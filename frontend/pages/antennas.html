@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RF Learning Hub - Comprehensive antenna guide from theory to advanced designs">
+    <meta name="keywords" content="antennas, dipole, yagi, helical, parabolic, VNA, SWR, impedance matching">
+    <title>RF Learning Hub - Antenna Guide</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .antenna-image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .antenna-image-card {
+            background: rgba(48, 43, 99, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .antenna-image-card:hover {
+            border-color: #00d4ff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .antenna-image-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            background: rgba(15, 12, 41, 0.5);
+            padding: 1rem;
+        }
+
+        .antenna-image-caption {
+            padding: 1rem;
+            text-align: center;
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .theory-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .theory-image {
+            text-align: center;
+        }
+
+        .theory-image img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            background: rgba(48, 43, 99, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(123, 47, 247, 0.3);
+        }
+
+        .theory-image p {
+            margin-top: 0.5rem;
+            color: #7b2ff7;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="../index.html">🛰️ RF Learning Hub</a></h1>
+        <p>Your Complete Interactive RF Engineering Platform</p>
+        <nav class="nav-tabs">
+            <a href="../index.html" class="nav-tab">📊 Dashboard</a>
+            <a href="learning-path.html" class="nav-tab">📚 Learning Path</a>
+            <a href="equipment.html" class="nav-tab">🔧 Equipment</a>
+            <a href="gallery.html" class="nav-tab">📸 Gallery</a>
+            <a href="measurements.html" class="nav-tab">📊 Measurements</a>
+            <a href="notebook.html" class="nav-tab">📝 Notebook</a>
+            <a href="projects.html" class="nav-tab">🎯 Projects</a>
+            <a href="rf-map.html" class="nav-tab">🗺️ RF Map</a>
+            <a href="videos.html" class="nav-tab">📹 Tutorials</a>
+            <a href="resources.html" class="nav-tab">🔗 Resources</a>
+            <a href="calculators.html" class="nav-tab">🧮 Calculators</a>
+            <a href="frequency-bands.html" class="nav-tab">📻 Bands</a>
+            <a href="antennas.html" class="nav-tab active">📡 Antennas</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="content-section">
+            <!-- Table of Contents -->
+            <div class="card">
+                <h2><span class="icon">📡</span> Comprehensive Antenna Guide</h2>
+                <p><strong>From Theory to Advanced Designs</strong> - Complete reference for RF engineers</p>
+
+                <h3>📑 Table of Contents</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="margin: 0.5rem 0;"><a href="#theory" style="color: #7b2ff7; text-decoration: none;">1. Basic Antenna Theory</a></li>
+                    <li style="margin: 0.5rem 0;"><a href="#hf-antennas" style="color: #7b2ff7; text-decoration: none;">2. Common HF Antennas (1.8-30 MHz)</a></li>
+                    <li style="margin: 0.5rem 0;"><a href="#vhf-uhf-antennas" style="color: #7b2ff7; text-decoration: none;">3. Common VHF/UHF Antennas (30-3000 MHz)</a></li>
+                    <li style="margin: 0.5rem 0;"><a href="#specialized" style="color: #7b2ff7; text-decoration: none;">4. Specialized Antenna Types</a></li>
+                    <li style="margin: 0.5rem 0;"><a href="#construction" style="color: #7b2ff7; text-decoration: none;">5. Construction Tips & Guidelines</a></li>
+                    <li style="margin: 0.5rem 0;"><a href="#resources" style="color: #7b2ff7; text-decoration: none;">6. Additional Resources</a></li>
+                </ul>
+            </div>
+
+            <!-- SECTION 1: BASIC ANTENNA THEORY -->
+            <div class="card" id="theory">
+                <h2>📚 Basic Antenna Theory</h2>
+
+                <div class="theory-images">
+                    <div class="theory-image">
+                        <img src="../assets/images/Antenna/D-symbol.png" alt="Antenna Symbol">
+                        <p>Antenna Schematic Symbol</p>
+                    </div>
+                    <div class="theory-image">
+                        <img src="../assets/images/Antenna/D-pattern.png" alt="Radiation Pattern">
+                        <p>Dipole Radiation Pattern</p>
+                    </div>
+                </div>
+
+                <h3>What is an Antenna?</h3>
+                <p>An antenna is a <strong>transducer</strong> that converts electrical energy into electromagnetic waves (transmitting) or electromagnetic waves into electrical energy (receiving). It's the interface between guided waves on a transmission line and free-space radio waves.</p>
+
+                <div style="background: rgba(123, 47, 247, 0.2); border-left: 4px solid #7b2ff7; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem; font-size: 1.1rem;">Key Principle: Reciprocity Theorem</strong>
+                    <p style="margin: 0;">Antenna characteristics (gain, pattern, impedance) are identical for transmit and receive operations.</p>
+                </div>
+
+                <h3>Radiation Mechanism</h3>
+                <p>Antennas work through the acceleration of electrons in a conductor:</p>
+                <ol>
+                    <li><strong>AC current</strong> flows through the antenna element</li>
+                    <li><strong>Accelerating charges</strong> create changing electric and magnetic fields</li>
+                    <li>These fields <strong>detach from the conductor</strong> and propagate as electromagnetic waves</li>
+                    <li>Energy travels at the <strong>speed of light</strong> (c ≈ 3 × 10⁸ m/s)</li>
+                </ol>
+
+                <h3>Wavelength and Frequency Relationship</h3>
+                <p>The fundamental equation linking frequency and physical antenna size:</p>
+
+                <div style="background: rgba(48, 43, 99, 0.6); padding: 1rem; border-radius: 8px; border-left: 4px solid #7b2ff7; margin: 1rem 0; font-family: 'Courier New', monospace; color: #00d4ff;">
+                    λ = c / f
+                    <br><br>
+                    Where:
+                    <br>λ = wavelength (meters)
+                    <br>c = speed of light (3 × 10⁸ m/s)
+                    <br>f = frequency (Hz)
+                </div>
+
+                <p><strong>Practical Example:</strong></p>
+                <ul>
+                    <li>145 MHz (2m band): λ = 300/145 = 2.07 meters</li>
+                    <li>Half-wave dipole: λ/2 = 1.04 meters</li>
+                    <li>Quarter-wave vertical: λ/4 = 0.52 meters</li>
+                </ul>
+
+                <h3>Essential Parameters</h3>
+
+                <h4 style="color: #00d4ff;">1. Radiation Pattern</h4>
+                <p>The <strong>3D distribution</strong> of radiated power as a function of direction. Typically shown as:</p>
+                <ul>
+                    <li><strong>Azimuth pattern</strong> (horizontal plane)</li>
+                    <li><strong>Elevation pattern</strong> (vertical plane)</li>
+                    <li><strong>3D pattern</strong> (complete visualization)</li>
+                </ul>
+
+                <p><strong>Key Terms:</strong></p>
+                <ul>
+                    <li><strong>Main lobe:</strong> Direction of maximum radiation</li>
+                    <li><strong>Beamwidth:</strong> Angle between half-power (-3dB) points</li>
+                    <li><strong>Side lobes:</strong> Undesired radiation in other directions</li>
+                    <li><strong>Front-to-back ratio:</strong> Power ratio between main lobe and opposite direction</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">2. Gain and Directivity</h4>
+                <p><strong>Gain (G):</strong> Ratio of power density in preferred direction vs. isotropic radiator</p>
+                <ul>
+                    <li>Measured in <strong>dBi</strong> (relative to isotropic) or <strong>dBd</strong> (relative to dipole)</li>
+                    <li>Conversion: <code style="background: rgba(123, 47, 247, 0.2); padding: 0.2rem 0.5rem; border-radius: 4px; color: #00d4ff;">dBi = dBd + 2.15</code></li>
+                </ul>
+
+                <p><strong>Reference Values:</strong></p>
+                <ul>
+                    <li>Isotropic radiator: 0 dBi (theoretical)</li>
+                    <li>Half-wave dipole: 2.15 dBi</li>
+                    <li>3-element Yagi: ~7-9 dBi</li>
+                    <li>Large dish antenna: 30-50 dBi</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">3. Polarization</h4>
+                <p>The <strong>orientation of the electric field</strong> vector. Types:</p>
+                <ul>
+                    <li><strong>Linear:</strong> Vertical or horizontal</li>
+                    <li><strong>Circular:</strong> Right-hand or left-hand (RHCP/LHCP)</li>
+                    <li><strong>Elliptical:</strong> Combination of linear and circular</li>
+                </ul>
+
+                <div style="background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Critical Note:</strong>
+                    <p style="margin: 0;">Cross-polarized antennas (90° apart) have 20-30 dB isolation. Ionospheric propagation scrambles polarization on HF.</p>
+                </div>
+
+                <h4 style="color: #00d4ff;">4. Impedance and SWR</h4>
+                <p><strong>Feed-point Impedance (Z):</strong> Complex impedance at feed connection</p>
+                <ul>
+                    <li>Typical values: 50Ω, 75Ω, 300Ω, 450Ω</li>
+                    <li>Has resistive (R) and reactive (X) components: Z = R + jX</li>
+                </ul>
+
+                <p><strong>Standing Wave Ratio (SWR):</strong> Measure of impedance match</p>
+                <ul>
+                    <li><strong>SWR = 1.0:1</strong> Perfect match (no reflections)</li>
+                    <li><strong>SWR &lt; 1.5:1</strong> Excellent match (most applications)</li>
+                    <li><strong>SWR &lt; 2.0:1</strong> Acceptable match (some power loss)</li>
+                    <li><strong>SWR &gt; 3.0:1</strong> Poor match (significant losses, potential damage)</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">5. Bandwidth</h4>
+                <p>The <strong>frequency range</strong> where antenna maintains acceptable performance:</p>
+                <ul>
+                    <li><strong>Impedance bandwidth:</strong> Range where SWR &lt; 2:1</li>
+                    <li><strong>Pattern bandwidth:</strong> Range where gain/pattern remain consistent</li>
+                </ul>
+
+                <p><strong>Factors Affecting Bandwidth:</strong></p>
+                <ul>
+                    <li><strong>Element diameter:</strong> Thicker = wider bandwidth</li>
+                    <li><strong>Antenna type:</strong> Dipoles narrow, discones wide</li>
+                    <li><strong>Q-factor:</strong> Lower Q = wider bandwidth</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">6. Resonance</h4>
+                <p>Antenna is <strong>resonant</strong> when feed-point reactance = 0 (purely resistive)</p>
+                <ul>
+                    <li>Occurs at specific frequencies</li>
+                    <li>Minimum SWR point</li>
+                    <li>Maximum radiation efficiency</li>
+                </ul>
+
+                <p><strong>Common Resonant Lengths:</strong></p>
+                <ul>
+                    <li><strong>Half-wave (λ/2):</strong> Dipoles</li>
+                    <li><strong>Quarter-wave (λ/4):</strong> Verticals with ground plane</li>
+                    <li><strong>Full-wave (1λ):</strong> Loop antennas</li>
+                </ul>
+            </div>
+
+            <!-- SECTION 2: HF ANTENNAS -->
+            <div class="card" id="hf-antennas">
+                <h2>📻 Common HF Antennas (1.8-30 MHz)</h2>
+
+                <div class="antenna-image-gallery">
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-dipole.png" alt="Half-Wave Dipole Diagram">
+                        <div class="antenna-image-caption">Half-Wave Dipole (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-dipole.jpg" alt="Half-Wave Dipole Photo">
+                        <div class="antenna-image-caption">Half-Wave Dipole (Photo)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-folded.png" alt="Folded Dipole">
+                        <div class="antenna-image-caption">Folded Dipole</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-vertical.png" alt="Vertical Monopole">
+                        <div class="antenna-image-caption">Quarter-Wave Vertical</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-loop.jpg" alt="Magnetic Loop">
+                        <div class="antenna-image-caption">Magnetic Loop Antenna</div>
+                    </div>
+                </div>
+
+                <h3>1. Half-Wave Dipole</h3>
+                <p><strong>Type:</strong> Balanced, center-fed<br>
+                <strong>Bands:</strong> Any HF band (single-band when cut to length)<br>
+                <strong>Length Formula:</strong> L (meters) = 143 / f (MHz) × 0.95</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>2.15 dBi (reference standard)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>73Ω at resonance (center-feed)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Figure-8 (omnidirectional broadside)</td>
+                    </tr>
+                    <tr>
+                        <td>Polarization</td>
+                        <td>Depends on orientation (horizontal typical for HF)</td>
+                    </tr>
+                </table>
+
+                <div style="background: rgba(46, 204, 113, 0.2); border-left: 4px solid #2ecc71; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Advantages</strong>
+                    <ul style="margin: 0;">
+                        <li>Simple construction</li>
+                        <li>Inexpensive (wire and insulators)</li>
+                        <li>Good efficiency</li>
+                        <li>Easy to match to 50Ω or 75Ω coax</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(231, 76, 60, 0.2); border-left: 4px solid #e74c3c; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Disadvantages</strong>
+                    <ul style="margin: 0;">
+                        <li>Single-band (unless using traps or tuner)</li>
+                        <li>Requires supports at both ends</li>
+                        <li>Height affects radiation angle</li>
+                    </ul>
+                </div>
+
+                <h3>2. End-Fed Half-Wave (EFHW)</h3>
+                <p><strong>Type:</strong> Unbalanced, end-fed with matching transformer<br>
+                <strong>Bands:</strong> Multi-band with appropriate transformer<br>
+                <strong>Length:</strong> 0.95 × λ/2 for lowest frequency</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>~2500-5000Ω at high-Z end, transformed to 50Ω</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Similar to dipole</td>
+                    </tr>
+                    <tr>
+                        <td>Matching</td>
+                        <td>49:1 transformer typically used</td>
+                    </tr>
+                </table>
+
+                <div style="background: rgba(46, 204, 113, 0.2); border-left: 4px solid #2ecc71; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Advantages</strong>
+                    <ul style="margin: 0;">
+                        <li>Only one support point needed</li>
+                        <li>Multi-band operation possible</li>
+                        <li>No radials required (acts as voltage-fed half-wave)</li>
+                        <li>Good for portable/stealth installations</li>
+                    </ul>
+                </div>
+
+                <h3>3. Vertical Antennas (Quarter-Wave)</h3>
+                <p><strong>Type:</strong> Ground plane, monopole<br>
+                <strong>Bands:</strong> Any HF band<br>
+                <strong>Length:</strong> λ/4 for vertical element</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>2-5 dBi (depending on ground system)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>36Ω (ideal ground), 25-50Ω (practical)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional in azimuth</td>
+                    </tr>
+                    <tr>
+                        <td>Take-off Angle</td>
+                        <td>Low (good for DX)</td>
+                    </tr>
+                    <tr>
+                        <td>Radials Required</td>
+                        <td>Minimum 4, optimal 16-120 (λ/4 each)</td>
+                    </tr>
+                </table>
+
+                <h3>4. Magnetic Loop Antennas (Small)</h3>
+                <p><strong>Type:</strong> Tuned resonant loop<br>
+                <strong>Bands:</strong> HF bands (remotely tuned)<br>
+                <strong>Size:</strong> Circumference < λ/10 (typically 1-2m diameter)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>-5 to +1 dBi (compact size penalty)</td>
+                    </tr>
+                    <tr>
+                        <td>Efficiency</td>
+                        <td>10-80% (depends on Q and losses)</td>
+                    </tr>
+                    <tr>
+                        <td>Bandwidth</td>
+                        <td>Very narrow (high Q)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Figure-8 (null through loop center)</td>
+                    </tr>
+                </table>
+
+                <div style="background: rgba(46, 204, 113, 0.2); border-left: 4px solid #2ecc71; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Advantages</strong>
+                    <ul style="margin: 0;">
+                        <li>Very compact (fits indoors)</li>
+                        <li>Low noise pickup (magnetic coupling)</li>
+                        <li>Directional null for QRM rejection</li>
+                        <li>No ground system required</li>
+                    </ul>
+                </div>
+
+                <h3>5. Full-Wave Loop Antennas (Large)</h3>
+                <p><strong>Type:</strong> Resonant closed loop<br>
+                <strong>Bands:</strong> Single or multi-band<br>
+                <strong>Perimeter:</strong> 1λ at lowest frequency</p>
+
+                <p><strong>Common Shapes:</strong></p>
+                <ul>
+                    <li><strong>Square/Rectangle:</strong> Easy to construct</li>
+                    <li><strong>Triangle (Delta):</strong> Single support point</li>
+                    <li><strong>Circle:</strong> Maximum gain (difficult to build)</li>
+                </ul>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>3-4 dBi (1-2 dB over dipole)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>100-120Ω (fed in middle of side)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional with some nulls off edges</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- SECTION 3: VHF/UHF ANTENNAS -->
+            <div class="card" id="vhf-uhf-antennas">
+                <h2>🛰️ Common VHF/UHF Antennas (30-3000 MHz)</h2>
+
+                <div class="antenna-image-gallery">
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-yagi.png" alt="Yagi-Uda Diagram">
+                        <div class="antenna-image-caption">Yagi-Uda Antenna (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-yagi2.png" alt="Yagi-Uda Detailed">
+                        <div class="antenna-image-caption">Yagi-Uda (Detailed View)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-yagi.jpg" alt="Yagi-Uda Photo">
+                        <div class="antenna-image-caption">Yagi-Uda Antenna (Photo)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-groundplane.png" alt="Ground Plane">
+                        <div class="antenna-image-caption">Ground Plane Antenna</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-jpole.png" alt="J-Pole Diagram">
+                        <div class="antenna-image-caption">J-Pole Antenna (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-jpole.jpg" alt="J-Pole Photo">
+                        <div class="antenna-image-caption">J-Pole Antenna (Photo)</div>
+                    </div>
+                </div>
+
+                <h3>1. Yagi-Uda Antenna</h3>
+                <p><strong>Type:</strong> Parasitic array, directional beam<br>
+                <strong>Bands:</strong> VHF/UHF (50-1300 MHz typical)<br>
+                <strong>Elements:</strong> 3-20+ (reflector, driver, directors)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>7-20 dBi (depends on element count)</td>
+                    </tr>
+                    <tr>
+                        <td>Front-to-Back</td>
+                        <td>15-30 dB</td>
+                    </tr>
+                    <tr>
+                        <td>Beamwidth</td>
+                        <td>30-70° (narrows with more elements)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>25-50Ω (depends on design)</td>
+                    </tr>
+                </table>
+
+                <p><strong>Design Parameters:</strong></p>
+                <ul>
+                    <li><strong>Reflector:</strong> 5% longer than driver</li>
+                    <li><strong>Directors:</strong> 5% shorter than driver, progressive shortening</li>
+                    <li><strong>Spacing:</strong> 0.1-0.25λ between elements</li>
+                    <li><strong>Boom length:</strong> Determines gain (longer = more gain)</li>
+                </ul>
+
+                <h3>2. J-Pole Antenna</h3>
+                <p><strong>Type:</strong> End-fed half-wave with matching stub<br>
+                <strong>Bands:</strong> VHF/UHF (2m, 70cm popular)<br>
+                <strong>Length:</strong> λ/2 radiating section + λ/4 matching stub</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>~2-3 dBi (comparable to dipole)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>50Ω (via matching stub)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional with slight gain at horizon</td>
+                    </tr>
+                    <tr>
+                        <td>Polarization</td>
+                        <td>Vertical</td>
+                    </tr>
+                </table>
+
+                <p><strong>Variations:</strong></p>
+                <ul>
+                    <li><strong>Slim Jim:</strong> Folded dipole version</li>
+                    <li><strong>Super-J:</strong> Two collinear half-waves</li>
+                    <li><strong>Collinear-J:</strong> Optimized spacing for 3dB gain</li>
+                </ul>
+
+                <h3>3. Ground Plane Antenna</h3>
+                <p><strong>Type:</strong> Quarter-wave vertical with radials<br>
+                <strong>Bands:</strong> VHF/UHF<br>
+                <strong>Length:</strong> λ/4 vertical + 4 radials (λ/4 each)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>2-5 dBi (depends on radial angle)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>36Ω (horizontal radials), 50Ω (radials drooped 45°)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional</td>
+                    </tr>
+                    <tr>
+                        <td>Take-off Angle</td>
+                        <td>Low (~10-30°)</td>
+                    </tr>
+                </table>
+
+                <p><strong>Radial Configurations:</strong></p>
+                <ul>
+                    <li><strong>Horizontal:</strong> 36Ω impedance</li>
+                    <li><strong>45° droop:</strong> 50Ω impedance (optimal match)</li>
+                    <li><strong>90° droop (vertical):</strong> Higher impedance</li>
+                </ul>
+
+                <h3>4. Collinear Antennas</h3>
+                <p><strong>Type:</strong> Stacked in-phase half-wave elements<br>
+                <strong>Bands:</strong> VHF/UHF<br>
+                <strong>Elements:</strong> 2-8 half-wave sections</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>3-6 dBi (increases ~3dB per doubling)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional, compressed vertical beamwidth</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>50Ω with proper phasing</td>
+                    </tr>
+                </table>
+
+                <p><strong>Phasing Methods:</strong></p>
+                <ul>
+                    <li><strong>Coil:</strong> Separates elements, provides phase shift</li>
+                    <li><strong>Stub:</strong> Half-wave phasing line</li>
+                    <li><strong>Folded:</strong> Uses transmission line principles</li>
+                </ul>
+
+                <h3>5. Discone Antenna</h3>
+                <p><strong>Type:</strong> Wideband omnidirectional<br>
+                <strong>Bands:</strong> Extremely wide (10:1 or more)<br>
+                <strong>Frequency Range:</strong> Typically 100 MHz - 2 GHz</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>2-4 dBi (slightly less than dipole)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>50-75Ω across wide range</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Omnidirectional</td>
+                    </tr>
+                    <tr>
+                        <td>Bandwidth</td>
+                        <td>Multi-octave coverage</td>
+                    </tr>
+                </table>
+
+                <div style="background: rgba(123, 47, 247, 0.2); border-left: 4px solid #7b2ff7; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Perfect For Scanner Use</strong>
+                    <p style="margin: 0;">The discone's extremely wide bandwidth makes it ideal for monitoring multiple frequency bands with a single antenna.</p>
+                </div>
+            </div>
+
+            <!-- SECTION 4: SPECIALIZED ANTENNAS -->
+            <div class="card" id="specialized">
+                <h2>🔬 Specialized Antenna Types</h2>
+
+                <div class="antenna-image-gallery">
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-lpda.png" alt="Log-Periodic Diagram">
+                        <div class="antenna-image-caption">Log-Periodic Array (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-lpda.jpg" alt="Log-Periodic Photo">
+                        <div class="antenna-image-caption">Log-Periodic Array (Photo)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-quad.jpg" alt="Cubical Quad">
+                        <div class="antenna-image-caption">Cubical Quad Antenna</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-quad2.png" alt="Quad Detail">
+                        <div class="antenna-image-caption">Quad Antenna Detail</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-helical.jpg" alt="Helical Antenna">
+                        <div class="antenna-image-caption">Helical Antenna</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-horn.png" alt="Horn Antenna Diagram">
+                        <div class="antenna-image-caption">Horn Antenna (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-horn.jpg" alt="Horn Antenna Photo">
+                        <div class="antenna-image-caption">Horn Antenna (Photo)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-dish.png" alt="Parabolic Dish Diagram">
+                        <div class="antenna-image-caption">Parabolic Dish (Diagram)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-dish2.jpg" alt="Parabolic Dish Photo">
+                        <div class="antenna-image-caption">Parabolic Dish (Photo)</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/D-corner.png" alt="Corner Reflector">
+                        <div class="antenna-image-caption">Corner Reflector</div>
+                    </div>
+                    <div class="antenna-image-card">
+                        <img src="../assets/images/Antenna/P-corner.jpg" alt="Corner Reflector Photo">
+                        <div class="antenna-image-caption">Corner Reflector (Photo)</div>
+                    </div>
+                </div>
+
+                <h3>1. Log-Periodic Dipole Array (LPDA)</h3>
+                <p><strong>Type:</strong> Wideband directional<br>
+                <strong>Bands:</strong> Multi-octave coverage (2:1 to 10:1)<br>
+                <strong>Elements:</strong> Multiple dipoles of decreasing length</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>6-10 dBi (constant across bandwidth)</td>
+                    </tr>
+                    <tr>
+                        <td>Impedance</td>
+                        <td>Constant (typically 50-200Ω)</td>
+                    </tr>
+                    <tr>
+                        <td>Beamwidth</td>
+                        <td>~60-80° (constant)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Unidirectional</td>
+                    </tr>
+                </table>
+
+                <p><strong>Applications:</strong> Multi-band HF operation, TV broadcast reception, Wideband EMC testing, Direction finding</p>
+
+                <h3>2. Cubical Quad</h3>
+                <p><strong>Type:</strong> Parasitic array using loops<br>
+                <strong>Bands:</strong> HF through VHF<br>
+                <strong>Elements:</strong> Full-wave loops (square typically)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>1-2 dB more than Yagi (same boom)</td>
+                    </tr>
+                    <tr>
+                        <td>Front-to-Back</td>
+                        <td>Excellent (25-35 dB)</td>
+                    </tr>
+                    <tr>
+                        <td>Perimeter</td>
+                        <td>1λ (full wavelength)</td>
+                    </tr>
+                    <tr>
+                        <td>Square Sides</td>
+                        <td>Each side = λ/4</td>
+                    </tr>
+                </table>
+
+                <h3>3. Helical Antenna</h3>
+                <p><strong>Type:</strong> Axial-mode or normal-mode<br>
+                <strong>Bands:</strong> VHF through microwave<br>
+                <strong>Modes:</strong> Axial (endfire) or Normal (broadside)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value (Axial Mode)</th>
+                    </tr>
+                    <tr>
+                        <td>Circumference</td>
+                        <td>~1λ</td>
+                    </tr>
+                    <tr>
+                        <td>Pitch</td>
+                        <td>0.25λ</td>
+                    </tr>
+                    <tr>
+                        <td>Turns</td>
+                        <td>5-15</td>
+                    </tr>
+                    <tr>
+                        <td>Polarization</td>
+                        <td>Circular (RHCP or LHCP)</td>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>12-20 dBi</td>
+                    </tr>
+                    <tr>
+                        <td>Beamwidth</td>
+                        <td>30-60°</td>
+                    </tr>
+                </table>
+
+                <p><strong>Applications:</strong> Satellite communications, GPS reception, Ham radio satellite (LEO), Radio astronomy</p>
+
+                <h3>4. Horn Antenna</h3>
+                <p><strong>Type:</strong> Waveguide aperture<br>
+                <strong>Bands:</strong> Microwave (1-100 GHz)<br>
+                <strong>Types:</strong> Pyramidal, conical, rectangular</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>10-25 dBi (depends on size)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Clean with low sidelobes</td>
+                    </tr>
+                    <tr>
+                        <td>Bandwidth</td>
+                        <td>Wide (octave or more)</td>
+                    </tr>
+                </table>
+
+                <p><strong>Applications:</strong> Feed horn for dishes, EMC testing (standard antenna), Radio astronomy, Radar systems</p>
+
+                <h3>5. Parabolic Dish Antenna</h3>
+                <p><strong>Type:</strong> Reflector with feed<br>
+                <strong>Bands:</strong> Microwave (1-100 GHz)<br>
+                <strong>Size:</strong> 0.5m to 20m+ diameter</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>20-60 dBi (depends on size)</td>
+                    </tr>
+                    <tr>
+                        <td>Beamwidth</td>
+                        <td>1-10° (inversely proportional to diameter)</td>
+                    </tr>
+                    <tr>
+                        <td>Efficiency</td>
+                        <td>50-70% (practical)</td>
+                    </tr>
+                </table>
+
+                <p><strong>Feed Types:</strong></p>
+                <ul>
+                    <li><strong>Prime Focus:</strong> Feed at focal point (simple)</li>
+                    <li><strong>Cassegrain:</strong> Sub-reflector (compact)</li>
+                    <li><strong>Offset:</strong> Aperture unblocked (maximum efficiency)</li>
+                </ul>
+
+                <p><strong>Applications:</strong> Satellite communications, Radio astronomy, EME (moonbounce), Microwave links</p>
+
+                <h3>6. Beverage Antenna (Receiving Only)</h3>
+                <p><strong>Type:</strong> Long-wire traveling wave<br>
+                <strong>Bands:</strong> LF through HF (160m-40m)<br>
+                <strong>Length:</strong> 1-4 wavelengths (100-600m typical)</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>-5 to +5 dBi (depends on length)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Unidirectional (toward terminated end)</td>
+                    </tr>
+                    <tr>
+                        <td>Noise</td>
+                        <td>Very low (ground-coupled)</td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td>2-4m above ground (relatively low)</td>
+                    </tr>
+                </table>
+
+                <div style="background: rgba(123, 47, 247, 0.2); border-left: 4px solid #7b2ff7; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">Extremely Low Noise</strong>
+                    <p style="margin: 0;">Beverage antennas provide exceptional noise performance for weak signal DX reception. Receive-only by design.</p>
+                </div>
+
+                <h3>7. NVIS (Near Vertical Incidence Skywave)</h3>
+                <p><strong>Type:</strong> Low horizontal antennas<br>
+                <strong>Bands:</strong> 40m, 80m, 160m (3.5-7 MHz)<br>
+                <strong>Height:</strong> λ/20 to λ/4 above ground</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Purpose</td>
+                        <td>Regional communications (0-400 km)</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>High-angle radiation (70-90°)</td>
+                    </tr>
+                    <tr>
+                        <td>Applications</td>
+                        <td>Emergency comms, regional nets</td>
+                    </tr>
+                </table>
+
+                <h3>8. Phased Arrays</h3>
+                <p><strong>Type:</strong> Multiple elements with controlled phase<br>
+                <strong>Elements:</strong> 2-1000+ driven elements<br>
+                <strong>Beam Steering:</strong> Electronic or mechanical</p>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Pattern</td>
+                        <td>Highly controllable</td>
+                    </tr>
+                    <tr>
+                        <td>Gain</td>
+                        <td>Sum of element gains + array factor</td>
+                    </tr>
+                    <tr>
+                        <td>Types</td>
+                        <td>Broadside, endfire, planar</td>
+                    </tr>
+                </table>
+
+                <p><strong>Applications:</strong> Direction finding (DF), Radar systems, Amateur satellite tracking, Interference rejection</p>
+            </div>
+
+            <!-- SECTION 5: CONSTRUCTION TIPS -->
+            <div class="card" id="construction">
+                <h2>🔧 Construction Tips & Guidelines</h2>
+
+                <h3>General Guidelines</h3>
+
+                <h4 style="color: #00d4ff;">1. Measure Twice, Cut Once</h4>
+                <div style="background: rgba(48, 43, 99, 0.6); padding: 1rem; border-radius: 8px; border-left: 4px solid #7b2ff7; margin: 1rem 0; font-family: 'Courier New', monospace; color: #00d4ff;">
+                    L = k × (300 / f_MHz)
+                    <br><br>
+                    Where:
+                    <br>k = 0.95 for wire dipoles
+                    <br>k = 0.94 for tubing
+                    <br>f_MHz = frequency in MHz
+                </div>
+
+                <h4 style="color: #00d4ff;">2. Use Quality Materials</h4>
+                <ul>
+                    <li><strong>Copper wire:</strong> 12-14 AWG minimum</li>
+                    <li><strong>Hardware:</strong> Stainless steel (corrosion resistant)</li>
+                    <li><strong>Insulators:</strong> UV-resistant materials</li>
+                    <li><strong>Coax:</strong> Quality cable (LMR-400, RG-213)</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">3. VNA is Essential</h4>
+                <ul>
+                    <li>Measure before installation</li>
+                    <li>Optimize at operating height</li>
+                    <li>Document SWR across band</li>
+                    <li>Save S11 plots for reference</li>
+                </ul>
+
+                <h4 style="color: #00d4ff;">4. Safety First</h4>
+                <div style="background: rgba(231, 76, 60, 0.2); border-left: 4px solid #e74c3c; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">⚠️ Critical Safety Considerations</strong>
+                    <ul style="margin: 0;">
+                        <li>Check for overhead power lines</li>
+                        <li>Use proper support structures</li>
+                        <li>Ground properly</li>
+                        <li>Consider lightning protection</li>
+                        <li>Never work alone on tall installations</li>
+                    </ul>
+                </div>
+
+                <h3>Recommended Tools</h3>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Category</th>
+                        <th>Tools</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Measurement</strong></td>
+                        <td>VNA, SWR meter, tape measure, frequency counter</td>
+                        <td>Antenna characterization and tuning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Construction</strong></td>
+                        <td>Wire cutters, crimp tool, soldering iron, drill</td>
+                        <td>Building and assembly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Software</strong></td>
+                        <td>4nec2, MMANA-GAL, SimSmith, VNA software</td>
+                        <td>Modeling and analysis</td>
+                    </tr>
+                </table>
+
+                <h3>Common Mistakes to Avoid</h3>
+
+                <div style="background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">1. Wrong Coax Length</strong>
+                    <p style="margin: 0;">Multiple of λ/2 can hide mismatch. Use random length or measure at antenna feedpoint.</p>
+                </div>
+
+                <div style="background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">2. Poor Connections</strong>
+                    <p style="margin: 0;">Solder all connections, use quality connectors, weatherproof outdoor connections.</p>
+                </div>
+
+                <div style="background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">3. Ignoring Environment</strong>
+                    <p style="margin: 0;">Nearby metal affects tuning, trees absorb RF (especially when wet), ground quality matters.</p>
+                </div>
+
+                <div style="background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">4. Insufficient Testing</strong>
+                    <p style="margin: 0;">Test before installation, measure at operating height, check multiple frequencies across band.</p>
+                </div>
+
+                <h3>Key Formulas Reference</h3>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Formula</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td>Wavelength</td>
+                        <td>λ (m) = 300 / f (MHz)</td>
+                        <td>Basic wavelength calculation</td>
+                    </tr>
+                    <tr>
+                        <td>Wire Dipole</td>
+                        <td>L (m) = 143 / f (MHz) × 0.95</td>
+                        <td>Half-wave with velocity factor</td>
+                    </tr>
+                    <tr>
+                        <td>Tubing Dipole</td>
+                        <td>L (m) = 143 / f (MHz) × 0.94</td>
+                        <td>Slightly shorter due to diameter</td>
+                    </tr>
+                    <tr>
+                        <td>Quarter-Wave</td>
+                        <td>L = 71.5 / f (MHz) × VF</td>
+                        <td>Vertical elements, VF varies</td>
+                    </tr>
+                    <tr>
+                        <td>Gain Conversion</td>
+                        <td>dBi = dBd + 2.15</td>
+                        <td>Isotropic to dipole reference</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- SECTION 6: RESOURCES -->
+            <div class="card" id="resources">
+                <h2>📚 Additional Resources</h2>
+
+                <h3>Recommended Books</h3>
+                <ul>
+                    <li><strong>ARRL Antenna Book</strong> - Essential reference for all antenna types</li>
+                    <li><strong>Antenna Physics: An Introduction</strong> - Robert J. Zavrel</li>
+                    <li><strong>The ARRL Handbook</strong> - Latest edition, comprehensive coverage</li>
+                    <li><strong>Reflector Antennas</strong> - William A. Imbriale (advanced)</li>
+                </ul>
+
+                <h3>Software Tools</h3>
+                <ul>
+                    <li><strong>4nec2:</strong> Free NEC2 modeling software (Windows) - <em>Highly recommended</em></li>
+                    <li><strong>MMANA-GAL:</strong> Alternative antenna modeler</li>
+                    <li><strong>EZNEC:</strong> Commercial software (most user-friendly)</li>
+                    <li><strong>SimSmith:</strong> Impedance matching and Smith chart analysis</li>
+                </ul>
+
+                <h3>Websites</h3>
+                <ul>
+                    <li><strong>Antenna-Theory.com</strong> - Excellent tutorials and theory</li>
+                    <li><strong>ARRL.org</strong> - Technical articles and resources</li>
+                    <li><strong>VK5AJL.com</strong> - Practical antenna builders guide</li>
+                    <li><strong>W8JI.com</strong> - Technical topics and measurements</li>
+                    <li><strong>ON4AA.net</strong> - Antenna design pages</li>
+                </ul>
+
+                <h3>Communities</h3>
+                <ul>
+                    <li><strong>r/amateurradio</strong> - Reddit community for ham radio</li>
+                    <li><strong>r/rfelectronics</strong> - RF engineering discussions</li>
+                    <li><strong>eHam.net</strong> - Reviews and forums</li>
+                    <li><strong>QRZ.com</strong> - Ham radio database and forums</li>
+                    <li><strong>EEVblog Forums</strong> - Test equipment and RF discussions</li>
+                </ul>
+            </div>
+
+            <!-- Quick Reference Table -->
+            <div class="card">
+                <h2>📊 Quick Reference: Antenna Comparison</h2>
+
+                <table class="data-table">
+                    <tr>
+                        <th>Antenna Type</th>
+                        <th>Bands</th>
+                        <th>Gain</th>
+                        <th>Pattern</th>
+                        <th>Impedance</th>
+                        <th>Best For</th>
+                    </tr>
+                    <tr>
+                        <td>Half-Wave Dipole</td>
+                        <td>HF</td>
+                        <td>2.15 dBi</td>
+                        <td>Figure-8</td>
+                        <td>73Ω</td>
+                        <td>General HF operation</td>
+                    </tr>
+                    <tr>
+                        <td>Vertical (λ/4)</td>
+                        <td>HF</td>
+                        <td>2-5 dBi</td>
+                        <td>Omni</td>
+                        <td>36-50Ω</td>
+                        <td>DX, limited space</td>
+                    </tr>
+                    <tr>
+                        <td>Magnetic Loop</td>
+                        <td>HF</td>
+                        <td>-5 to +1 dBi</td>
+                        <td>Figure-8</td>
+                        <td>Varies</td>
+                        <td>Indoor/stealth</td>
+                    </tr>
+                    <tr>
+                        <td>Yagi-Uda</td>
+                        <td>VHF/UHF</td>
+                        <td>7-20 dBi</td>
+                        <td>Directional</td>
+                        <td>25-50Ω</td>
+                        <td>Weak signals, DX</td>
+                    </tr>
+                    <tr>
+                        <td>J-Pole</td>
+                        <td>VHF/UHF</td>
+                        <td>2-3 dBi</td>
+                        <td>Omni</td>
+                        <td>50Ω</td>
+                        <td>Base stations</td>
+                    </tr>
+                    <tr>
+                        <td>Ground Plane</td>
+                        <td>VHF/UHF</td>
+                        <td>2-5 dBi</td>
+                        <td>Omni</td>
+                        <td>50Ω</td>
+                        <td>Simple, effective</td>
+                    </tr>
+                    <tr>
+                        <td>Discone</td>
+                        <td>VHF/UHF</td>
+                        <td>2-4 dBi</td>
+                        <td>Omni</td>
+                        <td>50-75Ω</td>
+                        <td>Wideband scanning</td>
+                    </tr>
+                    <tr>
+                        <td>Log-Periodic</td>
+                        <td>Multi-band</td>
+                        <td>6-10 dBi</td>
+                        <td>Directional</td>
+                        <td>50-200Ω</td>
+                        <td>Multi-band operation</td>
+                    </tr>
+                    <tr>
+                        <td>Helical</td>
+                        <td>VHF-Microwave</td>
+                        <td>12-20 dBi</td>
+                        <td>Directional</td>
+                        <td>140Ω</td>
+                        <td>Satellite comms</td>
+                    </tr>
+                    <tr>
+                        <td>Parabolic Dish</td>
+                        <td>Microwave</td>
+                        <td>20-60 dBi</td>
+                        <td>Very narrow</td>
+                        <td>Varies</td>
+                        <td>Satellite, EME</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="card">
+                <h2>📝 Document Information</h2>
+                <p><strong>Version:</strong> 1.0<br>
+                <strong>Last Updated:</strong> October 8, 2025<br>
+                <strong>Status:</strong> Complete Reference Document</p>
+
+                <p>This comprehensive antenna guide provides information for the RF Learning Hub project. All technical information has been verified against multiple authoritative sources including the ARRL Antenna Book, antenna-theory.com, and academic references.</p>
+
+                <div style="background: rgba(46, 204, 113, 0.2); border-left: 4px solid #2ecc71; padding: 1rem 1.5rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong style="display: block; margin-bottom: 0.5rem;">73! Good luck with your antenna projects!</strong>
+                    <p style="margin: 0;">May your SWR be low and your signals be strong!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RF Learning Hub - Interactive platform for Radio Frequency engineering education and experimentation">
+    <meta name="keywords" content="RF, Radio Frequency, SDR, Software Defined Radio, Amateur Radio, Ham Radio, Electronics">
+    <meta name="author" content="RF Learning Hub">
+    <title>RF Learning Hub - Dashboard</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <div class="header-content">
+                <h1><a href="index.html">🛰️ RF Learning Hub</a></h1>
+                <p>Your Complete Interactive RF Engineering Platform</p>
+            </div>
+            <button id="authButton" class="auth-button">🔐 Login</button>
+            <div id="userInfo" class="user-info" style="display: none;"></div>
+        </div>
+        <nav class="nav-tabs">
+            <a href="index.html" class="nav-tab active">📊 Dashboard</a>
+            <a href="pages/learning-path.html" class="nav-tab">📚 Learning Path</a>
+            <a href="pages/equipment.html" class="nav-tab">🔧 Equipment</a>
+            <a href="pages/gallery.html" class="nav-tab">📸 Gallery</a>
+            <a href="pages/measurements.html" class="nav-tab">📊 Measurements</a>
+            <a href="pages/notebook.html" class="nav-tab">📝 Notebook</a>
+            <a href="pages/projects.html" class="nav-tab">🎯 Projects</a>
+            <a href="pages/rf-map.html" class="nav-tab">🗺️ RF Map</a>
+            <a href="pages/videos.html" class="nav-tab">📹 Tutorials</a>
+            <a href="pages/resources.html" class="nav-tab">🔗 Resources</a>
+            <a href="pages/calculators.html" class="nav-tab">🧮 Calculators</a>
+            <a href="pages/frequency-bands.html" class="nav-tab">📻 Bands</a>
+            <a href="pages/antennas.html" class="nav-tab">📡 Antennas</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="content-section">
+            <div class="card">
+                <h2>📊 Learning Progress Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="modulesComplete">0</div>
+                        <div class="stat-label">Modules Completed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="hoursLogged">0</div>
+                        <div class="stat-label">Hours Logged</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="measurementCount">0</div>
+                        <div class="stat-label">Measurements</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="projectCount">0</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                </div>
+                
+                <div class="progress-tracker">
+                    <h3>Overall Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overallProgress" style="width: 0%">0%</div>
+                    </div>
+                    <p>Complete all 26 modules to master RF engineering fundamentals!</p>
+                </div>
+
+                <h3>Quick Actions</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <button class="export-btn" onclick="exportAllData()">📥 Export All Data</button>
+                    <button class="import-btn" onclick="importData()">📤 Import Data</button>
+                    <button class="add-entry-btn" onclick="window.location.href='pages/notebook.html'">📝 New Lab Entry</button>
+                </div>
+
+                <h3>Recent Activity</h3>
+                <div id="recentActivity" style="margin-top: 1rem;">
+                    <p style="color: #b0b0b0;">No recent activity. Start your learning journey!</p>
+                </div>
+
+                <h3>Equipment Status</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <h4>🔬 Rigol RSA5065N</h4>
+                        <p>Spectrum Analyzer + VNA</p>
+                        <p style="color: #2ecc71;">✓ Ready (9 kHz - 6.5 GHz)</p>
+                    </div>
+                    <div class="equipment-item">
+                        <h4>📡 HackRF One</h4>
+                        <p>Software Defined Radio</p>
+                        <p style="color: #2ecc71;">✓ Ready (1 MHz - 6 GHz)</p>
+                    </div>
+                    <div class="equipment-item">
+                        <h4>📻 RTL-SDR v5 (x2)</h4>
+                        <p>Receive-Only SDR</p>
+                        <p style="color: #2ecc71;">✓ Ready (500 kHz - 1.75 GHz)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Current Goals</h2>
+                <div class="project-card in-progress">
+                    <h4>Master VNA Measurements</h4>
+                    <span class="project-status status-in-progress">In Progress</span>
+                    <p>Learn S-parameters, impedance matching, and filter characterization</p>
+                </div>
+                <div class="project-card">
+                    <h4>Build QFH Antenna</h4>
+                    <span class="project-status status-planning">Planning</span>
+                    <p>Design and construct a Quadrifilar Helix antenna for weather satellites</p>
+                </div>
+                <div class="project-card">
+                    <h4>Decode ADS-B Signals</h4>
+                    <span class="project-status status-planning">Planning</span>
+                    <p>Track aircraft using 1090 MHz Mode-S transponder signals</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" style="display: none;" accept=".json">
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth-ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Initialize dashboard on load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            loadRecentActivity();
+        });
+
+        function updateDashboard() {
+            // Update module count
+            const completedModules = getCompletedModules();
+            document.getElementById('modulesComplete').textContent = completedModules.length;
+            
+            // Update overall progress
+            const totalModules = 26;
+            const progress = Math.round((completedModules.length / totalModules) * 100);
+            const progressBar = document.getElementById('overallProgress');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+            
+            // Update measurement count
+            const measurements = JSON.parse(localStorage.getItem('measurements') || '[]');
+            document.getElementById('measurementCount').textContent = measurements.length;
+            
+            // Update hours logged (estimate based on completed modules)
+            const hoursLogged = completedModules.length * 2; // Assume 2 hours per module
+            document.getElementById('hoursLogged').textContent = hoursLogged;
+            
+            // Update project count
+            const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+            const activeProjects = projects.filter(p => p.status !== 'completed').length;
+            document.getElementById('projectCount').textContent = activeProjects;
+        }
+
+        function getCompletedModules() {
+            const completed = [];
+            for (let i = 1; i <= 26; i++) {
+                if (localStorage.getItem(`module_${i}`) === 'true') {
+                    completed.push(i);
+                }
+            }
+            return completed;
+        }
+
+        function loadRecentActivity() {
+            const activity = JSON.parse(localStorage.getItem('recentActivity') || '[]');
+            const activityDiv = document.getElementById('recentActivity');
+            
+            if (activity.length > 0) {
+                activityDiv.innerHTML = activity.slice(0, 5).map(item => 
+                    `<div style="padding: 0.5rem; border-left: 3px solid #00d4ff; margin: 0.5rem 0;">
+                        <small style="color: #7b2ff7;">${item.date}</small>
+                        <p>${item.description}</p>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function exportAllData() {
+            const data = {
+                modules: {},
+                measurements: JSON.parse(localStorage.getItem('measurements') || '[]'),
+                notebook: JSON.parse(localStorage.getItem('labNotebook') || '[]'),
+                projects: JSON.parse(localStorage.getItem('projects') || '[]'),
+                gallery: JSON.parse(localStorage.getItem('gallery') || '[]'),
+                rfMap: JSON.parse(localStorage.getItem('rfMapData') || '[]'),
+                exportDate: new Date().toISOString()
+            };
+            
+            // Get module completion status
+            for (let i = 1; i <= 26; i++) {
+                data.modules[`module_${i}`] = localStorage.getItem(`module_${i}`) === 'true';
+            }
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rf-hub-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addActivity('Exported all data');
+        }
+
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        document.getElementById('importFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // Import modules
+                        if (data.modules) {
+                            Object.entries(data.modules).forEach(([key, value]) => {
+                                localStorage.setItem(key, value);
+                            });
+                        }
+                        
+                        // Import other data
+                        if (data.measurements) localStorage.setItem('measurements', JSON.stringify(data.measurements));
+                        if (data.notebook) localStorage.setItem('labNotebook', JSON.stringify(data.notebook));
+                        if (data.projects) localStorage.setItem('projects', JSON.stringify(data.projects));
+                        if (data.gallery) localStorage.setItem('gallery', JSON.stringify(data.gallery));
+                        if (data.rfMap) localStorage.setItem('rfMapData', JSON.stringify(data.rfMap));
+                        
+                        addActivity('Imported data successfully');
+                        updateDashboard();
+                        alert('Data imported successfully!');
+                    } catch (err) {
+                        alert('Error importing data: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function addActivity(description) {
+            const activity = JSON.parse(localStorage.getItem('recentActivity') || '[]');
+            activity.unshift({
+                date: new Date().toLocaleDateString(),
+                description: description
+            });
+            localStorage.setItem('recentActivity', JSON.stringify(activity.slice(0, 10)));
+            loadRecentActivity();
+        }
+    </script>
+</body>
+</html>
