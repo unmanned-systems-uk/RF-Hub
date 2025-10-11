@@ -1,10 +1,25 @@
 # Claude Code's Task Queue
 
-**Last Updated:** October 11, 2025 20:45 UTC
+**Last Updated:** October 12, 2025 23:06 UTC
 
 ---
 
 ## ✅ COMPLETED
+
+### Directory Path Updates (October 12, 2025)
+- ✅ Updated NGINX-SETUP.sh (fr-web → rf-web)
+- ✅ Updated nginx-rf-learning-hub.conf (fr-web → rf-web)
+- ✅ Updated backend/setup-ubuntu.sh (fr-web → rf-web)
+
+**Total Time:** 0.5 hours
+**Status:** ✅ COMPLETE
+
+**Files Modified:** 3
+- NGINX configuration setup script
+- Nginx site configuration file
+- Backend Ubuntu setup script
+
+---
 
 ### Backend API Implementation (October 11, 2025)
 - ✅ Phase 1: Foundation (config, middleware, server) - 2 hours

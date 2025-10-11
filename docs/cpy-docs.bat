@@ -1,0 +1,1 @@
+Get-ChildItem -Path . -Filter *.md -Recurse | Copy-Item -Destination .\all-docs-flat\
