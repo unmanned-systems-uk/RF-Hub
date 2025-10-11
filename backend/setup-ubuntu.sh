@@ -19,7 +19,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Project paths
-PROJECT_ROOT="/home/rfw/fr-web"
+PROJECT_ROOT="/home/rfw/rf-web"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 
 # Database credentials
@@ -392,7 +392,7 @@ echo "5. Test: curl http://localhost:3000/health"
 echo ""
 echo "For Claude Code implementation:"
 echo "  ssh frw@10.0.1.98"
-echo "  cd /home/rfw/fr-web/backend"
+echo "  cd /home/rfw/rf-web/backend"
 echo ""
 print_success "Ready for development!"
 echo ""

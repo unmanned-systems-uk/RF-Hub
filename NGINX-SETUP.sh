@@ -14,7 +14,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo "Step 1: Copying nginx configuration..."
-cp /home/rfw/fr-web/nginx-rf-learning-hub.conf /etc/nginx/sites-available/rf-learning-hub
+cp /home/rfw/rf-web/nginx-rf-learning-hub.conf /etc/nginx/sites-available/rf-learning-hub
 
 echo "Step 2: Creating symbolic link to sites-enabled..."
 ln -sf /etc/nginx/sites-available/rf-learning-hub /etc/nginx/sites-enabled/rf-learning-hub
