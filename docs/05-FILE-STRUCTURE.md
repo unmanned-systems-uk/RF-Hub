@@ -1,11 +1,7 @@
 # File Structure
 
-**Last Updated:** October 8, 2025 by Claude Code
-
-# File Structure
-
-**Document Owner:** Claude Code  
-**Last Updated:** October 8, 2025  
+**Document Owner:** Claude Code
+**Last Updated:** October 12, 2025
 **Status:** Current
 
 ---
@@ -18,87 +14,111 @@ This document maintains the definitive directory tree for the entire RF Learning
 
 ## 📊 Current Statistics
 
-**Total Files:** 50+  
-**Total Directories:** 25+  
-**Documentation Files:** 17  
-**Website Pages:** 13 (3 complete, 10 pending)  
-**Images:** 24 (antennas)
+**Total Files:** 66
+**Total Directories:** 33
+**Documentation Files:** 19
+**Backend Files:** 24 (API complete)
+**Frontend Files:** 12 (3 pages, 4 JS modules)
+**Images:** 26 (antenna diagrams/photos)
 
 ---
 
 ## 📁 Complete Directory Tree
 
 ```
-D:\SDR\RF Web Hub\RF Web Hub Project\
+/home/rfw/rf-web/
 │
 ├── docs/                                    📚 DOCUMENTATION HUB
 │   ├── README.md                            ✅ Project overview & navigation
+│   ├── 00-READ-THIS-FIRST.md                ✅ Quick start guide
+│   ├── 00-START-HERE-CORRECTED.md           ✅ Setup instructions
 │   ├── 01-PROJECT-OVERVIEW.md               ✅ Mission, vision, goals
 │   ├── 02-PROGRESS-TRACKER.md               ✅ Living status dashboard
 │   ├── 03-TODO-MASTER.md                    ✅ Prioritized task backlog
 │   ├── 04-IDEAS-SCRATCHPAD.md               ✅ Feature brainstorming
 │   ├── 05-FILE-STRUCTURE.md                 ✅ This file
 │   ├── 06-STYLING-GUIDE.md                  ✅ CSS design system
-│   ├── 07-DATABASE-SCHEMA.md                ✅ Data models & API specs
+│   ├── 07-DATABASE-SCHEMA.md                ✅ PostgreSQL schema & API specs
 │   ├── 08-DEPLOYMENT-GUIDE.md               ✅ Hosting & CI/CD
 │   ├── 09-CONTENT-INVENTORY.md              ✅ All written content
 │   ├── 10-CONTRIBUTOR-GUIDE.md              ✅ Workflow protocols
+│   ├── AUTH-ENHANCEMENTS.md                 ✅ Authentication improvements
+│   ├── CLAUDE-CODE-SUMMARY.md               ✅ Implementation summary
+│   ├── FRONTEND-SETUP-COMPLETE.md           ✅ Frontend setup notes
 │   │
 │   ├── claude/                              🔍 CLAUDE'S WORKSPACE
 │   │   ├── CLAUDE-CHECKPOINT.md             ✅ Active work tracking
 │   │   ├── CLAUDE-TASKS.md                  ✅ Assigned tasks
+│   │   ├── content-drafts/                  ✍️ Content being written
+│   │   ├── equipment-logs/                  🔬 Equipment data
+│   │   ├── implementation-notes/            📋 Implementation notes
+│   │   ├── learning-notes/                  📚 Learning materials
+│   │   ├── meeting-notes/                   📝 Meeting records
 │   │   ├── research-notes/                  📝 Research documents
-│   │   │   ├── .gitkeep                     ✅
-│   │   │   ├── antenna-research.md          ⏳ Future
-│   │   │   ├── calculator-specs.md          ⏳ Future
-│   │   │   ├── quiz-system-spec.md          ⏳ Future
-│   │   │   └── measurement-logging-spec.md  ⏳ Future
-│   │   └── content-drafts/                  ✍️ Content being written
-│   │       ├── .gitkeep                     ✅
-│   │       ├── learning-path-content.md     ⏳ In progress
-│   │       ├── equipment-page-content.md    ⏳ Queued
-│   │       └── quiz-questions-phase1.json   ⏳ Queued
+│   │   └── testing-logs/                    🧪 Test results
 │   │
 │   ├── claude-code/                         🔧 CC'S WORKSPACE
 │   │   ├── CC-CHECKPOINT.md                 ✅ Implementation tracking
 │   │   ├── CC-TASKS.md                      ✅ Build queue
+│   │   ├── CLAUDE-CODE-QUICK-START.md       ✅ Quick reference
+│   │   ├── IMPLEMENTATION-GUIDE.md          ✅ Implementation guide
+│   │   ├── IMPLEMENTATION-GUIDE-REVISED.md  ✅ Revised guide
+│   │   ├── IMPLEMENTATION-PHASE-4.md        ✅ Phase 4 details
 │   │   ├── implementation-notes/            📋 Development notes
-│   │   │   ├── .gitkeep                     ✅
-│   │   │   ├── page-templates.md            ⏳ Future
-│   │   │   ├── component-library.md         ⏳ Future
-│   │   │   └── localStorage-wrapper.md      ⏳ Future
 │   │   └── testing-logs/                    🧪 Test results
-│   │       ├── .gitkeep                     ✅
-│   │       ├── browser-compatibility.md     ⏳ Future
-│   │       └── mobile-testing-log.md        ⏳ Future
 │   │
 │   ├── anthony/                             🎯 ANTHONY'S WORKSPACE
 │   │   ├── CURRENT-WORK.md                  ✅ Active work log
 │   │   ├── ANTHONY-DECISIONS.md             ✅ Decision log
 │   │   ├── equipment-logs/                  🔬 VNA measurements
-│   │   │   ├── .gitkeep                     ✅
-│   │   │   ├── discone-baseline-sweep.csv   ⏳ Future
-│   │   │   ├── airband-dipole-measurements.csv ⏳ Future
-│   │   │   └── adsb-antenna-measurements.csv ⏳ Future
 │   │   └── learning-notes/                  📚 Personal progress
-│   │       ├── .gitkeep                     ✅
-│   │       └── module-progress.md           ⏳ Future
 │   │
 │   └── archives/                            📦 ARCHIVES
-│       ├── rf_learning_context_v2.2_20251008.md ⏳ To archive
 │       └── meeting-notes/                   📝 Meeting logs
-│           ├── .gitkeep                     ✅
-│           └── 2025-10-08-kickoff.md        ⏳ Future
 │
-├── rf-learning-hub/                         🌐 WEBSITE ROOT
-│   ├── index.html                           ✅ Dashboard page
+├── backend/                                 🔙 BACKEND API (Node.js + Express)
+│   ├── server.js                            ✅ Main Express server
+│   ├── package.json                         ✅ Node dependencies
+│   ├── package-lock.json                    ✅ Dependency lock
+│   ├── schema.sql                           ✅ PostgreSQL schema
+│   ├── seed_modules_phase1.sql              ✅ Initial module data
+│   ├── README.md                            ✅ Backend documentation
+│   ├── API-IMPLEMENTATION-SUMMARY.md        ✅ API summary
+│   ├── IMPLEMENTATION-STATUS.md             ✅ Status tracking
+│   ├── setup-ubuntu.sh                      ✅ Ubuntu setup script
+│   │
+│   ├── config/                              ⚙️ CONFIGURATION
+│   │   └── database.js                      ✅ PostgreSQL connection
+│   │
+│   ├── middleware/                          🔌 MIDDLEWARE
+│   │   ├── auth.js                          ✅ JWT authentication
+│   │   └── errorHandler.js                  ✅ Error handling
+│   │
+│   ├── models/                              📊 DATABASE MODELS
+│   │   ├── User.js                          ✅ User model
+│   │   ├── Module.js                        ✅ Learning module model
+│   │   ├── Progress.js                      ✅ User progress model
+│   │   ├── Quiz.js                          ✅ Quiz model
+│   │   ├── Badge.js                         ✅ Badge/achievement model
+│   │   └── Calculation.js                   ✅ Calculator history model
+│   │
+│   └── routes/                              🛣️ API ROUTES
+│       ├── auth.js                          ✅ /api/auth routes
+│       ├── modules.js                       ✅ /api/modules routes
+│       ├── progress.js                      ✅ /api/progress routes
+│       ├── quizzes.js                       ✅ /api/quizzes routes
+│       ├── badges.js                        ✅ /api/badges routes
+│       └── calculations.js                  ✅ /api/calculations routes
+│
+├── frontend/                                🌐 FRONTEND (Static HTML/CSS/JS)
+│   ├── index.html                           ✅ Dashboard/Homepage
 │   ├── LICENSE                              ✅ MIT License
-│   ├── README.md                            ✅ Website readme
+│   ├── README.md                            ✅ Frontend readme
 │   │
 │   ├── pages/                               📄 HTML PAGES
-│   │   ├── antennas.html                    ✅ Antenna guide (3/13)
-│   │   ├── frequency-bands.html             ✅ Spectrum reference (2/13)
-│   │   ├── learning-path.html               ⏳ 26-module curriculum
+│   │   ├── antennas.html                    ✅ Antenna guide
+│   │   ├── frequency-bands.html             ✅ Spectrum reference
+│   │   ├── learning-path.html               ⏳ Curriculum (planned)
 │   │   ├── equipment.html                   ⏳ Equipment inventory
 │   │   ├── measurements.html                ⏳ VNA database
 │   │   ├── notebook.html                    ⏳ Lab notebook
@@ -106,67 +126,68 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 │   │   ├── gallery.html                     ⏳ Photo gallery
 │   │   ├── calculators.html                 ⏳ RF calculators
 │   │   ├── resources.html                   ⏳ External links
-│   │   ├── videos.html                      ⏳ Video library
-│   │   └── rf-map.html                      ⏳ RF environment map
+│   │   └── videos.html                      ⏳ Video library
 │   │
 │   ├── assets/                              🎨 STATIC ASSETS
 │   │   │
 │   │   ├── css/                             🎨 STYLESHEETS
-│   │   │   └── styles.css                   ✅ Main stylesheet (1,250 lines)
+│   │   │   └── styles.css                   ✅ Main stylesheet (~1,250 lines)
 │   │   │
-│   │   ├── js/                              ⚙️ JAVASCRIPT
-│   │   │   ├── main.js                      ❌ MISSING (critical!)
-│   │   │   ├── calculators.js               ⏳ Not created
-│   │   │   ├── charts.js                    ⏳ Not created
-│   │   │   └── auth.js                      ⏳ Not created
+│   │   ├── js/                              ⚙️ JAVASCRIPT MODULES
+│   │   │   ├── main.js                      ✅ Main app logic
+│   │   │   ├── api.js                       ✅ API client wrapper
+│   │   │   ├── auth-ui.js                   ✅ Authentication UI
+│   │   │   ├── storage.js                   ✅ localStorage wrapper
+│   │   │   ├── calculators.js               ⏳ RF calculators (planned)
+│   │   │   └── charts.js                    ⏳ Chart.js integration (planned)
 │   │   │
-│   │   └── images/                          🖼️ IMAGES
-│   │       │
-│   │       ├── Antenna/                     📡 ANTENNA IMAGES (24 files)
-│   │       │   ├── D-Dipole-Basic.png       ✅ Diagram
-│   │       │   ├── D-Dipole-Folded.png      ✅ Diagram
-│   │       │   ├── D-Vertical-GP.png        ✅ Diagram
-│   │       │   ├── D-Loop-Magnetic.png      ✅ Diagram
-│   │       │   ├── D-Yagi-3el.png           ✅ Diagram
-│   │       │   ├── D-Yagi-5el.png           ✅ Diagram
-│   │       │   ├── D-JPole.png              ✅ Diagram
-│   │       │   ├── D-GroundPlane.png        ✅ Diagram
-│   │       │   ├── D-LPDA.png               ✅ Diagram
-│   │       │   ├── D-Horn.png               ✅ Diagram
-│   │       │   ├── D-Parabolic.png          ✅ Diagram
-│   │       │   ├── P-Discone-Mounted.jpg    ✅ Photo
-│   │       │   ├── P-Dipole-VHF.jpg         ✅ Photo
-│   │       │   ├── P-Yagi-UHF.jpg           ✅ Photo
-│   │       │   ├── P-LPDA-Array.jpg         ✅ Photo
-│   │       │   ├── P-Loop-Magnetic.jpg      ✅ Photo
-│   │       │   ├── P-Helical-Satellite.jpg  ✅ Photo
-│   │       │   ├── P-Horn-Microwave.jpg     ✅ Photo
-│   │       │   ├── P-Dish-Large.jpg         ✅ Photo
-│   │       │   ├── P-Quad-2el.jpg           ✅ Photo
-│   │       │   ├── P-CornerReflector.jpg    ✅ Photo
-│   │       │   ├── P-Vertical-HF.jpg        ✅ Photo
-│   │       │   ├── P-JPole-Copper.jpg       ✅ Photo
-│   │       │   └── P-GroundPlane-VHF.jpg    ✅ Photo
-│   │       │
-│   │       ├── Equipment/                   🔧 EQUIPMENT PHOTOS
-│   │       │   └── (empty - photos to be added)
-│   │       │
-│   │       └── Gallery/                     📸 USER UPLOADS
-│   │           └── (empty - user content)
+│   │   ├── images/                          🖼️ IMAGES
+│   │   │   └── Antenna/                     📡 ANTENNA IMAGES (26 files)
+│   │   │       ├── D-dipole.png             ✅ Basic dipole diagram
+│   │   │       ├── D-folded.png             ✅ Folded dipole diagram
+│   │   │       ├── D-vertical.png           ✅ Vertical antenna diagram
+│   │   │       ├── D-yagi.png               ✅ Yagi antenna diagram
+│   │   │       ├── D-yagi2.png              ✅ Yagi variant diagram
+│   │   │       ├── D-jpole.png              ✅ J-pole diagram
+│   │   │       ├── D-groundplane.png        ✅ Ground plane diagram
+│   │   │       ├── D-lpda.png               ✅ LPDA diagram
+│   │   │       ├── D-horn.png               ✅ Horn antenna diagram
+│   │   │       ├── D-dish.png               ✅ Parabolic dish diagram
+│   │   │       ├── D-corner.png             ✅ Corner reflector diagram
+│   │   │       ├── D-pattern.png            ✅ Radiation pattern diagram
+│   │   │       ├── D-symbol.png             ✅ Antenna symbol
+│   │   │       ├── P-dipole.jpg             ✅ Dipole photo
+│   │   │       ├── P-yagi.jpg               ✅ Yagi photo
+│   │   │       ├── P-lpda.jpg               ✅ LPDA photo
+│   │   │       ├── P-loop.jpg               ✅ Loop antenna photo
+│   │   │       ├── P-helical.jpg            ✅ Helical antenna photo
+│   │   │       ├── P-horn.jpg               ✅ Horn antenna photo
+│   │   │       ├── P-dish.webp              ✅ Dish photo (webp)
+│   │   │       ├── P-dish2.jpg              ✅ Dish photo (jpg)
+│   │   │       ├── P-quad.jpg               ✅ Quad antenna photo
+│   │   │       ├── P-quad2.png              ✅ Quad antenna diagram
+│   │   │       ├── P-jpole.jpg              ✅ J-pole photo
+│   │   │       ├── P-corner.jpg             ✅ Corner reflector photo
+│   │   │       └── img.txt                  ✅ Image manifest
+│   │   │
+│   │   └── sql/                             💾 SQL FILES (reference)
+│   │       ├── schema.sql                   ✅ Database schema copy
+│   │       └── seed_modules_phase1.sql      ✅ Module seed data copy
 │   │
-│   └── data/                                💾 DATA FILES (future)
-│       ├── users.json                       ⏳ Not created (localStorage initially)
-│       └── measurements.json                ⏳ Not created
+│   ├── data/                                💾 DATA (localStorage backup)
+│   └── test html/                           🧪 TEST FILES
+│       └── rf_hub_index.html                ✅ Test page
 │
 ├── scripts/                                 🐍 UTILITY SCRIPTS
-│   ├── antenna_image_downloader.py          ✅ Image download script
-│   └── generate_documentation.py            ✅ Doc generator script
+│   └── (empty - scripts to be added)
 │
 ├── .git/                                    📦 GIT REPOSITORY
-│   └── (Git internals)
+├── .claude/                                 🔧 CLAUDE CODE CONFIG
+│   └── settings.local.json                  ✅ Local settings
 │
-├── .gitignore                               ⏳ To create
-└── antenna_comprehensive_guide.md           ✅ Antenna research doc
+├── NGINX-SETUP.sh                           ✅ NGINX configuration script
+├── nginx-rf-learning-hub.conf               ✅ NGINX config file
+└── start-server.sh                          ✅ Server startup script
 
 ```
 
@@ -182,30 +203,36 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 
 ---
 
-## 🎯 Critical Missing Files
+## 🎯 Next Priority Files
 
-### 🔥 BLOCKING WORK
+### 📝 PLANNED FOR NEXT PHASE
 
-**1. rf-learning-hub/assets/js/main.js**
-- **Status:** ❌ MISSING
-- **Priority:** CRITICAL
-- **Impact:** All interactive features blocked
-- **References:** Every HTML page includes this file
-- **Assigned:** Claude Code
-- **Estimated Time:** 2 hours
-
-**2. .gitignore**
-- **Status:** ⏳ Not created
+**1. Frontend Pages**
+- **Files:** learning-path.html, calculators.html, equipment.html
+- **Status:** ⏳ Planned
 - **Priority:** HIGH
-- **Impact:** May commit unnecessary files
-- **Needed for:** Git best practices
-- **Contents needed:**
+- **Impact:** Core functionality expansion
+- **Dependencies:** Backend API (✅ Complete)
+
+**2. Calculator JavaScript**
+- **File:** frontend/assets/js/calculators.js
+- **Status:** ⏳ Planned
+- **Priority:** MEDIUM
+- **Impact:** RF calculator functionality
+- **Dependencies:** Calculator page HTML
+
+**3. .gitignore**
+- **Status:** ⏳ Should be created
+- **Priority:** MEDIUM
+- **Impact:** Clean git commits
+- **Suggested contents:**
   ```
   node_modules/
   .env
   *.log
   .DS_Store
   Thumbs.db
+  backend/bep
   ```
 
 ---
@@ -213,21 +240,29 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 ## 📊 File Size Overview
 
 ### Documentation (docs/)
-- Total: ~150 KB
-- Average per file: ~10 KB
-- Largest: 03-TODO-MASTER.md (~25 KB)
+- Total: ~200 KB
+- Files: 19 markdown files
+- Largest: 03-TODO-MASTER.md (~30 KB)
 
-### Website (rf-learning-hub/)
-- HTML: ~120 KB (3 pages)
+### Backend (backend/)
+- JavaScript: ~50 KB (server + routes + models)
+- SQL: ~20 KB (schema + seed data)
+- node_modules/: ~40 MB (dependencies)
+- **Total:** ~40 MB
+
+### Frontend (frontend/)
+- HTML: ~150 KB (3 complete pages)
 - CSS: ~45 KB (styles.css)
-- JS: 0 KB (main.js missing)
-- Images: ~8 MB (24 antenna images)
-- **Total:** ~8.3 MB
+- JS: ~20 KB (4 modules: main, api, auth-ui, storage)
+- Images: ~5 MB (26 antenna diagrams/photos)
+- **Total:** ~5.2 MB
 
-### Scripts
-- Python scripts: ~15 KB
+### Configuration
+- Shell scripts: ~3 KB
+- NGINX config: ~1 KB
 
-### **Project Total:** ~8.5 MB
+### **Project Total (excluding node_modules):** ~5.5 MB
+### **Project Total (including node_modules):** ~45 MB
 
 ---
 
@@ -269,54 +304,86 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 ## 📁 Directory Purposes
 
 ### `/docs/` - Documentation Hub
-**Purpose:** All project management, planning, and workflow documentation  
-**Owner:** All contributors (specific ownership per file)  
-**Update Frequency:** Daily  
+**Purpose:** All project management, planning, and workflow documentation
+**Owner:** All contributors (specific ownership per file)
+**Update Frequency:** Daily
 **Backup:** Git repository
 
 ### `/docs/claude/` - Claude's Workspace
-**Purpose:** Research, planning, content drafting  
-**Owner:** Claude (Sonnet 4.5)  
-**Update Frequency:** Multiple times daily during active work  
+**Purpose:** Research, planning, content drafting
+**Owner:** Claude (Sonnet 4.5)
+**Update Frequency:** Multiple times daily during active work
 **Contents:** Specs for CC, research notes, content drafts
 
 ### `/docs/claude-code/` - Claude Code's Workspace
-**Purpose:** Implementation tracking and development notes  
-**Owner:** Claude Code  
-**Update Frequency:** After each build session  
-**Contents:** Task queue, testing logs, implementation notes
+**Purpose:** Implementation tracking and development notes
+**Owner:** Claude Code
+**Update Frequency:** After each build session
+**Contents:** Task queue, testing logs, implementation guides
 
 ### `/docs/anthony/` - Anthony's Workspace
-**Purpose:** Lab work, equipment logs, decision tracking  
-**Owner:** Anthony  
-**Update Frequency:** As needed (daily for equipment logs)  
+**Purpose:** Lab work, equipment logs, decision tracking
+**Owner:** Anthony
+**Update Frequency:** As needed (daily for equipment logs)
 **Contents:** VNA measurements, learning progress, decisions
 
 ### `/docs/archives/` - Archives
-**Purpose:** Old versions, completed meeting notes  
-**Owner:** All (write-once, read-many)  
-**Update Frequency:** Weekly/monthly cleanup  
+**Purpose:** Old versions, completed meeting notes
+**Owner:** All (write-once, read-many)
+**Update Frequency:** Weekly/monthly cleanup
 **Retention:** Keep indefinitely for history
 
-### `/rf-learning-hub/` - Website Root
-**Purpose:** All website files (HTML, CSS, JS, images)  
-**Owner:** Claude Code (implementation), Claude (content)  
-**Deployed to:** GitHub Pages / Netlify (future)
+### `/backend/` - Backend API Server
+**Purpose:** Node.js + Express REST API with PostgreSQL
+**Owner:** Claude Code (implementation)
+**Port:** 3000 (configurable)
+**Tech Stack:** Express, pg (PostgreSQL), bcrypt, JWT
+**Status:** ✅ Complete and operational
 
-### `/rf-learning-hub/pages/` - Website Pages
-**Purpose:** All HTML page files (except index.html)  
-**Naming:** Descriptive, lowercase, hyphenated  
-**Count:** 13 total (3 complete, 10 pending)
+### `/backend/config/` - Backend Configuration
+**Purpose:** Database connections, environment settings
+**Files:** database.js (PostgreSQL pool configuration)
 
-### `/rf-learning-hub/assets/` - Static Assets
-**Purpose:** CSS, JavaScript, images, fonts  
-**Subdirectories:** css/, js/, images/, fonts/ (future)  
+### `/backend/middleware/` - Express Middleware
+**Purpose:** Authentication, error handling, request processing
+**Files:** auth.js (JWT verification), errorHandler.js
+
+### `/backend/models/` - Database Models
+**Purpose:** Data access layer for PostgreSQL tables
+**Pattern:** Each model exports CRUD methods
+**Files:** User, Module, Progress, Quiz, Badge, Calculation
+
+### `/backend/routes/` - API Route Handlers
+**Purpose:** REST API endpoint definitions
+**Base Path:** /api
+**Routes:** /auth, /modules, /progress, /quizzes, /badges, /calculations
+
+### `/frontend/` - Frontend Web Application
+**Purpose:** Static HTML/CSS/JS website
+**Owner:** Claude Code (implementation), Claude (content)
+**Tech:** Vanilla JS, no framework (intentional)
+**Deployment:** NGINX serving static files
+
+### `/frontend/pages/` - HTML Pages
+**Purpose:** All HTML page files (except index.html)
+**Naming:** Descriptive, lowercase, hyphenated
+**Count:** 11 total (2 complete, 9 planned)
+
+### `/frontend/assets/` - Static Assets
+**Purpose:** CSS, JavaScript, images, SQL reference files
+**Subdirectories:** css/, js/, images/, sql/
 **Optimization:** Images should be compressed before commit
 
+### `/frontend/assets/js/` - JavaScript Modules
+**Purpose:** Client-side application logic
+**Pattern:** ES6 modules, exported functions
+**Files:** main.js (app), api.js (fetch wrapper), auth-ui.js, storage.js
+
 ### `/scripts/` - Utility Scripts
-**Purpose:** Automation, build tools, utilities  
-**Language:** Python (primary), Bash (if needed)  
+**Purpose:** Automation, build tools, utilities
+**Language:** Python (primary), Bash (shell scripts)
 **Usage:** Run from project root
+**Status:** Directory exists but empty
 
 ---
 
@@ -325,17 +392,27 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 ### By Type
 - **Planning docs:** `docs/01-*.md` through `docs/04-*.md`
 - **Technical docs:** `docs/05-*.md` through `docs/10-*.md`
-- **Checkpoints:** `docs/*/CHECKPOINT.md`
-- **Task lists:** `docs/*/TASKS.md`
-- **Website pages:** `rf-learning-hub/pages/*.html`
-- **Styles:** `rf-learning-hub/assets/css/*.css`
-- **Scripts:** `rf-learning-hub/assets/js/*.js`
-- **Images:** `rf-learning-hub/assets/images/*/`
+- **Checkpoints:** `docs/*/CHECKPOINT.md` or `docs/*/*-CHECKPOINT.md`
+- **Task lists:** `docs/*/TASKS.md` or `docs/*/*-TASKS.md`
+- **Backend code:** `backend/**/*.js`
+- **Frontend pages:** `frontend/pages/*.html` + `frontend/index.html`
+- **Styles:** `frontend/assets/css/*.css`
+- **Client scripts:** `frontend/assets/js/*.js`
+- **Images:** `frontend/assets/images/*/`
+- **Database:** `backend/schema.sql`, `backend/seed_*.sql`
 
 ### By Contributor
 - **Anthony's files:** `docs/anthony/*`
 - **Claude's files:** `docs/claude/*`
 - **CC's files:** `docs/claude-code/*`
+
+### By Technology
+- **Node.js:** `backend/**/*.js`, `backend/package.json`
+- **HTML:** `frontend/**/*.html`
+- **CSS:** `frontend/assets/css/*.css`
+- **JavaScript:** `frontend/assets/js/*.js`
+- **SQL:** `backend/*.sql`, `frontend/assets/sql/*.sql`
+- **Shell:** `*.sh`, `nginx-*.conf`
 
 ### By Status
 - **Complete:** Look for ✅ in this doc
@@ -346,20 +423,21 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 
 ## 📈 Growth Projections
 
-### Next Week (Oct 15, 2025)
-- **Files:** +10 (5 HTML pages, 5 JS files)
-- **Size:** +2 MB (images, code)
-- **Directories:** +2 (data/, fonts/)
+### Next Week (Oct 19, 2025)
+- **Files:** +5 (2-3 new HTML pages, calculator JS)
+- **Size:** +500 KB (code, minimal images)
+- **Focus:** Learning path page, calculators page
 
-### Next Month (Nov 8, 2025)
-- **Files:** +30 (all pages complete, user data)
-- **Size:** +10 MB (user uploads, more images)
-- **Directories:** +5 (database exports, logs)
+### Next Month (Nov 12, 2025)
+- **Files:** +15 (remaining HTML pages, quiz data)
+- **Size:** +5 MB (equipment photos, more content)
+- **Directories:** +2 (logs/, uploads/)
+- **Focus:** Complete all planned pages
 
-### Next Quarter (Jan 8, 2026)
-- **Files:** +100 (content modules, quiz data)
-- **Size:** +50 MB (video thumbnails, user content)
-- **Directories:** +10 (feature expansion)
+### Next Quarter (Jan 12, 2026)
+- **Files:** +50 (content modules, user submissions)
+- **Size:** +20 MB (user uploads, video embeds)
+- **Focus:** Community features, advanced calculators
 
 ---
 
@@ -385,26 +463,42 @@ D:\SDR\RF Web Hub\RF Web Hub Project\
 ## 📝 Notes
 
 **Git Tracking:**
-- All files should be tracked except `.env`, logs, and `node_modules/`
-- Create `.gitignore` file (see Critical Missing Files section)
+- All files should be tracked except `.env`, logs, `node_modules/`, and `backend/bep`
+- Consider creating a `.gitignore` file (see Next Priority Files section)
+- Currently: 66 tracked files across 33 directories
 
 **File Size Limits:**
 - Keep individual files under 1 MB when possible
-- Optimize images before commit
-- Consider CDN for very large assets
+- Optimize images before commit (current antenna images are good)
+- Backend node_modules is ~40 MB (normal for Node.js projects)
+
+**Technology Stack:**
+- **Backend:** Node.js 18+, Express 4.x, PostgreSQL 15+
+- **Frontend:** Vanilla JavaScript (ES6), no framework
+- **Database:** PostgreSQL with pg driver
+- **Auth:** JWT tokens, bcrypt password hashing
+- **Server:** NGINX reverse proxy to Node.js on port 3000
 
 **Naming Consistency:**
+- Backend: camelCase for JS files and functions
+- Frontend: kebab-case for HTML files, camelCase for JS
+- Database: snake_case for table/column names
 - Always use the established conventions
-- Ask if unsure about naming
 - Update this doc after any reorganization
 
 **Documentation:**
-- Keep this file updated religiously
+- Keep this file updated after adding/removing files
 - Status changes should be reflected immediately
 - Include file sizes for large files (>100 KB)
 
+**Deployment:**
+- Backend runs on port 3000 via `node server.js`
+- Frontend served by NGINX on port 80
+- PostgreSQL on default port 5432
+- Database: rf_learning_hub
+
 ---
 
-**Last Updated:** October 8, 2025 23:45 UTC by Claude  
-**Next Update:** When files are created or structure changes  
-**Maintenance:** Claude Code owns this file, all update it
+**Last Updated:** October 12, 2025 by Claude Code
+**Next Update:** When files are created or structure changes
+**Maintenance:** Claude Code owns this file, all contributors update it
