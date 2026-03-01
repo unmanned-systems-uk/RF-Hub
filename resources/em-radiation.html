@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Antennas Radiate — The Complete Story</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2234;
+  --accent-e: #f59e0b;
+  --accent-h: #06b6d4;
+  --accent-em: #a78bfa;
+  --accent-power: #ef4444;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --border: #1e293b;
+  --glow-e: rgba(245, 158, 11, 0.15);
+  --glow-h: rgba(6, 182, 212, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Subtle grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-em) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px 0 40px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.e { background: var(--accent-e); box-shadow: 0 0 8px var(--glow-e); }
+.legend-dot.h { background: var(--accent-h); box-shadow: 0 0 8px var(--glow-h); }
+.legend-dot.em { background: var(--accent-em); }
+
+/* Story overview */
+.story-overview {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-overview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+}
+
+.story-overview h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.story-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+
+@media (max-width: 700px) {
+  .story-steps { grid-template-columns: 1fr 1fr; }
+}
+
+.story-step {
+  text-align: center;
+  padding: 20px 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+
+.story-step:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--accent-em);
+  transform: translateY(-2px);
+}
+
+.step-number {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-em);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.step-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.step-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.step-arrow {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 18px;
+}
+
+@media (max-width: 700px) {
+  .step-arrow { display: none; }
+}
+
+/* Chapter sections */
+.chapter {
+  margin-bottom: 80px;
+  scroll-margin-top: 40px;
+}
+
+.chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.chapter-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--accent-em);
+  white-space: nowrap;
+}
+
+.chapter-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-em), transparent);
+}
+
+h2.chapter-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.chapter p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.chapter p strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Diagram containers */
+.diagram-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 28px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.diagram-card.glow-e { box-shadow: inset 0 0 60px -30px var(--glow-e); }
+.diagram-card.glow-h { box-shadow: inset 0 0 60px -30px var(--glow-h); }
+.diagram-card.glow-em { box-shadow: inset 0 0 60px -30px rgba(167,139,250,0.08); }
+
+.diagram-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+svg.illustration {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Annotation callouts */
+.callout {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 12px 12px 0;
+  margin: 20px 0;
+}
+
+.callout.e-field { border-left-color: var(--accent-e); }
+.callout.h-field { border-left-color: var(--accent-h); }
+.callout.key-insight { border-left-color: var(--accent-power); }
+
+.callout-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.callout-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.callout-text strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Question boxes */
+.question-box {
+  background: linear-gradient(135deg, rgba(167,139,250,0.06), rgba(6,182,212,0.04));
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.question-box h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 12px;
+}
+
+.question-box p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.question-box p:last-child { margin-bottom: 0; }
+
+/* Interactive animation controls */
+.anim-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.anim-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 8px 20px;
+  background: rgba(167,139,250,0.1);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.anim-btn:hover {
+  background: rgba(167,139,250,0.2);
+  transform: translateY(-1px);
+}
+
+.anim-btn.active {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+}
+
+/* Terminology box */
+.term-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(167,139,250,0.1);
+  border-radius: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em;
+  color: var(--accent-em);
+  cursor: help;
+  position: relative;
+}
+
+.term-e { background: rgba(245,158,11,0.1); color: var(--accent-e); }
+.term-h { background: rgba(6,182,212,0.1); color: var(--accent-h); }
+
+/* Phase indicator */
+.phase-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 20px;
+}
+
+.phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-em);
+}
+
+.phase-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Analogy cards */
+.analogy {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.analogy-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.analogy-content h4 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.analogy-content p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Summary table */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+@media (max-width: 600px) {
+  .summary-grid { grid-template-columns: 1fr; }
+}
+
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.summary-card:hover {
+  border-color: var(--accent-em);
+  transform: translateY(-2px);
+}
+
+.summary-card h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.summary-card.e-card h4 { color: var(--accent-e); }
+.summary-card.h-card h4 { color: var(--accent-h); }
+.summary-card.em-card h4 { color: var(--accent-em); }
+.summary-card.pattern-card h4 { color: var(--accent-power); }
+
+.summary-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--accent-em);
+  text-decoration: none;
+}
+
+/* SVG animation styles */
+@keyframes pulse-e {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-h {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes propagate {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(80px); opacity: 0; }
+}
+
+@keyframes current-flow {
+  0% { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes wave-expand {
+  0% { r: 5; opacity: 0.8; }
+  100% { r: 120; opacity: 0; }
+}
+
+@keyframes field-detach {
+  0% { transform: scale(0.3); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.animate-current {
+  stroke-dasharray: 10 10;
+  animation: current-flow 0.8s linear infinite;
+}
+
+.animate-pulse-e {
+  animation: pulse-e 2s ease-in-out infinite;
+}
+
+.animate-pulse-h {
+  animation: pulse-h 2s ease-in-out infinite 0.5s;
+}
+
+/* Smooth scrolling */
+html { scroll-behavior: smooth; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .story-overview { padding: 24px; }
+  .diagram-card { padding: 20px; }
+  .legend { gap: 16px; }
+  .hero { padding: 48px 0 40px; }
+  .analogy { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">RF-Hub · Module 2</div>
+    <h1>How Antennas Radiate</h1>
+    <p class="hero-subtitle">The complete journey from voltage source to received signal — understanding what E and H fields actually are and why they can never be separated.</p>
+  </section>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot e"></div>
+      <span style="color: var(--accent-e);">E Field (Electric)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot h"></div>
+      <span style="color: var(--accent-h);">H Field (Magnetic)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot em"></div>
+      <span style="color: var(--accent-em);">EM Wave (Combined)</span>
+    </div>
+  </div>
+
+  <!-- Story Overview -->
+  <div class="story-overview">
+    <h2>The Story in Four Acts</h2>
+    <p style="color: var(--text-secondary); font-size: 0.95rem;">Every radio transmission follows these four stages. Click any stage to jump to that section.</p>
+    <div class="story-steps">
+      <a href="#chapter-1" class="story-step" style="text-decoration:none;">
+        <div class="step-number">ACT I</div>
+        <div class="step-icon">⚡</div>
+        <div class="step-title">Current flows in the antenna</div>
+        <span class="step-arrow">→</span>
+      </a>
+      <a href="#chapter-2" class="story-step" style="text-decoration:none;">
+        <div class="step-number">ACT II</div>
+        <div class="step-icon">🌀</div>
+        <div class="step-title">Fields form around the wire</div>
+        <span class="step-arrow">→</span>
+      </a>
+      <a href="#chapter-3" class="story-step" style="text-decoration:none;">
+        <div class="step-number">ACT III</div>
+        <div class="step-icon">📡</div>
+        <div class="step-title">Fields detach and propagate</div>
+        <span class="step-arrow">→</span>
+      </a>
+      <a href="#chapter-4" class="story-step" style="text-decoration:none;">
+        <div class="step-number">ACT IV</div>
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Fields induce current in RX</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================== CHAPTER 1 ===================== -->
+  <section class="chapter" id="chapter-1">
+    <div class="chapter-header">
+      <span class="chapter-num">ACT I</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">The Voltage Source Creates Current</h2>
+
+    <p>Everything starts with your transmitter pushing electrons back and forth along the antenna wire. This isn't a one-way flow like DC current — it's <strong>alternating current (AC)</strong>, reversing direction millions of times per second.</p>
+
+    <!-- SVG: Current flowing in dipole -->
+    <div class="diagram-card glow-e">
+      <div class="diagram-label">Diagram 1 · AC Current in a Dipole</div>
+      <svg class="illustration" viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background -->
+        <rect width="800" height="280" fill="transparent"/>
+
+        <!-- Center feed point -->
+        <circle cx="400" cy="140" r="8" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+        <text x="400" y="178" text-anchor="middle" fill="#64748b" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">FEED POINT</text>
+
+        <!-- Transmitter symbol -->
+        <rect x="370" y="192" width="60" height="28" rx="4" fill="none" stroke="#94a3b8" stroke-width="1"/>
+        <text x="400" y="210" text-anchor="middle" fill="#94a3b8" font-family="IBM Plex Mono" font-size="10">TX</text>
+        <line x1="385" y1="192" x2="385" y2="148" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="415" y1="192" x2="415" y2="148" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+
+        <!-- Left antenna element -->
+        <line x1="392" y1="140" x2="120" y2="140" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
+        <!-- Right antenna element -->
+        <line x1="408" y1="140" x2="680" y2="140" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Current arrows - left side (animated) -->
+        <g class="animate-pulse-e">
+          <polygon points="310,133 330,140 310,147" fill="#f59e0b" opacity="0.9"/>
+          <polygon points="230,133 250,140 230,147" fill="#f59e0b" opacity="0.7"/>
+          <polygon points="150,133 170,140 150,147" fill="#f59e0b" opacity="0.4"/>
+        </g>
+
+        <!-- Current arrows - right side (animated, opposite direction) -->
+        <g class="animate-pulse-e">
+          <polygon points="490,133 470,140 490,147" fill="#f59e0b" opacity="0.9"/>
+          <polygon points="570,133 550,140 570,147" fill="#f59e0b" opacity="0.7"/>
+          <polygon points="650,133 630,140 650,147" fill="#f59e0b" opacity="0.4"/>
+        </g>
+
+        <!-- Current magnitude labels -->
+        <text x="300" y="118" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="10" opacity="0.9">HIGH I</text>
+        <text x="170" y="118" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="10" opacity="0.5">LOW I</text>
+        <text x="500" y="118" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="10" opacity="0.9">HIGH I</text>
+        <text x="630" y="118" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="10" opacity="0.5">LOW I</text>
+
+        <!-- Voltage labels at tips -->
+        <text x="120" y="130" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="10">HIGH V</text>
+        <text x="680" y="130" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="10">HIGH V</text>
+
+        <!-- Tip dots -->
+        <circle cx="120" cy="140" r="4" fill="#a78bfa"/>
+        <circle cx="680" cy="140" r="4" fill="#a78bfa"/>
+
+        <!-- Labels -->
+        <text x="100" y="240" fill="#64748b" font-family="IBM Plex Sans" font-size="12">Current is maximum at the centre and zero at the tips</text>
+        <text x="100" y="258" fill="#64748b" font-family="IBM Plex Sans" font-size="12">Voltage is maximum at the tips and minimum at the centre</text>
+      </svg>
+    </div>
+
+    <p>Notice something crucial: <strong>current is strongest at the centre (feed point) and drops to zero at the tips.</strong> Meanwhile, voltage does the opposite — highest at the tips, lowest at the centre. This distribution pattern is fundamental to how the antenna radiates.</p>
+
+    <div class="analogy">
+      <div class="analogy-icon">🪢</div>
+      <div class="analogy-content">
+        <h4>Think of a skipping rope</h4>
+        <p>Shake one end of a skipping rope — the movement is biggest where you're holding it (like current at the feed point) and the rope barely moves at the far end where it's tied off (like the antenna tips where current is zero). The "standing wave" pattern on the rope is directly analogous to the current distribution on a dipole.</p>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <h4>🤔 But wait — why doesn't current just flow straight through?</h4>
+      <p>Because there's nowhere for it to go! The antenna tips are open-ended. The electrons rush towards the tip, pile up (creating high voltage), then get pushed back the other way. This back-and-forth creates a <strong>standing wave</strong> of current on the antenna — and it's this oscillating current that creates the electromagnetic fields.</p>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPTER 2 ===================== -->
+  <section class="chapter" id="chapter-2">
+    <div class="chapter-header">
+      <span class="chapter-num">ACT II</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Fields Form Around the Wire</h2>
+
+    <p>Here's where it gets beautiful. The oscillating current doesn't just stay in the wire — it creates two types of invisible field around it. These aren't two separate things; they're two inseparable aspects of the same phenomenon.</p>
+
+    <!-- SVG: E field around dipole -->
+    <div class="diagram-card glow-e">
+      <div class="diagram-label">Diagram 2 · The Electric (E) Field</div>
+      <svg class="illustration" viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna wire -->
+        <line x1="250" y1="175" x2="550" y2="175" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="400" cy="175" r="5" fill="#f59e0b"/>
+
+        <!-- E field lines (vertical, perpendicular to wire) -->
+        <!-- Near field - strong -->
+        <g class="animate-pulse-e">
+          <!-- Positive half-cycle field lines -->
+          <path d="M 340 175 Q 340 120, 400 120 Q 460 120, 460 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
+          <path d="M 320 175 Q 320 90, 400 90 Q 480 90, 480 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+          <path d="M 300 175 Q 300 55, 400 55 Q 500 55, 500 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.5"/>
+
+          <!-- Negative half-cycle field lines (below) -->
+          <path d="M 340 175 Q 340 230, 400 230 Q 460 230, 460 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
+          <path d="M 320 175 Q 320 260, 400 260 Q 480 260, 480 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+          <path d="M 300 175 Q 300 295, 400 295 Q 500 295, 500 175" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.5"/>
+        </g>
+
+        <!-- Direction arrows on field lines -->
+        <polygon points="400,117 404,125 396,125" fill="#f59e0b" opacity="0.9"/>
+        <polygon points="400,233 404,225 396,225" fill="#f59e0b" opacity="0.9"/>
+
+        <!-- Labels -->
+        <text x="540" y="100" fill="#f59e0b" font-family="IBM Plex Mono" font-size="11" font-weight="500">E FIELD</text>
+        <text x="540" y="116" fill="#64748b" font-family="IBM Plex Sans" font-size="11">Lines point from + to −</text>
+        <text x="540" y="132" fill="#64748b" font-family="IBM Plex Sans" font-size="11">Perpendicular to wire axis</text>
+
+        <!-- Charge labels -->
+        <text x="250" y="168" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="14" font-weight="600">+</text>
+        <text x="550" y="168" text-anchor="middle" fill="#06b6d4" font-family="IBM Plex Mono" font-size="14" font-weight="600">−</text>
+
+        <text x="400" y="340" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="12">E field lines loop from positive to negative charge concentrations</text>
+      </svg>
+    </div>
+
+    <div class="callout e-field">
+      <div class="callout-icon">⚡</div>
+      <div class="callout-text">
+        <strong>The E (Electric) field</strong> is created by the charge difference along the antenna. When current flows, electrons pile up at one end and leave a deficit at the other. This creates a voltage difference, and the E field lines point from the positive to the negative region. The E field oscillates in the plane of the antenna wire — for a vertical dipole, the E field is vertical. This is what we mean by <strong>vertical polarisation</strong>.
+      </div>
+    </div>
+
+    <!-- SVG: H field around dipole -->
+    <div class="diagram-card glow-h">
+      <div class="diagram-label">Diagram 3 · The Magnetic (H) Field</div>
+      <svg class="illustration" viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+        <!-- Looking at wire end-on (cross section) -->
+        <!-- Wire cross-section -->
+        <circle cx="400" cy="175" r="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>
+        <!-- Current direction dot (coming toward us) -->
+        <circle cx="400" cy="175" r="3" fill="#f59e0b"/>
+
+        <!-- H field circles (concentric, viewed end-on) -->
+        <g class="animate-pulse-h">
+          <circle cx="400" cy="175" r="35" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.9"/>
+          <circle cx="400" cy="175" r="65" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.7"/>
+          <circle cx="400" cy="175" r="100" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="400" cy="175" r="140" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.3"/>
+        </g>
+
+        <!-- Direction arrows on H field circles (clockwise) -->
+        <polygon points="435,168 435,182 442,175" fill="#06b6d4" opacity="0.9" transform="rotate(15, 400, 175)"/>
+        <polygon points="465,168 465,182 472,175" fill="#06b6d4" opacity="0.7" transform="rotate(15, 400, 175)"/>
+        <polygon points="500,168 500,182 507,175" fill="#06b6d4" opacity="0.5" transform="rotate(15, 400, 175)"/>
+
+        <!-- Right-hand rule illustration -->
+        <text x="580" y="80" fill="#06b6d4" font-family="IBM Plex Mono" font-size="11" font-weight="500">H FIELD</text>
+        <text x="580" y="96" fill="#64748b" font-family="IBM Plex Sans" font-size="11">Circles around the wire</text>
+        <text x="580" y="112" fill="#64748b" font-family="IBM Plex Sans" font-size="11">Follows right-hand rule</text>
+        <text x="580" y="128" fill="#64748b" font-family="IBM Plex Sans" font-size="11">⊙ = current toward you</text>
+
+        <!-- Cross-section label -->
+        <text x="400" y="330" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="12">End-on view: H field wraps around the wire in closed loops</text>
+
+        <!-- View indicator -->
+        <text x="120" y="100" fill="#94a3b8" font-family="IBM Plex Mono" font-size="11">CROSS-SECTION VIEW</text>
+        <text x="120" y="116" fill="#64748b" font-family="IBM Plex Sans" font-size="11">Looking down the wire</text>
+        <line x1="120" y1="130" x2="120" y2="175" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+        <polygon points="117,170 123,170 120,178" fill="#94a3b8"/>
+      </svg>
+    </div>
+
+    <div class="callout h-field">
+      <div class="callout-icon">🧲</div>
+      <div class="callout-text">
+        <strong>The H (Magnetic) field</strong> is created by the current itself — moving charges always create a magnetic field. The H field forms closed loops that wrap around the wire like rings on a finger. Use the <strong>right-hand rule</strong>: point your thumb in the direction of current flow, and your fingers curl in the direction of the H field. For a vertical dipole, the H field is horizontal.
+      </div>
+    </div>
+
+    <div class="question-box">
+      <h4>🤔 Why do we say H field instead of B field?</h4>
+      <p>Both describe magnetism, but they're subtly different. <strong>B</strong> is the magnetic flux density (measured in Tesla) — the "total" magnetic field including any effects of the material it passes through. <strong>H</strong> is the magnetic field intensity (measured in A/m) — it represents the "driving force" of the field, independent of the medium. In free space (air), they're directly proportional: <span class="term-h">B = μ₀ × H</span>. In antenna work, we tend to use H because we're interested in the field produced by the current, in free space.</p>
+    </div>
+
+    <!-- SVG: Combined E and H fields - the key diagram -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Diagram 4 · E and H Together — The Electromagnetic Field</div>
+      <svg class="illustration" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Propagation direction arrow -->
+        <line x1="400" y1="200" x2="720" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+        <polygon points="720,196 720,204 732,200" fill="#94a3b8"/>
+        <text x="740" y="204" fill="#94a3b8" font-family="IBM Plex Mono" font-size="11">PROPAGATION</text>
+
+        <!-- E field wave (vertical oscillation - amber) -->
+        <path d="M 100,200 C 130,200 140,100 170,100 C 200,100 210,200 240,200 C 270,200 280,300 310,300 C 340,300 350,200 380,200 C 410,200 420,100 450,100 C 480,100 490,200 520,200 C 550,200 560,300 590,300 C 620,300 630,200 660,200" 
+              fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.9"/>
+
+        <!-- H field wave (horizontal oscillation into/out of screen - cyan) -->
+        <!-- Represented as wave going "into" the page with perspective -->
+        <path d="M 100,200 C 130,200 140,160 170,160 C 200,160 210,200 240,200 C 270,200 280,240 310,240 C 340,240 350,200 380,200 C 410,200 420,160 450,160 C 480,160 490,200 520,200 C 550,200 560,240 590,240 C 620,240 630,200 660,200" 
+              fill="none" stroke="#06b6d4" stroke-width="2" opacity="0.7" stroke-dasharray="8 4"/>
+
+        <!-- 90° angle indicator -->
+        <rect x="96" y="196" width="8" height="8" fill="none" stroke="#a78bfa" stroke-width="1"/>
+
+        <!-- Labels -->
+        <text x="170" y="78" fill="#f59e0b" font-family="IBM Plex Mono" font-size="11" font-weight="500">E FIELD</text>
+        <text x="170" y="93" fill="#64748b" font-family="IBM Plex Sans" font-size="10">(oscillates vertically)</text>
+
+        <text x="170" y="268" fill="#06b6d4" font-family="IBM Plex Mono" font-size="11" font-weight="500">H FIELD</text>
+        <text x="170" y="283" fill="#64748b" font-family="IBM Plex Sans" font-size="10">(oscillates horizontally)</text>
+
+        <!-- Key annotation -->
+        <text x="150" y="350" fill="#a78bfa" font-family="IBM Plex Mono" font-size="11" font-weight="500">KEY:</text>
+        <text x="200" y="350" fill="#64748b" font-family="IBM Plex Sans" font-size="11">E ⊥ H ⊥ Direction of travel — all three are mutually perpendicular</text>
+
+        <!-- Wavelength marker -->
+        <line x1="170" y1="38" x2="450" y2="38" stroke="#a78bfa" stroke-width="1"/>
+        <line x1="170" y1="33" x2="170" y2="43" stroke="#a78bfa" stroke-width="1"/>
+        <line x1="450" y1="33" x2="450" y2="43" stroke="#a78bfa" stroke-width="1"/>
+        <text x="310" y="32" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="11">λ (one wavelength)</text>
+      </svg>
+    </div>
+
+    <p>This is the critical insight: <strong>the E and H fields are always perpendicular to each other, and both are perpendicular to the direction the wave travels.</strong> This isn't a coincidence — it's a fundamental requirement of Maxwell's equations. One field creates the other, and vice versa, in an endless self-sustaining dance.</p>
+
+    <div class="callout key-insight">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-text">
+        <strong>This is why they can't be separated.</strong> A changing electric field creates a magnetic field. A changing magnetic field creates an electric field. Each one generates the other. Once launched from the antenna, this self-sustaining cycle carries the wave through space at the speed of light — no wire needed.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPTER 3 ===================== -->
+  <section class="chapter" id="chapter-3">
+    <div class="chapter-header">
+      <span class="chapter-num">ACT III</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">The Fields Detach and Propagate</h2>
+
+    <p>This is the part that makes most people's brains short-circuit, and it's the hardest step in the original diagram to understand. How do the fields "leave" the wire?</p>
+
+    <p>The answer is: <strong>they don't so much "leave" as they get left behind.</strong></p>
+
+    <!-- SVG: Field detachment process -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Diagram 5 · How Fields Detach — The Half-Cycle Story</div>
+      <svg class="illustration" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+        <!-- Three-frame sequence -->
+
+        <!-- Frame 1: First half-cycle - field lines expanding -->
+        <text x="135" y="30" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">HALF-CYCLE 1</text>
+        <text x="135" y="48" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">Current flows UP</text>
+
+        <!-- Dipole frame 1 -->
+        <line x1="125" y1="100" x2="125" y2="220" stroke="#e2e8f0" stroke-width="2.5"/>
+        <circle cx="125" cy="160" r="4" fill="#f59e0b"/>
+        <polygon points="122,130 128,130 125,118" fill="#f59e0b" opacity="0.7"/>
+
+        <!-- Expanding E field lines frame 1 -->
+        <path d="M 125,130 Q 175,130 175,160 Q 175,190 125,190" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.8"/>
+        <path d="M 125,120 Q 205,120 205,160 Q 205,200 125,200" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.5"/>
+
+        <!-- Frame 2: Current reverses - new field, old field expanding -->
+        <text x="400" y="30" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">HALF-CYCLE 2</text>
+        <text x="400" y="48" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">Current reverses DOWN</text>
+
+        <!-- Dipole frame 2 -->
+        <line x1="380" y1="100" x2="380" y2="220" stroke="#e2e8f0" stroke-width="2.5"/>
+        <circle cx="380" cy="160" r="4" fill="#f59e0b"/>
+        <polygon points="377,190 383,190 380,202" fill="#f59e0b" opacity="0.7"/>
+
+        <!-- New (opposite polarity) field lines near wire -->
+        <path d="M 380,190 Q 420,190 420,160 Q 420,130 380,130" fill="none" stroke="#06b6d4" stroke-width="1.2" opacity="0.8"/>
+
+        <!-- Old field lines pushed outward -->
+        <path d="M 380,120 Q 470,120 470,160 Q 470,200 380,200" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.5"/>
+        <path d="M 380,105 Q 510,105 510,160 Q 510,215 380,215" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.3"/>
+
+        <!-- Annotation arrow showing push -->
+        <text x="480" y="155" fill="#94a3b8" font-family="IBM Plex Sans" font-size="10">old field</text>
+        <text x="480" y="168" fill="#94a3b8" font-family="IBM Plex Sans" font-size="10">pushed out</text>
+        <line x1="475" y1="160" x2="505" y2="160" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+        <!-- Frame 3: Field loop closes and detaches! -->
+        <text x="665" y="30" text-anchor="middle" fill="#a78bfa" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">DETACHMENT!</text>
+        <text x="665" y="48" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">Old field pinches off</text>
+
+        <!-- Dipole frame 3 -->
+        <line x1="620" y1="100" x2="620" y2="220" stroke="#e2e8f0" stroke-width="2.5"/>
+        <circle cx="620" cy="160" r="4" fill="#f59e0b"/>
+
+        <!-- New field near wire -->
+        <path d="M 620,130 Q 650,130 650,160 Q 650,190 620,190" fill="none" stroke="#06b6d4" stroke-width="1.2" opacity="0.8"/>
+
+        <!-- DETACHED field loop - closed loop floating free! -->
+        <ellipse cx="730" cy="160" rx="35" ry="55" fill="none" stroke="#f59e0b" stroke-width="1.8" opacity="0.7">
+          <animate attributeName="cx" values="730;760" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0.3" dur="3s" repeatCount="indefinite"/>
+        </ellipse>
+
+        <!-- Radiating arrow -->
+        <line x1="740" y1="160" x2="775" y2="160" stroke="#a78bfa" stroke-width="1" opacity="0.6">
+          <animate attributeName="x2" values="775;800" dur="3s" repeatCount="indefinite"/>
+        </line>
+
+        <!-- Arrow marker definition -->
+        <defs>
+          <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+            <polygon points="0 0, 6 2, 0 4" fill="#94a3b8"/>
+          </marker>
+        </defs>
+
+        <!-- Bottom explanation -->
+        <rect x="50" y="260" width="700" height="220" rx="12" fill="rgba(167,139,250,0.04)" stroke="rgba(167,139,250,0.1)" stroke-width="1"/>
+
+        <text x="80" y="295" fill="#a78bfa" font-family="IBM Plex Mono" font-size="12" font-weight="500">THE MECHANISM:</text>
+
+        <text x="80" y="325" fill="#e2e8f0" font-family="IBM Plex Sans" font-size="13" font-weight="400">1.</text>
+        <text x="100" y="325" fill="#94a3b8" font-family="IBM Plex Sans" font-size="13">Current flows one way → E field lines expand outward from the wire</text>
+
+        <text x="80" y="355" fill="#e2e8f0" font-family="IBM Plex Sans" font-size="13" font-weight="400">2.</text>
+        <text x="100" y="355" fill="#94a3b8" font-family="IBM Plex Sans" font-size="13">Current reverses → NEW field (opposite polarity) forms near the wire</text>
+
+        <text x="80" y="385" fill="#e2e8f0" font-family="IBM Plex Sans" font-size="13" font-weight="400">3.</text>
+        <text x="100" y="385" fill="#94a3b8" font-family="IBM Plex Sans" font-size="13">The new field pushes the old field further out</text>
+
+        <text x="80" y="415" fill="#e2e8f0" font-family="IBM Plex Sans" font-size="13" font-weight="400">4.</text>
+        <text x="100" y="415" fill="#94a3b8" font-family="IBM Plex Sans" font-size="13">The old field lines "pinch off" into a closed loop — now self-sustaining!</text>
+
+        <text x="80" y="450" fill="#a78bfa" font-family="IBM Plex Sans" font-size="13" font-weight="500">Each cycle launches another closed loop → continuous radiation</text>
+      </svg>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-icon">🫧</div>
+      <div class="analogy-content">
+        <h4>Think of blowing soap bubbles</h4>
+        <p>You blow through the ring (current flowing) and a bubble forms (field expands). When you pull back to take another breath (current reverses), the bubble pinches off from the ring and floats away on its own (self-sustaining EM wave). Each breath launches another bubble. The bubbles don't need the ring anymore once they've detached — and EM waves don't need the antenna once they've launched.</p>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <h4>🤔 Why does the antenna length matter?</h4>
+      <p>For the fields to detach efficiently, the antenna needs to be close to <strong>half a wavelength</strong> long. At this length, the current and voltage distributions create the maximum "push" for the fields to separate from the wire. Too short, and the fields form but collapse back onto the wire before they can detach — the energy goes back into the circuit as heat instead of radiation. This is why a short antenna needs a <strong>loading coil</strong> to compensate, and why SWR goes bad when the antenna isn't resonant.</p>
+    </div>
+
+    <!-- Radiation pattern connection -->
+    <div class="phase-strip">
+      <div class="phase-dot"></div>
+      <span class="phase-label">Connecting to the radiation pattern</span>
+    </div>
+
+    <p>Now here's where your two concepts unite. The fields detach in all directions around the wire, but <strong>not equally</strong>. The dipole radiates most strongly broadside (perpendicular to the wire) and almost nothing off the tips. Why? Because off the tips, the current elements on opposite sides of the feed point produce fields that cancel each other out.</p>
+
+    <div class="diagram-card">
+      <div class="diagram-label">Diagram 6 · From Fields to Radiation Pattern</div>
+      <svg class="illustration" viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left side: dipole with fields -->
+        <text x="180" y="30" text-anchor="middle" fill="#94a3b8" font-family="IBM Plex Mono" font-size="11">THE FIELDS</text>
+
+        <!-- Vertical dipole -->
+        <line x1="180" y1="80" x2="180" y2="280" stroke="#e2e8f0" stroke-width="3"/>
+        <circle cx="180" cy="180" r="5" fill="#f59e0b"/>
+
+        <!-- Strong radiation sideways -->
+        <g opacity="0.6">
+          <path d="M 180,180 Q 250,120 260,180 Q 250,240 180,180" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" stroke-width="1"/>
+          <path d="M 180,180 Q 300,90 320,180 Q 300,270 180,180" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1"/>
+        </g>
+        <g opacity="0.6">
+          <path d="M 180,180 Q 110,120 100,180 Q 110,240 180,180" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" stroke-width="1"/>
+          <path d="M 180,180 Q 60,90 40,180 Q 60,270 180,180" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1"/>
+        </g>
+
+        <!-- Weak/no radiation off tips -->
+        <text x="180" y="70" text-anchor="middle" fill="#ef4444" font-family="IBM Plex Mono" font-size="9" opacity="0.7">NULL</text>
+        <text x="180" y="302" text-anchor="middle" fill="#ef4444" font-family="IBM Plex Mono" font-size="9" opacity="0.7">NULL</text>
+
+        <!-- Arrow between -->
+        <line x1="370" y1="180" x2="430" y2="180" stroke="#94a3b8" stroke-width="1.5"/>
+        <polygon points="430,176 430,184 440,180" fill="#94a3b8"/>
+        <text x="400" y="170" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">results in</text>
+
+        <!-- Right side: classic doughnut pattern (cross-section) -->
+        <text x="600" y="30" text-anchor="middle" fill="#94a3b8" font-family="IBM Plex Mono" font-size="11">RADIATION PATTERN</text>
+
+        <!-- Doughnut cross-section -->
+        <line x1="600" y1="80" x2="600" y2="280" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4 4" opacity="0.3"/>
+
+        <!-- Classic figure-8 pattern -->
+        <path d="M 600,180 Q 520,100 520,180 Q 520,260 600,180" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="2"/>
+        <path d="M 600,180 Q 680,100 680,180 Q 680,260 600,180" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="2"/>
+
+        <!-- Max arrows -->
+        <line x1="520" y1="180" x2="490" y2="180" stroke="#a78bfa" stroke-width="1"/>
+        <text x="478" y="184" text-anchor="end" fill="#a78bfa" font-family="IBM Plex Mono" font-size="10">MAX</text>
+
+        <line x1="680" y1="180" x2="710" y2="180" stroke="#a78bfa" stroke-width="1"/>
+        <text x="722" y="184" fill="#a78bfa" font-family="IBM Plex Mono" font-size="10">MAX</text>
+
+        <!-- Null markers -->
+        <circle cx="600" cy="85" r="3" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="620" y="89" fill="#ef4444" font-family="IBM Plex Mono" font-size="9">NULL</text>
+        <circle cx="600" cy="275" r="3" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="620" y="279" fill="#ef4444" font-family="IBM Plex Mono" font-size="9">NULL</text>
+
+        <!-- Bottom label -->
+        <text x="600" y="330" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="12">Classic dipole "doughnut" pattern (cross-section view)</text>
+        <text x="600" y="350" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="12">In 3D, rotate this figure-8 around the antenna axis</text>
+      </svg>
+    </div>
+
+    <p>The <strong>radiation pattern</strong> is simply a map of "how much field strength arrives in each direction." It's the same E and H fields from Act II, but the pattern tells you where the energy goes. They're not separate things — the pattern <em>is</em> the spatial distribution of those fields.</p>
+  </section>
+
+  <!-- ===================== CHAPTER 4 ===================== -->
+  <section class="chapter" id="chapter-4">
+    <div class="chapter-header">
+      <span class="chapter-num">ACT IV</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Fields Induce Current in the Receiver</h2>
+
+    <p>The beautiful symmetry of electromagnetic radiation: the entire process <strong>runs in reverse</strong> at the receiving end.</p>
+
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Diagram 7 · The Complete Link — TX to RX</div>
+      <svg class="illustration" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- TX Side -->
+        <text x="120" y="30" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">TRANSMITTER</text>
+
+        <!-- TX Antenna -->
+        <line x1="120" y1="60" x2="120" y2="200" stroke="#e2e8f0" stroke-width="3"/>
+        <circle cx="120" cy="130" r="5" fill="#f59e0b"/>
+
+        <!-- TX Box -->
+        <rect x="90" y="210" width="60" height="30" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="120" y="229" text-anchor="middle" fill="#f59e0b" font-family="IBM Plex Mono" font-size="11">TX</text>
+
+        <!-- AC source -->
+        <text x="120" y="260" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">AC voltage</text>
+        <text x="120" y="275" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">creates current</text>
+
+        <!-- Propagating wave -->
+        <g>
+          <!-- Wave fronts -->
+          <path d="M 200,80 Q 220,130 200,180" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.8"/>
+          <path d="M 260,60 Q 290,130 260,200" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+          <path d="M 330,50 Q 370,130 330,210" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.45"/>
+          <path d="M 400,45 Q 450,130 400,215" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.35"/>
+          <path d="M 470,50 Q 510,130 470,210" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.25"/>
+          <path d="M 540,60 Q 570,130 540,200" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
+        </g>
+
+        <!-- Propagation arrow -->
+        <line x1="220" y1="130" x2="560" y2="130" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
+        <polygon points="556,127 556,133 566,130" fill="#94a3b8"/>
+        <text x="390" y="120" text-anchor="middle" fill="#94a3b8" font-family="IBM Plex Mono" font-size="10">c = 3 × 10⁸ m/s</text>
+
+        <!-- Labels on wave -->
+        <text x="250" y="240" fill="#f59e0b" font-family="IBM Plex Mono" font-size="9">E</text>
+        <text x="265" y="240" fill="#94a3b8" font-family="IBM Plex Sans" font-size="9">+</text>
+        <text x="275" y="240" fill="#06b6d4" font-family="IBM Plex Mono" font-size="9">H</text>
+        <text x="290" y="240" fill="#94a3b8" font-family="IBM Plex Sans" font-size="9">→ self-sustaining wave</text>
+
+        <!-- RX Side -->
+        <text x="660" y="30" text-anchor="middle" fill="#06b6d4" font-family="IBM Plex Mono" font-size="11" letter-spacing="1">RECEIVER</text>
+
+        <!-- RX Antenna -->
+        <line x1="660" y1="60" x2="660" y2="200" stroke="#e2e8f0" stroke-width="3"/>
+        <circle cx="660" cy="130" r="5" fill="#06b6d4"/>
+
+        <!-- Induced current arrows (subtle) -->
+        <polygon points="657,100 663,100 660,90" fill="#06b6d4" opacity="0.6"/>
+        <polygon points="657,160 663,160 660,170" fill="#06b6d4" opacity="0.6"/>
+
+        <!-- RX Box -->
+        <rect x="630" y="210" width="60" height="30" rx="4" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+        <text x="660" y="229" text-anchor="middle" fill="#06b6d4" font-family="IBM Plex Mono" font-size="11">RX</text>
+
+        <!-- RX description -->
+        <text x="660" y="260" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">E field pushes</text>
+        <text x="660" y="275" text-anchor="middle" fill="#64748b" font-family="IBM Plex Sans" font-size="10">electrons → current</text>
+      </svg>
+    </div>
+
+    <p>The arriving E field pushes electrons back and forth in the receiving antenna, creating an alternating current — a tiny mirror of the original transmitter signal. The H field contributes too, inducing voltage through Faraday's law. The receiver amplifies this microscopic signal back to something useful.</p>
+
+    <div class="callout key-insight">
+      <div class="callout-icon">📐</div>
+      <div class="callout-text">
+        <strong>Polarisation matching matters.</strong> The receiving antenna must be oriented to align with the incoming E field. If the transmitter uses a vertical dipole (vertical E field), the receiver works best as a vertical dipole too. Turn the receiving antenna horizontal and the E field can't push electrons along it — you lose the signal. This is why polarisation is one of the first things you check when setting up a link.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SUMMARY ===================== -->
+  <section class="chapter" id="summary">
+    <div class="chapter-header">
+      <span class="chapter-num">SUMMARY</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Bringing It All Together</h2>
+
+    <p>To answer your original question: <strong>E and H field propagation and the radiation pattern are two views of the same phenomenon</strong>, not separate entities.</p>
+
+    <div class="summary-grid">
+      <div class="summary-card e-card">
+        <h4>E Field</h4>
+        <p>Created by charge distribution (voltage). Oscillates in the plane of the antenna. Defines the polarisation. Pushes electrons in the receiving antenna.</p>
+      </div>
+      <div class="summary-card h-card">
+        <h4>H Field</h4>
+        <p>Created by current flow. Wraps around the wire, perpendicular to E. Always accompanies E — you cannot have one without the other in a propagating wave.</p>
+      </div>
+      <div class="summary-card em-card">
+        <h4>EM Wave</h4>
+        <p>E and H together, self-sustaining. Each creates the other as they change. Travels at the speed of light. The "stuff" that carries your signal through space.</p>
+      </div>
+      <div class="summary-card pattern-card">
+        <h4>Radiation Pattern</h4>
+        <p>A map showing WHERE the EM wave energy goes. Shaped by the antenna geometry. Not a separate thing — it's the spatial distribution of the E and H fields.</p>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <h4>🎯 The one-sentence version</h4>
+      <p><strong>The E and H fields are WHAT propagates; the radiation pattern is WHERE it propagates.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>RF-Hub · <a href="https://github.com/unmanned-systems-uk/RF-Hub">GitHub</a> · Built for the amateur radio community</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

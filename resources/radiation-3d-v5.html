@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Radiation Wavefronts</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-input: #1a2234;
+  --accent-e: #f59e0b;
+  --accent-h: #06b6d4;
+  --accent-em: #a78bfa;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --border: #1e293b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  padding: 28px 0 12px;
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-em));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+
+header p { color: var(--text-secondary); font-size: 0.9rem; }
+
+/* Controls */
+.controls-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.control-group {
+  flex: 1;
+  min-width: 130px;
+}
+
+.control-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.control-val { color: var(--accent-em); font-weight: 500; }
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(167,139,250,0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.ctrl-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 6px 12px;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.ctrl-btn:hover { background: rgba(167,139,250,0.08); color: var(--text-primary); }
+
+.ctrl-btn.active {
+  background: rgba(167,139,250,0.15);
+  color: var(--text-primary);
+  border-color: var(--accent-em);
+}
+
+.ctrl-btn.primary-active {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  border-color: var(--accent-em);
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.ctrl-btn.active .dot { opacity: 1; }
+
+/* Canvas */
+.scene-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  margin: 8px 0;
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  height: 600px;
+  cursor: grab;
+}
+
+#scene:active { cursor: grabbing; }
+
+.hud {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  pointer-events: none;
+  line-height: 1.8;
+}
+
+.hud-val { color: var(--accent-em); }
+
+.hud-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  pointer-events: none;
+  text-align: center;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+
+/* Info */
+.info-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.info-panel strong { color: var(--text-primary); font-weight: 500; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-top: 16px;
+}
+footer a { color: var(--accent-em); text-decoration: none; }
+
+/* Instrument panels */
+.instruments-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+@media (max-width: 700px) {
+  .instruments-row { grid-template-columns: 1fr; }
+}
+
+.instrument-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.instrument-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.instrument-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.instrument-reading {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-em);
+  font-weight: 500;
+}
+
+.instrument-canvas {
+  display: block;
+  width: 100%;
+  height: 200px;
+  background: #080c14;
+}
+
+/* RX info strip */
+.rx-info {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.rx-info span { color: var(--accent-em); }
+
+/* Drag hint */
+.rx-hint {
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.15);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 8px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent-h);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">RF-Hub · 3D Visualisation</div>
+    <h1>3D Radiation Wavefronts</h1>
+    <p>Watch electromagnetic waves radiate from a dipole — like ripples from a stone, but shaped by the antenna pattern. Drag to orbit.</p>
+  </header>
+
+  <div class="controls-bar">
+    <div class="control-group">
+      <div class="control-label"><span>Speed</span><span class="control-val" id="speed-val">1.0×</span></div>
+      <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+    </div>
+    <div class="control-group">
+      <div class="control-label"><span>Frequency</span><span class="control-val" id="density-val">6</span></div>
+      <input type="range" id="density" min="3" max="12" step="1" value="6">
+    </div>
+    <div>
+      <div class="control-label"><span>Camera</span></div>
+      <div class="btn-group">
+        <button class="ctrl-btn" data-view="orbit">Auto Orbit</button>
+        <button class="ctrl-btn primary-active" data-view="free">Free Drag</button>
+        <button class="ctrl-btn" data-view="top">Top Down</button>
+        <button class="ctrl-btn" data-view="side">Side</button>
+      </div>
+    </div>
+    <div>
+      <div class="control-label"><span>Wavefront Mode</span></div>
+      <div class="btn-group">
+        <button class="ctrl-btn primary-active" id="mode-rings">Flat Rings</button>
+        <button class="ctrl-btn" id="mode-shells">3D Shells</button>
+        <button class="ctrl-btn" id="mode-both">Both</button>
+      </div>
+    </div>
+    <div>
+      <div class="control-label"><span>Show</span></div>
+      <div class="btn-group">
+        <button class="ctrl-btn active" id="tog-pattern"><div class="dot" style="background:#a78bfa;box-shadow:0 0 4px rgba(167,139,250,0.5)"></div>Pattern</button>
+        <button class="ctrl-btn active" id="tog-axes"><div class="dot" style="background:#64748b"></div>Axes</button>
+        <button class="ctrl-btn active" id="tog-electrons"><div class="dot" style="background:#60a5fa;box-shadow:0 0 4px rgba(96,165,250,0.5)"></div>Electrons</button>
+        <button class="ctrl-btn active" id="tog-waveform"><div class="dot" style="background:#f59e0b;box-shadow:0 0 4px rgba(245,158,11,0.5)"></div>E Wave</button>
+        <button class="ctrl-btn" id="tog-hwave"><div class="dot" style="background:#06b6d4;box-shadow:0 0 4px rgba(6,182,212,0.5)"></div>H Wave</button>
+        <button class="ctrl-btn" id="tog-aperture"><div class="dot" style="background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,0.5)"></div>Aperture</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene-wrapper">
+    <canvas id="scene"></canvas>
+    <div class="hud">
+      <div>ANTENNA: <span class="hud-val">Half-wave Dipole</span></div>
+      <div>WAVES: <span class="hud-val" id="hud-waves">0</span> active</div>
+      <div>MODE: <span class="hud-val" id="hud-mode">Flat Rings</span></div>
+      <div>2D WAVE: <span class="hud-val" id="hud-2d">ON</span></div>
+    </div>
+    <div class="hud-hint">CLICK & DRAG TO ORBIT · SCROLL TO ZOOM</div>
+  </div>
+
+  <div class="rx-hint">🎯 DRAG the cyan RX antenna horizontally in the 3D scene · Use the HEIGHT slider below to move it vertically into the null zones · Toggle H Wave to see both fields</div>
+
+  <!-- RX Height Control -->
+  <div class="controls-bar" style="padding:12px 20px;">
+    <span class="control-section-label" style="min-width:80px">RX Height</span>
+    <div class="btn-group" style="align-items:center; gap:6px;">
+      <button class="ctrl-btn" id="rx-down" style="padding:6px 12px;font-size:14px;line-height:1;">▼</button>
+      <span style="font-family:'IBM Plex Mono';font-size:12px;color:var(--accent-h);min-width:60px;text-align:center;" id="rx-height-val">0.0 m</span>
+      <button class="ctrl-btn" id="rx-up" style="padding:6px 12px;font-size:14px;line-height:1;">▲</button>
+    </div>
+    <div class="control-group" style="min-width:200px;">
+      <div class="control-label"><span>RX Elevation</span><span class="control-val" id="rx-elev-angle">0°</span></div>
+      <input type="range" id="rx-height" min="-40" max="40" step="0.5" value="0">
+    </div>
+    <div style="font-family:'IBM Plex Mono';font-size:10px;color:var(--text-dim);letter-spacing:0.5px;">
+      Tip: Move RX above/below the antenna to enter the <span style="color:var(--accent-voltage)">null zones</span>
+    </div>
+  </div>
+
+  <!-- Instrument Displays -->
+  <div class="instruments-row">
+    <div class="instrument-card">
+      <div class="instrument-header">
+        <span class="instrument-title">Oscilloscope — Received Signal</span>
+        <span class="instrument-reading" id="scope-reading">0.00 mV</span>
+      </div>
+      <canvas class="instrument-canvas" id="scopeCanvas" width="600" height="200"></canvas>
+      <div class="rx-info">
+        <div>DIST: <span id="rx-dist">25.0</span> m</div>
+        <div>ANGLE: <span id="rx-angle">90</span>° from broadside</div>
+        <div>ELEV: <span id="rx-elev-display">0</span>°</div>
+        <div>PATTERN: <span id="rx-pattern">100</span>%</div>
+        <div>PATH LOSS: <span id="rx-loss">0.0</span> dB</div>
+      </div>
+    </div>
+    <div class="instrument-card">
+      <div class="instrument-header">
+        <span class="instrument-title">Spectrum Analyzer</span>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <button class="ctrl-btn primary-active" id="spec-log" style="padding:4px 10px;font-size:10px;">LOG (dBm)</button>
+          <button class="ctrl-btn" id="spec-lin" style="padding:4px 10px;font-size:10px;">LINEAR</button>
+          <span class="instrument-reading" id="spec-reading" style="margin-left:8px;">-40.0 dBm</span>
+        </div>
+      </div>
+      <canvas class="instrument-canvas" id="specCanvas" width="600" height="200"></canvas>
+      <div class="rx-info">
+        <div>RBW: <span>10 kHz</span></div>
+        <div>CENTER: <span>145.0 MHz</span></div>
+        <div>SPAN: <span>1 MHz</span></div>
+        <div>NOISE FLOOR: <span>-90 dBm</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <strong>What you're seeing:</strong> Drag the <strong style="color:#06b6d4">cyan RX antenna</strong> horizontally and use the <strong style="color:#06b6d4">height slider</strong> to move vertically into the <strong style="color:#ef4444">null zones</strong>. Toggle <strong style="color:#06b6d4">H Wave</strong> to see E ⊥ H at 90° — orbit to see it in 3D. Toggle <strong style="color:#22c55e">Aperture</strong> to see <em>why signals get weaker with distance</em>: your antenna captures a fixed area of the expanding shell. At 10m, it's a meaningful fraction. At 50m, the shell is 25× larger but your antenna hasn't grown — same bucket, vastly more ocean. The green wireframe sphere shows the total shell; the green disc at the RX is what your antenna actually catches. <strong>2× distance = −6 dB (¼ power)</strong>.
+  </div>
+
+  <footer>
+    <p>RF-Hub · <a href="https://github.com/unmanned-systems-uk/RF-Hub">GitHub</a> · Companion to "How Antennas Radiate"</p>
+    <p style="margin-top:4px;">73 and good DX! 📡</p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ============================================
+// STATE
+// ============================================
+let speed = 1.0;
+let waveDensity = 6;
+let cameraMode = 'free';
+let waveMode = 'rings'; // 'rings', 'shells', 'both'
+let showPattern = true;
+let showAxes = true;
+let showElectrons = true;
+let showWaveform = true;
+let showHWave = false;
+let specScale = 'log'; // 'log' or 'linear'
+let time = 0;
+
+// ============================================
+// THREE.JS SETUP
+// ============================================
+const container = document.getElementById('scene');
+const rect = container.getBoundingClientRect();
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0e1a, 0.012);
+
+const camera = new THREE.PerspectiveCamera(50, rect.width / rect.height, 0.1, 500);
+camera.position.set(30, 22, 40);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true, alpha: true });
+renderer.setSize(rect.width, rect.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x0a0e1a, 1);
+
+// ============================================
+// MOUSE CONTROL
+// ============================================
+let isDragging = false;
+let prevMouse = { x: 0, y: 0 };
+let orbitAngle = Math.PI / 5;
+let orbitPitch = 0.45;
+let orbitRadius = 55;
+
+container.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  orbitRadius = Math.max(15, Math.min(120, orbitRadius + e.deltaY * 0.05));
+}, { passive: false });
+
+// ============================================
+// SCENE OBJECTS
+// ============================================
+
+// Ambient light
+scene.add(new THREE.AmbientLight(0x334466, 0.5));
+const pLight = new THREE.PointLight(0xa78bfa, 0.6, 100);
+pLight.position.set(10, 30, 20);
+scene.add(pLight);
+
+// Antenna
+const antennaMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+const antennaGeo = new THREE.CylinderGeometry(0.18, 0.18, 20, 8);
+const antenna = new THREE.Mesh(antennaGeo, antennaMat);
+scene.add(antenna);
+
+// Feed point
+const feedGeo = new THREE.SphereGeometry(0.55, 16, 16);
+const feedMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+const feedPoint = new THREE.Mesh(feedGeo, feedMat);
+scene.add(feedPoint);
+
+// Tips
+const tipGeo = new THREE.SphereGeometry(0.35, 8, 8);
+const tipTop = new THREE.Mesh(tipGeo, new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.7 }));
+tipTop.position.y = 10;
+scene.add(tipTop);
+const tipBot = new THREE.Mesh(tipGeo, new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.7 }));
+tipBot.position.y = -10;
+scene.add(tipBot);
+
+// Ground grid
+const gridHelper = new THREE.GridHelper(80, 20, 0x1e293b, 0x151d2e);
+gridHelper.position.y = -13;
+scene.add(gridHelper);
+
+// Axes
+const axesGroup = new THREE.Group();
+function mkAxis(from, to, col) {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from), new THREE.Vector3(...to)]);
+  return new THREE.Line(g, new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.4 }));
+}
+axesGroup.add(mkAxis([-40,0,0],[40,0,0], 0x4a5568));
+axesGroup.add(mkAxis([0,0,-40],[0,0,40], 0x4a5568));
+// Vertical axis (antenna axis) - dotted effect with segments
+axesGroup.add(mkAxis([0,-13,0],[0,15,0], 0x3a4558));
+scene.add(axesGroup);
+
+// ============================================
+// DOUGHNUT RADIATION PATTERN (proper torus)
+// ============================================
+const patternGroup = new THREE.Group();
+
+// Use a proper torus — the dipole pattern in 3D IS a torus/doughnut
+// Major radius = distance from centre to middle of tube
+// Minor radius = tube thickness
+// For a dipole: fat doughnut, major radius ~ minor radius
+const torusR = 18; // major radius
+const torusTube = 10; // tube radius — fat doughnut
+const torusGeo = new THREE.TorusGeometry(torusR, torusTube, 32, 64);
+
+// Rotate so the hole aligns with the antenna (Y axis)
+torusGeo.rotateX(Math.PI / 2);
+
+const patternFillMat = new THREE.MeshBasicMaterial({
+  color: 0xa78bfa,
+  transparent: true,
+  opacity: 0.04,
+  side: THREE.DoubleSide,
+  depthWrite: false
+});
+patternGroup.add(new THREE.Mesh(torusGeo, patternFillMat));
+
+const patternWireMat = new THREE.MeshBasicMaterial({
+  color: 0xa78bfa,
+  transparent: true,
+  opacity: 0.1,
+  wireframe: true
+});
+patternGroup.add(new THREE.Mesh(torusGeo.clone(), patternWireMat));
+
+scene.add(patternGroup);
+
+// ============================================
+// ELECTRON PARTICLES
+// ============================================
+const electronGroup = new THREE.Group();
+const electrons = [];
+const numElectrons = 28;
+
+for (let i = 0; i < numElectrons; i++) {
+  const geo = new THREE.SphereGeometry(0.22, 6, 6);
+  const mat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.6 });
+  const mesh = new THREE.Mesh(geo, mat);
+  electronGroup.add(mesh);
+  electrons.push({ mesh, baseY: -9.5 + (i / numElectrons) * 19 });
+}
+scene.add(electronGroup);
+
+// ============================================
+// 2D WAVEFORM SLICE (locked in 3D scene)
+// ============================================
+const waveformGroup = new THREE.Group();
+
+// The sine wave ribbon - a flat mesh following the E-field wave
+// Extends along +X axis from the antenna
+const WAVE_SEGMENTS = 200;
+const WAVE_LENGTH = 45;
+const WAVE_AMP = 8;
+const RIBBON_HEIGHT = 0.15; // thin ribbon thickness
+
+// E-field wave line (top edge of ribbon)
+const eWaveGeo = new THREE.BufferGeometry();
+const eWavePositions = new Float32Array((WAVE_SEGMENTS + 1) * 3);
+eWaveGeo.setAttribute('position', new THREE.BufferAttribute(eWavePositions, 3));
+const eWaveLine = new THREE.Line(eWaveGeo, new THREE.LineBasicMaterial({
+  color: 0xf59e0b,
+  transparent: true,
+  opacity: 0.9,
+  linewidth: 2
+}));
+waveformGroup.add(eWaveLine);
+
+// Ribbon fill (thin plane between axis and wave)
+const ribbonGeo = new THREE.BufferGeometry();
+const ribbonVerts = new Float32Array((WAVE_SEGMENTS + 1) * 2 * 3); // top and bottom vertices
+const ribbonIndices = [];
+for (let i = 0; i < WAVE_SEGMENTS; i++) {
+  const base = i * 2;
+  ribbonIndices.push(base, base + 1, base + 2);
+  ribbonIndices.push(base + 1, base + 3, base + 2);
+}
+ribbonGeo.setAttribute('position', new THREE.BufferAttribute(ribbonVerts, 3));
+ribbonGeo.setIndex(ribbonIndices);
+const ribbonMesh = new THREE.Mesh(ribbonGeo, new THREE.MeshBasicMaterial({
+  color: 0xf59e0b,
+  transparent: true,
+  opacity: 0.08,
+  side: THREE.DoubleSide,
+  depthWrite: false
+}));
+waveformGroup.add(ribbonMesh);
+
+// Propagation axis line
+const propAxisGeo = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(2, 0, 0),
+  new THREE.Vector3(WAVE_LENGTH, 0, 0)
+]);
+const propAxisLine = new THREE.Line(propAxisGeo, new THREE.LineDashedMaterial({
+  color: 0x06b6d4,
+  transparent: true,
+  opacity: 0.35,
+  dashSize: 0.8,
+  gapSize: 0.5
+}));
+propAxisLine.computeLineDistances();
+waveformGroup.add(propAxisLine);
+
+// E-field vertical arrows (lines from axis to wave)
+const E_ARROW_COUNT = 24;
+const eArrows = [];
+for (let i = 0; i < E_ARROW_COUNT; i++) {
+  const lineGeo = new THREE.BufferGeometry();
+  const linePos = new Float32Array(6); // 2 points × 3 coords
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+  const lineMat = new THREE.LineBasicMaterial({
+    color: 0xf59e0b,
+    transparent: true,
+    opacity: 0.5
+  });
+  const line = new THREE.Line(lineGeo, lineMat);
+  waveformGroup.add(line);
+
+  // Arrow head (small cone)
+  const coneGeo = new THREE.ConeGeometry(0.2, 0.6, 4);
+  const coneMat = new THREE.MeshBasicMaterial({
+    color: 0xf59e0b,
+    transparent: true,
+    opacity: 0.5
+  });
+  const cone = new THREE.Mesh(coneGeo, coneMat);
+  waveformGroup.add(cone);
+
+  eArrows.push({ line, linePos, cone });
+}
+
+// H-field indicators along the axis
+const H_INDICATOR_COUNT = 24;
+const hIndicators = [];
+for (let i = 0; i < H_INDICATOR_COUNT; i++) {
+  // Dot (toward viewer) - sphere
+  const dotGeo = new THREE.SphereGeometry(0.2, 6, 6);
+  const dotMat = new THREE.MeshBasicMaterial({
+    color: 0x06b6d4,
+    transparent: true,
+    opacity: 0.5
+  });
+  const dot = new THREE.Mesh(dotGeo, dotMat);
+
+  // Ring around dot
+  const ringGeo = new THREE.TorusGeometry(0.35, 0.05, 4, 12);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0x06b6d4,
+    transparent: true,
+    opacity: 0.3
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2; // face along Z
+
+  // Cross (away from viewer) - two lines
+  const crossGeo1 = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-0.25, 0, -0.25),
+    new THREE.Vector3(0.25, 0, 0.25)
+  ]);
+  const crossGeo2 = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0.25, 0, -0.25),
+    new THREE.Vector3(-0.25, 0, 0.25)
+  ]);
+  const crossMat = new THREE.LineBasicMaterial({
+    color: 0x06b6d4,
+    transparent: true,
+    opacity: 0.5
+  });
+  const cross1 = new THREE.Line(crossGeo1, crossMat);
+  const cross2 = new THREE.Line(crossGeo2, crossMat.clone());
+
+  const group = new THREE.Group();
+  group.add(dot);
+  group.add(ring);
+  group.add(cross1);
+  group.add(cross2);
+  waveformGroup.add(group);
+
+  hIndicators.push({ group, dot, ring, cross1, cross2 });
+}
+
+// "E" and "H" text labels - use sprites
+function makeTextSprite(text, color) {
+  const canvas2 = document.createElement('canvas');
+  canvas2.width = 64;
+  canvas2.height = 32;
+  const ctx2 = canvas2.getContext('2d');
+  ctx2.font = 'bold 24px IBM Plex Mono, monospace';
+  ctx2.fillStyle = color;
+  ctx2.textAlign = 'center';
+  ctx2.fillText(text, 32, 24);
+  const tex = new THREE.CanvasTexture(canvas2);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.8 });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(2, 1, 1);
+  return sprite;
+}
+
+const eLabelSprite = makeTextSprite('E', '#f59e0b');
+eLabelSprite.position.set(6, WAVE_AMP + 2, 0);
+waveformGroup.add(eLabelSprite);
+
+const hLabelSprite = makeTextSprite('H', '#06b6d4');
+hLabelSprite.position.set(6, 0, WAVE_AMP + 2);
+waveformGroup.add(hLabelSprite);
+
+// ====== H FIELD WAVE (sine along Z axis, perpendicular to E) ======
+const hWaveGroup = new THREE.Group();
+
+// H wave line
+const hWaveGeo = new THREE.BufferGeometry();
+const hWavePositions = new Float32Array((WAVE_SEGMENTS + 1) * 3);
+hWaveGeo.setAttribute('position', new THREE.BufferAttribute(hWavePositions, 3));
+const hWaveLine = new THREE.Line(hWaveGeo, new THREE.LineBasicMaterial({
+  color: 0x06b6d4, transparent: true, opacity: 0.9, linewidth: 2
+}));
+hWaveGroup.add(hWaveLine);
+
+// H ribbon fill (between axis and H wave, in XZ plane)
+const hRibbonGeo = new THREE.BufferGeometry();
+const hRibbonVerts = new Float32Array((WAVE_SEGMENTS + 1) * 2 * 3);
+const hRibbonIdx = [];
+for (let i = 0; i < WAVE_SEGMENTS; i++) {
+  const b = i * 2;
+  hRibbonIdx.push(b, b+1, b+2);
+  hRibbonIdx.push(b+1, b+3, b+2);
+}
+hRibbonGeo.setAttribute('position', new THREE.BufferAttribute(hRibbonVerts, 3));
+hRibbonGeo.setIndex(hRibbonIdx);
+const hRibbonMesh = new THREE.Mesh(hRibbonGeo, new THREE.MeshBasicMaterial({
+  color: 0x06b6d4, transparent: true, opacity: 0.06, side: THREE.DoubleSide, depthWrite: false
+}));
+hWaveGroup.add(hRibbonMesh);
+
+const hWaveLabelSprite = makeTextSprite('H', '#06b6d4');
+hWaveLabelSprite.position.set(6, 0, WAVE_AMP + 2);
+hWaveGroup.add(hWaveLabelSprite);
+
+// H field arrows (pointing along Z)
+const H_ARROW_COUNT = 24;
+const hArrows = [];
+for (let i = 0; i < H_ARROW_COUNT; i++) {
+  const lg = new THREE.BufferGeometry();
+  const lp = new Float32Array(6);
+  lg.setAttribute('position', new THREE.BufferAttribute(lp, 3));
+  const lm = new THREE.LineBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.5 });
+  const ln = new THREE.Line(lg, lm);
+  hWaveGroup.add(ln);
+
+  const cg = new THREE.ConeGeometry(0.2, 0.6, 4);
+  cg.rotateX(Math.PI / 2); // point along Z
+  const cm = new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.5 });
+  const cn = new THREE.Mesh(cg, cm);
+  hWaveGroup.add(cn);
+
+  hArrows.push({ line: ln, linePos: lp, cone: cn });
+}
+
+// 90° angle indicator between E and H
+const angle90Geo = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(6, 2, 0),
+  new THREE.Vector3(6, 2, 2),
+  new THREE.Vector3(6, 0, 2)
+]);
+const angle90Line = new THREE.Line(angle90Geo, new THREE.LineBasicMaterial({
+  color: 0xa78bfa, transparent: true, opacity: 0.6
+}));
+hWaveGroup.add(angle90Line);
+
+const angle90Label = makeTextSprite('90°', '#a78bfa');
+angle90Label.position.set(6, 1.5, 1.5);
+angle90Label.scale.set(1.8, 0.9, 1);
+hWaveGroup.add(angle90Label);
+
+scene.add(hWaveGroup); // Independent of E wave toggle
+
+// Propagation arrow label
+const kLabelSprite = makeTextSprite('k →', '#a78bfa');
+kLabelSprite.position.set(WAVE_LENGTH - 2, -1.5, 0);
+waveformGroup.add(kLabelSprite);
+
+scene.add(waveformGroup);
+
+// Update waveform each frame
+function updateWaveform() {
+  waveformGroup.visible = showWaveform;
+  if (!showWaveform) return;
+
+  // SYNC with 3D wavefronts:
+  // Rings expand at expandSpeed (3.5) units per time unit
+  // Rings spawn every waveInterval = 1.0 / (waveDensity / 6)
+  // Each ring = one half-cycle, so full wavelength = 2 rings apart
+  // wavelengthInUnits = expandSpeed * waveInterval * 2
+  const expandSpeed = 3.5;
+  const waveInterval = 1.0 / (waveDensity / 6);
+  const wavelengthUnits = expandSpeed * waveInterval * 2;
+
+  // Phase: wave moves at expandSpeed units/time, so phase = time * expandSpeed
+  // Convert to radians: phase = (distance / wavelength) * 2π
+  // phase velocity in radians/time = (expandSpeed / wavelengthUnits) * 2π
+  const phaseVelocity = (expandSpeed / wavelengthUnits) * Math.PI * 2;
+  const phase = time * phaseVelocity;
+
+  const waveStart = 2; // start offset from antenna
+  const waveEnd = WAVE_LENGTH;
+  const positions = eWaveGeo.attributes.position.array;
+  const rVerts = ribbonGeo.attributes.position.array;
+
+  // Update sine wave line and ribbon
+  for (let i = 0; i <= WAVE_SEGMENTS; i++) {
+    const frac = i / WAVE_SEGMENTS;
+    const x = waveStart + frac * (waveEnd - waveStart);
+    const distFromAntenna = x - waveStart;
+
+    // Wave: sin(2π × distance/wavelength - phase)
+    const wavePhase = (distFromAntenna / wavelengthUnits) * Math.PI * 2 - phase;
+
+    // Fade in near antenna, fade out at far end
+    const fadeIn = Math.min(1, distFromAntenna / 5);
+    const fadeOut = Math.min(1, (waveEnd - x) / 4);
+    const envelope = fadeIn * fadeOut;
+
+    const y = Math.sin(wavePhase) * WAVE_AMP * envelope;
+
+    // E wave line
+    positions[i * 3] = x;
+    positions[i * 3 + 1] = y;
+    positions[i * 3 + 2] = 0;
+
+    // Ribbon: top vertex = wave, bottom vertex = axis
+    rVerts[i * 6] = x;
+    rVerts[i * 6 + 1] = y;
+    rVerts[i * 6 + 2] = 0;
+    rVerts[i * 6 + 3] = x;
+    rVerts[i * 6 + 4] = 0;
+    rVerts[i * 6 + 5] = 0;
+  }
+  eWaveGeo.attributes.position.needsUpdate = true;
+  ribbonGeo.attributes.position.needsUpdate = true;
+
+  // Update E-field arrows
+  for (let i = 0; i < E_ARROW_COUNT; i++) {
+    const frac = (i + 0.5) / E_ARROW_COUNT;
+    const x = waveStart + frac * (waveEnd - waveStart);
+    const distFromAntenna = x - waveStart;
+    const wavePhase = (distFromAntenna / wavelengthUnits) * Math.PI * 2 - phase;
+
+    const fadeIn = Math.min(1, distFromAntenna / 5);
+    const fadeOut = Math.min(1, (waveEnd - x) / 4);
+    const envelope = fadeIn * fadeOut;
+    const y = Math.sin(wavePhase) * WAVE_AMP * envelope;
+
+    const arrow = eArrows[i];
+    const lp = arrow.linePos;
+
+    lp[0] = x; lp[1] = 0; lp[2] = 0;
+    lp[3] = x; lp[4] = y; lp[5] = 0;
+    arrow.line.geometry.attributes.position.needsUpdate = true;
+
+    const absY = Math.abs(y);
+    const alpha = (absY / WAVE_AMP) * 0.6;
+    arrow.line.material.opacity = alpha;
+    arrow.cone.material.opacity = alpha;
+
+    arrow.cone.position.set(x, y, 0);
+    arrow.cone.rotation.z = y > 0 ? 0 : Math.PI;
+    arrow.cone.visible = absY > 0.8;
+    arrow.cone.scale.setScalar(Math.min(1, absY / 2));
+  }
+
+  // Update H-field indicators (dots/crosses) - only when E wave on but H wave off
+  // When H wave is on, the full sine wave replaces these
+  const showDotsCrosses = showWaveform && !showHWave;
+  hLabelSprite.visible = showDotsCrosses; // old label follows dots/crosses
+  for (let i = 0; i < H_INDICATOR_COUNT; i++) {
+    const frac = (i + 0.5) / H_INDICATOR_COUNT;
+    const x = waveStart + frac * (waveEnd - waveStart);
+    const distFromAntenna = x - waveStart;
+    const wavePhase = (distFromAntenna / wavelengthUnits) * Math.PI * 2 - phase;
+
+    const fadeIn = Math.min(1, distFromAntenna / 5);
+    const fadeOut = Math.min(1, (waveEnd - x) / 4);
+    const envelope = fadeIn * fadeOut;
+    const hVal = Math.sin(wavePhase) * envelope;
+
+    const ind = hIndicators[i];
+    ind.group.position.set(x, 0, 0);
+
+    if (!showDotsCrosses) {
+      ind.dot.visible = false;
+      ind.ring.visible = false;
+      ind.cross1.visible = false;
+      ind.cross2.visible = false;
+      continue;
+    }
+
+    const absH = Math.abs(hVal);
+    const hAlpha = absH * 0.6;
+
+    if (hVal > 0.05) {
+      ind.dot.visible = true;
+      ind.ring.visible = true;
+      ind.cross1.visible = false;
+      ind.cross2.visible = false;
+      ind.dot.scale.setScalar(absH * 1.2);
+      ind.ring.scale.setScalar(absH * 1.2);
+      ind.dot.material.opacity = hAlpha;
+      ind.ring.material.opacity = hAlpha * 0.5;
+    } else if (hVal < -0.05) {
+      ind.dot.visible = false;
+      ind.ring.visible = false;
+      ind.cross1.visible = true;
+      ind.cross2.visible = true;
+      ind.cross1.scale.setScalar(absH * 1.2);
+      ind.cross2.scale.setScalar(absH * 1.2);
+      ind.cross1.material.opacity = hAlpha;
+      ind.cross2.material.opacity = hAlpha;
+    } else {
+      ind.dot.visible = false;
+      ind.ring.visible = false;
+      ind.cross1.visible = false;
+      ind.cross2.visible = false;
+    }
+  }
+
+  eLabelSprite.position.y = WAVE_AMP + 2;
+
+  // ====== UPDATE H FIELD WAVE ======
+  hWaveGroup.visible = showHWave;
+  angle90Line.visible = showHWave && showWaveform;
+  angle90Label.visible = showHWave && showWaveform;
+  if (showHWave) {
+    const hPos = hWaveGeo.attributes.position.array;
+    const hRib = hRibbonGeo.attributes.position.array;
+
+    for (let i = 0; i <= WAVE_SEGMENTS; i++) {
+      const frac = i / WAVE_SEGMENTS;
+      const x = waveStart + frac * (waveEnd - waveStart);
+      const distFromAntenna = x - waveStart;
+      const wp = (distFromAntenna / wavelengthUnits) * Math.PI * 2 - phase;
+
+      const fadeIn = Math.min(1, distFromAntenna / 5);
+      const fadeOut = Math.min(1, (waveEnd - x) / 4);
+      const envelope = fadeIn * fadeOut;
+
+      // H field on Z axis (perpendicular to E on Y axis)
+      const z = Math.sin(wp) * WAVE_AMP * envelope;
+
+      hPos[i*3] = x;
+      hPos[i*3+1] = 0;
+      hPos[i*3+2] = z;
+
+      // Ribbon: wave vertex then axis vertex
+      hRib[i*6] = x;
+      hRib[i*6+1] = 0;
+      hRib[i*6+2] = z;
+      hRib[i*6+3] = x;
+      hRib[i*6+4] = 0;
+      hRib[i*6+5] = 0;
+    }
+    hWaveGeo.attributes.position.needsUpdate = true;
+    hRibbonGeo.attributes.position.needsUpdate = true;
+
+    // H field arrows
+    for (let i = 0; i < H_ARROW_COUNT; i++) {
+      const frac = (i + 0.5) / H_ARROW_COUNT;
+      const x = waveStart + frac * (waveEnd - waveStart);
+      const distFromAntenna = x - waveStart;
+      const wp = (distFromAntenna / wavelengthUnits) * Math.PI * 2 - phase;
+
+      const fadeIn = Math.min(1, distFromAntenna / 5);
+      const fadeOut = Math.min(1, (waveEnd - x) / 4);
+      const envelope = fadeIn * fadeOut;
+      const z = Math.sin(wp) * WAVE_AMP * envelope;
+
+      const ha = hArrows[i];
+      const lp = ha.linePos;
+      lp[0]=x; lp[1]=0; lp[2]=0;
+      lp[3]=x; lp[4]=0; lp[5]=z;
+      ha.line.geometry.attributes.position.needsUpdate = true;
+
+      const absZ = Math.abs(z);
+      const alpha = (absZ / WAVE_AMP) * 0.6;
+      ha.line.material.opacity = alpha;
+      ha.cone.material.opacity = alpha;
+
+      ha.cone.position.set(x, 0, z);
+      ha.cone.rotation.x = 0;
+      ha.cone.rotation.y = 0;
+      ha.cone.rotation.z = 0;
+      // Point cone along Z direction
+      if (z > 0) {
+        ha.cone.rotation.x = 0; // already pointing +Z from geometry rotation
+      } else {
+        ha.cone.rotation.x = Math.PI; // flip to -Z
+      }
+      ha.cone.visible = absZ > 0.8;
+      ha.cone.scale.setScalar(Math.min(1, absZ / 2));
+    }
+
+    hWaveLabelSprite.position.set(6, 0, WAVE_AMP + 2);
+  }
+}
+
+// ============================================
+// FLAT RING WAVEFRONTS
+// ============================================
+const MAX_WAVES = 16;
+const flatRings = [];
+
+for (let i = 0; i < MAX_WAVES; i++) {
+  // Ring = torus with very small tube radius
+  const geo = new THREE.TorusGeometry(1, 0.08, 4, 80);
+  geo.rotateX(Math.PI / 2); // flat in XZ plane
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0xa78bfa,
+    transparent: true,
+    opacity: 0.6,
+    depthWrite: false
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.visible = false;
+  scene.add(mesh);
+  flatRings.push({ mesh, birth: 0, alive: false });
+}
+
+// ============================================
+// 3D SHELL WAVEFRONTS (doughnut-shaped)
+// ============================================
+const shellWaves = [];
+
+for (let i = 0; i < MAX_WAVES; i++) {
+  // Each shell is a torus wireframe that expands
+  const geo = new THREE.TorusGeometry(1, 0.55, 12, 32);
+  geo.rotateX(Math.PI / 2);
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0xa78bfa,
+    transparent: true,
+    opacity: 0.4,
+    wireframe: true,
+    depthWrite: false
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.visible = false;
+  scene.add(mesh);
+
+  // Also a faint solid fill
+  const fillGeo = new THREE.TorusGeometry(1, 0.55, 12, 32);
+  fillGeo.rotateX(Math.PI / 2);
+  const fillMat = new THREE.MeshBasicMaterial({
+    color: 0xa78bfa,
+    transparent: true,
+    opacity: 0.06,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const fillMesh = new THREE.Mesh(fillGeo, fillMat);
+  fillMesh.visible = false;
+  scene.add(fillMesh);
+
+  shellWaves.push({ wire: mesh, fill: fillMesh, birth: 0, alive: false });
+}
+
+// ============================================
+// WAVE MANAGEMENT
+// ============================================
+let lastWaveTime = -10;
+let nextRingIdx = 0;
+let nextShellIdx = 0;
+
+function spawnWave() {
+  // Spawn flat ring
+  const ring = flatRings[nextRingIdx % MAX_WAVES];
+  ring.birth = time;
+  ring.alive = true;
+  ring.mesh.visible = (waveMode === 'rings' || waveMode === 'both');
+  nextRingIdx++;
+
+  // Spawn shell
+  const shell = shellWaves[nextShellIdx % MAX_WAVES];
+  shell.birth = time;
+  shell.alive = true;
+  shell.wire.visible = (waveMode === 'shells' || waveMode === 'both');
+  shell.fill.visible = (waveMode === 'shells' || waveMode === 'both');
+  nextShellIdx++;
+}
+
+function updateWaves() {
+  const waveInterval = 1.0 / (waveDensity / 6);
+  const maxAge = 10;
+  const expandSpeed = 3.5;
+
+  if (time - lastWaveTime > waveInterval) {
+    spawnWave();
+    lastWaveTime = time;
+  }
+
+  let activeCount = 0;
+
+  // Update flat rings
+  for (const ring of flatRings) {
+    if (!ring.alive) { ring.mesh.visible = false; continue; }
+    const age = time - ring.birth;
+    if (age > maxAge) { ring.alive = false; ring.mesh.visible = false; continue; }
+
+    const radius = 1 + age * expandSpeed;
+    const fadeIn = Math.min(1, age * 2.5);
+    const fadeOut = Math.max(0, 1 - (age / maxAge));
+    const alpha = fadeIn * fadeOut * 0.55;
+
+    // Polarity alternation
+    const polarity = Math.floor(ring.birth / waveInterval) % 2;
+    ring.mesh.material.color.setHex(polarity === 0 ? 0xa78bfa : 0x8b7bd4);
+
+    ring.mesh.scale.set(radius, radius, radius);
+    ring.mesh.material.opacity = alpha;
+    ring.mesh.visible = (waveMode === 'rings' || waveMode === 'both');
+
+    if (ring.alive) activeCount++;
+  }
+
+  // Update 3D shells
+  for (const shell of shellWaves) {
+    if (!shell.alive) { shell.wire.visible = false; shell.fill.visible = false; continue; }
+    const age = time - shell.birth;
+    if (age > maxAge) {
+      shell.alive = false;
+      shell.wire.visible = false;
+      shell.fill.visible = false;
+      continue;
+    }
+
+    const radius = 0.5 + age * expandSpeed;
+    const fadeIn = Math.min(1, age * 2.5);
+    const fadeOut = Math.max(0, 1 - (age / maxAge));
+    const wireAlpha = fadeIn * fadeOut * 0.35;
+    const fillAlpha = fadeIn * fadeOut * 0.05;
+
+    const polarity = Math.floor(shell.birth / waveInterval) % 2;
+    const col = polarity === 0 ? 0xa78bfa : 0x8b7bd4;
+    shell.wire.material.color.setHex(col);
+    shell.fill.material.color.setHex(col);
+
+    // Scale: the torus expands — both major radius and tube grow proportionally
+    shell.wire.scale.set(radius, radius, radius);
+    shell.fill.scale.set(radius, radius, radius);
+    shell.wire.material.opacity = wireAlpha;
+    shell.fill.material.opacity = fillAlpha;
+
+    const vis = (waveMode === 'shells' || waveMode === 'both');
+    shell.wire.visible = vis;
+    shell.fill.visible = vis;
+
+    if (shell.alive) activeCount++;
+  }
+
+  document.getElementById('hud-waves').textContent = activeCount;
+}
+
+// ============================================
+// ELECTRONS
+// ============================================
+function updateElectrons() {
+  electronGroup.visible = showElectrons;
+  if (!showElectrons) return;
+
+  const sinT = Math.sin(time * 4);
+  for (const e of electrons) {
+    const norm = (e.baseY + 10) / 20;
+    const sw = Math.sin(norm * Math.PI);
+    const disp = sinT * sw * 1.5;
+    e.mesh.position.set(0, e.baseY + disp, 0);
+    e.mesh.material.opacity = 0.15 + sw * 0.55;
+    e.mesh.scale.setScalar(0.4 + sw * 0.6);
+  }
+
+  const ci = Math.abs(sinT);
+  tipTop.material.opacity = ci * 0.8;
+  tipBot.material.opacity = ci * 0.8;
+  feedPoint.scale.setScalar(0.7 + ci * 0.5);
+}
+
+// ============================================
+// RX ANTENNA (draggable)
+// ============================================
+const rxGroup = new THREE.Group();
+
+const rxAntGeo = new THREE.CylinderGeometry(0.18, 0.18, 14, 8);
+const rxAntMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+rxGroup.add(new THREE.Mesh(rxAntGeo, rxAntMat));
+
+const rxFeedGeo = new THREE.SphereGeometry(0.5, 12, 12);
+const rxFeedMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+const rxFeed = new THREE.Mesh(rxFeedGeo, rxFeedMat);
+rxGroup.add(rxFeed);
+
+const rxTipGeo = new THREE.SphereGeometry(0.3, 8, 8);
+const rxTipTop = new THREE.Mesh(rxTipGeo, new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.7 }));
+rxTipTop.position.y = 7;
+rxGroup.add(rxTipTop);
+const rxTipBot = new THREE.Mesh(rxTipGeo, new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.7 }));
+rxTipBot.position.y = -7;
+rxGroup.add(rxTipBot);
+
+const rxLabelSpr = makeTextSprite('RX', '#06b6d4');
+rxLabelSpr.position.y = 10;
+rxLabelSpr.scale.set(2.5, 1.25, 1);
+rxGroup.add(rxLabelSpr);
+
+// Base ring (visual drag handle)
+const rxBaseGeo = new THREE.TorusGeometry(1.8, 0.12, 4, 24);
+rxBaseGeo.rotateX(Math.PI / 2);
+rxGroup.add(new THREE.Mesh(rxBaseGeo, new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.35 })));
+
+// Invisible hit target
+const rxHitGeo = new THREE.SphereGeometry(5, 8, 8);
+const rxHitTarget = new THREE.Mesh(rxHitGeo, new THREE.MeshBasicMaterial({ visible: false }));
+rxGroup.add(rxHitTarget);
+
+rxGroup.position.set(25, 0, 0);
+scene.add(rxGroup);
+
+// Signal path line
+const spGeo = new THREE.BufferGeometry();
+const spPos = new Float32Array(6);
+spGeo.setAttribute('position', new THREE.BufferAttribute(spPos, 3));
+const signalPath = new THREE.Line(spGeo, new THREE.LineDashedMaterial({
+  color: 0x22c55e, transparent: true, opacity: 0.3, dashSize: 1, gapSize: 0.6
+}));
+signalPath.computeLineDistances();
+scene.add(signalPath);
+
+// ============================================
+// EFFECTIVE APERTURE VISUALIZATION
+// ============================================
+let showAperture = false;
+
+// Antenna effective aperture: ~0.13λ² for half-wave dipole
+// In our units, λ ≈ waveInterval * expandSpeed * 2 ≈ 10.5 units
+const apertureArea = 0.13 * 10.5 * 10.5; // ≈ 14.3 units²
+const apertureRadius = Math.sqrt(apertureArea / Math.PI); // ≈ 2.1 units
+
+// Green disc representing antenna capture area (faces TX at origin)
+const apDiscGeo = new THREE.CircleGeometry(apertureRadius, 32);
+const apDiscMat = new THREE.MeshBasicMaterial({
+  color: 0x22c55e, transparent: true, opacity: 0.25, side: THREE.DoubleSide, depthWrite: false
+});
+const apDisc = new THREE.Mesh(apDiscGeo, apDiscMat);
+scene.add(apDisc);
+
+// Green ring outline for the disc
+const apRingGeo = new THREE.RingGeometry(apertureRadius - 0.08, apertureRadius + 0.08, 64);
+const apRingMat = new THREE.MeshBasicMaterial({
+  color: 0x22c55e, transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false
+});
+const apRing = new THREE.Mesh(apRingGeo, apRingMat);
+scene.add(apRing);
+
+// Wireframe sphere at RX distance showing total shell surface
+const apShellGeo = new THREE.SphereGeometry(1, 32, 16);
+const apShellMat = new THREE.MeshBasicMaterial({
+  color: 0x22c55e, transparent: true, opacity: 0.04, side: THREE.DoubleSide, depthWrite: false,
+  wireframe: true
+});
+const apShell = new THREE.Mesh(apShellGeo, apShellMat);
+scene.add(apShell);
+
+// Wireframe equator ring to emphasize shell size
+const apEquatorGeo = new THREE.TorusGeometry(1, 0.06, 4, 128);
+const apEquatorMat = new THREE.MeshBasicMaterial({
+  color: 0x22c55e, transparent: true, opacity: 0.2
+});
+const apEquator = new THREE.Mesh(apEquatorGeo, apEquatorMat);
+scene.add(apEquator);
+
+// Text overlay for aperture info (HTML overlay for better readability)
+const apInfoEl = document.createElement('div');
+apInfoEl.id = 'aperture-info';
+apInfoEl.style.cssText = `
+  position:absolute; bottom:12px; left:12px; padding:10px 14px;
+  background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3);
+  border-radius:8px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+  color:#86efac; pointer-events:none; display:none; line-height:1.6;
+  backdrop-filter:blur(8px); z-index:10; max-width:320px;
+`;
+document.querySelector('.scene-wrapper').appendChild(apInfoEl);
+
+function updateAperture() {
+  const visible = showAperture;
+  apDisc.visible = visible;
+  apRing.visible = visible;
+  apShell.visible = visible;
+  apEquator.visible = visible;
+  apInfoEl.style.display = visible ? 'block' : 'none';
+
+  if (!visible) return;
+
+  const rxPos = rxGroup.position.clone();
+  const dist = Math.max(1, rxPos.length());
+
+  // Position disc at RX, facing TX (origin)
+  apDisc.position.copy(rxPos);
+  apDisc.lookAt(0, 0, 0);
+  apRing.position.copy(rxPos);
+  apRing.lookAt(0, 0, 0);
+
+  // Scale shell to RX distance
+  apShell.scale.setScalar(dist);
+  apShell.position.set(0, 0, 0);
+  apEquator.scale.setScalar(dist);
+  apEquator.position.set(0, 0, 0);
+
+  // Calculate numbers
+  const shellArea = 4 * Math.PI * dist * dist;
+  const fraction = apertureArea / shellArea;
+  const fractionPct = fraction * 100;
+  const fractionDb = fraction > 0 ? 10 * Math.log10(fraction) : -99;
+
+  // Distance doubling reference
+  const refDist = 10;
+  const doublings = Math.log2(dist / refDist);
+  const doublingLoss = doublings * 6.02;
+
+  apInfoEl.innerHTML = `
+    <div style="color:#22c55e;font-weight:600;margin-bottom:4px;">🎯 EFFECTIVE APERTURE</div>
+    <div>Antenna capture: <strong>${apertureArea.toFixed(1)} m²</strong></div>
+    <div>Shell surface: <strong>${shellArea.toFixed(0)} m²</strong></div>
+    <div>Fraction captured: <strong style="color:${fractionPct > 1 ? '#4ade80' : fractionPct > 0.01 ? '#fbbf24' : '#ef4444'}">${fractionPct > 0.01 ? fractionPct.toFixed(3) : fractionPct.toExponential(1)}%</strong></div>
+    <div>Spreading loss: <strong>${fractionDb.toFixed(1)} dB</strong></div>
+    <div style="border-top:1px solid rgba(34,197,94,0.2);margin-top:6px;padding-top:6px;color:#86efac;">
+      <div style="font-weight:600;margin-bottom:2px;">📏 DISTANCE RULE</div>
+      <div>2× distance = −6 dB (¼ power)</div>
+      <div>From ref ${refDist}m: <strong>${doublings > 0 ? '+' : ''}${doublings.toFixed(1)} doublings</strong></div>
+      <div>Spreading: <strong>${doublingLoss > 0 ? '-' : '+'}${Math.abs(doublingLoss).toFixed(1)} dB</strong></div>
+    </div>
+  `;
+}
+
+// ============================================
+// DRAG LOGIC (replaces old mouse handlers)
+// ============================================
+const raycaster = new THREE.Raycaster();
+const mouseNDC = new THREE.Vector2();
+const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const planeHit = new THREE.Vector3();
+let isDraggingRx = false;
+let dragOffset = new THREE.Vector3();
+
+function getNDC(e) {
+  const r = container.getBoundingClientRect();
+  const cx = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+  const cy = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+  mouseNDC.x = ((cx - r.left) / r.width) * 2 - 1;
+  mouseNDC.y = -((cy - r.top) / r.height) * 2 + 1;
+}
+
+let rxHeight = 0;
+
+function clampRxPos(pos) {
+  const d = Math.sqrt(pos.x * pos.x + pos.z * pos.z);
+  if (d > 55) { pos.x *= 55/d; pos.z *= 55/d; }
+  if (d < 3) { pos.x *= 3/d; pos.z *= 3/d; }
+  pos.y = rxHeight; // vertical position from slider
+}
+
+container.addEventListener('mousedown', (e) => {
+  getNDC(e);
+  raycaster.setFromCamera(mouseNDC, camera);
+  if (raycaster.intersectObject(rxHitTarget, true).length > 0) {
+    isDraggingRx = true;
+    container.style.cursor = 'grabbing';
+    dragPlane.constant = -rxHeight; // match current RX height
+    raycaster.ray.intersectPlane(dragPlane, planeHit);
+    dragOffset.copy(rxGroup.position).sub(planeHit);
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+  isDragging = true;
+  prevMouse = { x: e.clientX, y: e.clientY };
+  if (cameraMode === 'orbit') setCameraMode('free');
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (isDraggingRx) {
+    getNDC(e);
+    raycaster.setFromCamera(mouseNDC, camera);
+    raycaster.ray.intersectPlane(dragPlane, planeHit);
+    const np = planeHit.add(dragOffset);
+    clampRxPos(np);
+    rxGroup.position.copy(np);
+    return;
+  }
+  if (isDragging) {
+    orbitAngle -= (e.clientX - prevMouse.x) * 0.008;
+    orbitPitch = Math.max(-1.3, Math.min(1.5, orbitPitch + (e.clientY - prevMouse.y) * 0.006));
+    prevMouse = { x: e.clientX, y: e.clientY };
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  isDraggingRx = false;
+  isDragging = false;
+  container.style.cursor = 'grab';
+});
+
+container.addEventListener('touchstart', (e) => {
+  if (e.touches.length !== 1) return;
+  getNDC(e);
+  raycaster.setFromCamera(mouseNDC, camera);
+  if (raycaster.intersectObject(rxHitTarget, true).length > 0) {
+    isDraggingRx = true;
+    dragPlane.constant = -rxHeight;
+    raycaster.ray.intersectPlane(dragPlane, planeHit);
+    dragOffset.copy(rxGroup.position).sub(planeHit);
+    e.preventDefault();
+    return;
+  }
+  isDragging = true;
+  prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  if (cameraMode === 'orbit') setCameraMode('free');
+}, { passive: false });
+
+container.addEventListener('touchmove', (e) => {
+  if (isDraggingRx && e.touches.length === 1) {
+    getNDC(e);
+    raycaster.setFromCamera(mouseNDC, camera);
+    raycaster.ray.intersectPlane(dragPlane, planeHit);
+    const np = planeHit.add(dragOffset);
+    clampRxPos(np);
+    rxGroup.position.copy(np);
+    e.preventDefault();
+    return;
+  }
+  if (!isDragging || e.touches.length !== 1) return;
+  orbitAngle -= (e.touches[0].clientX - prevMouse.x) * 0.008;
+  orbitPitch = Math.max(-1.3, Math.min(1.5, orbitPitch + (e.touches[0].clientY - prevMouse.y) * 0.006));
+  prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+
+container.addEventListener('touchend', () => { isDraggingRx = false; isDragging = false; }, { passive: true });
+
+// ============================================
+// SIGNAL CALCULATION
+// ============================================
+function calculateSignal() {
+  const p = rxGroup.position;
+  const dist = Math.max(1, p.length());
+  const cosTheta = p.y / dist;
+  const sinTheta = Math.sqrt(1 - cosTheta * cosTheta);
+  let pattern = sinTheta * sinTheta; // dipole power pattern ≈ sin²(θ)
+  pattern = Math.max(0, Math.min(1, pattern));
+  const refDist = 10;
+  const distAtten = (refDist * refDist) / (dist * dist);
+  const rxPower = pattern * distAtten;
+  const rxAmp = Math.sqrt(rxPower);
+  const dBm = rxPower > 1e-10 ? 10 * Math.log10(rxPower) : -90;
+  return {
+    amplitude: rxAmp,
+    power: rxPower,
+    dBm: Math.max(-90, dBm),
+    distance: dist,
+    angleFromBroadside: Math.asin(Math.abs(cosTheta)) * 180 / Math.PI,
+    patternPercent: pattern * 100
+  };
+}
+
+function updateSignalPath() {
+  const sp = signalPath.geometry.attributes.position.array;
+  sp[0]=0; sp[1]=0; sp[2]=0;
+  sp[3]=rxGroup.position.x; sp[4]=rxGroup.position.y; sp[5]=rxGroup.position.z;
+  signalPath.geometry.attributes.position.needsUpdate = true;
+
+  const sig = calculateSignal();
+  rxFeed.scale.setScalar(0.5 + sig.amplitude * 1.0);
+  rxFeedMat.color.setHex(sig.amplitude > 0.1 ? 0x22c55e : 0x06b6d4);
+  signalPath.material.opacity = 0.15 + sig.amplitude * 0.4;
+  signalPath.material.color.setHex(sig.amplitude > 0.1 ? 0x22c55e : 0x334455);
+}
+
+// ============================================
+// OSCILLOSCOPE
+// ============================================
+const scopeCanvas = document.getElementById('scopeCanvas');
+let scopeCtx, scopeW, scopeH;
+
+function setupScope() {
+  const dpr = window.devicePixelRatio || 1;
+  const r = scopeCanvas.getBoundingClientRect();
+  scopeW = r.width; scopeH = r.height;
+  scopeCanvas.width = scopeW * dpr;
+  scopeCanvas.height = scopeH * dpr;
+  scopeCtx = scopeCanvas.getContext('2d');
+  scopeCtx.scale(dpr, dpr);
+}
+
+function drawScope(sig) {
+  const c = scopeCtx; if (!c) return;
+  c.clearRect(0, 0, scopeW, scopeH);
+  c.fillStyle = '#080c14'; c.fillRect(0, 0, scopeW, scopeH);
+
+  // Grid
+  c.strokeStyle = '#1a2234'; c.lineWidth = 0.5;
+  const gx = scopeW/10, gy = scopeH/8;
+  for (let x=gx; x<scopeW; x+=gx) { c.beginPath(); c.moveTo(x,0); c.lineTo(x,scopeH); c.stroke(); }
+  for (let y=gy; y<scopeH; y+=gy) { c.beginPath(); c.moveTo(0,y); c.lineTo(scopeW,y); c.stroke(); }
+
+  // Center + graticule
+  c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(0,scopeH/2); c.lineTo(scopeW,scopeH/2); c.stroke();
+  c.strokeStyle = '#3a4a5e';
+  for (let x=gx; x<scopeW; x+=gx) { c.beginPath(); c.moveTo(x,scopeH/2-3); c.lineTo(x,scopeH/2+3); c.stroke(); }
+  for (let y=gy; y<scopeH; y+=gy) { c.beginPath(); c.moveTo(scopeW/2-3,y); c.lineTo(scopeW/2+3,y); c.stroke(); }
+
+  // Waveform
+  const amp = sig.amplitude * scopeH * 0.38;
+  const phase = time * 4;
+  c.shadowColor = '#22c55e'; c.shadowBlur = 8;
+  c.strokeStyle = '#22c55e'; c.lineWidth = 2;
+  c.beginPath();
+  for (let x=0; x<=scopeW; x++) {
+    const y = scopeH/2 - Math.sin((x/scopeW)*Math.PI*8 - phase) * amp;
+    x===0 ? c.moveTo(x,y) : c.lineTo(x,y);
+  }
+  c.stroke();
+  // Glow trace
+  c.globalAlpha=0.3; c.lineWidth=5;
+  c.beginPath();
+  for (let x=0; x<=scopeW; x++) {
+    const y = scopeH/2 - Math.sin((x/scopeW)*Math.PI*8 - phase) * amp;
+    x===0 ? c.moveTo(x,y) : c.lineTo(x,y);
+  }
+  c.stroke(); c.globalAlpha=1; c.shadowBlur=0;
+
+  // Amplitude markers
+  if (amp > 5) {
+    c.strokeStyle='#22c55e'; c.lineWidth=1; c.setLineDash([3,3]); c.globalAlpha=0.3;
+    c.beginPath(); c.moveTo(0,scopeH/2-amp); c.lineTo(scopeW,scopeH/2-amp); c.stroke();
+    c.beginPath(); c.moveTo(0,scopeH/2+amp); c.lineTo(scopeW,scopeH/2+amp); c.stroke();
+    c.setLineDash([]); c.globalAlpha=1;
+  }
+
+  c.font='500 10px IBM Plex Mono'; c.fillStyle='#4a5568';
+  c.fillText('TIME →', scopeW-55, scopeH-8);
+  document.getElementById('scope-reading').textContent = (sig.amplitude*100).toFixed(1) + ' mVpp';
+}
+
+// ============================================
+// SPECTRUM ANALYZER
+// ============================================
+const specCanvas = document.getElementById('specCanvas');
+let specCtx, specW, specH;
+
+function setupSpec() {
+  const dpr = window.devicePixelRatio || 1;
+  const r = specCanvas.getBoundingClientRect();
+  specW = r.width; specH = r.height;
+  specCanvas.width = specW * dpr;
+  specCanvas.height = specH * dpr;
+  specCtx = specCanvas.getContext('2d');
+  specCtx.scale(dpr, dpr);
+}
+
+function drawSpectrum(sig) {
+  const c = specCtx; if (!c) return;
+  c.clearRect(0, 0, specW, specH);
+  c.fillStyle = '#080c14'; c.fillRect(0, 0, specW, specH);
+
+  const margin = { top: 10, bottom: 22, left: 4, right: 38 };
+  const plotW = specW - margin.left - margin.right;
+  const plotH = specH - margin.top - margin.bottom;
+  const plotX = margin.left;
+  const plotY = margin.top;
+
+  // Grid
+  const gx = specW/10, gy = specH/8;
+  c.strokeStyle='#1a2234'; c.lineWidth=0.5;
+  for (let x=gx; x<specW; x+=gx) { c.beginPath(); c.moveTo(x,0); c.lineTo(x,specH); c.stroke(); }
+  for (let y=gy; y<specH; y+=gy) { c.beginPath(); c.moveTo(0,y); c.lineTo(specW,y); c.stroke(); }
+
+  const cx2 = specW * 0.45;
+  const pw = 18;
+
+  if (specScale === 'log') {
+    // ===== LOG SCALE: 0 dBm to -90 dBm =====
+    const dbTop = 0;
+    const dbBottom = -90;
+    const dbRange = dbTop - dbBottom; // 90
+
+    // dB→Y mapping
+    const dbToY = (db) => plotY + ((dbTop - db) / dbRange) * plotH;
+
+    // Scale labels
+    c.font='500 9px IBM Plex Mono'; c.fillStyle='#3a4a5e';
+    for (let db = 0; db >= -90; db -= 10) {
+      const y = dbToY(db);
+      c.fillText(db + '', specW - 34, y + 3);
+      // Tick mark
+      c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(specW - 38, y); c.lineTo(specW - 35, y); c.stroke();
+    }
+
+    // Reference line at 0 dBm
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(plotX, dbToY(0)); c.lineTo(plotX + plotW, dbToY(0)); c.stroke();
+
+    // -3dB reference (useful landmark)
+    c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2,4]);
+    c.beginPath(); c.moveTo(plotX, dbToY(-3)); c.lineTo(plotX + plotW, dbToY(-3)); c.stroke();
+    c.setLineDash([]);
+    c.font='500 8px IBM Plex Mono'; c.fillStyle='#334155';
+    c.fillText('-3 dB', plotX + 2, dbToY(-3) - 3);
+
+    // Noise floor
+    const noiseY = dbToY(-90);
+    c.strokeStyle='#f59e0b'; c.lineWidth=1; c.globalAlpha=0.15;
+    c.beginPath();
+    for (let x=plotX; x<plotX+plotW; x++) {
+      const y = noiseY + (Math.random()-0.5)*6;
+      x===plotX ? c.moveTo(x,y) : c.lineTo(x,y);
+    }
+    c.stroke(); c.globalAlpha=1;
+
+    // Signal peak
+    const sigdBm = Math.max(-90, sig.dBm);
+    const peakY = dbToY(sigdBm);
+
+    if (sigdBm > -85) {
+      // Peak curve
+      c.shadowColor='#f59e0b'; c.shadowBlur=10;
+      c.strokeStyle='#f59e0b'; c.lineWidth=2;
+      c.beginPath();
+      for (let x=cx2-pw*3; x<=cx2+pw*3; x++) {
+        const g = Math.exp(-((x-cx2)**2)/(2*(pw/2)**2));
+        const y = noiseY - (noiseY-peakY)*g;
+        x===cx2-pw*3 ? c.moveTo(x,y) : c.lineTo(x,y);
+      }
+      c.stroke();
+
+      // Fill under
+      c.globalAlpha=0.1; c.fillStyle='#f59e0b';
+      c.beginPath(); c.moveTo(cx2-pw*3, noiseY);
+      for (let x=cx2-pw*3; x<=cx2+pw*3; x++) {
+        const g = Math.exp(-((x-cx2)**2)/(2*(pw/2)**2));
+        c.lineTo(x, noiseY - (noiseY-peakY)*g);
+      }
+      c.lineTo(cx2+pw*3, noiseY); c.closePath(); c.fill();
+      c.globalAlpha=1; c.shadowBlur=0;
+
+      // Peak marker
+      c.strokeStyle='#f59e0b'; c.lineWidth=1; c.setLineDash([3,3]); c.globalAlpha=0.5;
+      c.beginPath(); c.moveTo(cx2,peakY); c.lineTo(specW-38,peakY); c.stroke();
+      c.setLineDash([]); c.globalAlpha=1;
+
+      // Peak label
+      c.font='500 10px IBM Plex Mono'; c.fillStyle='#f59e0b';
+      c.fillText(sigdBm.toFixed(1)+' dBm', cx2+pw*3+5, peakY+3);
+    }
+    c.shadowBlur=0;
+
+    // Scale label
+    c.font='500 10px IBM Plex Mono'; c.fillStyle='#4a5568';
+    c.fillText('FREQ →', specW-65, specH-5);
+    c.fillText('145 MHz', cx2-20, specH-5);
+    c.font='500 9px IBM Plex Mono'; c.fillStyle='#f59e0b';
+    c.globalAlpha=0.5; c.fillText('LOG', plotX+2, plotY+10); c.globalAlpha=1;
+
+    document.getElementById('spec-reading').textContent = Math.max(-90, sig.dBm).toFixed(1)+' dBm';
+
+  } else {
+    // ===== LINEAR SCALE: 0.0 to 1.0 (power) =====
+    // This dramatically shows how deceptive linear can be vs log
+
+    // Power → Y mapping (0 at bottom, 1.0 at top)
+    const linToY = (p) => plotY + plotH - (p * plotH);
+
+    // Scale labels
+    c.font='500 9px IBM Plex Mono'; c.fillStyle='#3a4a5e';
+    for (let i = 0; i <= 10; i++) {
+      const val = i / 10;
+      const y = linToY(val);
+      c.fillText(val.toFixed(1), specW - 34, y + 3);
+      c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(specW - 38, y); c.lineTo(specW - 35, y); c.stroke();
+    }
+
+    // Zero line
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(plotX, linToY(0)); c.lineTo(plotX + plotW, linToY(0)); c.stroke();
+
+    // Noise floor (very low on linear scale - barely visible!)
+    const noisePower = 1e-9; // essentially zero on linear
+    const noiseBaseY = linToY(noisePower);
+    c.strokeStyle='#f59e0b'; c.lineWidth=1; c.globalAlpha=0.15;
+    c.beginPath();
+    for (let x=plotX; x<plotX+plotW; x++) {
+      const y = noiseBaseY + (Math.random()-0.5)*3;
+      x===plotX ? c.moveTo(x,y) : c.lineTo(x,y);
+    }
+    c.stroke(); c.globalAlpha=1;
+
+    // Signal peak (linear power, 0 to 1)
+    const sigPower = Math.max(0, Math.min(1, sig.power));
+    const peakY = linToY(sigPower);
+
+    if (sigPower > 0.001) {
+      c.shadowColor='#f59e0b'; c.shadowBlur=10;
+      c.strokeStyle='#f59e0b'; c.lineWidth=2;
+      c.beginPath();
+      for (let x=cx2-pw*3; x<=cx2+pw*3; x++) {
+        const g = Math.exp(-((x-cx2)**2)/(2*(pw/2)**2));
+        const y = noiseBaseY - (noiseBaseY-peakY)*g;
+        x===cx2-pw*3 ? c.moveTo(x,y) : c.lineTo(x,y);
+      }
+      c.stroke();
+
+      // Fill
+      c.globalAlpha=0.1; c.fillStyle='#f59e0b';
+      c.beginPath(); c.moveTo(cx2-pw*3, noiseBaseY);
+      for (let x=cx2-pw*3; x<=cx2+pw*3; x++) {
+        const g = Math.exp(-((x-cx2)**2)/(2*(pw/2)**2));
+        c.lineTo(x, noiseBaseY - (noiseBaseY-peakY)*g);
+      }
+      c.lineTo(cx2+pw*3, noiseBaseY); c.closePath(); c.fill();
+      c.globalAlpha=1; c.shadowBlur=0;
+
+      // Peak marker
+      c.strokeStyle='#f59e0b'; c.lineWidth=1; c.setLineDash([3,3]); c.globalAlpha=0.5;
+      c.beginPath(); c.moveTo(cx2,peakY); c.lineTo(specW-38,peakY); c.stroke();
+      c.setLineDash([]); c.globalAlpha=1;
+
+      // Peak label
+      c.font='500 10px IBM Plex Mono'; c.fillStyle='#f59e0b';
+      c.fillText((sigPower*100).toFixed(1)+'%', cx2+pw*3+5, peakY+3);
+    }
+    c.shadowBlur=0;
+
+    // Half-power (-3 dB) reference line
+    c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2,4]);
+    c.beginPath(); c.moveTo(plotX, linToY(0.5)); c.lineTo(plotX + plotW, linToY(0.5)); c.stroke();
+    c.setLineDash([]);
+    c.font='500 8px IBM Plex Mono'; c.fillStyle='#334155';
+    c.fillText('50% (-3 dB)', plotX+2, linToY(0.5) - 3);
+
+    // 10% reference (-10 dB)
+    c.strokeStyle = '#262f3d'; c.lineWidth = 0.5; c.setLineDash([2,4]);
+    c.beginPath(); c.moveTo(plotX, linToY(0.1)); c.lineTo(plotX + plotW, linToY(0.1)); c.stroke();
+    c.setLineDash([]);
+    c.font='500 8px IBM Plex Mono'; c.fillStyle='#262f3d';
+    c.fillText('10% (-10 dB)', plotX+2, linToY(0.1) - 3);
+
+    // 1% reference (-20 dB)
+    c.strokeStyle = '#1e2636'; c.lineWidth = 0.5; c.setLineDash([2,4]);
+    c.beginPath(); c.moveTo(plotX, linToY(0.01)); c.lineTo(plotX + plotW, linToY(0.01)); c.stroke();
+    c.setLineDash([]);
+    c.font='500 8px IBM Plex Mono'; c.fillStyle='#1e2636';
+    c.fillText('1% (-20 dB)', plotX+2, linToY(0.01) - 3);
+
+    c.font='500 10px IBM Plex Mono'; c.fillStyle='#4a5568';
+    c.fillText('FREQ →', specW-65, specH-5);
+    c.fillText('145 MHz', cx2-20, specH-5);
+    c.font='500 9px IBM Plex Mono'; c.fillStyle='#22c55e';
+    c.globalAlpha=0.5; c.fillText('LINEAR', plotX+2, plotY+10); c.globalAlpha=1;
+
+    document.getElementById('spec-reading').textContent = (sigPower*100).toFixed(1)+'%';
+  }
+}
+
+// ============================================
+// RX INFO DISPLAY
+// ============================================
+function updateRxInfo(sig) {
+  document.getElementById('rx-dist').textContent = sig.distance.toFixed(1);
+  document.getElementById('rx-angle').textContent = (90-sig.angleFromBroadside).toFixed(0);
+  document.getElementById('rx-pattern').textContent = sig.patternPercent.toFixed(0);
+  const pl = sig.power>1e-10 ? (-10*Math.log10(sig.power)).toFixed(1) : '∞';
+  document.getElementById('rx-loss').textContent = pl;
+
+  // Elevation angle from horizontal
+  const p = rxGroup.position;
+  const horizDist = Math.sqrt(p.x*p.x + p.z*p.z);
+  const elevAngle = Math.atan2(p.y, horizDist) * 180 / Math.PI;
+  document.getElementById('rx-elev-display').textContent = elevAngle.toFixed(0);
+  document.getElementById('rx-elev-angle').textContent = elevAngle.toFixed(0) + '°';
+  document.getElementById('rx-height-val').textContent = p.y.toFixed(1) + ' m';
+  document.getElementById('rx-height').value = p.y;
+}
+
+setupScope();
+setupSpec();
+
+// ============================================
+// CAMERA
+// ============================================
+function updateCamera() {
+  switch (cameraMode) {
+    case 'orbit':
+      orbitAngle += 0.004 * speed;
+      break;
+    case 'top':
+      orbitPitch += (1.5 - orbitPitch) * 0.04;
+      orbitRadius += (45 - orbitRadius) * 0.04;
+      break;
+    case 'side':
+      orbitPitch += (0.05 - orbitPitch) * 0.04;
+      orbitRadius += (55 - orbitRadius) * 0.04;
+      break;
+  }
+
+  camera.position.set(
+    orbitRadius * Math.cos(orbitPitch) * Math.cos(orbitAngle),
+    orbitRadius * Math.sin(orbitPitch),
+    orbitRadius * Math.cos(orbitPitch) * Math.sin(orbitAngle)
+  );
+  camera.lookAt(0, 0, 0);
+}
+
+// ============================================
+// ANIMATION
+// ============================================
+function animate() {
+  time += 0.016 * speed;
+
+  updateCamera();
+  updateWaves();
+  updateElectrons();
+  updateWaveform();
+
+  // RX antenna + instruments
+  updateSignalPath();
+  const sig = calculateSignal();
+  drawScope(sig);
+  drawSpectrum(sig);
+  updateRxInfo(sig);
+  updateAperture();
+
+  patternGroup.visible = showPattern;
+  axesGroup.visible = showAxes;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+// ============================================
+// CONTROLS
+// ============================================
+document.getElementById('speed').addEventListener('input', (e) => {
+  speed = parseFloat(e.target.value);
+  document.getElementById('speed-val').textContent = speed.toFixed(1) + '×';
+});
+
+document.getElementById('density').addEventListener('input', (e) => {
+  waveDensity = parseInt(e.target.value);
+  document.getElementById('density-val').textContent = waveDensity;
+});
+
+function setCameraMode(mode) {
+  cameraMode = mode;
+  document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('primary-active'));
+  const btn = document.querySelector(`[data-view="${mode}"]`);
+  if (btn) btn.classList.add('primary-active');
+}
+
+document.querySelectorAll('[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => setCameraMode(btn.dataset.view));
+});
+
+function setWaveMode(mode) {
+  waveMode = mode;
+  document.getElementById('mode-rings').classList.toggle('primary-active', mode === 'rings');
+  document.getElementById('mode-shells').classList.toggle('primary-active', mode === 'shells');
+  document.getElementById('mode-both').classList.toggle('primary-active', mode === 'both');
+  const labels = { rings: 'Flat Rings', shells: '3D Shells', both: 'Both' };
+  document.getElementById('hud-mode').textContent = labels[mode];
+}
+
+document.getElementById('mode-rings').addEventListener('click', () => setWaveMode('rings'));
+document.getElementById('mode-shells').addEventListener('click', () => setWaveMode('shells'));
+document.getElementById('mode-both').addEventListener('click', () => setWaveMode('both'));
+
+document.getElementById('tog-pattern').addEventListener('click', function() {
+  showPattern = !showPattern;
+  this.classList.toggle('active', showPattern);
+});
+document.getElementById('tog-axes').addEventListener('click', function() {
+  showAxes = !showAxes;
+  this.classList.toggle('active', showAxes);
+});
+document.getElementById('tog-electrons').addEventListener('click', function() {
+  showElectrons = !showElectrons;
+  this.classList.toggle('active', showElectrons);
+});
+document.getElementById('tog-waveform').addEventListener('click', function() {
+  showWaveform = !showWaveform;
+  this.classList.toggle('active', showWaveform);
+  document.getElementById('hud-2d').textContent = showWaveform ? 'ON' : 'OFF';
+});
+
+document.getElementById('tog-hwave').addEventListener('click', function() {
+  showHWave = !showHWave;
+  this.classList.toggle('active', showHWave);
+});
+
+document.getElementById('tog-aperture').addEventListener('click', function() {
+  showAperture = !showAperture;
+  this.classList.toggle('active', showAperture);
+});
+
+// RX Height controls
+function updateRxHeight(h) {
+  rxHeight = Math.max(-40, Math.min(40, h));
+  rxGroup.position.y = rxHeight;
+  document.getElementById('rx-height').value = rxHeight;
+  document.getElementById('rx-height-val').textContent = rxHeight.toFixed(1) + ' m';
+
+  // Calculate elevation angle from horizontal
+  const horizDist = Math.sqrt(rxGroup.position.x**2 + rxGroup.position.z**2);
+  const elevAngle = Math.atan2(rxHeight, horizDist) * 180 / Math.PI;
+  document.getElementById('rx-elev-angle').textContent = elevAngle.toFixed(0) + '°';
+}
+
+document.getElementById('rx-height').addEventListener('input', (e) => {
+  updateRxHeight(parseFloat(e.target.value));
+});
+
+document.getElementById('rx-up').addEventListener('click', () => {
+  updateRxHeight(rxHeight + 2);
+});
+
+document.getElementById('rx-down').addEventListener('click', () => {
+  updateRxHeight(rxHeight - 2);
+});
+
+document.getElementById('spec-log').addEventListener('click', function() {
+  specScale = 'log';
+  this.classList.add('primary-active');
+  document.getElementById('spec-lin').classList.remove('primary-active');
+});
+document.getElementById('spec-lin').addEventListener('click', function() {
+  specScale = 'linear';
+  this.classList.add('primary-active');
+  document.getElementById('spec-log').classList.remove('primary-active');
+});
+
+// ============================================
+// RESIZE
+// ============================================
+window.addEventListener('resize', () => {
+  const r = container.getBoundingClientRect();
+  camera.aspect = r.width / r.height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(r.width, r.height);
+  setupScope();
+  setupSpec();
+});
+
+// ============================================
+// GO
+// ============================================
+animate();
+</script>
+</body>
+</html>

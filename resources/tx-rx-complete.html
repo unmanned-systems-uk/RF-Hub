@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Complete Link — TX to RX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-input: #1a2234;
+  --accent-e: #f59e0b;
+  --accent-h: #06b6d4;
+  --accent-em: #a78bfa;
+  --accent-current: #22c55e;
+  --accent-voltage: #ef4444;
+  --accent-electron: #60a5fa;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --border: #1e293b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+header {
+  padding: 32px 0 16px;
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-em));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+
+header p { color: var(--text-secondary); font-size: 0.9rem; }
+
+/* Layer controls */
+.controls-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.controls-row + .controls-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.control-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.layer-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 6px 14px;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.layer-btn:hover { background: rgba(167,139,250,0.08); }
+
+.layer-btn.active {
+  border-color: var(--accent-em);
+  color: var(--text-primary);
+  background: rgba(167,139,250,0.12);
+}
+
+.layer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.layer-btn.active .layer-dot { opacity: 1; }
+
+.dot-electron { background: var(--accent-electron); box-shadow: 0 0 4px rgba(96,165,250,0.4); }
+.dot-current { background: var(--accent-current); box-shadow: 0 0 4px rgba(34,197,94,0.4); }
+.dot-voltage { background: var(--accent-voltage); box-shadow: 0 0 4px rgba(239,68,68,0.4); }
+.dot-efield { background: var(--accent-e); box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+.dot-hfield { background: var(--accent-h); box-shadow: 0 0 4px rgba(6,182,212,0.4); }
+.dot-wave { background: var(--accent-em); box-shadow: 0 0 4px rgba(167,139,250,0.4); }
+
+/* Playback controls */
+.playback-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 250px;
+}
+
+.play-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.play-btn:hover { transform: scale(1.05); }
+
+.slider-group {
+  flex: 1;
+  min-width: 120px;
+}
+
+.slider-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.slider-val { color: var(--accent-em); font-weight: 500; }
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(167,139,250,0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  border: none;
+}
+
+/* Stage indicator */
+.stage-bar {
+  display: flex;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.stage-segment {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-input);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.stage-segment.active {
+  background: var(--accent-em);
+  box-shadow: 0 0 8px rgba(167,139,250,0.3);
+}
+
+.stage-segment.past {
+  background: rgba(167,139,250,0.3);
+}
+
+.stage-labels {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.stage-label {
+  flex: 1;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  transition: color 0.3s;
+}
+
+.stage-label.active { color: var(--accent-em); }
+
+/* Main canvas */
+.canvas-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+canvas#main {
+  display: block;
+  width: 100%;
+  cursor: default;
+}
+
+/* Info panel */
+.info-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  min-height: 60px;
+  transition: all 0.3s;
+}
+
+.info-panel strong { color: var(--text-primary); font-weight: 500; }
+.info-panel .ec { color: var(--accent-electron); }
+.info-panel .cc { color: var(--accent-current); }
+.info-panel .vc { color: var(--accent-voltage); }
+.info-panel .efc { color: var(--accent-e); }
+.info-panel .hfc { color: var(--accent-h); }
+.info-panel .wc { color: var(--accent-em); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-top: 20px;
+}
+footer a { color: var(--accent-em); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">RF-Hub · Interactive Animation</div>
+    <h1>The Complete Link — TX to RX</h1>
+    <p>A multi-layered animation of the entire radiation journey. Toggle layers on and off to isolate each phenomenon.</p>
+  </header>
+
+  <!-- Stage indicator -->
+  <div class="stage-labels" id="stage-labels">
+    <div class="stage-label active" data-stage="0">Electrons Flow</div>
+    <div class="stage-label" data-stage="1">Fields Form</div>
+    <div class="stage-label" data-stage="2">Detachment</div>
+    <div class="stage-label" data-stage="3">Propagation</div>
+    <div class="stage-label" data-stage="4">Reception</div>
+  </div>
+  <div class="stage-bar" id="stage-bar">
+    <div class="stage-segment active" data-stage="0"></div>
+    <div class="stage-segment" data-stage="1"></div>
+    <div class="stage-segment" data-stage="2"></div>
+    <div class="stage-segment" data-stage="3"></div>
+    <div class="stage-segment" data-stage="4"></div>
+  </div>
+
+  <!-- Layer toggles + playback -->
+  <div class="controls-bar">
+    <div class="controls-row">
+      <span class="control-section-label">Layers</span>
+      <button class="layer-btn active" data-layer="electrons"><div class="layer-dot dot-electron"></div>Electrons</button>
+      <button class="layer-btn active" data-layer="current"><div class="layer-dot dot-current"></div>Current (I)</button>
+      <button class="layer-btn active" data-layer="voltage"><div class="layer-dot dot-voltage"></div>Voltage (V)</button>
+      <button class="layer-btn active" data-layer="efield"><div class="layer-dot dot-efield"></div>E Field</button>
+      <button class="layer-btn active" data-layer="hfield"><div class="layer-dot dot-hfield"></div>H Field</button>
+      <button class="layer-btn active" data-layer="wavefronts"><div class="layer-dot dot-wave"></div>Wavefronts</button>
+    </div>
+    <div class="controls-row">
+      <span class="control-section-label">Play</span>
+      <div class="playback-row">
+        <button class="play-btn" id="playBtn">▶</button>
+        <div class="slider-group">
+          <div class="slider-label"><span>SPEED</span><span class="slider-val" id="speed-val">1.0×</span></div>
+          <input type="range" id="speed" min="0.1" max="2.5" step="0.1" value="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>PHASE</span><span class="slider-val" id="phase-val">0°</span></div>
+          <input type="range" id="phase" min="0" max="360" step="1" value="0">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main canvas -->
+  <div class="canvas-wrapper">
+    <canvas id="main" width="1060" height="520"></canvas>
+  </div>
+
+  <!-- Context info -->
+  <div class="info-panel" id="info">
+    <strong>Stage 1 — Electrons Flow:</strong> The transmitter drives an <span class="ec">alternating current</span> through the dipole. Electrons oscillate back and forth — they don't travel from end to end, they slosh. <span class="cc">Current (green)</span> is maximum at the feed point and zero at the tips. <span class="vc">Voltage (red)</span> is the opposite — maximum at the tips where charges pile up.
+  </div>
+
+  <footer>
+    <p>RF-Hub · <a href="https://github.com/unmanned-systems-uk/RF-Hub">GitHub</a> · Companion to "How Antennas Radiate"</p>
+    <p style="margin-top:4px;">73 and good DX! 📡</p>
+  </footer>
+</div>
+
+<script>
+// ============================================
+// STATE
+// ============================================
+const state = {
+  playing: true,
+  speed: 1.0,
+  time: 0,
+  manualPhase: 0,
+  usingManualPhase: false,
+  layers: {
+    electrons: true,
+    current: true,
+    voltage: true,
+    efield: true,
+    hfield: true,
+    wavefronts: true
+  }
+};
+
+// Colors
+const COL = {
+  electron: '#60a5fa',
+  current: '#22c55e',
+  voltage: '#ef4444',
+  efield: '#f59e0b',
+  hfield: '#06b6d4',
+  wave: '#a78bfa',
+  wire: '#cbd5e1',
+  wireDim: '#475569',
+  bg: '#0a0e1a',
+  grid: '#1a2234',
+  text: '#64748b',
+  textLight: '#94a3b8'
+};
+
+// Stage info texts
+const stageInfo = [
+  `<strong>Stage 1 — Electrons Flow:</strong> The transmitter drives an <span class="ec">alternating current</span> through the dipole. Electrons oscillate back and forth — they don't travel from end to end, they slosh like water in a U-tube. <span class="cc">Current (green)</span> is maximum at the feed point and zero at the tips. <span class="vc">Voltage (red)</span> is the opposite — maximum at the tips where charges pile up, minimum at the centre.`,
+  `<strong>Stage 2 — Fields Form:</strong> The oscillating charges create two inseparable fields. The <span class="efc">E field (amber)</span> radiates outward from charge concentrations — its direction follows the antenna orientation (this defines polarisation). The <span class="hfc">H field (cyan)</span> wraps around the wire in closed loops perpendicular to the current. Both fields expand outward as the current oscillates.`,
+  `<strong>Stage 3 — Detachment:</strong> As the current reverses, new field lines (opposite polarity) form near the wire. These push the previous half-cycle's fields further out. The old fields <span class="wc">"pinch off"</span> into self-contained loops — no longer connected to the wire. Each half-cycle launches another closed loop. This is radiation.`,
+  `<strong>Stage 4 — Propagation:</strong> The detached <span class="efc">E</span> and <span class="hfc">H</span> fields sustain each other — a changing E field creates H, a changing H field creates E. This self-sustaining cycle carries the wave through space at <span class="wc">c = 3×10⁸ m/s</span>. No wire needed. The wavefronts expand as they travel, with energy spreading over an ever-larger area (inverse square law).`,
+  `<strong>Stage 5 — Reception:</strong> The arriving <span class="efc">E field</span> pushes electrons in the receiving antenna, creating a tiny alternating current — a mirror of the original signal. The <span class="hfc">H field</span> also induces voltage via Faraday's law. The receiver amplifies this microscopic signal. For maximum coupling, the RX antenna must be aligned with the incoming E field polarisation.`
+];
+
+// ============================================
+// CANVAS SETUP
+// ============================================
+const canvas = document.getElementById('main');
+let ctx, W, H, dpr;
+
+function setupCanvas() {
+  dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height || 520;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.height = H + 'px';
+  ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+}
+
+// ============================================
+// LAYOUT CONSTANTS (computed after setup)
+// ============================================
+let L = {}; // layout
+
+function computeLayout() {
+  const margin = W * 0.06;
+  const txCenterX = margin + W * 0.08;
+  const rxCenterX = W - margin - W * 0.08;
+  const antennaHalfLen = H * 0.28;
+  const cy = H * 0.5;
+
+  L = {
+    margin,
+    txX: txCenterX,
+    rxX: rxCenterX,
+    cy,
+    antHalf: antennaHalfLen,
+    txTop: cy - antennaHalfLen,
+    txBot: cy + antennaHalfLen,
+    rxTop: cy - antennaHalfLen,
+    rxBot: cy + antennaHalfLen,
+    propStart: txCenterX + 30,
+    propEnd: rxCenterX - 30,
+    propLen: rxCenterX - txCenterX - 60
+  };
+}
+
+// ============================================
+// DRAWING HELPERS
+// ============================================
+function drawText(text, x, y, color = COL.text, size = 10, align = 'left') {
+  ctx.font = `500 ${size}px 'IBM Plex Mono', monospace`;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y);
+  ctx.textAlign = 'left';
+}
+
+function drawGrid() {
+  ctx.strokeStyle = COL.grid;
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+}
+
+// ============================================
+// LAYER: ANTENNA WIRES (always drawn)
+// ============================================
+function drawAntennas(phase) {
+  // TX antenna
+  ctx.strokeStyle = COL.wire;
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round';
+
+  // Upper element
+  ctx.beginPath();
+  ctx.moveTo(L.txX, L.cy - 4);
+  ctx.lineTo(L.txX, L.txTop);
+  ctx.stroke();
+
+  // Lower element
+  ctx.beginPath();
+  ctx.moveTo(L.txX, L.cy + 4);
+  ctx.lineTo(L.txX, L.txBot);
+  ctx.stroke();
+
+  // Feed gap
+  ctx.fillStyle = COL.efield;
+  ctx.beginPath();
+  ctx.arc(L.txX, L.cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // TX box
+  ctx.strokeStyle = COL.efield;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(L.txX - 22, L.txBot + 15, 44, 24);
+  drawText('TX', L.txX, L.txBot + 31, COL.efield, 11, 'center');
+
+  // Feed lines
+  ctx.strokeStyle = COL.textLight;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath();
+  ctx.moveTo(L.txX - 6, L.cy + 4);
+  ctx.lineTo(L.txX - 6, L.txBot + 15);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(L.txX + 6, L.cy + 4);
+  ctx.lineTo(L.txX + 6, L.txBot + 15);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // RX antenna
+  ctx.strokeStyle = COL.wire;
+  ctx.lineWidth = 3.5;
+
+  ctx.beginPath();
+  ctx.moveTo(L.rxX, L.cy - 4);
+  ctx.lineTo(L.rxX, L.rxTop);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(L.rxX, L.cy + 4);
+  ctx.lineTo(L.rxX, L.rxBot);
+  ctx.stroke();
+
+  ctx.fillStyle = COL.hfield;
+  ctx.beginPath();
+  ctx.arc(L.rxX, L.cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = COL.hfield;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(L.rxX - 22, L.rxBot + 15, 44, 24);
+  drawText('RX', L.rxX, L.rxBot + 31, COL.hfield, 11, 'center');
+
+  ctx.strokeStyle = COL.textLight;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath();
+  ctx.moveTo(L.rxX - 6, L.cy + 4);
+  ctx.lineTo(L.rxX - 6, L.rxBot + 15);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(L.rxX + 6, L.cy + 4);
+  ctx.lineTo(L.rxX + 6, L.rxBot + 15);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels
+  drawText('TRANSMIT', L.txX, L.txTop - 14, COL.textLight, 10, 'center');
+  drawText('RECEIVE', L.rxX, L.rxTop - 14, COL.textLight, 10, 'center');
+}
+
+// ============================================
+// LAYER: ELECTRONS
+// ============================================
+function drawElectrons(phase) {
+  if (!state.layers.electrons) return;
+
+  const sinP = Math.sin(phase);
+  const numElectrons = 18;
+
+  // TX antenna electrons
+  for (let i = 0; i < numElectrons; i++) {
+    const frac = (i + 0.5) / numElectrons; // 0 = top tip, 1 = bottom tip
+    const baseY = L.txTop + frac * (L.antHalf * 2);
+
+    // Electron displacement: maximum at centre, zero at tips
+    // Standing wave pattern: sin(π × position)
+    const standingWave = Math.sin(frac * Math.PI);
+    const displacement = sinP * standingWave * 12;
+
+    const ey = baseY + displacement;
+    const alpha = 0.3 + standingWave * 0.6;
+
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = COL.electron;
+    ctx.beginPath();
+    ctx.arc(L.txX, ey, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Motion trail
+    if (Math.abs(displacement) > 2) {
+      ctx.strokeStyle = COL.electron;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = alpha * 0.3;
+      ctx.beginPath();
+      ctx.moveTo(L.txX, ey);
+      ctx.lineTo(L.txX, ey - displacement * 0.5);
+      ctx.stroke();
+    }
+  }
+
+  // RX antenna electrons (weaker, responding to arriving field)
+  const rxStrength = 0.35;
+  for (let i = 0; i < numElectrons; i++) {
+    const frac = (i + 0.5) / numElectrons;
+    const baseY = L.rxTop + frac * (L.antHalf * 2);
+    const standingWave = Math.sin(frac * Math.PI);
+    // Delayed phase for RX (wave travel time)
+    const rxPhase = phase - 4;
+    const displacement = Math.sin(rxPhase) * standingWave * 12 * rxStrength;
+    const ey = baseY + displacement;
+    const alpha = (0.2 + standingWave * 0.4) * rxStrength;
+
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = COL.electron;
+    ctx.beginPath();
+    ctx.arc(L.rxX, ey, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// ============================================
+// LAYER: CURRENT DISTRIBUTION
+// ============================================
+function drawCurrent(phase) {
+  if (!state.layers.current) return;
+
+  const sinP = Math.sin(phase);
+  const halfLen = L.antHalf;
+
+  // TX current envelope
+  ctx.strokeStyle = COL.current;
+  ctx.lineWidth = 1.5;
+
+  // Draw current magnitude as width along antenna
+  const maxWidth = 20;
+
+  // Right side (shows magnitude)
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  for (let y = -halfLen; y <= halfLen; y += 1) {
+    const frac = (y + halfLen) / (2 * halfLen); // 0=top, 1=bottom
+    const magnitude = Math.sin(frac * Math.PI) * Math.abs(sinP);
+    const px = L.txX + 8 + magnitude * maxWidth;
+    if (y === -halfLen) ctx.moveTo(px, L.cy + y);
+    else ctx.lineTo(px, L.cy + y);
+  }
+  ctx.stroke();
+
+  // Fill
+  ctx.fillStyle = COL.current;
+  ctx.globalAlpha = 0.08;
+  ctx.beginPath();
+  ctx.moveTo(L.txX + 8, L.txTop);
+  for (let y = -halfLen; y <= halfLen; y += 1) {
+    const frac = (y + halfLen) / (2 * halfLen);
+    const magnitude = Math.sin(frac * Math.PI) * Math.abs(sinP);
+    ctx.lineTo(L.txX + 8 + magnitude * maxWidth, L.cy + y);
+  }
+  ctx.lineTo(L.txX + 8, L.txBot);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.globalAlpha = 1;
+
+  // Label
+  drawText('I', L.txX + 12, L.cy - 4, COL.current, 12);
+
+  // Current direction arrows
+  if (Math.abs(sinP) > 0.2) {
+    const dir = sinP > 0 ? -1 : 1;
+    ctx.fillStyle = COL.current;
+    ctx.globalAlpha = Math.abs(sinP) * 0.6;
+    // Arrow at feed point
+    const ay = L.cy + dir * 15;
+    ctx.beginPath();
+    ctx.moveTo(L.txX - 4, ay);
+    ctx.lineTo(L.txX + 4, ay);
+    ctx.lineTo(L.txX, ay + dir * 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ============================================
+// LAYER: VOLTAGE DISTRIBUTION
+// ============================================
+function drawVoltage(phase) {
+  if (!state.layers.voltage) return;
+
+  const sinP = Math.sin(phase);
+  const halfLen = L.antHalf;
+  const maxWidth = 16;
+
+  // Voltage envelope (opposite to current: max at tips, min at centre)
+  ctx.strokeStyle = COL.voltage;
+  ctx.lineWidth = 1.5;
+
+  // Left side
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  for (let y = -halfLen; y <= halfLen; y += 1) {
+    const frac = (y + halfLen) / (2 * halfLen);
+    const magnitude = Math.cos(frac * Math.PI) ; // cos = max at ends
+    // Actually voltage: max at tips. Use |cos(π·frac)| for both tips
+    const vMag = (1 - Math.sin(frac * Math.PI)) * Math.abs(sinP);
+    const px = L.txX - 8 - vMag * maxWidth;
+    if (y === -halfLen) ctx.moveTo(px, L.cy + y);
+    else ctx.lineTo(px, L.cy + y);
+  }
+  ctx.stroke();
+
+  // Fill
+  ctx.fillStyle = COL.voltage;
+  ctx.globalAlpha = 0.06;
+  ctx.beginPath();
+  ctx.moveTo(L.txX - 8, L.txTop);
+  for (let y = -halfLen; y <= halfLen; y += 1) {
+    const frac = (y + halfLen) / (2 * halfLen);
+    const vMag = (1 - Math.sin(frac * Math.PI)) * Math.abs(sinP);
+    ctx.lineTo(L.txX - 8 - vMag * maxWidth, L.cy + y);
+  }
+  ctx.lineTo(L.txX - 8, L.txBot);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.globalAlpha = 1;
+
+  // +/- charge labels at tips
+  const charge = sinP > 0 ? ['+', '−'] : ['−', '+'];
+  if (Math.abs(sinP) > 0.3) {
+    ctx.globalAlpha = Math.abs(sinP) * 0.8;
+    drawText(charge[0], L.txX - 4, L.txTop - 4, COL.voltage, 14, 'center');
+    drawText(charge[1], L.txX - 4, L.txBot + 14, COL.voltage, 14, 'center');
+    ctx.globalAlpha = 1;
+  }
+
+  drawText('V', L.txX - 16, L.cy - 4, COL.voltage, 12);
+}
+
+// ============================================
+// LAYER: E FIELD
+// ============================================
+function drawEField(phase) {
+  if (!state.layers.efield) return;
+
+  const sinP = Math.sin(phase);
+
+  // E field lines emanating from TX antenna
+  // Field lines point from + to - charge
+  const numLines = 5;
+
+  for (let i = 0; i < numLines; i++) {
+    const spread = (i + 1) / numLines;
+    const radius = 20 + spread * 50;
+
+    ctx.strokeStyle = COL.efield;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = (1 - spread * 0.6) * Math.abs(sinP) * 0.7;
+
+    // Top half field lines (curves from + to -)
+    ctx.beginPath();
+    if (sinP > 0) {
+      // + at top, - at bottom
+      ctx.moveTo(L.txX, L.txTop + 10);
+      ctx.quadraticCurveTo(L.txX + radius, L.cy, L.txX, L.txBot - 10);
+    } else {
+      // - at top, + at bottom
+      ctx.moveTo(L.txX, L.txBot - 10);
+      ctx.quadraticCurveTo(L.txX + radius, L.cy, L.txX, L.txTop + 10);
+    }
+    ctx.stroke();
+
+    // Left side too
+    ctx.beginPath();
+    if (sinP > 0) {
+      ctx.moveTo(L.txX, L.txTop + 10);
+      ctx.quadraticCurveTo(L.txX - radius, L.cy, L.txX, L.txBot - 10);
+    } else {
+      ctx.moveTo(L.txX, L.txBot - 10);
+      ctx.quadraticCurveTo(L.txX - radius, L.cy, L.txX, L.txTop + 10);
+    }
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+
+  // E field in propagation region (vertical oscillation)
+  if (state.layers.wavefronts) {
+    // Drawn as part of wavefronts
+  } else {
+    // Draw standalone E wave
+    ctx.strokeStyle = COL.efield;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    for (let x = L.propStart; x < L.propEnd; x += 1) {
+      const frac = (x - L.propStart) / L.propLen;
+      const wavePhase = frac * Math.PI * 6 - phase;
+      const amp = L.antHalf * 0.4;
+      const ey = L.cy - Math.sin(wavePhase) * amp;
+      if (x === L.propStart) ctx.moveTo(x, ey);
+      else ctx.lineTo(x, ey);
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ============================================
+// LAYER: H FIELD
+// ============================================
+function drawHField(phase) {
+  if (!state.layers.hfield) return;
+
+  const sinP = Math.sin(phase);
+
+  // H field circles around TX antenna (viewed from front = we see them as horizontal ovals)
+  const numRings = 4;
+
+  for (let i = 0; i < numRings; i++) {
+    const spread = (i + 1) / numRings;
+    const radius = 15 + spread * 45;
+
+    ctx.strokeStyle = COL.hfield;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = (1 - spread * 0.5) * Math.abs(sinP) * 0.5;
+
+    // Draw as horizontal ellipses at different heights along antenna
+    const positions = [-0.5, 0, 0.5];
+    positions.forEach(pos => {
+      const yOff = pos * L.antHalf * 0.6;
+      const hScale = Math.sin((pos + 1) / 2 * Math.PI); // current-weighted
+      if (hScale < 0.1) return;
+
+      ctx.beginPath();
+      ctx.ellipse(L.txX, L.cy + yOff, radius * hScale, radius * 0.3 * hScale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Direction indicator (small arrow)
+      if (i === 1 && Math.abs(sinP) > 0.3) {
+        const dir = sinP > 0 ? 1 : -1;
+        const ax = L.txX + radius * hScale * dir * 0.7;
+        const ay = L.cy + yOff - radius * 0.3 * hScale * 0.3;
+        ctx.fillStyle = COL.hfield;
+        ctx.beginPath();
+        ctx.arc(ax, ay, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// ============================================
+// LAYER: WAVEFRONTS (propagating E+H)
+// ============================================
+function drawWavefronts(phase) {
+  if (!state.layers.wavefronts) return;
+
+  const numWaves = 8;
+  const waveSpacing = L.propLen / numWaves;
+
+  for (let i = 0; i < numWaves * 2; i++) {
+    // Each wavefront moves from left to right
+    const baseX = L.propStart + ((i * waveSpacing / 2 + phase * waveSpacing / Math.PI) % L.propLen);
+
+    if (baseX < L.propStart || baseX > L.propEnd) continue;
+
+    const progress = (baseX - L.propStart) / L.propLen;
+    const wavePhase = progress * Math.PI * numWaves - phase;
+    const sinW = Math.sin(wavePhase);
+
+    // Fade in near TX, fade out near RX
+    const fadeIn = Math.min(1, (baseX - L.propStart) / 60);
+    const fadeOut = Math.min(1, (L.propEnd - baseX) / 60);
+    const alpha = fadeIn * fadeOut;
+
+    // E field component (vertical lines)
+    const eAmp = L.antHalf * 0.35 * sinW;
+    if (Math.abs(eAmp) > 3) {
+      ctx.strokeStyle = COL.efield;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = Math.abs(sinW) * 0.6 * alpha;
+      ctx.beginPath();
+      ctx.moveTo(baseX, L.cy);
+      ctx.lineTo(baseX, L.cy - eAmp);
+      ctx.stroke();
+
+      // Arrow head
+      if (Math.abs(eAmp) > 10) {
+        const dir = eAmp > 0 ? -1 : 1;
+        ctx.fillStyle = COL.efield;
+        ctx.beginPath();
+        ctx.moveTo(baseX, L.cy - eAmp);
+        ctx.lineTo(baseX - 3, L.cy - eAmp + dir * 6);
+        ctx.lineTo(baseX + 3, L.cy - eAmp + dir * 6);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // H field component (dots/crosses for in/out of screen)
+    const hVal = Math.sin(wavePhase); // Same phase for propagating wave
+    const hSize = Math.abs(hVal) * 5;
+
+    if (hSize > 1.5) {
+      ctx.globalAlpha = Math.abs(hVal) * 0.5 * alpha;
+      if (hVal > 0) {
+        // Dot (toward viewer)
+        ctx.fillStyle = COL.hfield;
+        ctx.beginPath();
+        ctx.arc(baseX, L.cy, hSize * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = COL.hfield;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(baseX, L.cy, hSize, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // Cross (away from viewer)
+        ctx.strokeStyle = COL.hfield;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(baseX - hSize, L.cy - hSize);
+        ctx.lineTo(baseX + hSize, L.cy + hSize);
+        ctx.moveTo(baseX + hSize, L.cy - hSize);
+        ctx.lineTo(baseX - hSize, L.cy + hSize);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Continuous E wave line
+  ctx.strokeStyle = COL.efield;
+  ctx.lineWidth = 1.8;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  for (let x = L.propStart; x <= L.propEnd; x += 2) {
+    const progress = (x - L.propStart) / L.propLen;
+    const wavePhase = progress * Math.PI * numWaves - phase;
+    const amp = L.antHalf * 0.35;
+    const fadeIn = Math.min(1, (x - L.propStart) / 50);
+    const fadeOut = Math.min(1, (L.propEnd - x) / 50);
+    const ey = L.cy - Math.sin(wavePhase) * amp * fadeIn * fadeOut;
+    if (x === L.propStart) ctx.moveTo(x, ey);
+    else ctx.lineTo(x, ey);
+  }
+  ctx.stroke();
+
+  ctx.globalAlpha = 1;
+
+  // Propagation arrow
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = COL.wave;
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.4;
+  ctx.beginPath();
+  ctx.moveTo(L.propStart + 20, L.cy);
+  ctx.lineTo(L.propEnd - 20, L.cy);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrow head
+  ctx.fillStyle = COL.wave;
+  ctx.beginPath();
+  ctx.moveTo(L.propEnd - 20, L.cy);
+  ctx.lineTo(L.propEnd - 28, L.cy - 4);
+  ctx.lineTo(L.propEnd - 28, L.cy + 4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.globalAlpha = 1;
+
+  // Speed of light label
+  drawText('c = 3×10⁸ m/s', (L.propStart + L.propEnd) / 2, L.cy + L.antHalf * 0.5 + 10, COL.wave, 10, 'center');
+}
+
+// ============================================
+// FIELD DETACHMENT VISUALIZATION
+// ============================================
+function drawDetachment(phase) {
+  if (!state.layers.efield && !state.layers.wavefronts) return;
+
+  // Show field loops detaching from TX antenna
+  const numLoops = 4;
+  const cyclePhase = (phase % (Math.PI * 2)) / (Math.PI * 2); // 0-1 per cycle
+
+  for (let i = 0; i < numLoops; i++) {
+    const loopPhase = ((phase / (Math.PI * 2)) + i / numLoops) % 1;
+    const x = L.txX + 30 + loopPhase * 80;
+    const expanding = loopPhase;
+
+    if (x > L.propStart - 10) continue; // Don't draw past propagation start
+
+    const loopHeight = L.antHalf * 0.3 * (0.3 + expanding * 0.7);
+    const loopWidth = 8 + expanding * 20;
+    const alpha = (1 - expanding) * 0.5;
+
+    if (alpha < 0.05) continue;
+
+    // Polarity alternates
+    const polarity = i % 2 === 0 ? 1 : -1;
+
+    ctx.strokeStyle = polarity > 0 ? COL.efield : COL.efield;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = alpha;
+
+    // Draw as elongated ellipse (field loop)
+    ctx.beginPath();
+    ctx.ellipse(x, L.cy, loopWidth, loopHeight, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Pinch-off effect for nearly detached loops
+    if (expanding > 0.6) {
+      ctx.globalAlpha = alpha * 0.3;
+      ctx.fillStyle = COL.efield;
+      ctx.beginPath();
+      ctx.ellipse(x, L.cy, loopWidth, loopHeight, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// ============================================
+// RX FIELD INTERACTION
+// ============================================
+function drawRXFields(phase) {
+  if (!state.layers.efield) return;
+
+  const rxPhase = phase - 4;
+  const sinP = Math.sin(rxPhase);
+
+  // Arriving field lines interacting with RX antenna
+  const numLines = 3;
+  for (let i = 0; i < numLines; i++) {
+    const spread = (i + 1) / numLines;
+    const radius = 15 + spread * 35;
+
+    ctx.strokeStyle = COL.efield;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = (1 - spread * 0.7) * Math.abs(sinP) * 0.35;
+
+    // Arriving wavefront curves
+    ctx.beginPath();
+    ctx.moveTo(L.rxX - radius * 1.5, L.cy - L.antHalf * 0.6);
+    ctx.quadraticCurveTo(L.rxX - radius * 0.3, L.cy, L.rxX - radius * 1.5, L.cy + L.antHalf * 0.6);
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// ============================================
+// STAGE DETERMINATION
+// ============================================
+function getCurrentStage(phase) {
+  // Determine which stage to highlight based on animation
+  const cycle = (phase % (Math.PI * 8)) / (Math.PI * 8);
+  if (cycle < 0.15) return 0;      // Electrons
+  if (cycle < 0.35) return 1;      // Fields form
+  if (cycle < 0.55) return 2;      // Detachment
+  if (cycle < 0.80) return 3;      // Propagation
+  return 4;                          // Reception
+}
+
+function updateStageUI(stage) {
+  document.querySelectorAll('.stage-segment').forEach((seg, i) => {
+    seg.classList.remove('active', 'past');
+    if (i === stage) seg.classList.add('active');
+    else if (i < stage) seg.classList.add('past');
+  });
+  document.querySelectorAll('.stage-label').forEach((lab, i) => {
+    lab.classList.toggle('active', i === stage);
+  });
+  document.getElementById('info').innerHTML = stageInfo[stage];
+}
+
+// ============================================
+// MAIN RENDER
+// ============================================
+function render() {
+  const phase = state.usingManualPhase
+    ? state.manualPhase * Math.PI / 180
+    : state.time;
+
+  ctx.clearRect(0, 0, W, H);
+  drawGrid();
+
+  // Draw layers in order (back to front)
+  drawWavefronts(phase);
+  drawDetachment(phase);
+  drawHField(phase);
+  drawEField(phase);
+  drawRXFields(phase);
+  drawAntennas(phase);
+  drawVoltage(phase);
+  drawCurrent(phase);
+  drawElectrons(phase);
+
+  // Stage indicator
+  const stage = getCurrentStage(phase);
+  updateStageUI(stage);
+}
+
+// ============================================
+// ANIMATION LOOP
+// ============================================
+let lastTime = 0;
+
+function animate(timestamp) {
+  if (state.playing && !state.usingManualPhase) {
+    const dt = Math.min(0.05, (timestamp - lastTime) / 1000);
+    state.time += dt * state.speed * 3;
+
+    // Update phase slider to match
+    const degrees = ((state.time * 180 / Math.PI) % 360 + 360) % 360;
+    document.getElementById('phase').value = degrees;
+    document.getElementById('phase-val').textContent = Math.round(degrees) + '°';
+  }
+  lastTime = timestamp;
+
+  render();
+  requestAnimationFrame(animate);
+}
+
+// ============================================
+// CONTROLS
+// ============================================
+// Layer toggles
+document.querySelectorAll('.layer-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const layer = btn.dataset.layer;
+    state.layers[layer] = !state.layers[layer];
+    btn.classList.toggle('active', state.layers[layer]);
+  });
+});
+
+// Play/pause
+document.getElementById('playBtn').addEventListener('click', () => {
+  state.playing = !state.playing;
+  state.usingManualPhase = false;
+  document.getElementById('playBtn').textContent = state.playing ? '⏸' : '▶';
+});
+
+// Speed
+document.getElementById('speed').addEventListener('input', (e) => {
+  state.speed = parseFloat(e.target.value);
+  document.getElementById('speed-val').textContent = state.speed.toFixed(1) + '×';
+});
+
+// Phase (manual scrub)
+document.getElementById('phase').addEventListener('input', (e) => {
+  state.manualPhase = parseInt(e.target.value);
+  state.usingManualPhase = true;
+  state.playing = false;
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('phase-val').textContent = state.manualPhase + '°';
+});
+
+// Click stage labels to jump
+document.querySelectorAll('.stage-label').forEach(lab => {
+  lab.style.cursor = 'pointer';
+  lab.addEventListener('click', () => {
+    const stage = parseInt(lab.dataset.stage);
+    const phases = [0, 50, 120, 200, 300]; // approximate degrees for each stage
+    state.manualPhase = phases[stage];
+    state.usingManualPhase = false;
+    state.playing = true;
+    state.time = phases[stage] * Math.PI / 180;
+    document.getElementById('playBtn').textContent = '⏸';
+  });
+});
+
+// ============================================
+// INIT
+// ============================================
+window.addEventListener('resize', () => {
+  setupCanvas();
+  computeLayout();
+});
+
+setupCanvas();
+computeLayout();
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding S11 Measurements — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="#" class="active">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">VNA Fundamentals</div>
+    <h1>Understanding S11 Measurements</h1>
+    <p class="hero-subtitle">A practical guide to Return Loss, SWR, and Smith Chart interpretation on the Rigol RSA5065N</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📡 <span>Instrument: Rigol RSA5065N</span></span>
+  <span class="article-meta-item">📅 <span>February 2026</span></span>
+  <span class="article-meta-item">⏱ <span>15 min read</span></span>
+</div>
+
+<!-- ─── CHAPTER 1: WHAT IS S11? ─────────────────────────────── -->
+<div class="chapter" id="what-is-s11">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>What is S11?</h2>
+
+  <p>S11 is one of the <strong>S-parameters</strong> (scattering parameters) used to describe how RF energy behaves when it encounters a device or component. Specifically, S11 measures the <strong>input reflection coefficient</strong> — the ratio of signal power reflected back from a device compared to the signal power that was sent into it.</p>
+
+  <p>In practical terms, when you connect an antenna to a VNA and measure S11, you are asking: <em>"How much of the signal power that I send down this cable is being reflected back instead of being radiated by the antenna?"</em></p>
+
+  <p>A perfect antenna would absorb all the power sent to it and reflect nothing back — giving an S11 of negative infinity in dB. A perfect mirror (open circuit or short circuit) would reflect everything — giving an S11 of 0 dB. Real antennas fall somewhere in between.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>The S-Parameter Naming Convention:</strong> The numbers in "S11" tell you where the signal is measured and where it was injected. The first digit is the measurement port, the second is the stimulus port. So S11 means "signal goes into Port 1 and is measured coming back out of Port 1" — a reflection measurement. S21 would mean "signal goes into Port 1 and is measured at Port 2" — a transmission measurement.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 2: DISPLAY FORMATS ──────────────────────────── -->
+<div class="chapter" id="display-formats">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>S11 Display Formats on the Rigol RSA5065N</h2>
+
+  <p>The VNA captures S11 as a complex number (magnitude and phase) at each frequency point. This raw data can be displayed in several formats, each revealing different information about the device under test. On the Rigol, these are accessed via <code>Trace > Trace Format</code>.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Format</th>
+          <th>What It Shows</th>
+          <th>Best Used For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Log Mag</strong></td>
+          <td>Return loss in dB vs frequency</td>
+          <td>Quantifying reflected power; comparing bands; pass/fail</td>
+        </tr>
+        <tr>
+          <td><strong>SWR</strong></td>
+          <td>Standing Wave Ratio vs frequency</td>
+          <td>Quick match assessment; familiar to amateur radio operators</td>
+        </tr>
+        <tr>
+          <td><strong>Smith Chart</strong></td>
+          <td>Complex impedance (R + jX) on a circular plot</td>
+          <td>Understanding mismatch nature; matching network design</td>
+        </tr>
+        <tr>
+          <td><strong>Phase</strong></td>
+          <td>Phase angle of reflection vs frequency</td>
+          <td>Cable length measurement; identifying resonant frequencies</td>
+        </tr>
+        <tr>
+          <td><strong>Polar</strong></td>
+          <td>Magnitude and phase on a polar plot</td>
+          <td>Similar to Smith chart but without impedance grid lines</td>
+        </tr>
+        <tr>
+          <td><strong>Group Delay</strong></td>
+          <td>Rate of phase change vs frequency</td>
+          <td>Identifying dispersion; filter characterisation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>For antenna work, the three most important formats are <strong>Log Magnitude</strong>, <strong>SWR</strong>, and <strong>Smith Chart</strong>. These three views show the same underlying data in different ways, and each reveals information the others do not.</p>
+</div>
+
+<!-- ─── CHAPTER 3: LOG MAGNITUDE ────────────────────────────── -->
+<div class="chapter" id="log-magnitude">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Log Magnitude (Return Loss)</h2>
+
+  <p>Log Magnitude displays S11 as <strong>return loss in decibels (dB)</strong> plotted against frequency. This is the most commonly used format for antenna measurements because it directly tells you how much power is being lost to reflections at each frequency.</p>
+
+  <h3>Reading the Axes</h3>
+  <p><strong>Y-axis (Return Loss in dB):</strong> Always 0 dB or negative for S11. Zero dB means total reflection (all power bounced back). More negative values mean less reflection, which is better.</p>
+  <p><strong>X-axis (Frequency):</strong> Spans the frequency range you configured. For narrow band measurements, this might cover a single LTE band. For wideband sweeps, it could cover hundreds of MHz.</p>
+
+  <h3>Key Thresholds</h3>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Return Loss</th>
+          <th>Power Reflected</th>
+          <th>Power Delivered</th>
+          <th>Practical Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0 dB</td><td>100%</td><td>0%</td><td class="bad">Total reflection (open/short)</td></tr>
+        <tr><td>-3 dB</td><td>50%</td><td>50%</td><td class="bad">Half power reflected — very bad</td></tr>
+        <tr><td>-6 dB</td><td>25%</td><td>75%</td><td class="poor">Poor match, usable in emergencies</td></tr>
+        <tr><td>-8 dB</td><td>16%</td><td>84%</td><td class="poor">Marginal (your Band 20 result)</td></tr>
+        <tr><td>-10 dB</td><td>10%</td><td>90%</td><td class="good">Minimum acceptable for most RF</td></tr>
+        <tr><td>-14 dB</td><td>4%</td><td>96%</td><td class="good">Good match</td></tr>
+        <tr><td>-20 dB</td><td>1%</td><td>99%</td><td class="excellent">Excellent match</td></tr>
+        <tr><td>-30 dB</td><td>0.1%</td><td>99.9%</td><td class="excellent">Laboratory grade</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What the Trace Shape Tells You</h3>
+
+  <!-- Figure placeholder — images to be extracted from DOCX -->
+  <div class="figure">
+    <div class="card" style="min-height: 200px; display: flex; align-items: center; justify-content: center; border: none;">
+      <p class="text-dim text-mono" style="font-size: 12px;">[ Figure 1: Log Magnitude traces — four antenna scenarios ]</p>
+    </div>
+    <div class="figure-caption">Figure 1: Log Magnitude traces showing four different antenna scenarios — open circuit, poorly matched broadband, well-matched wideband, and narrowband resonant.</div>
+  </div>
+
+  <p><strong class="text-e">Flat line near 0 dB:</strong> Open circuit or no antenna connected. Almost all energy is reflected. This is what you should see after calibration with nothing connected to the port.</p>
+  <p><strong class="text-power">Flat line at moderate level:</strong> A broadband antenna that is consistently poorly matched. It radiates some energy but wastes a significant portion to reflections across the entire band.</p>
+  <p><strong class="text-success">Broad dip:</strong> A well-matched wideband antenna. The dip shows frequencies where the antenna resonates and the impedance is closest to 50Ω. The width of the dip indicates usable bandwidth.</p>
+  <p><strong class="text-info">Sharp narrow dip:</strong> A narrowband antenna. Excellent match at the resonant frequency but poor performance even slightly off-tune.</p>
+</div>
+
+<!-- ─── CHAPTER 4: SWR ──────────────────────────────────────── -->
+<div class="chapter" id="swr">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Standing Wave Ratio (SWR)</h2>
+
+  <p>SWR (also called VSWR — Voltage Standing Wave Ratio) is an alternative way to express the same impedance mismatch information shown by Log Magnitude. Where Log Mag works in decibels, SWR expresses the mismatch as a <strong>ratio from 1.0 to infinity</strong>. A perfect match is 1.0:1. An open or short circuit gives infinite SWR.</p>
+
+  <h3>The Physical Meaning</h3>
+  <p>When a signal travels down a transmission line and encounters an impedance mismatch, some energy reflects back. The forward-travelling and reflected waves combine to create a standing wave pattern on the cable. SWR is the ratio of the peak voltage to the minimum voltage in this standing wave pattern.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>SWR</th><th>Assessment</th><th>Typical Application</th><th>Return Loss</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1.0</td><td class="excellent">Perfect</td><td>Calibration load</td><td>Infinite</td></tr>
+        <tr><td>1.0–1.5</td><td class="excellent">Excellent</td><td>Commercial antennas, lab equipment</td><td>-14 dB or better</td></tr>
+        <tr><td>1.5–2.0</td><td class="good">Good</td><td>Amateur radio, most cellular</td><td>-10 to -14 dB</td></tr>
+        <tr><td>2.0–3.0</td><td class="poor">Acceptable</td><td>Portable/compromise antennas</td><td>-6 to -10 dB</td></tr>
+        <tr><td>3.0+</td><td class="bad">Poor</td><td>Needs investigation or matching</td><td>Worse than -6 dB</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 5: THE MATHS ────────────────────────────────── -->
+<div class="chapter" id="maths">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Mathematical Relationship</h2>
+
+  <p>Return Loss (Log Mag) and SWR are mathematically linked through the reflection coefficient (Γ, gamma). They are not independent measurements — they are different representations of the same underlying quantity.</p>
+
+  <div class="card card--glow-em" style="margin: 24px 0;">
+    <h4 class="text-em">The Formulas</h4>
+    <p><strong>Reflection Coefficient (Γ):</strong> A complex number representing the ratio of reflected to incident voltage. Its magnitude ranges from 0 (perfect match) to 1 (total reflection).</p>
+    <pre><code>Return Loss (dB) = 20 × log₁₀(|Γ|)
+
+SWR = (1 + |Γ|) / (1 – |Γ|)
+
+Power Reflected (%) = |Γ|² × 100</code></pre>
+  </div>
+
+  <div class="callout">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Practical note:</strong> The relationship is non-linear. Small improvements in return loss near the -10 dB region produce significant improvements in SWR and reflected power. Beyond about -20 dB, further improvement has diminishing returns — you are already delivering over 99% of the power. This is why chasing a return loss better than -20 dB is rarely worthwhile for antenna installations.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 6: SMITH CHART ──────────────────────────────── -->
+<div class="chapter" id="smith-chart">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Smith Chart</h2>
+
+  <p>The Smith Chart is a specialised plot that shows complex impedance on a circular graph. While Log Mag and SWR only show how much signal is reflected (the magnitude), the Smith Chart also reveals the <strong>nature</strong> of the mismatch — whether the impedance is too high, too low, inductive, or capacitive.</p>
+
+  <div class="figure">
+    <div class="card" style="min-height: 200px; display: flex; align-items: center; justify-content: center; border: none;">
+      <p class="text-dim text-mono" style="font-size: 12px;">[ Figure 4: Smith Chart with key reference points annotated ]</p>
+    </div>
+    <div class="figure-caption">Figure 4: Smith Chart with key reference points — centre (50Ω perfect match), far right (open circuit), far left (short circuit), upper half (inductive), lower half (capacitive).</div>
+  </div>
+
+  <h3>Key Landmarks</h3>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h4 class="text-success">Centre — 50Ω</h4>
+      <p>Purely resistive, perfect match. After calibration with the Load standard connected, you should see a dot right here. The closer your antenna measurement sits to the centre, the better.</p>
+    </div>
+    <div class="summary-card">
+      <h4 class="text-power">Far Right — Open</h4>
+      <p>Infinite impedance — an open circuit. This is where the trace should jump when you disconnect everything from the port after calibration.</p>
+    </div>
+    <div class="summary-card">
+      <h4 class="text-info">Far Left — Short</h4>
+      <p>Zero impedance — a short circuit. Must appear on the far left edge of the centre line. If it appears below (capacitive region), there is a calibration error.</p>
+    </div>
+    <div class="summary-card">
+      <h4 class="text-em">SWR Circles</h4>
+      <p>Dashed circles centred on the middle represent constant SWR values. A tight cluster of points near the centre means good match across the measured range.</p>
+    </div>
+  </div>
+
+  <div class="callout callout--e">
+    <span class="callout-icon">⬆️</span>
+    <div class="callout-text"><strong>Upper half = Inductive (+jX):</strong> The antenna appears electrically too long, or there is excess inductance in the system.</div>
+  </div>
+  <div class="callout callout--h">
+    <span class="callout-icon">⬇️</span>
+    <div class="callout-text"><strong>Lower half = Capacitive (−jX):</strong> The antenna appears electrically too short, or there is excess capacitance.</div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 7: CABLES ───────────────────────────────────── -->
+<div class="chapter" id="cables">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>What Cables Do to Your Measurements</h2>
+
+  <p>When measuring an antenna through a length of coaxial cable, the cable affects your S11 measurement in two important ways.</p>
+
+  <h3>Cable Loss Masks True Performance</h3>
+  <p>The signal travels from the VNA up the cable to the antenna, reflects, and travels back down the cable. The cable attenuates the signal in <strong>both directions</strong>, so the reflected signal is weakened by twice the cable loss. This makes the return loss appear better than it really is — the cable is absorbing the reflected energy and hiding the true antenna mismatch.</p>
+
+  <div class="alert-box alert-box--warning">
+    <h4>⚠ Key Insight</h4>
+    <p>When calibrating at the instrument port and measuring through a cable, the cable loss will make the antenna look better-matched than it actually is. For example, a cable with 1.5 dB loss each way adds 3 dB to the apparent return loss. An antenna with a true -8 dB return loss would appear to have -11 dB — crossing the threshold from "poor" to "acceptable" without any real improvement.</p>
+  </div>
+
+  <h3>Calibration Sanity Check</h3>
+  <p>With a valid calibration, disconnecting the antenna produces a <strong>dramatic change</strong> in the measurement — from a reasonable return loss to near 0 dB. Without valid calibration, the measurement barely changes whether the antenna is connected or not. If disconnecting the antenna does not significantly change your trace, the calibration is not working correctly.</p>
+</div>
+
+<!-- ─── CHAPTER 8: REAL RESULTS ─────────────────────────────── -->
+<div class="chapter" id="real-results">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Putting It All Together — Real LTE Results</h2>
+
+  <p>The following results were captured from an actual LTE antenna installation, measured through approximately 15 metres of RG213 coaxial cable. Each band was measured individually with a fresh calibration to maximise measurement accuracy.</p>
+
+  <div class="figure">
+    <div class="card" style="min-height: 200px; display: flex; align-items: center; justify-content: center; border: none;">
+      <p class="text-dim text-mono" style="font-size: 12px;">[ Figure 6: Actual LTE antenna test results — Log Magnitude and SWR ]</p>
+    </div>
+    <div class="figure-caption">Figure 6: Actual LTE antenna test results across all UK bands — Log Magnitude (left) and SWR (right). Clear frequency-dependent performance improvement from 800 MHz to 3500 MHz.</div>
+  </div>
+
+  <p>The results clearly show the antenna improving at higher frequencies. Band 20 (800 MHz) sits in the poor zone with about 16% power reflected, while n78 (3500 MHz) achieves an excellent match with only 1% reflected. This frequency-dependent behaviour is characteristic of an antenna that is physically small relative to the lower band wavelengths.</p>
+
+  <p>The flat response within each band confirms the antenna has a broadband characteristic — it does not have sharp resonances that would create sweet spots or dead spots within a single LTE band.</p>
+</div>
+
+<!-- ─── CHAPTER 9: WHICH FORMAT? ────────────────────────────── -->
+<div class="chapter" id="which-format">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Which Display Format Should You Use?</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>If You Want To Know…</th><th>Use This Format</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"Is my antenna well-matched?"</td><td><strong>Log Mag</strong> — look for values below -10 dB</td></tr>
+        <tr><td>"What SWR will my radio see?"</td><td><strong>SWR</strong> — direct readout of the ratio</td></tr>
+        <tr><td>"Is the mismatch inductive or capacitive?"</td><td><strong>Smith Chart</strong> — check above or below centre line</td></tr>
+        <tr><td>"What impedance is the antenna presenting?"</td><td><strong>Smith Chart</strong> — read R + jX from the grid</td></tr>
+        <tr><td>"Over what bandwidth is the antenna usable?"</td><td><strong>Log Mag</strong> — measure the width of the dip below -10 dB</td></tr>
+        <tr><td>"Is my calibration valid?"</td><td><strong>Any format</strong> — disconnect the DUT and check for dramatic change</td></tr>
+        <tr><td>"Which LTE band gives the best performance?"</td><td><strong>Log Mag or SWR</strong> — compare per-band measurements</td></tr>
+        <tr><td>"Would an impedance matching network help?"</td><td><strong>Smith Chart</strong> — identify direction and magnitude of mismatch</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The best approach is to use multiple formats together. <strong>Start with Log Mag or SWR for a quick pass/fail assessment</strong>, then switch to the Smith Chart to understand why any mismatch exists and what you might do about it.</p>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ──────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

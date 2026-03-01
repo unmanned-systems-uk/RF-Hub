@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 — What is Electromagnetic Radiation?</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2234;
+  --bg-input: #1a2234;
+  --accent-e: #f59e0b;
+  --accent-h: #06b6d4;
+  --accent-em: #a78bfa;
+  --accent-power: #ef4444;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --border: #1e293b;
+  --glow-e: rgba(245,158,11,0.15);
+  --glow-h: rgba(6,182,212,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+html { scroll-behavior: smooth; }
+
+/* Hero */
+.hero { padding: 80px 0 60px; text-align: center; }
+.hero-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 6px 16px; border-radius: 20px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400; line-height: 1.15;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-em) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 1.1rem; color: var(--text-secondary);
+  max-width: 600px; margin: 0 auto;
+}
+
+/* Story overview / objectives */
+.story-overview {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 40px;
+  margin-bottom: 60px; position: relative; overflow: hidden;
+}
+.story-overview::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+}
+.story-overview h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; margin-bottom: 16px; color: var(--text-primary);
+}
+.objectives-list { list-style: none; padding: 0; margin-top: 20px; }
+.objectives-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; color: var(--text-secondary); font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.objectives-list li:last-child { border-bottom: none; }
+.obj-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent-em); background: rgba(167,139,250,0.1);
+  padding: 2px 8px; border-radius: 10px; flex-shrink: 0; margin-top: 2px;
+}
+
+/* Chapters */
+.chapter { margin-bottom: 80px; scroll-margin-top: 40px; }
+.chapter-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.chapter-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;
+  letter-spacing: 2px; color: var(--accent-em); white-space: nowrap;
+}
+.chapter-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent-em), transparent); }
+h2.chapter-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 400;
+  margin-bottom: 16px; color: var(--text-primary);
+}
+.chapter p { color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem; }
+.chapter p strong { color: var(--text-primary); font-weight: 500; }
+h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: var(--text-primary);
+  margin: 32px 0 12px;
+}
+
+/* Diagram cards */
+.diagram-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; margin: 28px 0;
+  position: relative; overflow: hidden;
+}
+.diagram-card.glow-e { box-shadow: inset 0 0 60px -30px var(--glow-e); }
+.diagram-card.glow-h { box-shadow: inset 0 0 60px -30px var(--glow-h); }
+.diagram-card.glow-em { box-shadow: inset 0 0 60px -30px rgba(167,139,250,0.08); }
+.diagram-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 16px;
+}
+
+/* Callouts */
+.callout {
+  display: flex; gap: 16px; padding: 20px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 12px 12px 0; margin: 20px 0;
+}
+.callout.e-field { border-left-color: var(--accent-e); }
+.callout.h-field { border-left-color: var(--accent-h); }
+.callout.key-insight { border-left-color: var(--accent-power); }
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.callout-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+.callout-text strong { color: var(--text-primary); font-weight: 500; }
+
+/* Question box */
+.question-box {
+  background: linear-gradient(135deg, rgba(167,139,250,0.06), rgba(6,182,212,0.04));
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 12px; padding: 24px; margin: 24px 0;
+}
+.question-box h4 {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent-em); margin-bottom: 12px;
+}
+.question-box p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 8px; }
+.question-box p:last-child { margin-bottom: 0; }
+
+/* Analogy */
+.analogy {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin: 24px 0;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.analogy-icon { font-size: 32px; flex-shrink: 0; }
+.analogy-content h4 { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.analogy-content p { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* Term box */
+.term-box {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; background: rgba(167,139,250,0.1);
+  border-radius: 6px; font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em; color: var(--accent-em);
+}
+
+/* Anim controls */
+.anim-controls { display: flex; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.anim-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  padding: 8px 20px; background: rgba(167,139,250,0.1);
+  color: var(--accent-em); border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px; cursor: pointer; transition: all 0.2s;
+}
+.anim-btn:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
+.anim-btn.active { background: var(--accent-em); color: var(--bg-deep); }
+
+/* Summary grid */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 24px 0; }
+.summary-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; transition: all 0.3s;
+}
+.summary-card:hover { border-color: var(--accent-em); transform: translateY(-2px); }
+.summary-card h4 {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+}
+.summary-card.e-card h4 { color: var(--accent-e); }
+.summary-card.h-card h4 { color: var(--accent-h); }
+.summary-card.em-card h4 { color: var(--accent-em); }
+.summary-card.pattern-card h4 { color: var(--accent-power); }
+.summary-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+/* Canvas */
+canvas { display: block; width: 100%; background: transparent; }
+
+/* Field trio */
+.field-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.field-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; text-align: center;
+}
+.field-panel canvas { border-radius: 0; }
+.field-panel-label {
+  padding: 12px; font-size: 0.85rem; color: var(--text-dim);
+  border-top: 1px solid var(--border);
+}
+
+/* Two-panel layout */
+.two-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.two-panel .panel-half {
+  padding: 16px; text-align: center; position: relative;
+}
+.two-panel .panel-half:first-child { border-right: 1px solid var(--border); }
+.panel-title {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Step controls */
+.step-controls { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; }
+.step-indicator {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  color: var(--text-dim); min-width: 80px; text-align: center;
+}
+
+/* Formula widget */
+.formula-display {
+  text-align: center; padding: 32px 0;
+  font-family: 'IBM Plex Mono', monospace; font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--text-primary); position: relative; min-height: 80px;
+}
+.formula-display .var-lambda { color: var(--accent-e); transition: all 0.5s ease; }
+.formula-display .var-c { color: var(--accent-em); transition: all 0.5s ease; }
+.formula-display .var-f { color: var(--accent-h); transition: all 0.5s ease; }
+.formula-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+.formula-subtitles {
+  display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--text-dim); margin-top: 8px;
+}
+.formula-subtitles span { display: flex; align-items: center; gap: 6px; }
+
+/* Calculator */
+.calc-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: end; margin: 16px 0; }
+.calc-field label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-dim); display: block; margin-bottom: 6px;
+}
+.calc-field input, .calc-field select {
+  width: 100%; padding: 10px 14px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text-primary);
+  font-family: 'IBM Plex Mono', monospace; font-size: 1rem;
+}
+.calc-field input:focus, .calc-field select:focus {
+  outline: none; border-color: var(--accent-em);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+}
+.calc-equals {
+  font-size: 1.5rem; color: var(--text-dim);
+  padding-bottom: 8px; text-align: center;
+}
+
+/* Wavelength scale SVG */
+.scale-scene { position: relative; }
+.scale-scene svg { width: 100%; height: auto; }
+
+/* Spectrum strip */
+.spectrum-container {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--bg-card); position: relative;
+}
+.spectrum-strip {
+  min-width: 1200px; padding: 20px; position: relative;
+  height: 320px;
+}
+.spectrum-band {
+  position: absolute; top: 60px; height: 80px;
+  border-radius: 4px; display: flex; align-items: center;
+  justify-content: center; font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,0.7); cursor: pointer; transition: opacity 0.2s;
+}
+.spectrum-marker {
+  position: absolute; top: 145px; width: 2px; height: 30px;
+  cursor: pointer; z-index: 2;
+}
+.spectrum-marker::before {
+  content: ''; position: absolute; top: 0; left: -4px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent-em); border: 2px solid var(--bg-card);
+}
+.spectrum-tooltip {
+  display: none; position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%); background: var(--bg-card);
+  border: 1px solid var(--accent-em); border-radius: 8px;
+  padding: 10px 14px; white-space: nowrap; z-index: 10;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--text-primary); pointer-events: none;
+}
+.spectrum-marker:hover .spectrum-tooltip,
+.spectrum-marker:focus .spectrum-tooltip { display: block; }
+.spectrum-msg {
+  position: absolute; bottom: 16px; left: 20px; right: 20px;
+  text-align: center; font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--accent-em);
+}
+.spectrum-freq-labels, .spectrum-wl-labels {
+  position: absolute; left: 20px; right: 20px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-dim);
+}
+.spectrum-freq-labels { top: 40px; }
+.spectrum-wl-labels { top: 185px; }
+
+/* 3D wave canvas */
+.wave3d-wrapper { position: relative; }
+.wave3d-label {
+  text-align: center; padding: 12px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  color: var(--accent-em); font-weight: 500;
+  border-top: 1px solid var(--border);
+}
+
+/* Iframe embed */
+.interactive-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin: 28px 0;
+  border-top: 3px solid var(--accent-em);
+}
+.interactive-section .section-header {
+  padding: 24px 32px; display: flex; align-items: center; gap: 12px;
+}
+.interactive-section h3 { margin: 0; }
+.interactive-section iframe {
+  width: 100%; height: 700px; border: none;
+  border-top: 1px solid var(--border);
+}
+.fallback-link {
+  padding: 12px 32px; text-align: center;
+  border-top: 1px solid var(--border);
+}
+.fallback-link a {
+  color: var(--accent-em); text-decoration: none;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+}
+
+/* Guided steps */
+.guided-steps { margin: 24px 0; }
+.guided-step {
+  display: flex; gap: 16px; padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.guided-step:last-child { border-bottom: none; }
+.step-pill {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent-em); background: rgba(167,139,250,0.1);
+  padding: 4px 12px; border-radius: 12px; flex-shrink: 0;
+  height: fit-content; margin-top: 2px;
+}
+.guided-step p { font-size: 0.95rem; color: var(--text-secondary); margin: 0; }
+.guided-step p strong { color: var(--text-primary); font-weight: 500; }
+
+/* Optional card */
+.optional-card {
+  background: var(--bg-card); border: 2px dashed var(--border);
+  border-radius: 16px; padding: 32px; margin: 28px 0; text-align: center;
+}
+.optional-badge {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); background: rgba(255,255,255,0.03);
+  padding: 4px 12px; border-radius: 10px; margin-bottom: 16px;
+}
+.optional-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 16px; }
+.btn-link {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; padding: 10px 24px;
+  background: rgba(167,139,250,0.1); color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2); border-radius: 8px;
+  text-decoration: none; transition: all 0.2s;
+}
+.btn-link:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
+
+/* Self-check */
+.exercise-group { margin: 24px 0; }
+.exercise-group h3 { margin-bottom: 16px; }
+.exercise {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; margin-bottom: 12px;
+}
+.exercise p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 12px; }
+.exercise p strong { color: var(--text-primary); }
+.reveal-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  padding: 6px 16px; background: rgba(167,139,250,0.1);
+  color: var(--accent-em); border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 20px; cursor: pointer; transition: all 0.2s;
+}
+.reveal-btn:hover { background: rgba(167,139,250,0.2); }
+.reveal-content {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 0; margin-top: 0;
+}
+.reveal-content.open {
+  max-height: 300px; padding: 16px 0 0; margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.reveal-content p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 4px; }
+
+/* Next lesson card */
+.next-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; margin: 28px 0;
+  position: relative; overflow: hidden;
+}
+.next-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border); padding: 40px 0;
+  text-align: center; color: var(--text-dim); font-size: 0.85rem;
+}
+footer a { color: var(--accent-em); text-decoration: none; }
+
+/* Animations */
+@keyframes pulse-lines { 0%,100%{opacity:0.5} 50%{opacity:1} }
+@keyframes float-arrow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .field-trio { grid-template-columns: 1fr; }
+  .two-panel { grid-template-columns: 1fr; }
+  .two-panel .panel-half:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+  .calc-row { grid-template-columns: 1fr; }
+  .calc-equals { display: none; }
+  .interactive-section iframe { height: 500px; }
+}
+@media (max-width: 480px) {
+  .summary-grid { grid-template-columns: 1fr; }
+  .hero { padding: 48px 0 40px; }
+  .story-overview { padding: 24px; }
+  .diagram-card { padding: 20px; }
+  .analogy { flex-direction: column; }
+  .formula-display { font-size: 1.8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="hero-badge">RF-Hub · Lesson 1</div>
+    <h1>What is Electromagnetic Radiation?</h1>
+    <p class="hero-subtitle">Unit 1 — How Antennas Work · No equipment needed · ~25 minutes</p>
+  </section>
+
+  <!-- Learning Objectives -->
+  <div class="story-overview">
+    <h2>Learning Objectives</h2>
+    <p style="color:var(--text-secondary);font-size:0.95rem;">By the end of this lesson you will be able to:</p>
+    <ol class="objectives-list">
+      <li><span class="obj-num">01</span>Explain what an electromagnetic field is, in plain language</li>
+      <li><span class="obj-num">02</span>Describe how a changing electric field creates a magnetic field, and vice versa</li>
+      <li><span class="obj-num">03</span>Explain why accelerating charge produces a self-sustaining wave</li>
+      <li><span class="obj-num">04</span>Calculate wavelength from frequency (and back again) using λ = c / f</li>
+      <li><span class="obj-num">05</span>Identify where common radio signals sit on the electromagnetic spectrum</li>
+      <li><span class="obj-num">06</span>Describe the relationship between the E field, the H field, and the direction of travel</li>
+    </ol>
+  </div>
+
+  <!-- ═══════════ SECTION 1: WHAT IS A FIELD? ═══════════ -->
+  <section class="chapter" id="section-1">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">What is a Field?</h2>
+
+    <p>Before we talk about electromagnetic radiation, we need one building block: the idea of a <strong>field</strong>.</p>
+    <p>A field is not mystical. It is simply a value that exists at every point in space. That's it. If you can point to any spot in a room and say "there's a number here," you've got a field.</p>
+    <p>You already know one. Gravity. Stand anywhere on Earth and there's a gravitational pull pointing downward. Move to a different spot — still there, maybe slightly stronger or weaker, but always present. You can't see it, but you can feel its effect the moment you drop something.</p>
+    <p>An <strong>electric field</strong> works the same way. Place a charged object in a room, and every point in that room now has an electric force associated with it. Bring another charge nearby and it gets pushed or pulled — the field is doing that pushing. The field exists whether or not anything is there to feel it.</p>
+    <p>A <strong>magnetic field</strong> is the same idea again. Put a magnet on the table. Every point in the space around it has a magnetic influence. Bring a compass close and the needle swings — it's responding to the field that was already there, waiting.</p>
+    <p>The key idea: fields fill space. They are invisible but real, and they exert forces on things that respond to them. Electric fields push charges. Magnetic fields push magnets (and moving charges). Gravitational fields pull masses.</p>
+
+    <!-- VISUAL: field-trio-comparison -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Interactive · Three Types of Field</div>
+      <div class="field-trio">
+        <div class="field-panel">
+          <canvas id="fieldGravity" width="280" height="260" role="img" aria-label="Gravity field: Earth with field lines pointing inward and a ball experiencing gravitational pull"></canvas>
+          <div class="field-panel-label">Every point has a direction and a strength.</div>
+        </div>
+        <div class="field-panel">
+          <canvas id="fieldElectric" width="280" height="260" role="img" aria-label="Electric field: positive charge with amber field lines radiating outward"></canvas>
+          <div class="field-panel-label">Push or pull — depends on the charges.</div>
+        </div>
+        <div class="field-panel">
+          <canvas id="fieldMagnetic" width="280" height="260" role="img" aria-label="Magnetic field: bar magnet with cyan field lines from north to south pole"></canvas>
+          <div class="field-panel-label">The needle follows the field.</div>
+        </div>
+      </div>
+      <p style="text-align:center;color:var(--text-dim);font-size:0.85rem;margin-top:12px;">Hover over any panel to see the field direction at your cursor position.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION 2: STATIC FIELDS GO NOWHERE ═══════════ -->
+  <section class="chapter" id="section-2">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Static Fields Go Nowhere</h2>
+
+    <p>Here is something important, and it might seem obvious: a field that just sits there does nothing interesting.</p>
+    <p>A charged battery terminal creates an electric field around it. That field reaches out into space, sure — but it stays put. It clings to the charge that made it. Move the charge and the field moves with it, like a shadow. It doesn't break free. It doesn't travel anywhere on its own.</p>
+    <p>Same with a magnet. Its magnetic field fills the space around it, beautifully curved from north to south. But it goes nowhere. Pick up the magnet and the field comes along. It's tethered.</p>
+    <p>So if fields just sit there attached to whatever made them, how does a radio signal travel from a transmitter to a receiver hundreds of kilometres away? Something has to change.</p>
+
+    <div class="callout key-insight">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-text">
+        <strong>A changing electric field creates a magnetic field.</strong><br>
+        And the reverse is also true:<br>
+        <strong>A changing magnetic field creates an electric field.</strong><br><br>
+        Not "might create" or "tends to create." <em>Must</em> create. It's as unavoidable as a dropped ball falling. This is the engine that makes electromagnetic radiation possible.
+      </div>
+    </div>
+
+    <!-- VISUAL: static-vs-changing -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Animation · Static vs Changing Fields</div>
+      <div class="two-panel">
+        <div class="panel-half">
+          <div class="panel-title" style="color:var(--text-dim)">Static (nothing happens)</div>
+          <canvas id="staticCanvas" width="380" height="280"></canvas>
+        </div>
+        <div class="panel-half">
+          <div class="panel-title" style="color:var(--accent-em)">Changing (everything happens)</div>
+          <canvas id="changingCanvas" width="380" height="280"></canvas>
+        </div>
+      </div>
+      <div class="anim-controls">
+        <button class="anim-btn" id="staticPlayBtn" onclick="toggleStaticAnim()">▶ Play</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION 3: THE WAVE IS BORN ═══════════ -->
+  <section class="chapter" id="section-3">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">The Wave is Born</h2>
+
+    <p>Now follow the chain reaction.</p>
+    <p>Imagine you grab a charge and shake it — accelerate it back and forth. That acceleration changes the electric field around it. The changing electric field creates a magnetic field (Maxwell's rule). But now that magnetic field is also changing (because the thing creating it is changing), and a changing magnetic field creates an electric field. Which is changing. Which creates a magnetic field. Which is changing...</p>
+    <p>Each field generates the next. The disturbance feeds itself and moves outward, away from the charge, at the speed of light. The original charge might stop shaking — it doesn't matter. The wave is already gone, self-sustaining, needing nothing more from the source.</p>
+
+    <div class="analogy">
+      <div class="analogy-icon">🫧</div>
+      <div class="analogy-content">
+        <h4>Think of blowing a soap bubble</h4>
+        <p>You create it, shape it, give it a push — and then it detaches and floats away. It doesn't need your breath any more. An electromagnetic wave works the same way. The accelerating charge creates the disturbance, but once launched, the wave propagates on its own.</p>
+      </div>
+    </div>
+
+    <p>There's an important word hiding in this story: <strong>accelerate</strong>. A charge moving at constant speed doesn't radiate. A charge sitting still doesn't radiate. Only a charge that is <em>accelerating</em> — speeding up, slowing down, or changing direction — creates electromagnetic waves. This is why antennas work: we drive alternating current through them, which means the electrons are constantly accelerating and decelerating, launching waves with every cycle.</p>
+
+    <!-- VISUAL: chain-reaction-wave -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Step-Through · The Chain Reaction</div>
+      <canvas id="chainCanvas" width="850" height="340" role="img" aria-label="Step-by-step animation showing how changing E fields create H fields and vice versa, forming a self-sustaining wave"></canvas>
+      <div class="step-controls">
+        <button class="anim-btn" onclick="chainStep(-1)">◀ Back</button>
+        <span class="step-indicator" id="chainStepLabel">Step 1 / 6</span>
+        <button class="anim-btn" onclick="chainStep(1)">Next ▶</button>
+        <button class="anim-btn" id="chainAutoBtn" onclick="chainAutoPlay()">Auto ▶▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION 4: WAVELENGTH, FREQUENCY, SPEED OF LIGHT ═══════════ -->
+  <section class="chapter" id="section-4">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Wavelength, Frequency, and the Speed of Light</h2>
+
+    <p>Every electromagnetic wave has three properties tied together by one simple relationship.</p>
+    <p><strong>Frequency</strong> (<em>f</em>) is how many complete cycles the wave completes per second. We measure it in hertz (Hz). A wave that completes 145 million cycles per second has a frequency of 145 MHz.</p>
+    <p><strong>Wavelength</strong> (λ, the Greek letter lambda) is the physical distance from one peak of the wave to the next. It's a real, measurable length — metres, centimetres, millimetres.</p>
+    <p><strong>Speed of light</strong> (<em>c</em>) is how fast the wave travels. In free space, all electromagnetic waves travel at the same speed: approximately 300,000,000 metres per second (3 × 10⁸ m/s). Radio waves, visible light, X-rays — all the same speed.</p>
+
+    <!-- VISUAL: formula-rearrangement -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Interactive · Formula Rearrangement</div>
+      <div class="formula-btns">
+        <button class="anim-btn active" id="btnLambda" onclick="showFormula('lambda')">Solve for λ</button>
+        <button class="anim-btn" id="btnF" onclick="showFormula('f')">Solve for f</button>
+        <button class="anim-btn" id="btnC" onclick="showFormula('c')">Solve for c</button>
+      </div>
+      <div class="formula-display" id="formulaDisplay">
+        <span class="var-lambda">λ</span> = <span class="var-c">c</span> / <span class="var-f">f</span>
+      </div>
+      <div class="formula-subtitles">
+        <span><span style="color:var(--accent-e)">λ</span> peak-to-peak distance</span>
+        <span><span style="color:var(--accent-h)">f</span> cycles per second</span>
+        <span><span style="color:var(--accent-em)">c</span> ≈ 3 × 10⁸ m/s</span>
+      </div>
+
+      <div style="border-top:1px solid var(--border);margin-top:24px;padding-top:24px;">
+        <div class="diagram-label">Live Calculator</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label for="calcFreqIn">Frequency</label>
+            <div style="display:flex;gap:8px;">
+              <input type="number" id="calcFreqIn" placeholder="e.g. 145" min="0" step="any" oninput="calcFromFrequency()">
+              <select id="calcFreqUnit" onchange="calcFromFrequency()" style="width:90px;">
+                <option value="1e6" selected>MHz</option>
+                <option value="1e3">kHz</option>
+                <option value="1e9">GHz</option>
+                <option value="1">Hz</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-equals">⇌</div>
+          <div class="calc-field">
+            <label for="calcWlIn">Wavelength</label>
+            <div style="display:flex;gap:8px;">
+              <input type="number" id="calcWlIn" placeholder="e.g. 2.07" min="0" step="any" oninput="calcFromWavelength()">
+              <select id="calcWlUnit" onchange="calcFromWavelength()" style="width:90px;">
+                <option value="1" selected>m</option>
+                <option value="0.01">cm</option>
+                <option value="0.001">mm</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center;color:var(--text-dim);font-size:0.85rem;">c = 299,792,458 m/s (shown as ≈ 3 × 10⁸ for mental maths)</p>
+      </div>
+    </div>
+
+    <h3>Putting Numbers to It</h3>
+    <p><strong>145 MHz</strong> — the 2-metre amateur band. Wavelength: 300,000,000 ÷ 145,000,000 ≈ <strong>2.07 metres</strong>. That's about the height of a tall doorway. This is why it's called "2 metres."</p>
+    <p><strong>440 MHz</strong> — the 70-centimetre band. Wavelength: 300 ÷ 440 ≈ <strong>0.68 metres</strong>, or 68 centimetres. A bit longer than your forearm.</p>
+    <p><strong>2,400 MHz (2.4 GHz)</strong> — WiFi. Wavelength: 300 ÷ 2400 ≈ <strong>0.125 metres</strong>, or 12.5 centimetres. About the width of your hand.</p>
+    <p><strong>10,000 MHz (10 GHz)</strong> — radar and satellite links. Wavelength: 300 ÷ 10,000 = <strong>0.03 metres</strong>, or 3 centimetres. The length of a paper clip.</p>
+
+    <div class="callout">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        <strong>The MHz shortcut:</strong> If frequency is in MHz, you can use <strong>λ (in metres) = 300 / f (in MHz)</strong>. The millions cancel. This is the version you'll use most often in amateur radio.
+      </div>
+    </div>
+
+    <!-- VISUAL: wavelength-at-human-scale -->
+    <div class="diagram-card">
+      <div class="diagram-label">Wavelength at Human Scale</div>
+      <canvas id="humanScaleCanvas" width="850" height="360" role="img" aria-label="A person standing for scale with wavelength bars showing 2m at 145MHz, 70cm at 440MHz, 12.5cm at 2.4GHz WiFi, and 3cm at 10GHz"></canvas>
+      <div style="padding:12px 0 0;text-align:center;">
+        <label style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);">Frequency: <span id="scaleFreqLabel">145 MHz</span></label><br>
+        <input type="range" id="scaleFreqSlider" min="1" max="10000" value="145" step="1" style="width:80%;max-width:400px;margin-top:8px;" oninput="updateHumanScale()">
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ HANDS-ON: EM FIELD ANIMATOR ═══════════ -->
+  <section class="chapter" id="section-hands-on">
+    <div class="chapter-header">
+      <span class="chapter-num">🔧 HANDS-ON</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Explore with the EM Field Animator</h2>
+    <p>Time to see this for yourself. Open the <strong>EM Field &amp; Radiation Pattern Animator</strong> below.</p>
+
+    <div class="interactive-section">
+      <div class="section-header">
+        <span style="font-size:24px;">🔧</span>
+        <h3>EM Field &amp; Radiation Pattern Animator</h3>
+      </div>
+      <iframe src="em-animato-2.html" title="EM Field Animator interactive" loading="lazy"></iframe>
+      <div class="fallback-link">
+        <a href="em-animato-2.html" target="_blank">Open in new tab ↗</a>
+      </div>
+    </div>
+
+    <p>This tool lets you set a frequency and watch the electric and magnetic fields oscillate in real time. Focus on the frequency slider and the wavelength readout.</p>
+
+    <div class="guided-steps">
+      <div class="guided-step"><span class="step-pill">Step 1</span><p>Set the frequency to <strong>145 MHz</strong>. Look at the wavelength readout. Does it match what we calculated above? (It should show approximately 2.07 m.)</p></div>
+      <div class="guided-step"><span class="step-pill">Step 2</span><p>Now slide the frequency up to <strong>440 MHz</strong>. Watch the wavelength shrink. Notice how the wave animation speeds up and the peaks get closer together.</p></div>
+      <div class="guided-step"><span class="step-pill">Step 3</span><p>Keep going — slide to <strong>1296 MHz</strong> (the 23 cm band). The wavelength should be about 23 cm. See how the waves are packed much more tightly?</p></div>
+      <div class="guided-step"><span class="step-pill">Step 4</span><p>Try to find a frequency where the wavelength is exactly <strong>1 metre</strong>. (Hint: use the formula. What's 300 ÷ 1?)</p></div>
+      <div class="guided-step"><span class="step-pill">Step 5</span><p>Watch the <span style="color:var(--accent-e)">E-field (amber)</span> and <span style="color:var(--accent-h)">H-field (cyan)</span> waves. Notice they oscillate at the same frequency but are perpendicular to each other.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION 5: THE EM SPECTRUM ═══════════ -->
+  <section class="chapter" id="section-5">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">The Electromagnetic Spectrum</h2>
+
+    <p>Here is something that surprises most people when they first hear it: visible light and radio waves are the same thing.</p>
+    <p>Not "similar to." Not "related to." The <em>same</em> physical phenomenon. A radio wave at 145 MHz and the yellow light from a sodium lamp are both electromagnetic waves — coupled E and H fields propagating through space at the speed of light. The only difference between them is frequency.</p>
+    <p>The electromagnetic spectrum is the full range of these frequencies, from the lowest to the highest:</p>
+    <p><strong>Radio waves</strong> (below ~300 GHz) — This is where we work. AM broadcast, shortwave, VHF, UHF, microwaves.</p>
+    <p><strong>Infrared</strong> (~300 GHz to ~400 THz) — Heat radiation. Your TV remote uses it.</p>
+    <p><strong>Visible light</strong> (~400 THz to ~750 THz) — The tiny sliver that human eyes can detect.</p>
+    <p><strong>Ultraviolet, X-rays, Gamma rays</strong> — Progressively higher energy, shorter wavelengths.</p>
+    <p>All of it — every frequency, every wavelength — is the same E⊥H wave travelling at <em>c</em>.</p>
+
+    <h3>Where Radio Lives</h3>
+    <p><strong>HF</strong> (3–30 MHz) — Shortwave. Used for long-distance communication via ionospheric skip.</p>
+    <p><strong>VHF</strong> (30–300 MHz) — Includes FM broadcast and the 2-metre amateur band.</p>
+    <p><strong>UHF</strong> (300 MHz–3 GHz) — Includes the 70 cm band, GPS, WiFi, and mobile phones.</p>
+    <p><strong>SHF/Microwave</strong> (3–30 GHz) — Satellite links, radar, 5G mmWave.</p>
+
+    <!-- VISUAL: em-spectrum-strip -->
+    <div class="diagram-card">
+      <div class="diagram-label">Interactive · The Electromagnetic Spectrum</div>
+      <div class="spectrum-container" role="img" aria-label="Horizontally scrollable electromagnetic spectrum showing radio through gamma rays with clickable markers for common frequencies">
+        <div class="spectrum-strip" id="spectrumStrip">
+          <!-- Frequency labels row -->
+          <div class="spectrum-freq-labels">FREQUENCY →</div>
+          <div class="spectrum-wl-labels">← WAVELENGTH</div>
+
+          <!-- Bands (positioned by JS) -->
+          <div class="spectrum-band" id="bandRadio" style="background:rgba(99,102,241,0.25);border:1px solid rgba(99,102,241,0.3);">RADIO</div>
+          <div class="spectrum-band" id="bandIR" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.25);">INFRARED</div>
+          <div class="spectrum-band" id="bandVisible" style="background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#3b82f6,#8b5cf6);border:1px solid rgba(255,255,255,0.2);">VISIBLE</div>
+          <div class="spectrum-band" id="bandUV" style="background:rgba(139,92,246,0.25);border:1px solid rgba(139,92,246,0.3);">UV</div>
+          <div class="spectrum-band" id="bandXray" style="background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.2);">X-RAY</div>
+          <div class="spectrum-band" id="bandGamma" style="background:rgba(100,116,139,0.15);border:1px solid rgba(100,116,139,0.2);">GAMMA</div>
+
+          <!-- Sub-bands within radio -->
+          <div class="spectrum-band" id="subHF" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.2);top:145px;height:30px;font-size:9px;">HF</div>
+          <div class="spectrum-band" id="subVHF" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.2);top:145px;height:30px;font-size:9px;">VHF</div>
+          <div class="spectrum-band" id="subUHF" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.2);top:145px;height:30px;font-size:9px;">UHF</div>
+          <div class="spectrum-band" id="subSHF" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.2);top:145px;height:30px;font-size:9px;">SHF</div>
+
+          <!-- Markers (positioned by JS) -->
+          <div class="spectrum-marker" id="markerFM" tabindex="0"><div class="spectrum-tooltip">FM Broadcast<br>88–108 MHz · λ ≈ 3 m</div></div>
+          <div class="spectrum-marker" id="marker2m" tabindex="0"><div class="spectrum-tooltip">2m Amateur<br>145 MHz · λ ≈ 2.07 m</div></div>
+          <div class="spectrum-marker" id="marker70cm" tabindex="0"><div class="spectrum-tooltip">70cm Amateur<br>435 MHz · λ ≈ 69 cm</div></div>
+          <div class="spectrum-marker" id="markerGPS" tabindex="0"><div class="spectrum-tooltip">GPS L1<br>1.575 GHz · λ ≈ 19 cm</div></div>
+          <div class="spectrum-marker" id="markerWiFi" tabindex="0"><div class="spectrum-tooltip">WiFi<br>2.4 GHz · λ ≈ 12.5 cm</div></div>
+
+          <div class="spectrum-msg">All the same phenomenon: E⊥H waves at the speed of light. Only the frequency differs.</div>
+        </div>
+      </div>
+      <p style="text-align:center;color:var(--text-dim);font-size:0.85rem;margin-top:8px;">← Scroll horizontally to explore · Hover markers for details →</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECTION 6: E AND H PERPENDICULAR ═══════════ -->
+  <section class="chapter" id="section-6">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">E and H: The Inseparable Pair</h2>
+
+    <p>In a propagating electromagnetic wave, the <strong>electric field</strong> (E) oscillates in one direction, and the <strong>magnetic field</strong> (H) oscillates perpendicular to it. The wave itself travels in a third direction, perpendicular to both E and H.</p>
+    <p>Picture it this way. Point your right thumb forward — that's the direction the wave travels (the <strong>propagation direction</strong>, or <em>k</em>). Now point your index finger upward — that's the E field. Your middle finger naturally points sideways — that's the H field.</p>
+    <p>Three directions, all at right angles: E ⊥ H ⊥ k.</p>
+    <p>You cannot have a propagating E field without an H field. They are created as a pair and travel as a pair. The E and H fields reach their peaks at the same time and in the same place — they are <strong>in phase</strong>.</p>
+    <p>The ratio of E to H in free space is a constant: approximately <span class="term-box">377 Ω</span> — the <strong>impedance of free space</strong>. We won't do much with this number in Lesson 1, but file it away.</p>
+
+    <!-- VISUAL: e-h-k-perpendicular -->
+    <div class="diagram-card glow-em">
+      <div class="diagram-label">Animated · 3D EM Wave Propagation</div>
+      <div class="wave3d-wrapper">
+        <canvas id="wave3dCanvas" width="850" height="400" role="img" aria-label="3D animated electromagnetic wave showing perpendicular E field (amber, vertical), H field (cyan, horizontal), and propagation direction k (purple)"></canvas>
+        <div class="wave3d-label">E ⊥ H ⊥ k — always. No exceptions.</div>
+      </div>
+      <div class="anim-controls">
+        <button class="anim-btn active" id="wave3dPlayBtn" onclick="toggleWave3d()">⏸ Pause</button>
+        <button class="anim-btn" onclick="setWave3dView('side')">Side</button>
+        <button class="anim-btn" onclick="setWave3dView('top')">Top</button>
+        <button class="anim-btn active" onclick="setWave3dView('3d')">3D</button>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        If you explored the EM Field Animator earlier, go back and look at the broadside view. You can see the E wave (amber) and H wave (cyan) oscillating at right angles. That's not just a pretty picture — it's showing you the real geometry of an electromagnetic wave.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ GO DEEPER (OPTIONAL) ═══════════ -->
+  <section class="chapter" id="section-deeper">
+    <div class="optional-card">
+      <div class="optional-badge">OPTIONAL</div>
+      <h3 style="color:var(--text-primary);margin-bottom:12px;">🔎 Go Deeper — How Antennas Radiate</h3>
+      <p>If you want to see the full story of how fields detach from an antenna and become a free-travelling wave, explore the interactive below. It walks through the process step by step with animated SVG diagrams.</p>
+      <p style="color:var(--text-dim);font-size:0.85rem;">Don't worry if you skip this for now. Lesson 2 covers the detachment story in full.</p>
+      <a href="em-radiation.html" target="_blank" class="btn-link">Explore "How Antennas Radiate" ↗</a>
+    </div>
+  </section>
+
+  <!-- ═══════════ SUMMARY ═══════════ -->
+  <section class="chapter" id="summary">
+    <div class="chapter-header">
+      <span class="chapter-num">SUMMARY</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">What We Covered</h2>
+
+    <div class="summary-grid">
+      <div class="summary-card em-card"><h4>Fields</h4><p>Values at every point in space. Electric fields push charges, magnetic fields push magnets and moving charges.</p></div>
+      <div class="summary-card e-card"><h4>Static vs Changing</h4><p>Static fields stay put. Changing fields create new fields — the engine behind all EM radiation.</p></div>
+      <div class="summary-card h-card"><h4>Wave is Born</h4><p>Accelerating charges launch self-sustaining E↔H chain reactions that propagate at the speed of light.</p></div>
+      <div class="summary-card em-card"><h4>λ = c / f</h4><p>Wavelength, frequency, and speed of light locked together. Quick version: λ (m) = 300 / f (MHz).</p></div>
+      <div class="summary-card em-card"><h4>EM Spectrum</h4><p>One continuous phenomenon. Radio, light, X-rays — all E⊥H waves, just different frequencies.</p></div>
+      <div class="summary-card pattern-card"><h4>E ⊥ H ⊥ k</h4><p>E and H perpendicular to each other and to travel direction. Always in phase. Inseparable.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SELF-CHECK EXERCISES ═══════════ -->
+  <section class="chapter" id="self-check">
+    <div class="chapter-header">
+      <span class="chapter-num">SELF-CHECK</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Exercises</h2>
+
+    <div class="exercise-group">
+      <h3>Wavelength Calculations</h3>
+      <p style="color:var(--text-secondary);">Use <strong>λ = 300 / f (MHz)</strong> for all of these.</p>
+
+      <div class="exercise">
+        <p><strong>1.</strong> 7.1 MHz (40-metre HF band) — What is the wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>300 / 7.1 = <strong>42.25 m</strong> — this is why it's called the "40-metre band" (rounded).</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>2.</strong> 52 MHz (6-metre band) — What is the wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>300 / 52 = <strong>5.77 m</strong> — the "6-metre band."</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>3.</strong> 145 MHz (2-metre band) — What is the wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>300 / 145 = <strong>2.07 m</strong> — the "2-metre band."</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>4.</strong> 1296 MHz (23-centimetre band) — What is the wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>300 / 1296 = <strong>0.231 m = 23.1 cm</strong> — the "23-centimetre band."</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>5.</strong> 5800 MHz (5.8 GHz, FPV drones) — What is the wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>300 / 5800 = <strong>0.0517 m = 5.17 cm</strong></p><p style="color:var(--accent-em);">Pattern: the band names are approximate wavelengths!</p></div>
+      </div>
+    </div>
+
+    <div class="exercise-group">
+      <h3>Spectrum Placement</h3>
+      <p style="color:var(--text-secondary);">Name the band (HF, VHF, UHF, or SHF) and estimate the wavelength.</p>
+
+      <div class="exercise">
+        <p><strong>1.</strong> FM broadcast radio (~100 MHz)</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>VHF</strong> — wavelength ≈ 3 m</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>2.</strong> 2-metre amateur repeater (145 MHz)</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>VHF</strong> — wavelength ≈ 2.07 m</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>3.</strong> WiFi (2.4 GHz)</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>UHF</strong> — wavelength ≈ 12.5 cm</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>4.</strong> GPS (1.575 GHz)</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>UHF</strong> — wavelength ≈ 19 cm</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>5.</strong> Shortwave broadcast (15 MHz)</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>HF</strong> — wavelength = 20 m</p></div>
+      </div>
+    </div>
+
+    <div class="exercise-group">
+      <h3>Concept Questions</h3>
+
+      <div class="exercise">
+        <p><strong>Q1.</strong> A charge is moving through space at a constant speed in a straight line. Does it radiate electromagnetic waves?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>No.</strong> Radiation requires acceleration — a change in speed or direction. A charge moving at constant velocity in a straight line does not radiate.</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>Q2.</strong> Can you have a propagating electromagnetic wave with an electric field but no magnetic field?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>No.</strong> In a propagating wave, E and H are inseparable. The changing E field is what creates the H field, and vice versa. Remove one and the wave cannot sustain itself.</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>Q3.</strong> Radio waves travel at the speed of light. Visible light also travels at the speed of light. If they're both the same kind of wave, why can't we see radio waves?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p>Human eyes contain receptor cells that only respond to EM waves in a very narrow frequency range (~400–750 THz). Radio waves (MHz to GHz) are far below this. The waves are real and passing through us — our eyes simply aren't built to detect them. We need an antenna and receiver instead.</p></div>
+      </div>
+      <div class="exercise">
+        <p><strong>Q4.</strong> You double the frequency of a signal. What happens to its wavelength?</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show Answer ▸</button>
+        <div class="reveal-content"><p><strong>It halves.</strong> Since λ = c / f, doubling f means λ becomes c / (2f) = half the original wavelength. Frequency and wavelength are inversely proportional.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ WHAT'S NEXT ═══════════ -->
+  <section class="chapter" id="whats-next">
+    <div class="next-card">
+      <div class="diagram-label">UP NEXT</div>
+      <h3 style="color:var(--text-primary);margin-bottom:12px;">Lesson 2 — From Waves to Wires</h3>
+      <p style="color:var(--text-secondary);font-size:0.95rem;">We'll zoom in on what happens at the antenna itself. How does current flowing in a piece of wire create a wave that detaches and flies across space? And how does a distant piece of wire catch that wave and turn it back into current? The "How Antennas Radiate" interactive becomes our primary tool.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p>RF-Hub · Lesson 1 · What is EM Radiation? · <a href="https://github.com/unmanned-systems-uk/RF-Hub">GitHub</a></p>
+    <p style="margin-top:8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// GLOBALS
+// ═══════════════════════════════════════════
+const C = 299792458;
+const E_COLOR = '#f59e0b';
+const H_COLOR = '#06b6d4';
+const EM_COLOR = '#a78bfa';
+const DIM = '#2a3448';
+const TEXT_COL = '#64748b';
+const BG = '#0a0e1a';
+const CARD_BG = '#111827';
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setupCanvas(id) {
+  const cv = document.getElementById(id);
+  if (!cv) return null;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = cv.getBoundingClientRect();
+  cv.width = rect.width * dpr;
+  cv.height = rect.height * dpr;
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { cv, ctx, w: rect.width, h: rect.height };
+}
+
+function drawGrid(ctx, w, h) {
+  ctx.strokeStyle = '#1a2234';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+}
+
+function label(ctx, txt, x, y, col, sz) {
+  ctx.font = (sz||10)+'px "IBM Plex Mono", monospace';
+  ctx.fillStyle = col||TEXT_COL;
+  ctx.fillText(txt, x, y);
+}
+
+// ═══════════════════════════════════════════
+// 1. FIELD TRIO COMPARISON
+// ═══════════════════════════════════════════
+let fieldCanvases = {};
+
+function initFieldTrio() {
+  fieldCanvases.g = setupCanvas('fieldGravity');
+  fieldCanvases.e = setupCanvas('fieldElectric');
+  fieldCanvases.m = setupCanvas('fieldMagnetic');
+  drawFieldPanel('g'); drawFieldPanel('e'); drawFieldPanel('m');
+
+  // Hover handlers
+  ['fieldGravity','fieldElectric','fieldMagnetic'].forEach(id => {
+    const cv = document.getElementById(id);
+    const key = id === 'fieldGravity' ? 'g' : id === 'fieldElectric' ? 'e' : 'm';
+    cv.addEventListener('mousemove', ev => {
+      const r = cv.getBoundingClientRect();
+      drawFieldPanel(key, (ev.clientX - r.left), (ev.clientY - r.top));
+    });
+    cv.addEventListener('mouseleave', () => drawFieldPanel(key));
+  });
+}
+
+function drawFieldPanel(key, mx, my) {
+  const c = fieldCanvases[key];
+  if (!c) return;
+  const {ctx, w, h} = c;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+
+  const cx = w/2, cy = h/2;
+
+  if (key === 'g') {
+    // Earth
+    ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI*2);
+    ctx.fillStyle = '#334155'; ctx.fill();
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5; ctx.stroke();
+    label(ctx, '🌍', cx-8, cy+5, '#fff', 16);
+    // Field lines pointing inward
+    for (let a = 0; a < 8; a++) {
+      const angle = a * Math.PI/4;
+      const r1 = 45, r2 = 90;
+      const x1 = cx + Math.cos(angle)*r1, y1 = cy + Math.sin(angle)*r1;
+      const x2 = cx + Math.cos(angle)*r2, y2 = cy + Math.sin(angle)*r2;
+      ctx.strokeStyle = 'rgba(226,232,240,0.4)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x1,y1); ctx.stroke();
+      // arrowhead toward center
+      const al = 6, aa = Math.atan2(y1-y2, x1-x2);
+      ctx.fillStyle = 'rgba(226,232,240,0.5)';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1-al*Math.cos(aa-0.4), y1-al*Math.sin(aa-0.4));
+      ctx.lineTo(x1-al*Math.cos(aa+0.4), y1-al*Math.sin(aa+0.4));
+      ctx.fill();
+    }
+    label(ctx, 'GRAVITY', 8, 16, TEXT_COL, 10);
+  } else if (key === 'e') {
+    // Positive charge
+    ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(245,158,11,0.3)'; ctx.fill();
+    ctx.strokeStyle = E_COLOR; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = E_COLOR; ctx.font = '16px "IBM Plex Mono"';
+    ctx.textAlign = 'center'; ctx.fillText('+', cx, cy+6); ctx.textAlign = 'start';
+    // Field lines outward
+    for (let a = 0; a < 8; a++) {
+      const angle = a * Math.PI/4;
+      const r1 = 22, r2 = 80;
+      const x1 = cx+Math.cos(angle)*r1, y1 = cy+Math.sin(angle)*r1;
+      const x2 = cx+Math.cos(angle)*r2, y2 = cy+Math.sin(angle)*r2;
+      ctx.strokeStyle = 'rgba(245,158,11,0.4)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      const al = 6, aa = Math.atan2(y2-y1, x2-x1);
+      ctx.fillStyle = 'rgba(245,158,11,0.5)';
+      ctx.beginPath();
+      ctx.moveTo(x2,y2);
+      ctx.lineTo(x2-al*Math.cos(aa-0.4),y2-al*Math.sin(aa-0.4));
+      ctx.lineTo(x2-al*Math.cos(aa+0.4),y2-al*Math.sin(aa+0.4));
+      ctx.fill();
+    }
+    label(ctx, 'ELECTRIC', 8, 16, E_COLOR, 10);
+  } else {
+    // Bar magnet
+    ctx.fillStyle = '#ef4444'; ctx.fillRect(cx-30, cy-12, 30, 24);
+    ctx.fillStyle = '#3b82f6'; ctx.fillRect(cx, cy-12, 30, 24);
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1;
+    ctx.strokeRect(cx-30, cy-12, 60, 24);
+    ctx.fillStyle = '#fff'; ctx.font = '12px "IBM Plex Mono"';
+    ctx.textAlign = 'center';
+    ctx.fillText('N', cx-15, cy+5); ctx.fillText('S', cx+15, cy+5);
+    ctx.textAlign = 'start';
+    // Curved field lines from N to S
+    const curves = [40, 65, 90];
+    curves.forEach((r, i) => {
+      ctx.strokeStyle = `rgba(6,182,212,${0.5 - i*0.12})`;
+      ctx.lineWidth = 1;
+      // Top arc
+      ctx.beginPath();
+      ctx.moveTo(cx-30, cy);
+      ctx.quadraticCurveTo(cx-30-r*0.5, cy-r, cx, cy-r);
+      ctx.quadraticCurveTo(cx+30+r*0.5, cy-r, cx+30, cy);
+      ctx.stroke();
+      // Bottom arc
+      ctx.beginPath();
+      ctx.moveTo(cx-30, cy);
+      ctx.quadraticCurveTo(cx-30-r*0.5, cy+r, cx, cy+r);
+      ctx.quadraticCurveTo(cx+30+r*0.5, cy+r, cx+30, cy);
+      ctx.stroke();
+    });
+    label(ctx, 'MAGNETIC', 8, 16, H_COLOR, 10);
+  }
+
+  // Hover arrow
+  if (mx !== undefined && my !== undefined) {
+    let dx, dy;
+    if (key === 'g') { dx = cx - mx; dy = cy - my; }
+    else if (key === 'e') { dx = mx - cx; dy = my - cy; }
+    else { // magnetic — simplified dipole direction
+      const relX = mx - cx, relY = my - cy;
+      const r = Math.sqrt(relX*relX + relY*relY) || 1;
+      const theta = Math.atan2(relY, relX);
+      dx = 2*Math.cos(theta)*Math.cos(theta) - Math.sin(theta)*Math.sin(theta);
+      dy = 3*Math.sin(theta)*Math.cos(theta);
+    }
+    const mag = Math.sqrt(dx*dx + dy*dy) || 1;
+    const len = 20;
+    const ax = dx/mag * len, ay = dy/mag * len;
+    const col = key === 'g' ? '#e2e8f0' : key === 'e' ? E_COLOR : H_COLOR;
+    ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.globalAlpha = 0.8;
+    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx+ax, my+ay); ctx.stroke();
+    const al = 7, aa = Math.atan2(ay, ax);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(mx+ax, my+ay);
+    ctx.lineTo(mx+ax-al*Math.cos(aa-0.4), my+ay-al*Math.sin(aa-0.4));
+    ctx.lineTo(mx+ax-al*Math.cos(aa+0.4), my+ay-al*Math.sin(aa+0.4));
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ═══════════════════════════════════════════
+// 2. STATIC VS CHANGING
+// ═══════════════════════════════════════════
+let staticAnim = { playing: false, time: 0, id: null };
+let staticC, changingC;
+
+function initStaticVsChanging() {
+  staticC = setupCanvas('staticCanvas');
+  changingC = setupCanvas('changingCanvas');
+  drawStaticPanel(0); drawChangingPanel(0);
+}
+
+function toggleStaticAnim() {
+  staticAnim.playing = !staticAnim.playing;
+  document.getElementById('staticPlayBtn').textContent = staticAnim.playing ? '⏸ Pause' : '▶ Play';
+  document.getElementById('staticPlayBtn').classList.toggle('active', staticAnim.playing);
+  if (staticAnim.playing) animateStatic();
+  else cancelAnimationFrame(staticAnim.id);
+}
+
+function animateStatic() {
+  if (!staticAnim.playing) return;
+  staticAnim.time += 0.02;
+  drawStaticPanel(staticAnim.time);
+  drawChangingPanel(staticAnim.time);
+  staticAnim.id = requestAnimationFrame(animateStatic);
+}
+
+function drawStaticPanel(t) {
+  if (!staticC) return;
+  const {ctx, w, h} = staticC;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+  const cx = w/2, cy = h/2;
+  // Static charge
+  ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(245,158,11,0.3)'; ctx.fill();
+  ctx.strokeStyle = E_COLOR; ctx.lineWidth = 2; ctx.stroke();
+  // Steady E field lines
+  for (let a = 0; a < 8; a++) {
+    const angle = a*Math.PI/4;
+    ctx.strokeStyle = 'rgba(245,158,11,0.35)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(angle)*16, cy+Math.sin(angle)*16);
+    ctx.lineTo(cx+Math.cos(angle)*80, cy+Math.sin(angle)*80);
+    ctx.stroke();
+  }
+  // Label after 2s
+  if (t > 2) {
+    ctx.globalAlpha = Math.min(1, (t-2)*0.5);
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(10, h-50, w-20, 40);
+    ctx.fillStyle = TEXT_COL; ctx.font = '11px "IBM Plex Sans"';
+    ctx.fillText('Static charge → static E field', 20, h-32);
+    ctx.fillText('→ no H field. Goes nowhere.', 20, h-18);
+    ctx.globalAlpha = 1;
+  }
+  // Clock
+  label(ctx, '⏱ ' + t.toFixed(1) + 's', w-70, 18, TEXT_COL, 10);
+}
+
+function drawChangingPanel(t) {
+  if (!changingC) return;
+  const {ctx, w, h} = changingC;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+  const cx = w/2, cy = h/2;
+  // Oscillating charge
+  const osc = Math.sin(t * 4) * 30;
+  const qy = cy + osc;
+  ctx.beginPath(); ctx.arc(cx, qy, 10, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(245,158,11,0.3)'; ctx.fill();
+  ctx.strokeStyle = E_COLOR; ctx.lineWidth = 2; ctx.stroke();
+  // Distorting E field lines
+  for (let a = 0; a < 8; a++) {
+    const angle = a * Math.PI/4;
+    const wobble = Math.sin(t*4 + a*0.3) * 8;
+    ctx.strokeStyle = `rgba(245,158,11,${0.3 + Math.abs(Math.sin(t*4))*0.3})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(angle)*16, qy+Math.sin(angle)*16);
+    ctx.quadraticCurveTo(
+      cx+Math.cos(angle)*50+wobble, qy+Math.sin(angle)*50,
+      cx+Math.cos(angle)*80, qy+Math.sin(angle)*80
+    );
+    ctx.stroke();
+  }
+  // H field loops appearing when changing
+  const hStrength = Math.abs(Math.cos(t * 4));
+  if (hStrength > 0.1) {
+    ctx.globalAlpha = hStrength * 0.6;
+    ctx.strokeStyle = H_COLOR; ctx.lineWidth = 1.5;
+    [30, 50, 70].forEach(r => {
+      ctx.beginPath(); ctx.arc(cx, qy, r, 0, Math.PI*2); ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+  }
+  // Label
+  if (t > 1) {
+    ctx.globalAlpha = Math.min(1, (t-1)*0.5);
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(10, h-50, w-20, 40);
+    ctx.fillStyle = EM_COLOR; ctx.font = '11px "IBM Plex Sans"';
+    ctx.fillText('Changing E → creates H.', 20, h-32);
+    ctx.fillText('This is the engine.', 20, h-18);
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ═══════════════════════════════════════════
+// 3. CHAIN REACTION WAVE
+// ═══════════════════════════════════════════
+let chainCurrentStep = 0;
+let chainAutoId = null;
+let chainC;
+
+const chainSteps = [
+  { title: 'Step 1: Charge at rest', desc: 'E-field lines are steady.' },
+  { title: 'Step 2: Charge accelerates', desc: 'E-field distorts.' },
+  { title: 'Step 3: Changing E → creates H', desc: 'Cyan H-field loops appear.' },
+  { title: 'Step 4: Changing H → creates E', desc: 'New E disturbance further out.' },
+  { title: 'Step 5: Cascade continues', desc: '→ creates H → creates E → ...' },
+  { title: 'Step 6: Self-sustaining wave', desc: 'Charge stops. Wave keeps going.' }
+];
+
+function initChain() {
+  chainC = setupCanvas('chainCanvas');
+  drawChain();
+}
+
+function chainStep(dir) {
+  chainCurrentStep = Math.max(0, Math.min(5, chainCurrentStep + dir));
+  drawChain();
+}
+
+function chainAutoPlay() {
+  if (chainAutoId) { clearInterval(chainAutoId); chainAutoId = null;
+    document.getElementById('chainAutoBtn').classList.remove('active'); return; }
+  chainCurrentStep = 0; drawChain();
+  document.getElementById('chainAutoBtn').classList.add('active');
+  chainAutoId = setInterval(() => {
+    chainCurrentStep++;
+    if (chainCurrentStep > 5) { clearInterval(chainAutoId); chainAutoId = null;
+      document.getElementById('chainAutoBtn').classList.remove('active'); return; }
+    drawChain();
+  }, 2000);
+}
+
+function drawChain() {
+  if (!chainC) return;
+  const {ctx, w, h} = chainC;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+  document.getElementById('chainStepLabel').textContent = 'Step ' + (chainCurrentStep+1) + ' / 6';
+
+  const cx = 100, cy = h/2;
+  const s = chainCurrentStep;
+
+  // Charge
+  const qOffset = s >= 1 && s < 5 ? Math.sin(Date.now()*0.003) * 20 : 0;
+  const qy = cy + (s >= 1 ? qOffset : 0);
+  ctx.beginPath(); ctx.arc(cx, qy, 10, 0, Math.PI*2);
+  ctx.fillStyle = s >= 5 ? 'rgba(245,158,11,0.15)' : 'rgba(245,158,11,0.4)';
+  ctx.fill();
+  ctx.strokeStyle = s >= 5 ? 'rgba(245,158,11,0.3)' : E_COLOR;
+  ctx.lineWidth = 2; ctx.stroke();
+
+  // E field near charge
+  if (s >= 0) {
+    const distort = s >= 1 ? Math.sin(Date.now()*0.003)*5 : 0;
+    for (let a = 0; a < 6; a++) {
+      const angle = a*Math.PI/3;
+      ctx.strokeStyle = `rgba(245,158,11,${s===0?0.35:0.5})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(angle)*16, qy+Math.sin(angle)*16);
+      ctx.lineTo(cx+Math.cos(angle)*(50+distort), qy+Math.sin(angle)*(50+distort));
+      ctx.stroke();
+    }
+  }
+
+  // H field loops (step 2+)
+  if (s >= 2) {
+    ctx.strokeStyle = H_COLOR; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.6;
+    ctx.beginPath(); ctx.arc(cx+80, cy, 25, 0, Math.PI*2); ctx.stroke();
+    if (s >= 3) { ctx.beginPath(); ctx.arc(cx+80, cy, 40, 0, Math.PI*2); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    // Flash effect
+    ctx.beginPath(); ctx.arc(cx+80, cy, 26, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(6,182,212,0.08)'; ctx.fill();
+  }
+
+  // New E further out (step 3+)
+  if (s >= 3) {
+    for (let a = 0; a < 4; a++) {
+      const angle = a*Math.PI/2;
+      ctx.strokeStyle = 'rgba(245,158,11,0.4)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx+160+Math.cos(angle)*10, cy+Math.sin(angle)*10);
+      ctx.lineTo(cx+160+Math.cos(angle)*40, cy+Math.sin(angle)*40);
+      ctx.stroke();
+    }
+  }
+
+  // More H further out (step 4+)
+  if (s >= 4) {
+    ctx.strokeStyle = H_COLOR; ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
+    ctx.beginPath(); ctx.arc(cx+240, cy, 25, 0, Math.PI*2); ctx.stroke();
+    ctx.globalAlpha = 1;
+    // And more E
+    for (let a = 0; a < 4; a++) {
+      const angle = a*Math.PI/2;
+      ctx.strokeStyle = 'rgba(245,158,11,0.3)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx+320+Math.cos(angle)*8, cy+Math.sin(angle)*8);
+      ctx.lineTo(cx+320+Math.cos(angle)*30, cy+Math.sin(angle)*30);
+      ctx.stroke();
+    }
+  }
+
+  // Full wave (step 5)
+  if (s >= 5) {
+    // Wave propagating right
+    const waveStart = cx + 60;
+    ctx.strokeStyle = E_COLOR; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let x = waveStart; x < w - 40; x++) {
+      const phase = (x - waveStart) * 0.04;
+      const ey = cy + Math.sin(phase) * 40 * Math.min(1, (x-waveStart)/100);
+      if (x === waveStart) ctx.moveTo(x, ey); else ctx.lineTo(x, ey);
+    }
+    ctx.stroke();
+    // H dots
+    ctx.strokeStyle = H_COLOR; ctx.lineWidth = 1;
+    for (let x = waveStart; x < w - 40; x += 20) {
+      const phase = (x - waveStart) * 0.04;
+      const val = Math.sin(phase) * Math.min(1, (x-waveStart)/100);
+      const sz = Math.abs(val) * 5;
+      if (sz > 1) {
+        ctx.globalAlpha = Math.abs(val) * 0.6;
+        if (val > 0) { ctx.fillStyle = H_COLOR; ctx.beginPath(); ctx.arc(x, cy, sz, 0, Math.PI*2); ctx.fill(); }
+        else { ctx.beginPath(); ctx.moveTo(x-sz,cy-sz); ctx.lineTo(x+sz,cy+sz); ctx.moveTo(x+sz,cy-sz); ctx.lineTo(x-sz,cy+sz); ctx.stroke(); }
+        ctx.globalAlpha = 1;
+      }
+    }
+    // Propagation arrow
+    ctx.strokeStyle = EM_COLOR; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(w-60, cy); ctx.lineTo(w-30, cy); ctx.stroke();
+    ctx.fillStyle = EM_COLOR; ctx.beginPath();
+    ctx.moveTo(w-30,cy); ctx.lineTo(w-38,cy-5); ctx.lineTo(w-38,cy+5); ctx.fill();
+  }
+
+  // Cause-effect labels
+  const labels = [
+    '', '', 'Changing E → creates H', 'Changing H → creates E',
+    '→ creates H → creates E → ...', 'Self-sustaining. No medium needed.'
+  ];
+  if (labels[s]) {
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillRect(20, h-45, w-40, 35);
+    ctx.fillStyle = EM_COLOR; ctx.font = '500 13px "IBM Plex Mono"';
+    ctx.textAlign = 'center'; ctx.fillText(labels[s], w/2, h-22); ctx.textAlign = 'start';
+  }
+}
+
+// ═══════════════════════════════════════════
+// 4. FORMULA REARRANGEMENT + CALCULATOR
+// ═══════════════════════════════════════════
+function showFormula(mode) {
+  const d = document.getElementById('formulaDisplay');
+  document.querySelectorAll('.formula-btns .anim-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'lambda') {
+    d.innerHTML = '<span class="var-lambda">λ</span> = <span class="var-c">c</span> / <span class="var-f">f</span>';
+    document.getElementById('btnLambda').classList.add('active');
+  } else if (mode === 'f') {
+    d.innerHTML = '<span class="var-f">f</span> = <span class="var-c">c</span> / <span class="var-lambda">λ</span>';
+    document.getElementById('btnF').classList.add('active');
+  } else {
+    d.innerHTML = '<span class="var-c">c</span> = <span class="var-f">f</span> × <span class="var-lambda">λ</span>';
+    document.getElementById('btnC').classList.add('active');
+  }
+}
+
+let calcLock = false;
+function calcFromFrequency() {
+  if (calcLock) return; calcLock = true;
+  const v = parseFloat(document.getElementById('calcFreqIn').value);
+  const u = parseFloat(document.getElementById('calcFreqUnit').value);
+  const wu = parseFloat(document.getElementById('calcWlUnit').value);
+  if (v && v > 0) {
+    const wl = C / (v * u);
+    document.getElementById('calcWlIn').value = parseFloat((wl / wu).toPrecision(6));
+  } else { document.getElementById('calcWlIn').value = ''; }
+  calcLock = false;
+}
+
+function calcFromWavelength() {
+  if (calcLock) return; calcLock = true;
+  const v = parseFloat(document.getElementById('calcWlIn').value);
+  const wu = parseFloat(document.getElementById('calcWlUnit').value);
+  const fu = parseFloat(document.getElementById('calcFreqUnit').value);
+  if (v && v > 0) {
+    const freq = C / (v * wu);
+    document.getElementById('calcFreqIn').value = parseFloat((freq / fu).toPrecision(6));
+  } else { document.getElementById('calcFreqIn').value = ''; }
+  calcLock = false;
+}
+
+// ═══════════════════════════════════════════
+// 5. WAVELENGTH AT HUMAN SCALE
+// ═══════════════════════════════════════════
+let humanC;
+
+function initHumanScale() {
+  humanC = setupCanvas('humanScaleCanvas');
+  updateHumanScale();
+}
+
+function updateHumanScale() {
+  if (!humanC) return;
+  const {ctx, w, h} = humanC;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+
+  const freq = parseFloat(document.getElementById('scaleFreqSlider').value);
+  const wl = 300 / freq; // metres
+  document.getElementById('scaleFreqLabel').textContent =
+    freq >= 1000 ? (freq/1000).toFixed(1) + ' GHz' : freq + ' MHz';
+
+  // Person: ~170cm, scale so person is 170px tall
+  const personH = 170;
+  const baseY = h - 40;
+  const personX = 120;
+  const pxPerM = personH / 1.7; // 100px per metre
+
+  // Draw person silhouette
+  ctx.fillStyle = '#334155';
+  // Head
+  ctx.beginPath(); ctx.arc(personX, baseY - personH + 12, 12, 0, Math.PI*2); ctx.fill();
+  // Body
+  ctx.fillRect(personX - 8, baseY - personH + 24, 16, 70);
+  // Legs
+  ctx.fillRect(personX - 8, baseY - personH + 94, 7, 76);
+  ctx.fillRect(personX + 1, baseY - personH + 94, 7, 76);
+  label(ctx, '170 cm', personX - 15, baseY + 14, TEXT_COL, 10);
+
+  // Height reference line
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(personX+30, baseY); ctx.lineTo(personX+30, baseY-personH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Wavelength bar
+  const barX = personX + 60;
+  const barH = Math.min(wl * pxPerM, h - 60);
+  const color = freq < 100 ? EM_COLOR : freq < 500 ? E_COLOR : freq < 3000 ? H_COLOR : '#ef4444';
+
+  if (wl * pxPerM > h - 60) {
+    // Too tall — draw partial with arrow
+    ctx.fillStyle = color; ctx.globalAlpha = 0.3;
+    ctx.fillRect(barX, 10, 30, baseY - 10);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.strokeRect(barX, 10, 30, baseY - 10);
+    // Arrow pointing up
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.moveTo(barX+15, 5); ctx.lineTo(barX+8, 15); ctx.lineTo(barX+22, 15); ctx.fill();
+    label(ctx, wl.toFixed(2) + ' m', barX + 40, 30, color, 13);
+    label(ctx, '(extends beyond view)', barX + 40, 48, TEXT_COL, 10);
+  } else {
+    ctx.fillStyle = color; ctx.globalAlpha = 0.2;
+    ctx.fillRect(barX, baseY - barH, 30, barH);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.strokeRect(barX, baseY - barH, 30, barH);
+  }
+
+  // Label
+  const labelY = Math.max(30, baseY - barH - 10);
+  if (wl * pxPerM <= h - 60) {
+    label(ctx, wl >= 1 ? wl.toFixed(2) + ' m' : (wl*100).toFixed(1) + ' cm', barX + 40, labelY, color, 13);
+  }
+  label(ctx, freq >= 1000 ? (freq/1000).toFixed(1)+' GHz' : freq+' MHz', barX + 40, labelY + 18, TEXT_COL, 11);
+
+  // Reference markers
+  const refs = [
+    {f:145, name:'2m band', col:EM_COLOR},
+    {f:440, name:'70cm band', col:E_COLOR},
+    {f:2400, name:'WiFi', col:H_COLOR},
+    {f:10000, name:'10 GHz', col:'#ef4444'}
+  ];
+  let ry = 30;
+  refs.forEach(r => {
+    const rw = 300 / r.f;
+    const rh = Math.min(rw * pxPerM, 50);
+    const rx = w - 180;
+    ctx.fillStyle = r.col; ctx.globalAlpha = 0.15;
+    ctx.fillRect(rx, ry, rh, 14);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = r.col; ctx.lineWidth = 1;
+    ctx.strokeRect(rx, ry, rh, 14);
+    label(ctx, r.name + ' (' + (rw>=1?rw.toFixed(1)+'m':(rw*100).toFixed(0)+'cm') + ')', rx + rh + 8, ry + 11, r.col, 10);
+    ry += 22;
+  });
+}
+
+// ═══════════════════════════════════════════
+// 6. EM SPECTRUM STRIP (positioned via JS)
+// ═══════════════════════════════════════════
+function initSpectrum() {
+  const strip = document.getElementById('spectrumStrip');
+  const sw = 1200;
+  // Logarithmic positioning: freq range 1MHz to 1e21 Hz
+  function freqToX(fHz) {
+    const minLog = Math.log10(1e6); // 1 MHz
+    const maxLog = Math.log10(1e21); // gamma
+    const frac = (Math.log10(fHz) - minLog) / (maxLog - minLog);
+    return 20 + frac * (sw - 40);
+  }
+
+  // Position bands
+  function posBand(id, f1, f2) {
+    const el = document.getElementById(id);
+    const x1 = freqToX(f1), x2 = freqToX(f2);
+    el.style.left = x1 + 'px'; el.style.width = (x2 - x1) + 'px';
+  }
+  posBand('bandRadio', 1e6, 3e11);
+  posBand('bandIR', 3e11, 4e14);
+  posBand('bandVisible', 4e14, 7.5e14);
+  posBand('bandUV', 7.5e14, 3e16);
+  posBand('bandXray', 3e16, 3e19);
+  posBand('bandGamma', 3e19, 1e21);
+
+  // Sub-bands
+  posBand('subHF', 3e6, 3e7);
+  posBand('subVHF', 3e7, 3e8);
+  posBand('subUHF', 3e8, 3e9);
+  posBand('subSHF', 3e9, 3e10);
+
+  // Position markers
+  function posMarker(id, fHz) {
+    const el = document.getElementById(id);
+    el.style.left = freqToX(fHz) + 'px';
+  }
+  posMarker('markerFM', 100e6);
+  posMarker('marker2m', 145e6);
+  posMarker('marker70cm', 435e6);
+  posMarker('markerGPS', 1.575e9);
+  posMarker('markerWiFi', 2.4e9);
+}
+
+// ═══════════════════════════════════════════
+// 7. E-H-K 3D WAVE
+// ═══════════════════════════════════════════
+let wave3d = { playing: true, time: 0, id: null, view: '3d' };
+let wave3dC;
+
+function initWave3d() {
+  wave3dC = setupCanvas('wave3dCanvas');
+  if (!reducedMotion) animateWave3d();
+  else { drawWave3d(0); }
+}
+
+function toggleWave3d() {
+  wave3d.playing = !wave3d.playing;
+  const btn = document.getElementById('wave3dPlayBtn');
+  btn.textContent = wave3d.playing ? '⏸ Pause' : '▶ Play';
+  btn.classList.toggle('active', wave3d.playing);
+  if (wave3d.playing) animateWave3d();
+  else cancelAnimationFrame(wave3d.id);
+}
+
+function setWave3dView(v) {
+  wave3d.view = v;
+  document.querySelectorAll('#section-6 .anim-controls .anim-btn').forEach((b,i) => {
+    if (i > 0) b.classList.toggle('active', b.textContent.trim().toLowerCase() === v);
+  });
+  if (!wave3d.playing) drawWave3d(wave3d.time);
+}
+
+function animateWave3d() {
+  if (!wave3d.playing) return;
+  wave3d.time += 0.02;
+  drawWave3d(wave3d.time);
+  wave3d.id = requestAnimationFrame(animateWave3d);
+}
+
+function drawWave3d(t) {
+  if (!wave3dC) return;
+  const {ctx, w, h} = wave3dC;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = BG; ctx.fillRect(0,0,w,h);
+  drawGrid(ctx, w, h);
+
+  const ox = w * 0.08, oy = h * 0.5;
+  const len = w * 0.8;
+  const ampE = h * 0.28, ampH = w * 0.1;
+  const phaseSpeed = t * 3;
+
+  // View transforms
+  let isoX, isoY;
+  if (wave3d.view === 'side') {
+    isoX = (x, z) => ox + x;
+    isoY = (y, z) => oy - y;
+  } else if (wave3d.view === 'top') {
+    isoX = (x, z) => ox + x + z * 0.8;
+    isoY = (y, z) => oy + z * 0.4;
+  } else { // 3d
+    isoX = (x, z) => ox + x + z * 0.3;
+    isoY = (y, z) => oy - y + z * 0.15;
+  }
+
+  // Propagation axis
+  ctx.setLineDash([4,4]); ctx.strokeStyle = DIM; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(isoX(0,0), isoY(0,0));
+  ctx.lineTo(isoX(len,0), isoY(0,0)); ctx.stroke(); ctx.setLineDash([]);
+
+  // k arrow
+  ctx.strokeStyle = EM_COLOR; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(isoX(len-15,0), isoY(0,0));
+  ctx.lineTo(isoX(len+10,0), isoY(0,0)); ctx.stroke();
+  ctx.fillStyle = EM_COLOR; ctx.beginPath();
+  ctx.moveTo(isoX(len+10,0), isoY(0,0));
+  ctx.lineTo(isoX(len+2,0)-4, isoY(0,0)-4);
+  ctx.lineTo(isoX(len+2,0)-4, isoY(0,0)+4); ctx.fill();
+  label(ctx, 'k', isoX(len+14,0), isoY(0,0)-4, EM_COLOR, 12);
+
+  const segs = 200;
+
+  // H field (behind)
+  ctx.strokeStyle = H_COLOR; ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let i = 0; i <= segs; i++) {
+    const frac = i/segs, x = frac*len;
+    const phase = frac * Math.PI * 4 - phaseSpeed;
+    const hz = Math.sin(phase) * ampH;
+    const px = isoX(x, hz), py = isoY(0, hz);
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // H reference lines
+  for (let i = 0; i < 16; i++) {
+    const frac = i/16, x = frac*len;
+    const phase = frac*Math.PI*4 - phaseSpeed;
+    const hz = Math.sin(phase) * ampH;
+    if (Math.abs(hz) > ampH*0.3) {
+      ctx.strokeStyle = H_COLOR; ctx.lineWidth = 0.6; ctx.globalAlpha = 0.25;
+      ctx.beginPath(); ctx.moveTo(isoX(x,0), isoY(0,0));
+      ctx.lineTo(isoX(x,hz), isoY(0,hz)); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  }
+
+  // E field (in front)
+  ctx.strokeStyle = E_COLOR; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i <= segs; i++) {
+    const frac = i/segs, x = frac*len;
+    const phase = frac*Math.PI*4 - phaseSpeed;
+    const ey = Math.sin(phase) * ampE;
+    const px = isoX(x,0), py = isoY(ey,0);
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // E reference lines
+  for (let i = 0; i < 16; i++) {
+    const frac = i/16, x = frac*len;
+    const phase = frac*Math.PI*4 - phaseSpeed;
+    const ey = Math.sin(phase) * ampE;
+    if (Math.abs(ey) > ampE*0.3) {
+      ctx.strokeStyle = E_COLOR; ctx.lineWidth = 0.6; ctx.globalAlpha = 0.25;
+      ctx.beginPath(); ctx.moveTo(isoX(x,0), isoY(0,0));
+      ctx.lineTo(isoX(x,0), isoY(ey,0)); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  }
+
+  // Labels
+  label(ctx, 'E (Electric Field)', isoX(5,0), isoY(ampE+12,0), E_COLOR, 11);
+  label(ctx, 'H (Magnetic Field)', isoX(len*0.4, ampH+5), isoY(-8, ampH+5), H_COLOR, 11);
+
+  // Right-hand rule inset
+  const rhx = w - 100, rhy = 30;
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.fillRect(rhx-10, rhy-5, 95, 65);
+  ctx.strokeStyle = DIM; ctx.lineWidth = 1;
+  ctx.strokeRect(rhx-10, rhy-5, 95, 65);
+  label(ctx, 'RIGHT-HAND', rhx, rhy+10, TEXT_COL, 8);
+  label(ctx, 'RULE', rhx, rhy+20, TEXT_COL, 8);
+  label(ctx, '→ thumb = k', rhx, rhy+35, EM_COLOR, 9);
+  label(ctx, '↑ index = E', rhx, rhy+47, E_COLOR, 9);
+  label(ctx, '⊙ middle = H', rhx, rhy+59, H_COLOR, 9);
+}
+
+// ═══════════════════════════════════════════
+// SELF-CHECK REVEAL
+// ═══════════════════════════════════════════
+function toggleReveal(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.textContent = isOpen ? 'Show Answer ▸' : 'Hide Answer ▾';
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init() {
+  initFieldTrio();
+  initStaticVsChanging();
+  initChain();
+  initHumanScale();
+  initSpectrum();
+  initWave3d();
+}
+
+// Lazy init with IntersectionObserver for performance
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+// Resize handler
+window.addEventListener('resize', () => {
+  initFieldTrio();
+  initStaticVsChanging();
+  chainC = setupCanvas('chainCanvas'); drawChain();
+  initHumanScale();
+  wave3dC = setupCanvas('wave3dCanvas');
+  if (!wave3d.playing) drawWave3d(wave3d.time);
+});
+</script>

@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EM Field & Radiation Pattern Animator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #111827;
+  --bg-input: #1a2234;
+  --accent-e: #f59e0b;
+  --accent-h: #06b6d4;
+  --accent-em: #a78bfa;
+  --accent-power: #ef4444;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
+  --border: #1e293b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+header {
+  padding: 40px 0 20px;
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-em));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Controls panel */
+.controls-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+.control-group {
+  flex: 1;
+  min-width: 180px;
+}
+
+.control-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-value {
+  color: var(--accent-em);
+  font-weight: 500;
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(167,139,250,0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  cursor: pointer;
+  border: none;
+}
+
+/* Legend inline */
+.legend-inline {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-width: 100%;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Canvas sections */
+.section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin: 28px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(167,139,250,0.3), transparent);
+}
+
+.canvas-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 700px) {
+  .canvas-row { grid-template-columns: 1fr; }
+}
+
+.canvas-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas-card-full {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.canvas-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.canvas-subtitle {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  background: transparent;
+}
+
+/* Antenna selector */
+.antenna-controls {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 28px;
+  margin: 16px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-antenna {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 8px 18px;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-antenna:hover {
+  background: rgba(167,139,250,0.1);
+  color: var(--text-primary);
+}
+
+.btn-antenna.active {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  border-color: var(--accent-em);
+  font-weight: 500;
+}
+
+.rotation-control {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Info panel */
+.info-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.info-panel strong { color: var(--text-primary); font-weight: 500; }
+.info-panel .e-color { color: var(--accent-e); }
+.info-panel .h-color { color: var(--accent-h); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 30px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-top: 40px;
+}
+
+footer a { color: var(--accent-em); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">RF-Hub · Interactive</div>
+    <h1>EM Field & Radiation Pattern Animator</h1>
+    <p>Watch E and H fields propagate in real-time. Change frequency, speed, antenna type, and viewing angle.</p>
+  </header>
+
+  <!-- Master Controls -->
+  <div class="controls-panel">
+    <div class="control-group">
+      <div class="control-label">
+        <span>Animation Speed</span>
+        <span class="control-value" id="speed-val">1.0×</span>
+      </div>
+      <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+    </div>
+    <div class="control-group">
+      <div class="control-label">
+        <span>Frequency</span>
+        <span class="control-value" id="freq-val">145 MHz</span>
+      </div>
+      <input type="range" id="frequency" min="1" max="500" step="1" value="145">
+    </div>
+    <div class="control-group">
+      <div class="control-label">
+        <span>Wavelength</span>
+        <span class="control-value" id="wavelength-val">2.07 m</span>
+      </div>
+    </div>
+    <div class="legend-inline">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,0.4)"></div>
+        <span style="color:#f59e0b">E Field (Electric)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#06b6d4;box-shadow:0 0 6px rgba(6,182,212,0.4)"></div>
+        <span style="color:#06b6d4">H Field (Magnetic)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#a78bfa"></div>
+        <span style="color:#a78bfa">Propagation Direction</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- E & H Field Animation -->
+  <div class="section-title">E & H Field Propagation</div>
+
+  <div class="canvas-row">
+    <div class="canvas-card">
+      <div class="canvas-header">
+        <span class="canvas-title">Broadside View</span>
+        <span class="canvas-subtitle">Looking perpendicular to propagation</span>
+      </div>
+      <canvas id="broadside" width="480" height="360"></canvas>
+    </div>
+    <div class="canvas-card">
+      <div class="canvas-header">
+        <span class="canvas-title">Isometric View</span>
+        <span class="canvas-subtitle">3D perspective showing E ⊥ H ⊥ k</span>
+      </div>
+      <canvas id="isometric" width="480" height="360"></canvas>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <strong>What you're seeing:</strong> The <span class="e-color">E field (amber)</span> oscillates vertically while the <span class="h-color">H field (cyan)</span> oscillates horizontally — always 90° apart and both perpendicular to the direction of travel. The broadside view shows the wave head-on; the isometric view reveals the full 3D structure. Adjust frequency to see how wavelength changes while the fundamental relationship stays the same.
+  </div>
+
+  <!-- Radiation Pattern -->
+  <div class="section-title">Radiation Pattern</div>
+
+  <div class="antenna-controls">
+    <div>
+      <div class="control-label" style="margin-bottom:8px"><span>Antenna Type</span></div>
+      <div class="btn-group">
+        <button class="btn-antenna active" data-type="dipole">Dipole</button>
+        <button class="btn-antenna" data-type="monopole">Monopole</button>
+        <button class="btn-antenna" data-type="yagi">Yagi</button>
+      </div>
+    </div>
+    <div class="rotation-control">
+      <div class="control-label">
+        <span>Antenna Rotation</span>
+        <span class="control-value" id="rotation-val">0°</span>
+      </div>
+      <input type="range" id="rotation" min="0" max="360" step="1" value="0">
+    </div>
+    <div class="control-group" style="min-width:120px">
+      <div class="control-label">
+        <span>Elements</span>
+        <span class="control-value" id="elements-val">—</span>
+      </div>
+      <input type="range" id="elements" min="3" max="12" step="1" value="5" disabled>
+    </div>
+  </div>
+
+  <div class="canvas-row">
+    <div class="canvas-card">
+      <div class="canvas-header">
+        <span class="canvas-title">E-Plane Pattern</span>
+        <span class="canvas-subtitle" id="eplane-sub">Vertical cross-section</span>
+      </div>
+      <canvas id="eplane" width="480" height="400"></canvas>
+    </div>
+    <div class="canvas-card">
+      <div class="canvas-header">
+        <span class="canvas-title">H-Plane Pattern</span>
+        <span class="canvas-subtitle" id="hplane-sub">Horizontal cross-section</span>
+      </div>
+      <canvas id="hplane" width="480" height="400"></canvas>
+    </div>
+  </div>
+
+  <div class="info-panel" id="antenna-info">
+    <strong>Half-wave Dipole:</strong> The classic figure-of-eight pattern in the E-plane (vertical slice) and omnidirectional doughnut in the H-plane (horizontal slice). Maximum radiation broadside to the wire, nulls off the ends. Rotate the antenna to see how the pattern follows.
+  </div>
+
+  <footer>
+    <p>RF-Hub · <a href="https://github.com/unmanned-systems-uk/RF-Hub">GitHub</a> · Companion to "How Antennas Radiate"</p>
+    <p style="margin-top:6px;">73 and good DX! 📡</p>
+  </footer>
+</div>
+
+<script>
+// ============================================
+// GLOBALS & STATE
+// ============================================
+let animSpeed = 1.0;
+let frequency = 145; // MHz
+let antennaType = 'dipole';
+let rotation = 0; // degrees
+let yagiElements = 5;
+let time = 0;
+let animId;
+
+const E_COLOR = '#f59e0b';
+const H_COLOR = '#06b6d4';
+const EM_COLOR = '#a78bfa';
+const DIM = '#2a3448';
+const GRID = '#1a2234';
+const TEXT_COLOR = '#64748b';
+
+// ============================================
+// CANVAS SETUP
+// ============================================
+function setupCanvas(id) {
+  const canvas = document.getElementById(id);
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { canvas, ctx, w: rect.width, h: rect.height };
+}
+
+let broadside, isometric, eplane, hplane;
+
+function initCanvases() {
+  broadside = setupCanvas('broadside');
+  isometric = setupCanvas('isometric');
+  eplane = setupCanvas('eplane');
+  hplane = setupCanvas('hplane');
+}
+
+// ============================================
+// DRAWING HELPERS
+// ============================================
+function drawGrid(ctx, w, h, spacing = 30) {
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < w; x += spacing) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  }
+  for (let y = 0; y < h; y += spacing) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+}
+
+function drawArrow(ctx, x1, y1, x2, y2, color, width = 1.5) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const headLen = 8;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - headLen * Math.cos(angle - 0.4), y2 - headLen * Math.sin(angle - 0.4));
+  ctx.lineTo(x2 - headLen * Math.cos(angle + 0.4), y2 - headLen * Math.sin(angle + 0.4));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawLabel(ctx, text, x, y, color = TEXT_COLOR, size = 10) {
+  ctx.font = `500 ${size}px 'IBM Plex Mono', monospace`;
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+}
+
+// ============================================
+// BROADSIDE VIEW - E & H wave propagation
+// ============================================
+function drawBroadside(t) {
+  const { ctx, w, h } = broadside;
+  ctx.clearRect(0, 0, w, h);
+  drawGrid(ctx, w, h);
+
+  const cx = w * 0.12;
+  const cy = h / 2;
+  const waveLen = w * 0.35;
+  const amp = h * 0.28;
+  const phaseSpeed = t * 3;
+
+  // Propagation axis
+  ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = '#2a3448';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(w - 20, cy);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  drawArrow(ctx, w - 40, cy, w - 15, cy, EM_COLOR, 1);
+  drawLabel(ctx, 'k', w - 12, cy - 6, EM_COLOR, 10);
+
+  // Antenna symbol at origin
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - 25);
+  ctx.lineTo(cx, cy + 25);
+  ctx.stroke();
+  ctx.fillStyle = E_COLOR;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // E field wave (vertical oscillation)
+  ctx.strokeStyle = E_COLOR;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let x = cx; x < w - 20; x += 1) {
+    const phase = ((x - cx) / waveLen) * Math.PI * 2 - phaseSpeed;
+    const dist = (x - cx) / (w - cx - 20);
+    const decay = 1;
+    const ey = cy - Math.sin(phase) * amp * decay;
+    if (x === cx) ctx.moveTo(x, ey);
+    else ctx.lineTo(x, ey);
+  }
+  ctx.stroke();
+
+  // E field arrows at peaks
+  for (let i = 0; i < 6; i++) {
+    const peakX = cx + ((phaseSpeed / (Math.PI * 2)) % 1) * waveLen + i * (waveLen / 2);
+    if (peakX > cx && peakX < w - 30) {
+      const phase = ((peakX - cx) / waveLen) * Math.PI * 2 - phaseSpeed;
+      const val = Math.sin(phase);
+      if (Math.abs(val) > 0.3) {
+        const ey = cy - val * amp;
+        ctx.strokeStyle = E_COLOR;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = Math.abs(val) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(peakX, cy);
+        ctx.lineTo(peakX, ey);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // H field shown as dots/crosses (into/out of screen)
+  const spacing = waveLen / 8;
+  for (let x = cx + spacing; x < w - 20; x += spacing) {
+    const phase = ((x - cx) / waveLen) * Math.PI * 2 - phaseSpeed;
+    const val = Math.sin(phase + Math.PI / 2); // 90° phase offset (in quadrature... actually same phase but perpendicular)
+    // Actually H is in phase with E for a propagating wave but perpendicular
+    const hval = Math.sin(phase);
+    const size = Math.abs(hval) * 6;
+
+    if (size > 1) {
+      ctx.globalAlpha = Math.abs(hval) * 0.8;
+      if (hval > 0) {
+        // Coming toward viewer - dot
+        ctx.fillStyle = H_COLOR;
+        ctx.beginPath();
+        ctx.arc(x, cy, size, 0, Math.PI * 2);
+        ctx.fill();
+        // Ring
+        ctx.strokeStyle = H_COLOR;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(x, cy, size + 2, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // Going away - cross
+        ctx.strokeStyle = H_COLOR;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x - size, cy - size);
+        ctx.lineTo(x + size, cy + size);
+        ctx.moveTo(x + size, cy - size);
+        ctx.lineTo(x - size, cy + size);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Labels
+  drawLabel(ctx, 'E', cx + 10, cy - amp - 8, E_COLOR, 12);
+  drawLabel(ctx, 'H (⊙ toward you  ✕ away)', cx + 10, cy + amp + 16, H_COLOR, 10);
+  drawLabel(ctx, 'BROADSIDE VIEW', 10, 18, TEXT_COLOR, 10);
+}
+
+// ============================================
+// ISOMETRIC VIEW - 3D perspective
+// ============================================
+function drawIsometric(t) {
+  const { ctx, w, h } = isometric;
+  ctx.clearRect(0, 0, w, h);
+  drawGrid(ctx, w, h);
+
+  const ox = w * 0.1;
+  const oy = h * 0.5;
+  const len = w * 0.75;
+  const ampE = h * 0.25;
+  const ampH = w * 0.12;
+  const phaseSpeed = t * 3;
+  const segments = 200;
+
+  // 3D projection helpers (simple oblique)
+  const isoX = (x, z) => ox + x + z * 0.3;
+  const isoY = (y, z) => oy - y + z * 0.15;
+
+  // Propagation axis
+  ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = '#2a3448';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(isoX(0, 0), isoY(0, 0));
+  ctx.lineTo(isoX(len, 0), isoY(0, 0));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  drawArrow(ctx, isoX(len - 20, 0), isoY(0, 0), isoX(len + 5, 0), isoY(0, 0), EM_COLOR, 1);
+  drawLabel(ctx, 'k', isoX(len + 8, 0), isoY(0, 0) - 4, EM_COLOR, 10);
+
+  // Draw H field first (behind E field)
+  ctx.strokeStyle = H_COLOR;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let i = 0; i <= segments; i++) {
+    const frac = i / segments;
+    const x = frac * len;
+    const phase = frac * Math.PI * 4 - phaseSpeed;
+    const hz = Math.sin(phase) * ampH;
+    const px = isoX(x, hz);
+    const py = isoY(0, hz);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // H field vertical reference lines at quarter-waves
+  const waveLen = len / 2;
+  for (let i = 0; i < 8; i++) {
+    const x = ((phaseSpeed / (Math.PI * 2)) % 0.5) * waveLen + i * (waveLen / 4);
+    if (x > 0 && x < len) {
+      const phase = (x / len) * Math.PI * 4 - phaseSpeed;
+      const hz = Math.sin(phase) * ampH;
+      if (Math.abs(hz) > ampH * 0.3) {
+        ctx.strokeStyle = H_COLOR;
+        ctx.lineWidth = 0.8;
+        ctx.globalAlpha = 0.3;
+        ctx.beginPath();
+        ctx.moveTo(isoX(x, 0), isoY(0, 0));
+        ctx.lineTo(isoX(x, hz), isoY(0, hz));
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // Draw E field (vertical, in front)
+  ctx.strokeStyle = E_COLOR;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i <= segments; i++) {
+    const frac = i / segments;
+    const x = frac * len;
+    const phase = frac * Math.PI * 4 - phaseSpeed;
+    const ey = Math.sin(phase) * ampE;
+    const px = isoX(x, 0);
+    const py = isoY(ey, 0);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // E field vertical reference lines
+  for (let i = 0; i < 8; i++) {
+    const x = ((phaseSpeed / (Math.PI * 2)) % 0.5) * waveLen + i * (waveLen / 4);
+    if (x > 0 && x < len) {
+      const phase = (x / len) * Math.PI * 4 - phaseSpeed;
+      const ey = Math.sin(phase) * ampE;
+      if (Math.abs(ey) > ampE * 0.3) {
+        ctx.strokeStyle = E_COLOR;
+        ctx.lineWidth = 0.8;
+        ctx.globalAlpha = 0.3;
+        ctx.beginPath();
+        ctx.moveTo(isoX(x, 0), isoY(0, 0));
+        ctx.lineTo(isoX(x, 0), isoY(ey, 0));
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // Axis labels
+  drawLabel(ctx, 'E (vertical)', isoX(5, 0), isoY(ampE + 8, 0), E_COLOR, 10);
+  drawLabel(ctx, 'H (horizontal)', isoX(len * 0.5, ampH + 5), isoY(-10, ampH + 5), H_COLOR, 10);
+
+  // 90° indicator
+  ctx.strokeStyle = EM_COLOR;
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.6;
+  const cornerX = isoX(len * 0.15, 0);
+  const cornerY = isoY(0, 0);
+  ctx.beginPath();
+  ctx.moveTo(cornerX, cornerY - 15);
+  ctx.lineTo(cornerX, cornerY);
+  ctx.lineTo(isoX(len * 0.15, 12), isoY(0, 12));
+  ctx.stroke();
+  drawLabel(ctx, '90°', cornerX + 2, cornerY - 18, EM_COLOR, 9);
+  ctx.globalAlpha = 1;
+
+  drawLabel(ctx, 'ISOMETRIC VIEW', 10, 18, TEXT_COLOR, 10);
+}
+
+// ============================================
+// RADIATION PATTERNS
+// ============================================
+function getPattern(type, angle, numElements) {
+  // Returns a function that gives gain at angle theta (radians from broadside)
+  switch (type) {
+    case 'dipole':
+      return (theta) => {
+        // Dipole: cos(π/2 cos θ) / sin θ pattern
+        const cosTheta = Math.cos(theta);
+        const sinTheta = Math.sin(theta);
+        if (Math.abs(sinTheta) < 0.001) return 0;
+        const num = Math.cos(Math.PI / 2 * cosTheta);
+        return Math.abs(num / sinTheta);
+      };
+    case 'monopole':
+      return (theta) => {
+        // Monopole: similar to dipole but only upper hemisphere
+        // with ground plane reflection
+        const cosTheta = Math.cos(theta);
+        const sinTheta = Math.sin(theta);
+        if (Math.abs(sinTheta) < 0.001) return 0;
+        if (theta > Math.PI) return 0; // below ground plane
+        const num = Math.cos(Math.PI / 2 * cosTheta);
+        return Math.abs(num / sinTheta) * 1.4;
+      };
+    case 'yagi':
+      return (theta) => {
+        // Simplified Yagi: array factor * element pattern
+        const n = numElements;
+        const d = 0.3; // element spacing in wavelengths
+        const beta = 0.4; // progressive phase shift
+        const psi = 2 * Math.PI * d * Math.cos(theta) - beta;
+        let af;
+        if (Math.abs(psi) < 0.001) {
+          af = n;
+        } else {
+          af = Math.abs(Math.sin(n * psi / 2) / (n * Math.sin(psi / 2)));
+        }
+        // Element factor (dipole)
+        const sinTheta = Math.sin(theta);
+        const cosTheta = Math.cos(theta);
+        let ef = 1;
+        if (Math.abs(sinTheta) > 0.001) {
+          ef = Math.abs(Math.cos(Math.PI / 2 * cosTheta) / sinTheta);
+        } else {
+          ef = 0;
+        }
+        return af * ef;
+      };
+  }
+}
+
+function drawRadPattern(canvasObj, patternFn, rotDeg, isHplane, t) {
+  const { ctx, w, h } = canvasObj;
+  ctx.clearRect(0, 0, w, h);
+
+  const cx = w / 2;
+  const cy = h / 2;
+  const maxR = Math.min(w, h) * 0.38;
+  const rotRad = rotDeg * Math.PI / 180;
+
+  // Grid circles
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.5;
+  for (let r = maxR * 0.25; r <= maxR; r += maxR * 0.25) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Grid lines (cross)
+  ctx.beginPath();
+  ctx.moveTo(cx - maxR - 10, cy); ctx.lineTo(cx + maxR + 10, cy); ctx.stroke();
+  ctx.moveTo(cx, cy - maxR - 10); ctx.lineTo(cx, cy + maxR + 10); ctx.stroke();
+
+  // dB labels
+  drawLabel(ctx, '0 dB', cx + maxR + 4, cy - 3, TEXT_COLOR, 9);
+  drawLabel(ctx, '-3 dB', cx + maxR * 0.75 + 4, cy - 3, TEXT_COLOR, 8);
+  drawLabel(ctx, '-6 dB', cx + maxR * 0.5 + 4, cy - 3, TEXT_COLOR, 8);
+
+  // Find max for normalization
+  let maxGain = 0;
+  for (let a = 0; a < 360; a++) {
+    const theta = a * Math.PI / 180;
+    const g = patternFn(theta);
+    if (g > maxGain) maxGain = g;
+  }
+  if (maxGain === 0) maxGain = 1;
+
+  // Draw pattern
+  const grad = ctx.createLinearGradient(cx - maxR, cy, cx + maxR, cy);
+  grad.addColorStop(0, isHplane ? H_COLOR : E_COLOR);
+  grad.addColorStop(1, EM_COLOR);
+
+  ctx.strokeStyle = isHplane ? H_COLOR : E_COLOR;
+  ctx.lineWidth = 2;
+  ctx.fillStyle = isHplane ? 'rgba(6,182,212,0.08)' : 'rgba(245,158,11,0.08)';
+  ctx.beginPath();
+
+  for (let a = 0; a <= 360; a++) {
+    const theta = a * Math.PI / 180;
+    let g = patternFn(theta);
+    g = g / maxGain;
+
+    // Apply rotation
+    const plotAngle = theta + rotRad;
+
+    // For H-plane of dipole, it's omnidirectional
+    // For E-plane, show the figure-8
+    let r;
+    if (isHplane && antennaType === 'dipole') {
+      // Omnidirectional in H-plane
+      r = maxR * 0.85;
+    } else if (isHplane && antennaType === 'monopole') {
+      r = maxR * 0.85;
+    } else if (isHplane && antennaType === 'yagi') {
+      // Yagi H-plane is the directional pattern
+      r = g * maxR;
+    } else {
+      r = g * maxR;
+    }
+
+    const px = cx + r * Math.cos(plotAngle - Math.PI / 2);
+    const py = cy + r * Math.sin(plotAngle - Math.PI / 2);
+
+    if (a === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Animated "pulse" showing radiation
+  const pulsePhase = (t * 2) % 1;
+  const pulseR = maxR * 0.3 + pulsePhase * maxR * 0.8;
+  ctx.globalAlpha = (1 - pulsePhase) * 0.15;
+  ctx.strokeStyle = EM_COLOR;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, pulseR, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Antenna symbol at center
+  if (antennaType === 'yagi') {
+    // Yagi arrow
+    const dirAngle = rotRad - Math.PI / 2;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 12 * Math.cos(dirAngle), cy - 12 * Math.sin(dirAngle));
+    ctx.lineTo(cx + 12 * Math.cos(dirAngle), cy + 12 * Math.sin(dirAngle));
+    ctx.stroke();
+    // Elements
+    for (let i = -1; i <= 1; i++) {
+      const ex = cx + i * 8 * Math.cos(dirAngle);
+      const ey = cy + i * 8 * Math.sin(dirAngle);
+      ctx.beginPath();
+      ctx.moveTo(ex - 8 * Math.sin(dirAngle), ey + 8 * Math.cos(dirAngle));
+      ctx.lineTo(ex + 8 * Math.sin(dirAngle), ey - 8 * Math.cos(dirAngle));
+      ctx.stroke();
+    }
+  } else {
+    // Dipole / monopole line
+    const antAngle = rotRad;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 15 * Math.cos(antAngle), cy + 15 * Math.sin(antAngle));
+    ctx.lineTo(cx + 15 * Math.cos(antAngle), cy - 15 * Math.sin(antAngle));
+    ctx.stroke();
+
+    if (antennaType === 'monopole') {
+      // Ground plane line
+      ctx.strokeStyle = '#4a5568';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([3, 3]);
+      const gx = Math.sin(antAngle) * 25;
+      const gy = Math.cos(antAngle) * 25;
+      ctx.beginPath();
+      ctx.moveTo(cx - gx, cy - gy);
+      ctx.lineTo(cx + gx, cy + gy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    ctx.fillStyle = E_COLOR;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Cardinal labels
+  drawLabel(ctx, '0°', cx - 6, 16, TEXT_COLOR, 10);
+  drawLabel(ctx, '180°', cx - 12, h - 8, TEXT_COLOR, 10);
+  drawLabel(ctx, '90°', w - 26, cy + 4, TEXT_COLOR, 10);
+  drawLabel(ctx, '270°', 4, cy + 4, TEXT_COLOR, 10);
+}
+
+// ============================================
+// ANIMATION LOOP
+// ============================================
+function animate(timestamp) {
+  time += 0.016 * animSpeed;
+
+  drawBroadside(time);
+  drawIsometric(time);
+
+  const pattern = getPattern(antennaType, rotation, yagiElements);
+  drawRadPattern(eplane, pattern, rotation, false, time);
+
+  // H-plane pattern
+  if (antennaType === 'yagi') {
+    drawRadPattern(hplane, pattern, rotation, true, time);
+  } else {
+    drawRadPattern(hplane, pattern, rotation, true, time);
+  }
+
+  animId = requestAnimationFrame(animate);
+}
+
+// ============================================
+// CONTROLS
+// ============================================
+const speedSlider = document.getElementById('speed');
+const freqSlider = document.getElementById('frequency');
+const rotSlider = document.getElementById('rotation');
+const elemSlider = document.getElementById('elements');
+
+speedSlider.addEventListener('input', (e) => {
+  animSpeed = parseFloat(e.target.value);
+  document.getElementById('speed-val').textContent = animSpeed.toFixed(1) + '×';
+});
+
+freqSlider.addEventListener('input', (e) => {
+  frequency = parseInt(e.target.value);
+  const wl = (299.792 / frequency).toFixed(2);
+  document.getElementById('freq-val').textContent = frequency + ' MHz';
+  document.getElementById('wavelength-val').textContent = wl + ' m';
+});
+
+rotSlider.addEventListener('input', (e) => {
+  rotation = parseInt(e.target.value);
+  document.getElementById('rotation-val').textContent = rotation + '°';
+});
+
+elemSlider.addEventListener('input', (e) => {
+  yagiElements = parseInt(e.target.value);
+  document.getElementById('elements-val').textContent = yagiElements + ' elements';
+});
+
+// Antenna type buttons
+const antennaInfo = {
+  dipole: '<strong>Half-wave Dipole:</strong> The classic figure-of-eight pattern in the E-plane (vertical slice) and omnidirectional doughnut in the H-plane (horizontal slice). Maximum radiation broadside to the wire, nulls off the ends. Rotate the antenna to see how the pattern follows. Gain: ~2.15 dBi.',
+  monopole: '<strong>Quarter-wave Monopole:</strong> Like cutting a dipole in half and placing it over a ground plane. The ground plane acts as a mirror, so all the energy goes upward — effectively doubling the gain compared to a dipole in the upper hemisphere. The ground plane is shown as a dashed line. Gain: ~5.15 dBi.',
+  yagi: '<strong>Yagi-Uda Array:</strong> A driven element (dipole) with a reflector behind and directors in front. The parasitic elements shape the beam into a focused lobe. More elements = narrower beam = higher gain but less coverage. Use the elements slider to add/remove directors. Gain: ~7-15 dBi depending on elements.'
+};
+
+document.querySelectorAll('.btn-antenna').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.btn-antenna').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    antennaType = btn.dataset.type;
+    document.getElementById('antenna-info').innerHTML = antennaInfo[antennaType];
+
+    // Enable elements slider only for yagi
+    if (antennaType === 'yagi') {
+      elemSlider.disabled = false;
+      document.getElementById('elements-val').textContent = yagiElements + ' elements';
+    } else {
+      elemSlider.disabled = true;
+      document.getElementById('elements-val').textContent = '—';
+    }
+  });
+});
+
+// ============================================
+// INIT
+// ============================================
+window.addEventListener('resize', () => {
+  initCanvases();
+});
+
+// Set initial values
+document.getElementById('freq-val').textContent = frequency + ' MHz';
+document.getElementById('wavelength-val').textContent = (299.792 / frequency).toFixed(2) + ' m';
+
+initCanvases();
+animate();
+</script>
+</body>
+</html>
