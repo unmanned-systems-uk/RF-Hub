@@ -6,11 +6,11 @@ class Badge {
    */
   static async getAllBadges() {
     const result = await pool.query(
-      `SELECT badge_id, badge_name, description, icon_url,
-              criteria, points_required, rarity, badge_type,
-              order_index
-       FROM badges
-       ORDER BY order_index ASC`
+      `SELECT DISTINCT ON (badge_name)
+              badge_id, badge_type, badge_name, badge_description,
+              badge_icon_url, tier
+       FROM user_badges
+       ORDER BY badge_name ASC`
     );
     return result.rows;
   }
@@ -20,7 +20,7 @@ class Badge {
    */
   static async getBadgeById(badge_id) {
     const result = await pool.query(
-      `SELECT * FROM badges WHERE badge_id = $1`,
+      `SELECT * FROM user_badges WHERE badge_id = $1`,
       [badge_id]
     );
     return result.rows[0];
@@ -31,17 +31,10 @@ class Badge {
    */
   static async getUserBadges(user_id) {
     const result = await pool.query(
-      `SELECT
-        ub.*,
-        b.badge_name,
-        b.description,
-        b.icon_url,
-        b.rarity,
-        b.badge_type
-       FROM user_badges ub
-       JOIN badges b ON ub.badge_id = b.badge_id
-       WHERE ub.user_id = $1
-       ORDER BY ub.earned_at DESC`,
+      `SELECT *
+       FROM user_badges
+       WHERE user_id = $1
+       ORDER BY earned_at DESC`,
       [user_id]
     );
     return result.rows;
@@ -142,13 +135,10 @@ class Badge {
    */
   static async getUserBadgeProgress(user_id) {
     const result = await pool.query(
-      `SELECT
-        b.*,
-        CASE WHEN ub.user_badge_id IS NOT NULL THEN true ELSE false END as earned,
-        ub.earned_at
-       FROM badges b
-       LEFT JOIN user_badges ub ON b.badge_id = ub.badge_id AND ub.user_id = $1
-       ORDER BY b.order_index ASC`,
+      `SELECT *, true as earned
+       FROM user_badges
+       WHERE user_id = $1
+       ORDER BY earned_at DESC`,
       [user_id]
     );
     return result.rows;

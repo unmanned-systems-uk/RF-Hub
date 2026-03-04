@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 19: Practical Phased Arrays | RF-Hub Antenna Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+  .objectives-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .objectives-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; }
+  .objectives-list li::before { content: '→'; color: var(--accent-em); font-family: var(--font-mono); flex-shrink: 0; margin-top: 2px; }
+
+  .formula-block {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-em);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+  .formula-block .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-em);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .hardware-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .hw-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .hw-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--accent-h); margin-bottom: 0.6rem; font-family: var(--font-body); }
+  .hw-card p, .hw-card li { font-size: 0.84rem; color: var(--text-secondary); font-family: var(--font-body); line-height: 1.6; }
+  .hw-card ul { padding-left: 1.2rem; margin: 0.25rem 0; }
+  .hw-card li { margin-top: 0.2rem; }
+
+  .lab-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0;
+  }
+  .lab-step-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .lab-step-num {
+    background: var(--accent-em);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+  .lab-step-title { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); font-family: var(--font-body); }
+  .lab-step p { font-size: 0.88rem; color: var(--text-secondary); font-family: var(--font-body); margin-top: 0.25rem; }
+  .lab-step ul { padding-left: 1.25rem; margin-top: 0.5rem; }
+  .lab-step li { font-size: 0.85rem; color: var(--text-secondary); font-family: var(--font-body); margin-top: 0.3rem; }
+
+  .record-box {
+    background: var(--bg-deep);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.75rem;
+  }
+
+  .problems-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.25rem 0;
+  }
+  .problem-row {
+    background: var(--bg-card);
+    padding: 0.9rem 1.25rem;
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .problem-row:hover { background: var(--bg-card-hover); }
+  .prob-name { font-weight: 700; font-size: 0.85rem; color: var(--accent-power); font-family: var(--font-body); }
+  .prob-symptom { font-size: 0.83rem; color: var(--text-secondary); font-family: var(--font-body); }
+  .prob-fix { font-size: 0.83rem; color: var(--accent-current); font-family: var(--font-body); }
+
+  .knowledge-check { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+  .knowledge-check h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-em); font-family: var(--font-body); }
+  .kc-question { margin-bottom: 1rem; }
+  .kc-question p { font-size: 0.9rem; margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .kc-question details summary { font-size: 0.82rem; color: var(--accent-h); cursor: pointer; font-family: var(--font-body); }
+  .kc-question details p { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.35rem; }
+
+  .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .lesson-nav a { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: border-color 0.2s; max-width: 48%; }
+  .lesson-nav a:hover { border-color: var(--accent-em); }
+  .lesson-nav .nav-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: var(--font-body); }
+  .lesson-nav .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); font-family: var(--font-body); }
+  .lesson-nav .nav-next { text-align: right; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Curriculum</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 4 · Lesson 19</div>
+    <h1>Practical Phased Arrays — Build and Test</h1>
+    <p class="hero-subtitle">From theory to hardware: element selection, feed networks, phase-shifting techniques, and verifying beam behaviour with an SDR.</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ─────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📚 <span>Unit 4: Advanced Systems</span></span>
+  <span class="article-meta-item">⚡ <span>Prerequisites: Lessons 16 &amp; 17</span></span>
+  <span class="article-meta-item">🛠 <span>Equipment: SDR, coax, connectors, optional power divider</span></span>
+  <span class="article-meta-item">⏱ <span>45 minutes</span></span>
+  <span class="article-meta-item"><span class="badge">Advanced</span></span>
+</div>
+
+
+<!-- ─── CHAPTER 1: LEARNING OBJECTIVES ──────────────────────── -->
+<div class="chapter" id="objectives">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Learning Objectives</h2>
+  <ul class="objectives-list">
+    <li>Select elements and calculate spacing for a practical phased array</li>
+    <li>Design a simple feed network using a power divider or hybrid coupler</li>
+    <li>Understand how phase is shifted in hardware — delay lines, PIN diodes, digital phase shifters</li>
+    <li>Connect a 2- or 4-element array to an SDR and verify beam behaviour</li>
+    <li>Diagnose common practical problems: imbalance, mutual coupling, feed errors</li>
+  </ul>
+</div>
+
+
+<!-- ─── CHAPTER 2: FROM THEORY TO HARDWARE ──────────────────── -->
+<div class="chapter" id="from-theory">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>From Theory to Hardware — What You Actually Need</h2>
+
+  <p>Theory tells you to apply phase shifts φ = (2πd sinθ)/λ to each element. Hardware must actually implement this. A practical phased array needs five things:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Component</th><th>Function</th><th>Practical options</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Array elements</td><td>Radiate/receive</td><td>Dipoles, patches, Yagi driven elements</td></tr>
+        <tr><td>2</td><td>Power splitter/combiner</td><td>Divide transmitter power (or combine received signals) equally</td><td>Wilkinson divider, T-junction, hybrid coupler</td></tr>
+        <tr><td>3</td><td>Phase shifters</td><td>Apply the required phase advance/delay per element</td><td>Coax delay lines, PIN diode switches, digital ICs</td></tr>
+        <tr><td>4</td><td>Common mode suppression</td><td>Prevent shield currents corrupting the pattern</td><td>Choke baluns at each element feedpoint</td></tr>
+        <tr><td>5</td><td>Controller/receiver</td><td>Select phase states (Tx) or combine signals (Rx)</td><td>SDR (Rx), switches, FPGA, microcontroller</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Starting point recommendation:</strong> Build a 2-element receive-only phased array connected to an RTL-SDR or HackRF. This is the simplest possible system and teaches every lesson applicable to much larger arrays. A 2-element array can only steer between two states or form one null — but the principles are identical to a 64-element system.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 3: ELEMENT CHOICE ───────────────────────────── -->
+<div class="chapter" id="element-choice">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Element Choice — Dipole, Yagi Segment, or Patch</h2>
+
+  <div class="hardware-grid">
+    <div class="hw-card">
+      <h4>Half-wave Dipole (recommended for first build)</h4>
+      <ul>
+        <li>Simple, predictable pattern (omnidirectional in azimuth)</li>
+        <li>73Ω feedpoint impedance — match to 50Ω with a simple L-network or use folded dipole (288Ω → transformer)</li>
+        <li>Broad element pattern → array factor dominates; errors more obvious</li>
+        <li>At 145 MHz: arm length = 491 mm (λ/4 with 0.95 VF)</li>
+        <li>Balance requirement: use a choke balun (8 turns RG-58 through FT-82-61)</li>
+      </ul>
+    </div>
+    <div class="hw-card">
+      <h4>Patch Antenna (higher performance)</h4>
+      <ul>
+        <li>Low profile, easily mounted flat on a ground plane</li>
+        <li>Inherently single-polarisation, ~8 dBi gain per element</li>
+        <li>~60° beamwidth → reduces mutual coupling in dense arrays</li>
+        <li>Bandwidth ~3–5% — frequency-selective, may need retuning</li>
+        <li>Easier to maintain consistent spacing on a PCB or plate</li>
+        <li>Common in 433 MHz, 2.4 GHz, and 5.8 GHz arrays</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 4: SPACING CALCULATION ──────────────────────── -->
+<div class="chapter" id="spacing">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Calculating Spacing — λ/2 and When to Break the Rule</h2>
+
+  <div class="formula-block">
+    <div class="formula-label">Standard λ/2 Spacing for Common Frequencies</div>
+    At 145 MHz:  λ = 2.067 m  →  d = 1.034 m  (103.4 cm)<br>
+    At 433 MHz:  λ = 0.692 m  →  d = 0.346 m  ( 34.6 cm)<br>
+    At 868 MHz:  λ = 0.345 m  →  d = 0.173 m  ( 17.3 cm)<br>
+    At 1575 MHz: λ = 0.190 m  →  d = 0.095 m  (  9.5 cm) [GPS L1]<br>
+    At 2.4 GHz:  λ = 0.125 m  →  d = 0.063 m  (  6.3 cm)
+  </div>
+
+  <p>Use d &lt; λ/2 if you need to scan beyond ±60° without grating lobes. Use d &gt; λ/2 only for fixed-beam high-gain arrays where the beam never steers away from broadside, and you accept the narrowing main lobe.</p>
+
+  <p><strong>Physical element size vs spacing:</strong> At lower frequencies the element itself (dipole arm length ≈ λ/4) approaches the spacing. This forces mutual coupling — the elements are electromagnetically close. Mutual coupling changes the element impedance and affects the beam pattern. Use an EM simulator (4nec2, MMANA-GAL, or CST) to verify the actual pattern when elements are closely spaced.</p>
+</div>
+
+
+<!-- ─── CHAPTER 5: FEED NETWORK ──────────────────────────────── -->
+<div class="chapter" id="feed-network">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Feed Network — Wilkinson Divider, T-Junction, Hybrid Coupler</h2>
+
+  <div class="hardware-grid">
+    <div class="hw-card">
+      <h4>T-Junction Splitter (simplest)</h4>
+      <ul>
+        <li>Coax T-connector — completely passive, no matching</li>
+        <li>Two 50Ω ports in parallel → 25Ω at junction — mismatch!</li>
+        <li>Use with two 100Ω elements (e.g., folded dipoles) for a match</li>
+        <li>No isolation between output ports — imbalance in one element affects the other</li>
+        <li>Good for testing; not ideal for precision arrays</li>
+      </ul>
+    </div>
+    <div class="hw-card">
+      <h4>Wilkinson Power Divider (recommended)</h4>
+      <ul>
+        <li>Two λ/4 transformer lines (70.7Ω for equal split) + 100Ω isolation resistor</li>
+        <li>Equal amplitude and phase at both outputs</li>
+        <li>Ports are isolated — load changes on one port don't disturb the other</li>
+        <li>Can be made from coax: cut two λ/4 lengths of 70.7Ω coax (or RG-179 at ~75Ω)</li>
+        <li>Available as a ready-made PCB component or SMA module</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Hybrid coupler for 90° phase arrays:</strong> A 90° hybrid coupler (branch-line coupler) divides power equally but with a fixed 90° phase relationship between the two output ports. This is ideal for a 2-element array steered to 30° at λ/2 spacing — the 90° phase shift corresponds to θ = 30° exactly. No separate phase shifter needed.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 6: PHASE SHIFTING HARDWARE ──────────────────── -->
+<div class="chapter" id="phase-shifting">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Phase Shifting Hardware — Delay Lines, PIN Diodes, Digital ICs</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Method</th><th>How it works</th><th>Phase resolution</th><th>Cost / complexity</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Coax delay line</strong></td>
+          <td>Fixed length of coaxial cable. Each 1° of phase = λ/(360×VF) metres. Switched in/out with relays.</td>
+          <td>Discrete, depends on line lengths provided</td>
+          <td>Very low — a few metres of coax and relays</td>
+        </tr>
+        <tr>
+          <td><strong>PIN diode switch</strong></td>
+          <td>PIN diodes switch between two signal paths (direct and through a delay network). Fast switching (ns)</td>
+          <td>Discrete 2–3 bit typical</td>
+          <td>Low — available as MMIC chips (e.g., MASWSS0115)</td>
+        </tr>
+        <tr>
+          <td><strong>Voltage-controlled phase shifter</strong></td>
+          <td>Varactor diodes in a low-pass ladder network shift phase continuously with bias voltage</td>
+          <td>Continuous analog</td>
+          <td>Medium — varactors + bias circuit</td>
+        </tr>
+        <tr>
+          <td><strong>Digital phase shifter IC</strong></td>
+          <td>MMIC integrating multiple switched delay networks. SPI or parallel control. (e.g., PE43702, ADPH-0105)</td>
+          <td>4–6 bit (22.5° or 5.6° steps)</td>
+          <td>Medium — ~£5–15 per channel, SPI interface</td>
+        </tr>
+        <tr>
+          <td><strong>Software (DBF)</strong></td>
+          <td>Each element has its own SDR receiver. Phase applied as complex multiplication in software.</td>
+          <td>Effectively infinite (floating point)</td>
+          <td>High — N × SDR cost, but flexible</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-label">Coax Delay Line Length — Worked Example</div>
+    Target: 90° phase shift at 145 MHz using RG-213 (VF = 0.66)<br><br>
+    Wavelength in cable: λ_cable = λ_free × VF = 2.067 × 0.66 = 1.364 m<br>
+    90° = λ_cable / 4 = 1.364 / 4 = <strong>341 mm</strong> of RG-213<br><br>
+    For 45°: 170 mm. For 135°: 511 mm. For 180°: 682 mm.
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 7: CONNECTING TO SDR ────────────────────────── -->
+<div class="chapter" id="sdr-connection">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Connecting to the SDR — Impedance, Dynamic Range, Common Mode</h2>
+
+  <p>Connecting multiple array elements to a single-input SDR requires a combiner. The same Wilkinson divider works in reverse as a combiner — but received signals from the elements must be combined, not their sources. Key considerations:</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>Common-mode currents:</strong> Shield currents on coaxial cables can flow back along the outer conductor, effectively making the cable itself part of the antenna and corrupting the pattern. Fit a choke balun (5–10 turns of coax through a ferrite toroid) immediately at each element feedpoint. Without baluns, the array pattern will be unpredictable.
+    </div>
+  </div>
+
+  <p><strong>Dynamic range:</strong> RTL-SDR dongles have limited dynamic range (~50 dB typical). If a very strong local signal is present (FM broadcast, PMR446, nearby transmitter), it may saturate the ADC. Use an attenuator or bandpass filter before the SDR input to protect it. The HackRF has similar limitations.</p>
+
+  <p><strong>Cable length matching:</strong> All cable runs from each element to the combiner must be of equal electrical length (matched to the wavelength). Even a 10 mm difference in RG-213 at 145 MHz causes a phase error of approximately 10 × 360 / 1364 mm ≈ 2.6°. This systematic error offsets your beam. Use a VNA to verify electrical lengths before assembly.</p>
+</div>
+
+
+<!-- ─── CHAPTER 8: VERIFICATION ──────────────────────────────── -->
+<div class="chapter" id="verification">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Verification — Rotating Transmitter Test and Null Steering</h2>
+
+  <p>Once assembled, verify that the array behaves as predicted. Three tests confirm correct operation:</p>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">V1</span>
+      <span class="lab-step-title">Rotating Transmitter Test</span>
+    </div>
+    <p>With the array connected to your SDR and set to broadside (δ = 0°, all equal phase), walk a CW transmitter in a full circle around the array at fixed distance (~10–20m). Plot S-meter reading vs angle. Compare to the theoretical AF pattern. Both should show maximum in the broadside direction and nulls at approximately ±90° off broadside.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">V2</span>
+      <span class="lab-step-title">Null Steering Check</span>
+    </div>
+    <p>Place a transmitter at a known angle (e.g., 30° from broadside). Calculate the required phase shift for a null at 30° using φ = (2πd sin30°)/λ. Apply the phase shift. Verify that the signal drops to the expected null depth. For a 2-element array with equal amplitudes, the null depth is theoretically infinite — practical nulls are typically 20–35 dB deep.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">V3</span>
+      <span class="lab-step-title">Waterfall Evidence</span>
+    </div>
+    <p>Use SDR# or GQRX waterfall display. With the phase shifter in the broadside state, observe a known signal at a strong level. Switch to the null-steering phase state. You should see the signal fade visibly on the waterfall — a direct visual confirmation that the phased array is functioning. Record the before/after signal level.</p>
+    <div class="record-box">
+      Broadside received level:  _______ dBm<br>
+      Null state received level: _______ dBm<br>
+      Null depth achieved:       _______ dB (target: &gt;15 dB for a practical 2-element array)
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 9: COMMON PROBLEMS ──────────────────────────── -->
+<div class="chapter" id="problems">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Common Problems and Fixes</h2>
+
+  <div class="problems-grid">
+    <div class="problem-row">
+      <div class="prob-name">Amplitude Imbalance</div>
+      <div class="prob-symptom">Null never goes below −10 dB. Pattern asymmetric. One element reads lower signal.</div>
+      <div class="prob-fix">Check cable lengths with VNA or signal source. Verify both elements are the same height/environment. Check splitter/combiner insertion loss balance.</div>
+    </div>
+    <div class="problem-row">
+      <div class="prob-name">Phase Error (Wrong Null Angle)</div>
+      <div class="prob-symptom">Null occurs at a different angle than calculated. Broadside offset.</div>
+      <div class="prob-fix">Measure cable electrical lengths — trim longer cable to match. Check delay line length calculation (remember velocity factor). VNA measurement of phase vs frequency on each cable run.</div>
+    </div>
+    <div class="problem-row">
+      <div class="prob-name">Common-Mode Currents</div>
+      <div class="prob-symptom">Pattern doesn't match theory at all — broad and asymmetric. Adding/removing hands changes received level.</div>
+      <div class="prob-fix">Add choke baluns at every element feedpoint. Ensure coax outer conductors don't form a large loop. Use shielded enclosures for combiner/phase shifter.</div>
+    </div>
+    <div class="problem-row">
+      <div class="prob-name">Mutual Coupling</div>
+      <div class="prob-symptom">Element impedance off from design value (VNA shows SWR > 2). Pattern distorted near endfire.</div>
+      <div class="prob-fix">Expected for closely-spaced elements. Model in 4nec2 to see the actual coupled impedance. Use an L-network matching at each element feedpoint to restore 50Ω.</div>
+    </div>
+    <div class="problem-row">
+      <div class="prob-name">Connector Phase Errors</div>
+      <div class="prob-symptom">Repeatable phase anomaly that doesn't match cable calculations.</div>
+      <div class="prob-fix">SMA/BNC connector delay ≈ 0.5–2 ns depending on type. At 145 MHz this is 0.07–0.29 degrees — usually negligible. At higher frequencies (433 MHz+) more significant. Use same connector type throughout to keep errors consistent.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 10: PRACTICAL LAB ───────────────────────────── -->
+<div class="chapter" id="lab">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 10</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Practical Lab — 2-Element Dipole Array + RTL-SDR: Steer a Null</h2>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">🛠</span>
+    <div class="callout-text">
+      <strong>Materials needed:</strong> 2× half-wave dipoles at 145 MHz (or 433 MHz), 2× short coax runs + choke baluns, 1× Wilkinson power combiner (purchased or homebuilt), 2× coax delay lines for phase states (0° and 90° at your frequency), 1× RTL-SDR or HackRF, SDR# or GQRX software, a portable transmitter at your chosen frequency (HT radio, beacon generator, or SDR in Tx mode if HackRF).
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">01</span>
+      <span class="lab-step-title">Build and Align the Elements</span>
+    </div>
+    <p>Mount two dipoles parallel to each other, separated by λ/2 (103 cm at 145 MHz, or 34.6 cm at 433 MHz). Align both on the same axis (same height, same orientation). Use a horizontal support to maintain accurate spacing. Fit choke baluns at each feedpoint. Measure the SWR of each element individually — target SWR &lt;1.5:1. Record the measured resonant frequency.</p>
+    <div class="record-box">
+      Element 1 resonant freq:  _______ MHz  SWR at target freq: _______<br>
+      Element 2 resonant freq:  _______ MHz  SWR at target freq: _______<br>
+      Element spacing measured: _______ mm  (target: _______ mm)
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">02</span>
+      <span class="lab-step-title">Build the Combiner and Equalise Cable Lengths</span>
+    </div>
+    <p>Connect equal-length coax runs from each element to the Wilkinson combiner. The cable lengths must match electrically. Cut to the same physical length (this is sufficient if using the same cable type from the same reel). Connect the combiner output to the RTL-SDR. Use a reference signal (FM broadcast or known transmitter) to confirm the system receives on all elements.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">03</span>
+      <span class="lab-step-title">Calculate and Cut the 90° Delay Line</span>
+    </div>
+    <p>Calculate the physical length of a 90° delay line for your frequency and chosen cable type. Example: at 145 MHz using RG-58 (VF = 0.66), length = (2.067 × 0.66) / 4 = 341 mm. Cut a pigtail of this length. This pigtail is inserted in series with one element's feed cable to shift its phase by 90°, steering the broadside null to 30°.</p>
+    <div class="record-box">
+      Calculated delay line length: _______ mm<br>
+      Cable type/VF used:           _______ / _______<br>
+      Phase shift this provides:    90° at _______ MHz
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">04</span>
+      <span class="lab-step-title">Position Transmitter and Compare Broadside vs Null-Steered</span>
+    </div>
+    <p>Place a transmitter approximately 30° from the array broadside at a distance of 20–50m. Open SDR# and note signal level with both elements connected and no delay line (broadside state). Insert the 90° delay line in series with the appropriate element. Observe the signal level change. The signal should drop by ≥15 dB as the null steers toward the transmitter.</p>
+    <div class="record-box">
+      Transmitter frequency:         _______ MHz<br>
+      Transmitter bearing from array: _______ ° (measured)<br>
+      Broadside state signal level:  _______ dBm<br>
+      Null-steered signal level:     _______ dBm<br>
+      Null depth achieved:           _______ dB
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">05</span>
+      <span class="lab-step-title">Document and Evaluate</span>
+    </div>
+    <p>Compare your measured null depth to the theoretical maximum (dependent on amplitude balance). If null depth is poor (&lt;15 dB), check for amplitude imbalance between the two signal paths using a signal generator and power meter (or SDR). Adjust cable lengths or add a fixed attenuator in the stronger path to equalise amplitudes. A well-balanced 2-element array should achieve 25–35 dB null depth.</p>
+  </div>
+</div>
+
+
+<!-- ─── KNOWLEDGE CHECK ──────────────────────────────────────── -->
+<div class="knowledge-check">
+  <h3>Knowledge Check</h3>
+
+  <div class="kc-question">
+    <p><strong>1.</strong> What is the physical length of a 90° delay line at 433 MHz using RG-213 (VF = 0.66)?</p>
+    <details><summary>Show answer</summary><p>λ at 433 MHz = 0.692 m. λ_cable = 0.692 × 0.66 = 0.457 m. 90° = λ_cable/4 = 0.457/4 = <strong>114 mm</strong> of RG-213.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>2.</strong> Why must all cable runs from elements to the combiner be the same electrical length?</p>
+    <details><summary>Show answer</summary><p>Any difference in electrical length adds an unintended phase offset to the signals from that element. This offsets the entire beam from the desired steering angle. A 50mm difference in RG-213 at 145 MHz causes a phase error of 50/1364 × 360° ≈ 13°, significantly displacing the null from its target.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>3.</strong> A 2-element broadside array with perfect amplitude balance can theoretically achieve how deep a null?</p>
+    <details><summary>Show answer</summary><p>Theoretically infinite (−∞ dB), because with equal amplitude and exactly 180° phase difference between the two signal paths, they cancel completely. In practice, amplitude imbalance limits this — 1 dB imbalance limits null depth to about −26 dB, 0.5 dB imbalance to about −32 dB.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>4.</strong> What is the advantage of a Wilkinson power divider over a simple T-junction for array feed networks?</p>
+    <details><summary>Show answer</summary><p>The Wilkinson divider provides isolation between the output ports. In a T-junction, a mismatch (or mutual coupling effect) on one element directly affects the signal at the other element's port. The Wilkinson's isolation resistor prevents this — changes in one element's load impedance don't perturb the other element's excitation.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>5.</strong> You observe that your 2-element null is only 12 dB deep. What is the most likely cause?</p>
+    <details><summary>Show answer</summary><p>Amplitude imbalance between the two element signal paths. −12 dB null depth corresponds to approximately 2 dB amplitude difference between the two paths. Check cable insertion losses, splitter port imbalance, and whether both elements have the same SWR (indicating the same impedance and hence same coupling efficiency). Add a fixed attenuator to the stronger path to equalise.</p></details>
+  </div>
+</div>
+
+
+<!-- ─── SUMMARY ───────────────────────────────────────────────── -->
+<div class="callout callout--success">
+  <span class="callout-icon">✅</span>
+  <div class="callout-text">
+    <strong>Lesson 19 Summary:</strong> Building a practical phased array requires five components: radiating elements, a power splitter/combiner, phase shifters, common-mode suppression (baluns), and a controller/receiver. Standard λ/2 spacing applies regardless of element type. Wilkinson power dividers provide better port isolation than T-junctions. Phase shifting can be implemented with fixed coax delay lines (simplest), PIN diode switches, or digital phase shifter ICs. The most common failure modes are amplitude imbalance and common-mode currents — address these with baluns and careful cable length matching.
+  </div>
+</div>
+
+
+<!-- ─── PREV/NEXT NAVIGATION ─────────────────────────────────── -->
+<div class="lesson-nav">
+  <a href="lesson-18-direction-finding.html">
+    <span class="nav-label">← Previous</span>
+    <span class="nav-title">Lesson 18 — Direction Finding</span>
+  </a>
+  <a class="nav-next" href="lesson-20-software-beamforming.html">
+    <span class="nav-label">Next →</span>
+    <span class="nav-title">Lesson 20 — Software Beamforming</span>
+  </a>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

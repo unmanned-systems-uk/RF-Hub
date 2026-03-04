@@ -182,7 +182,7 @@ class User {
         (SELECT COUNT(*) FROM user_progress WHERE user_id = $1 AND status = 'completed') as completed_count,
         (SELECT COUNT(*) FROM user_progress WHERE user_id = $1 AND status = 'in_progress') as in_progress_count,
         (SELECT COUNT(*) FROM user_badges WHERE user_id = $1) as badges_count,
-        (SELECT AVG(score) FROM quiz_attempts WHERE user_id = $1) as average_score
+        (SELECT AVG(score_percentage) FROM quiz_attempts WHERE user_id = $1) as average_score
        FROM users WHERE user_id = $1`,
       [user_id]
     );

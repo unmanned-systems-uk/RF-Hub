@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 16: Antenna Arrays | RF-Hub Antenna Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+  .objectives-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .objectives-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; }
+  .objectives-list li::before { content: '→'; color: var(--accent-em); font-family: var(--font-mono); flex-shrink: 0; margin-top: 2px; }
+
+  .array-visual {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    line-height: 1.9;
+    margin: 1.25rem 0;
+  }
+  .array-visual .element { color: var(--accent-em); font-weight: 700; }
+  .array-visual .spacing { color: var(--accent-h); }
+  .array-visual .label { color: var(--accent-e); }
+
+  .formula-block {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-em);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .formula-block .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-em);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .compare-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .compare-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-family: var(--font-body);
+    color: var(--accent-em);
+  }
+  .compare-card ul { list-style: none; padding: 0; }
+  .compare-card li {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-body);
+  }
+  .compare-card li:last-child { border-bottom: none; }
+
+  .knowledge-check {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .knowledge-check h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--accent-em);
+    font-family: var(--font-body);
+  }
+  .kc-question { margin-bottom: 1rem; }
+  .kc-question p { font-size: 0.9rem; margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .kc-question details summary { font-size: 0.82rem; color: var(--accent-h); cursor: pointer; font-family: var(--font-body); }
+  .kc-question details p { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.35rem; }
+
+  .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .lesson-nav a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+    max-width: 48%;
+  }
+  .lesson-nav a:hover { border-color: var(--accent-em); }
+  .lesson-nav .nav-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: var(--font-body); }
+  .lesson-nav .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); font-family: var(--font-body); }
+  .lesson-nav .nav-next { text-align: right; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Curriculum</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 4 · Lesson 16</div>
+    <h1>Antenna Arrays — Strength in Numbers</h1>
+    <p class="hero-subtitle">How combining multiple antenna elements multiplies gain and shapes radiation patterns without increasing individual element size.</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ─────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📚 <span>Unit 4: Advanced Systems</span></span>
+  <span class="article-meta-item">⚡ <span>Prerequisites: Unit 3 complete</span></span>
+  <span class="article-meta-item">🛠 <span>Equipment: None (theory)</span></span>
+  <span class="article-meta-item">⏱ <span>30 minutes</span></span>
+  <span class="article-meta-item"><span class="badge">Advanced</span></span>
+</div>
+
+
+<!-- ─── CHAPTER 1: LEARNING OBJECTIVES ──────────────────────── -->
+<div class="chapter" id="objectives">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Learning Objectives</h2>
+  <ul class="objectives-list">
+    <li>Explain how combining multiple antennas increases gain and shapes patterns</li>
+    <li>Calculate the array factor for simple linear arrays</li>
+    <li>Understand the relationship between element spacing and grating lobes</li>
+    <li>Distinguish between broadside and endfire arrays</li>
+  </ul>
+</div>
+
+
+<!-- ─── CHAPTER 2: WHY ARRAYS ────────────────────────────────── -->
+<div class="chapter" id="why-arrays">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Why Arrays — More Gain Without Bigger Elements</h2>
+
+  <p>A single half-wave dipole has a gain of 2.15 dBi and a relatively broad radiation pattern. To get more gain you have two choices: use a more complex individual element (like a Yagi), or use <strong>multiple simpler elements working together</strong>.</p>
+
+  <p>An array achieves gain through <strong>constructive interference</strong>. Multiple elements radiate simultaneously. In the desired direction the signals add coherently — like the outputs of multiple signal generators being combined in phase. In undesired directions the signals partially cancel. The result: a narrower, stronger main lobe and a suppressed back hemisphere.</p>
+
+  <p>This approach has a significant practical advantage: you can scale the system. Four dipoles in an array add approximately 6 dB of gain over a single dipole. Eight dipoles add approximately 9 dB. You are literally buying gain by adding hardware.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Arrays are everywhere:</strong> Your mobile phone is connected to a cellular base station using cross-polarised antenna panels that are really small arrays. The 4G/5G "blade" antennas you see on masts contain 8–64 individual radiating elements. Massive MIMO arrays use 128 or more. Even a simple Yagi is a linear array — the difference is that Yagi elements are parasitically coupled rather than directly fed.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 3: ARRAY FACTOR ─────────────────────────────── -->
+<div class="chapter" id="array-factor">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Array Factor × Element Pattern = Total Pattern</h2>
+
+  <p>The radiation pattern of an array is the product of two components:</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">📐</span>
+    <div class="callout-text">
+      <strong>Total Pattern = Array Factor (AF) × Element Pattern (EP)</strong><br>
+      The Element Pattern is the pattern a single element would produce in isolation. The Array Factor depends only on the geometry (number of elements, spacing, excitation).
+    </div>
+  </div>
+
+  <p>This separation is extremely useful. You can design the Array Factor independently of the element choice. Replace dipoles with patches and the AF is unchanged — only the EP multiplied into it shifts.</p>
+
+  <p>For a uniform linear array (ULA) of N elements with equal amplitude and progressive phase shift δ between adjacent elements:</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Array Factor — Uniform Linear Array</div>
+    AF(θ) = sin(Nψ/2) / [N · sin(ψ/2)]<br><br>
+    where: ψ = kd·sin(θ) + δ<br>
+    k = 2π/λ &nbsp; (wavenumber)<br>
+    d = element spacing<br>
+    θ = angle from broadside (perpendicular to array axis)<br>
+    δ = progressive phase shift between elements
+  </div>
+
+  <p>The AF has its main lobe where ψ = 0, and nulls where Nψ/2 = ±π, ±2π, etc. Side lobes fall between the nulls. For large N, the first sidelobe level is approximately −13.3 dB below the main lobe (for uniform excitation).</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>Practical note:</strong> The sinc-like AF formula above is the "far-field" form valid when all elements see essentially the same wave direction. It also assumes equal element spacing and identical elements. Real arrays deviate due to mutual coupling, element failures, and manufacturing tolerance.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 4: LINEAR ARRAYS ────────────────────────────── -->
+<div class="chapter" id="linear-arrays">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Linear Arrays — Broadside and Endfire</h2>
+
+  <p>A <strong>linear array</strong> has elements arranged along a straight line (the array axis). The geometry of this line determines how the AF relates to physical angle.</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>📡 Broadside Array</h4>
+      <ul>
+        <li>δ = 0 (all elements fed in phase)</li>
+        <li>Maximum radiation perpendicular to array axis</li>
+        <li>Collinear dipoles stacked vertically → broadside is horizontal</li>
+        <li>Pattern narrows as N increases</li>
+        <li>Most common type for base station verticals</li>
+      </ul>
+    </div>
+    <div class="compare-card">
+      <h4>🔭 Endfire Array</h4>
+      <ul>
+        <li>δ = −kd (phase leads in the endfire direction)</li>
+        <li>Maximum radiation along the array axis</li>
+        <li>Long Yagi is an endfire array</li>
+        <li>Higher gain but narrower steering range</li>
+        <li>Less common for steerable systems</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="array-visual">
+<span class="label">Broadside Array (vertical stack of dipoles, broadside = horizontal)</span>
+
+   ┌─────────────────────────────────────────────────────────┐
+   │  <span class="element">──|──</span>  dipole 1   ← feed line (all in phase)            │
+   │    │                                                     │
+   │    d = λ/2                                               │
+   │    │                                                     │
+   │  <span class="element">──|──</span>  dipole 2                                         │
+   │    │                                                     │
+   │    d = λ/2        <span class="spacing">main lobe →→→ (horizontal)</span>           │
+   │    │                                                     │
+   │  <span class="element">──|──</span>  dipole 3                                         │
+   │    │                                                     │
+   │    d = λ/2                                               │
+   │    │                                                     │
+   │  <span class="element">──|──</span>  dipole 4                                         │
+   └─────────────────────────────────────────────────────────┘
+   <span class="label">Gain ≈ 2.15 + 10·log₁₀(4) ≈ 8.2 dBi for 4 elements</span>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 5: ELEMENT SPACING ──────────────────────────── -->
+<div class="chapter" id="element-spacing">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Element Spacing — λ/2 Rule and Grating Lobes</h2>
+
+  <p>The spacing between array elements profoundly affects the pattern. The standard choice for a broadside array is <strong>d = λ/2</strong>, and for good reasons.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Spacing d</th>
+          <th>Visible range of ψ</th>
+          <th>Effect</th>
+          <th>Use case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>d &lt; λ/2</code></td>
+          <td>Reduced</td>
+          <td>Wider main lobe, lower gain than theoretical, no grating lobes</td>
+          <td>Conformal arrays, physical constraints</td>
+        </tr>
+        <tr>
+          <td><code>d = λ/2</code></td>
+          <td>Exactly −π to +π</td>
+          <td>Optimal gain, no grating lobes in ±90° scan, best mutual coupling</td>
+          <td><strong>Standard choice for broadside</strong></td>
+        </tr>
+        <tr>
+          <td><code>λ/2 &lt; d &lt; λ</code></td>
+          <td>Extended</td>
+          <td>Narrower main lobe but grating lobes appear at edge of visible space</td>
+          <td>Fixed-beam high-gain arrays</td>
+        </tr>
+        <tr>
+          <td><code>d = λ</code></td>
+          <td>0 to 2π</td>
+          <td>Grating lobe at θ = 0° and θ = 90° — ambiguous pattern</td>
+          <td>Avoid for most applications</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Grating lobes</strong> are additional main lobes that appear when element spacing exceeds λ/2. They arise because the array "thinks" it is looking in two directions simultaneously. For a steered array (phased array), grating lobes limit the maximum scan angle — the scan angle must be small enough that no grating lobe enters visible space.</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>The grating lobe condition:</strong> For a broadside array with phase steering, grating lobes appear when d·sin(θ_scan) = λ. To scan to ±60° without grating lobes: d &lt; λ / (1 + |sin(60°)|) = λ / 1.866 ≈ 0.536λ. Phased array designers use d ≈ 0.5λ as a safe rule.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 6: STACKING VS BAYING ───────────────────────── -->
+<div class="chapter" id="stacking-baying">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Stacking vs Baying — Vertical vs Horizontal Combining</h2>
+
+  <p>When arrays are described in real-world systems (especially base stations and repeater antennas), two combining strategies are common:</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>📶 Stacking (Vertical)</h4>
+      <ul>
+        <li>Elements arranged one above the other</li>
+        <li>Narrows the elevation beamwidth</li>
+        <li>Increases gain in horizontal plane</li>
+        <li>Standard for omnidirectional base stations</li>
+        <li>4-stack dipoles → ~6 dB gain, ~10° elevation beamwidth</li>
+        <li>Physical height required = N × d (≈ Nλ/2 for λ/2 spacing)</li>
+      </ul>
+    </div>
+    <div class="compare-card">
+      <h4>📡 Baying (Horizontal)</h4>
+      <ul>
+        <li>Elements arranged side by side</li>
+        <li>Narrows the azimuth beamwidth</li>
+        <li>Increases gain in vertical plane — useful for point-to-point</li>
+        <li>Less common in base stations (sectors already directional)</li>
+        <li>Two Yagis bayed side by side → 3 dB gain, ~halved azimuth BW</li>
+        <li>Physical width required = N × d</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>The terms are sometimes combined: a "2-bay, 4-stack" array has 2 columns of 4 elements = 8 elements total, giving approximately 9 dB gain over a single dipole. This is typical of a high-gain VHF/UHF repeater or broadcast antenna.</p>
+
+  <div class="callout callout--success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Gain approximation rule:</strong> Every doubling of the number of elements adds approximately 3 dB of gain (assuming ideal combination). N elements → gain ≈ G_element + 10·log₁₀(N). This ignores mutual coupling losses (~0.5–1 dB typical) and feed network losses.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── KNOWLEDGE CHECK ──────────────────────────────────────── -->
+<div class="knowledge-check">
+  <h3>Knowledge Check</h3>
+
+  <div class="kc-question">
+    <p><strong>1.</strong> A 4-element uniform broadside array uses dipole elements. Approximately how much gain does it have over a single dipole?</p>
+    <details><summary>Show answer</summary><p>Approximately 6 dB (10·log₁₀(4) ≈ 6.02 dB). This assumes ideal combination with no feed losses or mutual coupling degradation.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>2.</strong> What is the standard element spacing for a broadside array, and why?</p>
+    <details><summary>Show answer</summary><p>λ/2. At this spacing, the array factor covers exactly the visible angular range (−90° to +90°) without ambiguity, and grating lobes cannot appear for a fixed broadside beam. It also represents a good balance of mutual coupling between elements.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>3.</strong> What are grating lobes, and when do they appear?</p>
+    <details><summary>Show answer</summary><p>Grating lobes are additional main lobes in the radiation pattern that appear when element spacing exceeds approximately λ/2 for broadside arrays, or when a steered beam is scanned too far from broadside. They are undesirable because they mean the antenna radiates (or receives) in an unintended direction with the same gain as the desired direction.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>4.</strong> What is the difference between "stacking" and "baying" an array?</p>
+    <details><summary>Show answer</summary><p>Stacking places elements vertically (one above the other), which narrows the elevation beamwidth and adds gain in the horizontal plane. Baying places elements horizontally (side by side), which narrows the azimuth beamwidth. Both add approximately 3 dB per doubling of elements.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>5.</strong> For an endfire array, what is the progressive phase shift δ between elements?</p>
+    <details><summary>Show answer</summary><p>δ = −kd = −2πd/λ. This phase advance causes the array factor maximum to align with the array axis (θ = 90° from broadside, or directly "endfire"). For λ/2 spacing, δ = −π (180°).</p></details>
+  </div>
+</div>
+
+
+<!-- ─── SUMMARY ───────────────────────────────────────────────── -->
+<div class="callout callout--success">
+  <span class="callout-icon">✅</span>
+  <div class="callout-text">
+    <strong>Lesson 16 Summary:</strong> Antenna arrays multiply gain by combining multiple elements whose signals interfere constructively in the desired direction and cancel elsewhere. The total pattern equals the array factor multiplied by the element pattern. Standard broadside arrays use λ/2 spacing to avoid grating lobes. Stacking elements narrows the elevation beam; baying narrows the azimuth beam. Each doubling of elements adds approximately 3 dB of gain.
+  </div>
+</div>
+
+
+<!-- ─── PREV/NEXT NAVIGATION ─────────────────────────────────── -->
+<div class="lesson-nav">
+  <a href="../unit-3-design-and-construction/lesson-15-impedance-matching.html">
+    <span class="nav-label">← Previous</span>
+    <span class="nav-title">Lesson 15 — Impedance Matching</span>
+  </a>
+  <a class="nav-next" href="lesson-17-phased-arrays.html">
+    <span class="nav-label">Next →</span>
+    <span class="nav-title">Lesson 17 — Phased Arrays</span>
+  </a>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

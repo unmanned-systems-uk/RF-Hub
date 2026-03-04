@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Path — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.module-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+.module-card:hover {
+  border-color: var(--accent-em);
+  transform: translateY(-2px);
+}
+.module-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.module-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-em);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.module-title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+.module-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+}
+.module-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+.module-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.phase-intro {
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.status-msg {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../index.html">Dashboard</a></li>
+      <li><a href="frequency-bands.html">Spectrum</a></li>
+      <li><a href="antennas.html">Antennas</a></li>
+      <li><a href="learning-path.html" class="active">Learn</a></li>
+      <li><a href="gsm-cellular.html">GSM</a></li>
+      <li><a href="blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Curriculum</div>
+    <h1>Learning Path</h1>
+    <p class="hero-subtitle">A structured 26-module journey from RF fundamentals to advanced measurement techniques</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+
+  <!-- ─── CHAPTER 01: Curriculum Overview ─────────────────────── -->
+  <div class="chapter" id="overview">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Curriculum Overview</h2>
+
+    <p>The RF-Hub curriculum is organised into four progressive phases. Each phase builds on the last, taking you from first principles through to hands-on measurement and advanced signal systems. Modules are self-contained but designed to be completed in order within each phase.</p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-success">Phase 1 — Foundations</h4>
+        <p>Core RF theory: electromagnetic waves, frequency and wavelength, antenna fundamentals, transmission lines, and impedance matching. Suitable for complete beginners.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-h">Phase 2 — Practical RF</h4>
+        <p>Hands-on skills: SDR operation, spectrum analysis, modulation schemes, propagation, and real-world signal identification using your hardware.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-em">Phase 3 — Measurement</h4>
+        <p>VNA operation, S-parameter measurement, return loss, SWR, Smith chart interpretation, antenna characterisation, and filter analysis.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-e">Phase 4 — Advanced Systems</h4>
+        <p>Phased arrays, direction finding, software beamforming, satellite links, EMC principles, and research-grade experimentation.</p>
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">ℹ️</span>
+      <div class="callout-text">
+        <strong>Difficulty Key:</strong>
+        <span class="badge badge--success" style="margin: 0 6px;">Beginner</span> core theory, no prerequisites ·
+        <span class="badge" style="margin: 0 6px;">Intermediate</span> some RF background assumed ·
+        <span class="badge badge--warning" style="margin: 0 6px;">Advanced</span> prior phases required
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Dynamic Modules (rendered by JS) ────────────────────── -->
+  <div id="modules-container">
+    <p class="status-msg">Loading curriculum from API…</p>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+(function() {
+  var API_URL = (typeof API_BASE_URL !== 'undefined')
+    ? API_BASE_URL.replace('/api', '')
+    : '';
+
+  var PHASE_META = {
+    1: {
+      name: 'Phase 1 — RF Foundations',
+      desc: 'Core electromagnetic theory, the basis of everything RF. Complete these modules before moving on.',
+      chapterNum: '02',
+      id: 'phase-1'
+    },
+    2: {
+      name: 'Phase 2 — Practical RF',
+      desc: 'Hands-on skills with your SDR and spectrum analyser. Theory meets equipment.',
+      chapterNum: '03',
+      id: 'phase-2'
+    },
+    3: {
+      name: 'Phase 3 — Measurement & VNA',
+      desc: 'Precision measurement, S-parameters, and antenna characterisation.',
+      chapterNum: '04',
+      id: 'phase-3'
+    },
+    4: {
+      name: 'Phase 4 — Advanced Systems',
+      desc: 'Phased arrays, direction finding, satellite links, and EMC.',
+      chapterNum: '05',
+      id: 'phase-4'
+    }
+  };
+
+  var DIFFICULTY_BADGE = {
+    beginner:     '<span class="badge badge--success">Beginner</span>',
+    intermediate: '<span class="badge">Intermediate</span>',
+    advanced:     '<span class="badge badge--warning">Advanced</span>'
+  };
+
+  function chapterNum(n) {
+    return n < 10 ? '0' + n : '' + n;
+  }
+
+  var LESSON_PATHS = {
+    1:  'antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html',
+    2:  'antenna-curriculum/unit-1-how-antennas-work/lesson-02-how-antennas-radiate.html',
+    3:  'antenna-curriculum/unit-1-how-antennas-work/lesson-03-radiation-patterns.html',
+    4:  'antenna-curriculum/unit-1-how-antennas-work/lesson-04-antenna-types.html',
+    5:  'antenna-curriculum/unit-1-how-antennas-work/lesson-05-polarisation.html',
+    6:  'antenna-curriculum/unit-2-characteristics-and-measurement/lesson-06-impedance.html',
+    7:  'antenna-curriculum/unit-2-characteristics-and-measurement/lesson-07-swr-and-return-loss.html',
+    8:  'antenna-curriculum/unit-2-characteristics-and-measurement/lesson-08-smith-chart.html',
+    9:  'antenna-curriculum/unit-2-characteristics-and-measurement/lesson-09-gain-directivity-efficiency.html',
+    10: 'antenna-curriculum/unit-2-characteristics-and-measurement/lesson-10-vna-antenna-measurement-lab.html',
+    11: 'antenna-curriculum/unit-3-design-and-construction/lesson-11-dipole-deep-dive.html',
+    12: 'antenna-curriculum/unit-3-design-and-construction/lesson-12-vertical-antennas.html',
+    13: 'antenna-curriculum/unit-3-design-and-construction/lesson-13-yagi-antennas.html',
+    14: 'antenna-curriculum/unit-3-design-and-construction/lesson-14-broadband-antennas.html',
+    15: 'antenna-curriculum/unit-3-design-and-construction/lesson-15-impedance-matching.html',
+    16: 'antenna-curriculum/unit-4-advanced-systems/lesson-16-antenna-arrays.html',
+    17: 'antenna-curriculum/unit-4-advanced-systems/lesson-17-phased-arrays.html',
+    18: 'antenna-curriculum/unit-4-advanced-systems/lesson-18-direction-finding.html',
+    19: 'antenna-curriculum/unit-4-advanced-systems/lesson-19-practical-phased-array.html',
+    20: 'antenna-curriculum/unit-4-advanced-systems/lesson-20-software-beamforming.html'
+  };
+
+  function renderModuleCard(m) {
+    var lessonHref = m.content_url || LESSON_PATHS[m.module_number] || '#';
+    var diffBadge = DIFFICULTY_BADGE[m.difficulty] || '<span class="badge">' + m.difficulty + '</span>';
+    var mins = m.estimated_time_minutes || '—';
+    var desc = m.description || '';
+    if (desc.length > 120) desc = desc.substring(0, 120) + '…';
+
+    return '<a href="' + lessonHref + '" class="module-card">' +
+      '<div class="module-card-header">' +
+        '<span class="module-num">Module ' + m.module_number + '</span>' +
+        diffBadge +
+      '</div>' +
+      '<p class="module-title">' + m.title + '</p>' +
+      '<p class="module-desc">' + desc + '</p>' +
+      '<div class="module-footer">' +
+        '<span class="module-time">⏱ ' + mins + ' min</span>' +
+      '</div>' +
+    '</a>';
+  }
+
+  function renderPhase(phaseNum, modules, chNum) {
+    var meta = PHASE_META[phaseNum] || {
+      name: 'Phase ' + phaseNum,
+      desc: 'Advanced curriculum modules.',
+      chapterNum: chapterNum(chNum),
+      id: 'phase-' + phaseNum
+    };
+
+    var cards = modules.map(renderModuleCard).join('');
+
+    return '<div class="chapter" id="' + meta.id + '">' +
+      '<div class="chapter-header">' +
+        '<span class="chapter-num">CHAPTER ' + chapterNum(chNum) + '</span>' +
+        '<div class="chapter-line"></div>' +
+      '</div>' +
+      '<h2>' + meta.name + '</h2>' +
+      '<p class="phase-intro">' + meta.desc + '</p>' +
+      '<div class="module-grid">' + cards + '</div>' +
+    '</div>';
+  }
+
+  function groupByPhase(modules) {
+    var phases = {};
+    modules.forEach(function(m) {
+      var p = m.phase || 1;
+      if (!phases[p]) phases[p] = [];
+      phases[p].push(m);
+    });
+    return phases;
+  }
+
+  function render(modules) {
+    var container = document.getElementById('modules-container');
+
+    if (!modules || modules.length === 0) {
+      container.innerHTML = '<p class="status-msg">No modules available yet. Check back soon.</p>';
+      return;
+    }
+
+    var phases = groupByPhase(modules);
+    var phaseNums = Object.keys(phases).map(Number).sort(function(a, b) { return a - b; });
+    var html = '';
+    var chNum = 2; // Chapter 01 is Overview, phases start at 02
+
+    phaseNums.forEach(function(p) {
+      html += renderPhase(p, phases[p], chNum);
+      chNum++;
+    });
+
+    container.innerHTML = html;
+  }
+
+  fetch(API_URL + '/api/modules')
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      render(data.modules || data);
+    })
+    .catch(function(err) {
+      document.getElementById('modules-container').innerHTML =
+        '<div class="callout callout--warning">' +
+          '<span class="callout-icon">⚠️</span>' +
+          '<div class="callout-text"><strong>API Unreachable:</strong> Could not load curriculum modules. ' +
+          'Make sure the backend is running at ' + (API_URL || 'localhost') + '.</div>' +
+        '</div>';
+      console.warn('[RF-Hub] Modules API failed:', err.message);
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8: The Smith Chart — Your RF Roadmap — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.smith-landmark {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 10px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.smith-landmark-marker {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-em);
+  background: var(--bg-deep);
+  border: 1px solid var(--accent-em);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.smith-landmark p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 2 · Lesson 8</div>
+    <h1>The Smith Chart: Your RF Roadmap</h1>
+    <p class="hero-subtitle">Visual impedance geometry, SWR circles, frequency sweeps — the tool invented in 1939 still on every VNA</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 2 — Characteristics &amp; Measurement</span>
+    <span class="article-meta-item">Prerequisites: Lessons 6–7</span>
+    <span class="article-meta-item">Equipment: None (pairs with VNA work in Lesson 10)</span>
+    <span class="article-meta-item">⏱ 35 min</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Read impedance (R + jX) from a Smith chart</li>
+      <li>Identify key points: centre (50 Ω match), open circuit, short circuit</li>
+      <li>Determine if impedance is inductive or capacitive from chart position</li>
+      <li>Trace a frequency sweep on a Smith chart and interpret the shape</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Why the Smith Chart Exists ─── -->
+  <div class="chapter" id="why-smith-chart">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Why the Smith Chart Exists</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> Impedance calculations at RF involve complex numbers — awkward to plot on regular graph paper. Phillip Smith realised in 1939 that a particular conformal mapping could convert these complex impedance values into a circle, where all mathematically valid impedances appear as points within a single unit disk. The result was visual, intuitive, and could be used without a calculator.
+      </div>
+    </div>
+
+    <p>Despite being invented before computers, the Smith chart remains the standard display for RF impedance data. Every VNA — including the Rigol RSA5065N — has a Smith chart display mode. Once you understand it, you can read impedance, SWR, and matching information at a glance.</p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-em">Without Smith Chart</h4>
+        <p>Complex maths: calculate Γ from Z, then compute SWR and return loss, check each frequency point separately.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-success">With Smith Chart</h4>
+        <p>Look at the screen: position reveals impedance, distance from centre shows match quality, shape of trace shows frequency behaviour.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 03: The Chart Layout ─── -->
+  <div class="chapter" id="chart-layout">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Chart Layout</h2>
+
+    <p>A Smith chart is a circle containing a complex grid of overlapping circles and arcs. The key structural elements:</p>
+
+    <h3>Constant Resistance Circles</h3>
+    <p>Circles of varying size, all tangent to the right edge of the chart. Moving along a circle keeps resistance (R) constant while reactance (X) changes. The largest circle spans the entire chart (R = 0, purely reactive). The smallest circles are near the right edge (high R).</p>
+
+    <h3>Constant Reactance Arcs</h3>
+    <p>Arcs that cross the resistance circles. The horizontal axis through the centre is the purely resistive line (X = 0). Arcs above the centre line represent positive (inductive) reactance; arcs below represent negative (capacitive) reactance.</p>
+
+    <h3>Key Landmark Points</h3>
+
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">CENTRE</span>
+      <p><strong>50 Ω (normalised: 1 + j0)</strong> — the perfect match point. An antenna with Z = 50 + j0 Ω plots exactly here. SWR = 1:1.</p>
+    </div>
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">RIGHT EDGE</span>
+      <p><strong>Open circuit (Z = ∞)</strong> — infinite impedance. Nothing connected to the port, or a series resonant element at anti-resonance.</p>
+    </div>
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">LEFT EDGE</span>
+      <p><strong>Short circuit (Z = 0)</strong> — zero impedance. Port directly shorted. Calibration reference.</p>
+    </div>
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">UPPER HALF</span>
+      <p><strong>Inductive reactance (+jX)</strong> — impedance has positive imaginary component. Antenna is electrically too long or has a loading coil.</p>
+    </div>
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">LOWER HALF</span>
+      <p><strong>Capacitive reactance (−jX)</strong> — impedance has negative imaginary component. Antenna is electrically too short.</p>
+    </div>
+    <div class="smith-landmark">
+      <span class="smith-landmark-marker">HORIZONTAL AXIS</span>
+      <p><strong>Pure resistance (X = 0)</strong> — the real axis. Resonance occurs where a frequency sweep crosses this line.</p>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: Reading Impedance ─── -->
+  <div class="chapter" id="reading-impedance">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Reading Impedance from the Chart</h2>
+
+    <p>Every point inside the Smith chart circle represents a unique impedance value. Modern VNAs display the impedance numerically alongside the chart, but understanding the visual representation builds intuition.</p>
+
+    <h3>Normalised Impedance</h3>
+    <p>The Smith chart uses <strong>normalised impedance</strong> — the actual impedance divided by the reference impedance (Z₀, usually 50 Ω). This makes the chart universal, valid for any reference impedance.</p>
+
+    <pre><code>Normalised impedance: z = Z / Z₀
+
+Example: Z = 100 + j50 Ω, Z₀ = 50 Ω
+  z = (100 + j50) / 50 = 2 + j1
+
+To read actual impedance: multiply normalised value by Z₀
+  z = 2 + j1 → Z = (2 × 50) + j(1 × 50) = 100 + j50 Ω</code></pre>
+
+    <h3>Quick Position Guide</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Chart Position</th>
+            <th>What It Means</th>
+            <th>Example (Z₀ = 50 Ω)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Exact centre</td>
+            <td>Perfect 50 Ω match</td>
+            <td>Z = 50 + j0</td>
+          </tr>
+          <tr>
+            <td>Centre, upper half</td>
+            <td>Resistive + inductive</td>
+            <td>Z = 50 + j30 (inductive)</td>
+          </tr>
+          <tr>
+            <td>Centre, lower half</td>
+            <td>Resistive + capacitive</td>
+            <td>Z = 50 − j30 (capacitive)</td>
+          </tr>
+          <tr>
+            <td>Right of centre, on horizontal axis</td>
+            <td>Pure resistance &gt; 50 Ω</td>
+            <td>Z = 100 + j0</td>
+          </tr>
+          <tr>
+            <td>Left of centre, on horizontal axis</td>
+            <td>Pure resistance &lt; 50 Ω</td>
+            <td>Z = 25 + j0</td>
+          </tr>
+          <tr>
+            <td>Near right edge</td>
+            <td>Very high impedance</td>
+            <td>Z = 1000 + j0 (open-ish)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 05: SWR Circles ─── -->
+  <div class="chapter" id="swr-circles">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>SWR Circles on the Smith Chart</h2>
+
+    <p>A key property of the Smith chart: <strong>constant SWR traces a circle centred on the chart centre</strong>. This is one of the most useful facts in RF engineering.</p>
+
+    <ul>
+      <li>A point at the <strong>exact centre</strong> is on the SWR 1:1 circle (a point, radius 0)</li>
+      <li>Points on a <strong>small circle</strong> around centre = low SWR (good match)</li>
+      <li>Points on a <strong>large circle</strong> extending toward the chart edge = high SWR (poor match)</li>
+      <li>The <strong>outer boundary</strong> of the chart (the rim) = infinite SWR (perfect reflection)</li>
+    </ul>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>Practical rule:</strong> If your antenna's impedance point falls inside the SWR 2:1 circle (roughly the inner third of the chart radius), your match is acceptable. The goal of impedance matching is to move the point toward the centre.
+      </div>
+    </div>
+
+    <p>VNAs can overlay SWR circles on the Smith chart display. Set a circle at SWR 2:1 and you can instantly see whether any measurement falls within the acceptable zone.</p>
+  </div>
+
+  <!-- ─── CHAPTER 06: Frequency Sweeps ─── -->
+  <div class="chapter" id="frequency-sweeps">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Frequency Sweeps on the Smith Chart</h2>
+
+    <p>When a VNA sweeps across a range of frequencies, it plots each frequency's impedance point on the Smith chart. The result is a <strong>trace</strong> — a curve that tells the story of how the antenna's impedance evolves.</p>
+
+    <h3>What the Trace Shape Tells You</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Trace Shape</th>
+            <th>What It Means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Small loop near chart centre</td>
+            <td>Well-matched across a wide bandwidth — ideal</td>
+          </tr>
+          <tr>
+            <td>Large arc crossing the real axis</td>
+            <td>Antenna resonates (crosses X=0 line) but mismatched in resistance — needs matching network</td>
+          </tr>
+          <tr>
+            <td>Clockwise rotation with frequency</td>
+            <td>Normal behaviour — impedance rotates clockwise as frequency increases</td>
+          </tr>
+          <tr>
+            <td>Crossing the real axis from below</td>
+            <td>Resonance point — capacitive (below) to inductive (above)</td>
+          </tr>
+          <tr>
+            <td>Tight cluster near right edge</td>
+            <td>Very high impedance — open-circuit-like (e.g., open feedpoint, disconnected antenna)</td>
+          </tr>
+          <tr>
+            <td>Tight cluster at left edge</td>
+            <td>Very low impedance — short-circuit-like (e.g., DC path to ground)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Tip:</strong> When measuring your antenna on the RSA5065N in Lesson 10, switch to Smith chart display and watch the trace as you change frequency. Find where the trace crosses the real axis — that's resonance. See how far the crossing point is from centre — that's how close the feedpoint resistance is to 50 Ω.
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive:</strong> See the <a href="../../blog/understanding-s11.html">Understanding S11</a> blog post for a worked example of reading Smith chart traces from a real VNA measurement.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>On a Smith chart (Z₀ = 50 Ω), where is a perfect impedance match?</strong>
+        <!-- Exactly at the centre of the chart — corresponding to normalised impedance z = 1 + j0, or Z = 50 + j0 Ω -->
+      </li>
+      <li>
+        <strong>An antenna's impedance plots in the lower half of the Smith chart. Is it inductive or capacitive?</strong>
+        <!-- Capacitive — lower half = negative reactance (−jX). The antenna is electrically shorter than resonance. -->
+      </li>
+      <li>
+        <strong>What does a large SWR circle on a Smith chart represent?</strong>
+        <!-- A poor match — higher SWR means the impedance point is far from the chart centre, indicating large reflection. -->
+      </li>
+      <li>
+        <strong>A VNA frequency sweep shows the trace crossing the real axis (horizontal line) of the Smith chart. What is happening at that frequency?</strong>
+        <!-- The antenna is at resonance — reactance X = 0 at that frequency. The impedance is purely resistive. -->
+      </li>
+      <li>
+        <strong>What is normalised impedance and why does the Smith chart use it?</strong>
+        <!-- Normalised impedance = Z / Z₀. Used to make the chart universal — valid for any reference impedance, not just 50 Ω. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 8 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>The Smith chart maps complex impedance onto a circle — visual geometry replaces complex algebra</li>
+        <li><strong>Centre</strong> = perfect 50 Ω match. <strong>Right edge</strong> = open circuit. <strong>Left edge</strong> = short circuit</li>
+        <li><strong>Upper half</strong> = inductive (+jX). <strong>Lower half</strong> = capacitive (−jX). <strong>Horizontal axis</strong> = resonance</li>
+        <li>Constant SWR traces a circle centred on the chart — smaller circle = better match</li>
+        <li>A VNA frequency sweep creates a trace showing impedance evolution with frequency</li>
+        <li>Resonance is where the trace crosses the real (horizontal) axis</li>
+        <li>Use normalised impedance (z = Z/Z₀) to read the chart; multiply by Z₀ to get actual Ohms</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-07-swr-and-return-loss.html" class="btn btn--ghost">← Lesson 7: SWR &amp; Return Loss</a>
+    <a href="lesson-09-gain-directivity-efficiency.html" class="btn btn--primary">Next: Lesson 9 — Gain, Directivity &amp; Efficiency →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

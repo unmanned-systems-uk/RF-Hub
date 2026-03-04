@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 18: Direction Finding | RF-Hub Antenna Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+  .objectives-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .objectives-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; }
+  .objectives-list li::before { content: '→'; color: var(--accent-em); font-family: var(--font-mono); flex-shrink: 0; margin-top: 2px; }
+
+  .formula-block {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-em);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .formula-block .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-em);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .df-systems {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.25rem 0;
+  }
+  .df-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr;
+    gap: 1rem;
+    background: var(--bg-card);
+    padding: 1rem 1.25rem;
+    align-items: start;
+  }
+  .df-row:hover { background: var(--bg-card-hover); }
+  .df-system { font-weight: 700; font-size: 0.9rem; color: var(--accent-h); font-family: var(--font-body); }
+  .df-method { font-size: 0.84rem; color: var(--text-secondary); font-family: var(--font-body); }
+  .df-pros { font-size: 0.82rem; color: var(--text-secondary); font-family: var(--font-body); }
+
+  .lab-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 0.75rem 0;
+  }
+  .lab-step-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .lab-step-num {
+    background: var(--accent-em);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+  .lab-step-title { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); font-family: var(--font-body); }
+  .lab-step p { font-size: 0.88rem; color: var(--text-secondary); font-family: var(--font-body); margin-top: 0.25rem; }
+
+  .applications-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+  }
+  .app-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .app-card .app-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .app-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .app-card p { font-size: 0.78rem; color: var(--text-secondary); font-family: var(--font-body); }
+
+  .knowledge-check { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+  .knowledge-check h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-em); font-family: var(--font-body); }
+  .kc-question { margin-bottom: 1rem; }
+  .kc-question p { font-size: 0.9rem; margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .kc-question details summary { font-size: 0.82rem; color: var(--accent-h); cursor: pointer; font-family: var(--font-body); }
+  .kc-question details p { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.35rem; }
+
+  .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .lesson-nav a { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: border-color 0.2s; max-width: 48%; }
+  .lesson-nav a:hover { border-color: var(--accent-em); }
+  .lesson-nav .nav-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: var(--font-body); }
+  .lesson-nav .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); font-family: var(--font-body); }
+  .lesson-nav .nav-next { text-align: right; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Curriculum</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 4 · Lesson 18</div>
+    <h1>Direction Finding with Antenna Arrays</h1>
+    <p class="hero-subtitle">How amplitude comparison, phase measurement, and specialised array geometries locate RF transmitters — from fox hunting to search and rescue.</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ─────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📚 <span>Unit 4: Advanced Systems</span></span>
+  <span class="article-meta-item">⚡ <span>Prerequisites: Lesson 17</span></span>
+  <span class="article-meta-item">🛠 <span>Equipment: Optional — two antennas + SDR</span></span>
+  <span class="article-meta-item">⏱ <span>25 minutes</span></span>
+  <span class="article-meta-item"><span class="badge">Advanced</span></span>
+</div>
+
+
+<!-- ─── CHAPTER 1: LEARNING OBJECTIVES ──────────────────────── -->
+<div class="chapter" id="objectives">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Learning Objectives</h2>
+  <ul class="objectives-list">
+    <li>Explain basic direction-finding principles: amplitude comparison and phase comparison</li>
+    <li>Describe Watson-Watt, Adcock, and interferometer DF systems</li>
+    <li>Understand the relationship between DF accuracy and array geometry</li>
+    <li>Appreciate practical DF applications: fox hunting, SIGINT, and search and rescue</li>
+  </ul>
+</div>
+
+
+<!-- ─── CHAPTER 2: AMPLITUDE DF ─────────────────────────────── -->
+<div class="chapter" id="amplitude-df">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Amplitude DF — Comparing Signal Strength on Directional Antennas</h2>
+
+  <p>The simplest direction-finding technique exploits what every antenna has: a <strong>non-uniform radiation pattern</strong>. A directional antenna (Yagi, loop, dish) receives more signal from the direction it points than from off-axis. By rotating the antenna and observing signal strength, the direction of arrival is found at the orientation where received power is maximum — or minimum.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Null steering is more accurate than peak finding:</strong> The pattern null of a loop or Yagi is much sharper than the main lobe peak. Rotating to the null direction gives better angular resolution than rotating to the maximum. For fox hunting, always DF using the null, not the peak.
+    </div>
+  </div>
+
+  <p>Amplitude DF has several practical limitations:</p>
+  <ul style="color:var(--text-secondary); font-size:0.9rem; line-height:1.8; padding-left:1.5rem; margin:0.75rem 0;">
+    <li>Requires physical antenna rotation (slow, obvious)</li>
+    <li>Multipath reflections create false bearings (the reflected signal can be stronger than the direct path)</li>
+    <li>The 180° ambiguity: a cardioid or figure-8 pattern has two lobes or nulls — you cannot tell which hemisphere the signal is in without additional information</li>
+    <li>Accuracy: typically ±5–10° for manual Yagi DF, improving to ±2° with careful technique</li>
+  </ul>
+
+  <p>To resolve the 180° ambiguity, a <strong>sense antenna</strong> is used — an omnidirectional element whose output is combined with the directional element to produce a cardioid pattern with a single well-defined null.</p>
+</div>
+
+
+<!-- ─── CHAPTER 3: PHASE DF ──────────────────────────────────── -->
+<div class="chapter" id="phase-df">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Phase DF — Measuring Time/Phase Difference of Arrival</h2>
+
+  <p><strong>Phase comparison DF</strong> (also called Time Difference of Arrival, TDOA) uses two or more spatially separated antennas. A signal arriving from angle θ arrives at the two antennas at slightly different times — the nearer antenna receives it first. This time difference corresponds to a phase difference Δφ at the operating frequency.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Interferometer DF — Phase to Angle</div>
+    Δφ = (2π · d · sin θ) / λ<br><br>
+    θ = arcsin(λ · Δφ / (2π · d))<br><br>
+    where:<br>
+    Δφ = measured phase difference between the two antennas<br>
+    d  = baseline length (separation between antennas)<br>
+    λ  = wavelength<br>
+    θ  = angle of arrival from broadside (perpendicular to baseline)
+  </div>
+
+  <p>Phase DF is inherently more accurate than amplitude DF because phase can be measured very precisely. The longer the baseline d, the more sensitive the system — a small angle change produces a larger Δφ. However, longer baselines introduce <strong>ambiguity</strong>: if d &gt; λ/2, multiple angles of arrival produce the same Δφ (the same issue as grating lobes in arrays).</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>Ambiguity resolution:</strong> A long-baseline interferometer measures Δφ modulo 2π. Multiple baselines of different lengths are used together — the short baseline (d &lt; λ/2) resolves the integer ambiguity, while the long baseline provides accuracy. This is the same technique used in GPS and VLBI radio astronomy.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 4: DF SYSTEMS ────────────────────────────────── -->
+<div class="chapter" id="df-systems">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Classic DF Systems — Watson-Watt, Adcock, Interferometer</h2>
+
+  <div class="df-systems">
+    <div class="df-row">
+      <div class="df-system">Watson-Watt</div>
+      <div class="df-method">Two orthogonal (cross-shaped) loop antennas plus one sense antenna. The two loops produce X/Y components of the signal's direction vector. Their amplitude ratio gives tan(θ). The sense antenna resolves the 180° ambiguity. Outputs a direct bearing with no rotation required.</div>
+      <div class="df-pros"><strong>Pros:</strong> No moving parts, fast reading. <strong>Cons:</strong> Susceptible to sky-wave contamination (vertically polarised sky waves create errors in horizontally polarised loops). Accuracy ~1–3°.</div>
+    </div>
+    <div class="df-row">
+      <div class="df-system">Adcock</div>
+      <div class="df-method">Four vertical elements arranged in a cross, wired so horizontally polarised signals cancel and only vertically polarised signals contribute. Effectively a Watson-Watt variant immune to sky-wave interference. Widely used for MF/HF DF where ionospheric propagation dominates.</div>
+      <div class="df-pros"><strong>Pros:</strong> Sky-wave rejection. <strong>Cons:</strong> Physically larger than Watson-Watt loops. Accuracy ~1–2°.</div>
+    </div>
+    <div class="df-row">
+      <div class="df-system">Interferometer</div>
+      <div class="df-method">Two or more spaced receivers measuring phase difference of arrival. Baseline length determines sensitivity. Multiple baselines resolve ambiguity. Typically implemented digitally — two SDR channels with a common clock. Modern SIGINT systems use circular arrays of 8–16 elements.</div>
+      <div class="df-pros"><strong>Pros:</strong> Very high accuracy (sub-degree). <strong>Cons:</strong> Phase ambiguity, requires coherent receivers. Accuracy &lt;1° with good hardware.</div>
+    </div>
+    <div class="df-row">
+      <div class="df-system">Doppler DF</div>
+      <div class="df-method">A single antenna rapidly switched in a circle creates an apparent Doppler shift that varies sinusoidally with the signal's bearing angle. The phase of the Doppler modulation relative to the switching cycle reveals the bearing. Common in simple hand-held VHF/UHF fox-hunting receivers.</div>
+      <div class="df-pros"><strong>Pros:</strong> Cheap, simple, compact. <strong>Cons:</strong> Lower accuracy, works best on narrowband FM signals. Accuracy ~5°.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 5: ACCURACY FACTORS ─────────────────────────── -->
+<div class="chapter" id="accuracy">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Accuracy Factors — Baseline, Frequency, SNR</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Factor</th><th>Effect on accuracy</th><th>Practical implication</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Baseline length d</td>
+          <td>Longer → more sensitive (larger Δφ per degree)</td>
+          <td>Use d = 5–20λ for interferometry, but ambiguity must be resolved</td>
+        </tr>
+        <tr>
+          <td>Operating frequency</td>
+          <td>Higher f → shorter λ → given baseline = more phase sensitive</td>
+          <td>UHF DF (433 MHz, 1.2 GHz) is inherently more accurate than HF</td>
+        </tr>
+        <tr>
+          <td>SNR</td>
+          <td>Lower SNR → phase measurement noise → larger bearing error</td>
+          <td>Cramer-Rao bound: σ_θ ∝ λ / (d·cos(θ)·SNR)</td>
+        </tr>
+        <tr>
+          <td>Multipath</td>
+          <td>Reflected signals create apparent second source</td>
+          <td>Major limitation in urban areas; use wideband or FHSS signals</td>
+        </tr>
+        <tr>
+          <td>Array calibration</td>
+          <td>Phase/amplitude errors in receivers and cables create systematic bearing errors</td>
+          <td>Calibration tables or calibration sources are essential for accuracy</td>
+        </tr>
+        <tr>
+          <td>Number of snapshots</td>
+          <td>More observations → averaging → better accuracy</td>
+          <td>For a stationary transmitter, integrate over time to improve SNR</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 6: APPLICATIONS ─────────────────────────────── -->
+<div class="chapter" id="applications">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Applications — Fox Hunting to SIGINT</h2>
+
+  <div class="applications-grid">
+    <div class="app-card">
+      <div class="app-icon">🦊</div>
+      <h4>Amateur Fox Hunting</h4>
+      <p>Competitors locate a hidden 2m transmitter using directional antennas. Amplitude null-DF with a Yagi. Multiple bearings from different locations triangulate the fox. Excellent practical training for DF skills.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">✈️</div>
+      <h4>Search &amp; Rescue (SAR)</h4>
+      <p>Emergency locator beacons (ELT, PLB, EPIRB) transmit on 406 MHz and 121.5 MHz. SAR aircraft use DF to home on survivors. COSPAS-SARSAT satellites provide initial location; aircraft DF narrows to exact position.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🕵️</div>
+      <h4>SIGINT</h4>
+      <p>Intelligence gathering by locating hostile transmitters. Wide-baseline interferometer networks with widely spaced receive sites (TDOA). Used for locating radar, communications, and missile guidance emitters.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🚔</div>
+      <h4>Spectrum Enforcement</h4>
+      <p>Ofcom uses DF to locate unlicensed pirate radio stations, jammers, and interference sources. Vehicles with rooftop DF arrays triangulate sources while mobile. Fixed DF networks provide permanent coverage of key areas.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🛩️</div>
+      <h4>VOR Navigation</h4>
+      <p>VHF Omnidirectional Range — aircraft DF from ground beacons. The beacon transmits a rotating directional pattern; the phase difference of the received signal vs a reference tells the aircraft its magnetic bearing from the station.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">⚓</div>
+      <h4>AIS &amp; Maritime</h4>
+      <p>Automatic Identification System (AIS) tracking uses TDOA across multiple receive stations to locate vessels even when GPS is spoofed. Phase-difference DF provides independent position verification.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 7: OPTIONAL LAB ──────────────────────────────── -->
+<div class="chapter" id="lab">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Optional Lab — Amplitude DF with Yagi + SDR</h2>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">🛠</span>
+    <div class="callout-text">
+      <strong>Equipment:</strong> 2m Yagi (or any directional VHF/UHF antenna), RTL-SDR or HackRF, SDR# or GQRX, a known FM broadcast transmitter or a handheld transceiver as a beacon.<br>
+      <strong>Goal:</strong> Locate the transmitter to within 10° bearing accuracy using null-DF.
+    </div>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">01</span>
+      <span class="lab-step-title">Set Up the Receiver</span>
+    </div>
+    <p>Connect the SDR to your directional antenna. Open SDR# or GQRX and tune to your target signal (FM station 87.5–108 MHz, or a 2m beacon at 144.3 MHz). Confirm you can see the signal clearly. Note the S-meter or signal strength indicator value at your current orientation — this is your reference.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">02</span>
+      <span class="lab-step-title">Find the Rough Peak Direction</span>
+    </div>
+    <p>Slowly rotate the antenna 360° while watching signal strength. Note the approximate direction of the peak (strongest signal). This gives you the rough bearing — but the peak is broad and hard to pin down accurately. Note ±45° around the peak as the "likely sector".</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">03</span>
+      <span class="lab-step-title">Find the Null for Precision</span>
+    </div>
+    <p>Rotate 90° from the peak — this is where the Yagi sidelobe null should be (for a well-designed Yagi the pattern is symmetric). Slowly sweep through this region. The null is very sharp — signal strength drops 15–20 dB in just a few degrees. The null direction is perpendicular to the transmitter bearing. Rotate another 90° to get the transmitter bearing. Record the compass heading.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">04</span>
+      <span class="lab-step-title">Take Bearings from Two Locations</span>
+    </div>
+    <p>Move to a second location at least 200m from the first (further is better for triangulation accuracy). Repeat steps 2 and 3. Record the compass heading. Draw both bearing lines on a map. Where they intersect is the transmitter location. The accuracy depends on the angle of cut — 90° crossing gives best triangulation.</p>
+  </div>
+
+  <div class="lab-step">
+    <div class="lab-step-header">
+      <span class="lab-step-num">05</span>
+      <span class="lab-step-title">Evaluate and Record</span>
+    </div>
+    <p>Compare your triangulated position to the known transmitter location (FM transmitter tower, or your beacon operator's location). Calculate the bearing error. Note any sources of error: multipath from buildings, difficulty identifying the exact null, compass accuracy. A result within 10° is good for manual amplitude DF.</p>
+  </div>
+</div>
+
+
+<!-- ─── KNOWLEDGE CHECK ──────────────────────────────────────── -->
+<div class="knowledge-check">
+  <h3>Knowledge Check</h3>
+
+  <div class="kc-question">
+    <p><strong>1.</strong> Why is the pattern null preferred over the pattern peak for amplitude DF?</p>
+    <details><summary>Show answer</summary><p>The null is much sharper — signal strength changes by many dB over just a few degrees near the null, compared to the broad, flat peak region where strength changes slowly with angle. The sharper the feature, the more precisely you can identify its direction.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>2.</strong> What is the role of the sense antenna in a Watson-Watt DF system?</p>
+    <details><summary>Show answer</summary><p>The sense antenna is an omnidirectional element. Its output is combined with the figure-8 loop pattern. The combination produces a cardioid (heart-shaped) pattern with a single null — resolving the 180° ambiguity that a figure-8 loop alone cannot resolve (a figure-8 has two identical nulls 180° apart).</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>3.</strong> An interferometer uses two antennas separated by d = 3λ. What is the maximum phase difference at θ = 45°?</p>
+    <details><summary>Show answer</summary><p>Δφ = (2π × 3λ × sin45°) / λ = 2π × 3 × 0.707 = 6π × 0.707 ≈ 13.3 radians. This is 13.3 / (2π) ≈ 2.1 complete cycles — so there are 2 full ambiguities in the measurement. A shorter baseline (d &lt; λ/2) is needed to remove ambiguity, then the long baseline provides precision.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>4.</strong> What is the main difference between an Adcock array and a Watson-Watt system?</p>
+    <details><summary>Show answer</summary><p>The Adcock array uses vertical elements that suppress horizontally polarised components, making it immune to sky-wave interference (ionospheric reflections arrive at a shallow angle with horizontal polarisation). Watson-Watt uses horizontal loops, which are affected by sky waves. Adcock is preferred for HF DF where ionospheric paths are common.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>5.</strong> Why does a longer interferometer baseline improve DF accuracy?</p>
+    <details><summary>Show answer</summary><p>A longer baseline d produces a larger phase difference Δφ = (2πd sinθ)/λ for the same angle θ. The phase measurement has a fixed noise level, so a larger Δφ means better signal-to-noise in the phase domain. The angular accuracy σ_θ ≈ λ/(2πd·cosθ·SNR), which improves proportionally with d.</p></details>
+  </div>
+</div>
+
+
+<!-- ─── SUMMARY ───────────────────────────────────────────────── -->
+<div class="callout callout--success">
+  <span class="callout-icon">✅</span>
+  <div class="callout-text">
+    <strong>Lesson 18 Summary:</strong> Direction finding uses antenna pattern differences (amplitude DF) or phase differences of arrival (phase/interferometer DF) to locate transmitters. Watson-Watt and Adcock systems provide bearing without rotation; interferometers provide high accuracy (sub-degree) using phase measurements across spaced antennas. Accuracy improves with longer baselines, higher frequency, and better SNR. Applications range from amateur fox hunting and emergency SAR to spectrum enforcement and military SIGINT.
+  </div>
+</div>
+
+
+<!-- ─── PREV/NEXT NAVIGATION ─────────────────────────────────── -->
+<div class="lesson-nav">
+  <a href="lesson-17-phased-arrays.html">
+    <span class="nav-label">← Previous</span>
+    <span class="nav-title">Lesson 17 — Phased Arrays</span>
+  </a>
+  <a class="nav-next" href="lesson-19-practical-phased-array.html">
+    <span class="nav-label">Next →</span>
+    <span class="nav-title">Lesson 19 — Practical Phased Arrays</span>
+  </a>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

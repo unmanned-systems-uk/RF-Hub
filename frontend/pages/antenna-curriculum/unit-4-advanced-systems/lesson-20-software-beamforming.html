@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 20: Software Beamforming | RF-Hub Antenna Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+  .objectives-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .objectives-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; }
+  .objectives-list li::before { content: '→'; color: var(--accent-em); font-family: var(--font-mono); flex-shrink: 0; margin-top: 2px; }
+
+  .formula-block {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-em);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    line-height: 1.8;
+  }
+  .formula-block .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-em);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .code-block {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    line-height: 1.8;
+    margin: 1rem 0;
+  }
+  .code-block .kw { color: var(--accent-em); }
+  .code-block .fn { color: var(--accent-h); }
+  .code-block .cm { color: var(--text-dim); font-style: italic; }
+  .code-block .str { color: var(--accent-current); }
+  .code-block .num { color: var(--accent-e); }
+
+  .algo-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .algo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .algo-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.6rem; font-family: var(--font-body); }
+  .algo-card .algo-name { color: var(--accent-em); }
+  .algo-card p, .algo-card li { font-size: 0.84rem; color: var(--text-secondary); font-family: var(--font-body); line-height: 1.6; }
+  .algo-card ul { padding-left: 1.2rem; margin: 0.4rem 0; }
+  .algo-card li { margin-top: 0.2rem; }
+  .algo-card .pro  { color: var(--accent-current); }
+  .algo-card .con  { color: var(--accent-power); }
+
+  .workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin: 1.25rem 0;
+  }
+  .wf-step {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    align-items: flex-start;
+  }
+  .wf-step-num {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-em);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+  .wf-step-content h4 { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem; font-family: var(--font-body); }
+  .wf-step-content p { font-size: 0.82rem; color: var(--text-secondary); font-family: var(--font-body); }
+
+  .capstone-card {
+    background: var(--bg-card);
+    border: 2px solid var(--accent-em);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin: 2rem 0;
+  }
+  .capstone-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--accent-em); margin-bottom: 0.5rem; font-family: var(--font-body); }
+  .capstone-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; font-family: var(--font-body); }
+  .capstone-checklist { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .capstone-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-card-hover);
+    border-radius: 6px;
+  }
+  .capstone-checklist li::before { content: '☐'; color: var(--accent-em); font-size: 1rem; flex-shrink: 0; }
+
+  .knowledge-check { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+  .knowledge-check h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-em); font-family: var(--font-body); }
+  .kc-question { margin-bottom: 1rem; }
+  .kc-question p { font-size: 0.9rem; margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .kc-question details summary { font-size: 0.82rem; color: var(--accent-h); cursor: pointer; font-family: var(--font-body); }
+  .kc-question details p { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.35rem; }
+
+  .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .lesson-nav a { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: border-color 0.2s; max-width: 48%; }
+  .lesson-nav a:hover { border-color: var(--accent-em); }
+  .lesson-nav .nav-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: var(--font-body); }
+  .lesson-nav .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); font-family: var(--font-body); }
+  .lesson-nav .nav-next { text-align: right; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Curriculum</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 4 · Lesson 20</div>
+    <h1>Software Beamforming — Steering in Code</h1>
+    <p class="hero-subtitle">How digital beamforming applies complex weights to sampled signals in software — from the steering vector to MVDR adaptive null steering.</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ─────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📚 <span>Unit 4: Advanced Systems</span></span>
+  <span class="article-meta-item">⚡ <span>Prerequisites: Lesson 19, Python familiarity helpful</span></span>
+  <span class="article-meta-item">🛠 <span>Equipment: RTL-SDR or HackRF (optional)</span></span>
+  <span class="article-meta-item">⏱ <span>40 minutes</span></span>
+  <span class="article-meta-item"><span class="badge">Advanced</span></span>
+</div>
+
+
+<!-- ─── CHAPTER 1: LEARNING OBJECTIVES ──────────────────────── -->
+<div class="chapter" id="objectives">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Learning Objectives</h2>
+  <ul class="objectives-list">
+    <li>Explain how digital beamforming works — complex weights applied to sampled signals</li>
+    <li>Calculate the steering vector for a given array geometry and target direction</li>
+    <li>Understand delay-and-sum beamforming and its limitations</li>
+    <li>Describe MVDR (Capon) beamforming and why it outperforms delay-and-sum</li>
+    <li>Connect the concepts to real tools — GNU Radio, Python NumPy, RTL-SDR</li>
+  </ul>
+</div>
+
+
+<!-- ─── CHAPTER 2: WHAT SOFTWARE BEAMFORMING DOES ───────────── -->
+<div class="chapter" id="what-dbf-does">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>What Software Beamforming Actually Does</h2>
+
+  <p>In Lesson 19, we applied phase shifts in hardware — lengths of coaxial cable, PIN diode switches. Digital beamforming (DBF) replaces this with arithmetic. Each array element has its own receiver that outputs a stream of complex (I/Q) samples. These sample streams are multiplied by complex weights and summed. That's the entire algorithm.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">📐</span>
+    <div class="callout-text">
+      <strong>The beamformer output:</strong><br>
+      y(t) = w₁* · x₁(t) + w₂* · x₂(t) + ... + wN* · xN(t)<br><br>
+      where xₙ(t) is the complex sample from element n, wₙ is the complex weight for element n, and * denotes complex conjugate. In matrix notation: y = <strong>w</strong>ᴴ<strong>x</strong>
+    </div>
+  </div>
+
+  <p>The key insight: <strong>a complex number has both amplitude and phase</strong>. Multiplying a signal by e^(jφ) shifts its phase by φ without changing its amplitude. By choosing the right complex weights, you implement any combination of phase shifts and amplitude tapers across the array — in a single line of code per time sample.</p>
+
+  <p>The power of DBF lies in what happens next: you can apply <em>different</em> weight vectors to the same raw data simultaneously, forming multiple beams in different directions without any additional hardware. The same received data streams serve all the beams.</p>
+</div>
+
+
+<!-- ─── CHAPTER 3: COMPLEX WEIGHTS ──────────────────────────── -->
+<div class="chapter" id="complex-weights">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Complex Weights — Amplitude and Phase as a Single Number</h2>
+
+  <p>A complex weight wₙ = Aₙ · e^(jφₙ) encodes two things simultaneously:</p>
+  <ul style="color:var(--text-secondary); font-size:0.9rem; line-height:1.8; padding-left:1.5rem; margin:0.75rem 0;">
+    <li><strong>Aₙ</strong> — the amplitude weighting (tapering) applied to element n. Setting Aₙ &lt; 1 suppresses that element's contribution, implementing amplitude tapering.</li>
+    <li><strong>φₙ</strong> — the phase shift applied to element n. This is exactly the progressive phase shift from Lesson 17.</li>
+  </ul>
+
+  <p>For a beam steered to angle θ with uniform amplitude (no tapering), the weight for element n is simply:</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Steering Weight — Element n in a ULA</div>
+    wₙ = e^(-j · n · kd · sin θ)  =  e^(-j · n · 2π · d · sin θ / λ)<br><br>
+    where n = 0, 1, 2, ..., N−1 (element index)<br>
+    This is the complex conjugate of the steering vector aₙ.
+  </div>
+
+  <p>In Python, using NumPy, this is a one-liner:</p>
+
+  <div class="code-block">
+<span class="cm"># Steering weights for ULA, element indices 0..N-1</span>
+n = np.<span class="fn">arange</span>(N)
+w = np.<span class="fn">exp</span>(<span class="num">-1j</span> * n * <span class="num">2</span>*np.pi * d_over_lambda * np.<span class="fn">sin</span>(theta_rad))
+<span class="cm"># Apply to received data matrix X (shape N x T): one row per element</span>
+y = w.conj() @ X  <span class="cm"># shape: (T,) — beamformed output samples</span>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 4: STEERING VECTOR ──────────────────────────── -->
+<div class="chapter" id="steering-vector">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Steering Vector — Geometry Maps to Phase Differences</h2>
+
+  <p>The <strong>steering vector</strong> a(θ) describes how a signal from direction θ appears across all elements of the array. For a Uniform Linear Array (ULA) with N elements, element spacing d, and wavelength λ:</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Steering Vector — N-element ULA</div>
+    a(θ) = [1, e^(j·kd·sinθ), e^(j·2kd·sinθ), ..., e^(j·(N-1)kd·sinθ)]ᵀ<br><br>
+    where k = 2π/λ  (wavenumber)<br><br>
+    In Python:<br>
+    a = np.exp(1j * n * 2*np.pi * d_over_lambda * np.sin(theta_rad))
+  </div>
+
+  <p>The steering vector is the array's "fingerprint" of a signal arriving from θ. Element 0 is the phase reference (phase = 0). Each subsequent element accumulates more phase delay because the signal arrives later. The beamformer exploits this: the optimal weight vector to receive a signal from θ is the conjugate of the steering vector.</p>
+
+  <p>For non-ULA geometries (2D planar arrays, irregular arrays), the steering vector formula generalises by replacing the 1D path difference n·d·sinθ with the full 3D dot product between the element position vector and the direction-of-arrival unit vector.</p>
+</div>
+
+
+<!-- ─── CHAPTER 5: DELAY AND SUM ────────────────────────────── -->
+<div class="chapter" id="delay-sum">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Delay-and-Sum Beamforming — The Simplest Beamformer</h2>
+
+  <p><strong>Delay-and-sum (DAS)</strong> is the most straightforward DBF algorithm. To receive from direction θ:</p>
+
+  <div class="workflow-steps">
+    <div class="wf-step">
+      <div class="wf-step-num">1</div>
+      <div class="wf-step-content">
+        <h4>Compute the steering vector a(θ)</h4>
+        <p>Calculate the expected inter-element phase progression for direction θ using the formula above.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">2</div>
+      <div class="wf-step-content">
+        <h4>Apply conjugate weights: w = a*(θ) / N</h4>
+        <p>The conjugate phases "undo" the propagation delays, aligning the signals from direction θ before summation. Dividing by N normalises the output.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">3</div>
+      <div class="wf-step-content">
+        <h4>Compute output: y = wᴴ x</h4>
+        <p>The inner product of weight vector and received sample vector. Signals from θ add coherently (gain = N). Signals from other directions partially cancel.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">4</div>
+      <div class="wf-step-content">
+        <h4>Repeat for each time sample</h4>
+        <p>Apply the same weights to each column of the received data matrix. Output is a 1D time series representing the beamformed signal.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+<span class="cm"># Delay-and-sum beamformer in NumPy</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+N = <span class="num">4</span>           <span class="cm"># number of elements</span>
+d_over_lam = <span class="num">0.5</span> <span class="cm"># spacing in wavelengths (λ/2)</span>
+theta_deg = <span class="num">30</span>  <span class="cm"># desired beam direction (degrees)</span>
+
+theta = np.<span class="fn">radians</span>(theta_deg)
+n = np.<span class="fn">arange</span>(N)
+
+<span class="cm"># Steering vector</span>
+a = np.<span class="fn">exp</span>(<span class="num">1j</span> * n * <span class="num">2</span>*np.pi * d_over_lam * np.<span class="fn">sin</span>(theta))
+
+<span class="cm"># Delay-and-sum weight vector (normalised)</span>
+w_das = a.conj() / N
+
+<span class="cm"># Beamform: X has shape (N, T) — N elements, T time samples</span>
+<span class="cm"># y = w_das.conj() @ X  gives (T,) beamformed output</span>
+  </div>
+
+  <p>DAS is simple, robust, and computationally cheap. Its limitation is that the sidelobe level is fixed by the array aperture and window — it cannot adaptively place nulls on interferers.</p>
+</div>
+
+
+<!-- ─── CHAPTER 6: LIMITATIONS OF DAS ───────────────────────── -->
+<div class="chapter" id="das-limits">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Limitations of Delay-and-Sum</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Limitation</th><th>Why it occurs</th><th>Consequence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fixed sidelobe level</td>
+          <td>DAS weights are determined by geometry only, not by the interference environment</td>
+          <td>A strong interferer in a sidelobe degrades SNR</td>
+        </tr>
+        <tr>
+          <td>No null steering</td>
+          <td>DAS cannot place a null precisely on an interferer's direction</td>
+          <td>Interferer rejection depends only on sidelobe level at that angle</td>
+        </tr>
+        <tr>
+          <td>Resolution limit</td>
+          <td>Minimum resolvable angle = λ/(N·d) — the Rayleigh limit</td>
+          <td>Two closely-spaced sources cannot be separated if their angular separation &lt; λ/(N·d)</td>
+        </tr>
+        <tr>
+          <td>Signal mismatch sensitivity</td>
+          <td>Steering vector errors (due to calibration errors or multipath) degrade gain</td>
+          <td>Robust DAS (with steering vector uncertainty) is needed for real systems</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>These limitations motivate adaptive beamforming algorithms that use the actual received data statistics to optimise the weight vector — instead of relying on geometry alone.</p>
+</div>
+
+
+<!-- ─── CHAPTER 7: MVDR BEAMFORMING ─────────────────────────── -->
+<div class="chapter" id="mvdr">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>MVDR Beamforming — Minimum Variance Distortionless Response</h2>
+
+  <p>MVDR (also called Capon beamforming, 1969) solves an optimisation problem: find the weight vector that <strong>minimises the total output power while keeping the response to signals from the desired direction exactly 1</strong> (unity gain, no distortion). This forces nulls onto all interference sources automatically.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">MVDR Weight Vector</div>
+    w_MVDR = (R⁻¹ · a(θ)) / (aᴴ(θ) · R⁻¹ · a(θ))<br><br>
+    where:<br>
+    R = (1/T) · X · Xᴴ   is the sample covariance matrix (N × N)<br>
+    a(θ)  is the steering vector for the desired direction<br>
+    R⁻¹   is the matrix inverse of R
+  </div>
+
+  <p>The covariance matrix R captures the statistical structure of the received signals — including which directions interferers come from. Inverting R effectively "whitens" the interference, and the subsequent projection onto a(θ) places nulls precisely where the interferers are, without being told where they are.</p>
+
+  <div class="code-block">
+<span class="cm"># MVDR beamformer in NumPy</span>
+<span class="cm"># X: (N, T) received data matrix</span>
+
+<span class="cm"># 1. Estimate covariance matrix</span>
+R = (X @ X.conj().T) / X.shape[<span class="num">1</span>]
+
+<span class="cm"># 2. Regularise (diagonal loading for numerical stability)</span>
+R_reg = R + <span class="num">1e-6</span> * np.<span class="fn">eye</span>(N)
+
+<span class="cm"># 3. Invert</span>
+R_inv = np.linalg.<span class="fn">inv</span>(R_reg)
+
+<span class="cm"># 4. Compute MVDR weights</span>
+a = np.<span class="fn">exp</span>(<span class="num">1j</span> * n * <span class="num">2</span>*np.pi * d_over_lam * np.<span class="fn">sin</span>(theta))
+Rinv_a = R_inv @ a
+w_mvdr = Rinv_a / (a.conj() @ Rinv_a)
+
+<span class="cm"># 5. Beamform</span>
+y_mvdr = w_mvdr.conj() @ X
+  </div>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>MVDR requires enough data:</strong> The covariance matrix R must be estimated from data. A rule of thumb: use at least 2N–10N time samples to get a reliable estimate. With too few samples, R is poorly conditioned and its inverse is unreliable. Diagonal loading (adding a small constant to the diagonal) regularises the inversion.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 8: MUSIC ALGORITHM ──────────────────────────── -->
+<div class="chapter" id="music">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>MUSIC — Finding Angles by Eigenvalue Decomposition</h2>
+
+  <p><strong>MUSIC</strong> (MUltiple SIgnal Classification, Schmidt 1986) is a <em>direction-of-arrival</em> (DOA) estimation algorithm rather than a beamformer. It finds the directions of incoming signals with very high resolution — potentially super-resolution, beyond the Rayleigh limit.</p>
+
+  <p>The key idea: the covariance matrix R can be decomposed into a signal subspace and a noise subspace. The steering vectors of the incoming signals lie in the signal subspace and are therefore orthogonal to the noise subspace.</p>
+
+  <div class="formula-block">
+    <div class="formula-label">MUSIC Pseudo-Spectrum</div>
+    P_MUSIC(θ) = 1 / (aᴴ(θ) · Eₙ · Eₙᴴ · a(θ))<br><br>
+    where Eₙ is the matrix of noise eigenvectors (columns of U from SVD,<br>
+    corresponding to the N−K smallest eigenvalues for K sources).<br><br>
+    P_MUSIC peaks sharply at the true DOA angles.
+  </div>
+
+  <div class="algo-compare">
+    <div class="algo-card">
+      <h4 class="algo-name">Delay-and-Sum</h4>
+      <ul>
+        <li class="pro">Simple — no matrix operations</li>
+        <li class="pro">Robust to covariance estimation errors</li>
+        <li class="pro">Works with few samples</li>
+        <li class="con">Fixed sidelobes, no null steering</li>
+        <li class="con">Limited angular resolution</li>
+        <li class="con">Cannot resolve closely-spaced sources</li>
+      </ul>
+    </div>
+    <div class="algo-card">
+      <h4 class="algo-name">MVDR (Capon)</h4>
+      <ul>
+        <li class="pro">Adaptive nulling — places nulls on interferers automatically</li>
+        <li class="pro">Higher angular resolution than DAS</li>
+        <li class="pro">Good for communications (SINR maximisation)</li>
+        <li class="con">Requires matrix inversion — computationally heavier</li>
+        <li class="con">Sensitive to steering vector errors</li>
+        <li class="con">Needs sufficient data for covariance estimate</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 9: GNU RADIO AND PYTHON WORKFLOW ────────────── -->
+<div class="chapter" id="workflow">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>GNU Radio and Python Workflow — From ADC to Beam</h2>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">🛠</span>
+    <div class="callout-text">
+      <strong>Hardware prerequisite for real-data DBF:</strong> You need multiple <em>phase-coherent</em> SDR receive channels. Two RTL-SDR dongles driven from the same clock (mod for shared oscillator) or a KrakenSDR (5-channel coherent RTL-SDR) are practical options. A HackRF or USRP with multiple RX boards also works.
+    </div>
+  </div>
+
+  <div class="workflow-steps">
+    <div class="wf-step">
+      <div class="wf-step-num">1</div>
+      <div class="wf-step-content">
+        <h4>Receive and synchronise I/Q streams</h4>
+        <p>Each element's received I/Q samples arrive from its own SDR channel. The channels must be sample-synchronous (started at the same time) and phase-synchronous (same local oscillator). Use a calibration signal (known transmitter at known angle) to correct residual phase offsets between channels.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">2</div>
+      <div class="wf-step-content">
+        <h4>Buffer into data matrix X</h4>
+        <p>Collect T time samples from all N elements into a matrix X of shape N × T. T should be large enough for reliable covariance estimation (T ≥ 10N) but small enough that the signal environment hasn't changed.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">3</div>
+      <div class="wf-step-content">
+        <h4>Compute covariance matrix R</h4>
+        <p>R = X @ X.conj().T / T. Add diagonal loading: R += ε·I for numerical stability. ε is chosen as a fraction of the mean diagonal element of R.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">4</div>
+      <div class="wf-step-content">
+        <h4>Compute weight vector (DAS or MVDR)</h4>
+        <p>Choose your beamformer. For a receive-only application tracking a known signal, DAS is fine. For interference suppression, use MVDR. Apply weights to X to get the output time series y.</p>
+      </div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-step-num">5</div>
+      <div class="wf-step-content">
+        <h4>Demodulate / display</h4>
+        <p>The output y is a complex baseband signal — the same as any SDR output. Feed it to FM demodulation, FFT display, or further signal processing. You have effectively created a software-defined directional antenna.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>GNU Radio provides blocks for multi-channel SDR input, matrix operations, and output. KrakenSDR ships with Python-based DBF and MUSIC DOA software designed exactly for this workflow.</p>
+</div>
+
+
+<!-- ─── CHAPTER 10: PRACTICAL DEMO ──────────────────────────── -->
+<div class="chapter" id="demo">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 10</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Practical Demo — Receive Two FM Stations, Steer a Null to Suppress One</h2>
+
+  <p>This demonstration uses two phase-coherent SDR channels and a 2-element dipole array to show null steering in software. It requires two FM broadcast stations visible on your spectrum at different directions from the array.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">🛠</span>
+    <div class="callout-text">
+      <strong>Equipment:</strong> 2× RTL-SDR dongles with shared clock (or KrakenSDR), 2× dipoles at VHF FM spacing (λ/2 ≈ 1.4 m at 100 MHz), 1× laptop running Python 3 + NumPy + SciPy + PyRTLSDR or KrakenSDR Python SDK.
+    </div>
+  </div>
+
+  <p><strong>Procedure:</strong></p>
+  <ol style="padding-left:1.5rem; color:var(--text-secondary); font-size:0.9rem; line-height:2;">
+    <li>Identify two FM stations on different frequencies (e.g., 98.4 MHz and 102.1 MHz) coming from clearly different directions (use CellMapper equivalent for FM broadcast, or simply rotate a portable radio).</li>
+    <li>Tune both SDR channels to 100 MHz (wide enough to see both stations in the 2 MHz bandwidth).</li>
+    <li>Collect 10,000 samples from both channels simultaneously. Form X (2 × 10000 matrix).</li>
+    <li>Apply DAS steering toward station A's direction. Listen to the output — station A should be louder than station B.</li>
+    <li>Compute MVDR weights with the steering vector for station A. Apply to X. The MVDR output should suppress station B (which now acts as an interferer) even more strongly than DAS.</li>
+    <li>Swap: steer toward station B, use MVDR. Station A should now be suppressed.</li>
+    <li>Listen to both outputs and confirm the spatial selectivity — you are hearing direction-based separation of two overlapping signals.</li>
+  </ol>
+</div>
+
+
+<!-- ─── UNIT 4 CAPSTONE ───────────────────────────────────────── -->
+<div class="capstone-card">
+  <h3>Unit 4 Capstone — Arrays, Phasing, DF, and Beamforming</h3>
+  <p>This capstone ties together all five lessons of Unit 4 into a single design, build, and measure project. Work through all six deliverables to complete the unit.</p>
+  <ul class="capstone-checklist">
+    <li>Design a 4-element 145 MHz broadside array at λ/2 spacing. Calculate the 3 dB beamwidth using the ULA formula (≈ 0.886λ/(N·d) in radians). Sketch the expected AF pattern showing the main lobe and first sidelobes.</li>
+    <li>Build the array using half-wave dipoles with choke baluns. Measure each element's SWR individually and confirm resonance within 2 MHz of 145 MHz. Document the measured vs theoretical element impedance.</li>
+    <li>Design and build a feed network (Wilkinson tree for 4 elements: two 2-way Wilkinsons feeding a third). Verify equal-amplitude, equal-phase outputs using a signal generator and power meter (or VNA).</li>
+    <li>Implement manual beam steering using two 90° coax delay lines. Connect the array to an RTL-SDR. Perform the rotating-transmitter test and plot measured pattern vs theoretical AF. Quantify the 3 dB beamwidth and first sidelobe level.</li>
+    <li>Implement a software DF function using the Python MUSIC algorithm on data captured from two coherent elements of the array. Place a transmitter at three known angles (0°, 30°, −30°) and verify that MUSIC correctly identifies each bearing within ±5°.</li>
+    <li>Write a brief (1–2 page) technical report comparing the hardware phased array (Lesson 19) and the software beamformer (Lesson 20) in terms of cost, flexibility, latency, beam agility, and null depth. Recommend one approach for each of the following applications: (a) a fixed backhaul link, (b) a portable DF system, (c) a 5G base station sector antenna.</li>
+  </ul>
+</div>
+
+
+<!-- ─── KNOWLEDGE CHECK ──────────────────────────────────────── -->
+<div class="knowledge-check">
+  <h3>Knowledge Check</h3>
+
+  <div class="kc-question">
+    <p><strong>1.</strong> What is the steering vector for a 4-element ULA with λ/2 spacing, steered to θ = 0° (broadside)?</p>
+    <details><summary>Show answer</summary><p>a(0°) = [1, e^(j·0), e^(j·0), e^(j·0)] = [1, 1, 1, 1]. All elements have the same phase because sin(0°) = 0 — the signal arrives simultaneously at all elements when coming from broadside. The beamformer weights are the conjugate: w = [1, 1, 1, 1] / 4 (normalised).</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>2.</strong> Why does MVDR need the covariance matrix R, while DAS does not?</p>
+    <details><summary>Show answer</summary><p>DAS uses only the geometry (steering vector) to set weights, ignoring the actual interference environment. MVDR minimises the total output power subject to unity gain in the desired direction — to minimise power, it must know where the power is coming from, which is encoded in R. R captures the spatial distribution of interference and noise, enabling MVDR to place nulls precisely on strong interference sources.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>3.</strong> A 2-element DBF system forms a null on an FM station at 98.4 MHz arriving from 45°. What MVDR weight vector achieves this, assuming unit gain in the broadside direction (θ = 0°)?</p>
+    <details><summary>Show answer</summary><p>This is a constrained optimisation — in practice you'd compute w_MVDR from the data. Conceptually: the weight for element 0 is 1 (reference), and the weight for element 1 introduces a phase that makes the 45° signal cancel while the 0° signal passes. For a 2-element system with λ/2 spacing, the null at 45° requires element 1 weight phase = −π sin(45°) × π = −π × 0.707 = −2.22 rad. Combined with the unity gain constraint, w = [1, e^(j·2.22)]^* / 2.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>4.</strong> What does MUSIC provide that MVDR does not?</p>
+    <details><summary>Show answer</summary><p>MUSIC provides DOA (Direction of Arrival) estimation — it tells you where signals are coming from without needing to specify the target direction first. MVDR is a beamformer: you specify a direction and it maximises SINR from that direction. MUSIC uses the noise subspace of the covariance matrix to identify source directions with super-resolution capability (potentially resolving two sources closer than the Rayleigh limit).</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>5.</strong> Name two reasons why practical digital beamforming requires phase-coherent receivers across all elements.</p>
+    <details><summary>Show answer</summary><p>(1) Each element's I/Q samples must have a stable, known phase relationship to combine correctly. Independent oscillators drift independently, making the inter-element phase random and uncontrollable. (2) Steering vector calibration: to accurately map the steering vector to physical angles, you must know the phase offset between each receiver channel. Incoherent receivers would require continuous re-calibration even when the array geometry is fixed.</p></details>
+  </div>
+</div>
+
+
+<!-- ─── SUMMARY ───────────────────────────────────────────────── -->
+<div class="callout callout--success">
+  <span class="callout-icon">✅</span>
+  <div class="callout-text">
+    <strong>Lesson 20 Summary:</strong> Software beamforming replaces hardware phase shifters with complex weight multiplication in code. The steering vector a(θ) = [1, e^(jkd sinθ), ...] describes how a signal from direction θ appears across array elements. Delay-and-sum applies the conjugate steering vector as weights — simple but with fixed sidelobes. MVDR (Capon) uses the received data covariance matrix to adaptively place nulls on interferers, outperforming DAS in interference-heavy environments. MUSIC provides super-resolution DOA estimation through eigendecomposition of the covariance matrix. All three algorithms are implementable in NumPy in under 20 lines of Python.
+  </div>
+</div>
+
+
+<!-- ─── PREV/NEXT NAVIGATION ─────────────────────────────────── -->
+<div class="lesson-nav">
+  <a href="lesson-19-practical-phased-array.html">
+    <span class="nav-label">← Previous</span>
+    <span class="nav-title">Lesson 19 — Practical Phased Arrays</span>
+  </a>
+  <a class="nav-next" href="../../learning-path.html">
+    <span class="nav-label">Unit 4 Complete →</span>
+    <span class="nav-title">Return to Learning Path</span>
+  </a>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

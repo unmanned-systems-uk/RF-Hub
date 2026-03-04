@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 7: SWR and Return Loss — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.swr-gauge {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.swr-zone {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+}
+.swr-value {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.swr-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 2 · Lesson 7</div>
+    <h1>SWR and Return Loss: Is My Antenna Working?</h1>
+    <p class="hero-subtitle">Reflection coefficient, standing wave ratio, return loss — and what to do about a mismatch</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 2 — Characteristics &amp; Measurement</span>
+    <span class="article-meta-item">Prerequisites: Lesson 6 (Impedance)</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 25 min</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Define SWR, return loss, and reflection coefficient (Γ)</li>
+      <li>Convert between SWR, return loss, and reflection coefficient</li>
+      <li>Set practical SWR thresholds for different applications</li>
+      <li>Explain what actually happens to reflected power</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Reflection Coefficient ─── -->
+  <div class="chapter" id="reflection-coefficient">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Reflection Coefficient (Γ)</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> In Lesson 6 we learned that impedance mismatch means the antenna doesn't "look like" 50 Ω to the feedline. When impedances don't match, some of the forward-travelling RF power reflects back toward the transmitter. The reflection coefficient quantifies exactly how much.
+      </div>
+    </div>
+
+    <p>The reflection coefficient (Γ, Greek capital Gamma) is the fundamental quantity from which SWR and return loss are both derived:</p>
+
+    <pre><code>Γ = (Z_load − Z₀) / (Z_load + Z₀)
+
+where:
+  Z_load = antenna feedpoint impedance (complex: R + jX)
+  Z₀ = feedline characteristic impedance (usually 50 Ω)
+  |Γ| ranges from 0 (perfect match) to 1 (total reflection)</code></pre>
+
+    <p>Examples:</p>
+    <ul>
+      <li>Antenna Z = 50 Ω: Γ = (50−50)/(50+50) = 0 — perfect match, no reflection</li>
+      <li>Antenna Z = 100 Ω: Γ = (100−50)/(100+50) = 0.33 — some reflection</li>
+      <li>Antenna Z = open circuit: Γ = 1 — total reflection</li>
+      <li>Antenna Z = short circuit: Γ = −1 — total reflection, opposite phase</li>
+    </ul>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>S11 on a VNA is Γ.</strong> When your VNA displays S11, it is measuring the complex reflection coefficient at port 1. Every SWR and return loss value your VNA shows is derived from this single underlying measurement.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 03: SWR ─── -->
+  <div class="chapter" id="swr">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>SWR: Standing Wave Ratio</h2>
+
+    <p>When forward and reflected waves coexist on a feedline, they interfere and create a <strong>standing wave</strong> — a stationary pattern of voltage maxima and minima along the cable. The Standing Wave Ratio (SWR) describes how pronounced this pattern is:</p>
+
+    <pre><code>SWR = (1 + |Γ|) / (1 − |Γ|)
+
+Ranges from 1:1 (perfect match, no standing wave) to ∞:1 (total reflection)</code></pre>
+
+    <h3>Practical SWR Thresholds</h3>
+    <div class="swr-gauge">
+      <div class="swr-zone" style="border-color: var(--accent-current);">
+        <div class="swr-value" style="color: var(--accent-current);">1.0–1.5 : 1</div>
+        <div class="swr-label">Excellent — deploy without concern. Well under 4% power reflected.</div>
+      </div>
+      <div class="swr-zone" style="border-color: var(--accent-h);">
+        <div class="swr-value" style="color: var(--accent-h);">1.5–2.0 : 1</div>
+        <div class="swr-label">Good — acceptable for most applications. 11% power reflected at 2:1.</div>
+      </div>
+      <div class="swr-zone" style="border-color: var(--accent-e);">
+        <div class="swr-value" style="color: var(--accent-e);">2.0–3.0 : 1</div>
+        <div class="swr-label">Marginal — investigate and fix if possible. Increased feedline loss.</div>
+      </div>
+    </div>
+
+    <p>For receive-only SDR work, high SWR matters less — you lose some signal but won't damage equipment. For transmitting, sustained high SWR can cause feedline heating and stress the transmitter's output stage, though modern radios have built-in protection.</p>
+  </div>
+
+  <!-- ─── CHAPTER 04: Return Loss ─── -->
+  <div class="chapter" id="return-loss">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Return Loss</h2>
+
+    <p>Return loss is simply Γ expressed in decibels. It describes how much the reflected signal is attenuated compared to the forward signal:</p>
+
+    <pre><code>Return Loss (dB) = −20 × log₁₀(|Γ|)
+
+A higher (less negative) return loss number = better match
+  |Γ| = 0.01 → RL = 40 dB (excellent)
+  |Γ| = 0.1  → RL = 20 dB (good)
+  |Γ| = 0.33 → RL = 9.5 dB (marginal)</code></pre>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">📊</span>
+      <div class="callout-text">
+        <strong>Note on sign convention:</strong> VNA displays often show S11 as a negative number (e.g., −15 dB). The magnitude of this number is the return loss. A reading of −20 dB means the return loss is 20 dB — which is good. The more negative, the better the match.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 05: Conversion Reference ─── -->
+  <div class="chapter" id="conversion-table">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Conversion Reference Table</h2>
+
+    <p>These three quantities are three faces of the same measurement. Use this table to convert between them:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>SWR</th>
+            <th>|Γ|</th>
+            <th>Return Loss (dB)</th>
+            <th>Power Reflected (%)</th>
+            <th>Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.0 : 1</td>
+            <td>0.000</td>
+            <td>∞</td>
+            <td>0%</td>
+            <td>Perfect match</td>
+          </tr>
+          <tr>
+            <td>1.1 : 1</td>
+            <td>0.048</td>
+            <td>26.4 dB</td>
+            <td>0.2%</td>
+            <td>Excellent</td>
+          </tr>
+          <tr>
+            <td>1.5 : 1</td>
+            <td>0.200</td>
+            <td>14.0 dB</td>
+            <td>4%</td>
+            <td>Very good</td>
+          </tr>
+          <tr>
+            <td>2.0 : 1</td>
+            <td>0.333</td>
+            <td>9.5 dB</td>
+            <td>11%</td>
+            <td>Acceptable</td>
+          </tr>
+          <tr>
+            <td>3.0 : 1</td>
+            <td>0.500</td>
+            <td>6.0 dB</td>
+            <td>25%</td>
+            <td>Marginal</td>
+          </tr>
+          <tr>
+            <td>5.0 : 1</td>
+            <td>0.667</td>
+            <td>3.5 dB</td>
+            <td>44%</td>
+            <td>Poor</td>
+          </tr>
+          <tr>
+            <td>10.0 : 1</td>
+            <td>0.818</td>
+            <td>1.7 dB</td>
+            <td>67%</td>
+            <td>Very poor</td>
+          </tr>
+          <tr>
+            <td>∞ : 1</td>
+            <td>1.000</td>
+            <td>0 dB</td>
+            <td>100%</td>
+            <td>Total mismatch</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Reflected Power ─── -->
+  <div class="chapter" id="reflected-power">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>What Happens to Reflected Power?</h2>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        <strong>Common myth: "reflected power damages the transmitter."</strong> This is broadly untrue — the real story is more nuanced.
+      </div>
+    </div>
+
+    <p>When power reflects from the antenna back toward the transmitter, it reaches the transmitter output. There, it encounters another impedance mismatch (between the feedline and the transmitter's output circuit) and <strong>most of it reflects again</strong> — this time back toward the antenna. This double-reflection means the power bounces back and forth, eventually being absorbed (as useful radiated signal or feedline heat) rather than entering the transmitter's electronics.</p>
+
+    <p>The <strong>real concerns</strong> with high SWR are:</p>
+    <ul>
+      <li><strong>Increased feedline loss:</strong> Each trip down and back the cable dissipates energy. A lossy cable at SWR 3:1 wastes significantly more power than at 1:1. This is the primary practical problem.</li>
+      <li><strong>Voltage standing wave peaks:</strong> High SWR creates voltage maxima along the cable that can exceed cable voltage rating, potentially arcing in connectors or coax.</li>
+      <li><strong>Transmitter stress:</strong> Solid-state transmitters detect high SWR and reduce power to protect output transistors. This is protection, not damage — but it means reduced output power.</li>
+    </ul>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">✅</span>
+      <div class="callout-text">
+        <strong>Bottom line:</strong> For receive-only work (SDR), SWR doesn't damage anything — it just reduces signal. For transmitting, aim for SWR &lt; 2:1, use good-quality low-loss coax, and let the radio's SWR protection circuit do its job.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>What does SWR 1:1 mean physically?</strong>
+        <!-- Perfect impedance match — no power reflected, no standing wave on the feedline. Antenna impedance = Z₀ (50 Ω). -->
+      </li>
+      <li>
+        <strong>Your VNA shows S11 = −10 dB. What is the SWR?</strong>
+        <!-- Return loss = 10 dB → |Γ| = 10^(-10/20) = 0.316 → SWR = (1+0.316)/(1-0.316) ≈ 1.92:1 — slightly below 2:1, acceptable -->
+      </li>
+      <li>
+        <strong>If |Γ| = 0.5, what percentage of power is reflected?</strong>
+        <!-- P_reflected = |Γ|² × 100 = 0.25 × 100 = 25% — same as SWR 3:1 -->
+      </li>
+      <li>
+        <strong>What is S11 on a VNA measuring?</strong>
+        <!-- The reflection coefficient Γ at port 1 — i.e., the ratio of reflected to incident voltage wave. -->
+      </li>
+      <li>
+        <strong>What is the main practical problem with high SWR in a transmitting system?</strong>
+        <!-- Increased feedline losses — the cable heating from multiple signal bounces. Also voltage peaks that can cause arcing and transmitter power reduction. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 7 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Γ (reflection coefficient) = (Z<sub>load</sub> − Z₀) / (Z<sub>load</sub> + Z₀) — ranges 0 to 1</li>
+        <li>SWR = (1 + |Γ|) / (1 − |Γ|) — 1:1 is perfect, &lt;2:1 is acceptable for transmitting</li>
+        <li>Return Loss (dB) = −20 × log₁₀(|Γ|) — displayed as S11 on a VNA</li>
+        <li>SWR 2:1 = 9.5 dB return loss = 11% power reflected — all equivalent</li>
+        <li>High SWR primarily causes feedline losses and voltage peaks — not direct transmitter damage</li>
+        <li>S11 is Γ — every VNA SWR/return loss reading derives from this single measurement</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-06-impedance.html" class="btn btn--ghost">← Lesson 6: Impedance</a>
+    <a href="lesson-08-smith-chart.html" class="btn btn--primary">Next: Lesson 8 — The Smith Chart →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -133,13 +133,14 @@ class Quiz {
   static async getModuleQuizStats(module_id) {
     const result = await pool.query(
       `SELECT
-        COUNT(DISTINCT user_id) as total_attempts,
-        COUNT(CASE WHEN passed THEN 1 END) as passed_count,
-        AVG(score) as average_score,
-        MAX(score) as highest_score,
-        MIN(score) as lowest_score
-       FROM quiz_attempts
-       WHERE module_id = $1`,
+        COUNT(DISTINCT qa.user_id) as total_attempts,
+        COUNT(CASE WHEN qa.passed THEN 1 END) as passed_count,
+        AVG(qa.score_percentage) as average_score,
+        MAX(qa.score_percentage) as highest_score,
+        MIN(qa.score_percentage) as lowest_score
+       FROM quiz_attempts qa
+       JOIN quizzes q ON qa.quiz_id = q.quiz_id
+       WHERE q.module_id = $1`,
       [module_id]
     );
     return result.rows[0];
@@ -152,12 +153,13 @@ class Quiz {
     const result = await pool.query(
       `SELECT
         COUNT(*) as total_attempts,
-        COUNT(DISTINCT module_id) as modules_attempted,
-        COUNT(CASE WHEN passed THEN 1 END) as passed_count,
-        AVG(score) as average_score,
-        MAX(score) as highest_score
-       FROM quiz_attempts
-       WHERE user_id = $1`,
+        COUNT(DISTINCT q.module_id) as modules_attempted,
+        COUNT(CASE WHEN qa.passed THEN 1 END) as passed_count,
+        AVG(qa.score_percentage) as average_score,
+        MAX(qa.score_percentage) as highest_score
+       FROM quiz_attempts qa
+       JOIN quizzes q ON qa.quiz_id = q.quiz_id
+       WHERE qa.user_id = $1`,
       [user_id]
     );
     return result.rows[0];

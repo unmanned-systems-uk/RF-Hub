@@ -22,14 +22,13 @@ class Progress {
         up.*,
         m.title,
         m.slug,
-        m.difficulty_level,
-        m.category,
-        m.tier,
+        m.difficulty,
+        m.phase,
         m.estimated_time_minutes
        FROM user_progress up
        JOIN modules m ON up.module_id = m.module_id
        WHERE up.user_id = $1
-       ORDER BY up.last_accessed_at DESC`,
+       ORDER BY up.last_accessed DESC`,
       [user_id]
     );
     return result.rows;
@@ -40,15 +39,15 @@ class Progress {
    */
   static async upsertProgress(user_id, module_id, progress_percentage = 0) {
     const result = await pool.query(
-      `INSERT INTO user_progress (user_id, module_id, status, progress_percentage, last_accessed_at)
+      `INSERT INTO user_progress (user_id, module_id, status, progress_percentage, last_accessed)
        VALUES ($1, $2, 'in_progress', $3, CURRENT_TIMESTAMP)
        ON CONFLICT (user_id, module_id)
        DO UPDATE SET
          progress_percentage = GREATEST(user_progress.progress_percentage, $3),
-         last_accessed_at = CURRENT_TIMESTAMP,
+         last_accessed = CURRENT_TIMESTAMP,
          status = CASE
-           WHEN $3 >= 100 THEN 'completed'::progress_status
-           ELSE 'in_progress'::progress_status
+           WHEN $3 >= 100 THEN 'completed'
+           ELSE 'in_progress'
          END,
          completed_at = CASE
            WHEN $3 >= 100 AND user_progress.completed_at IS NULL THEN CURRENT_TIMESTAMP
@@ -97,7 +96,7 @@ class Progress {
     const result = await pool.query(
       `UPDATE user_progress
        SET time_spent_minutes = COALESCE(time_spent_minutes, 0) + $3,
-           last_accessed_at = CURRENT_TIMESTAMP
+           last_accessed = CURRENT_TIMESTAMP
        WHERE user_id = $1 AND module_id = $2
        RETURNING *`,
       [user_id, module_id, additional_minutes]
@@ -132,11 +131,11 @@ class Progress {
         up.*,
         m.title,
         m.slug,
-        m.difficulty_level
+        m.difficulty
        FROM user_progress up
        JOIN modules m ON up.module_id = m.module_id
        WHERE up.user_id = $1
-       ORDER BY up.last_accessed_at DESC
+       ORDER BY up.last_accessed DESC
        LIMIT $2`,
       [user_id, limit]
     );

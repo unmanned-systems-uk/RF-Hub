@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 17: Phased Arrays | RF-Hub Antenna Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+  .objectives-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .objectives-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; }
+  .objectives-list li::before { content: '→'; color: var(--accent-em); font-family: var(--font-mono); flex-shrink: 0; margin-top: 2px; }
+
+  .formula-block {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-em);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .formula-block .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-em);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .phase-calc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .phase-calc h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-h);
+    margin-bottom: 0.75rem;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .phase-calc .calc-line {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding: 0.2rem 0;
+  }
+  .phase-calc .calc-line .val { color: var(--accent-h); font-weight: 700; }
+
+  .taper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  .taper-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .taper-card .taper-name { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); font-family: var(--font-body); margin-bottom: 0.5rem; }
+  .taper-card .taper-sl { font-size: 1.2rem; font-weight: 700; font-family: var(--font-mono); margin: 0.35rem 0; }
+  .taper-card .taper-notes { font-size: 0.78rem; color: var(--text-secondary); font-family: var(--font-body); }
+  .taper-sl.uniform { color: var(--accent-power); }
+  .taper-sl.taylor   { color: var(--accent-e); }
+  .taper-sl.cheby    { color: var(--accent-current); }
+
+  .knowledge-check {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .knowledge-check h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-em); font-family: var(--font-body); }
+  .kc-question { margin-bottom: 1rem; }
+  .kc-question p { font-size: 0.9rem; margin-bottom: 0.35rem; font-family: var(--font-body); }
+  .kc-question details summary { font-size: 0.82rem; color: var(--accent-h); cursor: pointer; font-family: var(--font-body); }
+  .kc-question details p { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.35rem; }
+
+  .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .lesson-nav a { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: border-color 0.2s; max-width: 48%; }
+  .lesson-nav a:hover { border-color: var(--accent-em); }
+  .lesson-nav .nav-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-family: var(--font-body); }
+  .lesson-nav .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); font-family: var(--font-body); }
+  .lesson-nav .nav-next { text-align: right; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Curriculum</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 4 · Lesson 17</div>
+    <h1>Phased Arrays — Steering the Beam</h1>
+    <p class="hero-subtitle">How controlled phase shifts between array elements steer a beam electronically — no moving parts, arbitrary pointing in microseconds.</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ─────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📚 <span>Unit 4: Advanced Systems</span></span>
+  <span class="article-meta-item">⚡ <span>Prerequisites: Lesson 16</span></span>
+  <span class="article-meta-item">🛠 <span>Equipment: None (theory)</span></span>
+  <span class="article-meta-item">⏱ <span>30 minutes</span></span>
+  <span class="article-meta-item"><span class="badge">Advanced</span></span>
+</div>
+
+
+<!-- ─── CHAPTER 1: LEARNING OBJECTIVES ──────────────────────── -->
+<div class="chapter" id="objectives">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Learning Objectives</h2>
+  <ul class="objectives-list">
+    <li>Explain how phase differences between elements steer the beam</li>
+    <li>Calculate the inter-element phase shift for a given beam direction</li>
+    <li>Understand amplitude tapering for sidelobe control</li>
+    <li>Describe digital beamforming at a conceptual level</li>
+  </ul>
+</div>
+
+
+<!-- ─── CHAPTER 2: PHASE STEERING ───────────────────────────── -->
+<div class="chapter" id="phase-steering">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Phase Steering — Delayed Excitation = Tilted Wavefront</h2>
+
+  <p>In a fixed broadside array, all elements are fed with the same phase. The radiated wavefronts from each element add up in the plane perpendicular to the array axis. Now imagine introducing a small time delay between adjacent elements — the earlier-fired element's wavefront has had longer to propagate. The combined wavefront tilts. The beam steers.</p>
+
+  <p>This is the fundamental principle of phased array beam steering: <strong>by applying a progressive phase shift across the array, the constructive interference peak is moved away from broadside to any desired angle</strong>. No mechanical movement is required. The steering is instantaneous (limited only by the speed of signal propagation through the phase shifters).</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Analogy — Marching band:</strong> Imagine a line of musicians all starting to play at exactly the same time — the sound goes straight ahead (broadside). Now have each musician start playing 10 milliseconds after the one to their left. The "wavefront" of sound tilts to the right. This is phase steering.
+    </div>
+  </div>
+
+  <p>The relationship between the physical delay and the steering angle comes from geometry. For two adjacent elements separated by distance d, you want the wavefront to arrive at angle θ from broadside. The path difference is d·sin(θ). At frequency f, this path difference corresponds to a phase shift of:</p>
+
+  <div class="formula-block">
+    <div class="formula-label">Phase Shift for Beam Steering</div>
+    φ = (2π · d · sin θ) / λ<br><br>
+    where:<br>
+    φ = inter-element phase shift (radians)<br>
+    d = element spacing<br>
+    θ = desired beam angle from broadside<br>
+    λ = wavelength at operating frequency
+  </div>
+
+  <p>Each element n in the array is fed with a phase of n × φ. Element 0: 0°, Element 1: φ, Element 2: 2φ, etc. This is the <strong>progressive phase shift</strong> that tilts the beam to angle θ.</p>
+</div>
+
+
+<!-- ─── CHAPTER 3: PHASE CALCULATION ────────────────────────── -->
+<div class="chapter" id="phase-calculation">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Worked Example — Steering a 145 MHz Array to 30°</h2>
+
+  <p>Consider an 8-element broadside array operating at 145 MHz with λ/2 spacing. We want to steer the main beam to 30° from broadside.</p>
+
+  <div class="phase-calc">
+    <h4>Step-by-Step Calculation</h4>
+    <div class="calc-line">Frequency: f = <span class="val">145 MHz</span></div>
+    <div class="calc-line">Wavelength: λ = c/f = 299,792,458 / 145×10⁶ = <span class="val">2.067 m</span></div>
+    <div class="calc-line">Element spacing: d = λ/2 = <span class="val">1.034 m</span></div>
+    <div class="calc-line">Target angle: θ = <span class="val">30°</span></div>
+    <div class="calc-line">sin(30°) = <span class="val">0.500</span></div>
+    <div class="calc-line">φ = (2π × 1.034 × 0.500) / 2.067 = <span class="val">π/2 = 90°</span></div>
+    <div class="calc-line" style="margin-top:0.5rem;">Element 0: <span class="val">0°</span> · Element 1: <span class="val">90°</span> · Element 2: <span class="val">180°</span> · Element 3: <span class="val">270°</span> ···</div>
+  </div>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">📐</span>
+    <div class="callout-text">
+      <strong>Phase vs time delay:</strong> A phase shift of 90° at 145 MHz corresponds to a time delay of 90/(360 × 145×10⁶) = 1.72 ns. This is equivalent to about 345 mm of free-space path or approximately 228 mm of RG-213 cable (velocity factor ≈ 0.66). Hardware phase shifters implement exactly this.
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Steer angle θ</th>
+          <th>sin(θ)</th>
+          <th>Phase shift φ (λ/2 spacing)</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0° (broadside)</td><td>0.000</td><td>0°</td><td>All elements in phase</td></tr>
+        <tr><td>15°</td><td>0.259</td><td>46.6°</td><td>Small scan, low grating lobe risk</td></tr>
+        <tr><td>30°</td><td>0.500</td><td>90°</td><td>Worked example above</td></tr>
+        <tr><td>45°</td><td>0.707</td><td>127.3°</td><td>Moderate scan</td></tr>
+        <tr><td>60°</td><td>0.866</td><td>155.9°</td><td>Near scan limit for λ/2 spacing</td></tr>
+        <tr><td>90° (endfire)</td><td>1.000</td><td>180°</td><td>Maximum scan — element pattern falls to zero here</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 4: SCANNING RANGE ───────────────────────────── -->
+<div class="chapter" id="scanning-range">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Beam Scanning Range — Practical Limits</h2>
+
+  <p>Phased arrays can theoretically steer to ±90° from broadside, but practical scan range is significantly limited:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Limit</th><th>Cause</th><th>Typical effect</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Grating lobes</td>
+          <td>Spacing d ≥ λ creates ambiguous pattern</td>
+          <td>Limit scan to ±(30–60)° for λ/2 spacing depending on requirements</td>
+        </tr>
+        <tr>
+          <td>Element pattern roll-off</td>
+          <td>Individual dipole/patch gain falls off at large angles</td>
+          <td>Gain drops ~3 dB at 60°, ~10 dB at 80°</td>
+        </tr>
+        <tr>
+          <td>Mutual coupling variation</td>
+          <td>Impedance of each element changes as beam steers</td>
+          <td>Mismatch loss increases at large scan angles</td>
+        </tr>
+        <tr>
+          <td>Phase shifter resolution</td>
+          <td>Finite phase step size (e.g., 4-bit = 22.5° steps)</td>
+          <td>Quantisation error → small spurious sidelobes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>For most practical phased arrays, a scan range of <strong>±45° to ±60°</strong> from broadside is considered achievable with acceptable performance. Wider scan requires active element impedance matching, careful element design, or sub-half-wavelength spacing.</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>The "scan blindness" phenomenon:</strong> At certain scan angles, mutual coupling between elements can cause a near-perfect standing wave — the array becomes highly mismatched and effective gain collapses to nearly zero. This is scan blindness. It is predicted by analysing the array's active reflection coefficient as a function of scan angle.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 5: AMPLITUDE TAPERING ───────────────────────── -->
+<div class="chapter" id="amplitude-tapering">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Amplitude Tapering — Controlling Sidelobes</h2>
+
+  <p>With uniform excitation (all elements at equal amplitude), a linear array produces a first sidelobe approximately <strong>−13.3 dB</strong> below the main lobe. This is often unacceptable — sidelobes mean the array receives interference from, or radiates into, unintended directions.</p>
+
+  <p><strong>Amplitude tapering</strong> reduces the sidelobe levels by feeding the outer elements with less power than the central elements. The trade-off is that the main lobe widens slightly and peak gain decreases compared to uniform excitation. The aperture efficiency decreases.</p>
+
+  <div class="taper-grid">
+    <div class="taper-card">
+      <div class="taper-name">Uniform</div>
+      <div class="taper-sl uniform">−13.3 dB</div>
+      <div class="taper-notes">Highest gain, narrowest beam, highest sidelobes. All elements equal amplitude.</div>
+    </div>
+    <div class="taper-card">
+      <div class="taper-name">Taylor (−25 dB)</div>
+      <div class="taper-sl taylor">−25 dB</div>
+      <div class="taper-notes">~12 dB sidelobe improvement. ~1 dB gain loss. Commonly used in radar and communications.</div>
+    </div>
+    <div class="taper-card">
+      <div class="taper-name">Chebyshev (equiripple)</div>
+      <div class="taper-sl cheby">Specified</div>
+      <div class="taper-notes">All sidelobes equal a preset level. Minimum main lobe width for a given SLL. Common in radar.</div>
+    </div>
+  </div>
+
+  <p>Common tapering windows borrowed from DSP include: Hamming, Hanning, Blackman, Kaiser-Bessel. These familiar filters are applied not in time but across the <em>spatial</em> aperture of the array.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>Array design = filter design:</strong> The analogy between antenna arrays and FIR digital filters is exact. Array element positions and amplitudes correspond to filter tap positions and coefficients. Time → space, temporal frequency → spatial frequency (sin θ). You can design arrays using digital filter design tools.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── CHAPTER 6: DIGITAL BEAMFORMING PREVIEW ──────────────── -->
+<div class="chapter" id="digital-beamforming">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Digital Beamforming Preview — Phase Shifts in Software</h2>
+
+  <p>Traditional phased arrays apply phase shifts in analogue hardware (phase shifters, delay lines). <strong>Digital beamforming (DBF)</strong> takes a different approach: every array element has its own receiver that digitises the received signal to I/Q samples. The phase shifts (and amplitude weights) are then applied in software — multiplication of complex numbers.</p>
+
+  <p>This has transformative consequences:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Analogue phased array</th><th>Digital beamforming</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase shift</td><td>Hardware (PIN diodes, ferrite, MEMS)</td><td>Complex multiplication in DSP/FPGA</td></tr>
+        <tr><td>Number of beams</td><td>One beam at a time</td><td>Multiple simultaneous beams from one data stream</td></tr>
+        <tr><td>Beam update rate</td><td>Phase shifter switching time (µs)</td><td>Limited only by processing speed (ns potential)</td></tr>
+        <tr><td>Adaptive nulling</td><td>Difficult, requires feedback</td><td>Straightforward — MVDR, LCMV algorithms</td></tr>
+        <tr><td>Cost per element</td><td>Low (passive network)</td><td>High (ADC, LNA, cable per element)</td></tr>
+        <tr><td>5G Massive MIMO</td><td>Hybrid (some analogue + some digital)</td><td>Fully digital where cost allows</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Lesson 20 covers digital beamforming in full detail, including the steering vector, delay-and-sum algorithm, and MVDR adaptive beamforming.</p>
+</div>
+
+
+<!-- ─── KNOWLEDGE CHECK ──────────────────────────────────────── -->
+<div class="knowledge-check">
+  <h3>Knowledge Check</h3>
+
+  <div class="kc-question">
+    <p><strong>1.</strong> A 4-element array at 433 MHz uses λ/2 spacing. What inter-element phase shift is needed to steer the beam to 20° from broadside?</p>
+    <details><summary>Show answer</summary><p>λ = c/f = 0.692 m. d = λ/2 = 0.346 m. φ = (2π × 0.346 × sin20°) / 0.692 = (2π × 0.346 × 0.342) / 0.692 = 2π × 0.171 = 1.075 rad = <strong>61.6°</strong>.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>2.</strong> Why does amplitude tapering reduce sidelobes at the cost of a wider main lobe?</p>
+    <details><summary>Show answer</summary><p>Reducing the amplitude of outer elements is equivalent to windowing the aperture. The Fourier transform of the windowed aperture has a wider main lobe (lower spatial resolution) but lower sidelobes. The trade-off is exact: there is no free lunch — you cannot reduce both simultaneously for a given aperture size.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>3.</strong> What is the key advantage of digital beamforming over analogue phase shifting?</p>
+    <details><summary>Show answer</summary><p>Multiple simultaneous beams can be formed from the same received data. An analogue array can only point in one direction at a time (one set of phase shifter states). A digital beamformer can simultaneously form beams to multiple directions by applying different weight vectors to the same digitised element data, enabling MU-MIMO (multi-user MIMO) in 5G systems.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>4.</strong> What is "scan blindness" in a phased array?</p>
+    <details><summary>Show answer</summary><p>Scan blindness is a phenomenon where at a specific scan angle, mutual coupling between array elements causes a near-total impedance mismatch. The array effectively stops radiating/receiving at that angle. It is a resonance effect of the periodic element structure and must be predicted during design.</p></details>
+  </div>
+
+  <div class="kc-question">
+    <p><strong>5.</strong> A uniform 8-element array has a first sidelobe at −13.3 dB. You redesign with Taylor tapering giving −25 dB sidelobes. What is the approximate gain penalty?</p>
+    <details><summary>Show answer</summary><p>Approximately 1–1.5 dB reduction in peak gain (aperture efficiency falls from 1.0 for uniform to ~0.75–0.8 for Taylor −25 dB). The main lobe also widens by approximately 20–30%.</p></details>
+  </div>
+</div>
+
+
+<!-- ─── SUMMARY ───────────────────────────────────────────────── -->
+<div class="callout callout--success">
+  <span class="callout-icon">✅</span>
+  <div class="callout-text">
+    <strong>Lesson 17 Summary:</strong> Phased array beam steering works by applying a progressive phase shift φ = (2πd sinθ)/λ across array elements, tilting the interference maximum to angle θ. The scan range is practically limited to ±45–60° by grating lobes, element pattern roll-off, and mutual coupling effects. Amplitude tapering trades main lobe width for reduced sidelobe levels. Digital beamforming replaces hardware phase shifters with complex weighting in DSP, enabling simultaneous multiple beams and adaptive nulling.
+  </div>
+</div>
+
+
+<!-- ─── PREV/NEXT NAVIGATION ─────────────────────────────────── -->
+<div class="lesson-nav">
+  <a href="lesson-16-antenna-arrays.html">
+    <span class="nav-label">← Previous</span>
+    <span class="nav-title">Lesson 16 — Antenna Arrays</span>
+  </a>
+  <a class="nav-next" href="lesson-18-direction-finding.html">
+    <span class="nav-label">Next →</span>
+    <span class="nav-title">Lesson 18 — Direction Finding</span>
+  </a>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

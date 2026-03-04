@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 9: Gain, Directivity, and Efficiency — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.gain-chain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+.gain-chain-box {
+  background: var(--bg-deep);
+  border: 1px solid var(--accent-em);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent-em);
+  text-align: center;
+}
+.gain-chain-op {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  font-size: 1.1rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 2 · Lesson 9</div>
+    <h1>Gain, Directivity, and Efficiency</h1>
+    <p class="hero-subtitle">The relationship between pattern focus and power conversion — plus how to spot exaggerated marketing claims</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 2 — Characteristics &amp; Measurement</span>
+    <span class="article-meta-item">Prerequisites: Lessons 3, 6</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 25 min</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Define directivity, gain, and realised gain</li>
+      <li>Use the relationship Gain = Efficiency × Directivity</li>
+      <li>Convert between dBi and dBd (dBi = dBd + 2.15)</li>
+      <li>Spot unrealistic gain claims in product marketing</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Directivity ─── -->
+  <div class="chapter" id="directivity">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Directivity: Pattern Focus</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> Gain, directivity, and efficiency are three related but distinct properties. Understanding their relationship is essential for comparing antennas fairly and calculating link budgets accurately.
+      </div>
+    </div>
+
+    <p><strong>Directivity</strong> describes how focused an antenna's radiation pattern is compared to an isotropic radiator. It's a pure pattern property — it doesn't say anything about losses. An antenna with high directivity concentrates its radiated energy into a narrow beam.</p>
+
+    <pre><code>Directivity (D) = Maximum radiation intensity / Average radiation intensity
+
+In dBi: D(dBi) = 10 × log₁₀(D_linear)
+
+Reference values:
+  Isotropic radiator:    D = 0 dBi  (by definition)
+  Half-wave dipole:      D = 2.15 dBi
+  3-element Yagi:        D ≈ 7–8 dBi
+  10-element Yagi:       D ≈ 12 dBi
+  Parabolic dish (1m):   D ≈ 22 dBi at 10 GHz</code></pre>
+
+    <p>Directivity is determined entirely by the radiation pattern shape. A perfect antenna (100% efficient, no losses) has gain equal to its directivity. A real antenna always has gain lower than directivity due to losses.</p>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive:</strong> Open the <a href="../../../resources/radiation-3d-v5.html">3D Radiation Pattern Viewer</a> to see how pattern focus relates to directivity for different antenna types.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 03: Efficiency ─── -->
+  <div class="chapter" id="efficiency">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Efficiency: Power In vs Power Radiated</h2>
+
+    <p>Antenna efficiency (η) is the fraction of input power that actually gets radiated as EM waves:</p>
+
+    <pre><code>η = P_radiated / P_input
+
+In terms of resistance (from Lesson 6):
+  η = R_rad / (R_rad + R_loss)
+
+Expressed as a percentage or linear ratio (0 to 1)
+  η = 1.0  →  100% efficient (no losses)
+  η = 0.5  →  50% efficient (half the power lost as heat)</code></pre>
+
+    <p>Efficiency is degraded by:</p>
+    <ul>
+      <li>Conductor ohmic losses (thin wire, resistive material)</li>
+      <li>Ground losses (verticals without proper radial system)</li>
+      <li>Dielectric losses (wet insulators, loading coil cores)</li>
+      <li>Proximity coupling to lossy structures</li>
+    </ul>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        <strong>Small antennas struggle with efficiency.</strong> A "shortened" HF antenna (e.g., a 1.5 m whip for 40m band) may have radiation resistance of only 1–2 Ω. Even a modest 2 Ω of loss resistance then gives efficiency of only 33–50%. This is the fundamental challenge of electrically small antennas — not an engineering failure, but a physics constraint.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: Gain ─── -->
+  <div class="chapter" id="gain">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Gain: The Practical Number</h2>
+
+    <p>Gain combines directivity and efficiency into the single number that matters for system calculations:</p>
+
+    <div class="gain-chain">
+      <div class="gain-chain-box">Gain</div>
+      <span class="gain-chain-op">=</span>
+      <div class="gain-chain-box">Directivity</div>
+      <span class="gain-chain-op">×</span>
+      <div class="gain-chain-box">Efficiency (η)</div>
+    </div>
+
+    <pre><code>In dB: G(dBi) = D(dBi) + 10×log₁₀(η)
+
+Example:
+  Dipole directivity = 2.15 dBi
+  Efficiency = 95% (η = 0.95)
+  Gain = 2.15 + 10×log₁₀(0.95) = 2.15 − 0.22 = 1.93 dBi</code></pre>
+
+    <p>Gain is what you use in <strong>link budget calculations</strong> — it tells you how strong a signal will be at the receiver for a given transmit power. Directivity without efficiency information is incomplete for system design.</p>
+
+    <h3>Realised Gain</h3>
+    <p>Realised gain goes one step further — it also accounts for <strong>impedance mismatch loss</strong>:</p>
+
+    <pre><code>G_realised = G × (1 − |Γ|²)
+
+A perfectly matched antenna (|Γ| = 0): G_realised = G
+An antenna with SWR 2:1 (|Γ| = 0.33): G_realised = G × (1 − 0.11) = 0.89 × G ≈ −0.5 dB penalty</code></pre>
+
+    <p>For most well-matched antennas, mismatch loss is small. It becomes significant when an antenna is operated far from resonance or with a poor match.</p>
+  </div>
+
+  <!-- ─── CHAPTER 05: dBi vs dBd ─── -->
+  <div class="chapter" id="dbi-vs-dbd">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>dBi vs dBd: A Critical Distinction</h2>
+
+    <p>Antenna gain can be quoted in two reference systems:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Reference</th>
+            <th>Relationship</th>
+            <th>Common Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>dBi</strong></td>
+            <td>Isotropic radiator (theoretical)</td>
+            <td>The absolute standard</td>
+            <td>Engineering, VNA software, data sheets</td>
+          </tr>
+          <tr>
+            <td><strong>dBd</strong></td>
+            <td>Half-wave dipole (2.15 dBi)</td>
+            <td>dBi = dBd + 2.15</td>
+            <td>Amateur radio, some commercial antenna specs</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pre><code>Conversion: G(dBi) = G(dBd) + 2.15
+
+Example: A Yagi quoted at 9 dBd
+  G(dBi) = 9 + 2.15 = 11.15 dBi
+
+Example: A collinear quoted at 5 dBi
+  G(dBd) = 5 − 2.15 = 2.85 dBd</code></pre>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        <strong>Marketing alert:</strong> Some manufacturers quote gain in dBd to make the number smaller (and seem more conservative) or in dBi to make it larger. Always check which unit is being used before comparing antennas. An antenna claiming "5 dB gain" with no unit specified is ambiguous.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Effective Aperture ─── -->
+  <div class="chapter" id="effective-aperture">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Effective Aperture</h2>
+
+    <p>On receive, an antenna doesn't collect signal from just its physical area — it collects from an <strong>effective aperture</strong> (A<sub>eff</sub>) that depends on its gain:</p>
+
+    <pre><code>A_eff = (λ² × G) / (4π)
+
+where:
+  λ = wavelength (metres)
+  G = gain (linear, not dB)
+  A_eff = effective aperture (square metres)</code></pre>
+
+    <p>This is why gain matters for receive performance: a higher-gain antenna "captures" signal from a larger effective area, even though its physical size may be unchanged.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Antenna</th>
+            <th>Gain (dBi)</th>
+            <th>A<sub>eff</sub> at 145 MHz (λ = 2.07m)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Isotropic</td>
+            <td>0 dBi</td>
+            <td>0.34 m²</td>
+          </tr>
+          <tr>
+            <td>Half-wave dipole</td>
+            <td>2.15 dBi</td>
+            <td>0.57 m²</td>
+          </tr>
+          <tr>
+            <td>3-el Yagi</td>
+            <td>7.5 dBi</td>
+            <td>1.90 m²</td>
+          </tr>
+          <tr>
+            <td>9-el Yagi</td>
+            <td>12.5 dBi</td>
+            <td>6.02 m²</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>A 9-element Yagi at 145 MHz "sees" about 10× more signal-collecting area than a dipole, even though the Yagi isn't 10× physically larger. The beam focus is what creates the apparent larger aperture.</p>
+  </div>
+
+  <!-- ─── CHAPTER 07: Marketing Claims ─── -->
+  <div class="chapter" id="marketing-claims">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Beware Unrealistic Gain Claims</h2>
+
+    <p>Physics places hard limits on antenna gain based on size and type. When a product claims extraordinary gain from a small, simple antenna, scepticism is warranted.</p>
+
+    <h3>Realistic Gain Reference</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Antenna Type</th>
+            <th>Realistic Gain Range</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Rubber duck (handheld)</td>
+            <td>−1 to 2 dBi</td>
+            <td>Short, lossy — convenience over performance</td>
+          </tr>
+          <tr>
+            <td>Half-wave dipole</td>
+            <td>2.15 dBi</td>
+            <td>Theoretical reference — hard to exceed with simple wire</td>
+          </tr>
+          <tr>
+            <td>Discone (D130N)</td>
+            <td>0 to 2 dBi</td>
+            <td>Broadband trade-off limits gain</td>
+          </tr>
+          <tr>
+            <td>Collinear (2m/70cm)</td>
+            <td>3 to 7 dBi</td>
+            <td>Depends on number of elements stacked</td>
+          </tr>
+          <tr>
+            <td>3-el Yagi</td>
+            <td>6 to 8 dBi</td>
+            <td>Well-understood, easily verified</td>
+          </tr>
+          <tr>
+            <td>10-el Yagi</td>
+            <td>12 to 14 dBi</td>
+            <td>Long boom required</td>
+          </tr>
+          <tr>
+            <td>1m dish at 10 GHz</td>
+            <td>~22 dBi</td>
+            <td>High gain requires short wavelength</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--warning">
+      <span class="callout-icon">🚩</span>
+      <div class="callout-text">
+        <strong>Red flags to watch for:</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+          <li>A small rubber duck or stubby antenna claiming &gt;5 dBi</li>
+          <li>A "5G booster" claiming 20+ dBi with no boom or dish</li>
+          <li>Gain quoted without specifying dBi or dBd</li>
+          <li>Manufacturer gain figures that exceed physics limits for the antenna's physical size</li>
+        </ul>
+        Rule of thumb: if the claimed gain seems too good for the antenna's size, it probably is.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 08: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 08</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>What is the directivity of a half-wave dipole in dBi?</strong>
+        <!-- 2.15 dBi — this is the standard reference value -->
+      </li>
+      <li>
+        <strong>A Yagi is quoted at 10 dBd. What is this in dBi?</strong>
+        <!-- dBi = dBd + 2.15 = 10 + 2.15 = 12.15 dBi -->
+      </li>
+      <li>
+        <strong>An antenna has directivity 8 dBi and efficiency of 50%. What is its gain in dBi?</strong>
+        <!-- G = D + 10×log₁₀(0.5) = 8 + (−3) = 5 dBi -->
+      </li>
+      <li>
+        <strong>What does effective aperture represent for a receive antenna?</strong>
+        <!-- The effective signal-collecting area — the physical area that the antenna appears to "see" based on its gain. A_eff = λ²G / 4π -->
+      </li>
+      <li>
+        <strong>A handheld radio's stubby antenna claims 12 dBi gain. Why should you be sceptical?</strong>
+        <!-- 12 dBi requires a focused beam with significant physical structure (like a multi-element Yagi). A short stubby antenna can't physically achieve this — physics limits gain based on size. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 9 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li><strong>Directivity</strong> = pattern focus only (no losses). Half-wave dipole = 2.15 dBi</li>
+        <li><strong>Efficiency</strong> = P<sub>radiated</sub> / P<sub>input</sub> = R<sub>rad</sub> / (R<sub>rad</sub> + R<sub>loss</sub>)</li>
+        <li><strong>Gain</strong> = Directivity × Efficiency — the number used in link budgets</li>
+        <li><strong>Realised gain</strong> also includes mismatch loss: G × (1 − |Γ|²)</li>
+        <li><strong>dBi = dBd + 2.15</strong> always — check which unit a manufacturer uses</li>
+        <li><strong>Effective aperture</strong>: A<sub>eff</sub> = λ²G / 4π — higher gain = larger capture area</li>
+        <li>Physics limits gain for a given antenna size — scepticism about marketing claims is warranted</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-08-smith-chart.html" class="btn btn--ghost">← Lesson 8: The Smith Chart</a>
+    <a href="lesson-10-vna-antenna-measurement-lab.html" class="btn btn--primary">Next: Lesson 10 — VNA Lab →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

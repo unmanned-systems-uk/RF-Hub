@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2: From Waves to Wires — How Antennas Radiate — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 1 · Lesson 2</div>
+    <h1>From Waves to Wires: How Antennas Radiate</h1>
+    <p class="hero-subtitle">Why AC radiates, how current distributes on a half-wave dipole, and the reciprocity theorem</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
+    <span class="article-meta-item">Prerequisites: Lesson 1 (EM Radiation)</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 25 min</span>
+    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Explain how alternating current in a wire creates electromagnetic radiation</li>
+      <li>Describe why a wire carrying DC does not radiate</li>
+      <li>Sketch the current distribution on a half-wave dipole</li>
+      <li>State the reciprocity principle (TX and RX are the same process in reverse)</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Why DC Doesn't Radiate ─── -->
+  <div class="chapter" id="dc-vs-ac">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Why DC Doesn't Radiate (and AC Does)</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> In Lesson 1 we learned what EM waves are. Now the question is: how do we create them? The answer turns out to be beautifully simple — you just need charges that accelerate. And the easiest way to accelerate charges is to push alternating current through a wire.
+      </div>
+    </div>
+
+    <p>A battery connected to a long wire pushes current in one direction. The electrons flow steadily. They produce a magnetic field around the wire (Ampère's law), and there's a static electric field from the battery voltage. But nothing is <em>changing</em> — and it's the <strong>change</strong> that creates radiation.</p>
+
+    <p>Now connect an AC source — a radio transmitter — to that wire. The current flows one way, stops, reverses, flows the other way, stops, reverses again. The electrons are constantly accelerating and decelerating. Each time they change speed or direction, they "shake off" a little bit of their electromagnetic field, and that disturbance propagates outward as an EM wave.</p>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>The rule:</strong> Static charges produce electric fields. Moving charges produce magnetic fields. <strong>Accelerating charges produce electromagnetic radiation.</strong>
+      </div>
+    </div>
+
+    <p>This is why frequency matters: at 1 MHz, the current reverses direction one million times per second. At 1 GHz, it reverses a billion times per second. More rapid acceleration = more radiation at that frequency.</p>
+  </div>
+
+  <!-- ─── CHAPTER 03: The Half-Wave Dipole ─── -->
+  <div class="chapter" id="half-wave-dipole">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Half-Wave Dipole: Nature's Simplest Antenna</h2>
+
+    <p>Take a wire that's half a wavelength long (λ/2). Split it in the middle and connect your transmitter to the gap. This is a <strong>half-wave dipole</strong> — the most fundamental antenna, and the reference against which almost everything else is measured.</p>
+
+    <p>When RF energy is fed into the centre, something remarkable happens: the current doesn't flow uniformly along the wire. Instead, it forms a <strong>standing wave pattern</strong>.</p>
+
+    <h3>Current Distribution</h3>
+    <p>On a half-wave dipole at its resonant frequency:</p>
+    <ul>
+      <li><strong>Maximum current</strong> at the centre (the feedpoint)</li>
+      <li>Current decreases smoothly toward the tips</li>
+      <li><strong>Zero current</strong> at the tips (the ends are open — current has nowhere to go)</li>
+    </ul>
+    <p>The shape follows a half-sinusoid: peak in the middle, zero at both ends.</p>
+
+    <h3>Voltage Distribution</h3>
+    <p>Voltage does the opposite:</p>
+    <ul>
+      <li><strong>Zero voltage</strong> at the centre (low impedance point)</li>
+      <li><strong>Maximum voltage</strong> at the tips (high impedance — open circuit)</li>
+    </ul>
+    <p>This is exactly like a vibrating guitar string: fixed at both ends (that's where the string is pinned), maximum movement in the middle. The antenna wire is "fixed" electrically at the tips (zero current) and "moves" most at the centre (maximum current).</p>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive (future):</strong> Standing wave current visualiser — slider controls frequency, wire lights up showing current nodes and antinodes.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: How the Current Creates Radiation ─── -->
+  <div class="chapter" id="radiation-mechanism">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>How the Current Creates Radiation</h2>
+
+    <p>Each small segment of the wire carrying AC current radiates a tiny EM wave. But here's the clever part: because the current varies along the wire (sinusoidal distribution), the radiation from all these tiny segments <strong>adds up constructively</strong> in some directions and <strong>cancels out</strong> in others.</p>
+
+    <p>The result is a specific <strong>radiation pattern</strong> — a shape describing where the energy goes. For a dipole, it's a doughnut (toroid) shape around the wire. We'll explore patterns in detail in Lesson 3.</p>
+  </div>
+
+  <!-- ─── CHAPTER 05: Reciprocity ─── -->
+  <div class="chapter" id="reciprocity">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Receive Side: Reciprocity</h2>
+
+    <p>So far we've talked about transmitting — current in the wire creating EM waves. But antennas work the other way around too.</p>
+
+    <p>When an EM wave passes a wire, the electric field component pushes on the electrons in the wire, causing them to move — creating a current. This current can be amplified and processed by a receiver. The antenna has converted the EM wave back into an electrical signal.</p>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">⚡</span>
+      <div class="callout-text">
+        <strong>The Reciprocity Theorem:</strong> An antenna has the same radiation pattern, gain, and impedance whether it is transmitting or receiving.
+      </div>
+    </div>
+
+    <p>This is incredibly useful. It means:</p>
+    <ul>
+      <li>We can design an antenna for transmitting and know it will work equally well for receiving (and vice versa)</li>
+      <li>The radiation pattern we measure on transmit is the same as the reception sensitivity pattern</li>
+      <li>All the theory we develop works in both directions</li>
+    </ul>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive:</strong> <a href="../../../resources/tx-rx-complete.html">TX/RX Chain Demo</a><br>
+        Explore how the transmit and receive chains mirror each other. The antenna sits at the boundary between the electrical world and the electromagnetic world.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Preview ─── -->
+  <div class="chapter" id="preview">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Beyond the Dipole: A Preview</h2>
+
+    <p>The half-wave dipole is the starting point, but antenna engineering is about finding clever arrangements of conductors that shape the radiation in useful ways. Everything from a tiny mobile phone antenna to a massive radio telescope dish is doing the same fundamental thing: creating or capturing EM waves using currents in conductors.</p>
+
+    <p>In the coming lessons we'll see how different conductor arrangements create different radiation patterns (Lesson 3), why certain types suit certain jobs (Lesson 4), and how the orientation of the fields matters (Lesson 5).</p>
+  </div>
+
+  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>Why does a wire carrying DC not radiate EM waves?</strong>
+        <!-- DC = steady current = no acceleration. Radiation requires accelerating charges. -->
+      </li>
+      <li>
+        <strong>Where is the current maximum on a half-wave dipole?</strong>
+        <!-- At the centre (feedpoint). It follows a sinusoidal distribution, peaking at the middle. -->
+      </li>
+      <li>
+        <strong>Where is the voltage maximum on a half-wave dipole?</strong>
+        <!-- At the tips (ends). Voltage and current are 180° out of phase along the wire. -->
+      </li>
+      <li>
+        <strong>If you design an antenna for transmitting at 145 MHz, can you use it for receiving at 145 MHz?</strong>
+        <!-- Yes — reciprocity. The pattern, gain, and impedance are the same in both directions. -->
+      </li>
+      <li>
+        <strong>What type of current is needed for an antenna to radiate: AC or DC?</strong>
+        <!-- AC — the alternating current creates the accelerating charges necessary for radiation. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 2 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li><strong>Accelerating charges create EM radiation</strong> — this is the fundamental mechanism behind every antenna</li>
+        <li>DC in a wire creates static fields but no radiation; AC creates radiation</li>
+        <li>A half-wave dipole has <strong>maximum current at the centre</strong> and <strong>zero current at the tips</strong> — a sinusoidal standing wave</li>
+        <li>Voltage distribution is the inverse: zero at centre, maximum at tips</li>
+        <li><strong>Reciprocity:</strong> an antenna works identically for transmitting and receiving</li>
+        <li>The half-wave dipole is the foundation — all other antenna designs are variations on arranging conductors to shape the radiation</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-01-em-radiation.html" class="btn btn--ghost">← Lesson 1: EM Radiation</a>
+    <a href="lesson-03-radiation-patterns.html" class="btn btn--primary">Next: Lesson 3 — Radiation Patterns →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

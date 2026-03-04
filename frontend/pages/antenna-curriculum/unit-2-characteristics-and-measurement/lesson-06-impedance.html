@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6: Impedance — The Antenna's Personality — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.impedance-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+.impedance-component {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+.impedance-component h4 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  margin: 0 0 8px 0;
+}
+.impedance-component p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 2 · Lesson 6</div>
+    <h1>Impedance: The Antenna's Personality</h1>
+    <p class="hero-subtitle">Understanding R + jX, radiation resistance, reactance, and why 50 Ω is the universal standard</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 2 — Characteristics &amp; Measurement</span>
+    <span class="article-meta-item">Prerequisites: Unit 1 complete</span>
+    <span class="article-meta-item">Equipment: None (theory — VNA work in Lesson 10)</span>
+    <span class="article-meta-item">⏱ 30 min</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Define antenna impedance as resistance + reactance (R + jX)</li>
+      <li>Explain the difference between radiation resistance and loss resistance</li>
+      <li>Describe why impedance changes with frequency</li>
+      <li>Explain why 50 Ω is the standard reference impedance</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: What is Impedance? ─── -->
+  <div class="chapter" id="what-is-impedance">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>What is Impedance?</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> Impedance is the complete description of how an antenna interacts with electrical energy. It tells you not just whether the antenna resists current, but whether it stores and returns energy too. Getting impedance right is the key to efficient power transfer.
+      </div>
+    </div>
+
+    <p>At DC, we describe circuits using resistance (R). At RF, we need a richer description — <strong>impedance (Z)</strong> — which captures both how energy is consumed and how it's temporarily stored:</p>
+
+    <pre><code>Z = R + jX
+
+where:
+  R = resistance (Ω) — energy dissipated or radiated
+  X = reactance (Ω) — energy stored and returned
+  j = √(-1) — indicates the reactive (imaginary) component</code></pre>
+
+    <div class="impedance-visual">
+      <div class="impedance-component">
+        <h4 style="color: var(--accent-current);">R — Resistance</h4>
+        <p>Energy consumed per cycle. In an antenna, this splits into <strong>radiation resistance</strong> (energy radiated as EM waves — useful!) and <strong>loss resistance</strong> (energy wasted as heat — bad).</p>
+      </div>
+      <div class="impedance-component">
+        <h4 style="color: var(--accent-em);">jX — Reactance</h4>
+        <p>Energy stored and returned each cycle. Positive X = inductive (magnetic energy storage). Negative X = capacitive (electric energy storage). At resonance, X = 0.</p>
+      </div>
+    </div>
+
+    <h3>The Water Pipe Analogy</h3>
+    <p>Think of impedance like a water pipe system:</p>
+    <ul>
+      <li><strong>Resistance</strong> = friction in the pipe (energy permanently lost as heat)</li>
+      <li><strong>Reactance</strong> = springs attached to the pipe (energy stored and released, not lost)</li>
+      <li><strong>Impedance</strong> = the combined effect of both on water flow</li>
+    </ul>
+    <p>An antenna "feels" like a specific combination of resistance and reactance to its feedline. Matching these to the feedline's impedance is the job of an antenna tuner — or good antenna design.</p>
+  </div>
+
+  <!-- ─── CHAPTER 03: Radiation Resistance ─── -->
+  <div class="chapter" id="radiation-resistance">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Radiation Resistance</h2>
+
+    <p>Radiation resistance (R<sub>rad</sub>) is the portion of an antenna's resistance that represents power actually radiated as electromagnetic waves. It's not a physical resistor — it's a mathematical way of expressing the fact that the antenna is "consuming" power by converting it to radio waves.</p>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">⚡</span>
+      <div class="callout-text">
+        <strong>Half-wave dipole in free space:</strong> R<sub>rad</sub> ≈ 73 Ω at resonance. This is the reference value quoted in antenna textbooks and the basis for the 50 Ω standard.
+      </div>
+    </div>
+
+    <p>Radiation resistance determines antenna efficiency. An antenna is efficient when radiation resistance is high relative to loss resistance:</p>
+
+    <pre><code>Efficiency (η) = R_rad / (R_rad + R_loss)
+
+Example: R_rad = 73 Ω, R_loss = 1 Ω → η = 73/74 = 98.6% — excellent
+Example: R_rad = 1 Ω,  R_loss = 5 Ω → η = 1/6 = 16.7% — poor</code></pre>
+
+    <p>Small antennas (much shorter than λ/2) have very low radiation resistance — sometimes less than 1 Ω. Even tiny resistive losses then dominate, making them inefficient. This is a fundamental physics constraint, not an engineering deficiency.</p>
+  </div>
+
+  <!-- ─── CHAPTER 04: Loss Resistance ─── -->
+  <div class="chapter" id="loss-resistance">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Loss Resistance</h2>
+
+    <p>Loss resistance (R<sub>loss</sub>) represents power that enters the antenna system but exits as heat rather than radio waves. It comes from several sources:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Loss Source</th>
+            <th>Where</th>
+            <th>How to Minimise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Conductor ohmic loss</td>
+            <td>The antenna wire/element itself</td>
+            <td>Use thicker conductor; copper &gt; aluminium &gt; steel</td>
+          </tr>
+          <tr>
+            <td>Ground/counterpoise loss</td>
+            <td>Verticals, monopoles</td>
+            <td>Install more/longer ground radials</td>
+          </tr>
+          <tr>
+            <td>Proximity losses</td>
+            <td>Nearby conductors, structures</td>
+            <td>Keep antenna clear of metal objects</td>
+          </tr>
+          <tr>
+            <td>Dielectric losses</td>
+            <td>Insulators, traps, coils</td>
+            <td>Use quality components; avoid wet insulation</td>
+          </tr>
+          <tr>
+            <td>Connector/feedpoint losses</td>
+            <td>Coax connector, balun</td>
+            <td>Use weatherproof connectors; good balun design</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        <strong>Ground losses are significant for verticals.</strong> A quarter-wave vertical with no ground radials may have R<sub>loss</sub> of 10–30 Ω, dramatically cutting efficiency. Installing 32+ radials of λ/4 length can reduce this to near zero. This is why serious HF operators spend time on their ground systems.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 05: Reactance and Resonance ─── -->
+  <div class="chapter" id="reactance-resonance">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Reactance and Resonance</h2>
+
+    <p>Reactance is the frequency-dependent part of impedance. Unlike resistance, it doesn't consume energy permanently — it stores it (as electric or magnetic field) and releases it again each cycle.</p>
+
+    <p>For an antenna, reactance varies strongly with frequency:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Frequency vs. Resonance</th>
+            <th>Reactance (X)</th>
+            <th>Antenna Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Below resonant frequency</td>
+            <td>Negative (−jX)</td>
+            <td>Capacitive — antenna acts like a capacitor (too short electrically)</td>
+          </tr>
+          <tr>
+            <td>At resonant frequency</td>
+            <td>Zero (X = 0)</td>
+            <td>Purely resistive — maximum energy transfer possible</td>
+          </tr>
+          <tr>
+            <td>Above resonant frequency</td>
+            <td>Positive (+jX)</td>
+            <td>Inductive — antenna acts like an inductor (too long electrically)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>Resonance</strong> is the frequency where X = 0. The antenna's impedance is purely resistive. This is the natural operating frequency — maximum power transfer with no reactive component to match out. A well-designed antenna operates at or near resonance on its intended band.
+      </div>
+    </div>
+
+    <p>You can shift resonance by changing antenna length:</p>
+    <ul>
+      <li><strong>Shorten the antenna</strong> → resonance moves up in frequency, but now capacitive below that new resonance</li>
+      <li><strong>Lengthen the antenna</strong> → resonance moves down in frequency</li>
+      <li><strong>Add a loading coil</strong> → adds inductance, which shifts resonance down (used in mobile antennas to shorten physical length)</li>
+    </ul>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive (future):</strong> Frequency sweep animation — feedpoint impedance plotted as frequency sweeps through resonance. Watch R stay roughly constant while X passes through zero.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Why 50 Ω? ─── -->
+  <div class="chapter" id="fifty-ohms">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Why 50 Ω?</h2>
+
+    <p>Almost every RF system — transmitters, receivers, VNAs, coaxial cables — is designed around 50 Ω. This isn't arbitrary. It's a historical compromise between two competing physical requirements:</p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-success">Maximum Power Handling</h4>
+        <p>Coaxial cable transmits the most power before voltage breakdown at approximately <strong>30 Ω</strong> impedance.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-h">Minimum Signal Loss</h4>
+        <p>Coaxial cable has minimum ohmic attenuation at approximately <strong>77 Ω</strong> impedance.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-em">The Compromise</h4>
+        <p><strong>50 Ω</strong> — the geometric mean — balances power handling and low loss. Chosen for military/transmitting use. The standard has been universal ever since.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">📺</span>
+      <div class="callout-text">
+        <strong>What about 75 Ω?</strong> Cable TV and broadcast receive systems use 75 Ω coax (RG-6, RG-59). At 75 Ω, attenuation is minimised — ideal for receive-only systems where signal loss matters more than power handling. That's why your TV aerial uses 75 Ω coax while your transmit radio uses 50 Ω.
+      </div>
+    </div>
+
+    <p>The practical consequence: when your antenna's feedpoint impedance is 50 Ω, energy flows from transmitter to antenna with no reflection. When it's not 50 Ω, some power reflects back — which is exactly what SWR measures. (More in Lesson 7.)</p>
+  </div>
+
+  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>An antenna has impedance Z = 45 − j15. Is it inductive or capacitive, and is it above or below its resonant frequency?</strong>
+        <!-- Capacitive (negative X = -15). It's below resonant frequency — the antenna is electrically "too short" at this frequency. -->
+      </li>
+      <li>
+        <strong>A half-wave dipole in free space has approximately what radiation resistance at resonance?</strong>
+        <!-- ~73 Ω -->
+      </li>
+      <li>
+        <strong>If radiation resistance = 5 Ω and loss resistance = 45 Ω, what is the antenna's efficiency?</strong>
+        <!-- η = 5 / (5+45) = 5/50 = 10% — very poor efficiency -->
+      </li>
+      <li>
+        <strong>Why do HF vertical antennas benefit greatly from more ground radials?</strong>
+        <!-- Radials reduce ground loss resistance, which directly increases efficiency (since R_rad for a vertical is low, ground loss resistance has a large proportional impact) -->
+      </li>
+      <li>
+        <strong>Why is 75 Ω used for TV aerial cable instead of 50 Ω?</strong>
+        <!-- 75 Ω minimises signal attenuation — ideal for receive-only systems. 50 Ω balances power handling + loss for transmitting systems. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 6 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Impedance Z = R + jX — resistance consumes energy, reactance stores and returns it</li>
+        <li><strong>Radiation resistance</strong> represents power radiated as EM waves — the "useful" resistance</li>
+        <li><strong>Loss resistance</strong> represents power wasted as heat — minimise with good conductors and ground systems</li>
+        <li>Below resonance: capacitive (−jX). At resonance: purely resistive (X = 0). Above resonance: inductive (+jX)</li>
+        <li><strong>50 Ω</strong> is a compromise between maximum power handling (~30 Ω) and minimum loss (~77 Ω)</li>
+        <li>Efficiency = R<sub>rad</sub> / (R<sub>rad</sub> + R<sub>loss</sub>) — always maximise radiation resistance relative to loss</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="../unit-1-how-antennas-work/lesson-05-polarisation.html" class="btn btn--ghost">← Lesson 5: Polarisation</a>
+    <a href="lesson-07-swr-and-return-loss.html" class="btn btn--primary">Next: Lesson 7 — SWR &amp; Return Loss →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

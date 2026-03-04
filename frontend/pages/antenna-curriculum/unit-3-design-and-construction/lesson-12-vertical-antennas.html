@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 12: Vertical Antennas — Ground Planes and Monopoles — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.knowledge-check li { color: var(--text-secondary); line-height: 1.6; }
+.knowledge-check strong { color: var(--text-primary); display: block; margin-bottom: 4px; }
+.lab-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.lab-step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lab-step-num {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+.lab-step-title { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin: 0; }
+.lab-step ol, .lab-step ul { margin: 6px 0; padding-left: 20px; }
+.lab-step li { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-bottom: 3px; }
+.record-box {
+  background: var(--bg-deep);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 3 · Lesson 12</div>
+    <h1>Vertical Antennas: Ground Planes and Monopoles</h1>
+    <p class="hero-subtitle">Image theory, quarter-wave design, radial systems, and the droop angle impedance trick</p>
+  </div>
+</section>
+
+<div class="container">
+<div class="article">
+
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 3 — Design &amp; Construction</span>
+    <span class="article-meta-item">Prerequisites: Lesson 11</span>
+    <span class="article-meta-item">Equipment: Wire/rod, SO-239 connector, VNA</span>
+    <span class="article-meta-item">⏱ 25 min theory + 60 min lab</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <div class="chapter" id="objectives">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 01</span><div class="chapter-line"></div></div>
+    <h2>Learning Objectives</h2>
+    <ul class="objectives-list">
+      <li>Explain monopole/image theory (half a dipole + ground reflection)</li>
+      <li>Design a quarter-wave ground plane antenna</li>
+      <li>Understand the role of ground radials and droop angle</li>
+      <li>Build and VNA-validate a ground plane vertical</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="image-theory">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 02</span><div class="chapter-line"></div></div>
+    <h2>Monopole Theory: Image Antennas</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>The Big Idea:</strong> A monopole is half a dipole. It uses a ground plane to create a "mirror image" of the missing half. The combination of the real vertical element above ground plus its reflection in the ground plane is electrically equivalent to a complete dipole. This is called <strong>image theory</strong>.</div>
+    </div>
+
+    <p>When a vertical antenna element is mounted over a perfectly conducting ground plane:</p>
+    <ul>
+      <li>The ground plane reflects radio waves as if there were an identical element below it, pointing downward</li>
+      <li>The "image" antenna and the real antenna together form an equivalent dipole</li>
+      <li>The radiation pattern above the ground plane is identical to the upper half of a dipole pattern</li>
+      <li>The feedpoint impedance is exactly <strong>half</strong> that of a full dipole: ~36 Ω (vs 73 Ω for a dipole)</li>
+    </ul>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">⚡</span>
+      <div class="callout-text"><strong>Key result:</strong> A quarter-wave vertical monopole over a perfect ground plane has feedpoint impedance of <strong>36 Ω</strong> and gain of <strong>5.15 dBi</strong> (3 dB more than a dipole in free space, because all radiation goes upward — none downward).</div>
+    </div>
+
+    <p>The practical implications:</p>
+    <ul>
+      <li>36 Ω is close enough to 50 Ω for many applications without matching</li>
+      <li>A perfect ground plane doesn't exist in practice — real grounds raise impedance toward 50 Ω</li>
+      <li>The ground plane quality determines efficiency — a poor ground means high loss resistance</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="quarter-wave-design">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 03</span><div class="chapter-line"></div></div>
+    <h2>Quarter-Wave Vertical Design</h2>
+
+    <pre><code>Vertical element length (metres) = 71.25 / f(MHz)   [same as one dipole arm]
+Radial length         (metres) = 71.25 / f(MHz)   [same as vertical element]
+
+For 145 MHz:
+  Vertical element = 71,250 / 145 ≈ 491 mm ≈ 49.1 cm
+  Each radial      = 71,250 / 145 ≈ 491 mm ≈ 49.1 cm
+
+For 440 MHz (70cm band):
+  Vertical element = 71,250 / 440 ≈ 162 mm ≈ 16.2 cm
+  Each radial      = 71,250 / 440 ≈ 162 mm ≈ 16.2 cm</code></pre>
+
+    <p>The vertical element connects to the centre pin of the SO-239 (or N-type) connector. The radials connect to the connector body (ground/shield).</p>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text"><strong>The vertical element is unbalanced</strong> — the element is the "hot" side, the ground plane provides the return path. Unlike a dipole, no balun is needed for a correctly designed ground-plane vertical fed with coax. The coax shield IS the ground connection.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="radials">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 04</span><div class="chapter-line"></div></div>
+    <h2>Ground Radials: How Many, How Long</h2>
+
+    <p>Radials provide the return current path for the vertical element. They substitute for an actual ground connection — critical for elevated installations and for efficiency on all installations.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Number of Radials</th><th>Effective Ground Loss (R<sub>loss</sub>)</th><th>Application</th></tr></thead>
+        <tbody>
+          <tr><td>4 (minimum)</td><td>~15 Ω</td><td>Portable/temporary — acceptable compromise</td></tr>
+          <tr><td>8</td><td>~8 Ω</td><td>Lightweight base antenna — good for VHF/UHF</td></tr>
+          <tr><td>16</td><td>~4 Ω</td><td>Permanent installation — recommended minimum</td></tr>
+          <tr><td>32</td><td>~2 Ω</td><td>High-performance HF vertical base station</td></tr>
+          <tr><td>120 (buried)</td><td>~0.5 Ω</td><td>Professional broadcast station — approaching perfect ground</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>For VHF/UHF ground-plane antennas mounted above ground (portable or mast-mounted), <strong>4 radials</strong> is a practical standard. The antenna is elevated anyway — the radials provide the image ground, not the earth below.</p>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text"><strong>HF ground-mounted verticals are different.</strong> For HF (3–30 MHz) verticals mounted at or near ground level, buried radials in the soil are the ground system. Radiation resistance can be as low as 2–10 Ω, so ground loss resistance dominates efficiency. Minimum 32 radials of λ/4 length are recommended for serious HF work.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="droop-angle">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 05</span><div class="chapter-line"></div></div>
+    <h2>The Droop Angle Trick: Raising Impedance Toward 50 Ω</h2>
+
+    <p>A quarter-wave vertical with horizontal radials has a feedpoint impedance of ~36 Ω — slightly below 50 Ω. By <strong>drooping the radials downward</strong> at an angle below horizontal, the impedance rises toward 50 Ω.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Radial Angle Below Horizontal</th><th>Feedpoint Impedance (approx.)</th></tr></thead>
+        <tbody>
+          <tr><td>0° (horizontal)</td><td>36 Ω</td></tr>
+          <tr><td>30°</td><td>42 Ω</td></tr>
+          <tr><td>45°</td><td>50 Ω ← target!</td></tr>
+          <tr><td>60°</td><td>60 Ω</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>45° droop = 50 Ω.</strong> This is the standard construction for portable quarter-wave ground-plane antennas and explains the characteristic drooped radials you see on many commercial VHF/UHF ground-plane antennas. No matching network needed — just angle the radials downward at 45°.</div>
+    </div>
+
+    <p>The physical reason: drooping radials are no longer purely horizontal — they have a vertical component that effectively shortens the electrical image, shifting the impedance upward from 36 Ω.</p>
+  </div>
+
+  <div class="chapter" id="elevated-vs-ground">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 06</span><div class="chapter-line"></div></div>
+    <h2>Elevated vs Ground-Mounted Verticals</h2>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-success">Elevated (Mast-Mounted)</h4>
+        <p>Antenna and radials above ground. Ground radials ARE the ground plane — no earth connection. Typical for VHF/UHF. 4–8 radials sufficient. No ground loss from soil. Pattern is clean omnidirectional. Easy to install, portable.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-h">Ground-Mounted (Base at Earth)</h4>
+        <p>Vertical element at or near ground level. Uses buried radials in earth as ground system. Typical for HF. Needs many radials (32+) to minimise loss. Low takeoff angle — good for DX. Permanent installation required for best results.</p>
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text"><strong>Interactive (future):</strong> Ground plane designer — adjust radial count, droop angle, and height above ground. See how feedpoint impedance and radiation pattern change.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="lab">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 07</span><div class="chapter-line"></div></div>
+    <h2>Lab: Build a Quarter-Wave Ground Plane (145 or 440 MHz)</h2>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 1</span><h4 class="lab-step-title">Choose frequency and calculate dimensions</h4></div>
+      <ol>
+        <li>Choose: <strong>145 MHz</strong> (2m) or <strong>440 MHz</strong> (70cm)</li>
+        <li>Calculate vertical element: 71,250 / f(MHz) mm — add 10% extra for trimming</li>
+        <li>Calculate 4 radials: same length as vertical element</li>
+      </ol>
+      <div class="record-box">☐ Chosen frequency: _____ MHz | ☐ Element length: _____ mm | ☐ Radial length: _____ mm</div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 2</span><h4 class="lab-step-title">Assemble the antenna</h4></div>
+      <ol>
+        <li>Solder vertical element to centre pin of SO-239 (or N-type) connector</li>
+        <li>Solder 4 radials to connector body, equally spaced (90° apart)</li>
+        <li>Angle radials at <strong>45° below horizontal</strong> for 50 Ω feedpoint impedance</li>
+        <li>Secure with cable ties or bend wire at the connector body</li>
+      </ol>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 3</span><h4 class="lab-step-title">VNA measurement — initial</h4></div>
+      <ol>
+        <li>SOL-calibrate VNA for your frequency range (±30% of target)</li>
+        <li>Connect assembled antenna to VNA port</li>
+        <li>Record: resonant frequency, SWR at resonance, feedpoint impedance</li>
+        <li>Switch to Smith chart — note where impedance plots relative to centre</li>
+      </ol>
+      <div class="record-box">☐ Initial resonant freq: _____ MHz | ☐ SWR: _____ | ☐ Z = _____ + j_____ Ω</div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 4</span><h4 class="lab-step-title">Trim and optimise</h4></div>
+      <ol>
+        <li>Resonance too low → trim vertical element (and optionally radials by same proportion)</li>
+        <li>Resonance too high → extend with additional wire</li>
+        <li>SWR good but not at 50 Ω → adjust radial droop angle to shift impedance</li>
+        <li>Target: SWR ≤ 1.5:1, R ≈ 50 Ω, X ≈ 0</li>
+      </ol>
+      <div class="record-box">
+        ☐ Final freq: _____ MHz | ☐ Final SWR: _____ | ☐ Final Z: R=_____ X=_____
+        ☐ Radial droop angle used: _____ °
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 08</span><div class="chapter-line"></div></div>
+    <h2>Knowledge Check</h2>
+    <ol>
+      <li><strong>Why does a monopole over a perfect ground plane have exactly half the feedpoint impedance of a dipole?</strong>
+        <!-- Image theory: the ground plane creates a mirror image of the monopole. The real element + image together form a dipole, but only the real half is fed. Power is split between real and image equally, so impedance halves: 73/2 ≈ 36 Ω. -->
+      </li>
+      <li><strong>What is the feedpoint impedance of a quarter-wave vertical with horizontal radials?</strong>
+        <!-- ~36 Ω — below the 50 Ω standard. Drooping radials to 45° raises this to ~50 Ω. -->
+      </li>
+      <li><strong>A portable VHF ground-plane uses 4 radials. A permanent HF ground-mounted vertical uses 32. Why the difference?</strong>
+        <!-- VHF: elevated, 4 radials provide adequate image ground with low loss. HF: ground-mounted, radiation resistance is very low (a few Ω), so ground loss from insufficient radials severely degrades efficiency. More radials reduce ground resistance. -->
+      </li>
+      <li><strong>At what radial droop angle does a quarter-wave ground-plane achieve ~50 Ω feedpoint impedance?</strong>
+        <!-- ~45° below horizontal -->
+      </li>
+      <li><strong>A ground-plane vertical has R = 36 Ω and X = +20 Ω at your target frequency. Is the vertical element too long or too short?</strong>
+        <!-- Too long — positive reactance (+jX) = inductive = antenna is electrically too long. Trim the vertical element to bring X toward 0. -->
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 12 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>A monopole + ground plane = dipole via image theory. Impedance = half a dipole: ~36 Ω</li>
+        <li>Quarter-wave element length (mm) = 71,250 / f(MHz) — same as one dipole arm</li>
+        <li>Radials provide the return current path — quality determines efficiency</li>
+        <li>More radials = lower ground loss resistance = better efficiency</li>
+        <li><strong>Droop radials 45° downward</strong> to raise feedpoint impedance from 36 Ω to ~50 Ω</li>
+        <li>Elevated verticals (VHF/UHF): 4–8 radials sufficient. Ground-mounted HF: 32+ radials</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-11-dipole-deep-dive.html" class="btn btn--ghost">← Lesson 11: Dipole Deep Dive</a>
+    <a href="lesson-13-yagi-antennas.html" class="btn btn--primary">Next: Lesson 13 — Yagi Antennas →</a>
+  </div>
+
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -55,22 +55,22 @@ router.get('/search', async (req, res, next) => {
 
 /**
  * GET /api/modules/tier/:tier
- * Get modules by tier
+ * Get modules by phase (accepts integer 1-4)
  */
 router.get('/tier/:tier', async (req, res, next) => {
   try {
-    const { tier } = req.params;
+    const phase = parseInt(req.params.tier);
 
-    if (!['free', 'freemium', 'premium'].includes(tier)) {
+    if (isNaN(phase) || phase < 1 || phase > 4) {
       return res.status(400).json({
-        error: 'Invalid tier. Must be: free, freemium, or premium'
+        error: 'Invalid phase. Must be an integer between 1 and 4'
       });
     }
 
-    const modules = await Module.getByTier(tier);
+    const modules = await Module.getByTier(phase);
 
     res.json({
-      tier,
+      phase,
       count: modules.length,
       modules
     });

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5: Polarisation — Orientation Matters — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.capstone-card {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-em);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 32px;
+}
+.capstone-card h3 {
+  color: var(--accent-em);
+  margin-top: 0;
+}
+.capstone-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.capstone-checklist li {
+  display: flex;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.capstone-checklist li::before {
+  content: '☐';
+  font-family: var(--font-mono);
+  color: var(--accent-em);
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 1 · Lesson 5</div>
+    <h1>Polarisation: Orientation Matters</h1>
+    <p class="hero-subtitle">Linear, circular, and elliptical polarisation — plus the Unit 1 capstone challenge</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
+    <span class="article-meta-item">Prerequisites: Lesson 3 (Radiation Patterns)</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 25 min</span>
+    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Explain linear polarisation (vertical and horizontal)</li>
+      <li>Explain circular polarisation (RHCP and LHCP) and why satellites use it</li>
+      <li>Calculate the signal loss from a polarisation mismatch</li>
+      <li>Choose the correct polarisation for a given application</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Linear Polarisation ─── -->
+  <div class="chapter" id="linear">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Linear Polarisation</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> In Lesson 1 we learned that the electric field in an EM wave oscillates perpendicular to the direction of travel. But <em>which</em> perpendicular direction? It could be up-and-down, side-to-side, or rotating. This orientation of the electric field is called <strong>polarisation</strong>, and getting it wrong can cost you half your signal — or more.
+      </div>
+    </div>
+
+    <p>The simplest case. The electric field oscillates in a single plane.</p>
+
+    <h3>Vertical Polarisation</h3>
+    <p>A vertical antenna (like a whip on a car roof) produces vertically polarised waves — the E-field oscillates up and down. Most land mobile radio, FM broadcast, and amateur VHF/UHF is vertically polarised. Why? Because vertical antennas are practical for vehicles and handheld radios.</p>
+
+    <h3>Horizontal Polarisation</h3>
+    <p>A horizontal dipole produces horizontally polarised waves — the E-field oscillates side to side. Analogue TV broadcast was traditionally horizontally polarised in the UK. Amateur radio on HF often uses horizontal polarisation because horizontal wire antennas are easy to string between supports.</p>
+
+    <h3>The Cross-Polarisation Problem</h3>
+    <p>Here's the critical practical issue: <strong>a vertically polarised receiving antenna is essentially invisible to horizontally polarised signals</strong>, and vice versa.</p>
+
+    <p>In theory, a perfect cross-polarisation mismatch causes infinite loss (the receiving antenna can't "see" the signal at all). In practice, reflections from buildings, terrain, and the ionosphere mix the polarisation somewhat, but you can still lose <strong>20 dB or more</strong> — that's 99% of your signal gone.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>TX Polarisation</th>
+            <th>RX Polarisation</th>
+            <th>Approximate Loss</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vertical</td>
+            <td>Vertical</td>
+            <td>0 dB (matched)</td>
+          </tr>
+          <tr>
+            <td>Horizontal</td>
+            <td>Horizontal</td>
+            <td>0 dB (matched)</td>
+          </tr>
+          <tr>
+            <td>Vertical</td>
+            <td>Horizontal</td>
+            <td>20+ dB (severe)</td>
+          </tr>
+          <tr>
+            <td>Vertical</td>
+            <td>45° slant</td>
+            <td>3 dB (half power)</td>
+          </tr>
+          <tr>
+            <td>Any linear</td>
+            <td>Circular</td>
+            <td>3 dB</td>
+          </tr>
+          <tr>
+            <td>RHCP</td>
+            <td>RHCP</td>
+            <td>0 dB (matched)</td>
+          </tr>
+          <tr>
+            <td>RHCP</td>
+            <td>LHCP</td>
+            <td>20+ dB (severe)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The general formula for polarisation mismatch loss between two linearly polarised antennas is:</p>
+
+    <pre><code>Loss (dB) = -20 × log₁₀(cos θ)
+
+where θ is the angle between the two polarisation planes</code></pre>
+
+    <p>At θ = 45°, loss = 3 dB (half power). At θ = 90°, loss is theoretically infinite.</p>
+  </div>
+
+  <!-- ─── CHAPTER 03: Circular Polarisation ─── -->
+  <div class="chapter" id="circular">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Circular Polarisation</h2>
+
+    <p>Now imagine the E-field vector doesn't just oscillate — it <strong>rotates</strong> as the wave travels forward. If you watched it coming toward you, the tip of the E-field vector traces a circle. This is <strong>circular polarisation</strong>.</p>
+
+    <h3>Right-Hand Circular (RHCP)</h3>
+    <p>Looking at the oncoming wave, the E-field rotates clockwise. Called "right-hand" because if you point your right thumb in the direction of travel, your fingers curl in the direction of rotation.</p>
+
+    <h3>Left-Hand Circular (LHCP)</h3>
+    <p>The E-field rotates counter-clockwise (looking at the oncoming wave).</p>
+
+    <h3>Why Satellites Use Circular Polarisation</h3>
+    <p>Satellites use circular polarisation for a practical reason: the satellite is constantly moving and potentially tumbling slightly. If it transmitted a linearly polarised signal, a receiving antenna on the ground would see the polarisation angle constantly changing as the satellite crosses the sky, causing severe signal fading.</p>
+
+    <p>With circular polarisation, the rotation handles this automatically. As long as the receiving antenna is also circularly polarised (same hand), the orientation of either antenna doesn't matter. You always get a consistent signal.</p>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">⚡</span>
+      <div class="callout-text">
+        The trade-off: receiving a circularly polarised signal with a linearly polarised antenna (or vice versa) always costs exactly <strong>3 dB</strong> — you lose half the power. This is why dedicated satellite ground stations use circularly polarised antennas (helical, crossed-Yagi, or patch arrays), but casual reception with a linear antenna still works — you just accept the 3 dB penalty.
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive (future):</strong> Polarisation visualiser — 3D animation showing the E-field vector tip tracing linear, circular, and elliptical paths as the wave propagates.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: Elliptical Polarisation ─── -->
+  <div class="chapter" id="elliptical">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Elliptical Polarisation: The General Case</h2>
+
+    <p>Perfect linear and perfect circular polarisation are special cases. In reality, most signals end up somewhere between — the E-field traces an ellipse. This is <strong>elliptical polarisation</strong> and it's the most general description.</p>
+
+    <p>An antenna with imperfect axial ratio (not perfectly matched feed phases) produces elliptical rather than true circular polarisation. Likewise, a linearly polarised signal that bounces off buildings picks up a cross-polarised component and becomes slightly elliptical.</p>
+
+    <p>For practical purposes, if the axial ratio (the ratio of major to minor axis of the ellipse) is less than 3 dB, we call it "circular." If greater than 20 dB, we call it "linear." Everything between is elliptical.</p>
+  </div>
+
+  <!-- ─── CHAPTER 05: Practical Guide ─── -->
+  <div class="chapter" id="practical-guide">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Practical Polarisation Guide</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Application</th>
+            <th>Typical Polarisation</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FM broadcast (UK)</td>
+            <td>Vertical (or mixed)</td>
+            <td>Vertical whip antennas on cars</td>
+          </tr>
+          <tr>
+            <td>Amateur VHF/UHF</td>
+            <td>Vertical (FM), Horizontal (SSB/CW)</td>
+            <td>Convention and practicality</td>
+          </tr>
+          <tr>
+            <td>Amateur HF</td>
+            <td>Varies with propagation</td>
+            <td>Ionosphere rotates polarisation</td>
+          </tr>
+          <tr>
+            <td>Satellite downlinks</td>
+            <td>RHCP or LHCP</td>
+            <td>Orientation-independent</td>
+          </tr>
+          <tr>
+            <td>GPS</td>
+            <td>RHCP</td>
+            <td>All GPS satellites transmit RHCP</td>
+          </tr>
+          <tr>
+            <td>Wi-Fi</td>
+            <td>Often vertical or mixed</td>
+            <td>Consumer antennas typically vertical</td>
+          </tr>
+          <tr>
+            <td>TV broadcast (UK)</td>
+            <td>Horizontal (legacy), Vertical (some DAB)</td>
+            <td>Historical convention</td>
+          </tr>
+          <tr>
+            <td>ADS-B (1090 MHz)</td>
+            <td>Vertical</td>
+            <td>Aircraft monopole antennas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>What polarisation does a vertical whip antenna produce?</strong>
+        <!-- Vertical linear polarisation -->
+      </li>
+      <li>
+        <strong>A satellite transmits RHCP. You receive with a vertical dipole. How much signal do you lose from the polarisation mismatch?</strong>
+        <!-- 3 dB — receiving circular with linear always costs exactly 3 dB -->
+      </li>
+      <li>
+        <strong>Why is circular polarisation preferred for satellite communications?</strong>
+        <!-- Because the relative orientation between satellite and ground station constantly changes; circular pol handles this without signal fading -->
+      </li>
+      <li>
+        <strong>Your neighbour's FM radio antenna is horizontal. Most local FM broadcasts are vertically polarised. What problem will they experience?</strong>
+        <!-- Severe signal loss (potentially 20+ dB) from cross-polarisation mismatch -->
+      </li>
+      <li>
+        <strong>GPS signals are RHCP. If you tried to receive them with an LHCP antenna, what would happen?</strong>
+        <!-- Severe loss (20+ dB) — opposite-hand circular polarisations are cross-polarised -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 5 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li><strong>Polarisation</strong> is the orientation of the E-field in an EM wave</li>
+        <li><strong>Linear:</strong> vertical or horizontal — determined by antenna orientation</li>
+        <li><strong>Circular:</strong> RHCP or LHCP — E-field rotates as wave propagates</li>
+        <li><strong>Cross-polarisation mismatch</strong> can lose 20+ dB of signal</li>
+        <li><strong>Linear vs. circular</strong> mismatch costs exactly 3 dB</li>
+        <li>Satellites use circular polarisation for orientation independence</li>
+        <li>Always check the polarisation of both transmitter and receiver!</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 07: Unit 1 Capstone ─── -->
+  <div class="chapter" id="capstone">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>🏆 Unit 1 Capstone: Antenna Scavenger Hunt</h2>
+
+    <p>You've now completed Unit 1 — you understand the fundamentals of how antennas work. Time to put it into practice.</p>
+
+    <div class="capstone-card">
+      <h3>Your Mission</h3>
+      <p>Find and document <strong>10 different antennas</strong> in the real world. You can walk around your neighbourhood, drive around, or use Google Street View.</p>
+
+      <p>For each antenna, identify and record:</p>
+      <ul class="capstone-checklist">
+        <li><strong>Type</strong> (dipole, Yagi, dish, vertical, panel, etc.)</li>
+        <li><strong>Likely frequency range</strong> (use size as a clue — λ = 300/f)</li>
+        <li><strong>Polarisation</strong> (vertical, horizontal, circular)</li>
+        <li><strong>Purpose</strong> (mobile phone, TV, satellite, amateur, etc.)</li>
+        <li><strong>A photo</strong> (or screenshot from Street View)</li>
+      </ul>
+
+      <h3>Bonus Challenges</h3>
+      <ul class="capstone-checklist">
+        <li>Find at least one example of each antenna family (wire, aperture, broadband, array)</li>
+        <li>Estimate the gain of one of the antennas based on its type and size</li>
+        <li>Spot a polarisation mismatch in the wild (a wrongly oriented TV antenna?)</li>
+      </ul>
+
+      <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem;">Document your hunt as a portfolio entry for the RF-Hub.</p>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-04-antenna-types.html" class="btn btn--ghost">← Lesson 4: Antenna Types</a>
+    <span class="badge badge--success" style="font-size: 0.85rem; padding: 8px 16px;">✓ Unit 1 Complete</span>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

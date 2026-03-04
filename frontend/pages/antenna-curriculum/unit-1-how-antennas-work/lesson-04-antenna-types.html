@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4: Antenna Types — A Guided Tour — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.antenna-entry {
+  border-left: 3px solid var(--accent-h);
+  padding: 12px 16px;
+  margin: 16px 0;
+  background: var(--bg-card);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.antenna-entry h4 {
+  color: var(--accent-h);
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+}
+.antenna-entry .use-cases {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-em);
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 1 · Lesson 4</div>
+    <h1>Antenna Types: A Guided Tour</h1>
+    <p class="hero-subtitle">Wire, aperture, broadband, and array families — with a practical selection guide</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
+    <span class="article-meta-item">Prerequisites: Lesson 3 (Radiation Patterns)</span>
+    <span class="article-meta-item">Equipment: None (but look at your own antennas!)</span>
+    <span class="article-meta-item">⏱ 30 min</span>
+    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Classify antennas into families (wire, aperture, array, travelling wave)</li>
+      <li>Identify at least 8 common antenna types and their typical applications</li>
+      <li>Match antenna types to real-world use cases</li>
+      <li>Explain why no single antenna is best for everything</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: Family 1 — Wire Antennas ─── -->
+  <div class="chapter" id="wire-antennas">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Family 1: Wire Antennas</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> All antennas do the same fundamental thing — convert between electrical signals and EM waves. But the <em>way</em> they do it varies enormously, producing different patterns, bandwidths, sizes, and trade-offs. Choosing the right antenna for a job is one of the most practical skills in RF engineering.
+      </div>
+    </div>
+
+    <p>The simplest and oldest antenna family. These are exactly what they sound like — wires (or rods) arranged in specific shapes.</p>
+
+    <div class="antenna-entry">
+      <h4>Half-Wave Dipole</h4>
+      <p>The reference antenna from Lesson 2. Two wires, each λ/4 long, fed at the centre. Omnidirectional in the azimuth plane (when mounted vertically), with a doughnut-shaped pattern. Gain: 2.15 dBi. Every RF engineer should understand the dipole intimately — it's the yardstick against which others are measured.</p>
+      <p class="use-cases">▶ Use cases: General purpose, HF to UHF. The rubber duck on your handheld radio is a variation of a dipole (or monopole).</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Monopole (Quarter-Wave Vertical)</h4>
+      <p>Half a dipole mounted over a ground plane. The ground plane (or ground radials) provides the "mirror image" of the missing half. Length: λ/4. Impedance: ~36 Ω. Very common for mobile and base station use because it only needs one vertical element.</p>
+      <p class="use-cases">▶ Use cases: Car roof whips, base station verticals, VHF marine antennas.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Yagi-Uda</h4>
+      <p>A driven dipole with parasitic elements: one reflector behind it and one or more directors in front. Creates a directional beam. More directors = more gain and narrower beam, but also a longer boom and narrower bandwidth.</p>
+      <p class="use-cases">▶ Use cases: TV reception (that old rooftop antenna), amateur radio directional work, point-to-point links. We'll design one in Lesson 13.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Log-Periodic Dipole Array (LPDA)</h4>
+      <p>Looks similar to a Yagi but works differently — multiple driven dipoles of graduated size. Trades some gain compared to a Yagi for much wider bandwidth. The active region shifts along the array as frequency changes.</p>
+      <p class="use-cases">▶ Use cases: Wideband monitoring, EMC testing, TV reception across many channels, military communications.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Loop Antennas</h4>
+      <p>Wire bent into a circle (or square, triangle). Small loops (circumference &lt;&lt; λ) are often used for direction finding and receiving — they're compact but inefficient for transmitting. Full-wave loops (circumference = λ) are effective transmit antennas popular in amateur radio.</p>
+      <p class="use-cases">▶ Use cases: AM radio reception (the ferrite bar inside a portable radio is a loop), HF amateur radio, direction finding.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>End-Fed Half-Wave (EFHW)</h4>
+      <p>A half-wave dipole fed at one end instead of the centre. Requires an impedance transformer (typically 49:1) because the feedpoint impedance is very high (~2500 Ω). Popular for portable and stealth amateur installations because the feedline only needs to connect at one end.</p>
+      <p class="use-cases">▶ Use cases: Portable HF amateur radio, attic and stealth installations.</p>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 03: Family 2 — Aperture Antennas ─── -->
+  <div class="chapter" id="aperture-antennas">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Family 2: Aperture Antennas</h2>
+
+    <p>These antennas radiate through an opening (aperture) rather than from a wire. They become practical at higher frequencies where wavelengths are short enough to make the structures manageable.</p>
+
+    <div class="antenna-entry">
+      <h4>Parabolic Dish</h4>
+      <p>A reflective dish focuses EM waves onto a feed antenna at the focal point — exactly like a satellite TV dish. Extremely high gain and very narrow beamwidth. Gain scales with dish diameter: larger dish = more gain.</p>
+      <p class="use-cases">▶ Use cases: Satellite communication, radio astronomy, point-to-point microwave links, radar.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Horn Antenna</h4>
+      <p>A waveguide that flares out into a horn shape. Predictable, well-understood performance. Often used as the feed for a parabolic dish, or as a reference antenna for gain measurements.</p>
+      <p class="use-cases">▶ Use cases: Calibration standard, microwave links, EMC testing, radar feeds.</p>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: Family 3 — Broadband Antennas ─── -->
+  <div class="chapter" id="broadband-antennas">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Family 3: Broadband Antennas</h2>
+
+    <p>These sacrifice some peak performance for the ability to work across a wide frequency range.</p>
+
+    <div class="antenna-entry">
+      <h4>Discone</h4>
+      <p>A disc above a cone (or set of drooping radials approximating a cone). Your <strong>Diamond D130N</strong> is a discone. Omnidirectional with reasonable performance across a very wide bandwidth — typically 10:1 or more (e.g., 25 MHz to 1.3 GHz). The trade-off is modest gain (roughly 0 dBi to 2 dBi) compared to a resonant antenna tuned for a single band.</p>
+      <p class="use-cases">▶ Use cases: Wideband monitoring and scanning, SDR receiving stations. The go-to antenna when you want to hear everything. We'll measure yours with the VNA in Lesson 10.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Spiral Antennas</h4>
+      <p>Wire wound in a spiral pattern. Inherently broadband <em>and</em> circularly polarised — a rare combination. Common in military and measurement applications.</p>
+      <p class="use-cases">▶ Use cases: Direction finding, electronic warfare, reference antennas.</p>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 05: Family 4 — Array Antennas ─── -->
+  <div class="chapter" id="array-antennas">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Family 4: Array Antennas</h2>
+
+    <p>Multiple individual elements combined to create a composite pattern with higher gain, beam steering, or pattern shaping.</p>
+
+    <div class="antenna-entry">
+      <h4>Collinear Array</h4>
+      <p>Multiple dipoles or monopoles stacked vertically, all fed in phase. Narrows the elevation beamwidth (focusing energy toward the horizon) while maintaining omnidirectional azimuth coverage. Very common for base stations.</p>
+      <p class="use-cases">▶ Use cases: Mobile phone towers, amateur repeater stations, marine VHF.</p>
+    </div>
+
+    <div class="antenna-entry">
+      <h4>Phased Array</h4>
+      <p>Multiple elements with individually controlled phase (and sometimes amplitude). Can electronically steer the beam without physically moving. The most sophisticated antenna technology, used in modern radar, 5G, and satellite systems. We'll build a simple one in Unit 4.</p>
+      <p class="use-cases">▶ Use cases: Military radar, 5G base stations, satellite tracking, weather radar, radio astronomy (SKA telescope).</p>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 06: Trade-Off Triangle ─── -->
+  <div class="chapter" id="trade-off">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Trade-Off Triangle</h2>
+
+    <p>Every antenna design involves balancing three competing factors:</p>
+
+    <pre><code>        GAIN
+       /    \
+      /      \
+   SIZE ---- BANDWIDTH</code></pre>
+
+    <ul>
+      <li><strong>High gain + small size</strong> → narrow bandwidth (e.g., a small Yagi)</li>
+      <li><strong>Wide bandwidth + small size</strong> → low gain (e.g., a rubber duck antenna)</li>
+      <li><strong>High gain + wide bandwidth</strong> → large size (e.g., LPDA or large dish)</li>
+    </ul>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        You can optimise for any two, but the third will suffer. This is physics, not an engineering limitation — no clever design can cheat all three simultaneously. Understanding this trade-off is essential for choosing the right antenna.
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Reference:</strong> The existing <a href="../../antennas.html">Antenna Types page</a> provides a visual catalogue with images of each type. Use it alongside this lesson as a reference.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 07: Quick Selection Guide ─── -->
+  <div class="chapter" id="selection-guide">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Quick Selection Guide</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>I want to…</th>
+            <th>Consider…</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monitor everything 25 MHz–1.3 GHz</td>
+            <td>Discone (D130N)</td>
+            <td>Wideband omni</td>
+          </tr>
+          <tr>
+            <td>Work a single amateur band</td>
+            <td>Dipole or vertical</td>
+            <td>Simple, resonant, efficient</td>
+          </tr>
+          <tr>
+            <td>Get maximum signal from one direction</td>
+            <td>Yagi</td>
+            <td>High gain, directional</td>
+          </tr>
+          <tr>
+            <td>Receive HF with limited space</td>
+            <td>EFHW or loop</td>
+            <td>Compact, single-feedpoint</td>
+          </tr>
+          <tr>
+            <td>Track a satellite</td>
+            <td>Dish or helix</td>
+            <td>High gain + circular polarisation</td>
+          </tr>
+          <tr>
+            <td>Cover many bands with one antenna</td>
+            <td>LPDA</td>
+            <td>Broadband + directional</td>
+          </tr>
+          <tr>
+            <td>Steer a beam electronically</td>
+            <td>Phased array</td>
+            <td>No moving parts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 08: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 08</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>Name an antenna suitable for wideband monitoring from 25 MHz to 1.3 GHz.</strong>
+        <!-- Discone (e.g., Diamond D130N) -->
+      </li>
+      <li>
+        <strong>Why would you choose a Yagi over a dipole?</strong>
+        <!-- For higher gain in a specific direction (directional beam) -->
+      </li>
+      <li>
+        <strong>What type of antenna is the Diamond D130N?</strong>
+        <!-- A discone — broadband omnidirectional antenna -->
+      </li>
+      <li>
+        <strong>What is the main advantage of a phased array over a dish?</strong>
+        <!-- Electronic beam steering with no moving parts -->
+      </li>
+      <li>
+        <strong>In the gain-size-bandwidth trade-off, why can't a small antenna have both high gain and wide bandwidth?</strong>
+        <!-- Physics limits it: high gain requires structures comparable to wavelength, and wide bandwidth needs size variation. Small size constrains both. -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 4 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Antennas fall into families: wire, aperture, broadband, and array</li>
+        <li>Wire antennas (dipole, monopole, Yagi, LPDA) are the most common for HF–UHF</li>
+        <li>Aperture antennas (dish, horn) become practical at microwave frequencies</li>
+        <li>Broadband antennas (discone, spiral) trade gain for bandwidth</li>
+        <li>Array antennas combine elements for higher gain or beam steering</li>
+        <li>The <strong>gain-size-bandwidth trade-off</strong> is fundamental — you always compromise</li>
+        <li>Choosing the right antenna means matching the type to your specific use case</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-03-radiation-patterns.html" class="btn btn--ghost">← Lesson 3: Radiation Patterns</a>
+    <a href="lesson-05-polarisation.html" class="btn btn--primary">Next: Lesson 5 — Polarisation →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

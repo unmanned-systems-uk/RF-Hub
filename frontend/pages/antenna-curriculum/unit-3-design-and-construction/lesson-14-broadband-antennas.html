@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 14: Broadband Antennas — Discones, LPDAs, and Spirals — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.knowledge-check li { color: var(--text-secondary); line-height: 1.6; }
+.knowledge-check strong { color: var(--text-primary); display: block; margin-bottom: 4px; }
+.lab-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.lab-step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lab-step-num {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+.lab-step-title { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin: 0; }
+.lab-step ol, .lab-step ul { margin: 6px 0; padding-left: 20px; }
+.lab-step li { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-bottom: 3px; }
+.record-box {
+  background: var(--bg-deep);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 3 · Lesson 14</div>
+    <h1>Broadband Antennas: Discones, LPDAs, and Spirals</h1>
+    <p class="hero-subtitle">Frequency-independent designs, how broadband really works, and comparing SWR with the Lesson 11 dipole</p>
+  </div>
+</section>
+
+<div class="container">
+<div class="article">
+
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 3 — Design &amp; Construction</span>
+    <span class="article-meta-item">Prerequisites: Lesson 13</span>
+    <span class="article-meta-item">Equipment: D130N discone, dipole from Lesson 11, VNA</span>
+    <span class="article-meta-item">⏱ 25 min theory + 45 min lab</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <div class="chapter" id="objectives">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 01</span><div class="chapter-line"></div></div>
+    <h2>Learning Objectives</h2>
+    <ul class="objectives-list">
+      <li>Explain what makes an antenna broadband vs narrowband (resonant)</li>
+      <li>Describe operating principles of discone, LPDA, and spiral antennas</li>
+      <li>Choose the right broadband antenna for a given application</li>
+      <li>Compare narrowband vs broadband SWR performance with VNA</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="frequency-independent">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 02</span><div class="chapter-line"></div></div>
+    <h2>Frequency-Independent Antenna Principles: Angles, Not Lengths</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>The Big Idea:</strong> A resonant antenna (dipole, Yagi) depends on a specific physical length matching the wavelength. Change frequency significantly and the match degrades. Broadband antennas overcome this by using <em>shapes</em> defined by angles rather than lengths — the same angular geometry works at any frequency within a wide range.</div>
+    </div>
+
+    <p>The key insight was formalised by V.H. Rumsey in the 1950s: <strong>if an antenna's shape can be specified entirely by angles, with no characteristic length, then its properties are frequency-independent.</strong></p>
+
+    <p>In practice, pure frequency-independence is impossible (any real antenna has finite size), but the principle guides designs that achieve 10:1 or greater bandwidth ratios:</p>
+
+    <ul>
+      <li>A perfect cone angle doesn't change as frequency changes — neither does a discone's cone angle</li>
+      <li>A logarithmic spiral grows self-similarly at any scale — the active region just shifts position</li>
+      <li>An LPDA uses progressively scaled elements — the active region shifts along the array</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="discone">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 03</span><div class="chapter-line"></div></div>
+    <h2>The Discone: How It Works, Bandwidth, Gain</h2>
+
+    <p>Your <strong>Diamond D130N</strong> is a discone. It consists of:</p>
+    <ul>
+      <li>A <strong>disc</strong> (or set of radials approximating a disc) at the top — fed at its centre</li>
+      <li>A <strong>cone</strong> (or set of drooping radials approximating a cone) below — connected to the coax braid</li>
+    </ul>
+
+    <h3>Why It Works Across Such a Wide Range</h3>
+    <p>The discone is essentially a wideband vertical monopole. The disc acts as the active radiating element; the cone provides the ground plane. The angle of the cone (typically 25–30°) determines the characteristic impedance of the structure — and this angle doesn't change with frequency.</p>
+
+    <p>At any given frequency, the portion of the structure that is electrically active changes, but the same angular geometry continues to present a reasonable match to 50 Ω across the band.</p>
+
+    <h3>D130N Specifications</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Frequency range</td><td>25–1300 MHz</td></tr>
+          <tr><td>Frequency ratio</td><td>52:1 — exceptional</td></tr>
+          <tr><td>Gain (typical)</td><td>0–2 dBi (varies across band)</td></tr>
+          <tr><td>Polarisation</td><td>Vertical</td></tr>
+          <tr><td>Radiation pattern</td><td>Omnidirectional, slight downward tilt at higher frequencies</td></tr>
+          <tr><td>Impedance</td><td>50 Ω (nominal — SWR varies across band)</td></tr>
+          <tr><td>Connector</td><td>SO-239 (UHF female)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The discone's gain is modest — typically 0–2 dBi. The gain-size-bandwidth trade-off (from Lesson 4) applies: to achieve 52:1 bandwidth, gain must be sacrificed. You can't have both wide bandwidth AND high gain in a small antenna.</p>
+  </div>
+
+  <div class="chapter" id="lpda">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 04</span><div class="chapter-line"></div></div>
+    <h2>Log-Periodic Dipole Array (LPDA): The Yagi's Broadband Cousin</h2>
+
+    <p>An LPDA looks similar to a Yagi — a boom with multiple dipole elements — but works on a completely different principle. In a Yagi, only one element is driven (the others are parasitic). In an LPDA, <strong>all elements are driven</strong>, connected in a phase-reversed transmission line.</p>
+
+    <h3>How the LPDA Achieves Broadband Operation</h3>
+    <p>The elements are scaled by a constant ratio τ (tau, typically 0.9–0.95):</p>
+    <pre><code>τ = L₂/L₁ = L₃/L₂ = ... (ratio of adjacent element lengths)
+σ = spacing ratio (similar constant: S₂/L₂ = constant)
+
+At any given frequency, only the elements near resonance at that frequency
+contribute significantly to radiation. As frequency changes, the "active region"
+moves along the array — shorter elements at higher frequencies, longer at lower.</code></pre>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th></th><th>LPDA</th><th>Yagi</th></tr></thead>
+        <tbody>
+          <tr><td>Driven elements</td><td>All (phase reversed)</td><td>One only</td></tr>
+          <tr><td>Gain (typical)</td><td>6–9 dBi</td><td>7–14 dBi</td></tr>
+          <tr><td>Bandwidth</td><td>Very wide (5:1 or more)</td><td>Narrow (5–15%)</td></tr>
+          <tr><td>Pattern</td><td>Directional (forward)</td><td>Directional (forward)</td></tr>
+          <tr><td>Typical application</td><td>Wideband monitoring, EMC</td><td>Single-band high gain</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>LPDAs are common for TV antennas (must cover 170–870 MHz), wideband signal monitoring, and EMC test antenna systems.</p>
+  </div>
+
+  <div class="chapter" id="spiral">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 05</span><div class="chapter-line"></div></div>
+    <h2>Spiral Antennas: Inherently Circular Polarised and Broadband</h2>
+
+    <p>A spiral antenna is wire or strip conductor wound in an Archimedean or equiangular spiral. It combines two rare properties simultaneously:</p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-em">Inherently Broadband</h4>
+        <p>The equiangular spiral's shape is defined by angles only — frequency-independent by Rumsey's principle. Practical spirals achieve 10:1 to 40:1 bandwidth.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-h">Inherently Circular Polarised</h4>
+        <p>The spiral geometry generates equal E-field components in both planes, 90° out of phase — exactly the condition for circular polarisation. Unlike crossed dipoles or helix, no special feed network is needed.</p>
+      </div>
+    </div>
+
+    <p>Spiral antennas are used in direction finding (DF) receivers, electronic warfare, and measurement systems where you need broadband, circularly polarised reception without knowing the signal's polarisation in advance.</p>
+  </div>
+
+  <div class="chapter" id="trade-offs">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 06</span><div class="chapter-line"></div></div>
+    <h2>Trade-Offs: Broadband vs Resonant</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Property</th><th>Resonant (Dipole/Yagi)</th><th>Broadband (Discone/LPDA)</th></tr></thead>
+        <tbody>
+          <tr><td>Bandwidth</td><td>Narrow (5–15% of centre freq)</td><td>Wide (5:1 to 50:1 ratio)</td></tr>
+          <tr><td>Peak gain</td><td>High (dipole 2.15 dBi; Yagi up to 15 dBi)</td><td>Low-moderate (0–9 dBi)</td></tr>
+          <tr><td>SWR across band</td><td>Very low at resonance, rises steeply off-band</td><td>Moderate (2–3:1) but consistent</td></tr>
+          <tr><td>Design complexity</td><td>Simple (dipole); moderate (Yagi)</td><td>Moderate (discone); complex (LPDA)</td></tr>
+          <tr><td>Best use case</td><td>Known frequency, maximum performance</td><td>Unknown or many frequencies, monitoring</td></tr>
+          <tr><td>Typical SDR application</td><td>Optimised for specific mode/band</td><td>General scanning, unknown signals</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>Practical rule:</strong> Start with your D130N discone for general exploration and signal hunting. Once you identify an interesting signal on a specific frequency, build a resonant antenna (dipole or Yagi) for that frequency to extract maximum performance.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="lab">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 07</span><div class="chapter-line"></div></div>
+    <h2>Lab: Measure D130N Across Full Bandwidth, Compare to Dipole SWR</h2>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 1</span><h4 class="lab-step-title">Wideband sweep of the D130N</h4></div>
+      <ol>
+        <li>SOL-calibrate VNA for 25–1300 MHz</li>
+        <li>Connect D130N to calibrated port</li>
+        <li>Set sweep to 25–1300 MHz, 401+ points for resolution</li>
+        <li>Switch display to SWR — screenshot</li>
+        <li>Mark all points where SWR &lt; 2:1 (usable range)</li>
+        <li>Mark all SWR minima — note frequency of each</li>
+      </ol>
+      <div class="record-box">
+        ☐ SWR &lt; 2:1 regions: _____ – _____ MHz, _____ – _____ MHz
+        ☐ Worst-case SWR in rated band: _____ at _____ MHz
+        ☐ Resonant dips at approximately: _____ MHz, _____ MHz, _____ MHz
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 2</span><h4 class="lab-step-title">Measure the Lesson 11 dipole on the same setup</h4></div>
+      <ol>
+        <li>Re-calibrate (or confirm calibration is still valid) for 130–160 MHz</li>
+        <li>Connect Lesson 11 dipole</li>
+        <li>Sweep 130–160 MHz — record SWR vs frequency</li>
+        <li>Note SWR at 145 MHz and bandwidth at SWR &lt; 2:1</li>
+      </ol>
+      <div class="record-box">
+        ☐ Dipole SWR at 145 MHz: _____ | ☐ Dipole SWR &lt; 2:1 bandwidth: _____ MHz
+        ☐ D130N SWR at 145 MHz: _____ (from Step 1 data)
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 3</span><h4 class="lab-step-title">Compare and document</h4></div>
+      <ol>
+        <li>Create a comparison table: D130N vs dipole at 145 MHz (SWR, impedance)</li>
+        <li>Overlay SWR curves on the same graph if your VNA supports memory traces</li>
+        <li>Write a short assessment: for dedicated 145 MHz monitoring, which antenna is better and why?</li>
+        <li>Consider: at what frequency (if any) does the D130N's convenience outweigh the dipole's better SWR?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 08</span><div class="chapter-line"></div></div>
+    <h2>Knowledge Check</h2>
+    <ol>
+      <li><strong>What is the key design principle that makes a discone broadband?</strong>
+        <!-- Its shape is defined by angles (the cone angle, the disc-to-cone ratio), not by characteristic lengths. Angle-defined structures are frequency-independent by Rumsey's principle. -->
+      </li>
+      <li><strong>How does an LPDA differ from a Yagi even though they look similar?</strong>
+        <!-- In a Yagi only the driven element is connected to the feedline; the rest are parasitic. In an LPDA, all elements are driven via a phase-reversing transmission line. The active region shifts along the LPDA as frequency changes. -->
+      </li>
+      <li><strong>What two properties make spiral antennas unusual and useful?</strong>
+        <!-- They are simultaneously broadband AND inherently circularly polarised — a rare combination that doesn't require a special feed network. -->
+      </li>
+      <li><strong>Your D130N shows SWR 3.5:1 at 88 MHz (FM broadcast). Is this a failure?</strong>
+        <!-- No — 88 MHz is below the D130N's rated 25 MHz minimum? Wait — 88 MHz is within the 25-1300 MHz range, but some SWR variation is expected. SWR 3.5:1 means ~25% reflected power — usable for receive-only but not ideal. The discone trades SWR consistency for bandwidth. -->
+      </li>
+      <li><strong>For dedicated monitoring of 433 MHz ISM band signals, would you use the D130N or a purpose-built dipole? Why?</strong>
+        <!-- Purpose-built dipole (or monopole) — at 433 MHz a resonant antenna will have much better SWR (1.1:1 vs potentially 2:1+ for discone) and ~2 dBi gain vs discone's ~1 dBi. For a fixed known frequency, resonant antennas always outperform broadband designs. -->
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 14 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Broadband antennas use angle-defined geometry (not lengths) — from Rumsey's frequency-independence principle</li>
+        <li><strong>Discone</strong> (D130N): 25–1300 MHz, 0–2 dBi, omnidirectional vertical — ideal for scanning</li>
+        <li><strong>LPDA:</strong> all elements driven, active region shifts with frequency, 6–9 dBi, directional — good for wideband directional monitoring</li>
+        <li><strong>Spiral:</strong> inherently broadband AND circularly polarised — rare combination for DF and EW applications</li>
+        <li>Broadband = lower peak gain than resonant — the fundamental trade-off</li>
+        <li>Use broadband for unknown frequencies; resonant for known, optimised performance</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-13-yagi-antennas.html" class="btn btn--ghost">← Lesson 13: Yagi Antennas</a>
+    <a href="lesson-15-impedance-matching.html" class="btn btn--primary">Next: Lesson 15 — Impedance Matching →</a>
+  </div>
+
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+</body>
+</html>

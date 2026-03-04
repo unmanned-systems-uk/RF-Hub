@@ -42,7 +42,7 @@ class Calculation {
   static async getById(calculation_id, user_id) {
     const result = await pool.query(
       `SELECT * FROM saved_calculations
-       WHERE calculation_id = $1 AND user_id = $2`,
+       WHERE calc_id = $1 AND user_id = $2`,
       [calculation_id, user_id]
     );
     return result.rows[0];
@@ -55,7 +55,7 @@ class Calculation {
     const result = await pool.query(
       `UPDATE saved_calculations
        SET notes = $3, updated_at = CURRENT_TIMESTAMP
-       WHERE calculation_id = $1 AND user_id = $2
+       WHERE calc_id = $1 AND user_id = $2
        RETURNING *`,
       [calculation_id, user_id, notes]
     );
@@ -68,7 +68,7 @@ class Calculation {
   static async delete(calculation_id, user_id) {
     const result = await pool.query(
       `DELETE FROM saved_calculations
-       WHERE calculation_id = $1 AND user_id = $2
+       WHERE calc_id = $1 AND user_id = $2
        RETURNING *`,
       [calculation_id, user_id]
     );
@@ -101,9 +101,11 @@ class Calculation {
   static async getRecent(user_id, limit = 10) {
     const result = await pool.query(
       `SELECT
-        calculation_id,
+        calc_id,
         calculator_type,
-        result,
+        calculator_name,
+        inputs,
+        outputs,
         notes,
         created_at
        FROM saved_calculations

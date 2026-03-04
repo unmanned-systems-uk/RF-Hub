@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 13: Yagi-Uda Antennas — Adding Gain — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.knowledge-check li { color: var(--text-secondary); line-height: 1.6; }
+.knowledge-check strong { color: var(--text-primary); display: block; margin-bottom: 4px; }
+.lab-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.lab-step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lab-step-num {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+.lab-step-title { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin: 0; }
+.lab-step ol, .lab-step ul { margin: 6px 0; padding-left: 20px; }
+.lab-step li { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-bottom: 3px; }
+.record-box {
+  background: var(--bg-deep);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.element-diagram {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 3 · Lesson 13</div>
+    <h1>Yagi-Uda Antennas: Adding Gain</h1>
+    <p class="hero-subtitle">Parasitic elements, reflectors, directors, feed methods, and building a 3-element 145 MHz Yagi</p>
+  </div>
+</section>
+
+<div class="container">
+<div class="article">
+
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 3 — Design &amp; Construction</span>
+    <span class="article-meta-item">Prerequisites: Lessons 11–12</span>
+    <span class="article-meta-item">Equipment: Modelling software, construction materials, VNA</span>
+    <span class="article-meta-item">⏱ 30 min theory + 90 min lab</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <div class="chapter" id="objectives">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 01</span><div class="chapter-line"></div></div>
+    <h2>Learning Objectives</h2>
+    <ul class="objectives-list">
+      <li>Explain how parasitic elements create directivity</li>
+      <li>Define the roles of reflector, driven element, and directors</li>
+      <li>Understand the gain-bandwidth trade-off in Yagi design</li>
+      <li>Model a Yagi in 4nec2 and build/validate with VNA</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="parasitic-coupling">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 02</span><div class="chapter-line"></div></div>
+    <h2>Parasitic Coupling: How Non-Driven Elements Shape the Pattern</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>The Big Idea:</strong> The Yagi-Uda antenna adds gain without adding feedlines. Extra conductive elements — not connected to the transmitter — are placed near the driven dipole. These <em>parasitic</em> elements re-radiate the energy they receive, and by carefully choosing their length and spacing, the re-radiated energy adds constructively in one direction and destructively in others. The result: a directional beam from passive conductors.</div>
+    </div>
+
+    <p>When a parasitic element is near a driven antenna, mutual coupling induces current in the parasitic. Whether that current leads or lags the driven current — and by how much — depends on the parasitic's length relative to resonance:</p>
+
+    <ul>
+      <li>Parasitic element <strong>longer than resonant length</strong> → acts inductive → re-radiates with a phase lag → acts as a <strong>reflector</strong></li>
+      <li>Parasitic element <strong>shorter than resonant length</strong> → acts capacitive → re-radiates with a phase lead → acts as a <strong>director</strong></li>
+    </ul>
+
+    <p>By placing a reflector behind the driven element and one or more directors in front, the re-radiated fields add in the forward direction and cancel in the rearward direction — creating a forward-directed beam.</p>
+  </div>
+
+  <div class="chapter" id="reflector">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 03</span><div class="chapter-line"></div></div>
+    <h2>The Reflector: Slightly Longer, Reflects Energy Forward</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Length relative to driven element</td><td>~5% longer</td><td>Makes element inductive (above resonance)</td></tr>
+          <tr><td>Spacing from driven element</td><td>0.15–0.25 λ</td><td>0.2 λ is a common starting point</td></tr>
+          <tr><td>Gain added by reflector alone</td><td>~3–4 dB</td><td>Most gain comes from adding the first reflector</td></tr>
+          <tr><td>Effect on driven element impedance</td><td>Lowers it</td><td>Reduces feedpoint Z from ~73 Ω to ~20–30 Ω</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text"><strong>Only one reflector is ever used.</strong> Adding a second reflector behind the first provides negligible additional gain. The diminishing-returns pattern means all design effort focuses on the number of directors.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="directors">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 04</span><div class="chapter-line"></div></div>
+    <h2>Directors: Slightly Shorter, Focus the Beam</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Length relative to driven element</td><td>~5% shorter</td><td>Makes element capacitive (below resonance)</td></tr>
+          <tr><td>Spacing from adjacent element</td><td>0.1–0.2 λ</td><td>Closer spacing = more gain per boom length</td></tr>
+          <tr><td>Gain per additional director</td><td>~1–2 dB</td><td>Diminishing returns beyond 5–6 directors</td></tr>
+          <tr><td>Director lengths</td><td>Progressive shortening</td><td>Each director slightly shorter than the previous</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="element-diagram">
+← FORWARD DIRECTION (beam points this way) →
+
+  [D3]----[D2]----[D1]----[DRIVEN]----[REFLECTOR]
+  ←shortest               ←fed here    ←longest
+
+  D1/D2/D3 = directors (progressively shorter)
+  Driven    = dipole (fed with coax)
+  Reflector = passive, ~5% longer than driven</div>
+
+    <p>Gain vs number of elements (typical 2m Yagi):</p>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Elements</th><th>Configuration</th><th>Typical Gain</th><th>F/B Ratio</th></tr></thead>
+        <tbody>
+          <tr><td>2</td><td>Driven + Reflector</td><td>~5 dBd (7.1 dBi)</td><td>~10 dB</td></tr>
+          <tr><td>3</td><td>R + Driven + D1</td><td>~7 dBd (9.1 dBi)</td><td>~15–20 dB</td></tr>
+          <tr><td>5</td><td>R + Driven + D1–D3</td><td>~9 dBd (11.1 dBi)</td><td>~20–25 dB</td></tr>
+          <tr><td>9</td><td>R + Driven + D1–D7</td><td>~12 dBd (14.1 dBi)</td><td>~25 dB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="chapter" id="gain-bandwidth">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 05</span><div class="chapter-line"></div></div>
+    <h2>The Gain-Bandwidth Trade-Off</h2>
+
+    <p>Adding more directors increases gain but narrows bandwidth — this is a fundamental physical relationship, not an engineering choice:</p>
+
+    <ul>
+      <li>A 3-element Yagi for 145 MHz might have SWR &lt; 2:1 bandwidth of 10–15 MHz</li>
+      <li>A 10-element Yagi optimised for maximum gain might only have 3–5 MHz bandwidth</li>
+      <li>A 10-element Yagi optimised for broadband might have 8–10 MHz bandwidth but 1–2 dB less gain</li>
+    </ul>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text"><strong>Narrow-beam Yagis need accurate aiming.</strong> A 10-element Yagi with 3° half-power beamwidth must be pointed within ±1.5° of the target. An EME (moonbounce) station with a 20-element array must track the moon. More gain = more pointing accuracy required.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="feed-methods">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 06</span><div class="chapter-line"></div></div>
+    <h2>Feed Methods</h2>
+
+    <p>The driven element of a Yagi presents low impedance (typically 15–25 Ω for a 3-element design) rather than the 73 Ω of a free-space dipole — the parasitic elements lower it. A matching network is needed to feed 50 Ω coax.</p>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-em">Gamma Match</h4>
+        <p>A small rod tapped onto one arm of the driven element at a calculated point, connected to the coax centre. Adjustable — good for optimising on the bench. The non-symmetrical design means a balun is advisable.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-h">Hairpin Match (Beta Match)</h4>
+        <p>A short shorted transmission-line stub connected across the feedpoint. Tunable by adjusting the stub length. Provides matching and is symmetrical — no separate balun needed if the driven element is split.</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-success">Folded Dipole</h4>
+        <p>The driven element is a folded dipole (4× impedance of a regular dipole). Raises feedpoint Z to ~75–200 Ω range, closer to direct 50/75 Ω feed. Also wider bandwidth than a simple dipole element.</p>
+      </div>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text"><strong>Interactive:</strong> <a href="../../../resources/radiation-3d-v5.html">3D Radiation Pattern Viewer</a> — load Yagi pattern to see the elongated egg-shaped forward beam and suppressed back lobe.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="modelling">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 07</span><div class="chapter-line"></div></div>
+    <h2>Modelling in 4nec2 or MMANA-GAL</h2>
+
+    <p>Before building, model the Yagi in free NEC-based antenna modelling software. This predicts gain, pattern, and feedpoint impedance — and reveals any design errors before you cut metal.</p>
+
+    <h3>4nec2 (Windows, free)</h3>
+    <ul>
+      <li>Download from <strong>4nec2.nl</strong></li>
+      <li>Define elements as wire segments: start coordinate, end coordinate, diameter, number of segments</li>
+      <li>Set a voltage source on the driven element</li>
+      <li>Run frequency sweep to find resonance and impedance</li>
+      <li>Run far-field pattern to see gain and radiation pattern</li>
+    </ul>
+
+    <h3>MMANA-GAL (alternative, simpler UI)</h3>
+    <ul>
+      <li>Graphical element entry — easier for beginners than 4nec2's text-based input</li>
+      <li>Real-time pattern update as you adjust elements</li>
+      <li>Good for initial design exploration; 4nec2 for final validation</li>
+    </ul>
+
+    <h3>Starting Dimensions for 3-Element 145 MHz Yagi</h3>
+    <pre><code>Driven element: 975 mm total (487.5 mm each arm) — slightly short for matching
+Reflector:      1030 mm total — ~5% longer than driven (mounted 0.2λ = 414 mm behind driven)
+Director 1:     920 mm total — ~5% shorter (mounted 0.15λ = 310 mm in front of driven)
+
+Element diameter: 6 mm aluminium tube (affects velocity factor slightly)
+Boom: non-conducting (fibreglass) or insulate metallic boom from elements</code></pre>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">📐</span>
+      <div class="callout-text">These are starting dimensions for a gamma-matched design. Model first, then build. Actual optimal dimensions depend on element diameter, boom material, and desired gain/bandwidth balance.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="lab">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 08</span><div class="chapter-line"></div></div>
+    <h2>Lab: Design, Model, Build a 3-Element 145 MHz Yagi</h2>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 1</span><h4 class="lab-step-title">Model in 4nec2 or MMANA-GAL</h4></div>
+      <ol>
+        <li>Enter the starting dimensions from Chapter 07 into your chosen software</li>
+        <li>Set frequency: 144–146 MHz sweep</li>
+        <li>Run simulation — record predicted gain, F/B ratio, feedpoint impedance</li>
+        <li>Optimise: adjust element lengths and spacing to minimise SWR and maximise gain at 145 MHz</li>
+      </ol>
+      <div class="record-box">
+        ☐ Modelled gain: _____ dBi | ☐ F/B ratio: _____ dB | ☐ Feedpoint Z: _____ Ω
+        ☐ Driven element final length: _____ mm | ☐ Reflector: _____ mm | ☐ Director: _____ mm
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 2</span><h4 class="lab-step-title">Build the physical Yagi</h4></div>
+      <ol>
+        <li>Cut aluminium (or copper) elements to modelled lengths — leave 5 mm extra on each for trimming</li>
+        <li>Mark boom at element positions: reflector, driven element, director</li>
+        <li>Mount parasitic elements directly to boom (if non-conductive) or through insulating standoffs (if metal boom)</li>
+        <li>Mount driven element with centre gap — prepare gamma match or feed accordingly</li>
+        <li>Attach coax to feedpoint with appropriate matching and strain relief</li>
+      </ol>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 3</span><h4 class="lab-step-title">VNA measurement and comparison</h4></div>
+      <ol>
+        <li>SOL-calibrate VNA for 130–160 MHz range</li>
+        <li>Connect Yagi feedpoint coax to VNA port</li>
+        <li>Record S11, SWR, impedance, Smith chart trace</li>
+        <li>Compare to model predictions — note any deviations</li>
+        <li>Trim driven element (and adjust gamma match) to achieve SWR ≤ 1.5:1 at 145 MHz</li>
+      </ol>
+      <div class="record-box">
+        ☐ Measured resonant freq: _____ MHz | ☐ Measured SWR: _____ | ☐ Measured Z: _____
+        ☐ Model vs measured gain difference: _____ dB (requires field comparison test)
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">STEP 4</span><h4 class="lab-step-title">Compare with dipole from Lesson 11</h4></div>
+      <ol>
+        <li>Point the Yagi toward a distant beacon, repeater, or SDR signal source</li>
+        <li>Note signal strength (in SDR software or radio S-meter) with Yagi in peak direction</li>
+        <li>Swap antenna for the Lesson 11 dipole — note signal strength</li>
+        <li>Difference = practical gain of Yagi vs dipole</li>
+        <li>Compare measured gain to modelled gain prediction</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 09</span><div class="chapter-line"></div></div>
+    <h2>Knowledge Check</h2>
+    <ol>
+      <li><strong>Why does a reflector element need to be slightly longer than the driven element?</strong>
+        <!-- A longer element is above resonance, making it inductive. The induced current lags the driven current by ~90°. This phase lag causes the reflector's re-radiation to add constructively forward and cancel rearward. -->
+      </li>
+      <li><strong>How many directors can a Yagi have, and what limits the useful number?</strong>
+        <!-- Theoretically unlimited, but diminishing returns set in beyond ~10. More directors narrow the bandwidth and require precise element dimensions. Practical limit is usually 5–12 for amateur and commercial designs. -->
+      </li>
+      <li><strong>A 3-element Yagi has a feedpoint impedance of ~20 Ω. Why is this lower than a dipole's 73 Ω?</strong>
+        <!-- Mutual coupling from the parasitic elements modifies the driven element's impedance. The reflector and director load the feedpoint, lowering the radiation resistance toward 15–30 Ω. -->
+      </li>
+      <li><strong>What does the front-to-back ratio tell you about a Yagi?</strong>
+        <!-- How much stronger the signal is in the forward direction compared to the rearward direction. A 20 dB F/B means 100× more power forward than rearward — important for rejecting interference from behind. -->
+      </li>
+      <li><strong>Why must the boom of a metal-boom Yagi be insulated from the elements?</strong>
+        <!-- The boom is a conductor near the elements. Direct contact introduces parasitic coupling between elements via the boom, distorting the pattern and shifting impedance. Insulating the elements from the boom prevents this. -->
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 13 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Parasitic elements use mutual coupling to shape radiation — no direct electrical connection</li>
+        <li><strong>Reflector:</strong> ~5% longer, ~0.2λ behind driven → reflects energy forward</li>
+        <li><strong>Directors:</strong> ~5% shorter, ~0.15λ spacing → focus energy forward</li>
+        <li>More directors = more gain, narrower bandwidth, requires more precise aiming</li>
+        <li>Feedpoint impedance is reduced by parasitic coupling — needs matching (gamma, hairpin, or folded dipole)</li>
+        <li>Always model before building: 4nec2 or MMANA-GAL predict gain and impedance</li>
+        <li>VNA measurement + practical signal comparison validates the build</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-12-vertical-antennas.html" class="btn btn--ghost">← Lesson 12: Vertical Antennas</a>
+    <a href="lesson-14-broadband-antennas.html" class="btn btn--primary">Next: Lesson 14 — Broadband Antennas →</a>
+  </div>
+
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+</body>
+</html>

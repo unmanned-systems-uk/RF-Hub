@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSM &amp; Cellular Networks | RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css">
+<style>
+  /* ── Page layout ── */
+  .gsm-main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── Inline TOC ── */
+  .toc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .toc-card h3 {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+  .toc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .toc-links a {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-family: var(--font-body);
+    transition: all 0.15s;
+  }
+  .toc-links a:hover { color: var(--accent-h); border-color: var(--accent-h); }
+
+  /* ── Generation pills (hero) ── */
+  .generation-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+  .gen-pill {
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: var(--font-body);
+  }
+  .gen-pill.g2  { background: #1f3a1f; color: #39d353; border: 1px solid #39d35340; }
+  .gen-pill.g25 { background: #1f3020; color: #4ade80; border: 1px solid #4ade8040; }
+  .gen-pill.g3  { background: #1a1f3a; color: #818cf8; border: 1px solid #818cf840; }
+  .gen-pill.g35 { background: #1e1a3a; color: var(--accent-em); border: 1px solid rgba(167,139,250,0.25); }
+  .gen-pill.g4  { background: #1f2e1a; color: var(--accent-h); border: 1px solid rgba(6,182,212,0.25); }
+  .gen-pill.g5  { background: #2a1f1a; color: var(--accent-power); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* ── Section styling ── */
+  .content-section { margin-bottom: 3rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon { font-size: 1.4rem; }
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+  .section-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.1rem;
+    font-family: var(--font-body);
+  }
+
+  /* ── Generation Timeline ── */
+  .gen-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .gen-row {
+    display: grid;
+    grid-template-columns: 80px 120px 1fr auto;
+    gap: 1rem;
+    align-items: start;
+    background: var(--bg-card);
+    padding: 1rem 1.25rem;
+  }
+  .gen-row:hover { background: var(--bg-card-hover); }
+  .gen-label { font-weight: 700; font-size: 1rem; font-family: var(--font-body); }
+  .gen-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+  .gen-name small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+  }
+  .gen-desc { font-size: 0.83rem; color: var(--text-secondary); font-family: var(--font-body); }
+  .gen-speed {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-e);
+    white-space: nowrap;
+    font-family: var(--font-mono);
+  }
+
+  /* ── Terminology Grid ── */
+  .term-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .term-entry {
+    background: var(--bg-card);
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .term-entry:hover { background: var(--bg-card-hover); }
+  .term-name {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--accent-h);
+  }
+  .term-abbr {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    margin-top: 0.2rem;
+  }
+  .term-gen-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-top: 0.35rem;
+  }
+  .term-def {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-family: var(--font-body);
+  }
+  .term-def strong { color: var(--text-primary); font-weight: 600; }
+  .term-def .rf-note {
+    display: block;
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(6,182,212,0.06);
+    border-left: 2px solid var(--accent-h);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.78rem;
+    color: var(--accent-h);
+  }
+  .term-def .practical-note {
+    display: block;
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(34,197,94,0.06);
+    border-left: 2px solid var(--accent-current);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.78rem;
+    color: var(--accent-current);
+  }
+
+  /* ── Signal measurements table ── */
+  .sig-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .sig-table th {
+    background: var(--bg-card-hover);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  .sig-table td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    font-family: var(--font-body);
+  }
+  .sig-table tr:hover td { background: var(--bg-card-hover); }
+  .sig-name { font-family: var(--font-mono); font-weight: 700; color: var(--accent-h); }
+  .sig-range { font-family: var(--font-mono); font-size: 0.78rem; }
+  .quality-excellent { color: #39d353; }
+  .quality-good { color: #a8d353; }
+  .quality-fair { color: var(--accent-e); }
+  .quality-poor { color: var(--accent-power); }
+  .quality-bad { color: #f44; }
+
+  /* ── UK Bands Table ── */
+  .bands-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .bands-table th {
+    background: var(--bg-card-hover);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  .bands-table td {
+    padding: 0.65rem 0.85rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  .bands-table tr:hover td { background: var(--bg-card-hover); }
+  .band-num { font-weight: 700; color: var(--accent-h); }
+  .band-name { font-family: var(--font-body); color: var(--text-primary); font-weight: 500; }
+  .op-pill {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    margin: 0.1rem;
+  }
+  .op-ee { background: #1a2e1a; color: #39d353; }
+  .op-voda { background: #1a1a2e; color: #818cf8; }
+  .op-o2 { background: #1a2535; color: #38bdf8; }
+  .op-three { background: #2a1a1a; color: #f87171; }
+
+  /* ── PLMN Table ── */
+  .plmn-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .plmn-table th {
+    background: var(--bg-card-hover);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  .plmn-table td {
+    padding: 0.65rem 0.85rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+  }
+  .plmn-table tr:hover td { background: var(--bg-card-hover); }
+
+  /* ── Info boxes ── */
+  .info-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .info-box.accent { border-left: 3px solid var(--accent-h); }
+  .info-box.green  { border-left: 3px solid var(--accent-current); }
+  .info-box.orange { border-left: 3px solid var(--accent-power); }
+  .info-box.purple { border-left: 3px solid var(--accent-em); }
+  .info-box h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: var(--font-body);
+  }
+  .info-box.accent h4 { color: var(--accent-h); }
+  .info-box.green h4  { color: var(--accent-current); }
+  .info-box.orange h4 { color: var(--accent-power); }
+  .info-box.purple h4 { color: var(--accent-em); }
+  .info-box p, .info-box li {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-family: var(--font-body);
+  }
+  .info-box ul { padding-left: 1.25rem; }
+  .info-box li { margin-top: 0.25rem; }
+
+  /* ── Architecture diagram (text) ── */
+  .arch-diagram {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+  .arch-diagram .node  { color: var(--accent-h); font-weight: 700; }
+  .arch-diagram .link  { color: var(--border); }
+  .arch-diagram .label { color: var(--accent-e); font-size: 0.7rem; }
+
+  /* ── Collapsible sub-sections ── */
+  details {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+  }
+  summary {
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-body);
+  }
+  summary::after { content: '▸'; color: var(--accent-h); }
+  details[open] summary::after { content: '▾'; }
+  details .details-body { padding: 0 1rem 1rem; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .term-entry { grid-template-columns: 1fr; }
+    .gen-row { grid-template-columns: 60px 1fr; }
+    .gen-row .gen-speed { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../index.html">Dashboard</a></li>
+      <li><a href="frequency-bands.html">Spectrum</a></li>
+      <li><a href="antennas.html">Antennas</a></li>
+      <li><a href="learning-path.html">Learn</a></li>
+      <li><a href="gsm-cellular.html" class="active">GSM</a></li>
+      <li><a href="blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Reference Guide</div>
+    <h1>GSM &amp; Cellular Networks</h1>
+    <p class="hero-subtitle">Terminology, concepts, and reference data for 2G through 5G cellular systems — your field guide while working with LTE antennas, spectrum analysis, and SDR tools.</p>
+    <div class="generation-pills">
+      <span class="gen-pill g2">2G · GSM</span>
+      <span class="gen-pill g25">2.5G · GPRS</span>
+      <span class="gen-pill g25">2.75G · EDGE</span>
+      <span class="gen-pill g3">3G · UMTS</span>
+      <span class="gen-pill g35">3.5G · HSPA</span>
+      <span class="gen-pill g4">4G · LTE</span>
+      <span class="gen-pill g4">4G+ · LTE-A</span>
+      <span class="gen-pill g5">5G · NR</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CONTENT ─────────────────────────────────────────── -->
+<div class="gsm-main">
+
+  <!-- Inline TOC -->
+  <nav class="toc-card">
+    <h3>On This Page</h3>
+    <div class="toc-links">
+      <a href="#generations">Generations</a>
+      <a href="#architecture">Network Architecture</a>
+      <a href="#frequency">Frequency &amp; Channels</a>
+      <a href="#access-methods">Access Methods</a>
+      <a href="#modulation">Modulation</a>
+      <a href="#physical-layer">Physical Layer (LTE)</a>
+      <a href="#signal-measurements">Signal Measurements</a>
+      <a href="#identifiers">Network Identifiers</a>
+      <a href="#uk-bands">UK Frequency Bands</a>
+      <a href="#uk-operators">UK Operators (PLMN)</a>
+      <a href="#antenna-mimo">Antennas &amp; MIMO</a>
+      <a href="#coverage-concepts">Coverage Concepts</a>
+      <a href="#sdr-tools">SDR &amp; Practical Tools</a>
+    </div>
+  </nav>
+
+  <!-- ── QUICK INTRO ── -->
+  <div class="info-box accent" style="margin-bottom: 2rem;">
+    <h4>How to use this page</h4>
+    <p>This page is your field reference while working with LTE antennas, CellMapper, your Rigol RSA5065N, and SDR tools. Terminology is grouped by topic, not alphabetically — because understanding context matters more than alphabetical order. Use your browser's <strong>Ctrl+F / Cmd+F</strong> to jump to any term quickly.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 1: GENERATIONS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="generations">
+    <div class="section-header">
+      <span class="section-icon">📶</span>
+      <div>
+        <div class="section-title">Cellular Generations</div>
+        <div class="section-subtitle">The evolution from voice-only 2G through broadband 5G</div>
+      </div>
+    </div>
+
+    <div class="gen-timeline">
+      <div class="gen-row">
+        <span class="gen-label" style="color:#39d353;">2G</span>
+        <div class="gen-name">GSM<small>Global System for Mobile Communications</small></div>
+        <div class="gen-desc">The first fully digital cellular standard (1991). Replaced analogue 1G systems. Uses TDMA/FDMA access. Operates on 900 MHz and 1800 MHz in the UK. Primarily voice and SMS. Still used as a fallback in many areas, though many UK operators have now switched it off.</div>
+        <div class="gen-speed">9.6 kbps data</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:#4ade80;">2.5G</span>
+        <div class="gen-name">GPRS<small>General Packet Radio Service</small></div>
+        <div class="gen-desc">Packet-switched data overlay on GSM. Enables "always-on" IP connectivity by sharing unused GSM timeslots. Introduced WAP browsing and MMS. Multiple timeslots can be used simultaneously for higher throughput.</div>
+        <div class="gen-speed">Up to 114 kbps</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:#86efac;">2.75G</span>
+        <div class="gen-name">EDGE<small>Enhanced Data rates for GSM Evolution</small></div>
+        <div class="gen-desc">Improved GPRS using 8PSK modulation instead of GMSK, tripling data rates. Sometimes called "E-GPRS". Still visible on phones as the "E" indicator. A software upgrade to existing GPRS infrastructure.</div>
+        <div class="gen-speed">Up to 384 kbps</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:#818cf8;">3G</span>
+        <div class="gen-name">UMTS / WCDMA<small>Universal Mobile Telecommunications System</small></div>
+        <div class="gen-desc">First purpose-built mobile broadband standard. Uses CDMA spread-spectrum (W-CDMA variant) rather than TDMA. Operates primarily at 2100 MHz (Band 1) in the UK. Introduced video calling. The network behind "3" or "H" indicators.</div>
+        <div class="gen-speed">Up to 2 Mbps</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:var(--accent-em);">3.5G</span>
+        <div class="gen-name">HSPA / HSPA+<small>High Speed Packet Access</small></div>
+        <div class="gen-desc">Major UMTS enhancement. HSDPA (downlink) and HSUPA (uplink) use adaptive modulation, HARQ retransmission, and shorter frame intervals. HSPA+ added MIMO and 64QAM. Shown as "H" or "H+" on phones. Most 3G sites in the UK ran HSPA+.</div>
+        <div class="gen-speed">Up to 168 Mbps (HSPA+)</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:var(--accent-h);">4G</span>
+        <div class="gen-name">LTE<small>Long Term Evolution</small></div>
+        <div class="gen-desc">A complete redesign. Uses OFDMA (downlink) and SC-FDMA (uplink). All-IP architecture — voice is carried as VoLTE (Voice over LTE). Flexible channel bandwidths (1.4–20 MHz). Defined by the 3GPP standards body. What your Diamond D130N and LTE test antenna are designed for.</div>
+        <div class="gen-speed">Up to 300 Mbps (Cat 6)</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:#22d3ee;">4G+</span>
+        <div class="gen-name">LTE-Advanced<small>LTE-A / LTE-Advanced Pro</small></div>
+        <div class="gen-desc">Builds on LTE with Carrier Aggregation (multiple bands simultaneously), 4×4 MIMO, 256QAM, and HetNet (heterogeneous network) support. LTE-A Pro ("4.5G") adds Massive MIMO (up to 64T64R), LAA (LTE in unlicensed spectrum), and early 5G concepts.</div>
+        <div class="gen-speed">Up to 3 Gbps (theoretical)</div>
+      </div>
+      <div class="gen-row">
+        <span class="gen-label" style="color:var(--accent-power);">5G</span>
+        <div class="gen-name">NR<small>New Radio</small></div>
+        <div class="gen-desc">Current-generation standard. Two frequency ranges: FR1 (sub-6 GHz, including 700 MHz, 3.5 GHz) and FR2 (mmWave, 26/28/39 GHz). Flexible numerology (subcarrier spacings from 15 kHz to 240 kHz). Massive MIMO beamforming standard. NSA (Non-Standalone) mode anchors to 4G core initially.</div>
+        <div class="gen-speed">Up to 20 Gbps (theoretical)</div>
+      </div>
+    </div>
+
+    <div class="info-box green">
+      <h4>Why Does This Matter for RF Work?</h4>
+      <p>Each generation uses different frequency bands, modulation schemes, and channel structures. When you're looking at a signal on your RSA5065N, knowing the generation tells you what kind of signal structure to expect — GSM signals look completely different to LTE signals on a spectrum analyser, even if they're at adjacent frequencies.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 2: NETWORK ARCHITECTURE
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="architecture">
+    <div class="section-header">
+      <span class="section-icon">🏗️</span>
+      <div>
+        <div class="section-title">Network Architecture</div>
+        <div class="section-subtitle">The nodes, boxes, and connections that make up a cellular network</div>
+      </div>
+    </div>
+
+    <details open>
+      <summary>2G/3G Architecture (Legacy)</summary>
+      <div class="details-body">
+        <div class="term-grid">
+          <div class="term-entry">
+            <div class="term-name">BTS<span class="term-abbr">Base Transceiver Station</span></div>
+            <div class="term-def">The physical radio equipment at the base of a cell tower — the antennas, power amplifiers, transceivers, and feeder cables. This is the thing you actually see on masts. The BTS handles the radio interface directly with your phone. Each BTS covers one or more sectors.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">BSC<span class="term-abbr">Base Station Controller</span></div>
+            <div class="term-def">Controls a group of BTS units. Manages radio resources, handover decisions, and frequency allocation. Sits between the BTS and the MSC in the GSM architecture. Often co-located with the MSC at a central exchange building.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">MSC<span class="term-abbr">Mobile Switching Centre</span></div>
+            <div class="term-def">The core switching node for voice calls in 2G/3G. Routes calls between mobile users and to the PSTN (Public Switched Telephone Network). Manages mobility — tracking which cells users are in. Contains or interfaces with the HLR and VLR.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">HLR<span class="term-abbr">Home Location Register</span></div>
+            <div class="term-def">The master database for all subscribers on a network. Stores your SIM's IMSI, subscribed services, and current location (which VLR you're registered with). When you call someone on another network, their HLR is queried to find them.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">VLR<span class="term-abbr">Visitor Location Register</span></div>
+            <div class="term-def">Temporary database at the MSC storing details of subscribers currently in that MSC's coverage area. When you move into a new area, your details are copied from the HLR to the local VLR — avoiding constant HLR lookups during calls.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">RNC<span class="term-abbr">Radio Network Controller (3G)</span></div>
+            <div class="term-def">The 3G equivalent of the BSC. Controls a group of Node B (3G base stations). Manages soft handover (a 3G-specific feature where a phone can be connected to multiple base stations simultaneously), power control, and radio bearers.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">Node B<span class="term-abbr">3G Base Station</span></div>
+            <div class="term-def">The 3G equivalent of the BTS. The physical radio equipment on a 3G cell site. Often co-located with 2G BTS equipment on the same mast. Connected to the RNC via the Iub interface.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>4G LTE Architecture (EPC)</summary>
+      <div class="details-body">
+        <div class="arch-diagram">
+<span class="node">UE</span> (Phone) ──── <span class="label">[Uu interface / LTE radio]</span> ──── <span class="node">eNB</span> (eNodeB)
+                                                                         │
+                                                         <span class="label">[S1-MME]</span>         <span class="label">[S1-U]</span>
+                                                              │                │
+                                                         <span class="node">MME</span>           <span class="node">S-GW</span>
+                                                     <span class="label">(Control)</span>      <span class="label">(User data)</span>
+                                                                               │
+                                                                          <span class="node">P-GW</span>  ────── <span class="label">Internet / IMS</span>
+                                                              │                │
+                                                         <span class="node">HSS</span>           <span class="node">PCRF</span>
+                                                    <span class="label">(Subscriber DB)</span>  <span class="label">(Policy)</span>
+        </div>
+
+        <div class="term-grid" style="margin-top: 1rem;">
+          <div class="term-entry">
+            <div class="term-name">eNodeB<span class="term-abbr">eNB · Evolved Node B</span></div>
+            <div class="term-def">The LTE base station. Unlike 3G where the RNC handled most intelligence, the eNodeB is "smarter" — it manages radio resources, handover decisions, and scheduling autonomously. eNodeBs communicate with each other directly via the X2 interface, enabling faster handovers. What you see on modern masts alongside legacy equipment.
+              <span class="practical-note">🔧 On CellMapper, eNodeB IDs appear as "eNB ID". The full Cell ID = eNB ID × 256 + Cell Index.</span>
+            </div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">EPC<span class="term-abbr">Evolved Packet Core</span></div>
+            <div class="term-def">The 4G core network. Entirely packet-switched — there is no circuit-switched voice path. Voice is delivered via VoLTE (IMS). The EPC comprises the MME, S-GW, P-GW, HSS, and PCRF nodes.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">MME<span class="term-abbr">Mobility Management Entity</span></div>
+            <div class="term-def">The control-plane node of the EPC. Handles authentication, security, session establishment, and tracking area updates. When your phone wakes up on LTE, it registers with the MME. The MME is the "control brain" — it never touches user data directly.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">S-GW<span class="term-abbr">Serving Gateway</span></div>
+            <div class="term-def">Routes and forwards user data packets between the eNodeB and the P-GW. Acts as the local mobility anchor — when you handover between eNodeBs, the S-GW stays the same, simplifying the data path. The S-GW is the "local postman" for your data.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">P-GW<span class="term-abbr">PDN Gateway</span></div>
+            <div class="term-def">The gateway between the LTE network and the internet (PDN = Packet Data Network). Allocates your IP address, enforces QoS policies, and interfaces with external networks. The P-GW is where your data leaves the mobile network and enters the public internet.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">HSS<span class="term-abbr">Home Subscriber Server</span></div>
+            <div class="term-def">The 4G/5G equivalent of the HLR. Combined authentication centre and subscriber database. Stores authentication vectors, QoS profiles, and PDN connectivity settings. Interfaces with the MME for authentication.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">VoLTE<span class="term-abbr">Voice over LTE</span></div>
+            <div class="term-def">Voice calls carried as IP packets over LTE using the IMS (IP Multimedia Subsystem). Required dedicated QoS handling (QCI 1 bearer). Better voice quality than legacy circuit-switched calls. When operators switch off 2G/3G, VoLTE becomes the only voice option — which is why some older phones lose calling ability on 4G-only networks.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>5G Architecture (5GC / Next Gen)</summary>
+      <div class="details-body">
+        <div class="term-grid">
+          <div class="term-entry">
+            <div class="term-name">gNodeB<span class="term-abbr">gNB · 5G Base Station</span></div>
+            <div class="term-def">The 5G base station. Handles the 5G NR radio interface. In NSA (Non-Standalone) mode, a gNB works alongside an existing eNB and shares the 4G core — the "master" eNB handles signalling while the gNB adds extra capacity. In SA (Standalone) mode, it connects directly to the 5G Core.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">NSA vs SA<span class="term-abbr">Non-Standalone vs Standalone</span></div>
+            <div class="term-def"><strong>NSA (Option 3):</strong> 5G NR radio anchored to 4G LTE. Uses the existing 4G EPC core. Early 5G deployments in the UK are mostly NSA. Your phone shows "5G" but is still using the 4G control plane. <br><br><strong>SA (Option 2):</strong> Full 5G with the 5G Core (5GC). Network slicing, ultra-low latency, and true 5G features only available in SA mode.</div>
+          </div>
+          <div class="term-entry">
+            <div class="term-name">5GC<span class="term-abbr">5G Core</span></div>
+            <div class="term-def">Service-Based Architecture (SBA). Replaces the EPC's point-to-point interfaces with a microservices model. Key functions include AMF (Access and Mobility Management — replaces MME), UPF (User Plane Function — replaces S/P-GW), and SMF (Session Management Function). Enables network slicing — running multiple virtual networks on one physical infrastructure.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 3: FREQUENCY & CHANNELS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="frequency">
+    <div class="section-header">
+      <span class="section-icon">📻</span>
+      <div>
+        <div class="section-title">Frequency &amp; Channel Concepts</div>
+        <div class="section-subtitle">How spectrum is divided and assigned in cellular systems</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">FDD<span class="term-abbr">Frequency Division Duplex</span></div>
+        <div class="term-def">Uplink and downlink use <strong>different frequencies simultaneously</strong>. Requires a frequency "guard band" (duplex gap) between UL and DL. Most cellular spectrum is FDD — for example, LTE Band 20 uses 832–862 MHz for uplink and 791–821 MHz for downlink, with a 30 MHz separation. Your phone transmits and receives at the same time on different frequencies.
+          <span class="rf-note">📡 On your RSA5065N, FDD signals appear as two separate occupied spectrum blocks with a gap between them.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">TDD<span class="term-abbr">Time Division Duplex</span></div>
+        <div class="term-def">Uplink and downlink use the <strong>same frequency but at different times</strong>. No duplex gap needed — more efficient spectrum use. Common in unpaired spectrum allocations. LTE Band 38 (2600 MHz) and Band 40 (2300 MHz) are TDD. The UL/DL ratio can be dynamically adjusted. 5G NR uses TDD extensively, especially at higher frequencies.
+          <span class="rf-note">📡 TDD signals appear as a single occupied block that "bursts" — you'll see activity at a regular duty cycle corresponding to the frame structure.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">ARFCN<span class="term-abbr">Absolute Radio Frequency Channel Number</span></div>
+        <div class="term-def">A numerical index that unambiguously identifies a radio channel frequency in GSM. Instead of saying "935.2 MHz", GSM uses ARFCN numbers. ARFCN 1 = 935.2 MHz downlink / 890.2 MHz uplink (Band 900). Each ARFCN step = 200 kHz. Knowing an ARFCN lets you calculate the exact carrier frequency.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">EARFCN<span class="term-abbr">E-UTRA Absolute Radio Frequency Channel Number</span></div>
+        <div class="term-def">The LTE equivalent of ARFCN. A number that identifies the centre frequency of an LTE carrier. Each band has a range of valid EARFCNs. Formula: <strong>f = f_offset + 0.1 × (EARFCN − EARFCN_offset)</strong>. For example, EARFCN 6300 = 2655 MHz (Band 7 downlink).
+          <span class="practical-note">🔧 CellMapper and SDR tools like SDRangel display EARFCNs. Converting to MHz tells you the exact frequency to look for on your RSA5065N.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">NR-ARFCN<span class="term-abbr">5G NR Channel Number</span></div>
+        <div class="term-def">The 5G equivalent of EARFCN. Covers a much wider range than LTE to accommodate frequencies from 450 MHz to 52.6 GHz. Uses a finer 15 kHz global frequency raster for sub-6 GHz and coarser 60 kHz for mmWave.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Duplex Gap<span class="term-abbr">Guard Band between UL and DL (FDD)</span></div>
+        <div class="term-def">The unused spectrum between uplink and downlink in FDD systems. Required to prevent transmitter desensitisation — your phone's transmitter (uplink) must not bleed into its own receiver (downlink). The duplexer filter in the phone separates these. The gap size varies by band — Band 1 has a 190 MHz duplex gap, Band 20 has 41 MHz.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Carrier Aggregation<span class="term-abbr">CA · LTE-A feature</span></div>
+        <div class="term-def">Combining multiple LTE component carriers (CCs) to increase throughput. Can aggregate carriers in the same band (intra-band CA) or different bands (inter-band CA). Each CC can be up to 20 MHz. A "5CA" device can use up to 5 × 20 MHz = 100 MHz simultaneously. Shown as "4G+" or "LTE-A" on phones.
+          <span class="practical-note">🔧 With CellMapper, you can often see which bands a specific tower is broadcasting — this tells you which CA combinations are possible from that site.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Channel Bandwidth<span class="term-abbr">BW · Carrier bandwidth in MHz</span></div>
+        <div class="term-def">LTE supports: 1.4, 3, 5, 10, 15, and 20 MHz channel bandwidths. The bandwidth determines how many Resource Blocks (RBs) are available: 1.4 MHz = 6 RBs, 20 MHz = 100 RBs. Wider bandwidth = more capacity. Most UK LTE deployments use 10 or 20 MHz.
+          <span class="rf-note">📡 On your spectrum analyser, a 20 MHz LTE carrier looks like a flat-topped block approximately 18 MHz wide (with a small guard at each edge).</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">PCI<span class="term-abbr">Physical Cell Identity</span></div>
+        <div class="term-def">A number (0–503) that identifies a cell locally — not globally. Used by phones to distinguish between nearby cells on the same frequency. PCIs are reused across the network but must not repeat in adjacent cells (a "PCI collision"). Your phone synchronises to a cell using its PCI. Visible in engineering mode and on CellMapper.
+          <span class="practical-note">🔧 SDR tools that can decode LTE (like LTE-Cell-Scanner) will display the PCI. Combined with EARFCN, you can identify a specific cell.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 4: ACCESS METHODS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="access-methods">
+    <div class="section-header">
+      <span class="section-icon">🔀</span>
+      <div>
+        <div class="section-title">Multiple Access Methods</div>
+        <div class="section-subtitle">How multiple users share the same spectrum</div>
+      </div>
+    </div>
+
+    <div class="info-box accent">
+      <h4>The Core Problem</h4>
+      <p>Hundreds of phones need to share the same spectrum simultaneously without stepping on each other. Multiple access schemes divide the available radio resource across users — in time, frequency, code, or space.</p>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">TDMA<span class="term-abbr">Time Division Multiple Access · 2G GSM</span></div>
+        <div class="term-def">Divides a frequency channel into time slots. Each GSM carrier (200 kHz wide) is divided into 8 time slots (a TDMA frame of ~4.6 ms). Each user is assigned one or more slots. Analogy: 8 people taking turns speaking on a single walkie-talkie channel, so fast it sounds simultaneous.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">FDMA<span class="term-abbr">Frequency Division Multiple Access</span></div>
+        <div class="term-def">Divides the spectrum into separate frequency channels, each assigned to a user. Used in 1G analogue systems and as the outer layer in GSM (where TDMA sits within each 200 kHz FDMA channel). Also the basis of OFDMA — just with very many narrowly spaced subcarriers.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">CDMA<span class="term-abbr">Code Division Multiple Access · 3G UMTS</span></div>
+        <div class="term-def">All users share the same wideband frequency simultaneously, distinguished by unique spreading codes (Walsh codes). Each user's signal is spread across the full bandwidth — their signal appears as noise to others who don't have their code. The receiver uses the code to "de-spread" and extract the signal. Requires precise power control — all signals must arrive at the base station at equal power ("near-far problem").</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">OFDMA<span class="term-abbr">Orthogonal Frequency Division Multiple Access · LTE/5G downlink</span></div>
+        <div class="term-def">Divides the channel into hundreds of narrow, closely spaced subcarriers (15 kHz each in LTE). The subcarriers are orthogonal — they don't interfere even though they overlap. Different users are assigned different subcarriers within the same timeslot — flexible time-frequency resource allocation. Excellent resilience to multipath and frequency-selective fading. Used for <strong>downlink</strong> in LTE.
+          <span class="rf-note">📡 OFDM signals have a distinctive flat-topped, sharp-edged spectrum shape — very different from CDMA or TDMA signals.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">SC-FDMA<span class="term-abbr">Single Carrier FDMA · LTE uplink</span></div>
+        <div class="term-def">Used for the LTE <strong>uplink</strong> (phone to tower). Similar to OFDMA but with lower Peak-to-Average Power Ratio (PAPR) — important because phones have limited battery power and amplifier headroom. SC-FDMA maintains frequency-domain scheduling flexibility while being kinder to power amplifiers. Also called "DFT-spread OFDMA".</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 5: MODULATION
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="modulation">
+    <div class="section-header">
+      <span class="section-icon">〰️</span>
+      <div>
+        <div class="section-title">Modulation Schemes</div>
+        <div class="section-subtitle">How bits are encoded onto radio waves — higher order = more data, needs better signal</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">GMSK<span class="term-abbr">Gaussian Minimum Shift Keying · 2G GSM</span></div>
+        <div class="term-def">GSM's modulation scheme. A form of frequency shift keying with Gaussian filtering to smooth transitions. <strong>1 bit per symbol</strong>. Constant envelope (no amplitude variation) — great for power-efficient amplifiers. Very robust but low spectral efficiency. The "G" (Gaussian) refers to the pulse shaping filter that reduces bandwidth.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">QPSK<span class="term-abbr">Quadrature Phase Shift Keying</span></div>
+        <div class="term-def">4 phase states → <strong>2 bits per symbol</strong>. Used in LTE for control channels and in poor signal conditions. Robust — requires lower SNR than higher-order modulation. When your phone drops to QPSK, throughput falls but connection is maintained. Also used in 3G (WCDMA uses QPSK on downlink).</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">16QAM<span class="term-abbr">Quadrature Amplitude Modulation</span></div>
+        <div class="term-def">16 constellation points (4 amplitude × 4 phase) → <strong>4 bits per symbol</strong>. Used in LTE when signal conditions are moderate. Requires better SNR than QPSK. The phone and base station continuously negotiate which MCS (Modulation and Coding Scheme) to use based on channel quality.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">64QAM<span class="term-abbr">64-state QAM</span></div>
+        <div class="term-def">64 constellation points → <strong>6 bits per symbol</strong>. Used in LTE downlink when signal is strong. Requires significantly better SNR — constellation points are closer together. Peak LTE throughput figures (150 Mbps on 20 MHz) assume 64QAM with 2×2 MIMO.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">256QAM<span class="term-abbr">256-state QAM · LTE-A, 5G</span></div>
+        <div class="term-def">256 constellation points → <strong>8 bits per symbol</strong>. Requires excellent SNR — only used close to the base station. Introduced in LTE-Advanced Pro and standard in 5G. 33% more capacity than 64QAM. Requires high-quality amplifiers and filters to maintain linearity.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">MCS<span class="term-abbr">Modulation and Coding Scheme</span></div>
+        <div class="term-def">A combined indicator of modulation order and channel coding rate. The base station selects the MCS for each user based on the CQI (Channel Quality Indicator) reported by the phone. Higher MCS = higher throughput but needs better signal. LTE has 28 MCS indices (0–27). This is Adaptive Modulation and Coding (AMC) in action.</div>
+      </div>
+    </div>
+
+    <div class="info-box purple">
+      <h4>Adaptive Modulation in Practice</h4>
+      <p>As you move away from a tower, your phone's signal gets weaker. The network adapts the modulation scheme automatically: close to the tower → 256QAM; moderate distance → 64QAM or 16QAM; poor signal → QPSK. This is why throughput drops gradually as you move away, rather than the connection cutting off abruptly. Your RSA5065N can't decode the data, but you can observe the signal power — the modulation change happens transparently within the same occupied bandwidth.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 6: PHYSICAL LAYER (LTE)
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="physical-layer">
+    <div class="section-header">
+      <span class="section-icon">🧱</span>
+      <div>
+        <div class="section-title">LTE Physical Layer Structure</div>
+        <div class="section-subtitle">How LTE organises time and frequency into transmittable chunks</div>
+      </div>
+    </div>
+
+    <div class="info-box accent">
+      <h4>The LTE Time-Frequency Grid</h4>
+      <p>LTE organises its radio resource as a 2D grid: <strong>frequency</strong> on one axis (subcarriers, 15 kHz spacing) and <strong>time</strong> on the other (OFDM symbols, slots, subframes, frames). Resources are allocated to users in chunks called Resource Blocks.</p>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">Subcarrier<span class="term-abbr">15 kHz spacing in LTE</span></div>
+        <div class="term-def">The basic frequency unit in LTE OFDM. Each subcarrier is 15 kHz wide. A 20 MHz LTE channel contains 1200 data subcarriers (plus guard subcarriers). The subcarriers are mutually orthogonal — their peaks align with each other's nulls, preventing interference between adjacent subcarriers.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Resource Block<span class="term-abbr">RB · Scheduling unit</span></div>
+        <div class="term-def">The smallest unit the scheduler can allocate to a user: <strong>12 subcarriers × 1 slot (0.5 ms) = 84 resource elements</strong>. A 20 MHz LTE carrier has 100 RBs. The eNodeB scheduler assigns RBs to users every millisecond (1 TTI = 2 slots = 1 subframe). Think of RBs as the "pixels" of the LTE time-frequency grid.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">TTI<span class="term-abbr">Transmission Time Interval · 1 ms in LTE</span></div>
+        <div class="term-def">The scheduling interval — how often the base station makes new resource allocation decisions. In LTE: 1 TTI = 1 subframe = 2 slots = 1 ms. This is why LTE feels much more responsive than 3G (where the TTI was 10 ms). 5G NR has configurable TTI depending on numerology.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Frame Structure<span class="term-abbr">10 ms frame · 1 ms subframe · 0.5 ms slot</span></div>
+        <div class="term-def">LTE radio time hierarchy:<br>
+          1 frame = 10 ms<br>
+          1 frame = 10 subframes<br>
+          1 subframe = 2 slots = 1 TTI = 1 ms<br>
+          1 slot = 0.5 ms = 7 OFDM symbols (normal CP)<br>
+          So 1 frame contains 140 OFDM symbols.
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">CP<span class="term-abbr">Cyclic Prefix</span></div>
+        <div class="term-def">A guard interval prepended to each OFDM symbol — a copy of the end of the symbol placed at its beginning. Absorbs multipath reflections (inter-symbol interference). Normal CP = 4.7 µs (handles reflections up to ~1.4 km path difference). Extended CP = 16.7 µs (for very large cells or high multipath environments).</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">CQI<span class="term-abbr">Channel Quality Indicator</span></div>
+        <div class="term-def">A number (0–15) reported by the phone to the base station, indicating how good the received signal quality is. Higher CQI = better signal → higher MCS selected. CQI 0 means "out of range". CQI 15 means excellent conditions → 64QAM or 256QAM. The base station uses CQI reports to adapt scheduling and modulation.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">HARQ<span class="term-abbr">Hybrid Automatic Repeat Request</span></div>
+        <div class="term-def">LTE's retransmission mechanism. If a packet is received with errors, the receiver requests a retransmission but cleverly combines the error-containing received packet with the retransmission — increasing the chance of successful decoding. "Hybrid" because it combines FEC (Forward Error Correction) with ARQ retransmission. HARQ operates at the physical layer with very low latency (~8 ms round trip).</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Numerology<span class="term-abbr">µ · 5G NR concept</span></div>
+        <div class="term-def">5G NR introduced flexible subcarrier spacings to handle different frequency ranges and use cases: µ=0 (15 kHz, same as LTE), µ=1 (30 kHz), µ=2 (60 kHz), µ=3 (120 kHz, mmWave), µ=4 (240 kHz, reference only). Higher numerology = shorter symbols = better for higher frequencies and low-latency applications, but more overhead.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 7: SIGNAL MEASUREMENTS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="signal-measurements">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <div>
+        <div class="section-title">Signal Measurements &amp; Quality Metrics</div>
+        <div class="section-subtitle">What the numbers mean — and what counts as good, bad, or ugly</div>
+      </div>
+    </div>
+
+    <div class="info-box orange">
+      <h4>Important: RSSI ≠ RSRP ≠ Signal Quality</h4>
+      <p>A common mistake is treating RSSI as "the signal". In LTE, RSRP is the key metric — it measures only the reference signals, not total received power (which includes interference). RSRQ and SINR tell you about quality. You need to understand all three to properly diagnose a connection.</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="sig-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Full Name</th>
+            <th>System</th>
+            <th>Range</th>
+            <th>Excellent</th>
+            <th>Good</th>
+            <th>Fair</th>
+            <th>Poor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-name">RSSI</td>
+            <td>Received Signal Strength Indicator</td>
+            <td>All</td>
+            <td class="sig-range">−110 to −40 dBm</td>
+            <td class="quality-excellent">−65 dBm</td>
+            <td class="quality-good">−75 dBm</td>
+            <td class="quality-fair">−85 dBm</td>
+            <td class="quality-poor">−95 dBm</td>
+          </tr>
+          <tr>
+            <td class="sig-name">RSRP</td>
+            <td>Reference Signal Received Power</td>
+            <td>LTE / 5G</td>
+            <td class="sig-range">−140 to −44 dBm</td>
+            <td class="quality-excellent">≥ −80 dBm</td>
+            <td class="quality-good">−80 to −90</td>
+            <td class="quality-fair">−90 to −100</td>
+            <td class="quality-poor">−100 to −110</td>
+          </tr>
+          <tr>
+            <td class="sig-name">RSRQ</td>
+            <td>Reference Signal Received Quality</td>
+            <td>LTE / 5G</td>
+            <td class="sig-range">−19.5 to −3 dB</td>
+            <td class="quality-excellent">≥ −10 dB</td>
+            <td class="quality-good">−10 to −15</td>
+            <td class="quality-fair">−15 to −17</td>
+            <td class="quality-poor">≤ −17 dB</td>
+          </tr>
+          <tr>
+            <td class="sig-name">SINR</td>
+            <td>Signal to Interference plus Noise Ratio</td>
+            <td>LTE / 5G</td>
+            <td class="sig-range">−20 to +30 dB</td>
+            <td class="quality-excellent">≥ +20 dB</td>
+            <td class="quality-good">+13 to +20</td>
+            <td class="quality-fair">0 to +13</td>
+            <td class="quality-poor">≤ 0 dB</td>
+          </tr>
+          <tr>
+            <td class="sig-name">RSCP</td>
+            <td>Received Signal Code Power</td>
+            <td>3G UMTS</td>
+            <td class="sig-range">−120 to −25 dBm</td>
+            <td class="quality-excellent">≥ −75 dBm</td>
+            <td class="quality-good">−75 to −85</td>
+            <td class="quality-fair">−85 to −95</td>
+            <td class="quality-poor">≤ −95 dBm</td>
+          </tr>
+          <tr>
+            <td class="sig-name">Ec/No</td>
+            <td>Energy per Chip / Noise Density</td>
+            <td>3G UMTS</td>
+            <td class="sig-range">−24 to 0 dB</td>
+            <td class="quality-excellent">≥ −6 dB</td>
+            <td class="quality-good">−6 to −10</td>
+            <td class="quality-fair">−10 to −15</td>
+            <td class="quality-poor">≤ −15 dB</td>
+          </tr>
+          <tr>
+            <td class="sig-name">RxLev</td>
+            <td>Receive Level</td>
+            <td>2G GSM</td>
+            <td class="sig-range">0 to 63 (units)</td>
+            <td class="quality-excellent">≥ 40</td>
+            <td class="quality-good">30 to 40</td>
+            <td class="quality-fair">20 to 30</td>
+            <td class="quality-poor">≤ 20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box green" style="margin-top: 1.25rem;">
+      <h4>RSRP vs RSSI Explained</h4>
+      <p><strong>RSSI</strong> is the total power received across the entire channel bandwidth — including signal, interference, and noise. <strong>RSRP</strong> measures only the power of the LTE reference signals (specific known pilot subcarriers). Because RSRP ignores interference, two cells with identical RSSI can have very different RSRP — the one with more interference has lower RSRP. RSRP is always lower than RSSI by approximately: <strong>RSRP ≈ RSSI − 10×log₁₀(12 × N_RB)</strong> for N_RB resource blocks.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 8: NETWORK IDENTIFIERS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="identifiers">
+    <div class="section-header">
+      <span class="section-icon">🔖</span>
+      <div>
+        <div class="section-title">Network Identifiers</div>
+        <div class="section-subtitle">The numbering systems that uniquely identify networks, cells, and subscribers</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">PLMN<span class="term-abbr">Public Land Mobile Network</span></div>
+        <div class="term-def">The unique identifier for a mobile operator's network, formed by combining MCC + MNC. For example, EE in the UK = <strong>234-30</strong>. Your phone's SIM contains the home PLMN — when the phone searches for networks, it looks for matching PLMNs first (home network), then roaming partners.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">MCC<span class="term-abbr">Mobile Country Code</span></div>
+        <div class="term-def">3-digit country identifier. UK = <strong>234</strong> (and 235 for some operators). Used in conjunction with MNC to form the PLMN. US = 310–316, Germany = 262, France = 208.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">MNC<span class="term-abbr">Mobile Network Code</span></div>
+        <div class="term-def">2 or 3-digit operator identifier within a country. Combined with MCC to uniquely identify a network. See the UK Operators table below for UK MNCs.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">IMSI<span class="term-abbr">International Mobile Subscriber Identity</span></div>
+        <div class="term-def">The globally unique identifier stored on your SIM card. Format: MCC + MNC + MSIN (Mobile Subscriber Identification Number). 15 digits maximum. Never transmitted in plain text after initial registration — the TMSI (Temporary Mobile Subscriber Identity) is used instead to protect privacy. The IMSI is what cellular intercept systems attempt to capture (IMSI catchers / Stingrays).</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">IMEI<span class="term-abbr">International Mobile Equipment Identity</span></div>
+        <div class="term-def">The unique identifier for the physical handset (not the SIM). 15 digits. Format: TAC (Type Allocation Code, 8 digits) + Serial Number (6 digits) + check digit. Used by operators to block stolen phones (CEIR/EIR — Equipment Identity Register). Unlike the IMSI, the IMEI is tied to the hardware, not the subscriber.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Cell ID<span class="term-abbr">CGI · Cell Global Identity</span></div>
+        <div class="term-def">The globally unique identifier for a cell: MCC + MNC + LAC + Cell ID. In LTE, often expressed as eNB ID + Cell Index. CellMapper stores cells by this identifier. Used to map coverage and locate towers.
+          <span class="practical-note">🔧 In LTE: Cell ID = eNB ID × 256 + sector number (0, 1, or 2 for 3-sector sites).</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">TAC<span class="term-abbr">Tracking Area Code · LTE equivalent of LAC</span></div>
+        <div class="term-def">Groups a set of cells into a Tracking Area. When your phone is idle, the network only knows which Tracking Area it's in — not which specific cell. When a call arrives, the network pages all cells in the TA simultaneously. When you move to a new TA, your phone sends a Tracking Area Update (TAU) to the MME.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">LAC<span class="term-abbr">Location Area Code · 2G/3G equivalent of TAC</span></div>
+        <div class="term-def">The 2G/3G equivalent of Tracking Area Code. Groups cells for paging purposes. Location Area Updates (LAU) are sent when moving between LAs. Visible in CellMapper alongside Cell IDs for 2G/3G cells.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">PCI<span class="term-abbr">Physical Cell Identity · LTE radio-layer ID</span></div>
+        <div class="term-def">Range 0–503. Determines the primary synchronisation signal (PSS) and secondary synchronisation signal (SSS) sequences that identify the cell at the radio layer. Phones use PSS/SSS to synchronise with and identify cells. PCIs are planned carefully to avoid confusion between neighbouring cells.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 9: UK FREQUENCY BANDS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="uk-bands">
+    <div class="section-header">
+      <span class="section-icon">🇬🇧</span>
+      <div>
+        <div class="section-title">UK LTE Frequency Bands</div>
+        <div class="section-subtitle">The bands you'll encounter on UK towers — useful for antenna selection and spectrum analysis</div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="bands-table">
+        <thead>
+          <tr>
+            <th>Band</th>
+            <th>Name</th>
+            <th>UL (MHz)</th>
+            <th>DL (MHz)</th>
+            <th>Duplex</th>
+            <th>UK Operators</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="band-num">B1</td>
+            <td class="band-name">2100 IMT</td>
+            <td>1920–1980</td>
+            <td>2110–2170</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>Primary 3G band, now used for LTE too. Good capacity indoors.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B3</td>
+            <td class="band-name">1800 DCS</td>
+            <td>1710–1785</td>
+            <td>1805–1880</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>Most widely deployed LTE band in UK. Very common on CellMapper. Good urban coverage.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B7</td>
+            <td class="band-name">2600 IMT-E</td>
+            <td>2500–2570</td>
+            <td>2620–2690</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>High capacity urban band. Short range — dense cell deployment needed.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B8</td>
+            <td class="band-name">900 GSM-E</td>
+            <td>880–915</td>
+            <td>925–960</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span></td>
+            <td>Originally 2G 900 MHz. Refurmed for LTE. Excellent rural coverage. Not used by EE/Three for LTE.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B20</td>
+            <td class="band-name">800 Digital Dividend</td>
+            <td>832–862</td>
+            <td>791–821</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>Released when analogue TV switched off. Superb propagation — key rural coverage band. Excellent building penetration.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B28</td>
+            <td class="band-name">700 APT</td>
+            <td>703–748</td>
+            <td>758–803</td>
+            <td>FDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>700 MHz "Shared Rural Network" spectrum. Even better coverage than B20 — used for hard-to-reach rural areas. Recent deployment.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B32</td>
+            <td class="band-name">1500 L-band (SDL)</td>
+            <td>—</td>
+            <td>1452–1496</td>
+            <td>FDD SDL</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span></td>
+            <td>Supplemental Downlink only — no uplink. Used alongside CA to boost download capacity.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B38</td>
+            <td class="band-name">2600 TDD</td>
+            <td colspan="2">2570–2620 (shared)</td>
+            <td>TDD</td>
+            <td><span class="op-pill op-three">Three</span><span class="op-pill op-ee">EE</span></td>
+            <td>TDD band — same frequency for UL and DL. High capacity urban. Three UK's primary LTE-TDD deployment.</td>
+          </tr>
+          <tr>
+            <td class="band-num">B40</td>
+            <td class="band-name">2300 TDD</td>
+            <td colspan="2">2300–2400 (shared)</td>
+            <td>TDD</td>
+            <td><span class="op-pill op-three">Three</span></td>
+            <td>TDD. Used by Three for indoor/hotspot coverage. Less common on outdoor sites.</td>
+          </tr>
+          <tr>
+            <td class="band-num">n77/n78</td>
+            <td class="band-name">3.5 GHz (5G)</td>
+            <td colspan="2">3300–3800 (TDD)</td>
+            <td>TDD</td>
+            <td><span class="op-pill op-ee">EE</span><span class="op-pill op-voda">Voda</span><span class="op-pill op-o2">O2</span><span class="op-pill op-three">Three</span></td>
+            <td>Primary 5G NR band in UK. 3.4–3.6 GHz subrange most common. Wider channels (80–100 MHz) for high throughput.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box accent" style="margin-top: 1.25rem;">
+      <h4>For Antenna Selection</h4>
+      <ul>
+        <li>A wideband LTE antenna covering <strong>700–2700 MHz</strong> will cover Bands 20, 8, 3, 1, 7, and 38 in one element</li>
+        <li>Band 20 (800 MHz) and Band 28 (700 MHz) are the key rural coverage bands — prioritise these if you're outside urban areas</li>
+        <li>Band 3 (1800 MHz) is ubiquitous — all 4 UK operators use it heavily for LTE</li>
+        <li>Your Diamond D130N discone covers 25 MHz–1.3 GHz continuously — it will receive Bands 20, 8, and 28 but not Bands 3, 7, or B1</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 10: UK OPERATORS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="uk-operators">
+    <div class="section-header">
+      <span class="section-icon">🏢</span>
+      <div>
+        <div class="section-title">UK Operators &amp; PLMN Codes</div>
+        <div class="section-subtitle">MCC/MNC identifiers for UK networks — useful when reading CellMapper data</div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="plmn-table">
+        <thead>
+          <tr>
+            <th>Operator</th>
+            <th>Brand / Note</th>
+            <th>MCC</th>
+            <th>MNC</th>
+            <th>PLMN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="op-pill op-ee" style="font-size:0.78rem;padding:0.15rem 0.6rem;">EE</span></td>
+            <td>EE (formerly T-Mobile / Orange merger)</td>
+            <td>234</td>
+            <td>30</td>
+            <td style="color:var(--accent-h);font-weight:700;">234-30</td>
+          </tr>
+          <tr>
+            <td><span class="op-pill op-ee" style="font-size:0.78rem;padding:0.15rem 0.6rem;">EE</span></td>
+            <td>EE (legacy T-Mobile PLMN)</td>
+            <td>234</td>
+            <td>20</td>
+            <td>234-20</td>
+          </tr>
+          <tr>
+            <td><span class="op-pill op-voda" style="font-size:0.78rem;padding:0.15rem 0.6rem;">Vodafone</span></td>
+            <td>Vodafone UK</td>
+            <td>234</td>
+            <td>15</td>
+            <td style="color:var(--accent-h);font-weight:700;">234-15</td>
+          </tr>
+          <tr>
+            <td><span class="op-pill op-o2" style="font-size:0.78rem;padding:0.15rem 0.6rem;">O2</span></td>
+            <td>O2 UK (Telefónica)</td>
+            <td>234</td>
+            <td>10</td>
+            <td style="color:var(--accent-h);font-weight:700;">234-10</td>
+          </tr>
+          <tr>
+            <td><span class="op-pill op-o2" style="font-size:0.78rem;padding:0.15rem 0.6rem;">O2</span></td>
+            <td>O2 UK (legacy BT Cellnet)</td>
+            <td>234</td>
+            <td>11</td>
+            <td>234-11</td>
+          </tr>
+          <tr>
+            <td><span class="op-pill op-three" style="font-size:0.78rem;padding:0.15rem 0.6rem;">Three</span></td>
+            <td>Three UK (Hutchison 3G)</td>
+            <td>234</td>
+            <td>20</td>
+            <td style="color:var(--accent-h);font-weight:700;">234-20</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text-secondary);">Virgin Mobile</td>
+            <td>MVNO on EE network</td>
+            <td>234</td>
+            <td>32</td>
+            <td>234-32</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text-secondary);">Sky Mobile</td>
+            <td>MVNO on O2 network</td>
+            <td>234</td>
+            <td>10</td>
+            <td>234-10</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text-secondary);">Giffgaff</td>
+            <td>MVNO on O2 network</td>
+            <td>234</td>
+            <td>10</td>
+            <td>234-10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box accent" style="margin-top:1rem;">
+      <h4>MVNO Note</h4>
+      <p>MVNOs (Mobile Virtual Network Operators — giffgaff, Sky Mobile, Tesco Mobile, etc.) do not own spectrum. They use the infrastructure of a host MNO. On the radio layer, their signals are indistinguishable from the host network. CellMapper and RF tools will only see the host MNO's cells.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 11: ANTENNAS & MIMO
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="antenna-mimo">
+    <div class="section-header">
+      <span class="section-icon">📡</span>
+      <div>
+        <div class="section-title">Antennas &amp; MIMO in Cellular</div>
+        <div class="section-subtitle">How cellular systems use multiple antennas to multiply capacity and reliability</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">MIMO<span class="term-abbr">Multiple Input Multiple Output</span></div>
+        <div class="term-def">Using multiple antennas at both the transmitter and receiver simultaneously. Denoted as M×N (e.g., 2×2, 4×4). "Input" = transmitter antennas, "Output" = receiver antennas. MIMO can be used for two purposes: <strong>Spatial Multiplexing</strong> (send multiple data streams simultaneously, multiplying throughput) or <strong>Diversity</strong> (send the same data multiple ways, improving reliability). LTE base stations are typically 2T2R or 4T4R; 5G Massive MIMO uses 64T64R or more.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Spatial Multiplexing<span class="term-abbr">The "multiply throughput" MIMO mode</span></div>
+        <div class="term-def">Sending independent data streams on each antenna, relying on multipath propagation to separate them at the receiver. Each stream is called a "layer". 2-layer (rank 2) transmission doubles peak throughput versus a single antenna. Requires sufficient spatial separation between antennas and rich multipath — works better indoors and in urban environments than open fields with clear LOS.
+          <span class="rf-note">📡 The "rank" of the MIMO transmission (number of parallel streams) is indicated by the RI (Rank Indicator) reported by the phone.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Transmit Diversity<span class="term-abbr">The "improve reliability" MIMO mode</span></div>
+        <div class="term-def">Sending the same data from multiple antennas with different processing (SFBC — Space Frequency Block Coding). The receiver combines the copies coherently, gaining diversity against fading. Used for control channels (which must be reliable) and in poor channel conditions where spatial multiplexing is not beneficial.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Cross-Polarisation<span class="term-abbr">±45° dual-polarised antenna elements</span></div>
+        <div class="term-def">Modern cellular antennas use two polarisations — typically +45° and −45° from vertical. This gives two orthogonal signal paths within the same physical antenna. The two paths are sufficiently decorrelated to support 2×2 MIMO from a single physical antenna panel. This is why modern LTE antennas look like a single slim panel but support MIMO.
+          <span class="practical-note">🔧 When you see a modern "blade" antenna on a tower, it almost certainly contains cross-polarised elements supporting at minimum 2T2R MIMO.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Beamforming<span class="term-abbr">Steering signals toward specific users</span></div>
+        <div class="term-def">Using an array of antenna elements with controlled phase and amplitude to focus radiated energy toward a specific user. Increases signal strength at the target without increasing total transmit power — effectively increasing SINR. Used extensively in 5G Massive MIMO. Analogue beamforming (one beam), Digital beamforming (many simultaneous beams).</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Massive MIMO<span class="term-abbr">mMIMO · 5G hallmark technology</span></div>
+        <div class="term-def">Base station antenna arrays with many elements — typically 64T64R or 128T128R. Enables simultaneous beams to dozens of users (MU-MIMO — Multi-User MIMO). The many antennas create very narrow, precise beams. Standard in 5G NR deployments — those rectangular panels you see on new 5G masts with many small elements are Massive MIMO arrays.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Sectorisation<span class="term-abbr">Dividing a cell site into directional sectors</span></div>
+        <div class="term-def">Most tower sites use 3-sector layouts — three panel antennas each covering approximately 120° horizontally. This triples the capacity of an omnidirectional site. Urban areas may use 6 sectors. Rural sites sometimes use 2 sectors or omni. Each sector is a separate "cell" with its own Cell ID, PCI, and frequency allocation.
+          <span class="practical-note">🔧 On CellMapper, a 3-sector site appears as 3 separate cell records (Cell IDs differing by 1 or 2 within the same eNodeB ID).</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Electrical Tilt<span class="term-abbr">Remote electrical tilt — adjusting coverage without climbing</span></div>
+        <div class="term-def">Adjusting the downtilt of the antenna beam by shifting the phase relationships between antenna elements — electronically, without physically tilting the antenna. Allows operators to fine-tune coverage from the ground (or remotely). More downtilt = smaller coverage radius but better signal within it. RET (Remote Electrical Tilt) motorised actuators allow adjustment via O&amp;M systems.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 12: COVERAGE CONCEPTS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="coverage-concepts">
+    <div class="section-header">
+      <span class="section-icon">🗺️</span>
+      <div>
+        <div class="section-title">Coverage &amp; Propagation Concepts</div>
+        <div class="section-subtitle">How signals travel, fade, and how networks plan for it</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">Path Loss<span class="term-abbr">Signal attenuation with distance</span></div>
+        <div class="term-def">The reduction in signal power as it travels through space. In free space: <strong>PL = 20×log₁₀(d) + 20×log₁₀(f) + 32.4 dB</strong> (d in km, f in MHz). Doubling distance adds ~6 dB of path loss. Higher frequencies lose power faster with distance — which is why 700 MHz covers more ground than 2600 MHz. Real-world path loss is much higher than free space due to terrain, buildings, and vegetation.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Link Budget<span class="term-abbr">The accounting of gains and losses in a radio link</span></div>
+        <div class="term-def">A calculation that determines the maximum allowable path loss (MAPL) for a link: <strong>MAPL = Tx Power + Tx Gain − Tx Losses + Rx Gain − Rx Sensitivity − Fade Margin</strong>. If MAPL exceeds the actual path loss, the link works. Link budgets determine cell range during network planning.
+          <span class="rf-note">📡 The S11 measurements you take with your Rigol VNA feed directly into link budget calculations — antenna gain and return loss (mismatch loss) are factors in the link budget.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Handover<span class="term-abbr">HO · Switching between cells mid-connection</span></div>
+        <div class="term-def">Moving an active connection from one cell to another as the user moves. LTE uses <strong>hard handover</strong> (X2 or S1 interface) — the connection switches cleanly. 3G WCDMA used <strong>soft handover</strong> — the phone was simultaneously connected to multiple cells, and the best received frame was selected. LTE cannot do soft handover due to OFDMA's orthogonality requirements.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">NLOS<span class="term-abbr">Non-Line of Sight</span></div>
+        <div class="term-def">Communication where there is no direct unobstructed path between antennas. Buildings, terrain, and vegetation cause diffraction, reflection, and attenuation. LTE (and all cellular systems) must work in NLOS — the network is planned assuming NLOS conditions. Higher frequencies (5G mmWave) struggle significantly with NLOS.
+          <span class="practical-note">🔧 Your omnidirectional discone antenna test showed this — building penetration loss and multipath reflections are NLOS phenomena.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Fading<span class="term-abbr">Short-term signal variation due to multipath</span></div>
+        <div class="term-def"><strong>Fast fading (Rayleigh):</strong> Rapid signal fluctuations as multipath reflections add constructively and destructively. Changes over fractions of a wavelength of movement. LTE combats this with OFDM's flat frequency response per subcarrier and HARQ retransmission.<br><br><strong>Slow fading (shadowing):</strong> Large-scale variation as you pass behind buildings or hills. Log-normal distribution. Planned for using the fade margin in the link budget.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Paging<span class="term-abbr">Network calling an idle phone</span></div>
+        <div class="term-def">When a call or data arrives for an idle phone, the network doesn't know exactly which cell it's in — only its Tracking Area (LTE) or Location Area (2G/3G). The network sends a paging message to all cells in that TA/LA simultaneously. The phone wakes up from idle, reads the paging channel, and if it sees its own TMSI, responds to initiate the connection.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">Cell Breathing<span class="term-abbr">3G CDMA phenomenon — cell size changes with load</span></div>
+        <div class="term-def">Unique to CDMA/WCDMA: as more users are added to a cell, the interference level rises, reducing the effective coverage radius — the cell "shrinks". A heavily loaded 3G cell may only cover half the area of a lightly loaded one. LTE (OFDMA) does not have this problem — cell size is independent of load.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">ISD<span class="term-abbr">Inter-Site Distance · Planning parameter</span></div>
+        <div class="term-def">The distance between adjacent cell sites in a network. Determined by coverage and capacity requirements. Urban LTE: 200–500 m ISD. Suburban: 500 m–2 km. Rural: 2–15 km. 5G mmWave requires very small ISD (50–200 m) due to short range. ISD determines how many sites are needed to cover an area.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SECTION 13: SDR & PRACTICAL TOOLS
+  ═══════════════════════════════════════ -->
+  <section class="content-section" id="sdr-tools">
+    <div class="section-header">
+      <span class="section-icon">🛠️</span>
+      <div>
+        <div class="section-title">SDR &amp; Practical Tools</div>
+        <div class="section-subtitle">Terminology relevant to observing cellular signals with software-defined radio and network analysis tools</div>
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-entry">
+        <div class="term-name">PSS / SSS<span class="term-abbr">Primary &amp; Secondary Synchronisation Signals</span></div>
+        <div class="term-def">LTE broadcast signals used for cell search. The <strong>PSS</strong> provides timing synchronisation within the frame and carries part of the PCI (0, 1, or 2). The <strong>SSS</strong> provides frame timing and the remainder of the PCI (0–167). Together they give the full PCI (0–503). SDR LTE decoders (LTE-Cell-Scanner, FALCON) use PSS/SSS to detect and identify cells without decoding data.
+          <span class="practical-note">🔧 On a spectrum analyser, you can't directly see PSS/SSS — they're embedded within the LTE signal. But SDR software like LTE-Cell-Scanner can extract them from IQ data captured with your HackRF.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">CRS<span class="term-abbr">Cell-specific Reference Signal</span></div>
+        <div class="term-def">Known pilot signals transmitted by the eNodeB on fixed resource elements throughout the LTE frame. Used by phones to estimate channel quality and perform coherent demodulation. Also what RSRP measures. CRS patterns are determined by PCI — different cells use different CRS locations to avoid interference. CRS overhead is 4–14% of total capacity.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">MIB / SIB<span class="term-abbr">Master Information Block / System Information Blocks</span></div>
+        <div class="term-def"><strong>MIB</strong>: Broadcast on the PBCH (Physical Broadcast Channel). Contains essential parameters: bandwidth, frame number, PHICH configuration. Transmitted every 40 ms. The first thing a phone reads after synchronisation.<br><br><strong>SIBs</strong>: System Information Blocks carry additional network parameters (neighbour cell lists, access restrictions, paging configuration). SIB1 contains PLMN and TAC identifiers — from here you can identify the operator and tracking area without having a SIM.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">PBCH<span class="term-abbr">Physical Broadcast Channel</span></div>
+        <div class="term-def">Carries the MIB. Transmitted in the centre 6 RBs of the carrier (72 subcarriers) on a specific set of OFDM symbols. This "centre 6 RB" structure means you can detect and partially decode an LTE carrier without knowing its exact bandwidth — useful for scanning unknown cells.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">CellMapper<span class="term-abbr">Crowdsourced cell tower database</span></div>
+        <div class="term-def">A community-built database of cell tower locations contributed by users running the CellMapper app. Records: operator (PLMN), RAT (LTE/5G/3G), band, Cell ID, eNB ID, PCI, EARFCN, and GPS location. Invaluable for: locating nearby towers, identifying which operator/band is on a specific mast, planning antenna direction, and understanding local network topology.
+          <span class="practical-note">🔧 When troubleshooting your LTE antenna, CellMapper tells you which towers are nearby, their bands, and their direction — so you can point a directional antenna correctly.</span>
+        </div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">LTE-Cell-Scanner<span class="term-abbr">SDR tool for passive LTE cell detection</span></div>
+        <div class="term-def">Open-source software that uses an SDR receiver (RTL-SDR, HackRF, USRP) to passively scan for LTE cells. Detects PSS/SSS to find PCIs and EARFCNs, decodes the MIB to read bandwidth and frame number, and decodes SIB1 to extract PLMN and TAC. Fully passive — receive only, no SIM required, legal to use.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">PRACH<span class="term-abbr">Physical Random Access Channel</span></div>
+        <div class="term-def">The channel a phone uses to initially access the network (Random Access Procedure). Uses Zadoff-Chu sequences (preambles) — 64 possible preambles, one selected randomly by the phone. Transmitted in specific time-frequency resources defined in SIB2. The base station responds with a Random Access Response, after which normal scheduled access begins.</div>
+      </div>
+      <div class="term-entry">
+        <div class="term-name">IQ Data<span class="term-abbr">In-phase and Quadrature baseband samples</span></div>
+        <div class="term-def">The raw complex samples captured by an SDR receiver. I (in-phase) and Q (quadrature) are two orthogonal components that together represent the full amplitude and phase of a signal. Your HackRF captures IQ data. Software then processes this to demodulate signals, measure RSRP, detect cells, etc. Most SDR file formats (*.cf32, *.sc16) store IQ samples.
+          <span class="rf-note">📡 Your RSA5065N also works with IQ data internally — it's what the spectrum analyser processes to produce the spectrum display you see.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box green" style="margin-top: 1.25rem;">
+      <h4>Passive vs Active SDR on Cellular</h4>
+      <p>All of the SDR techniques described here are <strong>receive-only (passive)</strong> — legal to use without any licence. You are not transmitting, not connecting to the network, and not decoding any user content (the data channels are encrypted). Reading broadcast channels (PBCH, SIB) is equivalent to reading publicly broadcast information. However, actively transmitting on cellular frequencies without appropriate authorisation is illegal — your Foundation licence will not cover this.</p>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       QUICK REFERENCE CARD
+  ═══════════════════════════════════════ -->
+  <section class="content-section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <div>
+        <div class="section-title">Quick Reference Card</div>
+        <div class="section-subtitle">The numbers you'll reach for most often</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="info-box accent">
+        <h4>LTE Frame Quick Numbers</h4>
+        <ul>
+          <li>Frame = 10 ms</li>
+          <li>Subframe (TTI) = 1 ms</li>
+          <li>Slot = 0.5 ms</li>
+          <li>Subcarrier spacing = 15 kHz</li>
+          <li>Resource Block = 12 SC × 1 slot</li>
+          <li>20 MHz channel = 100 RBs</li>
+          <li>Normal CP = 4.7 µs</li>
+        </ul>
+      </div>
+      <div class="info-box green">
+        <h4>RSRP at a Glance</h4>
+        <ul>
+          <li>≥ −80 dBm → Excellent</li>
+          <li>−80 to −90 → Good</li>
+          <li>−90 to −100 → Fair</li>
+          <li>−100 to −110 → Poor</li>
+          <li>≤ −110 dBm → Very poor / edge</li>
+          <li>RSRP ≈ RSSI − 10·log₁₀(12·N_RB)</li>
+        </ul>
+      </div>
+      <div class="info-box orange">
+        <h4>UK MCC = 234</h4>
+        <ul>
+          <li>EE: 234-30</li>
+          <li>Vodafone: 234-15</li>
+          <li>O2: 234-10</li>
+          <li>Three: 234-20</li>
+        </ul>
+      </div>
+      <div class="info-box purple">
+        <h4>LTE Cell ID Formula</h4>
+        <ul>
+          <li>Cell ID = eNB ID × 256 + Cell Index</li>
+          <li>3-sector: Cell Index = 0, 1, 2</li>
+          <li>PCI range: 0–503</li>
+          <li>EARFCN → frequency: use online converter</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.gsm-main -->
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

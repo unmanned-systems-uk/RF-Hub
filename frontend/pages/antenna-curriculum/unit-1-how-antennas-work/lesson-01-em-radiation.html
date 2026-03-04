@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: What is Electromagnetic Radiation? — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 1 · Lesson 1</div>
+    <h1>What is Electromagnetic Radiation?</h1>
+    <p class="hero-subtitle">The wave phenomenon behind every radio signal — from fundamentals to the λ = c/f relationship</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
+    <span class="article-meta-item">Prerequisites: None</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 25 min</span>
+    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Explain that electromagnetic waves are coupled electric and magnetic fields propagating through space</li>
+      <li>Use the relationship λ = c / f to convert between frequency and wavelength</li>
+      <li>Identify where radio waves sit on the electromagnetic spectrum</li>
+      <li>Calculate the wavelength of common radio frequencies</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: What Are EM Waves ─── -->
+  <div class="chapter" id="em-waves">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>What Are Electromagnetic Waves?</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> Everything in radio — every antenna, every signal, every transmission — comes down to one phenomenon: electromagnetic radiation. Before we can understand how antennas work, we need to understand what they're actually creating and capturing.
+      </div>
+    </div>
+
+    <p>Imagine dropping a stone into a still pond. Ripples spread outward from the impact point — energy travelling through the water. Electromagnetic (EM) waves work similarly, except they don't need water or any medium at all. They travel perfectly well through the vacuum of space.</p>
+
+    <p>An EM wave is made of two things oscillating together:</p>
+
+    <ul>
+      <li><strong>An electric field (E)</strong> — the same kind of field that makes a balloon stick to your jumper after rubbing it</li>
+      <li><strong>A magnetic field (H)</strong> — the same kind of field that makes a compass needle point north</li>
+    </ul>
+
+    <p>These two fields are locked at right angles to each other, and both are at right angles to the direction the wave travels. They feed each other: a changing electric field creates a magnetic field, and a changing magnetic field creates an electric field. Once started, this self-sustaining cycle carries energy forward at the speed of light.</p>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>Key point:</strong> EM waves don't need a medium. Radio signals from distant spacecraft travel through the vacuum of space to reach us. This is fundamentally different from sound, which needs air (or another material) to travel through.
+      </div>
+    </div>
+
+    <h3>The Three Directions</h3>
+    <p>For a wave travelling toward you:</p>
+    <ul>
+      <li>The <strong>electric field</strong> oscillates up and down (or side to side)</li>
+      <li>The <strong>magnetic field</strong> oscillates side to side (or up and down) — always perpendicular to the electric field</li>
+      <li>The <strong>wave itself</strong> moves forward — perpendicular to both fields</li>
+    </ul>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive:</strong>
+        <a href="../../../resources/em-radiation.html">EM Radiation Visualiser</a> ·
+        <a href="../../../resources/em-animato-2.html">EM Wave Animation</a><br>
+        Observe: the E-field (typically shown in red/blue) and H-field (typically green) oscillate in sync but in perpendicular planes.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 03: The EM Spectrum ─── -->
+  <div class="chapter" id="spectrum">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Electromagnetic Spectrum</h2>
+
+    <p>EM waves come in an enormous range of frequencies. The only difference between radio waves, visible light, and X-rays is their frequency (and therefore wavelength). They're all the same fundamental phenomenon.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Region</th>
+            <th>Frequency Range</th>
+            <th>Wavelength Range</th>
+            <th>What Uses It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ELF/VLF</td>
+            <td>3 Hz – 30 kHz</td>
+            <td>100,000 km – 10 km</td>
+            <td>Submarine comms</td>
+          </tr>
+          <tr>
+            <td>LF</td>
+            <td>30 – 300 kHz</td>
+            <td>10 km – 1 km</td>
+            <td>AM longwave radio, NDB</td>
+          </tr>
+          <tr>
+            <td>MF</td>
+            <td>300 kHz – 3 MHz</td>
+            <td>1 km – 100 m</td>
+            <td>AM broadcast</td>
+          </tr>
+          <tr>
+            <td>HF</td>
+            <td>3 – 30 MHz</td>
+            <td>100 m – 10 m</td>
+            <td>Shortwave, amateur radio</td>
+          </tr>
+          <tr>
+            <td>VHF</td>
+            <td>30 – 300 MHz</td>
+            <td>10 m – 1 m</td>
+            <td>FM radio, airband, 2m ham</td>
+          </tr>
+          <tr>
+            <td>UHF</td>
+            <td>300 MHz – 3 GHz</td>
+            <td>1 m – 10 cm</td>
+            <td>TV, mobile, 70cm ham, Wi-Fi</td>
+          </tr>
+          <tr>
+            <td>SHF</td>
+            <td>3 – 30 GHz</td>
+            <td>10 cm – 1 cm</td>
+            <td>Satellite, radar, 5G</td>
+          </tr>
+          <tr>
+            <td>EHF</td>
+            <td>30 – 300 GHz</td>
+            <td>1 cm – 1 mm</td>
+            <td>Millimetre wave, future 6G</td>
+          </tr>
+          <tr>
+            <td>Infrared</td>
+            <td>300 GHz – 400 THz</td>
+            <td>1 mm – 750 nm</td>
+            <td>Heat, remote controls</td>
+          </tr>
+          <tr>
+            <td>Visible light</td>
+            <td>400 – 790 THz</td>
+            <td>750 – 380 nm</td>
+            <td>Your eyes!</td>
+          </tr>
+          <tr>
+            <td>UV / X-ray / Gamma</td>
+            <td>&gt; 790 THz</td>
+            <td>&lt; 380 nm</td>
+            <td>Medical, nuclear</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>As radio engineers, we work primarily in the HF through SHF range. But the physics is the same across the entire spectrum.</p>
+  </div>
+
+  <!-- ─── CHAPTER 04: Frequency, Wavelength, Speed of Light ─── -->
+  <div class="chapter" id="wavelength">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Frequency, Wavelength, and the Speed of Light</h2>
+
+    <p>Every EM wave has two key properties that are locked together:</p>
+
+    <ul>
+      <li><strong>Frequency (f)</strong> — how many complete oscillations per second, measured in Hertz (Hz). 1 MHz = 1,000,000 cycles per second.</li>
+      <li><strong>Wavelength (λ, "lambda")</strong> — the physical distance from one wave peak to the next, measured in metres.</li>
+    </ul>
+
+    <p>They're related by the speed of light:</p>
+
+    <pre><code>λ = c / f
+
+where:
+  λ = wavelength in metres
+  c = speed of light ≈ 300,000,000 m/s (3 × 10⁸ m/s)
+  f = frequency in Hz</code></pre>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>Practical shortcut:</strong> For MHz, use <strong>λ(metres) = 300 / f(MHz)</strong>.<br>
+        This is the single most-used equation in antenna work.
+      </div>
+    </div>
+
+    <h3>Worked Examples</h3>
+
+    <p><strong>Example 1:</strong> What is the wavelength of a 145 MHz signal (2m amateur band)?</p>
+    <pre><code>λ = 300 / 145 = 2.07 metres</code></pre>
+    <p>That's why it's called "the 2 metre band" — the wavelength is approximately 2 metres. When we design a dipole for 145 MHz, it will be roughly 1 metre long (half a wavelength — we'll learn why in Lesson 2).</p>
+
+    <p><strong>Example 2:</strong> What is the wavelength of a 1090 MHz ADS-B signal?</p>
+    <pre><code>λ = 300 / 1090 = 0.275 metres ≈ 27.5 cm</code></pre>
+    <p>Notice how higher frequency = shorter wavelength. ADS-B antennas are physically much smaller than 2m antennas because the waves they handle are shorter.</p>
+
+    <p><strong>Example 3:</strong> FM broadcast at 98.5 MHz?</p>
+    <pre><code>λ = 300 / 98.5 = 3.05 metres</code></pre>
+    <p>A full-size FM broadcast antenna is physically large — that's why those tall towers with multiple elements exist.</p>
+  </div>
+
+  <!-- ─── CHAPTER 05: Why This Matters for Antennas ─── -->
+  <div class="chapter" id="antenna-dimensions">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Why This Matters for Antennas</h2>
+
+    <p>Here's the crucial insight that will recur throughout this entire curriculum:</p>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>Antenna dimensions are directly related to wavelength.</strong>
+      </div>
+    </div>
+
+    <p>An antenna needs to be a significant fraction of the wavelength it's designed for. A half-wave dipole for 145 MHz is about 1 metre long. A half-wave dipole for 7 MHz (the 40m amateur band) would be about 20 metres long. A half-wave dipole for 2.4 GHz Wi-Fi is about 6 centimetres.</p>
+
+    <p>This is why:</p>
+    <ul>
+      <li>HF antennas are big (long wires, large loops)</li>
+      <li>VHF/UHF antennas are medium-sized (the rubber duck on your handheld)</li>
+      <li>Microwave antennas are tiny (the chip antenna inside your phone)</li>
+      <li>Your Diamond D130N discone is physically designed to cover a huge bandwidth, so it contains elements spanning many different sizes</li>
+    </ul>
+
+    <p>Every design decision in antenna engineering traces back to the relationship between physical dimensions and wavelength.</p>
+  </div>
+
+  <!-- ─── CHAPTER 06: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments — try each question first.</p>
+    <ol>
+      <li>
+        <strong>What two fields make up an electromagnetic wave?</strong>
+        <!-- Electric field and magnetic field, oscillating perpendicular to each other -->
+      </li>
+      <li>
+        <strong>What is the wavelength of a 440 MHz signal (70cm band)?</strong>
+        <!-- λ = 300/440 = 0.682 m ≈ 68 cm — that's why it's called 70cm -->
+      </li>
+      <li>
+        <strong>If you double the frequency, what happens to the wavelength?</strong>
+        <!-- It halves. λ and f are inversely proportional. -->
+      </li>
+      <li>
+        <strong>A signal has a wavelength of 10 metres. What is its frequency?</strong>
+        <!-- f = 300/10 = 30 MHz — that's the boundary between HF and VHF -->
+      </li>
+      <li>
+        <strong>Can radio waves travel through a vacuum? Why or why not?</strong>
+        <!-- Yes — EM waves are self-sustaining (E creates H, H creates E) and need no medium -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 1 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>EM waves are coupled electric and magnetic fields propagating at the speed of light</li>
+        <li>Radio waves, light, and X-rays are all EM radiation — just at different frequencies</li>
+        <li><strong>λ = 300 / f(MHz)</strong> is the key relationship for antenna work</li>
+        <li>Higher frequency = shorter wavelength = physically smaller antennas</li>
+        <li>Antenna dimensions scale with wavelength — this is the foundation of everything that follows</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <span></span>
+    <a href="lesson-02-how-antennas-radiate.html" class="btn btn--primary">Next: Lesson 2 — How Antennas Radiate →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

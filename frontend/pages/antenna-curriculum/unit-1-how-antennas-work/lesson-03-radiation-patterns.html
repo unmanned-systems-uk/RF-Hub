@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: Radiation Patterns — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.knowledge-check li {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.knowledge-check strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+.term-block {
+  background: var(--bg-card);
+  border-left: 3px solid var(--accent-em);
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.term-block strong {
+  color: var(--accent-em);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 1 · Lesson 3</div>
+    <h1>Radiation Patterns: Where Does the Energy Go?</h1>
+    <p class="hero-subtitle">Reading 2D/3D patterns, isotropic reference, dipole doughnut, and key terminology</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container">
+<div class="article">
+
+  <!-- Article Meta -->
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
+    <span class="article-meta-item">Prerequisites: Lesson 2 (How Antennas Radiate)</span>
+    <span class="article-meta-item">Equipment: None</span>
+    <span class="article-meta-item">⏱ 30 min</span>
+    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
+  </div>
+
+  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
+  <div class="chapter" id="objectives">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 01</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Learning Objectives</h2>
+    <p>By the end of this lesson you will be able to:</p>
+    <ul class="objectives-list">
+      <li>Read and interpret 2D radiation patterns (azimuth and elevation cuts)</li>
+      <li>Read a 3D radiation pattern and identify its features</li>
+      <li>Identify main lobe, side lobes, nulls, back lobe, and half-power beamwidth</li>
+      <li>Explain why the isotropic radiator is useful as a reference even though it can't physically exist</li>
+      <li>Describe the radiation pattern shape of a half-wave dipole</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 02: The Isotropic Radiator ─── -->
+  <div class="chapter" id="isotropic">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Isotropic Radiator: A Useful Fiction</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>The Big Idea:</strong> In Lesson 2 we said that the current distribution on an antenna causes radiation to be stronger in some directions than others. A <strong>radiation pattern</strong> is simply a map of that directionality — it tells you where the antenna sends (or receives) the most energy.
+      </div>
+    </div>
+
+    <p>Imagine a theoretical point source that radiates equally in every direction — up, down, left, right, forward, backward. This is an <strong>isotropic radiator</strong>. Its 3D pattern would be a perfect sphere.</p>
+
+    <p>No real antenna does this. It's physically impossible. But it's enormously useful as a <strong>reference point</strong>. When we say an antenna has "6 dBi gain," the "i" stands for "isotropic" — it means the antenna focuses energy 6 dB better than this imaginary perfect sphere in its best direction.</p>
+
+    <p>Think of it like sea level for altitude measurements. Sea level isn't interesting by itself, but it gives everything else a reference.</p>
+  </div>
+
+  <!-- ─── CHAPTER 03: The Dipole Pattern ─── -->
+  <div class="chapter" id="dipole-pattern">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 03</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>The Dipole Pattern: Your First Real Pattern</h2>
+
+    <p>A half-wave dipole (from Lesson 2) produces a distinctive pattern:</p>
+    <ul>
+      <li><strong>3D shape:</strong> A doughnut (toroid) wrapped around the wire</li>
+      <li><strong>Maximum radiation:</strong> Broadside to the wire (perpendicular)</li>
+      <li><strong>Zero radiation (nulls):</strong> Off the tips of the wire (along its axis)</li>
+    </ul>
+
+    <p>If you hold a dipole vertically:</p>
+    <ul>
+      <li>It radiates strongly toward the horizon in all horizontal directions</li>
+      <li>It radiates nothing straight up or straight down</li>
+    </ul>
+
+    <p>If you hold it horizontally:</p>
+    <ul>
+      <li>It still radiates strongest broadside, but now the nulls are off the ends</li>
+    </ul>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive:</strong> <a href="../../../resources/radiation-3d-v5.html">3D Radiation Pattern Viewer</a><br>
+        Load the dipole pattern and rotate it. Find the doughnut shape. Identify where the nulls are. Try rotating your mental model to match a vertical installation vs. a horizontal one.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 04: Reading 2D Pattern Plots ─── -->
+  <div class="chapter" id="2d-patterns">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Reading 2D Pattern Plots</h2>
+
+    <p>A 3D pattern is informative but hard to print or compare precisely. So we typically slice through it to create <strong>2D plots</strong>:</p>
+
+    <h3>Azimuth (Horizontal) Plane</h3>
+    <p>Imagine slicing through the 3D pattern horizontally — like cutting through the doughnut at its widest point. The result is a circular plot showing signal strength at each compass bearing.</p>
+    <ul>
+      <li>For a vertical dipole: the azimuth cut is a perfect circle (equal radiation in all horizontal directions — this is called <strong>omnidirectional</strong>)</li>
+      <li>For a Yagi pointing north: the azimuth cut shows a strong lobe to the north and smaller lobes or nulls in other directions</li>
+    </ul>
+
+    <h3>Elevation (Vertical) Plane</h3>
+    <p>Now slice vertically — like cutting the doughnut in half from top to bottom. This shows signal strength at each elevation angle.</p>
+    <ul>
+      <li>For a vertical dipole: the elevation cut shows a figure-eight shape — strong at the horizon, null straight up</li>
+      <li>The angle of maximum radiation above the horizon is called the <strong>takeoff angle</strong> — critical for HF communications</li>
+    </ul>
+
+    <h3>How to Read the Scales</h3>
+    <p>Pattern plots use either:</p>
+    <ul>
+      <li><strong>Linear scale</strong> — signal strength shown as distance from centre (intuitive but compresses detail)</li>
+      <li><strong>Logarithmic (dB) scale</strong> — each concentric ring represents a fixed dB step (reveals detail in the sidelobes)</li>
+    </ul>
+    <p>Most engineering plots use dB scale. The outermost ring is the maximum (0 dB reference), and inner rings might be -3 dB, -10 dB, -20 dB, etc.</p>
+  </div>
+
+  <!-- ─── CHAPTER 05: Pattern Terminology ─── -->
+  <div class="chapter" id="terminology">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Pattern Terminology</h2>
+
+    <p>Here are the key terms you'll encounter on every antenna data sheet and in every antenna discussion:</p>
+
+    <div class="term-block">
+      <strong>MAIN LOBE (MAIN BEAM)</strong>
+      <p style="margin: 4px 0 0 0;">The direction of strongest radiation. This is where the antenna is "pointing."</p>
+    </div>
+
+    <div class="term-block">
+      <strong>SIDE LOBES</strong>
+      <p style="margin: 4px 0 0 0;">Smaller lobes of radiation in unwanted directions. All real antennas have some side lobes — the goal is usually to minimise them.</p>
+    </div>
+
+    <div class="term-block">
+      <strong>BACK LOBE</strong>
+      <p style="margin: 4px 0 0 0;">Radiation in the direction opposite the main beam. For a Yagi pointed north, the back lobe is to the south.</p>
+    </div>
+
+    <div class="term-block">
+      <strong>NULLS</strong>
+      <p style="margin: 4px 0 0 0;">Directions where radiation drops to zero (or very close to it). The dipole has nulls off its tips.</p>
+    </div>
+
+    <div class="term-block">
+      <strong>HALF-POWER BEAMWIDTH (HPBW)</strong>
+      <p style="margin: 4px 0 0 0;">The angular width of the main beam measured between the points where power drops to half (-3 dB). A narrow beamwidth means a focused beam; a wide beamwidth means broad coverage.</p>
+    </div>
+
+    <div class="term-block">
+      <strong>FRONT-TO-BACK RATIO (F/B)</strong>
+      <p style="margin: 4px 0 0 0;">The ratio in dB between the main lobe and the back lobe. A Yagi with 20 dB F/B ratio has 100× more power going forward than backward.</p>
+    </div>
+
+    <div class="term-block">
+      <strong>FRONT-TO-SIDE RATIO</strong>
+      <p style="margin: 4px 0 0 0;">Similar concept but comparing main lobe to the worst side lobe.</p>
+    </div>
+
+    <h3>Putting It Together: A Practical Example</h3>
+    <p>Imagine you're setting up a Yagi antenna for receiving ADS-B signals from aircraft at a distant airport to the east:</p>
+    <ul>
+      <li>The <strong>main lobe</strong> points east toward the airport</li>
+      <li>The <strong>HPBW</strong> tells you how accurately you need to aim</li>
+      <li>The <strong>F/B ratio</strong> tells you how well it rejects signals from behind</li>
+      <li>The <strong>side lobes</strong> might pick up interfering signals from other directions</li>
+      <li>The <strong>nulls</strong> are directions where you'll receive nothing</li>
+    </ul>
+  </div>
+
+  <!-- ─── CHAPTER 06: Common Pattern Shapes ─── -->
+  <div class="chapter" id="pattern-shapes">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Common Pattern Shapes to Recognise</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Antenna</th>
+            <th>3D Pattern Shape</th>
+            <th>Azimuth (H-plane)</th>
+            <th>Elevation (E-plane)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Isotropic</td>
+            <td>Sphere</td>
+            <td>Circle</td>
+            <td>Circle</td>
+          </tr>
+          <tr>
+            <td>Vertical dipole</td>
+            <td>Doughnut (horizontal)</td>
+            <td>Circle (omni)</td>
+            <td>Figure-eight</td>
+          </tr>
+          <tr>
+            <td>Horizontal dipole</td>
+            <td>Doughnut (vertical)</td>
+            <td>Figure-eight</td>
+            <td>Depends on height</td>
+          </tr>
+          <tr>
+            <td>Yagi</td>
+            <td>Elongated egg</td>
+            <td>Strong front lobe</td>
+            <td>Narrow main beam</td>
+          </tr>
+          <tr>
+            <td>Discone</td>
+            <td>Flattened doughnut</td>
+            <td>Circle (omni)</td>
+            <td>Broad, low angle</td>
+          </tr>
+          <tr>
+            <td>Dish</td>
+            <td>Pencil beam</td>
+            <td>Very narrow lobe</td>
+            <td>Very narrow lobe</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text">
+        <strong>Interactive (future):</strong> Pattern comparison tool — toggle between different antenna types and see their 2D and 3D patterns side by side.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">CHAPTER 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2>Knowledge Check</h2>
+    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
+    <ol>
+      <li>
+        <strong>What is the 3D radiation pattern shape of a half-wave dipole?</strong>
+        <!-- A toroid (doughnut) shape centred on the wire -->
+      </li>
+      <li>
+        <strong>Where are the nulls on a vertical dipole?</strong>
+        <!-- Straight up and straight down (along the axis of the wire) -->
+      </li>
+      <li>
+        <strong>An antenna has a half-power beamwidth of 30°. Is this a focused beam or broad coverage?</strong>
+        <!-- Focused beam — 30° is relatively narrow (compare to a dipole at ~78°) -->
+      </li>
+      <li>
+        <strong>What does front-to-back ratio tell you?</strong>
+        <!-- How much stronger the main beam is compared to radiation in the opposite direction -->
+      </li>
+      <li>
+        <strong>On a dB-scale pattern plot, what does the -3 dB contour represent?</strong>
+        <!-- The half-power boundary — signal strength is half the maximum -->
+      </li>
+    </ol>
+  </div>
+
+  <!-- ─── Summary ─── -->
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 3 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>A <strong>radiation pattern</strong> maps where an antenna sends/receives energy</li>
+        <li>The <strong>isotropic radiator</strong> is a theoretical reference — perfect sphere, equal in all directions</li>
+        <li>A dipole pattern is a <strong>doughnut</strong> — strong broadside, null off the tips</li>
+        <li>2D cuts show <strong>azimuth</strong> (horizontal) and <strong>elevation</strong> (vertical) slices</li>
+        <li>Key terms: main lobe, side lobes, nulls, HPBW, front-to-back ratio</li>
+        <li>Pattern plots use dB scale for detail — -3 dB = half power</li>
+        <li>Different antenna types produce characteristically different pattern shapes</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Lesson Navigation ─── -->
+  <div class="lesson-nav">
+    <a href="lesson-02-how-antennas-radiate.html" class="btn btn--ghost">← Lesson 2: How Antennas Radiate</a>
+    <a href="lesson-04-antenna-types.html" class="btn btn--primary">Next: Lesson 4 — Antenna Types →</a>
+  </div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+</body>
+</html>

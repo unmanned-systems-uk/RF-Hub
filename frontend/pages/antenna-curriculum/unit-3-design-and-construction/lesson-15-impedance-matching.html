@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 15: Impedance Matching — Making Antennas Play Nice — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.objectives-list li::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  color: var(--accent-current);
+  font-size: 0.85rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.knowledge-check ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.knowledge-check li { color: var(--text-secondary); line-height: 1.6; }
+.knowledge-check strong { color: var(--text-primary); display: block; margin-bottom: 4px; }
+.lab-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+.lab-step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.lab-step-num {
+  background: var(--accent-em);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+.lab-step-title { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin: 0; }
+.lab-step ol, .lab-step ul { margin: 6px 0; padding-left: 20px; }
+.lab-step li { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-bottom: 3px; }
+.record-box {
+  background: var(--bg-deep);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.capstone-card {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-em);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 32px;
+}
+.capstone-card h3 { color: var(--accent-em); margin-top: 0; }
+.capstone-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.capstone-checklist li {
+  display: flex;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.capstone-checklist li::before {
+  content: '☐';
+  font-family: var(--font-mono);
+  color: var(--accent-em);
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Unit 3 · Lesson 15</div>
+    <h1>Impedance Matching: Making Antennas Play Nice</h1>
+    <p class="hero-subtitle">L-networks, Smith chart matching strategy, baluns, stub matching — and the Unit 3 capstone</p>
+  </div>
+</section>
+
+<div class="container">
+<div class="article">
+
+  <div class="article-meta">
+    <span class="article-meta-item">Unit 3 — Design &amp; Construction</span>
+    <span class="article-meta-item">Prerequisites: Lessons 8, 11–14</span>
+    <span class="article-meta-item">Equipment: L/C components, ferrite core, VNA</span>
+    <span class="article-meta-item">⏱ 30 min theory + 60 min lab</span>
+    <span class="article-meta-item"><span class="badge">Intermediate</span></span>
+  </div>
+
+  <div class="chapter" id="objectives">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 01</span><div class="chapter-line"></div></div>
+    <h2>Learning Objectives</h2>
+    <ul class="objectives-list">
+      <li>Design an L-network matching circuit for a given impedance mismatch</li>
+      <li>Use a Smith chart to plan a matching strategy visually</li>
+      <li>Explain what a balun does and when you need one</li>
+      <li>Build and VNA-verify a matching network</li>
+    </ul>
+  </div>
+
+  <div class="chapter" id="why-matching">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 02</span><div class="chapter-line"></div></div>
+    <h2>Why Matching Matters: Maximum Power Transfer</h2>
+
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text"><strong>The Big Idea:</strong> We've spent this unit building antennas that don't always present 50 Ω to the feedline — a Yagi driven element at 20 Ω, a monopole at 36 Ω, an EFHW at 2500 Ω. Impedance matching transforms one impedance to another, enabling maximum power transfer without reflections.</div>
+    </div>
+
+    <p>Maximum power transfer occurs when the source impedance (transmitter/feedline at 50 Ω) equals the load impedance (antenna). When they don't match:</p>
+    <ul>
+      <li>Power reflects back toward the transmitter (quantified as SWR and return loss)</li>
+      <li>Feedline losses increase due to standing waves</li>
+      <li>Transmitter output stages may reduce power or trip protection</li>
+    </ul>
+
+    <p>A matching network sits between feedline and antenna, transforming the antenna's actual impedance to appear as 50 Ω to the transmitter. Done well, the matching network introduces minimal loss and provides a broadband match. Done poorly, it introduces significant loss and narrows bandwidth.</p>
+  </div>
+
+  <div class="chapter" id="l-network">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 03</span><div class="chapter-line"></div></div>
+    <h2>L-Network Matching</h2>
+
+    <p>The L-network is the simplest matching network: just two reactive components (inductors and/or capacitors) arranged in an L-shape. It can match any real impedance to any other real impedance.</p>
+
+    <h3>Design Procedure</h3>
+    <pre><code>Given: R_source (usually 50 Ω) and R_load (antenna resistance at resonance)
+
+Step 1: Q factor
+  Q = √(R_high / R_low − 1)
+
+  where R_high = whichever of R_source, R_load is larger
+        R_low  = whichever is smaller
+
+Step 2: Shunt element reactance (in parallel with high-impedance side)
+  X_shunt = R_high / Q
+
+Step 3: Series element reactance (in series with low-impedance side)
+  X_series = Q × R_low
+
+Step 4: Calculate component values
+  For an inductor:  L = X / (2π × f)    [Henries]
+  For a capacitor:  C = 1 / (2π × f × X) [Farads]</code></pre>
+
+    <h3>Worked Example: Match 20 Ω Yagi to 50 Ω Coax at 145 MHz</h3>
+    <pre><code>R_high = 50 Ω (source), R_low = 20 Ω (load)
+Q = √(50/20 − 1) = √(1.5) = 1.225
+
+X_shunt (across 50 Ω side) = 50 / 1.225 = 40.8 Ω
+X_series (in series with 20 Ω load) = 1.225 × 20 = 24.5 Ω
+
+At 145 MHz:
+  Shunt inductor: L = 40.8 / (2π × 145×10⁶) = 44.8 nH
+  Series capacitor: C = 1 / (2π × 145×10⁶ × 24.5) = 44.8 pF
+
+(Or invert: shunt capacitor and series inductor — both configurations work)</code></pre>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text"><strong>Interactive (future):</strong> L-network calculator with Smith chart path visualisation — enter source and load impedances, see the L-network component values and the matching path on a Smith chart.</div>
+    </div>
+
+    <div class="callout callout--e">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text"><strong>L-networks only match real impedances.</strong> If the antenna has significant reactance (X ≠ 0), first bring it to resonance (trim the element) or add a series/parallel element to cancel the reactance, then apply the L-network for the resistive mismatch.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="smith-chart-matching">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 04</span><div class="chapter-line"></div></div>
+    <h2>Smith Chart Matching: Visual Strategy</h2>
+
+    <p>The Smith chart isn't just for reading impedance — it's a matching tool. Adding a lumped component moves the impedance point along a predictable path on the chart:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Action</th><th>Movement on Smith Chart</th></tr></thead>
+        <tbody>
+          <tr><td>Add series inductor (+ jX)</td><td>Move clockwise along constant-resistance circle (upward)</td></tr>
+          <tr><td>Add series capacitor (− jX)</td><td>Move counter-clockwise along constant-resistance circle (downward)</td></tr>
+          <tr><td>Add shunt inductor (+ jB)</td><td>Move counter-clockwise along constant-conductance circle</td></tr>
+          <tr><td>Add shunt capacitor (− jB)</td><td>Move clockwise along constant-conductance circle</td></tr>
+          <tr><td>Add series transmission line</td><td>Rotate clockwise around the chart at constant radius</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Matching Strategy</h3>
+    <ol>
+      <li>Plot the antenna load impedance Z<sub>L</sub> on the Smith chart</li>
+      <li>Goal: reach the chart centre (50 Ω, Z = 1 + j0)</li>
+      <li>Design a two-step path using the movements above</li>
+      <li>Step 1 typically moves the point to the constant-resistance circle passing through the centre</li>
+      <li>Step 2 moves along that circle to the centre</li>
+      <li>Each step corresponds to one component — two components = L-network</li>
+    </ol>
+
+    <p>This visual approach makes it obvious which component type to add at each step, and prevents algebraic errors. VNA software like NanoVNA-Saver and Rigol's PC software include Smith chart matching assistants.</p>
+  </div>
+
+  <div class="chapter" id="baluns">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 05</span><div class="chapter-line"></div></div>
+    <h2>Baluns: Balanced to Unbalanced Conversion</h2>
+
+    <p>A <strong>balun</strong> (Balanced-Unbalanced) solves the mismatch between balanced antennas (dipoles, folded dipoles — symmetric, no ground reference) and unbalanced feedlines (coax — one conductor is grounded).</p>
+
+    <h3>The Problem Without a Balun</h3>
+    <p>Without a balun, the coax braid becomes part of the antenna. Common-mode current flows down the outside of the braid, radiating and receiving from the feedline rather than the antenna. This:</p>
+    <ul>
+      <li>Distorts the radiation pattern (radiation comes from the cable, not the antenna)</li>
+      <li>Couples RF into the shack (RFI on audio, computer interference)</li>
+      <li>Makes SWR measurements unreliable (the VNA measures the antenna + feedline)</li>
+    </ul>
+
+    <h3>1:1 Choke Balun (Current Balun)</h3>
+    <p>Does not change impedance — presents high impedance to common-mode current while passing differential (balanced) current unchanged. The most common type for dipoles.</p>
+
+    <pre><code>Construction: Wind 8–12 turns of coax through a ferrite toroid
+  Suitable ferrite: FT-240-31 or FT-240-43 for HF
+                    FT-82-61 or FT-50-61 for VHF/UHF
+  Winding: coil the coax into the toroid with tight, even turns
+  Result: presents &gt;1000 Ω common-mode impedance at target frequency</code></pre>
+
+    <h3>4:1 Voltage Balun (Transformer Balun)</h3>
+    <p>Transforms impedance 4:1 while converting balanced to unbalanced. Used when you need both impedance transformation and balance — for example, feeding a 200 Ω balanced folded dipole with 50 Ω coax.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Balun Type</th><th>Ratio</th><th>Use Case</th><th>Key Property</th></tr></thead>
+        <tbody>
+          <tr><td>Choke (current) balun</td><td>1:1</td><td>Dipole → 50 Ω coax</td><td>Stops common-mode; doesn't transform Z</td></tr>
+          <tr><td>Voltage (transformer) balun</td><td>4:1</td><td>200 Ω folded dipole → 50 Ω</td><td>Transforms Z by 4× AND converts balanced/unbalanced</td></tr>
+          <tr><td>EFHW transformer</td><td>49:1</td><td>~2500 Ω EFHW → 50 Ω</td><td>Very high impedance transformation for end-fed antennas</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="chapter" id="when-balun">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 06</span><div class="chapter-line"></div></div>
+    <h2>When You Need a Balun</h2>
+
+    <div class="callout callout--success">
+      <span class="callout-icon">✅</span>
+      <div class="callout-text">
+        <strong>Always use a 1:1 choke balun when:</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+          <li>Feeding a centre-fed dipole with coax</li>
+          <li>Feeding any balanced antenna (folded dipole, loop) with unbalanced coax</li>
+          <li>You observe RF feedback in the shack when transmitting</li>
+          <li>SWR on the rig doesn't match the VNA reading (feedline radiation)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>Baluns are NOT needed for:</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+          <li>Quarter-wave ground plane verticals (unbalanced by design)</li>
+          <li>Yagi antennas with a gamma match (gamma match is inherently unbalanced)</li>
+          <li>Any antenna that is already unbalanced (one arm grounded)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter" id="stub-matching">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 07</span><div class="chapter-line"></div></div>
+    <h2>Stub Matching for Advanced Applications</h2>
+
+    <p>A transmission line stub is a short section of feedline, open or short-circuited at one end, connected in parallel with the feedpoint. It presents a specific reactance that cancels the antenna's reactance, leaving only resistance to be matched.</p>
+
+    <h3>Why Stubs Are Useful</h3>
+    <ul>
+      <li>No physical components (no inductors or capacitors to source, wind, or tune)</li>
+      <li>Low loss — coax has lower loss than lumped inductors at UHF</li>
+      <li>Can be built from surplus coax</li>
+      <li>Ideal for VHF and UHF matching where lumped components become impractical</li>
+    </ul>
+
+    <h3>Shorted vs Open Stubs</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Stub Type</th><th>Length &lt; λ/4</th><th>Length = λ/4</th><th>Length &gt; λ/4</th></tr></thead>
+        <tbody>
+          <tr><td>Short-circuited</td><td>Inductive (+jX)</td><td>Open circuit (high Z)</td><td>Capacitive (−jX)</td></tr>
+          <tr><td>Open-circuited</td><td>Capacitive (−jX)</td><td>Short circuit (low Z)</td><td>Inductive (+jX)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>By choosing stub length and type, you can add any desired reactance to cancel the antenna's reactance — leaving a pure resistance for the main matching network or direct coax connection.</p>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">🔧</span>
+      <div class="callout-text"><strong>Smith chart use:</strong> Plot the antenna impedance, then add a stub by rotating along a constant-conductance circle until you reach the real axis. The arc length corresponds to the electrical stub length.</div>
+    </div>
+  </div>
+
+  <div class="chapter" id="lab">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 08</span><div class="chapter-line"></div></div>
+    <h2>Lab: Matching and Balun Construction</h2>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">LAB A</span><h4 class="lab-step-title">Measure a mismatched antenna, design and build an L-network</h4></div>
+      <ol>
+        <li>Choose an antenna that presents a known mismatch at your target frequency — the Lesson 13 Yagi driven element (~20 Ω) works well, or a shortened whip</li>
+        <li>VNA-measure the antenna: record R and X at target frequency</li>
+        <li>If X ≠ 0, note its sign — cancel it with a series component first (series capacitor for inductive, series inductor for capacitive)</li>
+        <li>Apply L-network design formula to match R_antenna to 50 Ω</li>
+        <li>Build the L-network on a small piece of PCB or tag strip using appropriate component values</li>
+        <li>Re-measure with VNA — compare SWR before and after network</li>
+      </ol>
+      <div class="record-box">
+        ☐ Antenna Z before matching: R=_____ Ω, X=_____ Ω, SWR=_____
+        ☐ L-network: shunt X=_____ Ω (L/C?), series X=_____ Ω (L/C?)
+        ☐ Component values: shunt=_____ nH/pF, series=_____ nH/pF
+        ☐ SWR after matching: _____
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-header"><span class="lab-step-num">LAB B</span><h4 class="lab-step-title">Wind a 1:1 choke balun and test on dipole</h4></div>
+      <ol>
+        <li>Obtain a suitable ferrite toroid (FT-82-61 or similar for VHF)</li>
+        <li>Wind 8–12 turns of RG-58 or RG-174 coax through the toroid core</li>
+        <li>Keep turns tight and even; avoid gaps between turns</li>
+        <li>Connect dipole from Lesson 11 first without balun — measure SWR, note any anomalies</li>
+        <li>Insert balun between coax and dipole feedpoint — re-measure SWR</li>
+        <li>Look for changes in resonant frequency or impedance — a change indicates feedline was radiating before</li>
+      </ol>
+      <div class="record-box">
+        ☐ Dipole SWR at 145 MHz without balun: _____
+        ☐ Resonant frequency without balun: _____ MHz
+        ☐ Dipole SWR at 145 MHz with balun: _____
+        ☐ Resonant frequency with balun: _____ MHz
+        ☐ Observations: _____
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter knowledge-check" id="knowledge-check">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 09</span><div class="chapter-line"></div></div>
+    <h2>Knowledge Check</h2>
+    <ol>
+      <li><strong>An antenna has feedpoint impedance of 12.5 Ω at resonance (X = 0). Design an L-network to match it to 50 Ω.</strong>
+        <!-- Q = √(50/12.5 − 1) = √3 = 1.732. X_shunt (across 50Ω) = 50/1.732 = 28.9 Ω. X_series (in series with 12.5Ω) = 1.732 × 12.5 = 21.65 Ω. This is the basis of an EFHW 4:1 matching approach. -->
+      </li>
+      <li><strong>What does a 1:1 choke balun do, and what does it NOT do?</strong>
+        <!-- It stops common-mode (shield) current by presenting high impedance to it. It does NOT transform impedance — the impedance ratio is 1:1. It simply enforces current balance between the two feedline conductors. -->
+      </li>
+      <li><strong>Why does a dipole ALWAYS need a balun when fed with coax?</strong>
+        <!-- A dipole is balanced (symmetric, no ground reference). Coax is unbalanced (shield is grounded). Without a balun, common-mode current flows on the braid, making the feedline part of the antenna — distorting the pattern and introducing RFI. -->
+      </li>
+      <li><strong>On a Smith chart, which direction do you move when adding a series capacitor?</strong>
+        <!-- Counter-clockwise along the constant-resistance circle (downward, toward the capacitive lower half). -->
+      </li>
+      <li><strong>What is the advantage of stub matching over lumped-component L-networks at UHF?</strong>
+        <!-- Stubs use transmission line sections (no physical inductors/capacitors), which have lower loss at UHF where lumped inductors become lossy and self-resonant. Stubs are also easier to adjust by cutting rather than swapping components. -->
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout callout--success" style="margin-top: 32px;">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson 15 Summary</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Impedance matching enables maximum power transfer — transforms antenna Z to appear as 50 Ω</li>
+        <li><strong>L-network:</strong> Q = √(R_high/R_low − 1) → two components, shunt and series</li>
+        <li><strong>Smith chart:</strong> series L/C moves along resistance circles; shunt L/C moves along conductance circles</li>
+        <li><strong>1:1 choke balun:</strong> stops common-mode current on coax — required for all dipoles</li>
+        <li><strong>4:1 voltage balun:</strong> transforms impedance 4× AND converts balanced/unbalanced</li>
+        <li><strong>Stub matching:</strong> transmission-line sections replace lumped components — lower loss at UHF</li>
+        <li>Always VNA-verify matching networks before declaring success</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Unit 3 Capstone -->
+  <div class="chapter" id="capstone">
+    <div class="chapter-header"><span class="chapter-num">CHAPTER 10</span><div class="chapter-line"></div></div>
+    <h2>🏆 Unit 3 Capstone: Design-Build-Measure Project</h2>
+
+    <p>You've completed Unit 3 — Design and Construction. Now demonstrate the full cycle.</p>
+
+    <div class="capstone-card">
+      <h3>Your Project</h3>
+      <p>Design an antenna for a frequency of your choosing. Complete the entire design-build-measure-iterate cycle:</p>
+      <ul class="capstone-checklist">
+        <li><strong>Model in software</strong> (4nec2 or MMANA-GAL) — predict gain, impedance, pattern</li>
+        <li><strong>Build it physically</strong> — document materials, dimensions, construction method</li>
+        <li><strong>VNA-measure</strong> — S11, SWR, Smith chart trace, resonant frequency, bandwidth</li>
+        <li><strong>Compare model to measurement</strong> — table of predicted vs actual for each parameter</li>
+        <li><strong>Iterate</strong> — trim, adjust, add matching until SWR &lt; 1.5:1 at target frequency</li>
+        <li><strong>Write up the complete design cycle</strong> — include before/after VNA screenshots and annotated Smith chart</li>
+        <li><strong>Publish as a build guide</strong> on RF-Hub — include all measurements so others can replicate</li>
+      </ul>
+
+      <h3 style="margin-top: 16px;">Suggested Projects</h3>
+      <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 20px;">
+        <li>Half-wave dipole for any HF band (e.g., 40m, 20m, 10m)</li>
+        <li>Quarter-wave vertical with 4-radial ground plane for 433 MHz or 868 MHz</li>
+        <li>3-element Yagi for 145 MHz or 440 MHz</li>
+        <li>Portable EFHW with 49:1 transformer for 40m/20m dual-band</li>
+        <li>J-pole for 145 MHz (stub matching built in)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-14-broadband-antennas.html" class="btn btn--ghost">← Lesson 14: Broadband Antennas</a>
+    <span class="badge badge--success" style="font-size: 0.85rem; padding: 8px 16px;">✓ Unit 3 Complete</span>
+  </div>
+
+</div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+</body>
+</html>

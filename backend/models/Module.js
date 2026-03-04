@@ -8,8 +8,8 @@ class Module {
     const { difficulty, category, tier } = filters;
 
     let query = `
-      SELECT module_id, title, slug, description, difficulty_level,
-             category, tier, order_index, estimated_time_minutes,
+      SELECT module_id, module_number, title, slug, description, difficulty,
+             phase, order_in_phase, estimated_time_minutes,
              is_published, created_at, updated_at
       FROM modules
       WHERE is_published = true
@@ -18,21 +18,16 @@ class Module {
     let paramCount = 1;
 
     if (difficulty) {
-      query += ` AND difficulty_level = $${paramCount++}`;
+      query += ` AND difficulty = $${paramCount++}`;
       params.push(difficulty);
     }
 
-    if (category) {
-      query += ` AND category = $${paramCount++}`;
-      params.push(category);
-    }
-
     if (tier) {
-      query += ` AND tier = $${paramCount++}`;
+      query += ` AND phase = $${paramCount++}`;
       params.push(tier);
     }
 
-    query += ' ORDER BY order_index ASC';
+    query += ' ORDER BY phase ASC, order_in_phase ASC';
 
     const result = await pool.query(query, params);
     return result.rows;
@@ -85,12 +80,12 @@ class Module {
    */
   static async search(searchTerm) {
     const result = await pool.query(
-      `SELECT module_id, title, slug, description, difficulty_level,
-              category, tier
+      `SELECT module_id, module_number, title, slug, description, difficulty,
+              phase, order_in_phase
        FROM modules
        WHERE is_published = true
-         AND (title ILIKE $1 OR description ILIKE $1 OR category ILIKE $1)
-       ORDER BY order_index ASC`,
+         AND (title ILIKE $1 OR description ILIKE $1)
+       ORDER BY phase ASC, order_in_phase ASC`,
       [`%${searchTerm}%`]
     );
     return result.rows;
@@ -101,11 +96,11 @@ class Module {
    */
   static async getByTier(tier) {
     const result = await pool.query(
-      `SELECT module_id, title, slug, description, difficulty_level,
-              category, tier, order_index, estimated_time_minutes
+      `SELECT module_id, module_number, title, slug, description, difficulty,
+              phase, order_in_phase, estimated_time_minutes
        FROM modules
-       WHERE tier = $1 AND is_published = true
-       ORDER BY order_index ASC`,
+       WHERE phase = $1 AND is_published = true
+       ORDER BY order_in_phase ASC`,
       [tier]
     );
     return result.rows;
