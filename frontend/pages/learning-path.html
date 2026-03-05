@@ -121,22 +121,26 @@
     <p>The RF-Hub curriculum is organised into four progressive phases. Each phase builds on the last, taking you from first principles through to hands-on measurement and advanced signal systems. Modules are self-contained but designed to be completed in order within each phase.</p>
 
     <div class="summary-grid">
-      <div class="summary-card">
+      <a href="antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html" class="summary-card" style="text-decoration:none;">
         <h4 class="text-success">Phase 1 — Foundations</h4>
         <p>Core RF theory: electromagnetic waves, frequency and wavelength, antenna fundamentals, transmission lines, and impedance matching. Suitable for complete beginners.</p>
-      </div>
-      <div class="summary-card">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:8px;display:block;">Start → Lesson 1: EM Radiation</span>
+      </a>
+      <a href="antenna-curriculum/unit-2-characteristics-and-measurement/lesson-06-impedance.html" class="summary-card" style="text-decoration:none;">
         <h4 class="text-h">Phase 2 — Practical RF</h4>
         <p>Hands-on skills: SDR operation, spectrum analysis, modulation schemes, propagation, and real-world signal identification using your hardware.</p>
-      </div>
-      <div class="summary-card">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:8px;display:block;">Start → Lesson 6: Impedance</span>
+      </a>
+      <a href="antenna-curriculum/unit-3-design-and-construction/lesson-11-dipole-deep-dive.html" class="summary-card" style="text-decoration:none;">
         <h4 class="text-em">Phase 3 — Measurement</h4>
         <p>VNA operation, S-parameter measurement, return loss, SWR, Smith chart interpretation, antenna characterisation, and filter analysis.</p>
-      </div>
-      <div class="summary-card">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:8px;display:block;">Start → Lesson 11: Dipole Deep Dive</span>
+      </a>
+      <a href="antenna-curriculum/unit-4-advanced-systems/lesson-16-antenna-arrays.html" class="summary-card" style="text-decoration:none;">
         <h4 class="text-e">Phase 4 — Advanced Systems</h4>
         <p>Phased arrays, direction finding, software beamforming, satellite links, EMC principles, and research-grade experimentation.</p>
-      </div>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:8px;display:block;">Start → Lesson 16: Antenna Arrays</span>
+      </a>
     </div>
 
     <div class="callout callout--info">
@@ -209,6 +213,31 @@
   function chapterNum(n) {
     return n < 10 ? '0' + n : '' + n;
   }
+
+  // Static module data — used as fallback when API is unavailable.
+  // Mirrors the API response shape so renderModuleCard works unchanged.
+  var STATIC_MODULES = [
+    { module_number:  1, phase: 1, title: 'What is Electromagnetic Radiation?',    description: 'How radio waves are created, the electromagnetic spectrum, and why frequency matters for RF engineering.',          difficulty: 'beginner',     estimated_time_minutes: 30 },
+    { module_number:  2, phase: 1, title: 'How Antennas Radiate',                  description: 'From oscillating electrons to propagating waves — the mechanism behind every antenna you will ever use.',             difficulty: 'beginner',     estimated_time_minutes: 30 },
+    { module_number:  3, phase: 1, title: 'Radiation Patterns',                    description: 'Visualising where an antenna sends (and receives) energy: 2D plots, 3D patterns, lobes, and nulls.',                  difficulty: 'beginner',     estimated_time_minutes: 35 },
+    { module_number:  4, phase: 1, title: 'Antenna Types',                         description: 'Survey of dipoles, monopoles, Yagi, patch, helical, and parabolic antennas — when and why each is used.',             difficulty: 'beginner',     estimated_time_minutes: 40 },
+    { module_number:  5, phase: 1, title: 'Polarisation',                          description: 'Linear, circular, and elliptical polarisation — and why polarisation mismatch kills your link budget.',                 difficulty: 'beginner',     estimated_time_minutes: 25 },
+    { module_number:  6, phase: 2, title: 'Impedance',                             description: 'Antenna impedance, why 50 Ω is the standard, and what happens when you get it wrong.',                                difficulty: 'intermediate', estimated_time_minutes: 40 },
+    { module_number:  7, phase: 2, title: 'SWR and Return Loss',                   description: 'Standing Wave Ratio, reflection coefficient, and return loss — the three ways to measure the same problem.',           difficulty: 'intermediate', estimated_time_minutes: 35 },
+    { module_number:  8, phase: 2, title: 'The Smith Chart',                       description: 'Reading and using the Smith chart for impedance matching and transmission line analysis.',                              difficulty: 'intermediate', estimated_time_minutes: 50 },
+    { module_number:  9, phase: 2, title: 'Gain, Directivity, and Efficiency',     description: 'The three figures of merit for any antenna and how they relate to each other.',                                        difficulty: 'intermediate', estimated_time_minutes: 35 },
+    { module_number: 10, phase: 2, title: 'VNA Antenna Measurement Lab',           description: 'Practical guide to measuring your antenna with a Vector Network Analyser — setup, calibration, and interpretation.',   difficulty: 'intermediate', estimated_time_minutes: 60 },
+    { module_number: 11, phase: 3, title: 'Dipole Deep Dive',                      description: 'Everything about the humble dipole: resonance, feed impedance, folded variants, and building your own.',               difficulty: 'intermediate', estimated_time_minutes: 45 },
+    { module_number: 12, phase: 3, title: 'Vertical Antennas',                     description: 'Quarter-wave verticals, ground planes, loading coils, and why verticals dominate HF.',                                difficulty: 'intermediate', estimated_time_minutes: 40 },
+    { module_number: 13, phase: 3, title: 'Yagi Antennas',                         description: 'Directors, reflectors, boom length, and gain — designing and building a Yagi for any frequency.',                      difficulty: 'intermediate', estimated_time_minutes: 50 },
+    { module_number: 14, phase: 3, title: 'Broadband Antennas',                    description: 'Log-periodic, discone, and LPDA designs for wide-frequency coverage.',                                                  difficulty: 'intermediate', estimated_time_minutes: 40 },
+    { module_number: 15, phase: 3, title: 'Impedance Matching',                    description: 'L-networks, baluns, transformers, and stub matching — practical techniques for any antenna system.',                   difficulty: 'advanced',     estimated_time_minutes: 55 },
+    { module_number: 16, phase: 4, title: 'Antenna Arrays',                        description: 'How multiple elements combine to increase gain, steer beams, and create nulls.',                                       difficulty: 'advanced',     estimated_time_minutes: 50 },
+    { module_number: 17, phase: 4, title: 'Phased Arrays',                         description: 'Electronic beam steering without moving parts — the theory behind radar, 5G, and satellite comms.',                    difficulty: 'advanced',     estimated_time_minutes: 55 },
+    { module_number: 18, phase: 4, title: 'Direction Finding',                     description: 'TDOA, FDOA, MUSIC, and ESPRIT — algorithms and hardware for locating radio transmitters.',                             difficulty: 'advanced',     estimated_time_minutes: 60 },
+    { module_number: 19, phase: 4, title: 'Practical Phased Array',                description: 'Building and calibrating a real phased array with SDR front-ends and software beamforming.',                          difficulty: 'advanced',     estimated_time_minutes: 70 },
+    { module_number: 20, phase: 4, title: 'Software Beamforming',                  description: 'Digital signal processing for beamforming: weights, calibration, and real-time implementation.',                      difficulty: 'advanced',     estimated_time_minutes: 65 },
+  ];
 
   var LESSON_PATHS = {
     1:  'antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html',
@@ -314,15 +343,12 @@
       render(data.modules || data);
     })
     .catch(function(err) {
-      document.getElementById('modules-container').innerHTML =
-        '<div class="callout callout--warning">' +
-          '<span class="callout-icon">⚠️</span>' +
-          '<div class="callout-text"><strong>API Unreachable:</strong> Could not load curriculum modules. ' +
-          'Make sure the backend is running at ' + (API_URL || 'localhost') + '.</div>' +
-        '</div>';
-      console.warn('[RF-Hub] Modules API failed:', err.message);
+      console.warn('[RF-Hub] Modules API failed, rendering static curriculum:', err.message);
+      render(STATIC_MODULES);
     });
 })();
 </script>
+<script src="/assets/js/dev-pages.js"></script>
+<script src="/assets/js/dev-nav.js"></script>
 </body>
 </html>
