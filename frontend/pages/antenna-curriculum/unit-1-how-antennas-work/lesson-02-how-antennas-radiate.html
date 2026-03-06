@@ -4,29 +4,147 @@
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 2: From Waves to Wires — How Antennas Radiate — RF-Hub</title>
+<title>Lesson 2 — How Antennas Radiate | RF-Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
 <style>
-/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
-.lesson-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
+/* ============================================================
+   CSS CUSTOM PROPERTIES — RF-Hub Design System
+   ============================================================ */
+:root {
+  --bg-deep:        #0a0e1a;
+  --bg-card:        #111827;
+  --bg-card-hover:  #1a2234;
+  --bg-input:       #1a2234;
+  --accent-e:       #f59e0b;
+  --accent-h:       #06b6d4;
+  --accent-em:      #a78bfa;
+  --accent-power:   #ef4444;
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim:       #64748b;
+  --border:         #1e293b;
+  --glow-e:         rgba(245,158,11,0.15);
+  --glow-h:         rgba(6,182,212,0.15);
+  --glow-em:        rgba(167,139,250,0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-em) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   OBJECTIVES CARD
+   ============================================================ */
+.objectives-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 40px;
+  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.objectives-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+}
+.objectives-card h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
 }
 .objectives-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
 }
+@media (max-width: 600px) { .objectives-list { grid-template-columns: 1fr; } }
 .objectives-list li {
   display: flex;
   gap: 10px;
@@ -36,126 +154,480 @@
   line-height: 1.5;
 }
 .objectives-list li::before {
-  content: '✓';
-  font-family: var(--font-mono);
-  color: var(--accent-current);
-  font-size: 0.85rem;
-  margin-top: 2px;
+  content: '→';
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--accent-em);
+  font-size: 0.8rem;
+  margin-top: 3px;
   flex-shrink: 0;
 }
-.knowledge-check ol {
-  padding-left: 20px;
+
+/* ============================================================
+   CHAPTER SECTIONS
+   ============================================================ */
+.chapter { margin-bottom: 80px; scroll-margin-top: 40px; }
+.chapter-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.chapter-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  white-space: nowrap;
+}
+.chapter-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent-em), transparent); }
+h2.chapter-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+h3.section-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 28px 0 12px;
+}
+.chapter p { color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem; }
+.chapter p strong { color: var(--text-primary); font-weight: 500; }
+.chapter ul, .chapter ol { color: var(--text-secondary); padding-left: 24px; margin-bottom: 16px; }
+.chapter li { margin-bottom: 8px; line-height: 1.6; }
+.chapter li strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   DIAGRAM CARDS
+   ============================================================ */
+.diagram-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 28px 0;
+  position: relative;
+  overflow: hidden;
+}
+.diagram-card.glow-e  { box-shadow: inset 0 0 60px -30px var(--glow-e); }
+.diagram-card.glow-h  { box-shadow: inset 0 0 60px -30px var(--glow-h); }
+.diagram-card.glow-em { box-shadow: inset 0 0 60px -30px var(--glow-em); }
+.diagram-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout {
   display: flex;
-  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 12px 12px 0;
+  margin: 20px 0;
+}
+.callout.key-insight { border-left-color: var(--accent-power); background: rgba(239,68,68,0.04); }
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.callout-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+.callout-text strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   ANALOGY CARDS
+   ============================================================ */
+.analogy {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.analogy-icon { font-size: 32px; flex-shrink: 0; }
+.analogy-content h4 { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.analogy-content p  { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+
+/* ============================================================
+   ANIMATION CONTROLS
+   ============================================================ */
+.anim-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.anim-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 8px 20px;
+  background: rgba(167,139,250,0.1);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.anim-btn:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
+.anim-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.anim-readout {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-em);
+  min-width: 100px;
+  text-align: center;
+}
+
+/* ============================================================
+   RANGE SLIDERS
+   ============================================================ */
+input[type="range"] {
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  flex: 1;
+  min-width: 120px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  box-shadow: 0 0 10px rgba(167,139,250,0.3);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  border: none;
+  box-shadow: 0 0 10px rgba(167,139,250,0.3);
+}
+
+/* ============================================================
+   CANVAS BASE
+   ============================================================ */
+canvas { display: block; width: 100%; background: transparent; }
+
+/* ============================================================
+   DUAL CANVAS PANEL
+   ============================================================ */
+.dual-canvas-row {
+  display: flex;
   gap: 16px;
 }
-.knowledge-check li {
+.canvas-panel { flex: 1; min-width: 0; }
+.canvas-panel-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.canvas-panel-label.e-label { color: var(--accent-e); }
+.canvas-panel-label.h-label { color: var(--accent-h); }
+@media (max-width: 500px) { .dual-canvas-row { flex-direction: column; } }
+
+/* ============================================================
+   STEP DISPLAY
+   ============================================================ */
+.step-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: rgba(167,139,250,0.08);
+  border-radius: 8px;
+  color: var(--accent-em);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   MODE TOGGLE
+   ============================================================ */
+.mode-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.mode-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 8px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+.mode-btn.active-tx { background: rgba(245,158,11,0.15); color: var(--accent-e); border-color: rgba(245,158,11,0.3); }
+.mode-btn.active-rx { background: rgba(6,182,212,0.15); color: var(--accent-h); border-color: rgba(6,182,212,0.3); }
+.mode-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+
+/* ============================================================
+   SUMMARY GRID
+   ============================================================ */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+@media (max-width: 600px) { .summary-grid { grid-template-columns: 1fr; } }
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+.summary-card:hover { border-color: var(--accent-em); transform: translateY(-2px); }
+.summary-card h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.summary-card.e-card  h4 { color: var(--accent-e); }
+.summary-card.h-card  h4 { color: var(--accent-h); }
+.summary-card.em-card h4 { color: var(--accent-em); }
+.summary-card.r-card  h4 { color: var(--accent-power); }
+.summary-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+.summary-card p strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   SELF-CHECK
+   ============================================================ */
+.self-check-group { margin-bottom: 40px; }
+.self-check-group > h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.self-check-group > h3::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(167,139,250,0.3), transparent);
+}
+.self-check {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.self-check h4 { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.self-check > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 14px; }
+.btn-reveal {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  background: rgba(167,139,250,0.1);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reveal:hover { background: rgba(167,139,250,0.2); }
+.btn-reveal:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.self-check__reveal {
+  margin-top: 14px;
+  padding: 16px;
+  background: rgba(167,139,250,0.06);
+  border-left: 2px solid var(--accent-em);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
 }
-.knowledge-check strong {
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 4px;
+.self-check__reveal.open { max-height: 400px; }
+.self-check__reveal strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   NAV CARDS
+   ============================================================ */
+.nav-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 40px 0;
+}
+@media (max-width: 500px) { .nav-cards { grid-template-columns: 1fr; } }
+.nav-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nav-card:hover { border-color: var(--accent-em); transform: translateY(-2px); }
+.nav-card-dir {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.nav-card-title { font-size: 0.9rem; color: var(--text-secondary); }
+.nav-card.next { text-align: right; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 80px;
+}
+footer a { color: var(--accent-em); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .diagram-card { padding: 20px; }
+  .hero { padding: 56px 0 40px; }
+  .objectives-card { padding: 24px; }
+}
+@media (max-width: 360px) {
+  .container { padding: 0 16px; }
+  h1 { font-size: 1.8rem; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ NAVIGATION ═══ -->
-<nav class="site-nav">
-  <div class="container container--wide">
-    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
-    <ul class="site-nav-links">
-      <li><a href="../../../index.html">Dashboard</a></li>
-      <li><a href="../../frequency-bands.html">Spectrum</a></li>
-      <li><a href="../../antennas.html">Antennas</a></li>
-      <li><a href="../../learning-path.html">Learning Path</a></li>
-      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
-    </ul>
-  </div>
-</nav>
+<!-- PROGRESS BAR -->
+<div id="progress-bar" role="progressbar" aria-label="Lesson reading progress"></div>
 
-<!-- ═══ HERO ═══ -->
+<!-- HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">Unit 1 · Lesson 2</div>
-    <h1>From Waves to Wires: How Antennas Radiate</h1>
-    <p class="hero-subtitle">Why AC radiates, how current distributes on a half-wave dipole, and the reciprocity theorem</p>
+    <div class="hero-badge">RF-Hub · Lesson 2 · Unit 1</div>
+    <h1>How Antennas Radiate</h1>
+    <p class="hero-subtitle">Unit 1 — How Antennas Work &nbsp;·&nbsp; No equipment needed &nbsp;·&nbsp; ~25 minutes</p>
   </div>
 </section>
 
-<!-- ═══ CONTENT ═══ -->
+<!-- MAIN CONTENT -->
 <div class="container">
-<div class="article">
 
-  <!-- Article Meta -->
-  <div class="article-meta">
-    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
-    <span class="article-meta-item">Prerequisites: Lesson 1 (EM Radiation)</span>
-    <span class="article-meta-item">Equipment: None</span>
-    <span class="article-meta-item">⏱ 25 min</span>
-    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
-  </div>
-
-  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
-  <div class="chapter" id="objectives">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 01</span>
-      <div class="chapter-line"></div>
-    </div>
+  <!-- LEARNING OBJECTIVES -->
+  <div class="objectives-card">
     <h2>Learning Objectives</h2>
-    <p>By the end of this lesson you will be able to:</p>
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;">By the end of this lesson you will be able to:</p>
     <ul class="objectives-list">
       <li>Explain how alternating current in a wire creates electromagnetic radiation</li>
       <li>Describe why a wire carrying DC does not radiate</li>
       <li>Sketch the current distribution on a half-wave dipole</li>
-      <li>State the reciprocity principle (TX and RX are the same process in reverse)</li>
+      <li>State the reciprocity principle — TX and RX are the same process in reverse</li>
     </ul>
   </div>
 
-  <!-- ─── CHAPTER 02: Why DC Doesn't Radiate ─── -->
-  <div class="chapter" id="dc-vs-ac">
+  <!-- CHAPTER 1: THE BIG IDEA -->
+  <section class="chapter" id="ch-big-idea">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 02</span>
+      <span class="chapter-num">01</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>Why DC Doesn't Radiate (and AC Does)</h2>
+    <h2 class="chapter-title">The Big Idea</h2>
+    <p>In Lesson 1 we learned what EM waves are. Now the question is: <strong>how do we create them?</strong> The answer turns out to be beautifully simple — you just need charges that accelerate. And the easiest way to accelerate charges is to push alternating current through a wire.</p>
+  </section>
 
-    <div class="callout">
-      <span class="callout-icon">💡</span>
-      <div class="callout-text">
-        <strong>The Big Idea:</strong> In Lesson 1 we learned what EM waves are. Now the question is: how do we create them? The answer turns out to be beautifully simple — you just need charges that accelerate. And the easiest way to accelerate charges is to push alternating current through a wire.
-      </div>
+  <!-- CHAPTER 2: WHY DC DOESN'T RADIATE -->
+  <section class="chapter" id="ch-dc-vs-ac">
+    <div class="chapter-header">
+      <span class="chapter-num">02</span>
+      <div class="chapter-line"></div>
     </div>
+    <h2 class="chapter-title">Why DC Doesn't Radiate (and AC Does)</h2>
 
     <p>A battery connected to a long wire pushes current in one direction. The electrons flow steadily. They produce a magnetic field around the wire (Ampère's law), and there's a static electric field from the battery voltage. But nothing is <em>changing</em> — and it's the <strong>change</strong> that creates radiation.</p>
 
     <p>Now connect an AC source — a radio transmitter — to that wire. The current flows one way, stops, reverses, flows the other way, stops, reverses again. The electrons are constantly accelerating and decelerating. Each time they change speed or direction, they "shake off" a little bit of their electromagnetic field, and that disturbance propagates outward as an EM wave.</p>
 
-    <div class="callout">
-      <span class="callout-icon">🔑</span>
+    <div class="callout key-insight">
+      <span class="callout-icon">⚡</span>
       <div class="callout-text">
         <strong>The rule:</strong> Static charges produce electric fields. Moving charges produce magnetic fields. <strong>Accelerating charges produce electromagnetic radiation.</strong>
       </div>
     </div>
 
     <p>This is why frequency matters: at 1 MHz, the current reverses direction one million times per second. At 1 GHz, it reverses a billion times per second. More rapid acceleration = more radiation at that frequency.</p>
-  </div>
 
-  <!-- ─── CHAPTER 03: The Half-Wave Dipole ─── -->
-  <div class="chapter" id="half-wave-dipole">
+    <!-- VISUAL 1: DC vs AC Radiation -->
+    <div class="diagram-card glow-em" id="card-dc-ac">
+      <div class="diagram-label">Animation — DC vs AC Radiation</div>
+      <canvas id="cv-dc-ac" data-aspect="0.38"
+        aria-label="Two-panel animation: left shows DC wire with static field lines that do not propagate; right shows AC wire with EM wavefronts expanding outward"></canvas>
+      <div class="anim-controls">
+        <button class="anim-btn" id="btn-dc-ac-play" aria-label="Play or pause DC vs AC animation">&#9646;&#9646; Pause</button>
+        <span class="anim-readout" id="dc-ac-readout">AC — radiating</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3: HALF-WAVE DIPOLE -->
+  <section class="chapter" id="ch-dipole">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 03</span>
+      <span class="chapter-num">03</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>The Half-Wave Dipole: Nature's Simplest Antenna</h2>
+    <h2 class="chapter-title">The Half-Wave Dipole: Nature's Simplest Antenna</h2>
 
     <p>Take a wire that's half a wavelength long (λ/2). Split it in the middle and connect your transmitter to the gap. This is a <strong>half-wave dipole</strong> — the most fundamental antenna, and the reference against which almost everything else is measured.</p>
 
     <p>When RF energy is fed into the centre, something remarkable happens: the current doesn't flow uniformly along the wire. Instead, it forms a <strong>standing wave pattern</strong>.</p>
 
-    <h3>Current Distribution</h3>
+    <h3 class="section-title">Current Distribution</h3>
+
     <p>On a half-wave dipole at its resonant frequency:</p>
     <ul>
       <li><strong>Maximum current</strong> at the centre (the feedpoint)</li>
@@ -164,51 +636,99 @@
     </ul>
     <p>The shape follows a half-sinusoid: peak in the middle, zero at both ends.</p>
 
-    <h3>Voltage Distribution</h3>
+    <!-- VISUAL 2: Standing Wave Visualiser -->
+    <div class="diagram-card glow-e" id="card-standing-wave">
+      <div class="diagram-label">Interactive — Standing Wave Current Distribution</div>
+      <canvas id="cv-standing-wave" data-aspect="0.32"
+        aria-label="Half-wave dipole showing animated current distribution: maximum amber glow at the feedpoint centre, zero at the tips. Frequency slider controls the display."></canvas>
+      <div class="anim-controls">
+        <label for="sl-freq" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);white-space:nowrap;">Frequency</label>
+        <input type="range" id="sl-freq" min="1" max="30" value="7" step="1" aria-label="Frequency in MHz">
+        <output id="out-freq" class="anim-readout">7 MHz — λ/2 = 21.4 m</output>
+      </div>
+    </div>
+
+    <h3 class="section-title">Voltage Distribution</h3>
+
     <p>Voltage does the opposite:</p>
     <ul>
       <li><strong>Zero voltage</strong> at the centre (low impedance point)</li>
       <li><strong>Maximum voltage</strong> at the tips (high impedance — open circuit)</li>
     </ul>
+
     <p>This is exactly like a vibrating guitar string: fixed at both ends (that's where the string is pinned), maximum movement in the middle. The antenna wire is "fixed" electrically at the tips (zero current) and "moves" most at the centre (maximum current).</p>
 
-    <div class="callout callout--info">
-      <span class="callout-icon">🔧</span>
-      <div class="callout-text">
-        <strong>Interactive (future):</strong> Standing wave current visualiser — slider controls frequency, wire lights up showing current nodes and antinodes.
+    <div class="analogy">
+      <span class="analogy-icon">&#127928;</span>
+      <div class="analogy-content">
+        <h4>Guitar String Analogy</h4>
+        <p>A guitar string plucked in the middle vibrates most at the centre and not at all where it's pinned at the nut and bridge. The dipole is identical — current "vibrates" most at the feedpoint and is pinned to zero at both open ends.</p>
       </div>
     </div>
-  </div>
 
-  <!-- ─── CHAPTER 04: How the Current Creates Radiation ─── -->
-  <div class="chapter" id="radiation-mechanism">
+    <!-- VISUAL 3: Voltage / Current Side-by-Side -->
+    <div class="diagram-card glow-h" id="card-vi-dist">
+      <div class="diagram-label">Animation — Current &amp; Voltage Distribution (simultaneous)</div>
+      <div class="dual-canvas-row">
+        <div class="canvas-panel">
+          <div class="canvas-panel-label e-label">Current I(x)</div>
+          <canvas id="cv-current" data-aspect="0.7"
+            aria-label="Current profile along dipole: half-sine curve in amber, maximum at feedpoint centre, zero at tips"></canvas>
+        </div>
+        <div class="canvas-panel">
+          <div class="canvas-panel-label h-label">Voltage V(x)</div>
+          <canvas id="cv-voltage" data-aspect="0.7"
+            aria-label="Voltage profile along dipole: inverse distribution in cyan, zero at feedpoint, maximum at tips"></canvas>
+        </div>
+      </div>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:12px;">current and voltage are inverses — exactly like a guitar string</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4: HOW CURRENT CREATES RADIATION -->
+  <section class="chapter" id="ch-radiation">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 04</span>
+      <span class="chapter-num">04</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>How the Current Creates Radiation</h2>
+    <h2 class="chapter-title">How the Current Creates Radiation</h2>
 
     <p>Each small segment of the wire carrying AC current radiates a tiny EM wave. But here's the clever part: because the current varies along the wire (sinusoidal distribution), the radiation from all these tiny segments <strong>adds up constructively</strong> in some directions and <strong>cancels out</strong> in others.</p>
 
     <p>The result is a specific <strong>radiation pattern</strong> — a shape describing where the energy goes. For a dipole, it's a doughnut (toroid) shape around the wire. We'll explore patterns in detail in Lesson 3.</p>
-  </div>
 
-  <!-- ─── CHAPTER 05: Reciprocity ─── -->
-  <div class="chapter" id="reciprocity">
+    <!-- VISUAL 4: Radiation Building Step-by-Step -->
+    <div class="diagram-card glow-em" id="card-radiation-build">
+      <div class="diagram-label">Animation — How Radiation Builds</div>
+      <canvas id="cv-radiation" data-aspect="0.75"
+        aria-label="Step-by-step animation: individual dipole segment radiation arrows, then combined contributions, then the final donut-shaped radiation pattern"></canvas>
+      <div id="step-label" class="step-label">Step 1 — each wire segment radiates individually</div>
+      <div class="anim-controls">
+        <button class="anim-btn" id="btn-rad-prev" aria-label="Previous step">&larr; Prev</button>
+        <span class="anim-readout" id="rad-step-count">Step 1 / 3</span>
+        <button class="anim-btn" id="btn-rad-next" aria-label="Next step">Next &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 5: RECIPROCITY -->
+  <section class="chapter" id="ch-reciprocity">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 05</span>
+      <span class="chapter-num">05</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>The Receive Side: Reciprocity</h2>
+    <h2 class="chapter-title">The Receive Side: Reciprocity</h2>
 
     <p>So far we've talked about transmitting — current in the wire creating EM waves. But antennas work the other way around too.</p>
 
     <p>When an EM wave passes a wire, the electric field component pushes on the electrons in the wire, causing them to move — creating a current. This current can be amplified and processed by a receiver. The antenna has converted the EM wave back into an electrical signal.</p>
 
-    <div class="callout callout--success">
-      <span class="callout-icon">⚡</span>
+    <p>The <strong>reciprocity theorem</strong> states:</p>
+
+    <div class="callout">
+      <span class="callout-icon">&#8596;</span>
       <div class="callout-text">
-        <strong>The Reciprocity Theorem:</strong> An antenna has the same radiation pattern, gain, and impedance whether it is transmitting or receiving.
+        An antenna has the same radiation pattern, gain, and impedance whether it is <strong>transmitting or receiving</strong>.
       </div>
     </div>
 
@@ -219,93 +739,874 @@
       <li>All the theory we develop works in both directions</li>
     </ul>
 
-    <div class="callout callout--info">
-      <span class="callout-icon">🔧</span>
-      <div class="callout-text">
-        <strong>Interactive:</strong> <a href="../../../resources/tx-rx-complete.html">TX/RX Chain Demo</a><br>
-        Explore how the transmit and receive chains mirror each other. The antenna sits at the boundary between the electrical world and the electromagnetic world.
+    <!-- VISUAL 5: TX/RX Reciprocity -->
+    <div class="diagram-card glow-h" id="card-reciprocity">
+      <div class="diagram-label">Interactive — Reciprocity: TX and RX</div>
+      <div class="mode-row">
+        <button class="mode-btn active-tx" id="btn-tx" aria-pressed="true">TX &mdash; Transmit</button>
+        <button class="mode-btn" id="btn-rx" aria-pressed="false">RX &mdash; Receive</button>
       </div>
+      <canvas id="cv-reciprocity" data-aspect="0.42"
+        aria-label="Interactive demonstrating reciprocity: TX mode shows signal generator feeding dipole with EM waves propagating outward; RX mode shows incoming wave inducing current in same dipole feeding a receiver"></canvas>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:10px;">Reciprocity Theorem — same antenna, same pattern, both directions</p>
     </div>
-  </div>
+  </section>
 
-  <!-- ─── CHAPTER 06: Preview ─── -->
-  <div class="chapter" id="preview">
+  <!-- CHAPTER 6: BEYOND THE DIPOLE -->
+  <section class="chapter" id="ch-beyond">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 06</span>
+      <span class="chapter-num">06</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>Beyond the Dipole: A Preview</h2>
+    <h2 class="chapter-title">Beyond the Dipole: A Preview</h2>
 
     <p>The half-wave dipole is the starting point, but antenna engineering is about finding clever arrangements of conductors that shape the radiation in useful ways. Everything from a tiny mobile phone antenna to a massive radio telescope dish is doing the same fundamental thing: creating or capturing EM waves using currents in conductors.</p>
 
     <p>In the coming lessons we'll see how different conductor arrangements create different radiation patterns (Lesson 3), why certain types suit certain jobs (Lesson 4), and how the orientation of the fields matters (Lesson 5).</p>
-  </div>
+  </section>
 
-  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
-  <div class="chapter knowledge-check" id="knowledge-check">
+  <!-- SUMMARY -->
+  <section class="chapter" id="ch-summary">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 07</span>
+      <span class="chapter-num">Summary</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>Knowledge Check</h2>
-    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
-    <ol>
-      <li>
-        <strong>Why does a wire carrying DC not radiate EM waves?</strong>
-        <!-- DC = steady current = no acceleration. Radiation requires accelerating charges. -->
-      </li>
-      <li>
-        <strong>Where is the current maximum on a half-wave dipole?</strong>
-        <!-- At the centre (feedpoint). It follows a sinusoidal distribution, peaking at the middle. -->
-      </li>
-      <li>
-        <strong>Where is the voltage maximum on a half-wave dipole?</strong>
-        <!-- At the tips (ends). Voltage and current are 180° out of phase along the wire. -->
-      </li>
-      <li>
-        <strong>If you design an antenna for transmitting at 145 MHz, can you use it for receiving at 145 MHz?</strong>
-        <!-- Yes — reciprocity. The pattern, gain, and impedance are the same in both directions. -->
-      </li>
-      <li>
-        <strong>What type of current is needed for an antenna to radiate: AC or DC?</strong>
-        <!-- AC — the alternating current creates the accelerating charges necessary for radiation. -->
-      </li>
-    </ol>
-  </div>
-
-  <!-- ─── Summary ─── -->
-  <div class="callout callout--success" style="margin-top: 32px;">
-    <span class="callout-icon">✅</span>
-    <div class="callout-text">
-      <strong>Lesson 2 Summary</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li><strong>Accelerating charges create EM radiation</strong> — this is the fundamental mechanism behind every antenna</li>
-        <li>DC in a wire creates static fields but no radiation; AC creates radiation</li>
-        <li>A half-wave dipole has <strong>maximum current at the centre</strong> and <strong>zero current at the tips</strong> — a sinusoidal standing wave</li>
-        <li>Voltage distribution is the inverse: zero at centre, maximum at tips</li>
-        <li><strong>Reciprocity:</strong> an antenna works identically for transmitting and receiving</li>
-        <li>The half-wave dipole is the foundation — all other antenna designs are variations on arranging conductors to shape the radiation</li>
-      </ul>
+    <h2 class="chapter-title">Key Takeaways</h2>
+    <div class="summary-grid">
+      <div class="summary-card e-card">
+        <h4>Acceleration Creates Radiation</h4>
+        <p><strong>Accelerating charges produce EM radiation.</strong> DC current flows steadily — no acceleration, no radiation. AC constantly reverses direction — radiation results.</p>
+      </div>
+      <div class="summary-card h-card">
+        <h4>Standing Wave</h4>
+        <p>A half-wave dipole at resonance forms a sinusoidal <strong>standing wave</strong>: maximum current at the feedpoint (centre), zero current at the tips (ends).</p>
+      </div>
+      <div class="summary-card em-card">
+        <h4>Voltage is Inverse</h4>
+        <p>Voltage distribution is the <strong>inverse</strong> of current: zero at centre, maximum at tips. Low impedance at feedpoint (~73 ohms), high impedance at tips.</p>
+      </div>
+      <div class="summary-card r-card">
+        <h4>Reciprocity</h4>
+        <p>An antenna has <strong>identical pattern, gain, and impedance</strong> whether transmitting or receiving. Design for TX and you get RX for free.</p>
+      </div>
     </div>
+  </section>
+
+  <!-- KNOWLEDGE CHECK -->
+  <section class="chapter" id="ch-knowledge-check">
+    <div class="chapter-header">
+      <span class="chapter-num">Knowledge Check</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Test Your Understanding</h2>
+
+    <div class="self-check-group">
+      <h3>Five Questions</h3>
+
+      <div class="self-check">
+        <h4>Question 1</h4>
+        <p>Why does a wire carrying DC not radiate EM waves?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="ans-1">Show answer</button>
+        <div class="self-check__reveal" id="ans-1">
+          <p>DC means <strong>steady, constant current</strong> — the electrons flow at a fixed speed and direction. Radiation requires <strong>accelerating charges</strong>. With DC, nothing is accelerating or changing, so no EM wave is produced. There is a static magnetic field around the wire and a static electric field from the voltage source, but neither propagates as a wave.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>Question 2</h4>
+        <p>Where is the current maximum on a half-wave dipole?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="ans-2">Show answer</button>
+        <div class="self-check__reveal" id="ans-2">
+          <p>At the <strong>centre — the feedpoint</strong>. The current follows a sinusoidal (half-sine) distribution along the wire, peaking at the middle where it is fed, and falling to zero at both open tips. The shape is: I(x) = I_max &times; sin(&pi; &times; position / total_length).</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>Question 3</h4>
+        <p>Where is the voltage maximum on a half-wave dipole?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="ans-3">Show answer</button>
+        <div class="self-check__reveal" id="ans-3">
+          <p>At the <strong>tips (the ends)</strong>. Voltage and current distributions are inverses of each other — where current is maximum (centre), voltage is minimum (near zero), and where current is zero (tips), voltage is maximum. This makes the feedpoint a <strong>low-impedance point</strong> (approximately 73 &Omega; for a free-space dipole).</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>Question 4</h4>
+        <p>If you design an antenna for transmitting at 145 MHz, can you use it for receiving at 145 MHz?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="ans-4">Show answer</button>
+        <div class="self-check__reveal" id="ans-4">
+          <p><strong>Yes</strong> — this is exactly what the reciprocity theorem guarantees. The antenna's radiation pattern, gain, and impedance are <strong>identical in both directions</strong> at the same frequency. Design it for TX and it will work equally well for RX. This is why every repeater station uses the same antenna for transmitting and receiving (separated by a duplexer).</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>Question 5</h4>
+        <p>What type of current is needed for an antenna to radiate: AC or DC?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="ans-5">Show answer</button>
+        <div class="self-check__reveal" id="ans-5">
+          <p><strong>AC — alternating current</strong>. The alternating current constantly reverses direction, meaning the electrons are perpetually <strong>accelerating and decelerating</strong>. This acceleration is the mechanism that radiates EM energy. A DC current, once established, produces only static fields that do not propagate as waves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAV LINKS -->
+  <div class="nav-cards">
+    <a class="nav-card prev" href="lesson-01-em-radiation.html">
+      <span class="nav-card-dir">&larr; Previous</span>
+      <span class="nav-card-title">Lesson 1 — What is EM Radiation?</span>
+    </a>
+    <a class="nav-card next" href="lesson-03-radiation-patterns.html">
+      <span class="nav-card-dir">Next &rarr;</span>
+      <span class="nav-card-title">Lesson 3 — Radiation Patterns</span>
+    </a>
   </div>
 
-  <!-- ─── Lesson Navigation ─── -->
-  <div class="lesson-nav">
-    <a href="lesson-01-em-radiation.html" class="btn btn--ghost">← Lesson 1: EM Radiation</a>
-    <a href="lesson-03-radiation-patterns.html" class="btn btn--primary">Next: Lesson 3 — Radiation Patterns →</a>
-  </div>
+</div><!-- /container -->
 
-</div><!-- /.article -->
-</div><!-- /.container -->
-
-<!-- ═══ FOOTER ═══ -->
-<footer class="site-footer">
+<footer>
   <div class="container">
-    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
-    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+    <p>Lesson 2 &middot; Unit 1 — How Antennas Work &middot; <a href="../index.html">Course Index</a></p>
   </div>
 </footer>
 
+<script>
+/* ============================================================
+   SHARED CONSTANTS & CANVAS UTILITY
+   ============================================================ */
+var AMBER  = '#f59e0b';
+var CYAN   = '#06b6d4';
+var PURPLE = '#a78bfa';
+var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setupCv(id) {
+  var cv  = document.getElementById(id);
+  if (!cv) return null;
+  var dpr = window.devicePixelRatio || 1;
+  var w   = cv.parentElement.getBoundingClientRect().width || 600;
+  var asp = parseFloat(cv.dataset.aspect) || 0.4;
+  var h   = w * asp;
+  cv.width  = Math.round(w * dpr);
+  cv.height = Math.round(h * dpr);
+  var ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx: ctx, w: w, h: h };
+}
+
+/* ============================================================
+   VISUAL 1 — DC vs AC RADIATION
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-dc-ac');
+  if (!cv) return;
+  var ctx, w, h, rafId;
+  var t = 0;
+  var playing = !reducedMotion;
+
+  function setup() {
+    var r = setupCv('cv-dc-ac');
+    if (!r) return;
+    ctx = r.ctx; w = r.w; h = r.h;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var half = w / 2;
+    var cy   = h / 2;
+
+    // Divider
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath(); ctx.moveTo(half, 10); ctx.lineTo(half, h - 10); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // ── LEFT PANEL: DC ──
+    var dcCx  = half / 2;
+    var wSpan = half * 0.72;
+    var wL    = dcCx - wSpan / 2;
+    var wR    = dcCx + wSpan / 2;
+
+    ctx.strokeStyle = AMBER;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(wL, cy); ctx.lineTo(wR, cy); ctx.stroke();
+
+    // Static perpendicular field lines
+    var nL = 5;
+    var sp = wSpan / (nL + 1);
+    for (var i = 1; i <= nL; i++) {
+      var lx = wL + i * sp;
+      for (var d = -1; d <= 1; d += 2) {
+        ctx.strokeStyle = 'rgba(245,158,11,0.28)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(lx, cy + d * 20); ctx.stroke();
+        // Arrowhead
+        var ay = cy + d * 20;
+        ctx.beginPath();
+        ctx.moveTo(lx - 4, ay - d * 6);
+        ctx.lineTo(lx, ay);
+        ctx.lineTo(lx + 4, ay - d * 6);
+        ctx.stroke();
+      }
+    }
+
+    ctx.textAlign = 'center';
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = AMBER;
+    ctx.fillText('DC', dcCx, h - 26);
+    ctx.font = '300 10px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.65)';
+    ctx.fillText('no radiation', dcCx, h - 13);
+    ctx.font = '300 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(245,158,11,0.38)';
+    ctx.fillText('static E-field only', dcCx, 15);
+
+    // ── RIGHT PANEL: AC ──
+    var acCx = half + half / 2;
+    var aL   = half + half * 0.13;
+    var aR   = w   - half * 0.13;
+    var phase = Math.sin(t * 2.8);
+
+    ctx.strokeStyle = phase > 0 ? AMBER : CYAN;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(aL, cy); ctx.lineTo(aR, cy); ctx.stroke();
+
+    // Current direction arrow
+    var arDir = phase > 0 ? 1 : -1;
+    var arX   = acCx + arDir * 16;
+    ctx.fillStyle = phase > 0 ? AMBER : CYAN;
+    ctx.beginPath();
+    ctx.moveTo(arX, cy - 5);
+    ctx.lineTo(arX + arDir * 10, cy);
+    ctx.lineTo(arX, cy + 5);
+    ctx.fill();
+
+    // Expanding elliptical wavefronts
+    var period = 80;
+    for (var j = 0; j < 5; j++) {
+      var age   = ((t * 28 + j * (period / 5)) % period);
+      var alpha = (1 - age / period) * 0.75;
+      var rx    = age * 0.52 + 4;
+      var ry    = age * 0.28 + 2;
+      ctx.beginPath();
+      ctx.ellipse(acCx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(167,139,250,' + alpha + ')';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    ctx.textAlign = 'center';
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = PURPLE;
+    ctx.fillText('AC', acCx, h - 26);
+    ctx.font = '300 10px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = 'rgba(148,163,184,0.65)';
+    ctx.fillText('radiates', acCx, h - 13);
+    ctx.font = '300 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(167,139,250,0.38)';
+    ctx.fillText('EM wavefronts expanding', acCx, 15);
+
+    if (playing) { t += 0.025; rafId = requestAnimationFrame(draw); }
+  }
+
+  function init() {
+    setup();
+    if (reducedMotion) { draw(); return; }
+    rafId = requestAnimationFrame(draw);
+    var ro = new ResizeObserver(function() {
+      cancelAnimationFrame(rafId);
+      setup();
+      if (playing) rafId = requestAnimationFrame(draw); else draw();
+    });
+    ro.observe(cv.parentElement);
+  }
+
+  document.getElementById('btn-dc-ac-play').addEventListener('click', function() {
+    playing = !playing;
+    this.textContent = playing ? '\u2016 Pause' : '\u25B6 Play';
+    document.getElementById('dc-ac-readout').textContent = playing ? 'AC \u2014 radiating' : 'paused';
+    if (playing) rafId = requestAnimationFrame(draw);
+    else cancelAnimationFrame(rafId);
+  });
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+
+/* ============================================================
+   VISUAL 2 — STANDING WAVE VISUALISER
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-standing-wave');
+  if (!cv) return;
+  var ctx, w, h, rafId;
+  var t = 0;
+  var freq = 7;
+
+  function setup() {
+    var r = setupCv('cv-standing-wave');
+    if (!r) return;
+    ctx = r.ctx; w = r.w; h = r.h;
+  }
+
+  function updateReadout(f) {
+    var half = (150 / f).toFixed(1);
+    document.getElementById('out-freq').textContent = f + ' MHz \u2014 \u03BB/2 = ' + half + ' m';
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var cy     = h * 0.5;
+    var wStart = w * 0.08;
+    var wEnd   = w * 0.92;
+    var wLen   = wEnd - wStart;
+    var nSeg   = 120;
+    var segW   = wLen / nSeg;
+    var amp    = Math.abs(Math.sin(t * 2.2));
+
+    for (var i = 0; i < nSeg; i++) {
+      var xNorm   = i / nSeg;
+      var current = Math.sin(Math.PI * xNorm) * amp;
+      var x       = wStart + i * segW;
+      var dr = Math.round(30  + current * 215);
+      var dg = Math.round(41  + current * 117);
+      var db = Math.round(59  + current * -48);
+      ctx.fillStyle = 'rgb(' + dr + ',' + dg + ',' + db + ')';
+      ctx.fillRect(x, cy - 4, segW + 1, 8);
+      if (current > 0.45) {
+        ctx.fillStyle = 'rgba(245,158,11,' + ((current - 0.45) * 0.35) + ')';
+        ctx.fillRect(x - 1, cy - 12, segW + 2, 24);
+      }
+    }
+
+    // Tip markers
+    ctx.fillStyle = 'rgba(100,116,139,0.55)';
+    ctx.beginPath(); ctx.arc(wStart, cy, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(wEnd,   cy, 5, 0, Math.PI * 2); ctx.fill();
+
+    // Feedpoint dashed line
+    var cx = wStart + wLen / 2;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(cx, cy - 28); ctx.lineTo(cx, cy + 28); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+
+    ctx.font = '300 9px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(245,158,11,0.7)';
+    ctx.fillText('feedpoint', cx, cy - 36);
+    ctx.fillStyle = 'rgba(245,158,11,0.5)';
+    ctx.fillText('max current', cx, cy + 44);
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(100,116,139,0.6)';
+    ctx.fillText('tip / zero', wStart - 2, cy - 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('zero / tip', wEnd + 2, cy - 14);
+
+    // λ/2 span arrow
+    var arY = cy + 30;
+    ctx.strokeStyle = 'rgba(167,139,250,0.22)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(wStart, arY); ctx.lineTo(wEnd, arY); ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.22)';
+    ctx.beginPath(); ctx.moveTo(wStart, arY); ctx.lineTo(wStart + 8, arY - 4); ctx.lineTo(wStart + 8, arY + 4); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(wEnd, arY);   ctx.lineTo(wEnd - 8, arY - 4);   ctx.lineTo(wEnd - 8, arY + 4);   ctx.fill();
+    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(167,139,250,0.38)';
+    ctx.fillText('\u03BB/2', cx, arY + 14);
+
+    if (!reducedMotion) { t += 0.03; rafId = requestAnimationFrame(draw); }
+  }
+
+  function init() {
+    setup(); updateReadout(freq);
+    if (reducedMotion) { draw(); return; }
+    rafId = requestAnimationFrame(draw);
+    var ro = new ResizeObserver(function() {
+      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
+    });
+    ro.observe(cv.parentElement);
+  }
+
+  document.getElementById('sl-freq').addEventListener('input', function() {
+    freq = parseInt(this.value); updateReadout(freq);
+  });
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+
+/* ============================================================
+   VISUAL 3 — VOLTAGE / CURRENT DUAL CANVAS
+   ============================================================ */
+(function() {
+  var cvI = document.getElementById('cv-current');
+  var cvV = document.getElementById('cv-voltage');
+  if (!cvI || !cvV) return;
+  var ctxI, wI, hI, ctxV, wV, hV, rafId;
+  var t = 0;
+
+  function setup() {
+    var rI = setupCv('cv-current');
+    var rV = setupCv('cv-voltage');
+    if (!rI || !rV) return;
+    ctxI = rI.ctx; wI = rI.w; hI = rI.h;
+    ctxV = rV.ctx; wV = rV.w; hV = rV.h;
+  }
+
+  function drawPanel(ctx, w, h, t, isVoltage) {
+    ctx.clearRect(0, 0, w, h);
+    var wireY  = h * 0.62;
+    var padX   = w * 0.08;
+    var maxAmp = h * 0.4 * Math.abs(Math.sin(t * 1.8));
+    var color  = isVoltage ? CYAN : AMBER;
+
+    // Wire
+    ctx.strokeStyle = 'rgba(100,116,139,0.45)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(padX, wireY); ctx.lineTo(w - padX, wireY); ctx.stroke();
+
+    // Tip markers
+    ctx.fillStyle = 'rgba(100,116,139,0.45)';
+    ctx.beginPath(); ctx.arc(padX, wireY, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w - padX, wireY, 4, 0, Math.PI * 2); ctx.fill();
+
+    // Filled area
+    ctx.beginPath(); ctx.moveTo(padX, wireY);
+    for (var x = padX; x <= w - padX; x++) {
+      var xN  = (x - padX) / (w - 2 * padX);
+      var val = (isVoltage ? Math.abs(Math.cos(Math.PI * xN)) : Math.sin(Math.PI * xN)) * maxAmp;
+      ctx.lineTo(x, wireY - val);
+    }
+    ctx.lineTo(w - padX, wireY); ctx.closePath();
+    ctx.fillStyle = isVoltage ? 'rgba(6,182,212,0.18)' : 'rgba(245,158,11,0.18)'; ctx.fill();
+
+    // Curve stroke
+    ctx.beginPath(); ctx.moveTo(padX, wireY);
+    for (var x2 = padX; x2 <= w - padX; x2++) {
+      var xN2  = (x2 - padX) / (w - 2 * padX);
+      var val2 = (isVoltage ? Math.abs(Math.cos(Math.PI * xN2)) : Math.sin(Math.PI * xN2)) * maxAmp;
+      ctx.lineTo(x2, wireY - val2);
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+
+    // Labels
+    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+    if (!isVoltage) {
+      ctx.fillStyle = 'rgba(245,158,11,0.7)';
+      ctx.fillText('max I', w / 2, wireY - maxAmp - 7);
+      ctx.fillStyle = 'rgba(100,116,139,0.55)';
+      ctx.fillText('feedpoint', w / 2, h - 12);
+    } else {
+      ctx.fillStyle = 'rgba(6,182,212,0.7)';
+      if (maxAmp > 4) {
+        ctx.textAlign = 'left';  ctx.fillText('max V', padX + 4, wireY - maxAmp - 7);
+        ctx.textAlign = 'right'; ctx.fillText('max V', w - padX - 4, wireY - maxAmp - 7);
+      }
+      ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(100,116,139,0.55)';
+      ctx.fillText('V \u2248 0 here', w / 2, wireY + 16);
+      ctx.fillText('feedpoint', w / 2, h - 12);
+    }
+  }
+
+  function draw() {
+    drawPanel(ctxI, wI, hI, t, false);
+    drawPanel(ctxV, wV, hV, t, true);
+    if (!reducedMotion) { t += 0.025; rafId = requestAnimationFrame(draw); }
+  }
+
+  function init() {
+    setup();
+    if (reducedMotion) { draw(); return; }
+    rafId = requestAnimationFrame(draw);
+    var ro = new ResizeObserver(function() {
+      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
+    });
+    ro.observe(cvI.parentElement.parentElement);
+  }
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cvI);
+}());
+
+/* ============================================================
+   VISUAL 4 — RADIATION BUILDING STEPS
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-radiation');
+  if (!cv) return;
+  var ctx, w, h, rafId;
+  var step = 0;
+  var stepT = 0;
+  var LABELS = [
+    'Step 1 \u2014 each wire segment radiates individually',
+    'Step 2 \u2014 contributions combine (constructive + destructive)',
+    'Step 3 \u2014 final donut-shaped radiation pattern emerges'
+  ];
+
+  function setup() {
+    var r = setupCv('cv-radiation');
+    if (!r) return;
+    ctx = r.ctx; w = r.w; h = r.h;
+  }
+
+  function drawFig8(cx, cy, scale, alpha) {
+    ctx.beginPath();
+    for (var theta = 0; theta <= Math.PI * 2 + 0.02; theta += 0.02) {
+      var r  = Math.pow(Math.sin(theta), 2) * scale;
+      var sx = cx + r * Math.sin(theta);
+      var sy = cy - r * Math.cos(theta);
+      if (theta < 0.03) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = 'rgba(167,139,250,' + alpha + ')';
+    ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,' + (alpha * 0.08) + ')'; ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var cx   = w / 2;
+    var cy   = h / 2;
+    var dLen = Math.min(h * 0.36, w * 0.22);
+    var nSeg = 8;
+
+    // Dipole wire
+    ctx.strokeStyle = 'rgba(245,158,11,0.45)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(cx, cy - dLen); ctx.lineTo(cx, cy + dLen); ctx.stroke();
+
+    // Feedpoint
+    ctx.fillStyle = AMBER;
+    ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(245,158,11,0.55)'; ctx.fillText('feedpoint', cx + 10, cy + 4);
+
+    var animT = reducedMotion ? 1 : stepT;
+
+    if (step === 0) {
+      // Individual segment arrows
+      var segH = (dLen * 2) / nSeg;
+      for (var i = 0; i < nSeg; i++) {
+        var segY  = (cy - dLen) + (i + 0.5) * segH;
+        var iNorm = Math.sin(Math.PI * ((i + 0.5) / nSeg));
+        var pulse = 0.7 + 0.3 * Math.sin(animT * 2 + i * 0.8);
+        var aLen  = (12 + iNorm * 22) * pulse;
+        for (var d2 = -1; d2 <= 1; d2 += 2) {
+          var ex = cx + d2 * aLen;
+          ctx.strokeStyle = 'rgba(245,158,11,' + ((0.35 + iNorm * 0.5) * pulse) + ')';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(cx + d2 * 7, segY); ctx.lineTo(ex, segY); ctx.stroke();
+          ctx.fillStyle = 'rgba(245,158,11,' + ((0.35 + iNorm * 0.5) * pulse) + ')';
+          ctx.beginPath();
+          ctx.moveTo(ex, segY);
+          ctx.lineTo(ex - d2 * 6, segY - 4);
+          ctx.lineTo(ex - d2 * 6, segY + 4);
+          ctx.fill();
+        }
+      }
+    }
+
+    if (step === 1) {
+      // Combined arrows + hint of pattern
+      var segH2 = (dLen * 2) / nSeg;
+      for (var i2 = 0; i2 < nSeg; i2++) {
+        var segY2  = (cy - dLen) + (i2 + 0.5) * segH2;
+        var iNorm2 = Math.sin(Math.PI * ((i2 + 0.5) / nSeg));
+        var pulse2 = 0.7 + 0.3 * Math.sin(animT * 2 + i2 * 0.8);
+        // Faded individual
+        for (var d3 = -1; d3 <= 1; d3 += 2) {
+          ctx.strokeStyle = 'rgba(245,158,11,0.18)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(cx + d3 * 7, segY2); ctx.lineTo(cx + d3 * 22, segY2); ctx.stroke();
+        }
+        // Purple combined
+        var combLen = iNorm2 * 32 * (0.7 + 0.3 * Math.sin(animT * 1.4));
+        for (var d4 = -1; d4 <= 1; d4 += 2) {
+          var ex2 = cx + d4 * (7 + combLen);
+          ctx.strokeStyle = 'rgba(167,139,250,' + (0.3 + iNorm2 * 0.55) + ')';
+          ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx + d4 * 7, segY2); ctx.lineTo(ex2, segY2); ctx.stroke();
+          ctx.fillStyle = 'rgba(167,139,250,' + (0.3 + iNorm2 * 0.55) + ')';
+          ctx.beginPath();
+          ctx.moveTo(ex2, segY2);
+          ctx.lineTo(ex2 - d4 * 7, segY2 - 4);
+          ctx.lineTo(ex2 - d4 * 7, segY2 + 4);
+          ctx.fill();
+        }
+      }
+      drawFig8(cx, cy, Math.min(w * 0.26, h * 0.32), 0.22 + 0.1 * Math.sin(animT * 0.8));
+    }
+
+    if (step === 2) {
+      var patScale = Math.min(w * 0.35, h * 0.38);
+      var patAlpha = reducedMotion ? 0.8 : Math.min(0.82, animT * 0.045);
+      drawFig8(cx, cy, patScale, patAlpha);
+      ctx.font = '300 9px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(167,139,250,0.55)';
+      ctx.fillText('max radiation', cx - patScale - 6, cy + 4);
+      ctx.textAlign = 'left';
+      ctx.fillText('max radiation', cx + patScale + 6, cy + 4);
+      ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(100,116,139,0.45)';
+      ctx.fillText('null (dipole axis)', cx, cy - dLen - 16);
+      ctx.fillText('null (dipole axis)', cx, cy + dLen + 18);
+    }
+
+    if (!reducedMotion) { stepT += 0.04; rafId = requestAnimationFrame(draw); }
+  }
+
+  function setStep(s) {
+    step  = Math.max(0, Math.min(2, s));
+    stepT = 0;
+    document.getElementById('step-label').textContent     = LABELS[step];
+    document.getElementById('rad-step-count').textContent = 'Step ' + (step + 1) + ' / 3';
+  }
+
+  function init() {
+    setup(); setStep(0);
+    if (reducedMotion) { draw(); return; }
+    rafId = requestAnimationFrame(draw);
+    var ro = new ResizeObserver(function() {
+      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
+    });
+    ro.observe(cv.parentElement);
+  }
+
+  document.getElementById('btn-rad-prev').addEventListener('click', function() { setStep(step - 1); });
+  document.getElementById('btn-rad-next').addEventListener('click', function() { setStep(step + 1); });
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+
+/* ============================================================
+   VISUAL 5 — TX / RX RECIPROCITY
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-reciprocity');
+  if (!cv) return;
+  var ctx, w, h, rafId;
+  var t    = 0;
+  var mode = 'tx';
+
+  function setup() {
+    var r = setupCv('cv-reciprocity');
+    if (!r) return;
+    ctx = r.ctx; w = r.w; h = r.h;
+  }
+
+  function roundRect(x, y, rw, rh, rad) {
+    ctx.beginPath();
+    ctx.moveTo(x + rad, y);
+    ctx.lineTo(x + rw - rad, y); ctx.quadraticCurveTo(x + rw, y, x + rw, y + rad);
+    ctx.lineTo(x + rw, y + rh - rad); ctx.quadraticCurveTo(x + rw, y + rh, x + rw - rad, y + rh);
+    ctx.lineTo(x + rad, y + rh); ctx.quadraticCurveTo(x, y + rh, x, y + rh - rad);
+    ctx.lineTo(x, y + rad); ctx.quadraticCurveTo(x, y, x + rad, y);
+    ctx.closePath();
+  }
+
+  function drawWaveSnippet(ox, oy, ww, hh, color) {
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (var i2 = 0; i2 <= ww; i2++) {
+      var wy = oy + Math.sin((i2 / ww) * Math.PI * 3) * hh;
+      if (i2 === 0) ctx.moveTo(ox + i2, wy); else ctx.lineTo(ox + i2, wy);
+    }
+    ctx.stroke();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var cy   = h / 2;
+    var antX = w / 2;
+    var antH = Math.min(h * 0.34, w * 0.2);
+    var isTX = mode === 'tx';
+    var animT = reducedMotion ? 0.5 : t;
+
+    // ── Antenna ──
+    ctx.strokeStyle = 'rgba(245,158,11,0.5)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(antX, cy - antH); ctx.lineTo(antX, cy - 5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(antX, cy + 5);   ctx.lineTo(antX, cy + antH); ctx.stroke();
+
+    // Feedpoint glow
+    var glow = Math.abs(Math.sin(animT * 3)) * 0.65 + 0.25;
+    ctx.fillStyle = 'rgba(245,158,11,' + glow + ')';
+    ctx.beginPath(); ctx.arc(antX, cy, 5, 0, Math.PI * 2); ctx.fill();
+
+    // Coax stub
+    ctx.strokeStyle = 'rgba(100,116,139,0.35)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(antX, cy + antH); ctx.lineTo(antX, cy + antH + 16); ctx.stroke();
+
+    // Radiation pattern outline (always shown)
+    var patScale = Math.min(w * 0.15, h * 0.28);
+    ctx.beginPath();
+    for (var theta = 0; theta <= Math.PI * 2 + 0.02; theta += 0.02) {
+      var r2 = Math.pow(Math.sin(theta), 2) * patScale;
+      var sx = antX + r2 * Math.sin(theta);
+      var sy = cy   - r2 * Math.cos(theta);
+      if (theta < 0.03) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = 'rgba(167,139,250,0.18)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle   = 'rgba(167,139,250,0.04)'; ctx.fill();
+
+    var boxW = Math.min(w * 0.15, 90);
+    var boxH = h * 0.3;
+    var boxY = cy - boxH / 2;
+
+    if (isTX) {
+      // Signal generator box (left)
+      var genX = w * 0.05;
+      ctx.fillStyle = 'rgba(245,158,11,0.08)';
+      ctx.strokeStyle = 'rgba(245,158,11,0.28)'; ctx.lineWidth = 1;
+      roundRect(genX, boxY, boxW, boxH, 6); ctx.fill(); ctx.stroke();
+      drawWaveSnippet(genX + 6, cy, boxW - 12, boxH * 0.2, AMBER);
+      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(245,158,11,0.65)'; ctx.fillText('TX', genX + boxW / 2, boxY + boxH + 13);
+      ctx.fillStyle = 'rgba(100,116,139,0.5)'; ctx.fillText('signal gen', genX + boxW / 2, boxY + boxH + 25);
+
+      // Cable to antenna
+      var cX1 = genX + boxW, cX2 = antX - 7;
+      ctx.strokeStyle = 'rgba(245,158,11,' + (0.3 + 0.18 * Math.sin(animT * 3)) + ')';
+      ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(cX1, cy); ctx.lineTo(cX2, cy); ctx.stroke();
+      ctx.setLineDash([]);
+      var midX = (cX1 + cX2) / 2 + 10;
+      ctx.fillStyle = 'rgba(245,158,11,0.45)';
+      ctx.beginPath(); ctx.moveTo(midX, cy); ctx.lineTo(midX - 8, cy - 4); ctx.lineTo(midX - 8, cy + 4); ctx.fill();
+
+      // Expanding wavefronts (right)
+      var wO = antX + 7, maxWX = w * 0.97;
+      for (var j = 0; j < 4; j++) {
+        var age2   = ((animT * 45 + j * 60) % 240);
+        var alpha2 = (1 - age2 / 240) * 0.72;
+        var rx2    = age2 * 0.38 + 5;
+        var ry2    = age2 * 0.22 + 3;
+        if (wO + rx2 < maxWX) {
+          ctx.beginPath();
+          ctx.ellipse(wO + rx2, cy, rx2 * 0.35, ry2, 0, -Math.PI / 2, Math.PI / 2);
+          ctx.strokeStyle = 'rgba(167,139,250,' + alpha2 + ')'; ctx.lineWidth = 1.5; ctx.stroke();
+        }
+      }
+
+      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(245,158,11,0.45)'; ctx.fillText('signal \u2192', w * 0.25, h * 0.88);
+      ctx.fillStyle = 'rgba(167,139,250,0.45)'; ctx.fillText('EM waves \u2192', w * 0.78, h * 0.88);
+
+    } else {
+      // Incoming wavefronts (from right)
+      var wO2 = w * 0.93;
+      for (var j2 = 0; j2 < 4; j2++) {
+        var age3   = ((animT * 45 + j2 * 60) % 240);
+        var alpha3 = (1 - age3 / 240) * 0.72;
+        var rx3    = age3 * 0.38 + 5;
+        var ry3    = age3 * 0.22 + 3;
+        var wX3    = wO2 - rx3;
+        if (wX3 > antX + 7) {
+          ctx.beginPath();
+          ctx.ellipse(wX3, cy, rx3 * 0.35, ry3, 0, Math.PI / 2, Math.PI * 1.5);
+          ctx.strokeStyle = 'rgba(6,182,212,' + alpha3 + ')'; ctx.lineWidth = 1.5; ctx.stroke();
+        }
+      }
+
+      // Receiver box (left)
+      var recX = w * 0.05;
+      ctx.fillStyle = 'rgba(6,182,212,0.08)';
+      ctx.strokeStyle = 'rgba(6,182,212,0.28)'; ctx.lineWidth = 1;
+      roundRect(recX, boxY, boxW, boxH, 6); ctx.fill(); ctx.stroke();
+      ctx.font = '16px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('\uD83C\uDFA7', recX + boxW / 2, cy + 6);
+      ctx.font = '300 9px "IBM Plex Mono", monospace';
+      ctx.fillStyle = 'rgba(6,182,212,0.65)'; ctx.fillText('RX', recX + boxW / 2, boxY + boxH + 13);
+      ctx.fillStyle = 'rgba(100,116,139,0.5)'; ctx.fillText('receiver', recX + boxW / 2, boxY + boxH + 25);
+
+      // Cable from antenna to receiver
+      var cX3 = recX + boxW, cX4 = antX - 7;
+      ctx.strokeStyle = 'rgba(6,182,212,' + (0.3 + 0.18 * Math.sin(animT * 3)) + ')';
+      ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(cX4, cy); ctx.lineTo(cX3, cy); ctx.stroke();
+      ctx.setLineDash([]);
+      var midX2 = (cX3 + cX4) / 2 - 10;
+      ctx.fillStyle = 'rgba(6,182,212,0.45)';
+      ctx.beginPath(); ctx.moveTo(midX2, cy); ctx.lineTo(midX2 + 8, cy - 4); ctx.lineTo(midX2 + 8, cy + 4); ctx.fill();
+
+      // Induced current in antenna
+      var indA = 0.3 + 0.28 * Math.abs(Math.sin(animT * 3));
+      ctx.strokeStyle = 'rgba(6,182,212,' + indA + ')'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(antX, cy - antH * 0.6); ctx.lineTo(antX, cy + antH * 0.6); ctx.stroke();
+
+      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(6,182,212,0.45)'; ctx.fillText('\u2190 EM waves', w * 0.78, h * 0.88);
+      ctx.fillStyle = 'rgba(6,182,212,0.45)'; ctx.fillText('\u2190 induced current', w * 0.25, h * 0.88);
+    }
+
+    if (!reducedMotion) { t += 0.025; rafId = requestAnimationFrame(draw); }
+  }
+
+  function setMode(m) {
+    mode = m;
+    var btnTX = document.getElementById('btn-tx');
+    var btnRX = document.getElementById('btn-rx');
+    btnTX.className = 'mode-btn' + (m === 'tx' ? ' active-tx' : '');
+    btnRX.className = 'mode-btn' + (m === 'rx' ? ' active-rx' : '');
+    btnTX.setAttribute('aria-pressed', String(m === 'tx'));
+    btnRX.setAttribute('aria-pressed', String(m === 'rx'));
+  }
+
+  function init() {
+    setup();
+    if (reducedMotion) { draw(); return; }
+    rafId = requestAnimationFrame(draw);
+    var ro = new ResizeObserver(function() {
+      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
+    });
+    ro.observe(cv.parentElement);
+  }
+
+  document.getElementById('btn-tx').addEventListener('click', function() { setMode('tx'); });
+  document.getElementById('btn-rx').addEventListener('click', function() { setMode('rx'); });
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  function update() {
+    var scrolled = window.scrollY;
+    var total    = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}());
+
+/* ============================================================
+   SELF-CHECK REVEAL TOGGLES
+   ============================================================ */
+document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target   = document.getElementById(this.dataset.target);
+    var expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    this.textContent = expanded ? 'Show answer' : 'Hide answer';
+    target.classList.toggle('open', !expanded);
+  });
+});
+</script>
 <script src="/assets/js/dev-pages.js"></script>
 <script src="/assets/js/dev-nav.js"></script>
 </body>
