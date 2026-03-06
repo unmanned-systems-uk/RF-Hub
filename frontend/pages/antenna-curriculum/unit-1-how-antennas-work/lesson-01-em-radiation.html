@@ -397,19 +397,26 @@ h3.section-title {
 .btn-reveal:hover { background: rgba(167,139,250,0.2); }
 .btn-reveal:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
 .self-check__reveal {
-  margin-top: 14px;
-  padding: 16px;
-  background: rgba(167,139,250,0.06);
-  border-left: 2px solid var(--accent-em);
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 16px;
+  margin-top: 0;
+  border-left: 2px solid transparent;
+  background: rgba(167,139,250,0);
   border-radius: 0 8px 8px 0;
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
+  transition: max-height 0.35s ease, padding 0.35s ease, margin 0.35s ease,
+              border-color 0.35s ease, background 0.35s ease;
 }
-.self-check__reveal.open { max-height: 600px; }
+.self-check__reveal.open {
+  max-height: 600px;
+  padding: 16px;
+  margin-top: 14px;
+  border-left: 2px solid var(--accent-em);
+  background: rgba(167,139,250,0.06);
+}
 .self-check__reveal strong { color: var(--text-primary); font-weight: 500; }
 .self-check__reveal code {
   font-family: 'IBM Plex Mono', monospace;
@@ -841,7 +848,74 @@ input[type="range"]::-moz-range-thumb {
     <h2 class="chapter-title">Wavelength, Frequency, and the Speed of Light</h2>
 
     <p>You just watched a wave form. Now let's measure it.</p>
-    <p>Every electromagnetic wave has three properties tied together by one relationship. But before we write the formula, we need to be comfortable with the numbers involved — because they're big.</p>
+    <p>The most important measurement is <strong>wavelength</strong> — the physical distance of one complete cycle. You saw it labelled on the wave animation in Section 3: the distance from one peak to the next. But wavelength isn't just a number on a diagram. It's a real, physical distance you can measure with a tape measure.</p>
+
+    <!-- wavelength-diagram: static SVG reference diagram -->
+    <div class="diagram-card glow-em" id="wavelength-diagram" role="img" aria-label="Sine wave diagram showing peak, trough, one complete cycle, wavelength as the distance of one cycle, and amplitude as the height from centre to peak">
+      <div class="diagram-label">Wavelength — the distance of one complete cycle</div>
+      <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;padding:8px 0;" aria-hidden="true">
+        <!-- Centre equilibrium line (dashed) -->
+        <line x1="55" y1="110" x2="785" y2="110" stroke="#6b7280" stroke-width="1" stroke-dasharray="6 4"/>
+        <!-- Sine wave: 2.5 complete cycles, amber (#f59e0b), cycle width=288px, amplitude=52 -->
+        <path d="M 60,110 C 100,110 132,81 132,58 C 132,87 164,110 204,110 C 244,110 276,139 276,162 C 276,133 308,110 348,110 C 388,110 420,81 420,58 C 420,87 452,110 492,110 C 532,110 564,139 564,162 C 564,133 596,110 636,110 C 676,110 708,81 708,58 C 708,87 740,110 780,110" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- "One complete cycle" bracket (purple, above wave, first peak to second peak) -->
+        <line x1="132" y1="20" x2="420" y2="20" stroke="#a78bfa" stroke-width="1.5"/>
+        <line x1="132" y1="20" x2="132" y2="32" stroke="#a78bfa" stroke-width="1.5"/>
+        <line x1="420" y1="20" x2="420" y2="32" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="276" y="12" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#a78bfa">One complete cycle</text>
+        <!-- Peak label with leader line -->
+        <circle cx="132" cy="58" r="2.5" fill="#f9fafb" opacity="0.7"/>
+        <line x1="131" y1="57" x2="114" y2="42" stroke="#f9fafb" stroke-width="0.8" opacity="0.5"/>
+        <text x="110" y="43" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#f9fafb">Peak</text>
+        <!-- Trough label with leader line -->
+        <circle cx="276" cy="162" r="2.5" fill="#f9fafb" opacity="0.7"/>
+        <line x1="275" y1="163" x2="257" y2="176" stroke="#f9fafb" stroke-width="0.8" opacity="0.5"/>
+        <text x="253" y="176" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#f9fafb">Trough</text>
+        <!-- Wavelength (λ) double-headed arrow — hero element (purple, prominent) -->
+        <!-- Tick lines extending down from the two peak positions to the arrow -->
+        <line x1="132" y1="164" x2="132" y2="193" stroke="#a78bfa" stroke-width="1.5" opacity="0.6"/>
+        <line x1="420" y1="164" x2="420" y2="193" stroke="#a78bfa" stroke-width="1.5" opacity="0.6"/>
+        <!-- Arrow body and heads -->
+        <line x1="140" y1="190" x2="412" y2="190" stroke="#a78bfa" stroke-width="2"/>
+        <path d="M 140,185 L 132,190 L 140,195 Z" fill="#a78bfa"/>
+        <path d="M 412,185 L 420,190 L 412,195 Z" fill="#a78bfa"/>
+        <!-- Wavelength label (prominent) -->
+        <text x="276" y="210" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="500" fill="#a78bfa">Wavelength (λ)</text>
+        <!-- Amplitude double-headed arrow (second cycle peak, --text-dim, secondary) -->
+        <line x1="420" y1="58" x2="452" y2="58" stroke="#6b7280" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+        <line x1="436" y1="110" x2="452" y2="110" stroke="#6b7280" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+        <line x1="448" y1="66" x2="448" y2="102" stroke="#6b7280" stroke-width="1.5"/>
+        <path d="M 443,66 L 448,58 L 453,66 Z" fill="#6b7280"/>
+        <path d="M 443,102 L 448,110 L 453,102 Z" fill="#6b7280"/>
+        <text x="456" y="88" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#6b7280">Amplitude</text>
+      </svg>
+    </div>
+
+    <h3 class="section-title">Why wavelength matters in radio</h3>
+    <p>Wavelength is not an abstract number. It's a distance you can hold in your hands, stretch out with your arms, or pace out across a garden. A 2-metre wave is literally two metres long — about the height of a doorway. A 70-centimetre wave is the length of your forearm. A 12-centimetre WiFi wave fits across your palm.</p>
+    <p>In amateur radio, wavelength is the common language. Every band is named after its approximate wavelength: the '2-metre band', the '70-centimetre band', the '40-metre band', the '6-metre band'. When a ham says 'I'm on 2 metres', they're telling you the wavelength of the signal — and from that, you immediately know the frequency, the type of propagation, and roughly how big the antenna is.</p>
+    <p>This is the crucial connection: your antenna has to be built to match the wavelength. A simple dipole antenna for the 2-metre band is about 1 metre long — half the wavelength. A dipole for the 40-metre band is about 20 metres long. A WiFi antenna is just a few centimetres. Every antenna dimension in this entire course traces back to wavelength. It's the bridge between 'what frequency am I on?' and 'how big does my antenna need to be?'</p>
+
+    <div class="callout">
+      <span class="callout-icon">🔑</span>
+      <div class="callout-text">
+        <strong>Wavelength is the physical ruler of antenna engineering.</strong> Every band name, every antenna dimension, every design decision starts with: what is the wavelength?
+      </div>
+    </div>
+
+    <h3 class="section-title">Three properties, one relationship</h3>
+    <p>So wavelength is a distance. But how do we find it? We need two more properties. <strong>Frequency</strong> (<em>f</em>) is how many complete cycles the wave completes per second, measured in hertz (Hz). A wave completing 145 million cycles per second has a frequency of 145 MHz. Higher frequency means more cycles packed into each second — which means each cycle is physically shorter.</p>
+    <p>The <strong>speed of light</strong> (<em>c</em>) ties them together. In free space, all electromagnetic waves travel at exactly the same speed: 300,000,000 metres per second. Radio waves, visible light, X-rays — all identical speed. Since speed = distance × cycles per second, we get:</p>
+
+    <div class="callout">
+      <span class="callout-icon" style="font-family:'IBM Plex Mono',monospace;font-size:16px;">λ</span>
+      <div class="callout-text">
+        <strong>λ = c / f</strong><br>
+        Wavelength equals the speed of light divided by frequency. Higher frequency → shorter wavelength. Lower frequency → longer wavelength. They're locked in an inverse relationship, always multiplying to give <em>c</em>.
+      </div>
+    </div>
+
+    <p>That formula is simple — but the numbers involved are enormous. 300,000,000 metres per second. 145,000,000 cycles per second. Before we start calculating, let's get comfortable with how RF engineers write these numbers.</p>
 
     <h3 class="section-title">Reading Big Numbers in RF</h3>
     <p>Radio frequencies are big numbers. Rather than writing all the zeros, there are two shorthand systems you'll see everywhere.</p>
@@ -887,21 +961,6 @@ input[type="range"]::-moz-range-thumb {
           <button class="anim-btn" id="bni-cancel-btn">▶ Show Cancellation</button>
         </div>
         <div id="bni-cancel-result" style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;color:var(--accent-em);margin-top:12px;min-height:1.5em;"></div>
-      </div>
-    </div>
-
-    <h3 class="section-title">The Formula</h3>
-    <p>Now the three properties:</p>
-    <p><strong>Frequency</strong> (<em>f</em>) is how many complete cycles the wave completes per second. We measure it in hertz (Hz). A wave that completes 145 million cycles per second has a frequency of 145 MHz.</p>
-    <p><strong>Wavelength</strong> (λ, the Greek letter lambda) is the physical distance from one peak to the next — you saw this labelled on the wave in Section 3. It's a real, measurable length — metres, centimetres, millimetres.</p>
-    <p><strong>Speed of light</strong> (<em>c</em>) is how fast the wave travels. In free space, all electromagnetic waves travel at the same speed: 300,000,000 metres per second (3 × 10⁸ m/s). Radio waves, visible light, X-rays — all the same speed.</p>
-    <p>These three are locked together:</p>
-
-    <div class="callout">
-      <span class="callout-icon" style="font-family:'IBM Plex Mono',monospace;font-size:16px;">λ</span>
-      <div class="callout-text">
-        <strong>λ = c / f</strong><br>
-        Wavelength equals the speed of light divided by frequency. If frequency goes up, wavelength gets shorter. If frequency goes down, wavelength gets longer. They move in opposite directions, always multiplying to give <em>c</em>.
       </div>
     </div>
 
@@ -2541,7 +2600,7 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
     const y2 =  y3 * Math.cos(rx) - z2 * Math.sin(rx);
     const z3f =  y3 * Math.sin(rx) + z2 * Math.cos(rx);
     // Orthographic projection, centred
-    return { x: w * 0.15 + x2 * (w * 0.006), y: h / 2 + y2 * (h * 0.4) };
+    return { x: w * 0.5 + x2 * (w * 0.0035), y: h / 2 + y2 * (h * 0.006) };
   }
 
   function drawEHK(ctx, w, h) {
