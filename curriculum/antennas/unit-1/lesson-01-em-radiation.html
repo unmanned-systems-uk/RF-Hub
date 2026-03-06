@@ -992,12 +992,20 @@ function setupCanvas(id) {
   const cv = document.getElementById(id);
   if (!cv) return null;
   const dpr = window.devicePixelRatio || 1;
-  const rect = cv.getBoundingClientRect();
-  cv.width = rect.width * dpr;
-  cv.height = rect.height * dpr;
+  // Store natural dimensions once (before any resize inflates cv.width/height)
+  if (!cv.dataset.naturalW) {
+    cv.dataset.naturalW = cv.width;
+    cv.dataset.naturalH = cv.height;
+  }
+  // Derive size from parent container width to avoid dpr-multiplication feedback loop
+  const w = cv.parentElement.getBoundingClientRect().width;
+  const aspect = parseFloat(cv.dataset.naturalH) / parseFloat(cv.dataset.naturalW);
+  const h = w * aspect;
+  cv.width = w * dpr;
+  cv.height = h * dpr;
   const ctx = cv.getContext('2d');
   ctx.scale(dpr, dpr);
-  return { cv, ctx, w: rect.width, h: rect.height };
+  return { cv, ctx, w, h };
 }
 
 function drawGrid(ctx, w, h) {

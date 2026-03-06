@@ -1517,10 +1517,6 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   const restBtn   = document.getElementById('svc-restart-btn');
   if (!cStatic || !cChanging) return;
 
-  // Set canvas heights relative to their container
-  cStatic.style.height   = '200px';
-  cChanging.style.height = '200px';
-
   let running = false, raf = null;
   let t = 0; // animation time
   const STATE = { phase: 'static', elapsed: 0, labelOpacity: 0, hLoopOpacity: 0 };
@@ -1671,9 +1667,22 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
     ctx.fillText('Changing E → creates H. This is the engine.', cx, h - 16);
   }
 
+  const FIXED_H = 200;
+  function resizeCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.parentElement.getBoundingClientRect().width;
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(FIXED_H * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = FIXED_H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { ctx, w, h: FIXED_H };
+  }
+
   function resize() {
-    const { ctx: ctxS, w: wS, h: hS } = setupCanvas(cStatic);
-    const { ctx: ctxC, w: wC, h: hC } = setupCanvas(cChanging);
+    const { ctx: ctxS, w: wS, h: hS } = resizeCanvas(cStatic);
+    const { ctx: ctxC, w: wC, h: hC } = resizeCanvas(cChanging);
     drawStatic(ctxS, wS, hS, t);
     drawChanging(ctxC, wC, hC, t);
   }
@@ -1742,10 +1751,23 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   const phLabel = document.getElementById('crw-phase-label');
   if (!canvas) return;
 
-  canvas.style.height = '260px';
-
   let running = true, raf = null, t = 0;
   let speed = 1.0;
+  const FIXED_H3 = 260;
+  let _ctx3, _w3;
+
+  function resizeCanvas3() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.parentElement.getBoundingClientRect().width;
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(FIXED_H3 * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = FIXED_H3 + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    _ctx3 = ctx; _w3 = w;
+    return { ctx, w, h: FIXED_H3 };
+  }
 
   // Phase times (in "speed=1" ticks at 60fps)
   const P1_END = 480; // 8s
@@ -1957,7 +1979,7 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   }
 
   function resize() {
-    const { ctx, w, h } = setupCanvas(canvas);
+    const { ctx, w, h } = resizeCanvas3();
     drawFrame(ctx, w, h);
   }
 
@@ -1965,7 +1987,9 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
     if (!running) return;
     t += speed;
     if (t > P3_END + 120) t = 0; // loop
-    const { ctx, w, h } = setupCanvas(canvas);
+    const ctx = canvas.getContext('2d');
+    const w = parseFloat(canvas.style.width);
+    const h = FIXED_H3;
     drawFrame(ctx, w, h);
     // Update phase label
     const ph = getPhase(t);
@@ -2484,10 +2508,21 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   const playBtn = document.getElementById('ehk-play-btn');
   if (!canvas) return;
 
-  canvas.style.height = '240px';
-
   let running = true, raf = null, t = 0;
   let viewMode = '3d'; // '3d', 'side', 'top'
+  const FIXED_H8 = 240;
+
+  function resizeCanvas8() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.parentElement.getBoundingClientRect().width;
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(FIXED_H8 * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = FIXED_H8 + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { ctx, w, h: FIXED_H8 };
+  }
 
   // View matrices (isometric-style projection)
   const views = {
@@ -2621,7 +2656,7 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   }
 
   function resize() {
-    const { ctx, w, h } = setupCanvas(canvas);
+    const { ctx, w, h } = resizeCanvas8();
     drawEHK(ctx, w, h);
     if (rhrCanvas) {
       const dpr = window.devicePixelRatio || 1;
@@ -2636,8 +2671,9 @@ document.querySelectorAll('.btn-reveal').forEach(btn => {
   function loop() {
     if (!running) return;
     t++;
-    const { ctx, w, h } = setupCanvas(canvas);
-    drawEHK(ctx, w, h);
+    const ctx = canvas.getContext('2d');
+    const w = parseFloat(canvas.style.width);
+    drawEHK(ctx, w, FIXED_H8);
     raf = requestAnimationFrame(loop);
   }
 
