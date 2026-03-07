@@ -2239,6 +2239,13 @@ function setAntenna(type) {
     activePatternGroup = newGroup;
   }
 
+  // Hide dipole rod, tips, and electrons for loop antenna — it uses a ring element instead
+  const isDipoleElement = (type !== 'loop');
+  antenna.visible = isDipoleElement;
+  tipTop.visible = isDipoleElement;
+  tipBot.visible = isDipoleElement;
+  electronGroup.visible = isDipoleElement && showElectrons;
+
   currentAntennaType = type;
   const hudEl = document.getElementById('hud-antenna');
   if (hudEl) hudEl.textContent = ANTENNA_NAMES[type] || type;
