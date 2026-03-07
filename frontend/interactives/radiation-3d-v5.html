@@ -392,6 +392,7 @@ footer a { color: var(--accent-em); text-decoration: none; }
     <canvas id="scene"></canvas>
     <div class="hud">
       <div>ANTENNA: <span class="hud-val" id="hud-antenna">Half-wave Dipole</span></div>
+      <div>POLARISATION: <span class="hud-val" id="hud-pol">Vertical</span></div>
       <div>WAVES: <span class="hud-val" id="hud-waves">0</span> active</div>
       <div>MODE: <span class="hud-val" id="hud-mode">Flat Rings</span></div>
       <div>2D WAVE: <span class="hud-val" id="hud-2d">ON</span></div>
@@ -1089,7 +1090,8 @@ function updateWaveform() {
 // PATTERN FUNCTION & WAVE TEMPLATES
 // ============================================
 function patternF(type, theta, phi) {
-  // Coordinate convention matches patternBuilders: forward = +X (cos(phi)), Y = vertical
+  // Coordinate convention: Y = vertical, dipole/vertical/collinear = omnidirectional in azimuth
+  // Directional antennas: yagi/loop/dish forward = +Z (sin(phi)), patch forward = +Y
   switch(type) {
     case 'dipole':
       return Math.abs(Math.sin(theta));
@@ -1099,8 +1101,7 @@ function patternF(type, theta, phi) {
     case 'collinear':
       return Math.pow(Math.abs(Math.sin(theta)), 3); // sin³θ — compressed elevation, more gain at horizon
     case 'yagi': {
-      const cosForward = Math.sin(theta) * Math.cos(phi); // forward = +X (aligns with E/H field)
-      const forward = Math.max(0, cosForward);
+      const forward = Math.max(0, Math.sin(theta) * Math.sin(phi)); // forward = +Z (along boom)
       return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward);
     }
     case 'loop':
@@ -1111,8 +1112,8 @@ function patternF(type, theta, phi) {
       // Broadside hemisphere: cos^1.5 gives ~102° HPBW, no radiation below ground
       return theta <= Math.PI / 2 ? Math.pow(Math.cos(theta), 1.5) : 0;
     case 'dish': {
-      const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
-      return Math.pow(Math.max(0, cosA), 12);
+      const sinA = Math.sin(theta) * Math.sin(phi); // forward = +Z (along beam)
+      return Math.pow(Math.max(0, sinA), 12);
     }
     default:
       return Math.abs(Math.sin(theta));
@@ -2162,6 +2163,19 @@ const ANTENNA_NAMES = {
   dish:      'Parabolic Dish'
 };
 
+// Wave propagation direction per antenna type.
+// rotY: Y-axis rotation applied to waveformGroup and hWaveGroup.
+// rotZ: Z-axis rotation (patch only — tilts wave to travel along +Y).
+const WAVE_CONFIG = {
+  dipole:    { rotY: 0 },
+  vertical:  { rotY: 0 },
+  collinear: { rotY: 0 },
+  yagi:      { rotY: -Math.PI / 2 }, // wave travels along +Z (along boom)
+  loop:      { rotY: -Math.PI / 2 }, // wave travels along +Z (edge-on to loop)
+  patch:     { rotY: 0, rotZ: Math.PI / 2 }, // wave travels along +Y (broadside upward), E horizontal
+  dish:      { rotY: -Math.PI / 2 }, // wave travels along +Z (along beam)
+};
+
 const MAX_PATTERN_R = 28;
 
 // Build a BufferGeometry from a spherical radiation function r(theta, phi)
@@ -2201,9 +2215,8 @@ const patternBuilders = {
     return theta <= Math.PI / 2 ? Math.abs(Math.sin(theta)) * MAX_PATTERN_R : 0;
   }),
   yagi: () => makePatternGeo((theta, phi) => {
-    // Forward lobe along +X — aligns with E/H field waveform propagation axis
-    const cosForward = Math.sin(theta) * Math.cos(phi);
-    const forward = Math.max(0, cosForward);
+    // Forward lobe along +Z (along boom, matches waveform direction)
+    const forward = Math.max(0, Math.sin(theta) * Math.sin(phi));
     return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward) * MAX_PATTERN_R;
   }),
   collinear: () => makePatternGeo((theta, phi) => {
@@ -2220,11 +2233,19 @@ const patternBuilders = {
     return Math.pow(Math.cos(theta), 1.5) * MAX_PATTERN_R;
   }),
   dish: () => makePatternGeo((theta, phi) => {
-    // Narrow pencil beam along +X
-    const cosA = Math.sin(theta) * Math.cos(phi);
-    return Math.max(0, cosA) ** 12 * MAX_PATTERN_R;
+    // Narrow pencil beam along +Z (along beam, matches waveform direction)
+    const sinA = Math.sin(theta) * Math.sin(phi);
+    return Math.max(0, sinA) ** 12 * MAX_PATTERN_R;
   })
 };
+
+function applyWaveConfig(type) {
+  const cfg = WAVE_CONFIG[type] || WAVE_CONFIG.dipole;
+  waveformGroup.rotation.set(0, cfg.rotY || 0, cfg.rotZ || 0);
+  hWaveGroup.rotation.set(0, cfg.rotY || 0, cfg.rotZ || 0);
+  const polEl = document.getElementById('hud-pol');
+  if (polEl) polEl.textContent = (type === 'patch') ? 'Horizontal' : 'Vertical';
+}
 
 function buildAntennaElement(type) {
   // Helper: add mesh to antennaElementGroup
@@ -2249,19 +2270,19 @@ function buildAntennaElement(type) {
     }
 
     case 'yagi': {
-      // Boom along +X (x = -3 to +12, length 15)
+      // Boom along +Z (z = -3 to +12, length 15) — beam direction = +Z
       const boom = new THREE.CylinderGeometry(0.2, 0.2, 15, 8);
       const boomMesh = add(boom, 0x64748b);
-      boomMesh.rotation.z = Math.PI / 2;
-      boomMesh.position.x = 4.5;
-      // Reflector at x=-3, length 9, slate
-      add(new THREE.CylinderGeometry(0.25, 0.25, 9, 8), 0x64748b).position.x = -3;
-      // Driven element at x=0, length 8, amber
-      add(new THREE.CylinderGeometry(0.3, 0.3, 8, 8), 0xfbbf24).position.x = 0;
-      // Director 1 at x=4.5, length 7
-      add(new THREE.CylinderGeometry(0.22, 0.22, 7, 8), 0x94a3b8).position.x = 4.5;
-      // Director 2 at x=9, length 6.5
-      add(new THREE.CylinderGeometry(0.22, 0.22, 6.5, 8), 0x94a3b8).position.x = 9;
+      boomMesh.rotation.x = Math.PI / 2; // rotate CylinderGeometry Y-axis → +Z
+      boomMesh.position.z = 4.5;
+      // Reflector at z=-3, length 9, slate (elements are perpendicular to boom = along Y)
+      add(new THREE.CylinderGeometry(0.25, 0.25, 9, 8), 0x64748b).position.z = -3;
+      // Driven element at z=0, length 8, amber
+      add(new THREE.CylinderGeometry(0.3, 0.3, 8, 8), 0xfbbf24).position.z = 0;
+      // Director 1 at z=4.5, length 7
+      add(new THREE.CylinderGeometry(0.22, 0.22, 7, 8), 0x94a3b8).position.z = 4.5;
+      // Director 2 at z=9, length 6.5
+      add(new THREE.CylinderGeometry(0.22, 0.22, 6.5, 8), 0x94a3b8).position.z = 9;
       break;
     }
 
@@ -2299,8 +2320,8 @@ function buildAntennaElement(type) {
 
     case 'dish': {
       const discGeo = new THREE.CircleGeometry(7, 48);
-      const disc = add(discGeo, 0x94a3b8, 0.35, { side: THREE.DoubleSide });
-      disc.rotation.y = Math.PI / 2; // aperture faces +X
+      // CircleGeometry lies in XY plane, normal faces +Z by default — aperture faces +Z (beam direction)
+      add(discGeo, 0x94a3b8, 0.35, { side: THREE.DoubleSide });
       break;
     }
 
@@ -2347,6 +2368,7 @@ function setAntenna(type) {
   electronGroup.visible = isDipoleElement && showElectrons;
 
   currentAntennaType = type;
+  applyWaveConfig(type);
   const hudEl = document.getElementById('hud-antenna');
   if (hudEl) hudEl.textContent = ANTENNA_NAMES[type] || type;
 
