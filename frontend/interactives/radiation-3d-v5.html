@@ -1084,7 +1084,7 @@ function patternF(type, theta, phi) {
       // Upper hemisphere only — same as dipole above ground plane, zero below
       return theta <= Math.PI / 2 ? Math.abs(Math.sin(theta)) : 0;
     case 'collinear':
-      return Math.pow(Math.abs(Math.sin(theta)), 4);
+      return Math.pow(Math.abs(Math.sin(theta)), 3); // sin³θ — compressed elevation, more gain at horizon
     case 'yagi': {
       const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
       return Math.pow(Math.max(0, (1 + cosA) / 2), 2);
