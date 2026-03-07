@@ -1074,36 +1074,104 @@ function updateWaveform() {
 }
 
 // ============================================
+// PATTERN FUNCTION & WAVE TEMPLATES
+// ============================================
+function patternF(type, theta, phi) {
+  switch(type) {
+    case 'dipole':
+      return Math.abs(Math.sin(theta));
+    case 'vertical':
+      return theta <= Math.PI/2 ? Math.abs(Math.sin(theta)) : 0;
+    case 'collinear':
+      return Math.pow(Math.abs(Math.sin(theta)), 3);
+    case 'yagi': {
+      const cosForward = Math.sin(theta) * Math.sin(phi);
+      const forward = Math.max(0, cosForward);
+      return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward);
+    }
+    case 'loop':
+      return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta)*Math.cos(phi), 2)));
+    case 'patch':
+      return theta <= Math.PI/2 ? Math.pow(Math.cos(theta), 1.5) : 0;
+    case 'dish': {
+      const cosForward = Math.sin(theta) * Math.sin(phi);
+      return Math.pow(Math.max(0, cosForward), 18);
+    }
+    default:
+      return Math.abs(Math.sin(theta));
+  }
+}
+
+function buildRingTemplate(antennaType) {
+  const N = 128;
+  const positions = new Float32Array((N + 1) * 3);
+  for (let i = 0; i <= N; i++) {
+    const phi = (i / N) * Math.PI * 2;
+    const r = patternF(antennaType, Math.PI / 2, phi);
+    positions[i*3 + 0] = r * Math.cos(phi);
+    positions[i*3 + 1] = 0;
+    positions[i*3 + 2] = r * Math.sin(phi);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  return geo;
+}
+
+function buildShellTemplate(antennaType) {
+  const W = 48, H = 24;
+  const verts = [];
+  const idx = [];
+  for (let j = 0; j <= H; j++) {
+    for (let i = 0; i <= W; i++) {
+      const theta = (j / H) * Math.PI;
+      const phi   = (i / W) * Math.PI * 2;
+      const r = patternF(antennaType, theta, phi);
+      verts.push(
+        r * Math.sin(theta) * Math.cos(phi),
+        r * Math.cos(theta),
+        r * Math.sin(theta) * Math.sin(phi)
+      );
+    }
+  }
+  for (let j = 0; j < H; j++) {
+    for (let i = 0; i < W; i++) {
+      const a = j*(W+1)+i, b = a+W+1;
+      idx.push(a, b, a+1, b, b+1, a+1);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  return geo;
+}
+
+// ============================================
 // FLAT RING WAVEFRONTS
 // ============================================
 const MAX_WAVES = 16;
 const flatRings = [];
 
 for (let i = 0; i < MAX_WAVES; i++) {
-  // Ring = torus with very small tube radius
-  const geo = new THREE.TorusGeometry(1, 0.08, 4, 80);
-  geo.rotateX(Math.PI / 2); // flat in XZ plane
-  const mat = new THREE.MeshBasicMaterial({
+  const geo = buildRingTemplate('dipole');
+  const mat = new THREE.LineBasicMaterial({
     color: 0xa78bfa,
     transparent: true,
-    opacity: 0.6,
-    depthWrite: false
+    opacity: 0.6
   });
-  const mesh = new THREE.Mesh(geo, mat);
+  const mesh = new THREE.Line(geo, mat);
   mesh.visible = false;
   scene.add(mesh);
   flatRings.push({ mesh, birth: 0, alive: false });
 }
 
 // ============================================
-// 3D SHELL WAVEFRONTS (doughnut-shaped)
+// 3D SHELL WAVEFRONTS (pattern-shaped)
 // ============================================
 const shellWaves = [];
 
 for (let i = 0; i < MAX_WAVES; i++) {
-  // Each shell is a torus wireframe that expands
-  const geo = new THREE.TorusGeometry(1, 0.55, 12, 32);
-  geo.rotateX(Math.PI / 2);
+  const geo = buildShellTemplate('dipole');
   const mat = new THREE.MeshBasicMaterial({
     color: 0xa78bfa,
     transparent: true,
@@ -1115,9 +1183,7 @@ for (let i = 0; i < MAX_WAVES; i++) {
   mesh.visible = false;
   scene.add(mesh);
 
-  // Also a faint solid fill
-  const fillGeo = new THREE.TorusGeometry(1, 0.55, 12, 32);
-  fillGeo.rotateX(Math.PI / 2);
+  const fillGeo = buildShellTemplate('dipole');
   const fillMat = new THREE.MeshBasicMaterial({
     color: 0xa78bfa,
     transparent: true,
@@ -1130,6 +1196,32 @@ for (let i = 0; i < MAX_WAVES; i++) {
   scene.add(fillMesh);
 
   shellWaves.push({ wire: mesh, fill: fillMesh, birth: 0, alive: false });
+}
+
+// Template cache — rebuild only on antenna change, not per frame
+let ringTemplate = buildRingTemplate('dipole');
+let shellTemplate = buildShellTemplate('dipole');
+let templateAntenna = 'dipole';
+
+function rebuildWaveMeshes() {
+  for (const ring of flatRings) {
+    ring.mesh.geometry.dispose();
+    ring.mesh.geometry = ringTemplate.clone();
+  }
+  for (const shell of shellWaves) {
+    shell.wire.geometry.dispose();
+    shell.wire.geometry = shellTemplate.clone();
+    shell.fill.geometry.dispose();
+    shell.fill.geometry = shellTemplate.clone();
+  }
+}
+
+function ensureTemplates(antennaType) {
+  if (templateAntenna === antennaType) return;
+  ringTemplate = buildRingTemplate(antennaType);
+  shellTemplate = buildShellTemplate(antennaType);
+  templateAntenna = antennaType;
+  rebuildWaveMeshes();
 }
 
 // ============================================
@@ -1157,6 +1249,7 @@ function spawnWave() {
 }
 
 function updateWaves() {
+  ensureTemplates(currentAntennaType);
   const waveInterval = 1.0 / (waveDensity / 6);
   const maxAge = 10;
   const expandSpeed = 3.5;
