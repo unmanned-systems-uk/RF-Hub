@@ -597,6 +597,7 @@ patternGroup.add(new THREE.Mesh(torusGeo.clone(), patternWireMat));
 scene.add(patternGroup);
 let activePatternGroup = patternGroup;
 let loopElement = null; // amber loop ring — lives outside activePatternGroup so pattern toggle doesn't hide it
+let dishElement = null; // dish reflector disc — same pattern
 
 // ============================================
 // ELECTRON PARTICLES
@@ -1339,7 +1340,7 @@ function updateWaves() {
 // ELECTRONS
 // ============================================
 function updateElectrons() {
-  electronGroup.visible = showElectrons && currentAntennaType !== 'loop';
+  electronGroup.visible = showElectrons && currentAntennaType !== 'loop' && currentAntennaType !== 'dish';
   if (!electronGroup.visible) return;
 
   const sinT = Math.sin(time * 4);
@@ -2226,6 +2227,13 @@ function setAntenna(type) {
     loopElement.material.dispose();
     loopElement = null;
   }
+  // Remove previous dish reflector element
+  if (dishElement) {
+    scene.remove(dishElement);
+    dishElement.geometry.dispose();
+    dishElement.material.dispose();
+    dishElement = null;
+  }
 
   if (type === 'dipole') {
     patternGroup.visible = showPattern;
@@ -2260,8 +2268,19 @@ function setAntenna(type) {
     scene.add(loopElement);
   }
 
-  // Hide dipole rod, tips, and electrons for loop antenna — it uses a ring element instead
-  const isDipoleElement = (type !== 'loop');
+  // Dish antenna: circular reflector disc in YZ plane, aperture facing +X
+  if (type === 'dish') {
+    const discGeo = new THREE.CircleGeometry(7, 48);
+    dishElement = new THREE.Mesh(discGeo, new THREE.MeshBasicMaterial({
+      color: 0x94a3b8, transparent: true, opacity: 0.35,
+      side: THREE.DoubleSide
+    }));
+    dishElement.rotation.y = Math.PI / 2; // aperture faces +X
+    scene.add(dishElement);
+  }
+
+  // Hide dipole rod, tips, and electrons for antennas with their own element visual
+  const isDipoleElement = (type !== 'loop' && type !== 'dish');
   antenna.visible = isDipoleElement;
   tipTop.visible = isDipoleElement;
   tipBot.visible = isDipoleElement;
