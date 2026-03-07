@@ -1095,7 +1095,8 @@ function patternF(type, theta, phi) {
       // f = √(1 − sin²θ cos²φ) — equivalent to |sin(angle from X axis)|
       return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta) * Math.cos(phi), 2)));
     case 'patch':
-      return theta <= Math.PI / 2 ? Math.pow(Math.cos(theta), 2) : 0;
+      // Broadside hemisphere: cos^1.5 gives ~102° HPBW, no radiation below ground
+      return theta <= Math.PI / 2 ? Math.pow(Math.cos(theta), 1.5) : 0;
     case 'dish': {
       const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
       return Math.pow(Math.max(0, cosA), 12);
@@ -2192,9 +2193,9 @@ const patternBuilders = {
     return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta) * Math.cos(phi), 2))) * MAX_PATTERN_R;
   }),
   patch: () => makePatternGeo((theta, phi) => {
-    // Broadside hemisphere pointing up, null below
+    // Broadside hemisphere: cos^1.5 gives ~102° HPBW, no radiation below ground
     if (theta > Math.PI * 0.5) return 0;
-    return Math.cos(theta) ** 2 * MAX_PATTERN_R;
+    return Math.pow(Math.cos(theta), 1.5) * MAX_PATTERN_R;
   }),
   dish: () => makePatternGeo((theta, phi) => {
     // Narrow pencil beam along +X
