@@ -1284,13 +1284,13 @@ function updateWaves() {
     ring.mesh.material.color.setHex(polarity === 0 ? 0xa78bfa : 0x8b7bd4);
 
     if (currentAntennaType === 'patch') {
-      // Patch radiates upward — rings rise along +Y with small fixed XZ footprint
+      // Patch radiates upward — rings rise along +Y
+      // Patch template r≈0.2 (cos^1.5 at 70°) vs dipole r=1.0, so use normal scale
       ring.mesh.position.y = age * expandSpeed;
-      ring.mesh.scale.setScalar(0.3);
     } else {
       ring.mesh.position.y = 0;
-      ring.mesh.scale.set(radius, radius, radius);
     }
+    ring.mesh.scale.set(radius, radius, radius);
     ring.mesh.material.opacity = alpha;
     ring.mesh.visible = (waveMode === 'rings' || waveMode === 'both');
 
