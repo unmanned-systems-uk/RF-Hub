@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 2 — How Antennas Radiate | RF-Hub</title>
+<title>Lesson 2 — From Waves to Wires: How Antennas Radiate | RF-Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -23,9 +23,9 @@
   --text-secondary: #94a3b8;
   --text-dim:       #64748b;
   --border:         #1e293b;
-  --glow-e:         rgba(245,158,11,0.15);
-  --glow-h:         rgba(6,182,212,0.15);
-  --glow-em:        rgba(167,139,250,0.08);
+  --glow-e:         rgba(245, 158, 11, 0.15);
+  --glow-h:         rgba(6, 182, 212, 0.15);
+  --glow-em:        rgba(167, 139, 250, 0.08);
 }
 
 /* ============================================================
@@ -233,6 +233,8 @@ h3.section-title {
   border-radius: 0 12px 12px 0;
   margin: 20px 0;
 }
+.callout.e-field     { border-left-color: var(--accent-e); }
+.callout.h-field     { border-left-color: var(--accent-h); }
 .callout.key-insight { border-left-color: var(--accent-power); background: rgba(239,68,68,0.04); }
 .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
 .callout-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
@@ -280,18 +282,25 @@ h3.section-title {
 }
 .anim-btn:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
 .anim-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.anim-btn.active { background: var(--accent-em); color: var(--bg-deep); }
 .anim-readout {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   color: var(--accent-em);
-  min-width: 100px;
+  min-width: 80px;
   text-align: center;
 }
+
+/* ============================================================
+   CANVAS BASE
+   ============================================================ */
+canvas { display: block; width: 100%; background: transparent; }
 
 /* ============================================================
    RANGE SLIDERS
    ============================================================ */
 input[type="range"] {
+  width: 100%;
   height: 6px;
   -webkit-appearance: none;
   appearance: none;
@@ -299,8 +308,6 @@ input[type="range"] {
   border-radius: 3px;
   outline: none;
   cursor: pointer;
-  flex: 1;
-  min-width: 120px;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -319,69 +326,21 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ============================================================
-   CANVAS BASE
+   TERM BOXES
    ============================================================ */
-canvas { display: block; width: 100%; background: transparent; }
-
-/* ============================================================
-   DUAL CANVAS PANEL
-   ============================================================ */
-.dual-canvas-row {
-  display: flex;
-  gap: 16px;
-}
-.canvas-panel { flex: 1; min-width: 0; }
-.canvas-panel-label {
+.term-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(167,139,250,0.1);
+  border-radius: 5px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.canvas-panel-label.e-label { color: var(--accent-e); }
-.canvas-panel-label.h-label { color: var(--accent-h); }
-@media (max-width: 500px) { .dual-canvas-row { flex-direction: column; } }
-
-/* ============================================================
-   STEP DISPLAY
-   ============================================================ */
-.step-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  text-align: center;
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: rgba(167,139,250,0.08);
-  border-radius: 8px;
+  font-size: 0.85em;
   color: var(--accent-em);
-  letter-spacing: 0.5px;
 }
-
-/* ============================================================
-   MODE TOGGLE
-   ============================================================ */
-.mode-row {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.mode-btn {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  padding: 8px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  transition: all 0.2s;
-  letter-spacing: 1px;
-}
-.mode-btn.active-tx { background: rgba(245,158,11,0.15); color: var(--accent-e); border-color: rgba(245,158,11,0.3); }
-.mode-btn.active-rx { background: rgba(6,182,212,0.15); color: var(--accent-h); border-color: rgba(6,182,212,0.3); }
-.mode-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.term-e { background: rgba(245,158,11,0.1);  color: var(--accent-e); }
+.term-h { background: rgba(6,182,212,0.1);   color: var(--accent-h); }
 
 /* ============================================================
    SUMMARY GRID
@@ -403,15 +362,15 @@ canvas { display: block; width: 100%; background: transparent; }
   text-transform: uppercase;
   margin-bottom: 10px;
 }
-.summary-card.e-card  h4 { color: var(--accent-e); }
-.summary-card.h-card  h4 { color: var(--accent-h); }
-.summary-card.em-card h4 { color: var(--accent-em); }
-.summary-card.r-card  h4 { color: var(--accent-power); }
+.summary-card.e-card     h4 { color: var(--accent-e); }
+.summary-card.h-card     h4 { color: var(--accent-h); }
+.summary-card.em-card    h4 { color: var(--accent-em); }
+.summary-card.special-card h4 { color: var(--accent-power); }
 .summary-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
 .summary-card p strong { color: var(--text-primary); font-weight: 500; }
 
 /* ============================================================
-   SELF-CHECK
+   SELF-CHECK EXERCISES
    ============================================================ */
 .self-check-group { margin-bottom: 40px; }
 .self-check-group > h3 {
@@ -455,53 +414,328 @@ canvas { display: block; width: 100%; background: transparent; }
 .btn-reveal:hover { background: rgba(167,139,250,0.2); }
 .btn-reveal:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
 .self-check__reveal {
-  margin-top: 14px;
-  padding: 16px;
-  background: rgba(167,139,250,0.06);
-  border-left: 2px solid var(--accent-em);
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 16px;
+  margin-top: 0;
+  border-left: 2px solid transparent;
+  background: rgba(167,139,250,0);
   border-radius: 0 8px 8px 0;
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
+  transition: max-height 0.35s ease, padding 0.35s ease, margin 0.35s ease,
+              border-color 0.35s ease, background 0.35s ease;
 }
-.self-check__reveal.open { max-height: 400px; }
+.self-check__reveal.open {
+  max-height: 800px;
+  padding: 16px;
+  margin-top: 14px;
+  border-left: 2px solid var(--accent-em);
+  background: rgba(167,139,250,0.06);
+}
 .self-check__reveal strong { color: var(--text-primary); font-weight: 500; }
+.self-check__reveal code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.self-check__reveal ol, .self-check__reveal ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+.self-check__reveal li { margin-bottom: 6px; }
 
 /* ============================================================
-   NAV CARDS
+   RESOURCE LINK BLOCKS
    ============================================================ */
-.nav-cards {
+.resource-block {
+  background: var(--bg-card);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin: 32px 0;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.resource-block-icon { font-size: 28px; flex-shrink: 0; margin-top: 4px; }
+.resource-block-content h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.resource-block-content p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px; }
+.btn-resource {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 10px 24px;
+  background: rgba(167,139,250,0.12);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.3);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.btn-resource:hover { background: rgba(167,139,250,0.22); transform: translateY(-1px); }
+.btn-resource:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+@media (max-width: 560px) { .resource-block { flex-direction: column; } }
+
+/* ============================================================
+   GUIDED EXERCISE BLOCKS
+   ============================================================ */
+.exercise-block {
+  background: rgba(167,139,250,0.03);
+  border: 1px solid rgba(167,139,250,0.12);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 20px 0 32px;
+}
+.exercise-block h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 16px;
+}
+.exercise-block ol {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding-left: 20px;
+  line-height: 1.7;
+}
+.exercise-block li { margin-bottom: 10px; }
+.exercise-block li em { color: var(--text-primary); font-style: normal; font-weight: 500; }
+.exercise-closing {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ============================================================
+   FORMULA WIDGET (V5 — L = c / 2f)
+   ============================================================ */
+.formula-widget {
+  text-align: center;
+  padding: 8px 0 16px;
+}
+.formula-display {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-height: 3rem;
+}
+.fvar {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.3s, background 0.3s, opacity 0.3s;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.fvar--L { color: var(--accent-e);  background: rgba(245,158,11,0.1);  border-color: rgba(245,158,11,0.2); }
+.fvar--c { color: var(--accent-h);  background: rgba(6,182,212,0.1);   border-color: rgba(6,182,212,0.2); }
+.fvar--f { color: var(--accent-em); background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.2); }
+.fvar.dimmed { opacity: 0.3; }
+.fop { color: var(--text-dim); font-size: 0.9em; }
+.formula-solve-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.solve-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.solve-btn--L { background: rgba(245,158,11,0.12); color: var(--accent-e);  border-color: rgba(245,158,11,0.25); }
+.solve-btn--c { background: rgba(6,182,212,0.12);  color: var(--accent-h);  border-color: rgba(6,182,212,0.25); }
+.solve-btn--f { background: rgba(167,139,250,0.12);color: var(--accent-em); border-color: rgba(167,139,250,0.25); }
+.solve-btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
+.solve-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.solve-btn.active { filter: brightness(1.4); font-weight: 600; }
+.formula-calc {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+.formula-calc h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.88rem;
+}
+.calc-row label {
+  width: 130px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+.calc-row input[type="number"] {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+.calc-row input[type="number"]:focus { border-color: var(--accent-em); }
+.calc-row .calc-unit { color: var(--text-dim); font-size: 0.8rem; width: 36px; flex-shrink: 0; }
+.calc-row .calc-result {
+  flex: 1;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--accent-e);
+  font-weight: 500;
+}
+.calc-divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+/* ============================================================
+   DC vs AC CANVAS — 2-panel layout
+   ============================================================ */
+.two-panel-canvas {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin: 40px 0;
 }
-@media (max-width: 500px) { .nav-cards { grid-template-columns: 1fr; } }
-.nav-card {
+@media (max-width: 600px) { .two-panel-canvas { grid-template-columns: 1fr; } }
+.panel-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.panel-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.panel-label.dc { color: var(--text-dim); }
+.panel-label.ac { color: var(--accent-e); }
+.panel-sublabel {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   SVG VISUALS — shared wrapper
+   ============================================================ */
+.svg-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+.svg-wrapper svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================================
+   INFO PANELS
+   ============================================================ */
+.info-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px 24px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.info-panel strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   WHAT'S NEXT CARD
+   ============================================================ */
+.next-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 40px 0;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 20px;
+  align-items: center;
 }
-.nav-card:hover { border-color: var(--accent-em); transform: translateY(-2px); }
-.nav-card-dir {
+.next-card-icon { font-size: 36px; flex-shrink: 0; }
+.next-card-content h3 { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 6px; }
+.next-card-content > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 14px; }
+@media (max-width: 500px) { .next-card { flex-direction: column; } }
+
+/* ============================================================
+   LESSON NAVIGATION
+   ============================================================ */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
+  font-size: 12px;
+  padding: 10px 20px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
 }
-.nav-card-title { font-size: 0.9rem; color: var(--text-secondary); }
-.nav-card.next { text-align: right; }
+.nav-btn:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.3); transform: translateY(-1px); }
+.nav-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.nav-btn--next { margin-left: auto; }
 
 /* ============================================================
    FOOTER
@@ -524,6 +758,8 @@ footer a:hover { text-decoration: underline; }
   .diagram-card { padding: 20px; }
   .hero { padding: 56px 0 40px; }
   .objectives-card { padding: 24px; }
+  .resource-block { padding: 20px; }
+  .formula-calc { padding: 16px; }
 }
 @media (max-width: 360px) {
   .container { padding: 0 16px; }
@@ -550,8 +786,8 @@ footer a:hover { text-decoration: underline; }
 <!-- HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">RF-Hub · Lesson 2 · Unit 1</div>
-    <h1>How Antennas Radiate</h1>
+    <div class="hero-badge">RF-Hub · Unit 1 · Lesson 2</div>
+    <h1>From Waves to Wires:<br>How Antennas Radiate</h1>
     <p class="hero-subtitle">Unit 1 — How Antennas Work &nbsp;·&nbsp; No equipment needed &nbsp;·&nbsp; ~25 minutes</p>
   </div>
 </section>
@@ -564,1049 +800,1400 @@ footer a:hover { text-decoration: underline; }
     <h2>Learning Objectives</h2>
     <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;">By the end of this lesson you will be able to:</p>
     <ul class="objectives-list">
-      <li>Explain how alternating current in a wire creates electromagnetic radiation</li>
-      <li>Describe why a wire carrying DC does not radiate</li>
-      <li>Sketch the current distribution on a half-wave dipole</li>
-      <li>State the reciprocity principle — TX and RX are the same process in reverse</li>
+      <li>Explain why a wire carrying DC does not radiate, and why AC does</li>
+      <li>Describe how a changing field detaches from a wire and becomes a free EM wave</li>
+      <li>Sketch the current and voltage distribution on a half-wave dipole</li>
+      <li>Calculate the physical length of a half-wave dipole for a given frequency</li>
+      <li>State the reciprocity principle and explain what it means in practice</li>
     </ul>
   </div>
 
-  <!-- CHAPTER 1: THE BIG IDEA -->
-  <section class="chapter" id="ch-big-idea">
+  <!-- ═══ SECTION 01 — BRIDGE FROM LESSON 1 ═══ -->
+  <div class="chapter" id="section-01">
     <div class="chapter-header">
-      <span class="chapter-num">01</span>
+      <span class="chapter-num">SECTION 01</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">The Big Idea</h2>
-    <p>In Lesson 1 we learned what EM waves are. Now the question is: <strong>how do we create them?</strong> The answer turns out to be beautifully simple — you just need charges that accelerate. And the easiest way to accelerate charges is to push alternating current through a wire.</p>
-  </section>
+    <h2 class="chapter-title">Bridge from Lesson 1</h2>
 
-  <!-- CHAPTER 2: WHY DC DOESN'T RADIATE -->
-  <section class="chapter" id="ch-dc-vs-ac">
+    <p>In Lesson 1 we answered the question: <em>what is an EM wave?</em></p>
+
+    <p>You learned that a changing electric field creates a magnetic field, and a changing magnetic field creates an electric field. Each one regenerates the other, and together they propagate outward from their source at the speed of light. The <strong>E field</strong> and <strong>H field</strong> travel as a pair, perpendicular to each other and perpendicular to the direction of travel.</p>
+
+    <p>That answered <em>what</em> the wave is. Now a new question: <em>how do we make one?</em></p>
+
+    <p>We have a wire. We have a radio transmitter. Something about connecting the two produces EM waves that travel out into space. What is actually happening inside that wire — and why does the wave leave at all, rather than just sitting there?</p>
+
+    <p>This lesson answers that. By the end, you will understand not just that antennas radiate, but <em>why</em> they must, and <em>how</em> the energy escapes.</p>
+  </div>
+
+  <!-- ═══ SECTION 02 — DC DOESN'T RADIATE. AC DOES. ═══ -->
+  <div class="chapter" id="section-02">
     <div class="chapter-header">
-      <span class="chapter-num">02</span>
+      <span class="chapter-num">SECTION 02</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">Why DC Doesn't Radiate (and AC Does)</h2>
+    <h2 class="chapter-title">DC Doesn't Radiate. AC Does. Here's Why.</h2>
 
-    <p>A battery connected to a long wire pushes current in one direction. The electrons flow steadily. They produce a magnetic field around the wire (Ampère's law), and there's a static electric field from the battery voltage. But nothing is <em>changing</em> — and it's the <strong>change</strong> that creates radiation.</p>
+    <p>Connect a battery to a wire. Electrons flow steadily in one direction. Around the wire, a magnetic field appears — Ampère's law. Alongside the battery voltage, there's an electric field too. Both fields are real and present.</p>
 
-    <p>Now connect an AC source — a radio transmitter — to that wire. The current flows one way, stops, reverses, flows the other way, stops, reverses again. The electrons are constantly accelerating and decelerating. Each time they change speed or direction, they "shake off" a little bit of their electromagnetic field, and that disturbance propagates outward as an EM wave.</p>
+    <p>But nothing is <em>changing</em>. The fields exist, but they're static — frozen in place. And as you learned in Lesson 1, it's <em>change</em> that matters. A static electric field doesn't create a magnetic field. A static magnetic field doesn't create an electric field. Nothing propagates. Nothing leaves.</p>
+
+    <p>Now replace the battery with a transmitter outputting AC — alternating current. The current flows one way, slows, stops, reverses, flows the other way, slows, stops, reverses again. The electrons are constantly accelerating and decelerating. The fields around the wire are constantly changing.</p>
+
+    <p>And here is the rule — simple enough to memorise, deep enough to build an entire career on:</p>
 
     <div class="callout key-insight">
-      <span class="callout-icon">⚡</span>
+      <div class="callout-icon">⚡</div>
       <div class="callout-text">
-        <strong>The rule:</strong> Static charges produce electric fields. Moving charges produce magnetic fields. <strong>Accelerating charges produce electromagnetic radiation.</strong>
+        <strong>Static charges → electric field.</strong><br>
+        <strong>Moving charges → magnetic field.</strong><br>
+        <strong>Accelerating charges → electromagnetic radiation.</strong>
       </div>
     </div>
 
-    <p>This is why frequency matters: at 1 MHz, the current reverses direction one million times per second. At 1 GHz, it reverses a billion times per second. More rapid acceleration = more radiation at that frequency.</p>
+    <p>Each time the current reverses, the charges accelerate. Each acceleration shakes the surrounding field. That disturbance propagates outward as an EM wave.</p>
 
-    <!-- VISUAL 1: DC vs AC Radiation -->
-    <div class="diagram-card glow-em" id="card-dc-ac">
-      <div class="diagram-label">Animation — DC vs AC Radiation</div>
-      <canvas id="cv-dc-ac" data-aspect="0.38"
-        aria-label="Two-panel animation: left shows DC wire with static field lines that do not propagate; right shows AC wire with EM wavefronts expanding outward"></canvas>
+    <p>This is also why frequency matters. At 145 MHz, the current reverses 145 million times per second. At 1296 MHz, it reverses nearly 1.3 billion times per second. The fields are changing more rapidly — which is why higher frequencies carry more energy per photon. But the <em>mechanism</em> is identical across the entire spectrum.</p>
+
+    <!-- VISUAL 1 — dc-vs-ac-wire -->
+    <div class="diagram-card glow-e" id="v1-card">
+      <div class="diagram-label">Visual 1 — DC vs AC Radiation</div>
+      <div class="two-panel-canvas">
+        <div class="panel-wrap">
+          <div class="panel-label dc">DC Wire</div>
+          <canvas id="canvas-dc"
+                  aria-label="DC wire animation: electrons moving uniformly, static field rings, no radiation"
+                  role="img"></canvas>
+          <div class="panel-sublabel" id="dc-sublabel">fields present, not changing — no radiation</div>
+        </div>
+        <div class="panel-wrap">
+          <div class="panel-label ac">AC Wire</div>
+          <canvas id="canvas-ac"
+                  aria-label="AC wire animation: electrons reversing direction, field lines peeling away as wave packets"
+                  role="img"></canvas>
+          <div class="panel-sublabel" id="ac-sublabel">fields changing — radiation escaping &nbsp;·&nbsp; cycle: <span id="ac-cycle">0</span></div>
+        </div>
+      </div>
       <div class="anim-controls">
-        <button class="anim-btn" id="btn-dc-ac-play" aria-label="Play or pause DC vs AC animation">&#9646;&#9646; Pause</button>
-        <span class="anim-readout" id="dc-ac-readout">AC — radiating</span>
+        <button class="anim-btn active" id="v1-playpause" aria-label="Pause animation">⏸ Pause</button>
       </div>
     </div>
-  </section>
 
-  <!-- CHAPTER 3: HALF-WAVE DIPOLE -->
-  <section class="chapter" id="ch-dipole">
+  </div>
+
+  <!-- ═══ SECTION 03 — THE DETACHMENT STORY ═══ -->
+  <div class="chapter" id="section-03">
     <div class="chapter-header">
-      <span class="chapter-num">03</span>
+      <span class="chapter-num">SECTION 03</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">The Half-Wave Dipole: Nature's Simplest Antenna</h2>
+    <h2 class="chapter-title">The Detachment Story: How the Wave Escapes</h2>
 
-    <p>Take a wire that's half a wavelength long (λ/2). Split it in the middle and connect your transmitter to the gap. This is a <strong>half-wave dipole</strong> — the most fundamental antenna, and the reference against which almost everything else is measured.</p>
+    <p>Understanding that AC radiates is one thing. Understanding <em>why the wave doesn't just collapse back into the wire</em> is another — and it is the deeper insight.</p>
 
-    <p>When RF energy is fed into the centre, something remarkable happens: the current doesn't flow uniformly along the wire. Instead, it forms a <strong>standing wave pattern</strong>.</p>
+    <p>This is the story of field detachment. It happens in four acts.</p>
 
-    <h3 class="section-title">Current Distribution</h3>
+    <h3 class="section-title">Act 1 — The field expands</h3>
+    <p>When current begins to flow in the wire, a magnetic field builds around it. As the voltage rises, an electric field builds too. These fields don't sit on the wire surface — they extend outward into the space around it. The further they extend, the further they have to travel to get back if they need to.</p>
 
-    <p>On a half-wave dipole at its resonant frequency:</p>
-    <ul>
-      <li><strong>Maximum current</strong> at the centre (the feedpoint)</li>
-      <li>Current decreases smoothly toward the tips</li>
-      <li><strong>Zero current</strong> at the tips (the ends are open — current has nowhere to go)</li>
-    </ul>
-    <p>The shape follows a half-sinusoid: peak in the middle, zero at both ends.</p>
+    <h3 class="section-title">Act 2 — The current reverses</h3>
+    <p>The AC source completes its half-cycle. Current slows to zero, then begins to reverse. The electric and magnetic fields that built up during the first half-cycle now need to collapse back — but there's a problem. Fields don't travel instantaneously. They travel at the speed of light.</p>
+    <p>The field that expanded outward is now some distance away from the wire. To collapse back, it would have to travel back at the speed of light. But the current is <em>already reversing</em> before that can happen.</p>
 
-    <!-- VISUAL 2: Standing Wave Visualiser -->
-    <div class="diagram-card glow-e" id="card-standing-wave">
-      <div class="diagram-label">Interactive — Standing Wave Current Distribution</div>
-      <canvas id="cv-standing-wave" data-aspect="0.32"
-        aria-label="Half-wave dipole showing animated current distribution: maximum amber glow at the feedpoint centre, zero at the tips. Frequency slider controls the display."></canvas>
-      <div class="anim-controls">
-        <label for="sl-freq" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);white-space:nowrap;">Frequency</label>
-        <input type="range" id="sl-freq" min="1" max="30" value="7" step="1" aria-label="Frequency in MHz">
-        <output id="out-freq" class="anim-readout">7 MHz — λ/2 = 21.4 m</output>
-      </div>
-    </div>
-
-    <h3 class="section-title">Voltage Distribution</h3>
-
-    <p>Voltage does the opposite:</p>
-    <ul>
-      <li><strong>Zero voltage</strong> at the centre (low impedance point)</li>
-      <li><strong>Maximum voltage</strong> at the tips (high impedance — open circuit)</li>
-    </ul>
-
-    <p>This is exactly like a vibrating guitar string: fixed at both ends (that's where the string is pinned), maximum movement in the middle. The antenna wire is "fixed" electrically at the tips (zero current) and "moves" most at the centre (maximum current).</p>
+    <h3 class="section-title">Act 3 — The field cannot follow</h3>
+    <p>The new current builds a <em>new</em> field in the opposite direction — close to the wire, where the new field is forming. Meanwhile the old field is still out there, some distance away, and it can no longer connect smoothly to what's happening at the wire.</p>
 
     <div class="analogy">
-      <span class="analogy-icon">&#127928;</span>
+      <div class="analogy-icon">🫧</div>
       <div class="analogy-content">
-        <h4>Guitar String Analogy</h4>
-        <p>A guitar string plucked in the middle vibrates most at the centre and not at all where it's pinned at the nut and bridge. The dipole is identical — current "vibrates" most at the feedpoint and is pinned to zero at both open ends.</p>
+        <h4>The soap bubble analogy</h4>
+        <p>Think of blowing a soap bubble. You blow outward — the bubble expands. Then you reverse and try to suck it back in. But if it has expanded far enough, the neck pinches. The outer bubble separates from the air stream. It's free. The field does exactly this. The outer field — the part that expanded furthest — pinches off from the wire.</p>
       </div>
     </div>
 
-    <!-- VISUAL 3: Voltage / Current Side-by-Side -->
-    <div class="diagram-card glow-h" id="card-vi-dist">
-      <div class="diagram-label">Animation — Current &amp; Voltage Distribution (simultaneous)</div>
-      <div class="dual-canvas-row">
-        <div class="canvas-panel">
-          <div class="canvas-panel-label e-label">Current I(x)</div>
-          <canvas id="cv-current" data-aspect="0.7"
-            aria-label="Current profile along dipole: half-sine curve in amber, maximum at feedpoint centre, zero at tips"></canvas>
-        </div>
-        <div class="canvas-panel">
-          <div class="canvas-panel-label h-label">Voltage V(x)</div>
-          <canvas id="cv-voltage" data-aspect="0.7"
-            aria-label="Voltage profile along dipole: inverse distribution in cyan, zero at feedpoint, maximum at tips"></canvas>
-        </div>
-      </div>
-      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:12px;">current and voltage are inverses — exactly like a guitar string</p>
-    </div>
-  </section>
+    <h3 class="section-title">Act 4 — The wave is free</h3>
+    <p>The detached field packet is now self-sustaining. Its changing electric component regenerates its magnetic component, and vice versa — exactly as you learned in Lesson 1. It no longer needs the wire. It propagates outward at the speed of light, carrying energy with it.</p>
 
-  <!-- CHAPTER 4: HOW CURRENT CREATES RADIATION -->
-  <section class="chapter" id="ch-radiation">
+    <div class="callout key-insight">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        This is electromagnetic radiation. Not a by-product of the process — <strong>the process itself</strong>.
+      </div>
+    </div>
+
+    <!-- VISUAL 2 — field-detachment-4panel -->
+    <div class="diagram-card glow-em" id="v2-card">
+      <div class="diagram-label">Visual 2 — Field Detachment: Four Acts</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 840 240" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Four-panel diagram showing field detachment across one AC cycle: expansion, reversal, pinch-off, and free propagation"
+             role="img" style="min-width:560px;">
+
+          <!-- === Panel borders === -->
+          <rect x="4"   y="4"   width="200" height="232" rx="8" fill="#111827" stroke="#1e293b" stroke-width="1.5"/>
+          <rect x="214" y="4"   width="200" height="232" rx="8" fill="#111827" stroke="#1e293b" stroke-width="1.5"/>
+          <rect x="424" y="4"   width="200" height="232" rx="8" fill="#111827" stroke="#1e293b" stroke-width="1.5"/>
+          <rect x="634" y="4"   width="202" height="232" rx="8" fill="#111827" stroke="#1e293b" stroke-width="1.5"/>
+
+          <!-- === Act labels === -->
+          <text x="104" y="24" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">ACT 1</text>
+          <text x="314" y="24" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">ACT 2</text>
+          <text x="524" y="24" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">ACT 3</text>
+          <text x="735" y="24" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">ACT 4</text>
+
+          <!-- ═══ ACT 1: Current up, fields expanding ═══ -->
+          <!-- Wire -->
+          <line x1="104" y1="50" x2="104" y2="170" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <!-- Current arrow (upward) -->
+          <line x1="104" y1="155" x2="104" y2="65" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-e)"/>
+          <!-- Expanding E/H rings -->
+          <ellipse cx="104" cy="110" rx="18" ry="10" fill="none" stroke="#a78bfa" stroke-width="1.2" opacity="0.9"/>
+          <ellipse cx="104" cy="110" rx="32" ry="18" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.7"/>
+          <ellipse cx="104" cy="110" rx="48" ry="26" fill="none" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="104" cy="110" rx="64" ry="34" fill="none" stroke="#a78bfa" stroke-width="0.6" opacity="0.3"/>
+          <!-- Expansion arrows -->
+          <line x1="148" y1="100" x2="158" y2="97" stroke="#a78bfa" stroke-width="1" marker-end="url(#arrow-em-sm)"/>
+          <line x1="60"  y1="120" x2="50"  y2="123" stroke="#a78bfa" stroke-width="1" marker-end="url(#arrow-em-sm)"/>
+          <!-- Caption -->
+          <text x="104" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Current rising.</text>
+          <text x="104" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Fields expanding outward.</text>
+
+          <!-- ═══ ACT 2: Current reversing, fields at max extent ═══ -->
+          <!-- Wire -->
+          <line x1="314" y1="50" x2="314" y2="170" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <!-- Current arrow reversal (double-headed, fading) -->
+          <line x1="314" y1="155" x2="314" y2="100" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+          <text x="314" y="92" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b" opacity="0.7">↕ reversing</text>
+          <!-- Fields at max extent — slightly larger rings, static -->
+          <ellipse cx="314" cy="110" rx="22" ry="12" fill="none" stroke="#a78bfa" stroke-width="1.2" opacity="0.8"/>
+          <ellipse cx="314" cy="110" rx="40" ry="22" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+          <ellipse cx="314" cy="110" rx="60" ry="32" fill="none" stroke="#a78bfa" stroke-width="0.8" opacity="0.4"/>
+          <ellipse cx="314" cy="110" rx="78" ry="42" fill="none" stroke="#a78bfa" stroke-width="0.6" opacity="0.25"/>
+          <!-- "Cannot return in time" label -->
+          <text x="370" y="80" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#64748b" text-anchor="middle">← too far</text>
+          <text x="370" y="90" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#64748b" text-anchor="middle">to return</text>
+          <!-- Caption -->
+          <text x="314" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Current slows, then reverses.</text>
+          <text x="314" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Outer field cannot snap back.</text>
+
+          <!-- ═══ ACT 3: New field forming, old field detaching ═══ -->
+          <!-- Wire -->
+          <line x1="524" y1="50" x2="524" y2="170" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <!-- New field (opposite, tight, near wire) — cyan to distinguish -->
+          <ellipse cx="524" cy="110" rx="16" ry="9"  fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.9"/>
+          <ellipse cx="524" cy="110" rx="28" ry="15" fill="none" stroke="#06b6d4" stroke-width="1"   opacity="0.65"/>
+          <!-- Old field (detaching, purple, wider) -->
+          <ellipse cx="524" cy="110" rx="52" ry="28" fill="none" stroke="#a78bfa" stroke-width="1"   opacity="0.55"/>
+          <ellipse cx="524" cy="110" rx="70" ry="38" fill="none" stroke="#a78bfa" stroke-width="0.7" opacity="0.35"/>
+          <!-- Pinch point marker -->
+          <circle cx="566" cy="110" r="3.5" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+          <line x1="570" y1="107" x2="580" y2="96" stroke="#ef4444" stroke-width="1"/>
+          <text x="584" y="94" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#ef4444">pinch</text>
+          <!-- New current arrow (downward) -->
+          <line x1="524" y1="65" x2="524" y2="155" stroke="#06b6d4" stroke-width="2" marker-end="url(#arrow-h)"/>
+          <!-- Caption -->
+          <text x="524" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">New field forms (cyan, reversed).</text>
+          <text x="524" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Old field pinches off.</text>
+
+          <!-- ═══ ACT 4: Detached packet propagating freely ═══ -->
+          <!-- Wire -->
+          <line x1="695" y1="50" x2="695" y2="170" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <!-- Next cycle new field near wire -->
+          <ellipse cx="695" cy="110" rx="14" ry="8"  fill="none" stroke="#a78bfa" stroke-width="1.2" opacity="0.8"/>
+          <ellipse cx="695" cy="110" rx="26" ry="14" fill="none" stroke="#a78bfa" stroke-width="0.9" opacity="0.5"/>
+          <!-- Detached packet — moving right, shown as two concentric ovals displaced right -->
+          <ellipse cx="760" cy="110" rx="22" ry="14" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.85"/>
+          <ellipse cx="760" cy="110" rx="12" ry="8"  fill="none" stroke="#a78bfa" stroke-width="1"   opacity="0.65"/>
+          <!-- Propagation arrow -->
+          <line x1="780" y1="110" x2="794" y2="110" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-em-sm)"/>
+          <text x="760" y="100" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#a78bfa">free</text>
+          <!-- Caption -->
+          <text x="735" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Detached packet propagates freely.</text>
+          <text x="735" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#94a3b8">Wire begins its next cycle.</text>
+
+          <!-- === Arrowhead markers === -->
+          <defs>
+            <marker id="arrow-e" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/>
+            </marker>
+            <marker id="arrow-h" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#06b6d4"/>
+            </marker>
+            <marker id="arrow-em-sm" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#a78bfa"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+      <div class="info-panel" style="margin-top:16px;">
+        <strong>Key:</strong>
+        <span class="term-e">amber arrow</span> = current direction &nbsp;·&nbsp;
+        <span class="term-h" style="background:rgba(6,182,212,0.1);color:var(--accent-h);">cyan rings</span> = new reversed field &nbsp;·&nbsp;
+        <span class="term-box">purple rings</span> = original outgoing field &nbsp;·&nbsp;
+        <span style="color:var(--accent-power);font-family:'IBM Plex Mono',monospace;font-size:0.85em;">red circle</span> = pinch point
+      </div>
+    </div>
+
+    <!-- RESOURCE: em-radiation.html -->
+    <div class="resource-block">
+      <div class="resource-block-icon">▶</div>
+      <div class="resource-block-content">
+        <h3>Interactive — em-radiation.html</h3>
+        <p>The interactive animates the four-act detachment story step by step. <strong>Do the guided exercise below before reading further.</strong> The animation will make the text above click into place.</p>
+        <a class="btn-resource" href="../../../resources/em-radiation.html" target="_blank" rel="noopener">Open em-radiation interactive →</a>
+      </div>
+    </div>
+
+    <div class="exercise-block">
+      <h4>Guided Exercise — em-radiation.html</h4>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:14px;">Work through the four acts in order. For each act, read the annotation on screen, then answer the question before advancing.</p>
+      <ol>
+        <li><em>Act 1 — Current and fields build.</em> Watch the field lines expand outward from the wire. Question to yourself: where are these field lines travelling — and how fast?</li>
+        <li><em>Act 2 — Current reverses.</em> The current direction indicator flips. Watch the field lines at the furthest extent. Question: why can't those distant field lines instantly snap back to the wire?</li>
+        <li><em>Act 3 — Detachment.</em> Watch the pinch point form. The outer field separates. Question: what does the soap bubble analogy have to do with this moment?</li>
+        <li><em>Act 4 — Free propagation.</em> The detached packet moves outward. The wire is already generating its next cycle. Question: what keeps this packet moving? What "feeds" it now that it's separated from the wire?</li>
+      </ol>
+      <p class="exercise-closing">After completing all four acts: close the interactive and write two sentences in your own words explaining why the wave cannot simply return to the wire once it detaches.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 04 — THE HALF-WAVE DIPOLE ═══ -->
+  <div class="chapter" id="section-04">
     <div class="chapter-header">
-      <span class="chapter-num">04</span>
+      <span class="chapter-num">SECTION 04</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">How the Current Creates Radiation</h2>
+    <h2 class="chapter-title">The Half-Wave Dipole</h2>
 
-    <p>Each small segment of the wire carrying AC current radiates a tiny EM wave. But here's the clever part: because the current varies along the wire (sinusoidal distribution), the radiation from all these tiny segments <strong>adds up constructively</strong> in some directions and <strong>cancels out</strong> in others.</p>
+    <p>Now we can build something.</p>
 
-    <p>The result is a specific <strong>radiation pattern</strong> — a shape describing where the energy goes. For a dipole, it's a doughnut (toroid) shape around the wire. We'll explore patterns in detail in Lesson 3.</p>
+    <p>Take a straight piece of wire. Feed AC into the centre. The wire radiates — we now know why. But the <em>amount</em> of radiation, and the <em>pattern</em> of where it goes, depends on the wire's length relative to the wavelength of the signal.</p>
 
-    <!-- VISUAL 4: Radiation Building Step-by-Step -->
-    <div class="diagram-card glow-em" id="card-radiation-build">
-      <div class="diagram-label">Animation — How Radiation Builds</div>
-      <canvas id="cv-radiation" data-aspect="0.75"
-        aria-label="Step-by-step animation: individual dipole segment radiation arrows, then combined contributions, then the final donut-shaped radiation pattern"></canvas>
-      <div id="step-label" class="step-label">Step 1 — each wire segment radiates individually</div>
-      <div class="anim-controls">
-        <button class="anim-btn" id="btn-rad-prev" aria-label="Previous step">&larr; Prev</button>
-        <span class="anim-readout" id="rad-step-count">Step 1 / 3</span>
-        <button class="anim-btn" id="btn-rad-next" aria-label="Next step">Next &rarr;</button>
+    <p>When the wire is exactly half a wavelength long (λ/2), something special happens: the current distributes itself along the wire in a way that makes it a very efficient radiator. This is the <strong>half-wave dipole</strong> — the simplest practical antenna, and the reference standard against which almost every other antenna design is compared.</p>
+
+    <h3 class="section-title">Current Distribution: Why It Isn't Uniform</h3>
+
+    <p>You might expect the current to be the same everywhere along the wire. It isn't. The ends of the wire are open — there's nowhere for current to go. Current at an open end must be zero. That's a hard boundary condition.</p>
+
+    <p>At the centre — the feedpoint — current flows freely from the transmitter into the wire. That's where current is at its maximum.</p>
+
+    <p>Between centre and tip, the current tapers from maximum to zero, following a smooth half-sinusoid curve.</p>
+
+    <!-- VISUAL 3 — dipole-current-distribution -->
+    <div class="diagram-card glow-e" id="v3-card">
+      <div class="diagram-label">Visual 3 — Half-Wave Dipole: Current Distribution</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Half-wave dipole current distribution: maximum current at feedpoint centre, zero at both tips, shown as a half-sinusoid curve and a colour-gradient version"
+             role="img">
+
+          <!-- === TOP ROW: sinusoid overlay diagram === -->
+
+          <!-- Centre line (horizontal axis) -->
+          <line x1="60" y1="90" x2="640" y2="90" stroke="#1e293b" stroke-width="1"/>
+
+          <!-- Wire halves -->
+          <line x1="60"  y1="90" x2="349" y2="90" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+          <line x1="351" y1="90" x2="640" y2="90" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Feedpoint gap and connector -->
+          <rect x="342" y="82" width="16" height="16" rx="3" fill="#1a2234" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="350" y="94" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b">⚡</text>
+
+          <!-- Current distribution curve (half-sinusoid lobe above the wire) -->
+          <!-- The curve peaks at x=350 (centre) with apex at y=30, and meets the wire at x=60 and x=640 -->
+          <path d="M 60,90 Q 205,28 350,26 Q 495,28 640,90"
+                fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round"/>
+
+          <!-- Amplitude reference dashes -->
+          <line x1="350" y1="26" x2="350" y2="90" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+
+          <!-- Tip labels -->
+          <text x="50"  y="87" text-anchor="end"    font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b">←</text>
+          <text x="650" y="87" text-anchor="start"  font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b">→</text>
+
+          <!-- Annotation arrows and labels -->
+          <!-- Centre / feedpoint -->
+          <line x1="350" y1="26" x2="350" y2="14" stroke="#f59e0b" stroke-width="1.2"/>
+          <text x="350" y="11" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#f59e0b" font-weight="500">Maximum current — feedpoint</text>
+
+          <!-- Left tip annotation -->
+          <line x1="60"  y1="90" x2="60"  y2="112" stroke="#64748b" stroke-width="1"/>
+          <text x="60"   y="123" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#64748b">Zero current — open end</text>
+
+          <!-- Right tip annotation -->
+          <line x1="640" y1="90" x2="640" y2="112" stroke="#64748b" stroke-width="1"/>
+          <text x="640"  y="123" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#64748b">Zero current — open end</text>
+
+          <!-- λ/2 bracket -->
+          <line x1="60"  y1="140" x2="640" y2="140" stroke="#1e293b" stroke-width="1.2"/>
+          <line x1="60"  y1="136" x2="60"  y2="144" stroke="#1e293b" stroke-width="1.2"/>
+          <line x1="640" y1="136" x2="640" y2="144" stroke="#1e293b" stroke-width="1.2"/>
+          <text x="350" y="138" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b">← λ/2 →</text>
+
+          <!-- === BOTTOM ROW: colour-gradient version === -->
+
+          <!-- Divider -->
+          <line x1="40" y1="158" x2="660" y2="158" stroke="#1e293b" stroke-width="0.8"/>
+          <text x="350" y="172" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="1.5">COLOUR MAP VIEW</text>
+
+          <!-- Gradient wire — red at centre, blue at tips -->
+          <defs>
+            <linearGradient id="current-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#06b6d4" stop-opacity="0.9"/>
+              <stop offset="20%"  stop-color="#a78bfa" stop-opacity="0.85"/>
+              <stop offset="50%"  stop-color="#f59e0b" stop-opacity="1"/>
+              <stop offset="80%"  stop-color="#a78bfa" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.9"/>
+            </linearGradient>
+          </defs>
+          <line x1="60" y1="220" x2="640" y2="220" stroke="url(#current-grad)" stroke-width="8" stroke-linecap="round"/>
+
+          <!-- Feedpoint marker -->
+          <rect x="343" y="212" width="14" height="16" rx="2" fill="#1a2234" stroke="#f59e0b" stroke-width="1.2"/>
+
+          <!-- Colour key -->
+          <circle cx="140" cy="252" r="5" fill="#f59e0b"/>
+          <text x="150" y="256" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#94a3b8">high current</text>
+          <circle cx="310" cy="252" r="5" fill="#a78bfa"/>
+          <text x="320" y="256" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#94a3b8">mid</text>
+          <circle cx="420" cy="252" r="5" fill="#06b6d4"/>
+          <text x="430" y="256" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#94a3b8">zero current (tip)</text>
+
+        </svg>
       </div>
     </div>
-  </section>
 
-  <!-- CHAPTER 5: RECIPROCITY -->
-  <section class="chapter" id="ch-reciprocity">
+    <h3 class="section-title">Voltage Distribution: The Inverse</h3>
+
+    <p>Voltage behaves in the opposite way. At the centre, where current is maximum, voltage is at its minimum (the feedpoint is a low-impedance point). At the tips, where current is zero, voltage is at its maximum — the open ends look like a high-impedance point.</p>
+
+    <p>The analogy that works best here is a <strong>vibrating guitar string</strong> pinned at both ends. The pins are fixed — no movement at the ends. Maximum movement occurs in the middle. The antenna wire is "pinned" electrically at the tips (zero current), with maximum "movement" at the centre (maximum current). The shape is a standing wave — not a travelling one.</p>
+
+    <!-- VISUAL 4 — guitar-string-analogy -->
+    <div class="diagram-card glow-em" id="v4-card">
+      <div class="diagram-label">Visual 4 — The Guitar String Analogy</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Guitar string analogy: top row shows vibrating guitar string with max displacement at centre and zero at pinned ends; bottom row shows dipole wire with matching current distribution shape"
+             role="img">
+
+          <!-- === TITLE === -->
+          <text x="350" y="20" text-anchor="middle"
+                font-family="DM Serif Display,Georgia,serif" font-size="14"
+                fill="#e2e8f0">The same physics — different medium.</text>
+
+          <!-- ═══ TOP ROW — Guitar string ═══ -->
+          <text x="30" y="52" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="1.5">GUITAR STRING</text>
+
+          <!-- Bridge pins -->
+          <rect x="52"  y="58" width="12" height="36" rx="3" fill="#1e293b" stroke="#64748b" stroke-width="1.2"/>
+          <rect x="636" y="58" width="12" height="36" rx="3" fill="#1e293b" stroke="#64748b" stroke-width="1.2"/>
+
+          <!-- String at rest (faint) -->
+          <line x1="64" y1="76" x2="636" y2="76" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+
+          <!-- Vibrating string curve -->
+          <path d="M 64,76 Q 210,28 350,24 Q 490,28 636,76"
+                fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="2.2"/>
+
+          <!-- Pin labels -->
+          <text x="58"  y="108" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#64748b">fixed</text>
+          <text x="58"  y="119" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9"  fill="#64748b">(zero movement)</text>
+          <text x="642" y="108" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#64748b">fixed</text>
+          <text x="642" y="119" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9"  fill="#64748b">(zero movement)</text>
+
+          <!-- Centre label -->
+          <line x1="350" y1="24" x2="350" y2="14" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="350" y="11" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#a78bfa">maximum movement</text>
+
+          <!-- Divider -->
+          <line x1="40" y1="130" x2="660" y2="130" stroke="#1e293b" stroke-width="0.8"/>
+
+          <!-- ═══ BOTTOM ROW — Dipole wire ═══ -->
+          <text x="30" y="150" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="1.5">DIPOLE WIRE</text>
+
+          <!-- Wire -->
+          <line x1="64"  y1="174" x2="344" y2="174" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+          <line x1="356" y1="174" x2="636" y2="174" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Feedpoint -->
+          <rect x="342" y="166" width="16" height="16" rx="3" fill="#1a2234" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="350" y="178" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b">⚡</text>
+
+          <!-- Current distribution curve -->
+          <path d="M 64,174 Q 210,126 350,122 Q 490,126 636,174"
+                fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="2.2"/>
+
+          <!-- Tip labels -->
+          <text x="58"  y="204" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#06b6d4">zero current</text>
+          <text x="58"  y="215" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9"  fill="#64748b">(open end)</text>
+          <text x="642" y="204" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#06b6d4">zero current</text>
+          <text x="642" y="215" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9"  fill="#64748b">(open end)</text>
+
+          <!-- Centre label -->
+          <line x1="350" y1="122" x2="350" y2="112" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="350" y="109" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#f59e0b">maximum current</text>
+          <text x="350" y="120" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9"  fill="#64748b">(feedpoint)</text>
+
+        </svg>
+      </div>
+    </div>
+
+    <h3 class="section-title">Physical Length: Putting the Maths Together</h3>
+
+    <p>In Lesson 1 you learned λ = c / f. Now that formula becomes <em>useful</em> — because the physical length of a half-wave dipole is simply:</p>
+
+    <div class="callout">
+      <div class="callout-icon">📐</div>
+      <div class="callout-text">
+        <strong>L = λ/2 = c / (2f)</strong><br>
+        Where <strong>L</strong> = total dipole length (metres), <strong>c</strong> = 300,000,000 m/s, <strong>f</strong> = frequency (Hz).<br>
+        In practice, two equal arms each λ/4 long: <strong>each arm = c / (4f)</strong>
+      </div>
+    </div>
+
+    <p>Let's work through a real example — the 2-metre amateur band, centred at 145 MHz.</p>
+
+    <div class="info-panel">
+      <strong>Step 1 — convert to Hz:</strong> 145 MHz = 145,000,000 Hz<br>
+      <strong>Step 2 — find the wavelength:</strong> λ = 300,000,000 / 145,000,000 = 2.069 m<br>
+      <strong>Step 3 — find the total dipole length:</strong> L = 2.069 / 2 = <strong>1.034 m</strong><br>
+      <strong>Step 4 — find each arm:</strong> 1.034 / 2 = <strong>0.517 m</strong> (about 52 cm)
+    </div>
+
+    <p>So a 2m dipole is roughly a metre tip-to-tip — something you can easily hold in both hands outstretched.</p>
+
+    <p>For comparison:</p>
+    <ul>
+      <li><strong>70cm band (435 MHz):</strong> each arm ≈ 17 cm — fits across your palm</li>
+      <li><strong>23cm band (1296 MHz):</strong> each arm ≈ 5.8 cm — shorter than your thumb</li>
+    </ul>
+
+    <p>This is why higher frequencies allow physically smaller antennas. The maths from Lesson 1 has a direct, touchable consequence.</p>
+
+    <div class="callout">
+      <div class="callout-icon">📝</div>
+      <div class="callout-text">
+        <strong>Note for students with a physics background:</strong> In free space, the formula above gives exact results. In practice, a real wire dipole needs to be cut slightly <em>shorter</em> than the theoretical λ/2 due to the "velocity factor" of current in a conductor vs. free space. At these frequencies the correction is small — about 2–5%. We'll cover this properly in Lesson 11 (Dipole Deep Dive). For now, use the free-space formula and know that real dipoles are trimmed slightly shorter.
+      </div>
+    </div>
+
+    <!-- VISUAL 5 — formula-animation L = c / (2f) -->
+    <div class="diagram-card glow-em" id="v5-card">
+      <div class="diagram-label">Visual 5 — Dipole Length Formula: L = c / (2f)</div>
+      <div class="formula-widget">
+        <div class="formula-display" id="formula-display" aria-live="polite" aria-label="Formula display: L = c divided by 2f">
+          <span class="fvar fvar--L" id="fvar-L" data-var="L" tabindex="0" role="button" aria-label="Solve for L">L</span>
+          <span class="fop">=</span>
+          <span class="fvar fvar--c" id="fvar-c" data-var="c" tabindex="0" role="button" aria-label="Solve for c">c</span>
+          <span class="fop">/</span>
+          <span class="fop">(2 ×</span>
+          <span class="fvar fvar--f" id="fvar-f" data-var="f" tabindex="0" role="button" aria-label="Solve for f">f</span>
+          <span class="fop">)</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-dim);margin-bottom:16px;">Click a variable to rearrange the formula for that unknown</p>
+        <div class="formula-solve-btns">
+          <button class="solve-btn solve-btn--L active" data-solve="L" aria-pressed="true">Solve for L (length)</button>
+          <button class="solve-btn solve-btn--f"        data-solve="f" aria-pressed="false">Solve for f (frequency)</button>
+          <button class="solve-btn solve-btn--c"        data-solve="c" aria-pressed="false">Solve for c (speed of light)</button>
+        </div>
+        <div class="formula-calc">
+          <h4>Live Calculator</h4>
+          <div class="calc-row">
+            <label for="calc-freq">Frequency (f)</label>
+            <input type="number" id="calc-freq" value="145" min="0.001" step="1" aria-label="Frequency in megahertz">
+            <span class="calc-unit">MHz</span>
+          </div>
+          <div class="calc-divider"></div>
+          <div class="calc-row">
+            <label>Total length (L)</label>
+            <span class="calc-result" id="calc-total-L">1.034 m</span>
+          </div>
+          <div class="calc-row">
+            <label>Each arm (λ/4)</label>
+            <span class="calc-result" id="calc-arm-L">0.517 m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL 6 — human-scale-dipoles -->
+    <div class="diagram-card glow-h" id="v6-card">
+      <div class="diagram-label">Visual 6 — Human Scale Comparison</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Human scale comparison of dipole sizes: 2m band dipole is arm-span wide, 70cm band fits across a forearm, 23cm band is hand-width"
+             role="img">
+
+          <!-- === Person silhouette (stick figure) === -->
+          <!-- Head -->
+          <circle cx="80" cy="46" r="18" fill="none" stroke="#64748b" stroke-width="2"/>
+          <!-- Body -->
+          <line x1="80" y1="64" x2="80" y2="150" stroke="#64748b" stroke-width="2.5"/>
+          <!-- Arms -->
+          <line x1="30" y1="95" x2="130" y2="95" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Forearm (right, bent slightly down) -->
+          <line x1="130" y1="95" x2="148" y2="118" stroke="#64748b" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <!-- Legs -->
+          <line x1="80" y1="150" x2="58"  y2="210" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="80" y1="150" x2="102" y2="210" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Person label -->
+          <text x="80" y="228" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b">~1.7 m</text>
+
+          <!-- === Reference arm-span line === -->
+          <line x1="30" y1="240" x2="130" y2="240" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3"/>
+
+          <!-- ═══ 2m band dipole (145 MHz, L ≈ 1.034 m) ═══ -->
+          <!-- Scale: viewBox 700 wide, person arm-span ~100px = 1m physical => 1.034m ≈ 104px -->
+          <!-- Centred at x=400, so from x=348 to x=452 -->
+          <text x="400" y="32" text-anchor="middle"
+                font-family="IBM Plex Mono,monospace" font-size="10" fill="#f59e0b" letter-spacing="1">145 MHz · 2m BAND</text>
+
+          <!-- Dipole wire -->
+          <line x1="218" y1="52" x2="344" y2="52" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+          <rect x="344" y="44" width="14" height="16" rx="3" fill="#1a2234" stroke="#f59e0b" stroke-width="1.5"/>
+          <line x1="358" y1="52" x2="482" y2="52" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Bracket -->
+          <line x1="218" y1="65" x2="482" y2="65" stroke="#f59e0b" stroke-width="1" opacity="0.5"/>
+          <line x1="218" y1="61" x2="218" y2="69" stroke="#f59e0b" stroke-width="1" opacity="0.5"/>
+          <line x1="482" y1="61" x2="482" y2="69" stroke="#f59e0b" stroke-width="1" opacity="0.5"/>
+          <text x="350" y="63" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b" opacity="0.8">↔</text>
+
+          <!-- Label -->
+          <text x="350" y="80" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="#f59e0b" font-weight="500">λ = 2.069 m &nbsp;·&nbsp; L = 1.034 m tip-to-tip</text>
+          <text x="350" y="93" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10"   fill="#94a3b8">≈ arm-span — you can hold both ends outstretched</text>
+
+          <!-- ═══ 70cm band dipole (435 MHz, L ≈ 345 mm) ═══ -->
+          <!-- 0.345m ≈ 35px wide. Centred at x=400 -->
+          <text x="400" y="122" text-anchor="middle"
+                font-family="IBM Plex Mono,monospace" font-size="10" fill="#06b6d4" letter-spacing="1">435 MHz · 70cm BAND</text>
+
+          <!-- Dipole wire -->
+          <line x1="332" y1="140" x2="349" y2="140" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
+          <rect x="349" y="132" width="14" height="16" rx="3" fill="#1a2234" stroke="#06b6d4" stroke-width="1.5"/>
+          <line x1="363" y1="140" x2="380" y2="140" stroke="#06b6d4" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Bracket -->
+          <line x1="332" y1="153" x2="380" y2="153" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>
+          <line x1="332" y1="149" x2="332" y2="157" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>
+          <line x1="380" y1="149" x2="380" y2="157" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>
+
+          <!-- Label -->
+          <text x="350" y="168" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="#06b6d4" font-weight="500">λ = 0.690 m &nbsp;·&nbsp; L = 345 mm tip-to-tip</text>
+          <text x="350" y="181" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10"   fill="#94a3b8">≈ forearm length — fits across your palm</text>
+
+          <!-- ═══ 23cm band dipole (1296 MHz, L ≈ 116 mm) ═══ -->
+          <!-- 0.116m ≈ 12px — use minimum visible size, scale up slightly for legibility -->
+          <text x="400" y="208" text-anchor="middle"
+                font-family="IBM Plex Mono,monospace" font-size="10" fill="#a78bfa" letter-spacing="1">1296 MHz · 23cm BAND</text>
+
+          <!-- Dipole wire (scaled up ×2 for legibility, with note) -->
+          <line x1="339" y1="224" x2="349" y2="224" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/>
+          <rect x="349" y="216" width="14" height="16" rx="3" fill="#1a2234" stroke="#a78bfa" stroke-width="1.5"/>
+          <line x1="363" y1="224" x2="373" y2="224" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Bracket -->
+          <line x1="339" y1="237" x2="373" y2="237" stroke="#a78bfa" stroke-width="1" opacity="0.5"/>
+          <line x1="339" y1="233" x2="339" y2="241" stroke="#a78bfa" stroke-width="1" opacity="0.5"/>
+          <line x1="373" y1="233" x2="373" y2="241" stroke="#a78bfa" stroke-width="1" opacity="0.5"/>
+
+          <!-- Label -->
+          <text x="350" y="255" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="#a78bfa" font-weight="500">λ = 0.231 m &nbsp;·&nbsp; L = 116 mm tip-to-tip</text>
+          <text x="350" y="268" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10"   fill="#94a3b8">≈ hand-width — shorter than your thumb</text>
+
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 05 — RECIPROCITY ═══ -->
+  <div class="chapter" id="section-05">
     <div class="chapter-header">
-      <span class="chapter-num">05</span>
+      <span class="chapter-num">SECTION 05</span>
       <div class="chapter-line"></div>
     </div>
     <h2 class="chapter-title">The Receive Side: Reciprocity</h2>
 
-    <p>So far we've talked about transmitting — current in the wire creating EM waves. But antennas work the other way around too.</p>
+    <p>Everything above describes <em>transmitting</em> — current in a wire creating EM waves that propagate outward. But you've heard that "an antenna works the same for transmitting and receiving." What does that actually mean?</p>
 
-    <p>When an EM wave passes a wire, the electric field component pushes on the electrons in the wire, causing them to move — creating a current. This current can be amplified and processed by a receiver. The antenna has converted the EM wave back into an electrical signal.</p>
+    <p>When an EM wave passes through space, its electric field component creates a voltage gradient along any conductor it passes through. That gradient drives electron movement — it induces a current. A receiver amplifies and processes that current.</p>
 
-    <p>The <strong>reciprocity theorem</strong> states:</p>
+    <p>Notice the language: the field <em>passes through</em> the wire. The wave doesn't "hit" the antenna and stop. The antenna samples the field that's already threading through it. This distinction matters — we'll return to it in Lesson 5 when we discuss polarisation, because it's the reason that rotating an antenna changes signal strength.</p>
 
-    <div class="callout">
-      <span class="callout-icon">&#8596;</span>
+    <p>For now, the key result is this:</p>
+
+    <div class="callout key-insight">
+      <div class="callout-icon">⚖️</div>
       <div class="callout-text">
-        An antenna has the same radiation pattern, gain, and impedance whether it is <strong>transmitting or receiving</strong>.
+        <strong>The Reciprocity Theorem:</strong> An antenna has the same radiation pattern, gain, and impedance whether it is transmitting or receiving.
       </div>
     </div>
 
-    <p>This is incredibly useful. It means:</p>
+    <p>This is not obvious — it requires proof, which lives in the mathematics of Maxwell's equations. But the practical consequences are very useful:</p>
+
     <ul>
-      <li>We can design an antenna for transmitting and know it will work equally well for receiving (and vice versa)</li>
-      <li>The radiation pattern we measure on transmit is the same as the reception sensitivity pattern</li>
-      <li>All the theory we develop works in both directions</li>
+      <li>Design an antenna for transmitting and it works identically for receiving</li>
+      <li>The radiation pattern on transmit is the same as the reception sensitivity pattern on receive</li>
+      <li>Every antenna measurement we make applies in both directions</li>
     </ul>
 
-    <!-- VISUAL 5: TX/RX Reciprocity -->
-    <div class="diagram-card glow-h" id="card-reciprocity">
-      <div class="diagram-label">Interactive — Reciprocity: TX and RX</div>
-      <div class="mode-row">
-        <button class="mode-btn active-tx" id="btn-tx" aria-pressed="true">TX &mdash; Transmit</button>
-        <button class="mode-btn" id="btn-rx" aria-pressed="false">RX &mdash; Receive</button>
+    <!-- VISUAL 7 — tx-rx-mirror -->
+    <div class="diagram-card glow-h" id="v7-card">
+      <div class="diagram-label">Visual 7 — Reciprocity: TX / RX Mirror</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Reciprocity diagram: left side shows transmitter feeding antenna that radiates EM waves; right side is a mirror showing the same antenna receiving EM waves and delivering signal to a receiver"
+             role="img">
+
+          <!-- === Mirror line === -->
+          <line x1="350" y1="10" x2="350" y2="190" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <text x="350" y="8" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b" letter-spacing="1">MIRROR</text>
+
+          <!-- ═══ LEFT SIDE — TX ═══ -->
+          <text x="175" y="22" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#f59e0b" letter-spacing="1.5">TRANSMIT</text>
+
+          <!-- Transmitter box -->
+          <rect x="20" y="80" width="70" height="40" rx="6" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="55" y="96" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b">TX</text>
+          <text x="55" y="109" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#94a3b8">transmitter</text>
+
+          <!-- Feedline TX -->
+          <line x1="90" y1="100" x2="200" y2="100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="145" y="93" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#64748b">feedline</text>
+
+          <!-- Antenna (TX side) — vertical dipole -->
+          <line x1="210" y1="55"  x2="210" y2="97"  stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+          <rect x="204" y="97"   width="12" height="6" rx="2" fill="#1a2234" stroke="#f59e0b" stroke-width="1.2"/>
+          <line x1="210" y1="103" x2="210" y2="145" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- EM waves radiating right -->
+          <path d="M 230,100 Q 248,85 248,100 Q 248,115 230,100" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.8"/>
+          <path d="M 250,100 Q 275,75 275,100 Q 275,125 250,100" fill="none" stroke="#a78bfa" stroke-width="1.3" opacity="0.6"/>
+          <path d="M 275,100 Q 308,65 308,100 Q 308,135 275,100" fill="none" stroke="#a78bfa" stroke-width="1.1" opacity="0.4"/>
+          <!-- Propagation arrow -->
+          <line x1="310" y1="100" x2="338" y2="100" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-em-tx)"/>
+
+          <!-- Signal flow arrows (TX) -->
+          <line x1="90"  y1="98"  x2="198" y2="98"  stroke="#f59e0b" stroke-width="1" marker-end="url(#arrow-e-tx)" opacity="0.6"/>
+
+          <!-- ═══ RIGHT SIDE — RX ═══ -->
+          <text x="525" y="22" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#06b6d4" letter-spacing="1.5">RECEIVE</text>
+
+          <!-- EM waves arriving from left -->
+          <line x1="362" y1="100" x2="388" y2="100" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-em-rx)"/>
+          <path d="M 420,100 Q 402,85 402,100 Q 402,115 420,100" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.8"/>
+          <path d="M 448,100 Q 422,75 422,100 Q 422,125 448,100" fill="none" stroke="#a78bfa" stroke-width="1.3" opacity="0.6"/>
+          <path d="M 478,100 Q 445,65 445,100 Q 445,135 478,100" fill="none" stroke="#a78bfa" stroke-width="1.1" opacity="0.4"/>
+
+          <!-- Antenna (RX side) — same shape, mirrored -->
+          <line x1="490" y1="55"  x2="490" y2="97"  stroke="#06b6d4" stroke-width="4" stroke-linecap="round"/>
+          <rect x="484" y="97"   width="12" height="6" rx="2" fill="#1a2234" stroke="#06b6d4" stroke-width="1.2"/>
+          <line x1="490" y1="103" x2="490" y2="145" stroke="#06b6d4" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- Feedline RX -->
+          <line x1="502" y1="100" x2="610" y2="100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 3"/>
+          <text x="556" y="93" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#64748b">feedline</text>
+
+          <!-- Receiver box -->
+          <rect x="610" y="80" width="70" height="40" rx="6" fill="#111827" stroke="#06b6d4" stroke-width="1.5"/>
+          <text x="645" y="96" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#06b6d4">RX</text>
+          <text x="645" y="109" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#94a3b8">receiver</text>
+
+          <!-- Signal flow arrow (RX) -->
+          <line x1="502" y1="102" x2="608" y2="102" stroke="#06b6d4" stroke-width="1" marker-end="url(#arrow-h-rx)" opacity="0.6"/>
+
+          <!-- "Same antenna" annotation -->
+          <line x1="210" y1="155" x2="490" y2="155" stroke="#1e293b" stroke-width="1"/>
+          <line x1="210" y1="151" x2="210" y2="159" stroke="#64748b" stroke-width="1"/>
+          <line x1="490" y1="151" x2="490" y2="159" stroke="#64748b" stroke-width="1"/>
+          <text x="350" y="153" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#64748b">Same antenna — same pattern — same impedance</text>
+
+          <!-- Caption -->
+          <text x="350" y="178" text-anchor="middle" font-family="DM Serif Display,Georgia,serif" font-size="11" fill="#94a3b8" font-style="italic">
+            "The antenna doesn't know which direction the energy is flowing."
+          </text>
+
+          <!-- Arrowhead markers -->
+          <defs>
+            <marker id="arrow-e-tx" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#f59e0b"/>
+            </marker>
+            <marker id="arrow-h-rx" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#06b6d4"/>
+            </marker>
+            <marker id="arrow-em-tx" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#a78bfa"/>
+            </marker>
+            <marker id="arrow-em-rx" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#a78bfa"/>
+            </marker>
+          </defs>
+        </svg>
       </div>
-      <canvas id="cv-reciprocity" data-aspect="0.42"
-        aria-label="Interactive demonstrating reciprocity: TX mode shows signal generator feeding dipole with EM waves propagating outward; RX mode shows incoming wave inducing current in same dipole feeding a receiver"></canvas>
-      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:10px;">Reciprocity Theorem — same antenna, same pattern, both directions</p>
     </div>
-  </section>
 
-  <!-- CHAPTER 6: BEYOND THE DIPOLE -->
-  <section class="chapter" id="ch-beyond">
+    <!-- RESOURCE: tx-rx-complete.html -->
+    <div class="resource-block">
+      <div class="resource-block-icon">▶</div>
+      <div class="resource-block-content">
+        <h3>Interactive — tx-rx-complete.html</h3>
+        <p>This interactive shows the full transmit and receive chains side by side. Work through the guided exercise below before moving to the self-check.</p>
+        <a class="btn-resource" href="../../../resources/tx-rx-complete.html" target="_blank" rel="noopener">Open TX/RX interactive →</a>
+      </div>
+    </div>
+
+    <div class="exercise-block">
+      <h4>Guided Exercise — tx-rx-complete.html</h4>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:14px;">The interactive shows the full transmit and receive chains side by side.</p>
+      <ol>
+        <li>Trace the signal path from transmitter to antenna on the TX side.</li>
+        <li>Trace the signal path from antenna to receiver on the RX side.</li>
+        <li>Find the point where the electrical world and the electromagnetic world meet on each side. They are the same point — the antenna feedpoint.</li>
+        <li><em>Question: what does "the antenna is at the boundary between two worlds" mean in terms of what it converts and in which direction?</em></li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 06 — SELF-CHECK ═══ -->
+  <div class="chapter" id="section-06">
     <div class="chapter-header">
-      <span class="chapter-num">06</span>
+      <span class="chapter-num">SECTION 06</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">Beyond the Dipole: A Preview</h2>
+    <h2 class="chapter-title">Self-Check</h2>
+    <p>Work through these without looking back at the lesson. If you get stuck, re-read the relevant section — don't just peek at the answer.</p>
 
-    <p>The half-wave dipole is the starting point, but antenna engineering is about finding clever arrangements of conductors that shape the radiation in useful ways. Everything from a tiny mobile phone antenna to a massive radio telescope dish is doing the same fundamental thing: creating or capturing EM waves using currents in conductors.</p>
+    <!-- PART A — Dipole Length Calculations -->
+    <div class="self-check-group">
+      <h3>Part A — Dipole Length Calculations</h3>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;">For each frequency, calculate: (1) wavelength, (2) total dipole length, (3) length of each arm. Show all working. Use c = 300,000,000 m/s.</p>
 
-    <p>In the coming lessons we'll see how different conductor arrangements create different radiation patterns (Lesson 3), why certain types suit certain jobs (Lesson 4), and how the orientation of the fields matters (Lesson 5).</p>
-  </section>
+      <div class="self-check">
+        <h4>A1 — 145 MHz (2m amateur band)</h4>
+        <p>Find λ, total dipole length L, and each arm length.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a1">
+          <ol>
+            <li><strong>λ = c / f = 300,000,000 / 145,000,000 = 2.069 m</strong></li>
+            <li><strong>L = λ / 2 = 2.069 / 2 = 1.034 m</strong> (total tip-to-tip)</li>
+            <li><strong>Each arm = L / 2 = 1.034 / 2 = 0.517 m</strong> (≈ 52 cm)</li>
+          </ol>
+          <p style="margin-top:8px;">A 2m dipole is roughly arm-span wide. You can hold both ends outstretched.</p>
+        </div>
+      </div>
 
-  <!-- SUMMARY -->
-  <section class="chapter" id="ch-summary">
+      <div class="self-check">
+        <h4>A2 — 435 MHz (70cm amateur band)</h4>
+        <p>Find λ, total dipole length L, and each arm length.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a2">
+          <ol>
+            <li><strong>λ = 300,000,000 / 435,000,000 = 0.690 m</strong></li>
+            <li><strong>L = 0.690 / 2 = 0.345 m</strong> (345 mm)</li>
+            <li><strong>Each arm = 0.345 / 2 = 0.172 m</strong> (≈ 17 cm — fits across your palm)</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A3 — 1296 MHz (23cm amateur band)</h4>
+        <p>Find λ, total dipole length L, and each arm length.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a3">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a3">
+          <ol>
+            <li><strong>λ = 300,000,000 / 1,296,000,000 = 0.231 m</strong></li>
+            <li><strong>L = 0.231 / 2 = 0.116 m</strong> (116 mm)</li>
+            <li><strong>Each arm = 0.116 / 2 = 0.058 m</strong> (≈ 5.8 cm — shorter than your thumb)</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A4 — 27 MHz (CB radio / 11m band)</h4>
+        <p>Find λ, total dipole length L, and each arm length. <em>This one might surprise you.</em></p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a4">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a4">
+          <ol>
+            <li><strong>λ = 300,000,000 / 27,000,000 = 11.11 m</strong></li>
+            <li><strong>L = 11.11 / 2 = 5.56 m</strong> tip-to-tip</li>
+            <li><strong>Each arm = 5.56 / 2 = 2.78 m</strong></li>
+          </ol>
+          <p style="margin-top:8px;">Over 5.5 metres tip-to-tip — taller than a double-decker bus. This is why CB antennas use coiled loading coils to simulate electrical length in a shorter physical package.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A5 — 2400 MHz (Wi-Fi 2.4 GHz band)</h4>
+        <p>Find λ, total dipole length L, and each arm length. Convert carefully: 2400 MHz = ? Hz.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a5">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a5">
+          <ol>
+            <li>2400 MHz = 2,400,000,000 Hz = 2.4 × 10⁹ Hz</li>
+            <li><strong>λ = 300,000,000 / 2,400,000,000 = 0.125 m</strong> (125 mm)</li>
+            <li><strong>L = 0.125 / 2 = 0.0625 m</strong> (62.5 mm)</li>
+            <li><strong>Each arm = 31.25 mm</strong> (≈ 3 cm — fits on a PCB)</li>
+          </ol>
+          <p style="margin-top:8px;">This is why Wi-Fi router antennas are so short — and why you'll find PCB trace antennas inside phones at these frequencies.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART B — Concept Questions -->
+    <div class="self-check-group">
+      <h3>Part B — Concept Questions</h3>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;">Answer in one or two sentences. Complete sentences, not single words.</p>
+
+      <div class="self-check">
+        <h4>B1 — Does a DC wire radiate?</h4>
+        <p>A wire connected to a 12V DC battery has current flowing through it. Does it radiate EM waves? Why or why not?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b1">
+          <p><strong>No, it does not radiate.</strong> DC produces a steady current — the electrons move at constant velocity without accelerating. The surrounding electric and magnetic fields are static. Since EM radiation requires <em>accelerating</em> charges, steady DC produces no radiation. Only changing (AC) current causes the field changes needed for radiation to escape.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B2 — Why is current zero at the tips?</h4>
+        <p>The current at the tips of a half-wave dipole is always zero. What physical reason forces this to be true?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b2">
+          <p>The wire tips are <strong>open ends</strong> — there is no conductor beyond them for current to flow into. Current cannot accumulate at an open end, so it must be zero. This is a hard electrical boundary condition: no path for current means no current. The standing wave pattern on the dipole is shaped by these boundary conditions at both ends.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B3 — Same antenna on receive at 145 MHz?</h4>
+        <p>A half-wave dipole is resonant at 145 MHz. You use the same antenna to receive a signal at 145 MHz. Is the radiation pattern the same? What principle does this rely on?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b3">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b3">
+          <p><strong>Yes, the radiation pattern is identical.</strong> This relies on the <strong>Reciprocity Theorem</strong>, which states that an antenna has the same gain, radiation pattern, and impedance on transmit and receive. The pattern of directions from which the antenna receives most strongly is exactly the same pattern it transmits most strongly in. The antenna has no concept of "direction" — it responds to the same fields in both modes.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B4 — Why does the field detach?</h4>
+        <p>In your own words: why does the EM field detach from the wire rather than collapsing back into it when the current reverses?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b4">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b4">
+          <p>The field cannot travel back fast enough. When the current reverses, the field that already expanded outward would need to travel back at the speed of light — but by the time it could complete the return journey, the current has already reversed and a new opposing field has formed near the wire. The outer field can no longer connect smoothly to the new field near the wire. The connection pinches off, and the outer field becomes a self-sustaining packet, propagating freely.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B5 — 145 MHz dipole used at 435 MHz</h4>
+        <p>You have a dipole cut for 145 MHz. Someone asks you to use it at 435 MHz. The antenna will still radiate — but what has changed about the relationship between the antenna's physical length and the new wavelength?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b5">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b5">
+          <p>The antenna was cut to be λ/2 at 145 MHz, so it is approximately <strong>3λ/2</strong> at 435 MHz (three times the original frequency, three times shorter wavelength). This means the antenna is now three half-wavelengths long rather than one — it will still radiate, but the current distribution and radiation pattern will change significantly. The feedpoint impedance will also be very different, causing a mismatch with the transmitter unless a tuner is used.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART C — Sketch from Memory -->
+    <div class="self-check-group">
+      <h3>Part C — Sketch from Memory</h3>
+      <div class="self-check">
+        <h4>C1 — Dipole sketch with distributions</h4>
+        <p>Without looking at the lesson: draw a horizontal half-wave dipole. Mark where current is maximum and zero, where voltage is maximum and zero, where the feedpoint is, and add a rough current distribution curve with its shape labelled.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-c1">Show Reference Answer ▸</button>
+        <div class="self-check__reveal" id="sc-c1">
+          <p><strong>Your sketch should show:</strong></p>
+          <ul>
+            <li><strong>Current maximum:</strong> at the centre (feedpoint) — peak of the half-sinusoid curve</li>
+            <li><strong>Current zero:</strong> at both tips — open ends, hard boundary</li>
+            <li><strong>Voltage maximum:</strong> at both tips (inverse of current)</li>
+            <li><strong>Voltage minimum:</strong> at the centre feedpoint (low-impedance point)</li>
+            <li><strong>Feedpoint:</strong> the gap at the centre where the transmitter connects</li>
+            <li><strong>Curve shape:</strong> a half-sinusoid — smooth, like one arch of a sine wave from zero at the left tip, rising to peak at centre, falling back to zero at the right tip</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART D — Apply and Connect (optional) -->
+    <div class="self-check-group">
+      <h3>Part D — Apply and Connect <span style="font-size:0.85em;color:var(--text-dim);font-weight:300;">(optional stretch)</span></h3>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;">These questions require you to connect ideas across Lesson 1 and Lesson 2.</p>
+
+      <div class="self-check">
+        <h4>D1 — Optical "dipole" arm length</h4>
+        <p>Visible light has a frequency of roughly 600 THz. If you were to make a "dipole" for visible light, how long would each arm be? What does this tell you about why optical antennas are not practical in the traditional sense?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-d1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-d1">
+          <ol>
+            <li>600 THz = 600,000,000,000,000 Hz = 6 × 10¹⁴ Hz</li>
+            <li>λ = 300,000,000 / 600,000,000,000,000 = 5 × 10⁻⁷ m = <strong>500 nanometres</strong></li>
+            <li>Each arm = λ/4 = <strong>125 nm</strong> — smaller than a virus</li>
+          </ol>
+          <p style="margin-top:8px;">At 125 nm per arm, you cannot build this with conventional metalworking. The wavelength is comparable to atomic spacings. This is why optical antennas require nanofabrication techniques, and why visible light is manipulated with lenses and mirrors rather than wire antennas.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>D2 — Field return speed at 145 MHz</h4>
+        <p>The detachment story says the field "cannot snap back in time." At what speed would the field need to travel to return to the wire in less than half a cycle at 145 MHz?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-d2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-d2">
+          <ol>
+            <li>Period T = 1/f = 1/145,000,000 = 6.9 × 10⁻⁹ s</li>
+            <li>Half-period = 3.45 × 10⁻⁹ s (3.45 nanoseconds)</li>
+            <li>Distance the field travels in one half-period at c: 3 × 10⁸ × 3.45 × 10⁻⁹ = <strong>1.034 m</strong></li>
+          </ol>
+          <p style="margin-top:8px;">In exactly one half-cycle, the field front travels <strong>one half-wavelength</strong> — which is exactly the length of the dipole. This is why the dipole dimensions are tied to the wavelength: the geometry is set by the time the field needs to travel while the current reverses. The antenna's physical length and its operating frequency are the same phenomenon expressed in different units.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ LESSON SUMMARY ═══ -->
+  <div class="chapter" id="summary">
     <div class="chapter-header">
-      <span class="chapter-num">Summary</span>
+      <span class="chapter-num">SUMMARY</span>
       <div class="chapter-line"></div>
     </div>
-    <h2 class="chapter-title">Key Takeaways</h2>
+    <h2 class="chapter-title">Lesson Summary</h2>
+
     <div class="summary-grid">
       <div class="summary-card e-card">
-        <h4>Acceleration Creates Radiation</h4>
-        <p><strong>Accelerating charges produce EM radiation.</strong> DC current flows steadily — no acceleration, no radiation. AC constantly reverses direction — radiation results.</p>
-      </div>
-      <div class="summary-card h-card">
-        <h4>Standing Wave</h4>
-        <p>A half-wave dipole at resonance forms a sinusoidal <strong>standing wave</strong>: maximum current at the feedpoint (centre), zero current at the tips (ends).</p>
+        <h4>Accelerating Charges Radiate</h4>
+        <p>DC (steady current) produces static fields but no radiation. AC (reversing current) produces continuously <strong>accelerating charges</strong> — and radiation. The rule: static charges → E field, moving charges → H field, accelerating charges → EM radiation.</p>
       </div>
       <div class="summary-card em-card">
-        <h4>Voltage is Inverse</h4>
-        <p>Voltage distribution is the <strong>inverse</strong> of current: zero at centre, maximum at tips. Low impedance at feedpoint (~73 ohms), high impedance at tips.</p>
+        <h4>Field Detachment</h4>
+        <p>The wave leaves because the field <strong>cannot keep up with the reversing current</strong>. The outer field expands, the current reverses before it can return, the field pinches off, and a self-sustaining wave propagates freely at the speed of light.</p>
       </div>
-      <div class="summary-card r-card">
+      <div class="summary-card e-card">
+        <h4>Half-Wave Dipole Distribution</h4>
+        <p><strong>Maximum current at centre</strong> (feedpoint), zero current at tips. Voltage is the inverse — minimum at centre, maximum at tips. Distribution follows a half-sinusoid — like a vibrating string pinned at both ends.</p>
+      </div>
+      <div class="summary-card h-card">
+        <h4>Physical Length Formula</h4>
+        <p><strong>L = c / (2f)</strong>. Each arm = c / (4f). The higher the frequency, the shorter the antenna. A 2m dipole is ~1 m tip-to-tip; a 23cm dipole fits in your hand.</p>
+      </div>
+      <div class="summary-card special-card" style="grid-column: 1 / -1;">
         <h4>Reciprocity</h4>
-        <p>An antenna has <strong>identical pattern, gain, and impedance</strong> whether transmitting or receiving. Design for TX and you get RX for free.</p>
+        <p>An antenna has the <strong>same pattern, gain, and impedance on transmit and receive</strong>. The antenna sits at the boundary between the electrical world (current in conductors) and the electromagnetic world (waves in free space), and converts energy in both directions equally.</p>
       </div>
     </div>
-  </section>
 
-  <!-- KNOWLEDGE CHECK -->
-  <section class="chapter" id="ch-knowledge-check">
-    <div class="chapter-header">
-      <span class="chapter-num">Knowledge Check</span>
-      <div class="chapter-line"></div>
-    </div>
-    <h2 class="chapter-title">Test Your Understanding</h2>
-
-    <div class="self-check-group">
-      <h3>Five Questions</h3>
-
-      <div class="self-check">
-        <h4>Question 1</h4>
-        <p>Why does a wire carrying DC not radiate EM waves?</p>
-        <button class="btn-reveal" aria-expanded="false" data-target="ans-1">Show answer</button>
-        <div class="self-check__reveal" id="ans-1">
-          <p>DC means <strong>steady, constant current</strong> — the electrons flow at a fixed speed and direction. Radiation requires <strong>accelerating charges</strong>. With DC, nothing is accelerating or changing, so no EM wave is produced. There is a static magnetic field around the wire and a static electric field from the voltage source, but neither propagates as a wave.</p>
-        </div>
-      </div>
-
-      <div class="self-check">
-        <h4>Question 2</h4>
-        <p>Where is the current maximum on a half-wave dipole?</p>
-        <button class="btn-reveal" aria-expanded="false" data-target="ans-2">Show answer</button>
-        <div class="self-check__reveal" id="ans-2">
-          <p>At the <strong>centre — the feedpoint</strong>. The current follows a sinusoidal (half-sine) distribution along the wire, peaking at the middle where it is fed, and falling to zero at both open tips. The shape is: I(x) = I_max &times; sin(&pi; &times; position / total_length).</p>
-        </div>
-      </div>
-
-      <div class="self-check">
-        <h4>Question 3</h4>
-        <p>Where is the voltage maximum on a half-wave dipole?</p>
-        <button class="btn-reveal" aria-expanded="false" data-target="ans-3">Show answer</button>
-        <div class="self-check__reveal" id="ans-3">
-          <p>At the <strong>tips (the ends)</strong>. Voltage and current distributions are inverses of each other — where current is maximum (centre), voltage is minimum (near zero), and where current is zero (tips), voltage is maximum. This makes the feedpoint a <strong>low-impedance point</strong> (approximately 73 &Omega; for a free-space dipole).</p>
-        </div>
-      </div>
-
-      <div class="self-check">
-        <h4>Question 4</h4>
-        <p>If you design an antenna for transmitting at 145 MHz, can you use it for receiving at 145 MHz?</p>
-        <button class="btn-reveal" aria-expanded="false" data-target="ans-4">Show answer</button>
-        <div class="self-check__reveal" id="ans-4">
-          <p><strong>Yes</strong> — this is exactly what the reciprocity theorem guarantees. The antenna's radiation pattern, gain, and impedance are <strong>identical in both directions</strong> at the same frequency. Design it for TX and it will work equally well for RX. This is why every repeater station uses the same antenna for transmitting and receiving (separated by a duplexer).</p>
-        </div>
-      </div>
-
-      <div class="self-check">
-        <h4>Question 5</h4>
-        <p>What type of current is needed for an antenna to radiate: AC or DC?</p>
-        <button class="btn-reveal" aria-expanded="false" data-target="ans-5">Show answer</button>
-        <div class="self-check__reveal" id="ans-5">
-          <p><strong>AC — alternating current</strong>. The alternating current constantly reverses direction, meaning the electrons are perpetually <strong>accelerating and decelerating</strong>. This acceleration is the mechanism that radiates EM energy. A DC current, once established, produces only static fields that do not propagate as waves.</p>
-        </div>
+    <!-- What's Next -->
+    <div class="next-card">
+      <div class="next-card-icon">→</div>
+      <div class="next-card-content">
+        <h3>What's Next: Radiation Patterns</h3>
+        <p>Lesson 3 explores the 3D shape of where the energy goes. The half-wave dipole's toroid pattern is the starting point. We'll look at how different antenna geometries reshape that pattern, why some directions radiate more than others, and how we describe and measure the shape mathematically. The interactive <code>radiation-3d-v5.html</code> will be the centrepiece.</p>
+        <a class="nav-btn nav-btn--next" href="lesson-03-radiation-patterns.html">Lesson 3: Radiation Patterns →</a>
       </div>
     </div>
-  </section>
 
-  <!-- NAV LINKS -->
-  <div class="nav-cards">
-    <a class="nav-card prev" href="lesson-01-em-radiation.html">
-      <span class="nav-card-dir">&larr; Previous</span>
-      <span class="nav-card-title">Lesson 1 — What is EM Radiation?</span>
-    </a>
-    <a class="nav-card next" href="lesson-03-radiation-patterns.html">
-      <span class="nav-card-dir">Next &rarr;</span>
-      <span class="nav-card-title">Lesson 3 — Radiation Patterns</span>
-    </a>
+    <!-- Lesson navigation -->
+    <nav class="lesson-nav" aria-label="Lesson navigation">
+      <a class="nav-btn" href="lesson-01-em-radiation.html">← Lesson 1: What is EM Radiation?</a>
+      <a class="nav-btn nav-btn--next" href="lesson-03-radiation-patterns.html">Lesson 3: Radiation Patterns →</a>
+    </nav>
   </div>
 
-</div><!-- /container -->
-
-<footer>
-  <div class="container">
-    <p>Lesson 2 &middot; Unit 1 — How Antennas Work &middot; <a href="../index.html">Course Index</a></p>
-  </div>
-</footer>
+</div><!-- /.container -->
 
 <script>
-/* ============================================================
-   SHARED CONSTANTS & CANVAS UTILITY
-   ============================================================ */
-var AMBER  = '#f59e0b';
-var CYAN   = '#06b6d4';
-var PURPLE = '#a78bfa';
-var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-function setupCv(id) {
-  var cv  = document.getElementById(id);
-  if (!cv) return null;
-  var dpr = window.devicePixelRatio || 1;
-  var w   = cv.parentElement.getBoundingClientRect().width || 600;
-  var asp = parseFloat(cv.dataset.aspect) || 0.4;
-  var h   = w * asp;
-  cv.width  = Math.round(w * dpr);
-  cv.height = Math.round(h * dpr);
-  var ctx = cv.getContext('2d');
-  ctx.scale(dpr, dpr);
-  return { ctx: ctx, w: w, h: h };
-}
-
-/* ============================================================
-   VISUAL 1 — DC vs AC RADIATION
-   ============================================================ */
-(function() {
-  var cv = document.getElementById('cv-dc-ac');
-  if (!cv) return;
-  var ctx, w, h, rafId;
-  var t = 0;
-  var playing = !reducedMotion;
-
-  function setup() {
-    var r = setupCv('cv-dc-ac');
-    if (!r) return;
-    ctx = r.ctx; w = r.w; h = r.h;
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    var half = w / 2;
-    var cy   = h / 2;
-
-    // Divider
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 6]);
-    ctx.beginPath(); ctx.moveTo(half, 10); ctx.lineTo(half, h - 10); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.restore();
-
-    // ── LEFT PANEL: DC ──
-    var dcCx  = half / 2;
-    var wSpan = half * 0.72;
-    var wL    = dcCx - wSpan / 2;
-    var wR    = dcCx + wSpan / 2;
-
-    ctx.strokeStyle = AMBER;
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(wL, cy); ctx.lineTo(wR, cy); ctx.stroke();
-
-    // Static perpendicular field lines
-    var nL = 5;
-    var sp = wSpan / (nL + 1);
-    for (var i = 1; i <= nL; i++) {
-      var lx = wL + i * sp;
-      for (var d = -1; d <= 1; d += 2) {
-        ctx.strokeStyle = 'rgba(245,158,11,0.28)';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.moveTo(lx, cy); ctx.lineTo(lx, cy + d * 20); ctx.stroke();
-        // Arrowhead
-        var ay = cy + d * 20;
-        ctx.beginPath();
-        ctx.moveTo(lx - 4, ay - d * 6);
-        ctx.lineTo(lx, ay);
-        ctx.lineTo(lx + 4, ay - d * 6);
-        ctx.stroke();
-      }
-    }
-
-    ctx.textAlign = 'center';
-    ctx.font = '500 11px "IBM Plex Mono", monospace';
-    ctx.fillStyle = AMBER;
-    ctx.fillText('DC', dcCx, h - 26);
-    ctx.font = '300 10px "IBM Plex Sans", sans-serif';
-    ctx.fillStyle = 'rgba(148,163,184,0.65)';
-    ctx.fillText('no radiation', dcCx, h - 13);
-    ctx.font = '300 9px "IBM Plex Mono", monospace';
-    ctx.fillStyle = 'rgba(245,158,11,0.38)';
-    ctx.fillText('static E-field only', dcCx, 15);
-
-    // ── RIGHT PANEL: AC ──
-    var acCx = half + half / 2;
-    var aL   = half + half * 0.13;
-    var aR   = w   - half * 0.13;
-    var phase = Math.sin(t * 2.8);
-
-    ctx.strokeStyle = phase > 0 ? AMBER : CYAN;
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(aL, cy); ctx.lineTo(aR, cy); ctx.stroke();
-
-    // Current direction arrow
-    var arDir = phase > 0 ? 1 : -1;
-    var arX   = acCx + arDir * 16;
-    ctx.fillStyle = phase > 0 ? AMBER : CYAN;
-    ctx.beginPath();
-    ctx.moveTo(arX, cy - 5);
-    ctx.lineTo(arX + arDir * 10, cy);
-    ctx.lineTo(arX, cy + 5);
-    ctx.fill();
-
-    // Expanding elliptical wavefronts
-    var period = 80;
-    for (var j = 0; j < 5; j++) {
-      var age   = ((t * 28 + j * (period / 5)) % period);
-      var alpha = (1 - age / period) * 0.75;
-      var rx    = age * 0.52 + 4;
-      var ry    = age * 0.28 + 2;
-      ctx.beginPath();
-      ctx.ellipse(acCx, cy, rx, ry, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(167,139,250,' + alpha + ')';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-
-    ctx.textAlign = 'center';
-    ctx.font = '500 11px "IBM Plex Mono", monospace';
-    ctx.fillStyle = PURPLE;
-    ctx.fillText('AC', acCx, h - 26);
-    ctx.font = '300 10px "IBM Plex Sans", sans-serif';
-    ctx.fillStyle = 'rgba(148,163,184,0.65)';
-    ctx.fillText('radiates', acCx, h - 13);
-    ctx.font = '300 9px "IBM Plex Mono", monospace';
-    ctx.fillStyle = 'rgba(167,139,250,0.38)';
-    ctx.fillText('EM wavefronts expanding', acCx, 15);
-
-    if (playing) { t += 0.025; rafId = requestAnimationFrame(draw); }
-  }
-
-  function init() {
-    setup();
-    if (reducedMotion) { draw(); return; }
-    rafId = requestAnimationFrame(draw);
-    var ro = new ResizeObserver(function() {
-      cancelAnimationFrame(rafId);
-      setup();
-      if (playing) rafId = requestAnimationFrame(draw); else draw();
-    });
-    ro.observe(cv.parentElement);
-  }
-
-  document.getElementById('btn-dc-ac-play').addEventListener('click', function() {
-    playing = !playing;
-    this.textContent = playing ? '\u2016 Pause' : '\u25B6 Play';
-    document.getElementById('dc-ac-readout').textContent = playing ? 'AC \u2014 radiating' : 'paused';
-    if (playing) rafId = requestAnimationFrame(draw);
-    else cancelAnimationFrame(rafId);
-  });
-
-  var io = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) { init(); io.disconnect(); }
-  }, { threshold: 0.1 });
-  io.observe(cv);
-}());
-
-/* ============================================================
-   VISUAL 2 — STANDING WAVE VISUALISER
-   ============================================================ */
-(function() {
-  var cv = document.getElementById('cv-standing-wave');
-  if (!cv) return;
-  var ctx, w, h, rafId;
-  var t = 0;
-  var freq = 7;
-
-  function setup() {
-    var r = setupCv('cv-standing-wave');
-    if (!r) return;
-    ctx = r.ctx; w = r.w; h = r.h;
-  }
-
-  function updateReadout(f) {
-    var half = (150 / f).toFixed(1);
-    document.getElementById('out-freq').textContent = f + ' MHz \u2014 \u03BB/2 = ' + half + ' m';
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    var cy     = h * 0.5;
-    var wStart = w * 0.08;
-    var wEnd   = w * 0.92;
-    var wLen   = wEnd - wStart;
-    var nSeg   = 120;
-    var segW   = wLen / nSeg;
-    var amp    = Math.abs(Math.sin(t * 2.2));
-
-    for (var i = 0; i < nSeg; i++) {
-      var xNorm   = i / nSeg;
-      var current = Math.sin(Math.PI * xNorm) * amp;
-      var x       = wStart + i * segW;
-      var dr = Math.round(30  + current * 215);
-      var dg = Math.round(41  + current * 117);
-      var db = Math.round(59  + current * -48);
-      ctx.fillStyle = 'rgb(' + dr + ',' + dg + ',' + db + ')';
-      ctx.fillRect(x, cy - 4, segW + 1, 8);
-      if (current > 0.45) {
-        ctx.fillStyle = 'rgba(245,158,11,' + ((current - 0.45) * 0.35) + ')';
-        ctx.fillRect(x - 1, cy - 12, segW + 2, 24);
-      }
-    }
-
-    // Tip markers
-    ctx.fillStyle = 'rgba(100,116,139,0.55)';
-    ctx.beginPath(); ctx.arc(wStart, cy, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(wEnd,   cy, 5, 0, Math.PI * 2); ctx.fill();
-
-    // Feedpoint dashed line
-    var cx = wStart + wLen / 2;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
-    ctx.beginPath(); ctx.moveTo(cx, cy - 28); ctx.lineTo(cx, cy + 28); ctx.stroke();
-    ctx.setLineDash([]); ctx.restore();
-
-    ctx.font = '300 9px "IBM Plex Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(245,158,11,0.7)';
-    ctx.fillText('feedpoint', cx, cy - 36);
-    ctx.fillStyle = 'rgba(245,158,11,0.5)';
-    ctx.fillText('max current', cx, cy + 44);
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(100,116,139,0.6)';
-    ctx.fillText('tip / zero', wStart - 2, cy - 14);
-    ctx.textAlign = 'right';
-    ctx.fillText('zero / tip', wEnd + 2, cy - 14);
-
-    // λ/2 span arrow
-    var arY = cy + 30;
-    ctx.strokeStyle = 'rgba(167,139,250,0.22)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(wStart, arY); ctx.lineTo(wEnd, arY); ctx.stroke();
-    ctx.fillStyle = 'rgba(167,139,250,0.22)';
-    ctx.beginPath(); ctx.moveTo(wStart, arY); ctx.lineTo(wStart + 8, arY - 4); ctx.lineTo(wStart + 8, arY + 4); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(wEnd, arY);   ctx.lineTo(wEnd - 8, arY - 4);   ctx.lineTo(wEnd - 8, arY + 4);   ctx.fill();
-    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(167,139,250,0.38)';
-    ctx.fillText('\u03BB/2', cx, arY + 14);
-
-    if (!reducedMotion) { t += 0.03; rafId = requestAnimationFrame(draw); }
-  }
-
-  function init() {
-    setup(); updateReadout(freq);
-    if (reducedMotion) { draw(); return; }
-    rafId = requestAnimationFrame(draw);
-    var ro = new ResizeObserver(function() {
-      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
-    });
-    ro.observe(cv.parentElement);
-  }
-
-  document.getElementById('sl-freq').addEventListener('input', function() {
-    freq = parseInt(this.value); updateReadout(freq);
-  });
-
-  var io = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) { init(); io.disconnect(); }
-  }, { threshold: 0.1 });
-  io.observe(cv);
-}());
-
-/* ============================================================
-   VISUAL 3 — VOLTAGE / CURRENT DUAL CANVAS
-   ============================================================ */
-(function() {
-  var cvI = document.getElementById('cv-current');
-  var cvV = document.getElementById('cv-voltage');
-  if (!cvI || !cvV) return;
-  var ctxI, wI, hI, ctxV, wV, hV, rafId;
-  var t = 0;
-
-  function setup() {
-    var rI = setupCv('cv-current');
-    var rV = setupCv('cv-voltage');
-    if (!rI || !rV) return;
-    ctxI = rI.ctx; wI = rI.w; hI = rI.h;
-    ctxV = rV.ctx; wV = rV.w; hV = rV.h;
-  }
-
-  function drawPanel(ctx, w, h, t, isVoltage) {
-    ctx.clearRect(0, 0, w, h);
-    var wireY  = h * 0.62;
-    var padX   = w * 0.08;
-    var maxAmp = h * 0.4 * Math.abs(Math.sin(t * 1.8));
-    var color  = isVoltage ? CYAN : AMBER;
-
-    // Wire
-    ctx.strokeStyle = 'rgba(100,116,139,0.45)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(padX, wireY); ctx.lineTo(w - padX, wireY); ctx.stroke();
-
-    // Tip markers
-    ctx.fillStyle = 'rgba(100,116,139,0.45)';
-    ctx.beginPath(); ctx.arc(padX, wireY, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(w - padX, wireY, 4, 0, Math.PI * 2); ctx.fill();
-
-    // Filled area
-    ctx.beginPath(); ctx.moveTo(padX, wireY);
-    for (var x = padX; x <= w - padX; x++) {
-      var xN  = (x - padX) / (w - 2 * padX);
-      var val = (isVoltage ? Math.abs(Math.cos(Math.PI * xN)) : Math.sin(Math.PI * xN)) * maxAmp;
-      ctx.lineTo(x, wireY - val);
-    }
-    ctx.lineTo(w - padX, wireY); ctx.closePath();
-    ctx.fillStyle = isVoltage ? 'rgba(6,182,212,0.18)' : 'rgba(245,158,11,0.18)'; ctx.fill();
-
-    // Curve stroke
-    ctx.beginPath(); ctx.moveTo(padX, wireY);
-    for (var x2 = padX; x2 <= w - padX; x2++) {
-      var xN2  = (x2 - padX) / (w - 2 * padX);
-      var val2 = (isVoltage ? Math.abs(Math.cos(Math.PI * xN2)) : Math.sin(Math.PI * xN2)) * maxAmp;
-      ctx.lineTo(x2, wireY - val2);
-    }
-    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
-
-    // Labels
-    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-    if (!isVoltage) {
-      ctx.fillStyle = 'rgba(245,158,11,0.7)';
-      ctx.fillText('max I', w / 2, wireY - maxAmp - 7);
-      ctx.fillStyle = 'rgba(100,116,139,0.55)';
-      ctx.fillText('feedpoint', w / 2, h - 12);
-    } else {
-      ctx.fillStyle = 'rgba(6,182,212,0.7)';
-      if (maxAmp > 4) {
-        ctx.textAlign = 'left';  ctx.fillText('max V', padX + 4, wireY - maxAmp - 7);
-        ctx.textAlign = 'right'; ctx.fillText('max V', w - padX - 4, wireY - maxAmp - 7);
-      }
-      ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(100,116,139,0.55)';
-      ctx.fillText('V \u2248 0 here', w / 2, wireY + 16);
-      ctx.fillText('feedpoint', w / 2, h - 12);
-    }
-  }
-
-  function draw() {
-    drawPanel(ctxI, wI, hI, t, false);
-    drawPanel(ctxV, wV, hV, t, true);
-    if (!reducedMotion) { t += 0.025; rafId = requestAnimationFrame(draw); }
-  }
-
-  function init() {
-    setup();
-    if (reducedMotion) { draw(); return; }
-    rafId = requestAnimationFrame(draw);
-    var ro = new ResizeObserver(function() {
-      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
-    });
-    ro.observe(cvI.parentElement.parentElement);
-  }
-
-  var io = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) { init(); io.disconnect(); }
-  }, { threshold: 0.1 });
-  io.observe(cvI);
-}());
-
-/* ============================================================
-   VISUAL 4 — RADIATION BUILDING STEPS
-   ============================================================ */
-(function() {
-  var cv = document.getElementById('cv-radiation');
-  if (!cv) return;
-  var ctx, w, h, rafId;
-  var step = 0;
-  var stepT = 0;
-  var LABELS = [
-    'Step 1 \u2014 each wire segment radiates individually',
-    'Step 2 \u2014 contributions combine (constructive + destructive)',
-    'Step 3 \u2014 final donut-shaped radiation pattern emerges'
-  ];
-
-  function setup() {
-    var r = setupCv('cv-radiation');
-    if (!r) return;
-    ctx = r.ctx; w = r.w; h = r.h;
-  }
-
-  function drawFig8(cx, cy, scale, alpha) {
-    ctx.beginPath();
-    for (var theta = 0; theta <= Math.PI * 2 + 0.02; theta += 0.02) {
-      var r  = Math.pow(Math.sin(theta), 2) * scale;
-      var sx = cx + r * Math.sin(theta);
-      var sy = cy - r * Math.cos(theta);
-      if (theta < 0.03) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
-    }
-    ctx.strokeStyle = 'rgba(167,139,250,' + alpha + ')';
-    ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = 'rgba(167,139,250,' + (alpha * 0.08) + ')'; ctx.fill();
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    var cx   = w / 2;
-    var cy   = h / 2;
-    var dLen = Math.min(h * 0.36, w * 0.22);
-    var nSeg = 8;
-
-    // Dipole wire
-    ctx.strokeStyle = 'rgba(245,158,11,0.45)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(cx, cy - dLen); ctx.lineTo(cx, cy + dLen); ctx.stroke();
-
-    // Feedpoint
-    ctx.fillStyle = AMBER;
-    ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI * 2); ctx.fill();
-    ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(245,158,11,0.55)'; ctx.fillText('feedpoint', cx + 10, cy + 4);
-
-    var animT = reducedMotion ? 1 : stepT;
-
-    if (step === 0) {
-      // Individual segment arrows
-      var segH = (dLen * 2) / nSeg;
-      for (var i = 0; i < nSeg; i++) {
-        var segY  = (cy - dLen) + (i + 0.5) * segH;
-        var iNorm = Math.sin(Math.PI * ((i + 0.5) / nSeg));
-        var pulse = 0.7 + 0.3 * Math.sin(animT * 2 + i * 0.8);
-        var aLen  = (12 + iNorm * 22) * pulse;
-        for (var d2 = -1; d2 <= 1; d2 += 2) {
-          var ex = cx + d2 * aLen;
-          ctx.strokeStyle = 'rgba(245,158,11,' + ((0.35 + iNorm * 0.5) * pulse) + ')';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath(); ctx.moveTo(cx + d2 * 7, segY); ctx.lineTo(ex, segY); ctx.stroke();
-          ctx.fillStyle = 'rgba(245,158,11,' + ((0.35 + iNorm * 0.5) * pulse) + ')';
-          ctx.beginPath();
-          ctx.moveTo(ex, segY);
-          ctx.lineTo(ex - d2 * 6, segY - 4);
-          ctx.lineTo(ex - d2 * 6, segY + 4);
-          ctx.fill();
-        }
-      }
-    }
-
-    if (step === 1) {
-      // Combined arrows + hint of pattern
-      var segH2 = (dLen * 2) / nSeg;
-      for (var i2 = 0; i2 < nSeg; i2++) {
-        var segY2  = (cy - dLen) + (i2 + 0.5) * segH2;
-        var iNorm2 = Math.sin(Math.PI * ((i2 + 0.5) / nSeg));
-        var pulse2 = 0.7 + 0.3 * Math.sin(animT * 2 + i2 * 0.8);
-        // Faded individual
-        for (var d3 = -1; d3 <= 1; d3 += 2) {
-          ctx.strokeStyle = 'rgba(245,158,11,0.18)'; ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(cx + d3 * 7, segY2); ctx.lineTo(cx + d3 * 22, segY2); ctx.stroke();
-        }
-        // Purple combined
-        var combLen = iNorm2 * 32 * (0.7 + 0.3 * Math.sin(animT * 1.4));
-        for (var d4 = -1; d4 <= 1; d4 += 2) {
-          var ex2 = cx + d4 * (7 + combLen);
-          ctx.strokeStyle = 'rgba(167,139,250,' + (0.3 + iNorm2 * 0.55) + ')';
-          ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(cx + d4 * 7, segY2); ctx.lineTo(ex2, segY2); ctx.stroke();
-          ctx.fillStyle = 'rgba(167,139,250,' + (0.3 + iNorm2 * 0.55) + ')';
-          ctx.beginPath();
-          ctx.moveTo(ex2, segY2);
-          ctx.lineTo(ex2 - d4 * 7, segY2 - 4);
-          ctx.lineTo(ex2 - d4 * 7, segY2 + 4);
-          ctx.fill();
-        }
-      }
-      drawFig8(cx, cy, Math.min(w * 0.26, h * 0.32), 0.22 + 0.1 * Math.sin(animT * 0.8));
-    }
-
-    if (step === 2) {
-      var patScale = Math.min(w * 0.35, h * 0.38);
-      var patAlpha = reducedMotion ? 0.8 : Math.min(0.82, animT * 0.045);
-      drawFig8(cx, cy, patScale, patAlpha);
-      ctx.font = '300 9px "IBM Plex Mono", monospace';
-      ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(167,139,250,0.55)';
-      ctx.fillText('max radiation', cx - patScale - 6, cy + 4);
-      ctx.textAlign = 'left';
-      ctx.fillText('max radiation', cx + patScale + 6, cy + 4);
-      ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(100,116,139,0.45)';
-      ctx.fillText('null (dipole axis)', cx, cy - dLen - 16);
-      ctx.fillText('null (dipole axis)', cx, cy + dLen + 18);
-    }
-
-    if (!reducedMotion) { stepT += 0.04; rafId = requestAnimationFrame(draw); }
-  }
-
-  function setStep(s) {
-    step  = Math.max(0, Math.min(2, s));
-    stepT = 0;
-    document.getElementById('step-label').textContent     = LABELS[step];
-    document.getElementById('rad-step-count').textContent = 'Step ' + (step + 1) + ' / 3';
-  }
-
-  function init() {
-    setup(); setStep(0);
-    if (reducedMotion) { draw(); return; }
-    rafId = requestAnimationFrame(draw);
-    var ro = new ResizeObserver(function() {
-      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
-    });
-    ro.observe(cv.parentElement);
-  }
-
-  document.getElementById('btn-rad-prev').addEventListener('click', function() { setStep(step - 1); });
-  document.getElementById('btn-rad-next').addEventListener('click', function() { setStep(step + 1); });
-
-  var io = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) { init(); io.disconnect(); }
-  }, { threshold: 0.1 });
-  io.observe(cv);
-}());
-
-/* ============================================================
-   VISUAL 5 — TX / RX RECIPROCITY
-   ============================================================ */
-(function() {
-  var cv = document.getElementById('cv-reciprocity');
-  if (!cv) return;
-  var ctx, w, h, rafId;
-  var t    = 0;
-  var mode = 'tx';
-
-  function setup() {
-    var r = setupCv('cv-reciprocity');
-    if (!r) return;
-    ctx = r.ctx; w = r.w; h = r.h;
-  }
-
-  function roundRect(x, y, rw, rh, rad) {
-    ctx.beginPath();
-    ctx.moveTo(x + rad, y);
-    ctx.lineTo(x + rw - rad, y); ctx.quadraticCurveTo(x + rw, y, x + rw, y + rad);
-    ctx.lineTo(x + rw, y + rh - rad); ctx.quadraticCurveTo(x + rw, y + rh, x + rw - rad, y + rh);
-    ctx.lineTo(x + rad, y + rh); ctx.quadraticCurveTo(x, y + rh, x, y + rh - rad);
-    ctx.lineTo(x, y + rad); ctx.quadraticCurveTo(x, y, x + rad, y);
-    ctx.closePath();
-  }
-
-  function drawWaveSnippet(ox, oy, ww, hh, color) {
-    ctx.strokeStyle = color; ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    for (var i2 = 0; i2 <= ww; i2++) {
-      var wy = oy + Math.sin((i2 / ww) * Math.PI * 3) * hh;
-      if (i2 === 0) ctx.moveTo(ox + i2, wy); else ctx.lineTo(ox + i2, wy);
-    }
-    ctx.stroke();
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    var cy   = h / 2;
-    var antX = w / 2;
-    var antH = Math.min(h * 0.34, w * 0.2);
-    var isTX = mode === 'tx';
-    var animT = reducedMotion ? 0.5 : t;
-
-    // ── Antenna ──
-    ctx.strokeStyle = 'rgba(245,158,11,0.5)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(antX, cy - antH); ctx.lineTo(antX, cy - 5); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(antX, cy + 5);   ctx.lineTo(antX, cy + antH); ctx.stroke();
-
-    // Feedpoint glow
-    var glow = Math.abs(Math.sin(animT * 3)) * 0.65 + 0.25;
-    ctx.fillStyle = 'rgba(245,158,11,' + glow + ')';
-    ctx.beginPath(); ctx.arc(antX, cy, 5, 0, Math.PI * 2); ctx.fill();
-
-    // Coax stub
-    ctx.strokeStyle = 'rgba(100,116,139,0.35)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(antX, cy + antH); ctx.lineTo(antX, cy + antH + 16); ctx.stroke();
-
-    // Radiation pattern outline (always shown)
-    var patScale = Math.min(w * 0.15, h * 0.28);
-    ctx.beginPath();
-    for (var theta = 0; theta <= Math.PI * 2 + 0.02; theta += 0.02) {
-      var r2 = Math.pow(Math.sin(theta), 2) * patScale;
-      var sx = antX + r2 * Math.sin(theta);
-      var sy = cy   - r2 * Math.cos(theta);
-      if (theta < 0.03) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
-    }
-    ctx.strokeStyle = 'rgba(167,139,250,0.18)'; ctx.lineWidth = 1; ctx.stroke();
-    ctx.fillStyle   = 'rgba(167,139,250,0.04)'; ctx.fill();
-
-    var boxW = Math.min(w * 0.15, 90);
-    var boxH = h * 0.3;
-    var boxY = cy - boxH / 2;
-
-    if (isTX) {
-      // Signal generator box (left)
-      var genX = w * 0.05;
-      ctx.fillStyle = 'rgba(245,158,11,0.08)';
-      ctx.strokeStyle = 'rgba(245,158,11,0.28)'; ctx.lineWidth = 1;
-      roundRect(genX, boxY, boxW, boxH, 6); ctx.fill(); ctx.stroke();
-      drawWaveSnippet(genX + 6, cy, boxW - 12, boxH * 0.2, AMBER);
-      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(245,158,11,0.65)'; ctx.fillText('TX', genX + boxW / 2, boxY + boxH + 13);
-      ctx.fillStyle = 'rgba(100,116,139,0.5)'; ctx.fillText('signal gen', genX + boxW / 2, boxY + boxH + 25);
-
-      // Cable to antenna
-      var cX1 = genX + boxW, cX2 = antX - 7;
-      ctx.strokeStyle = 'rgba(245,158,11,' + (0.3 + 0.18 * Math.sin(animT * 3)) + ')';
-      ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
-      ctx.beginPath(); ctx.moveTo(cX1, cy); ctx.lineTo(cX2, cy); ctx.stroke();
-      ctx.setLineDash([]);
-      var midX = (cX1 + cX2) / 2 + 10;
-      ctx.fillStyle = 'rgba(245,158,11,0.45)';
-      ctx.beginPath(); ctx.moveTo(midX, cy); ctx.lineTo(midX - 8, cy - 4); ctx.lineTo(midX - 8, cy + 4); ctx.fill();
-
-      // Expanding wavefronts (right)
-      var wO = antX + 7, maxWX = w * 0.97;
-      for (var j = 0; j < 4; j++) {
-        var age2   = ((animT * 45 + j * 60) % 240);
-        var alpha2 = (1 - age2 / 240) * 0.72;
-        var rx2    = age2 * 0.38 + 5;
-        var ry2    = age2 * 0.22 + 3;
-        if (wO + rx2 < maxWX) {
-          ctx.beginPath();
-          ctx.ellipse(wO + rx2, cy, rx2 * 0.35, ry2, 0, -Math.PI / 2, Math.PI / 2);
-          ctx.strokeStyle = 'rgba(167,139,250,' + alpha2 + ')'; ctx.lineWidth = 1.5; ctx.stroke();
-        }
-      }
-
-      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(245,158,11,0.45)'; ctx.fillText('signal \u2192', w * 0.25, h * 0.88);
-      ctx.fillStyle = 'rgba(167,139,250,0.45)'; ctx.fillText('EM waves \u2192', w * 0.78, h * 0.88);
-
-    } else {
-      // Incoming wavefronts (from right)
-      var wO2 = w * 0.93;
-      for (var j2 = 0; j2 < 4; j2++) {
-        var age3   = ((animT * 45 + j2 * 60) % 240);
-        var alpha3 = (1 - age3 / 240) * 0.72;
-        var rx3    = age3 * 0.38 + 5;
-        var ry3    = age3 * 0.22 + 3;
-        var wX3    = wO2 - rx3;
-        if (wX3 > antX + 7) {
-          ctx.beginPath();
-          ctx.ellipse(wX3, cy, rx3 * 0.35, ry3, 0, Math.PI / 2, Math.PI * 1.5);
-          ctx.strokeStyle = 'rgba(6,182,212,' + alpha3 + ')'; ctx.lineWidth = 1.5; ctx.stroke();
-        }
-      }
-
-      // Receiver box (left)
-      var recX = w * 0.05;
-      ctx.fillStyle = 'rgba(6,182,212,0.08)';
-      ctx.strokeStyle = 'rgba(6,182,212,0.28)'; ctx.lineWidth = 1;
-      roundRect(recX, boxY, boxW, boxH, 6); ctx.fill(); ctx.stroke();
-      ctx.font = '16px sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText('\uD83C\uDFA7', recX + boxW / 2, cy + 6);
-      ctx.font = '300 9px "IBM Plex Mono", monospace';
-      ctx.fillStyle = 'rgba(6,182,212,0.65)'; ctx.fillText('RX', recX + boxW / 2, boxY + boxH + 13);
-      ctx.fillStyle = 'rgba(100,116,139,0.5)'; ctx.fillText('receiver', recX + boxW / 2, boxY + boxH + 25);
-
-      // Cable from antenna to receiver
-      var cX3 = recX + boxW, cX4 = antX - 7;
-      ctx.strokeStyle = 'rgba(6,182,212,' + (0.3 + 0.18 * Math.sin(animT * 3)) + ')';
-      ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
-      ctx.beginPath(); ctx.moveTo(cX4, cy); ctx.lineTo(cX3, cy); ctx.stroke();
-      ctx.setLineDash([]);
-      var midX2 = (cX3 + cX4) / 2 - 10;
-      ctx.fillStyle = 'rgba(6,182,212,0.45)';
-      ctx.beginPath(); ctx.moveTo(midX2, cy); ctx.lineTo(midX2 + 8, cy - 4); ctx.lineTo(midX2 + 8, cy + 4); ctx.fill();
-
-      // Induced current in antenna
-      var indA = 0.3 + 0.28 * Math.abs(Math.sin(animT * 3));
-      ctx.strokeStyle = 'rgba(6,182,212,' + indA + ')'; ctx.lineWidth = 4; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(antX, cy - antH * 0.6); ctx.lineTo(antX, cy + antH * 0.6); ctx.stroke();
-
-      ctx.font = '300 9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(6,182,212,0.45)'; ctx.fillText('\u2190 EM waves', w * 0.78, h * 0.88);
-      ctx.fillStyle = 'rgba(6,182,212,0.45)'; ctx.fillText('\u2190 induced current', w * 0.25, h * 0.88);
-    }
-
-    if (!reducedMotion) { t += 0.025; rafId = requestAnimationFrame(draw); }
-  }
-
-  function setMode(m) {
-    mode = m;
-    var btnTX = document.getElementById('btn-tx');
-    var btnRX = document.getElementById('btn-rx');
-    btnTX.className = 'mode-btn' + (m === 'tx' ? ' active-tx' : '');
-    btnRX.className = 'mode-btn' + (m === 'rx' ? ' active-rx' : '');
-    btnTX.setAttribute('aria-pressed', String(m === 'tx'));
-    btnRX.setAttribute('aria-pressed', String(m === 'rx'));
-  }
-
-  function init() {
-    setup();
-    if (reducedMotion) { draw(); return; }
-    rafId = requestAnimationFrame(draw);
-    var ro = new ResizeObserver(function() {
-      cancelAnimationFrame(rafId); setup(); rafId = requestAnimationFrame(draw);
-    });
-    ro.observe(cv.parentElement);
-  }
-
-  document.getElementById('btn-tx').addEventListener('click', function() { setMode('tx'); });
-  document.getElementById('btn-rx').addEventListener('click', function() { setMode('rx'); });
-
-  var io = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) { init(); io.disconnect(); }
-  }, { threshold: 0.1 });
-  io.observe(cv);
-}());
-
 /* ============================================================
    PROGRESS BAR
    ============================================================ */
 (function() {
   var bar = document.getElementById('progress-bar');
   function update() {
-    var scrolled = window.scrollY;
-    var total    = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
   }
   window.addEventListener('scroll', update, { passive: true });
   update();
-}());
+})();
 
 /* ============================================================
    SELF-CHECK REVEAL TOGGLES
    ============================================================ */
 document.querySelectorAll('.btn-reveal').forEach(function(btn) {
   btn.addEventListener('click', function() {
-    var target   = document.getElementById(this.dataset.target);
+    var target = document.getElementById(this.dataset.target);
     var expanded = this.getAttribute('aria-expanded') === 'true';
     this.setAttribute('aria-expanded', String(!expanded));
-    this.textContent = expanded ? 'Show answer' : 'Hide answer';
-    target.classList.toggle('open', !expanded);
+    this.textContent = expanded ? 'Show Answer \u25b8' : 'Hide Answer \u25be';
+    if (expanded) {
+      target.classList.remove('open');
+    } else {
+      target.classList.add('open');
+    }
   });
 });
+
+/* ============================================================
+   VISUAL 1 — DC vs AC Wire Canvas Animation
+   ============================================================ */
+(function() {
+  var canvasDC = document.getElementById('canvas-dc');
+  var canvasAC = document.getElementById('canvas-ac');
+  var ctxDC    = canvasDC.getContext('2d');
+  var ctxAC    = canvasAC.getContext('2d');
+  var btn      = document.getElementById('v1-playpause');
+  var cycleEl  = document.getElementById('ac-cycle');
+
+  var FIXED_H  = 200;  /* px — never read from parent */
+  var dpr      = window.devicePixelRatio || 1;
+  var running  = true;
+  var rafId    = null;
+  var t        = 0;
+  var cycle    = 0;
+  var lastSign = 1;
+
+  /* Colours */
+  var C_WIRE   = '#94a3b8';
+  var C_ELEC   = '#e2e8f0';
+  var C_FIELD  = '#a78bfa';
+  var C_WAVE   = 'rgba(167,139,250,0.55)';
+  var C_E      = '#f59e0b';
+  var C_DIM    = '#64748b';
+
+  /* ---------- Canvas sizing ---------- */
+  function resizeCanvas(canvas) {
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var w    = Math.floor(rect.width);
+    canvas.width  = w * dpr;
+    canvas.height = FIXED_H * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = FIXED_H + 'px';
+  }
+
+  var ro = new ResizeObserver(function() {
+    resizeCanvas(canvasDC);
+    resizeCanvas(canvasAC);
+  });
+  ro.observe(canvasDC.parentElement);
+  ro.observe(canvasAC.parentElement);
+  resizeCanvas(canvasDC);
+  resizeCanvas(canvasAC);
+
+  /* ---------- DC panel ---------- */
+  function drawDC() {
+    var w  = canvasDC.width;
+    var h  = canvasDC.height;
+    var cx = w / 2;
+    var cy = h / 2;
+    ctxDC.clearRect(0, 0, w, h);
+    ctxDC.save();
+    ctxDC.scale(dpr, dpr);
+
+    var pw = w / dpr;
+    var ph = h / dpr;
+    var pcx = pw / 2;
+    var pcy = ph / 2;
+
+    /* Wire */
+    ctxDC.beginPath();
+    ctxDC.strokeStyle = C_WIRE;
+    ctxDC.lineWidth   = 4;
+    ctxDC.lineCap     = 'round';
+    ctxDC.moveTo(40, pcy);
+    ctxDC.lineTo(pw - 40, pcy);
+    ctxDC.stroke();
+
+    /* Static concentric field rings */
+    for (var r = 1; r <= 4; r++) {
+      ctxDC.beginPath();
+      ctxDC.strokeStyle = C_FIELD;
+      ctxDC.lineWidth   = 1;
+      ctxDC.globalAlpha = 0.55 - r * 0.1;
+      ctxDC.ellipse(pcx, pcy, r * 28, r * 14, 0, 0, Math.PI * 2);
+      ctxDC.stroke();
+    }
+    ctxDC.globalAlpha = 1;
+
+    /* Electron dots — uniform motion left-to-right */
+    var numDots = 8;
+    var wRange  = pw - 100;
+    for (var i = 0; i < numDots; i++) {
+      var xPos = 50 + ((i / numDots * wRange + t * 30) % wRange);
+      ctxDC.beginPath();
+      ctxDC.fillStyle   = C_ELEC;
+      ctxDC.globalAlpha = 0.85;
+      ctxDC.arc(xPos, pcy, 3.5, 0, Math.PI * 2);
+      ctxDC.fill();
+    }
+    ctxDC.globalAlpha = 1;
+
+    /* "No radiation" label */
+    ctxDC.font      = '10px IBM Plex Mono, monospace';
+    ctxDC.fillStyle = C_DIM;
+    ctxDC.textAlign = 'center';
+    ctxDC.fillText('no radiation', pcx, ph - 12);
+
+    ctxDC.restore();
+  }
+
+  /* ---------- AC panel ---------- */
+  /* Wave packet pool — each packet is { x, alpha, speed } */
+  var packets = [];
+  var nextPacket = 0;
+
+  function drawAC() {
+    var w  = canvasAC.width;
+    var h  = canvasAC.height;
+    ctxAC.clearRect(0, 0, w, h);
+    ctxAC.save();
+    ctxAC.scale(dpr, dpr);
+
+    var pw  = w / dpr;
+    var ph  = h / dpr;
+    var pcx = pw / 2;
+    var pcy = ph / 2;
+
+    /* Current sign drives electron direction */
+    var currentSign = Math.sin(t * 1.8);
+
+    /* Spawn wave packet on zero-crossing (cycle tick) */
+    if (lastSign * currentSign < 0) {
+      packets.push({ x: pcx, alpha: 0.75, speed: 28 });
+      cycle++;
+      cycleEl.textContent = cycle;
+      lastSign = currentSign > 0 ? 1 : -1;
+    }
+
+    /* Update & draw packets */
+    packets = packets.filter(function(p) { return p.alpha > 0.02 && p.x < pw + 60; });
+    packets.forEach(function(p) {
+      p.x     += p.speed * 0.016;
+      p.alpha *= 0.985;
+      ctxAC.beginPath();
+      ctxAC.strokeStyle = 'rgba(167,139,250,' + p.alpha + ')';
+      ctxAC.lineWidth   = 1.5;
+      ctxAC.ellipse(p.x, pcy, 20, 10, 0, 0, Math.PI * 2);
+      ctxAC.stroke();
+      ctxAC.beginPath();
+      ctxAC.strokeStyle = 'rgba(167,139,250,' + p.alpha * 0.55 + ')';
+      ctxAC.lineWidth   = 1;
+      ctxAC.ellipse(p.x, pcy, 36, 18, 0, 0, Math.PI * 2);
+      ctxAC.stroke();
+    });
+
+    /* Distorting near-wire field rings — stretch with current */
+    var stretch = Math.abs(currentSign);
+    for (var r = 1; r <= 3; r++) {
+      ctxAC.beginPath();
+      ctxAC.strokeStyle = C_FIELD;
+      ctxAC.lineWidth   = 1;
+      ctxAC.globalAlpha = (0.5 - r * 0.1) * stretch;
+      ctxAC.ellipse(pcx, pcy, r * 22 * (1 + stretch * 0.3), r * 11, 0, 0, Math.PI * 2);
+      ctxAC.stroke();
+    }
+    ctxAC.globalAlpha = 1;
+
+    /* Wire */
+    ctxAC.beginPath();
+    ctxAC.strokeStyle = C_WIRE;
+    ctxAC.lineWidth   = 4;
+    ctxAC.lineCap     = 'round';
+    ctxAC.moveTo(40, pcy);
+    ctxAC.lineTo(pw - 40, pcy);
+    ctxAC.stroke();
+
+    /* Electron dots — reversing direction with current */
+    var numDots = 8;
+    var wRange  = pw - 100;
+    for (var i = 0; i < numDots; i++) {
+      var xBase = 50 + (i / numDots * wRange);
+      var xPos  = 50 + ((xBase - 50 + t * 30 * currentSign + wRange * 2) % wRange);
+      var bright = Math.abs(currentSign);
+      ctxAC.beginPath();
+      ctxAC.fillStyle   = 'rgba(245,158,11,' + (0.5 + bright * 0.5) + ')';
+      ctxAC.arc(xPos, pcy, 3.5, 0, Math.PI * 2);
+      ctxAC.fill();
+    }
+
+    /* Current direction arrow */
+    var arrowColor = currentSign >= 0 ? C_E : '#06b6d4';
+    ctxAC.beginPath();
+    ctxAC.strokeStyle = arrowColor;
+    ctxAC.lineWidth   = 1.5;
+    ctxAC.globalAlpha = Math.abs(currentSign) * 0.7 + 0.15;
+    var arrowDir = currentSign >= 0 ? 1 : -1;
+    var ax = pcx - arrowDir * 40;
+    var bx = pcx + arrowDir * 40;
+    ctxAC.moveTo(ax, pcy - 14);
+    ctxAC.lineTo(bx, pcy - 14);
+    /* arrowhead */
+    ctxAC.lineTo(bx - arrowDir * 6, pcy - 18);
+    ctxAC.moveTo(bx, pcy - 14);
+    ctxAC.lineTo(bx - arrowDir * 6, pcy - 10);
+    ctxAC.stroke();
+    ctxAC.globalAlpha = 1;
+
+    /* "radiation escaping" label */
+    ctxAC.font      = '10px IBM Plex Mono, monospace';
+    ctxAC.fillStyle = C_E;
+    ctxAC.textAlign = 'center';
+    ctxAC.fillText('radiation escaping →', pcx, ph - 12);
+
+    ctxAC.restore();
+  }
+
+  /* ---------- RAF loop ---------- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function loop() {
+    drawDC();
+    drawAC();
+    if (running && !reduced) {
+      t += 0.022;
+      rafId = requestAnimationFrame(loop);
+    }
+  }
+
+  /* Lazy init via IntersectionObserver */
+  var started = false;
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting && !started) {
+      started = true;
+      if (!reduced) {
+        running = true;
+        loop();
+      } else {
+        /* Static frame */
+        t = 0;
+        drawDC();
+        drawAC();
+        btn.textContent = '▶ Play';
+        btn.classList.remove('active');
+      }
+    }
+  }, { threshold: 0.1 });
+  io.observe(document.getElementById('v1-card'));
+
+  /* Play/Pause */
+  btn.addEventListener('click', function() {
+    running = !running;
+    if (running) {
+      this.textContent = '⏸ Pause';
+      this.classList.add('active');
+      if (!rafId || !started) { started = true; loop(); }
+      else { rafId = requestAnimationFrame(loop); }
+    } else {
+      this.textContent = '▶ Play';
+      this.classList.remove('active');
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+  });
+})();
 </script>
+
+<script>
+/* ============================================================
+   VISUAL 5 — Formula Rearrangement + Live Calculator
+   ============================================================ */
+(function() {
+  var display  = document.getElementById('formula-display');
+  var calcFreq = document.getElementById('calc-freq');
+  var calcL    = document.getElementById('calc-total-L');
+  var calcArm  = document.getElementById('calc-arm-L');
+  var btns     = document.querySelectorAll('.solve-btn');
+  var C        = 299792458; /* m/s */
+
+  /* Formula HTML for each solve target */
+  var forms = {
+    L: '<span class="fvar fvar--L" data-var="L">L</span>'
+     + '<span class="fop">=</span>'
+     + '<span class="fvar fvar--c" data-var="c">c</span>'
+     + '<span class="fop">/</span>'
+     + '<span class="fop">(2 ×</span>'
+     + '<span class="fvar fvar--f" data-var="f">f</span>'
+     + '<span class="fop">)</span>',
+
+    f: '<span class="fvar fvar--f" data-var="f">f</span>'
+     + '<span class="fop">=</span>'
+     + '<span class="fvar fvar--c" data-var="c">c</span>'
+     + '<span class="fop">/</span>'
+     + '<span class="fop">(2 ×</span>'
+     + '<span class="fvar fvar--L" data-var="L">L</span>'
+     + '<span class="fop">)</span>',
+
+    c: '<span class="fvar fvar--c" data-var="c">c</span>'
+     + '<span class="fop">=</span>'
+     + '<span class="fvar fvar--L" data-var="L">L</span>'
+     + '<span class="fop">× 2 ×</span>'
+     + '<span class="fvar fvar--f" data-var="f">f</span>'
+  };
+
+  /* Calculator update */
+  function updateCalc() {
+    var fMHz = parseFloat(calcFreq.value);
+    if (!fMHz || fMHz <= 0) { calcL.textContent = '—'; calcArm.textContent = '—'; return; }
+    var fHz   = fMHz * 1e6;
+    var total = C / (2 * fHz);
+    var arm   = total / 2;
+    calcL.textContent   = total.toFixed(3) + ' m';
+    calcArm.textContent = arm.toFixed(3)   + ' m';
+  }
+
+  /* Solve-for button handler */
+  function setSolve(target) {
+    display.innerHTML = forms[target];
+    btns.forEach(function(b) {
+      var active = b.dataset.solve === target;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+
+    /* Update calculator label depending on solve target */
+    var freqRow = calcFreq ? calcFreq.closest('.calc-row') : null;
+    if (target === 'L') {
+      calcFreq.removeAttribute('readonly');
+      calcFreq.style.color = '';
+    } else {
+      /* For f and c, calculator still shows L from frequency — keep editable */
+      calcFreq.removeAttribute('readonly');
+    }
+    updateCalc();
+  }
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() { setSolve(this.dataset.solve); });
+  });
+
+  calcFreq.addEventListener('input', updateCalc);
+
+  /* Also allow clicking fvar spans to rearrange */
+  display.addEventListener('click', function(e) {
+    var target = e.target.closest('.fvar');
+    if (target && target.dataset.var) { setSolve(target.dataset.var); }
+  });
+  display.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      var target = e.target.closest('.fvar');
+      if (target && target.dataset.var) { setSolve(target.dataset.var); }
+    }
+  });
+
+  /* Initial state */
+  setSolve('L');
+})();
+</script>
+
+<footer>
+  <div class="container">
+    <p>Lesson 2 of 20 &nbsp;·&nbsp; Unit 1: How Antennas Work &nbsp;·&nbsp;
+       <a href="../index.html">Course index</a> &nbsp;·&nbsp;
+       <a href="lesson-01-em-radiation.html">← Lesson 1</a> &nbsp;·&nbsp;
+       <a href="lesson-03-radiation-patterns.html">Lesson 3 →</a>
+    </p>
+  </div>
+</footer>
+
 <script src="/assets/js/dev-pages.js"></script>
 <script src="/assets/js/dev-nav.js"></script>
 </body>
