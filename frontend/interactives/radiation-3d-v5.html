@@ -333,7 +333,23 @@ footer a { color: var(--accent-em); text-decoration: none; }
     <p>Watch electromagnetic waves radiate from a dipole — like ripples from a stone, but shaped by the antenna pattern. Drag to orbit.</p>
   </header>
 
-  <div class="controls-bar">
+  <!-- Antenna Selector — hidden when ?antenna= param is set -->
+  <div class="controls-bar" id="antenna-selector">
+    <div>
+      <div class="control-label"><span>Antenna Type</span></div>
+      <div class="btn-group">
+        <button class="ctrl-btn primary-active" data-antenna="dipole">Dipole</button>
+        <button class="ctrl-btn" data-antenna="vertical">Vertical</button>
+        <button class="ctrl-btn" data-antenna="yagi">Yagi</button>
+        <button class="ctrl-btn" data-antenna="collinear">Collinear</button>
+        <button class="ctrl-btn" data-antenna="loop">Loop</button>
+        <button class="ctrl-btn" data-antenna="patch">Patch</button>
+        <button class="ctrl-btn" data-antenna="dish">Dish</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-bar" id="main-controls">
     <div class="control-group">
       <div class="control-label"><span>Speed</span><span class="control-val" id="speed-val">1.0×</span></div>
       <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
@@ -375,7 +391,7 @@ footer a { color: var(--accent-em); text-decoration: none; }
   <div class="scene-wrapper">
     <canvas id="scene"></canvas>
     <div class="hud">
-      <div>ANTENNA: <span class="hud-val">Half-wave Dipole</span></div>
+      <div>ANTENNA: <span class="hud-val" id="hud-antenna">Half-wave Dipole</span></div>
       <div>WAVES: <span class="hud-val" id="hud-waves">0</span> active</div>
       <div>MODE: <span class="hud-val" id="hud-mode">Flat Rings</span></div>
       <div>2D WAVE: <span class="hud-val" id="hud-2d">ON</span></div>
@@ -386,7 +402,7 @@ footer a { color: var(--accent-em); text-decoration: none; }
   <div class="rx-hint">🎯 DRAG the cyan RX antenna horizontally in the 3D scene · Use the HEIGHT slider below to move it vertically into the null zones · Toggle H Wave to see both fields</div>
 
   <!-- RX Height Control -->
-  <div class="controls-bar" style="padding:12px 20px;">
+  <div class="controls-bar" id="rx-controls" style="padding:12px 20px;">
     <span class="control-section-label" style="min-width:80px">RX Height</span>
     <div class="btn-group" style="align-items:center; gap:6px;">
       <button class="ctrl-btn" id="rx-down" style="padding:6px 12px;font-size:14px;line-height:1;">▼</button>
@@ -463,6 +479,7 @@ let showWaveform = true;
 let showHWave = false;
 let specScale = 'log'; // 'log' or 'linear'
 let time = 0;
+let currentAntennaType = 'dipole';
 
 // ============================================
 // THREE.JS SETUP
@@ -578,6 +595,7 @@ const patternWireMat = new THREE.MeshBasicMaterial({
 patternGroup.add(new THREE.Mesh(torusGeo.clone(), patternWireMat));
 
 scene.add(patternGroup);
+let activePatternGroup = patternGroup;
 
 // ============================================
 // ELECTRON PARTICLES
@@ -1887,7 +1905,7 @@ function animate() {
   updateRxInfo(sig);
   updateAperture();
 
-  patternGroup.visible = showPattern;
+  activePatternGroup.visible = showPattern;
   axesGroup.visible = showAxes;
 
   renderer.render(scene, camera);
@@ -1995,6 +2013,11 @@ document.getElementById('spec-lin').addEventListener('click', function() {
   document.getElementById('spec-log').classList.remove('primary-active');
 });
 
+// Antenna selector
+document.querySelectorAll('[data-antenna]').forEach(btn => {
+  btn.addEventListener('click', () => setAntenna(btn.dataset.antenna));
+});
+
 // ============================================
 // RESIZE
 // ============================================
@@ -2006,6 +2029,170 @@ window.addEventListener('resize', () => {
   setupScope();
   setupSpec();
 });
+
+// ============================================
+// ANTENNA PATTERNS
+// ============================================
+const ANTENNA_NAMES = {
+  dipole:    'Half-wave Dipole',
+  vertical:  'Vertical Monopole',
+  yagi:      'Yagi-Uda',
+  collinear: 'Collinear Array',
+  loop:      'Small Loop',
+  patch:     'Patch Antenna',
+  dish:      'Parabolic Dish'
+};
+
+const MAX_PATTERN_R = 28;
+
+// Build a BufferGeometry from a spherical radiation function r(theta, phi)
+function makePatternGeo(rFunc) {
+  const tSegs = 48, pSegs = 80;
+  const verts = [], idx = [];
+  for (let i = 0; i <= tSegs; i++) {
+    for (let j = 0; j <= pSegs; j++) {
+      const theta = (i / tSegs) * Math.PI;
+      const phi   = (j / pSegs) * Math.PI * 2;
+      const r = Math.max(0, rFunc(theta, phi));
+      verts.push(
+        r * Math.sin(theta) * Math.cos(phi),
+        r * Math.cos(theta),
+        r * Math.sin(theta) * Math.sin(phi)
+      );
+    }
+  }
+  for (let i = 0; i < tSegs; i++) {
+    for (let j = 0; j < pSegs; j++) {
+      const a = i * (pSegs + 1) + j;
+      const b = a + pSegs + 1;
+      idx.push(a, b, a + 1);
+      idx.push(b, b + 1, a + 1);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+  geo.setIndex(idx);
+  return geo;
+}
+
+// Pattern functions for each antenna type (dipole uses existing torus)
+const patternBuilders = {
+  vertical: () => makePatternGeo((theta, phi) => {
+    // Null along X (horizontal), max in YZ plane — horizontal dipole orientation
+    const cosX = Math.sin(theta) * Math.cos(phi);
+    return (1 - cosX * cosX) * MAX_PATTERN_R;
+  }),
+  yagi: () => makePatternGeo((theta, phi) => {
+    // Forward lobe along +X, cardioid-squared (suppressed back lobe)
+    const cosA = Math.sin(theta) * Math.cos(phi);
+    return Math.max(0, (1 + cosA) / 2) ** 2 * MAX_PATTERN_R;
+  }),
+  collinear: () => makePatternGeo((theta, phi) => {
+    // Dipole sin^4 — narrower elevation angle, wider in azimuth
+    return Math.sin(theta) ** 4 * MAX_PATTERN_R * 1.35;
+  }),
+  loop: () => makePatternGeo((theta, phi) => {
+    // Figure-of-eight: two lobes along Z, null along X
+    return Math.sin(theta) * Math.abs(Math.sin(phi)) * MAX_PATTERN_R;
+  }),
+  patch: () => makePatternGeo((theta, phi) => {
+    // Broadside hemisphere pointing up, null below
+    if (theta > Math.PI * 0.5) return 0;
+    return Math.cos(theta) ** 2 * MAX_PATTERN_R;
+  }),
+  dish: () => makePatternGeo((theta, phi) => {
+    // Narrow pencil beam along +X
+    const cosA = Math.sin(theta) * Math.cos(phi);
+    return Math.max(0, cosA) ** 12 * MAX_PATTERN_R;
+  })
+};
+
+function setAntenna(type) {
+  // Remove previous non-dipole pattern from scene
+  if (activePatternGroup && activePatternGroup !== patternGroup) {
+    scene.remove(activePatternGroup);
+  }
+
+  if (type === 'dipole') {
+    patternGroup.visible = showPattern;
+    activePatternGroup = patternGroup;
+  } else {
+    patternGroup.visible = false;
+    const builder = patternBuilders[type];
+    if (!builder) { setAntenna('dipole'); return; }
+
+    const geo = builder();
+    const newGroup = new THREE.Group();
+    newGroup.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      color: 0xa78bfa, transparent: true, opacity: 0.04,
+      side: THREE.DoubleSide, depthWrite: false
+    })));
+    newGroup.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      color: 0xa78bfa, transparent: true, opacity: 0.10,
+      wireframe: true
+    })));
+    scene.add(newGroup);
+    activePatternGroup = newGroup;
+  }
+
+  currentAntennaType = type;
+  const hudEl = document.getElementById('hud-antenna');
+  if (hudEl) hudEl.textContent = ANTENNA_NAMES[type] || type;
+
+  document.querySelectorAll('[data-antenna]').forEach(b => {
+    b.classList.toggle('primary-active', b.dataset.antenna === type);
+  });
+}
+
+// ============================================
+// UI MODE
+// ============================================
+function applyUIMode(mode) {
+  const hide = (el) => { if (el) el.style.display = 'none'; };
+  if (mode === 'minimal') {
+    hide(document.querySelector('header'));
+    hide(document.getElementById('antenna-selector'));
+    hide(document.getElementById('main-controls'));
+    hide(document.querySelector('.rx-hint'));
+    hide(document.getElementById('rx-controls'));
+    hide(document.querySelector('.instruments-row'));
+    hide(document.querySelector('.info-panel'));
+    hide(document.querySelector('footer'));
+  } else if (mode === 'standard') {
+    hide(document.querySelector('.instruments-row'));
+    hide(document.querySelector('.info-panel'));
+  }
+  // 'full' = default, no changes needed
+}
+
+// ============================================
+// QUERY PARAMETERS
+// ============================================
+(function initQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const validAntennas = ['dipole', 'vertical', 'yagi', 'collinear', 'loop', 'patch', 'dish'];
+
+  // ?antenna=
+  const antennaParam = params.get('antenna');
+  if (antennaParam !== null) {
+    const type = validAntennas.includes(antennaParam) ? antennaParam : 'dipole';
+    setAntenna(type);
+    const sel = document.getElementById('antenna-selector');
+    if (sel) sel.style.display = 'none';
+  }
+
+  // ?ui=
+  const uiParam = params.get('ui');
+  if (uiParam === 'minimal' || uiParam === 'standard' || uiParam === 'full') {
+    applyUIMode(uiParam);
+  }
+
+  // ?view=
+  const viewParam = params.get('view');
+  if (['orbit', 'top', 'side', 'free'].includes(viewParam)) {
+    setCameraMode(viewParam);
+  }
+})();
 
 // ============================================
 // GO
