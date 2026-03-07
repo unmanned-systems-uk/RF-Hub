@@ -858,11 +858,10 @@ function updateWaveform() {
   if (!showWaveform) return;
 
   // SYNC with 3D wavefronts:
-  // Rings expand at expandSpeed (3.5) units per time unit
-  // Rings spawn every waveInterval = 1.0 / (waveDensity / 6)
-  // Each ring = one half-cycle, so full wavelength = 2 rings apart
-  // wavelengthInUnits = expandSpeed * waveInterval * 2
-  const expandSpeed = 3.5;
+  // expandSpeed scales with waveDensity so wavelength stays constant (7 units)
+  // expandSpeed = 3.5 * (waveDensity/6), waveInterval = 6/waveDensity
+  // wavelengthInUnits = expandSpeed * waveInterval * 2 = 7 (constant)
+  const expandSpeed = 3.5 * (waveDensity / 6); // synced to frequency
   const waveInterval = 1.0 / (waveDensity / 6);
   const wavelengthUnits = expandSpeed * waveInterval * 2;
 
@@ -1077,25 +1076,29 @@ function updateWaveform() {
 // PATTERN FUNCTION & WAVE TEMPLATES
 // ============================================
 function patternF(type, theta, phi) {
+  // Coordinate convention matches patternBuilders: forward = +X (cos(phi)), Y = vertical
   switch(type) {
     case 'dipole':
       return Math.abs(Math.sin(theta));
-    case 'vertical':
-      return theta <= Math.PI/2 ? Math.abs(Math.sin(theta)) : 0;
+    case 'vertical': {
+      // Null along +X, max along Z — horizontal element along X
+      const cosX = Math.sin(theta) * Math.cos(phi);
+      return 1 - cosX * cosX;
+    }
     case 'collinear':
-      return Math.pow(Math.abs(Math.sin(theta)), 3);
+      return Math.pow(Math.abs(Math.sin(theta)), 4);
     case 'yagi': {
-      const cosForward = Math.sin(theta) * Math.sin(phi);
-      const forward = Math.max(0, cosForward);
-      return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward);
+      const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
+      return Math.pow(Math.max(0, (1 + cosA) / 2), 2);
     }
     case 'loop':
-      return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta)*Math.cos(phi), 2)));
+      // Null along +X, lobes along Z
+      return Math.abs(Math.sin(theta)) * Math.abs(Math.sin(phi));
     case 'patch':
-      return theta <= Math.PI/2 ? Math.pow(Math.cos(theta), 1.5) : 0;
+      return theta <= Math.PI / 2 ? Math.pow(Math.cos(theta), 2) : 0;
     case 'dish': {
-      const cosForward = Math.sin(theta) * Math.sin(phi);
-      return Math.pow(Math.max(0, cosForward), 18);
+      const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
+      return Math.pow(Math.max(0, cosA), 12);
     }
     default:
       return Math.abs(Math.sin(theta));
@@ -1252,7 +1255,7 @@ function updateWaves() {
   ensureTemplates(currentAntennaType);
   const waveInterval = 1.0 / (waveDensity / 6);
   const maxAge = 10;
-  const expandSpeed = 3.5;
+  const expandSpeed = 3.5 * (waveDensity / 6); // scales with frequency; wavelength stays constant
 
   if (time - lastWaveTime > waveInterval) {
     spawnWave();
