@@ -1091,8 +1091,9 @@ function patternF(type, theta, phi) {
       return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward);
     }
     case 'loop':
-      // Null along +X, lobes along Z
-      return Math.abs(Math.sin(theta)) * Math.abs(Math.sin(phi));
+      // Rotated toroid: null along +X, max along ±Y and ±Z
+      // f = √(1 − sin²θ cos²φ) — equivalent to |sin(angle from X axis)|
+      return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta) * Math.cos(phi), 2)));
     case 'patch':
       return theta <= Math.PI / 2 ? Math.pow(Math.cos(theta), 2) : 0;
     case 'dish': {
@@ -2187,8 +2188,8 @@ const patternBuilders = {
     return Math.sin(theta) ** 4 * MAX_PATTERN_R * 1.35;
   }),
   loop: () => makePatternGeo((theta, phi) => {
-    // Figure-of-eight: two lobes along Z, null along X
-    return Math.sin(theta) * Math.abs(Math.sin(phi)) * MAX_PATTERN_R;
+    // Rotated toroid: null along +X (loop broadside), max along ±Y and ±Z
+    return Math.sqrt(Math.max(0, 1 - Math.pow(Math.sin(theta) * Math.cos(phi), 2))) * MAX_PATTERN_R;
   }),
   patch: () => makePatternGeo((theta, phi) => {
     // Broadside hemisphere pointing up, null below
@@ -2226,6 +2227,14 @@ function setAntenna(type) {
       color: 0xa78bfa, transparent: true, opacity: 0.10,
       wireframe: true
     })));
+    // Loop antenna: add ring element in YZ plane (normal = +X, null through hole)
+    if (type === 'loop') {
+      const loopRingGeo = new THREE.TorusGeometry(5, 0.4, 8, 48);
+      loopRingGeo.rotateY(Math.PI / 2); // ring in YZ plane, opening faces +X
+      newGroup.add(new THREE.Mesh(loopRingGeo, new THREE.MeshBasicMaterial({
+        color: 0xf59e0b, transparent: true, opacity: 0.7
+      })));
+    }
     scene.add(newGroup);
     activePatternGroup = newGroup;
   }
