@@ -77,14 +77,32 @@ Sets the opening camera position.
 
 ### `em-animato-2.html` Parameters
 
-No query parameter support currently. Used as full interactive in L01.  
-If lesson-specific config is needed in future, add `?freq=` to pre-set the frequency slider.
+#### `?freq=`
+Pre-sets the frequency slider on load. Useful for lesson exercises that say "start at 145 MHz".
+
+| Value | Effect |
+|-------|--------|
+| Integer (1–500) | Sets frequency slider to that value in MHz on load |
+| Out of range | Ignored silently — default used |
+| *(absent)* | Default frequency (145 MHz) |
+
+Valid range matches the slider: **1 – 500 MHz**.
 
 ---
 
 ### `em-radiation.html` Parameters
 
-No query parameter support currently. Used as full 4-act narrative in L01 (optional) and L02 (primary).
+#### `?act=`
+Opens the page scrolled directly to a specific act in the 4-act narrative. Useful for embedding in lesson iframes that focus on one act.
+
+| Value | Effect |
+|-------|--------|
+| `1` | Scrolls to Act I — Current flows in the antenna |
+| `2` | Scrolls to Act II — Fields form around the wire |
+| `3` | Scrolls to Act III — Fields detach and propagate |
+| `4` | Scrolls to Act IV — Fields induce current in RX |
+| *(absent)* | Full narrative from the top (current behaviour) |
+| Invalid | Ignored silently — full narrative from top |
 
 ---
 
@@ -109,15 +127,14 @@ Lesson `.md` files reference interactives in `<!-- VISUAL: -->` briefs using the
 
 ## Enhancement Queue
 
-Enhancements to interactives are handled by the **Claude Code agent** in a separate project.  
+Enhancements to interactives are handled by the **Claude Code agent** in a separate project.
 This file is the specification source — the Claude Code agent reads it before touching any interactive.
 
-### radiation-3d-v5.html — Pending Enhancement
-**Priority:** Required before L04 HTML conversion  
-**Brief for Claude Code agent:**
-- Implement `?antenna=` query parameter — read on load, set pattern, hide/show selector accordingly
-- Implement `?ui=` query parameter — `minimal` hides all controls except orbit/zoom; `standard` hides instrument panels; `full` is current default behaviour
-- Implement `?view=` query parameter — set initial camera position on load
-- Add antenna patterns: vertical (toroid rotated 90°), yagi (forward pencil lobe), collinear (compressed toroid), loop (figure-of-eight), patch (broadside lobe), dish (narrow pencil beam)
-- Selector UI: shown only when `?antenna=` is absent; lists all available patterns
-- All existing behaviour preserved when no parameters are passed (backwards compatible)
+### radiation-3d-v5.html — ✅ COMPLETE (7 March 2026)
+Branch: `review/radiation-3d-query-params`
+
+All query parameters implemented:
+- `?antenna=` — loads pattern, hides selector
+- `?ui=` — minimal/standard/full chrome control
+- `?view=` — opening camera position
+- All 6 antenna patterns added (vertical, yagi, collinear, loop, patch, dish)

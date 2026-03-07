@@ -1060,6 +1060,19 @@ window.addEventListener('resize', () => {
   initCanvases();
 });
 
+// ?freq= query parameter — pre-set frequency slider on load
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const freqParam = params.get('freq');
+  if (freqParam !== null) {
+    const f = parseInt(freqParam, 10);
+    if (!isNaN(f) && f >= parseInt(freqSlider.min) && f <= parseInt(freqSlider.max)) {
+      frequency = f;
+      freqSlider.value = f;
+    }
+  }
+})();
+
 // Set initial values
 document.getElementById('freq-val').textContent = frequency + ' MHz';
 document.getElementById('wavelength-val').textContent = (299.792 / frequency).toFixed(2) + ' m';

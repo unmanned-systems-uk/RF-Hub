@@ -1169,5 +1169,17 @@ html { scroll-behavior: smooth; }
   </div>
 </footer>
 
+<script>
+// ?act= query parameter — scroll to the specified act on load
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const actMap = { '1': 'chapter-1', '2': 'chapter-2', '3': 'chapter-3', '4': 'chapter-4' };
+  const targetId = actMap[params.get('act')];
+  if (targetId) {
+    const el = document.getElementById(targetId);
+    if (el) el.scrollIntoView();
+  }
+})();
+</script>
 </body>
 </html>
