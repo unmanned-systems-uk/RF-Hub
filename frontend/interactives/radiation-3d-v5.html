@@ -1086,8 +1086,9 @@ function patternF(type, theta, phi) {
     case 'collinear':
       return Math.pow(Math.abs(Math.sin(theta)), 3); // sin³θ — compressed elevation, more gain at horizon
     case 'yagi': {
-      const cosA = Math.sin(theta) * Math.cos(phi); // forward = +X
-      return Math.pow(Math.max(0, (1 + cosA) / 2), 2);
+      const cosForward = Math.sin(theta) * Math.sin(phi); // forward = +Z
+      const forward = Math.max(0, cosForward);
+      return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward);
     }
     case 'loop':
       // Null along +X, lobes along Z
@@ -2176,9 +2177,10 @@ const patternBuilders = {
     return theta <= Math.PI / 2 ? Math.abs(Math.sin(theta)) * MAX_PATTERN_R : 0;
   }),
   yagi: () => makePatternGeo((theta, phi) => {
-    // Forward lobe along +X, cardioid-squared (suppressed back lobe)
-    const cosA = Math.sin(theta) * Math.cos(phi);
-    return Math.max(0, (1 + cosA) / 2) ** 2 * MAX_PATTERN_R;
+    // Forward lobe along +Z — boom points toward viewer
+    const cosForward = Math.sin(theta) * Math.sin(phi);
+    const forward = Math.max(0, cosForward);
+    return Math.abs(Math.sin(theta)) * (0.15 + 0.85 * forward * forward) * MAX_PATTERN_R;
   }),
   collinear: () => makePatternGeo((theta, phi) => {
     // Dipole sin^4 — narrower elevation angle, wider in azimuth
