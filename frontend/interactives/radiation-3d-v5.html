@@ -596,8 +596,19 @@ patternGroup.add(new THREE.Mesh(torusGeo.clone(), patternWireMat));
 
 scene.add(patternGroup);
 let activePatternGroup = patternGroup;
-let loopElement = null; // amber loop ring — lives outside activePatternGroup so pattern toggle doesn't hide it
-let dishElement = null; // dish reflector disc — same pattern
+// Antenna element group — holds physical model for the current antenna type.
+// Lives outside activePatternGroup so it is never hidden by the pattern toggle.
+const antennaElementGroup = new THREE.Group();
+scene.add(antennaElementGroup);
+
+function clearAntennaElements() {
+  while (antennaElementGroup.children.length > 0) {
+    const child = antennaElementGroup.children[0];
+    if (child.geometry) child.geometry.dispose();
+    if (child.material) child.material.dispose();
+    antennaElementGroup.remove(child);
+  }
+}
 
 // ============================================
 // ELECTRON PARTICLES
@@ -1340,7 +1351,7 @@ function updateWaves() {
 // ELECTRONS
 // ============================================
 function updateElectrons() {
-  electronGroup.visible = showElectrons && currentAntennaType !== 'loop' && currentAntennaType !== 'dish';
+  electronGroup.visible = showElectrons && currentAntennaType === 'dipole';
   if (!electronGroup.visible) return;
 
   const sinT = Math.sin(time * 4);
@@ -2215,25 +2226,96 @@ const patternBuilders = {
   })
 };
 
+function buildAntennaElement(type) {
+  // Helper: add mesh to antennaElementGroup
+  const add = (geo, color, opacity = 1, extra = {}) => {
+    const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial(
+      Object.assign({ color, transparent: opacity < 1, opacity }, extra)
+    ));
+    antennaElementGroup.add(mesh);
+    return mesh;
+  };
+
+  switch (type) {
+
+    case 'vertical': {
+      // Ground plane disc at y=0
+      const gnd = new THREE.CylinderGeometry(14, 14, 0.35, 48);
+      add(gnd, 0x334155, 0.7).position.y = -0.2;
+      // Monopole rod: y=0 → y=10
+      const rod = new THREE.CylinderGeometry(0.35, 0.35, 10, 8);
+      add(rod, 0xfbbf24).position.y = 5;
+      break;
+    }
+
+    case 'yagi': {
+      // Boom along +X (x = -3 to +12, length 15)
+      const boom = new THREE.CylinderGeometry(0.2, 0.2, 15, 8);
+      const boomMesh = add(boom, 0x64748b);
+      boomMesh.rotation.z = Math.PI / 2;
+      boomMesh.position.x = 4.5;
+      // Reflector at x=-3, length 9, slate
+      add(new THREE.CylinderGeometry(0.25, 0.25, 9, 8), 0x64748b).position.x = -3;
+      // Driven element at x=0, length 8, amber
+      add(new THREE.CylinderGeometry(0.3, 0.3, 8, 8), 0xfbbf24).position.x = 0;
+      // Director 1 at x=4.5, length 7
+      add(new THREE.CylinderGeometry(0.22, 0.22, 7, 8), 0x94a3b8).position.x = 4.5;
+      // Director 2 at x=9, length 6.5
+      add(new THREE.CylinderGeometry(0.22, 0.22, 6.5, 8), 0x94a3b8).position.x = 9;
+      break;
+    }
+
+    case 'collinear': {
+      // 3 λ/2 sections stacked along Y with phasing coils at joints
+      // Section centres at y = -7, 0, +7 (each 5.5 units long, 1.5 unit gaps)
+      const centres = [-7, 0, 7];
+      for (const cy of centres) {
+        add(new THREE.CylinderGeometry(0.3, 0.3, 5.5, 8), 0xfbbf24).position.y = cy;
+      }
+      // Phasing coils at joints y = -3.5 and +3.5
+      for (const gy of [-3.5, 3.5]) {
+        const coil = new THREE.TorusGeometry(0.7, 0.22, 8, 16);
+        add(coil, 0xfbbf24, 0.9).position.y = gy;
+      }
+      break;
+    }
+
+    case 'patch': {
+      // Ground plane
+      add(new THREE.BoxGeometry(20, 0.3, 20), 0x334155, 0.75).position.y = -1.8;
+      // Dielectric substrate
+      add(new THREE.BoxGeometry(14, 1.2, 14), 0x1e3a5f, 0.6).position.y = -1.05;
+      // Patch conductor (square)
+      add(new THREE.BoxGeometry(9, 0.18, 9), 0xfbbf24, 0.9).position.y = -0.4;
+      break;
+    }
+
+    case 'loop': {
+      const loopRingGeo = new THREE.TorusGeometry(5, 0.4, 8, 48);
+      loopRingGeo.rotateY(Math.PI / 2); // ring in YZ plane, opening faces +X
+      add(loopRingGeo, 0xf59e0b, 0.7);
+      break;
+    }
+
+    case 'dish': {
+      const discGeo = new THREE.CircleGeometry(7, 48);
+      const disc = add(discGeo, 0x94a3b8, 0.35, { side: THREE.DoubleSide });
+      disc.rotation.y = Math.PI / 2; // aperture faces +X
+      break;
+    }
+
+    default: break; // dipole uses the existing antenna/tip/electron objects
+  }
+}
+
 function setAntenna(type) {
   // Remove previous non-dipole pattern from scene
   if (activePatternGroup && activePatternGroup !== patternGroup) {
     scene.remove(activePatternGroup);
   }
-  // Remove previous loop ring element (lives outside pattern group)
-  if (loopElement) {
-    scene.remove(loopElement);
-    loopElement.geometry.dispose();
-    loopElement.material.dispose();
-    loopElement = null;
-  }
-  // Remove previous dish reflector element
-  if (dishElement) {
-    scene.remove(dishElement);
-    dishElement.geometry.dispose();
-    dishElement.material.dispose();
-    dishElement = null;
-  }
+  // Rebuild antenna element model
+  clearAntennaElements();
+  buildAntennaElement(type);
 
   if (type === 'dipole') {
     patternGroup.visible = showPattern;
@@ -2257,30 +2339,8 @@ function setAntenna(type) {
     activePatternGroup = newGroup;
   }
 
-  // Loop antenna: add amber ring element directly to scene (not in activePatternGroup)
-  // so it stays visible when the pattern envelope is toggled off
-  if (type === 'loop') {
-    const loopRingGeo = new THREE.TorusGeometry(5, 0.4, 8, 48);
-    loopRingGeo.rotateY(Math.PI / 2); // ring in YZ plane, opening faces +X
-    loopElement = new THREE.Mesh(loopRingGeo, new THREE.MeshBasicMaterial({
-      color: 0xf59e0b, transparent: true, opacity: 0.7
-    }));
-    scene.add(loopElement);
-  }
-
-  // Dish antenna: circular reflector disc in YZ plane, aperture facing +X
-  if (type === 'dish') {
-    const discGeo = new THREE.CircleGeometry(7, 48);
-    dishElement = new THREE.Mesh(discGeo, new THREE.MeshBasicMaterial({
-      color: 0x94a3b8, transparent: true, opacity: 0.35,
-      side: THREE.DoubleSide
-    }));
-    dishElement.rotation.y = Math.PI / 2; // aperture faces +X
-    scene.add(dishElement);
-  }
-
-  // Hide dipole rod, tips, and electrons for antennas with their own element visual
-  const isDipoleElement = (type !== 'loop' && type !== 'dish');
+  // Dipole rod/tips/electrons only for dipole — all other types use antennaElementGroup
+  const isDipoleElement = (type === 'dipole');
   antenna.visible = isDipoleElement;
   tipTop.visible = isDipoleElement;
   tipBot.visible = isDipoleElement;
