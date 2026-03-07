@@ -4,29 +4,147 @@
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 3: Radiation Patterns — RF-Hub</title>
+<title>Lesson 3 — Where Does the Energy Go? Radiation Patterns | RF-Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
 <style>
-/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
-.lesson-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
+/* ============================================================
+   CSS CUSTOM PROPERTIES — RF-Hub Design System
+   ============================================================ */
+:root {
+  --bg-deep:        #0a0e1a;
+  --bg-card:        #111827;
+  --bg-card-hover:  #1a2234;
+  --bg-input:       #1a2234;
+  --accent-e:       #f59e0b;
+  --accent-h:       #06b6d4;
+  --accent-em:      #a78bfa;
+  --accent-power:   #ef4444;
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim:       #64748b;
+  --border:         #1e293b;
+  --glow-e:         rgba(245, 158, 11, 0.15);
+  --glow-h:         rgba(6, 182, 212, 0.15);
+  --glow-em:        rgba(167, 139, 250, 0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-em) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   OBJECTIVES CARD
+   ============================================================ */
+.objectives-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 40px;
+  margin-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.objectives-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-e), var(--accent-em), var(--accent-h));
+}
+.objectives-card h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
 }
 .objectives-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
 }
+@media (max-width: 600px) { .objectives-list { grid-template-columns: 1fr; } }
 .objectives-list li {
   display: flex;
   gap: 10px;
@@ -36,375 +154,1903 @@
   line-height: 1.5;
 }
 .objectives-list li::before {
-  content: '✓';
-  font-family: var(--font-mono);
-  color: var(--accent-current);
-  font-size: 0.85rem;
-  margin-top: 2px;
+  content: '→';
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--accent-em);
+  font-size: 0.8rem;
+  margin-top: 3px;
   flex-shrink: 0;
 }
-.knowledge-check ol {
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+
+/* ============================================================
+   CHAPTER SECTIONS
+   ============================================================ */
+.chapter { margin-bottom: 80px; scroll-margin-top: 40px; }
+.chapter-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.chapter-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  white-space: nowrap;
 }
-.knowledge-check li {
+.chapter-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--accent-em), transparent); }
+h2.chapter-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+h3.section-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 28px 0 12px;
+}
+.chapter p { color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem; }
+.chapter p strong { color: var(--text-primary); font-weight: 500; }
+.chapter ul, .chapter ol { color: var(--text-secondary); padding-left: 24px; margin-bottom: 16px; }
+.chapter li { margin-bottom: 8px; line-height: 1.6; }
+.chapter li strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   DIAGRAM CARDS
+   ============================================================ */
+.diagram-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 28px 0;
+  position: relative;
+  overflow: hidden;
+}
+.diagram-card.glow-e  { box-shadow: inset 0 0 60px -30px var(--glow-e); }
+.diagram-card.glow-h  { box-shadow: inset 0 0 60px -30px var(--glow-h); }
+.diagram-card.glow-em { box-shadow: inset 0 0 60px -30px var(--glow-em); }
+.diagram-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   SVG WRAPPER
+   ============================================================ */
+.svg-wrapper { overflow-x: auto; }
+.svg-wrapper svg { display: block; }
+
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 12px 12px 0;
+  margin: 20px 0;
+}
+.callout.e-field     { border-left-color: var(--accent-e); }
+.callout.h-field     { border-left-color: var(--accent-h); }
+.callout.key-insight { border-left-color: var(--accent-power); background: rgba(239,68,68,0.04); }
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.callout-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+.callout-text strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   INFO PANELS
+   ============================================================ */
+.info-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
-.knowledge-check strong {
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 4px;
+.info-panel strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   ANIMATION CONTROLS
+   ============================================================ */
+.anim-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
-.term-block {
-  background: var(--bg-card);
-  border-left: 3px solid var(--accent-em);
-  padding: 12px 16px;
-  margin: 12px 0;
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-}
-.term-block strong {
+.anim-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 8px 20px;
+  background: rgba(167,139,250,0.1);
   color: var(--accent-em);
-  font-family: var(--font-mono);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.anim-btn:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
+.anim-btn:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.anim-readout {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-em);
+  min-width: 80px;
+  text-align: center;
+}
+
+/* ============================================================
+   TERM BOXES
+   ============================================================ */
+.term-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(167,139,250,0.1);
+  border-radius: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85em;
+  color: var(--accent-em);
+}
+.term-e { background: rgba(245,158,11,0.1);  color: var(--accent-e); }
+.term-h { background: rgba(6,182,212,0.1);   color: var(--accent-h); }
+
+/* ============================================================
+   SUMMARY GRID
+   ============================================================ */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+@media (max-width: 600px) { .summary-grid { grid-template-columns: 1fr; } }
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+.summary-card:hover { border-color: var(--accent-em); transform: translateY(-2px); }
+.summary-card h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.summary-card.e-card     h4 { color: var(--accent-e); }
+.summary-card.h-card     h4 { color: var(--accent-h); }
+.summary-card.em-card    h4 { color: var(--accent-em); }
+.summary-card.power-card h4 { color: var(--accent-power); }
+.summary-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+.summary-card p strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   SELF-CHECK EXERCISES
+   ============================================================ */
+.self-check-group { margin-bottom: 40px; }
+.self-check-group > h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.self-check-group > h3::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(167,139,250,0.3), transparent);
+}
+.self-check {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.self-check h4 { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+.self-check > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 14px; }
+.btn-reveal {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  background: rgba(167,139,250,0.1);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reveal:hover { background: rgba(167,139,250,0.2); }
+.btn-reveal:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
+.self-check__reveal {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 16px;
+  margin-top: 0;
+  border-left: 2px solid transparent;
+  background: rgba(167,139,250,0);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: max-height 0.35s ease, padding 0.35s ease, margin 0.35s ease,
+              border-color 0.35s ease, background 0.35s ease;
+}
+.self-check__reveal.open {
+  max-height: 800px;
+  padding: 16px;
+  margin-top: 14px;
+  border-left: 2px solid var(--accent-em);
+  background: rgba(167,139,250,0.06);
+}
+.self-check__reveal strong { color: var(--text-primary); font-weight: 500; }
+
+/* ============================================================
+   RESOURCE BLOCK (for external interactive links)
+   ============================================================ */
+.resource-block {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+.resource-block-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  color: var(--accent-em);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 2px;
+}
+.resource-block-content h3 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.resource-block-content p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.btn-resource {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 10px 24px;
+  background: rgba(167,139,250,0.12);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.btn-resource:hover { background: rgba(167,139,250,0.22); transform: translateY(-1px); }
+@media (max-width: 560px) { .resource-block { flex-direction: column; } }
+
+/* ============================================================
+   EXERCISE BLOCK (guided interactive exercises)
+   ============================================================ */
+.exercise-block {
+  background: rgba(167,139,250,0.04);
+  border: 1px solid rgba(167,139,250,0.18);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin: 24px 0;
+}
+.exercise-block h4 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 20px;
+}
+.exercise-block h5 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 16px 0 6px;
+}
+.exercise-block p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.exercise-block ul {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.exercise-block li { margin-bottom: 6px; line-height: 1.5; }
+.exercise-block li em { color: var(--accent-em); font-style: normal; }
+
+/* ============================================================
+   POLAR PLOT LAYOUT
+   ============================================================ */
+.polar-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.polar-panel { flex: 1; min-width: 0; }
+.polar-panel-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.polar-panel-sublabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--accent-em);
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0.75;
+}
+@media (max-width: 540px) { .polar-row { flex-direction: column; } }
+
+/* ============================================================
+   SELF-CHECK POLAR ROW (3 plots)
+   ============================================================ */
+.sc-polar-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.sc-polar-panel { flex: 1; min-width: 0; }
+.sc-polar-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 8px;
+}
+@media (max-width: 600px) { .sc-polar-row { flex-direction: column; } }
+
+/* ============================================================
+   WHAT'S NEXT CARD
+   ============================================================ */
+.next-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 40px 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.next-card-icon { font-size: 36px; flex-shrink: 0; }
+.next-card-content h3 { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 6px; }
+.next-card-content > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 14px; }
+.nav-btn {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 10px 20px;
+  background: rgba(167,139,250,0.1);
+  color: var(--accent-em);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+.nav-btn:hover { background: rgba(167,139,250,0.2); transform: translateY(-1px); }
+.nav-btn--next { background: var(--accent-em); color: var(--bg-deep); border-color: var(--accent-em); }
+.nav-btn--next:hover { opacity: 0.9; }
+@media (max-width: 500px) { .next-card { flex-direction: column; } }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-dim);
   font-size: 0.85rem;
+  margin-top: 80px;
+}
+footer a { color: var(--accent-em); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ============================================================
+   CANVAS BASE
+   ============================================================ */
+canvas { display: block; width: 100%; background: transparent; }
+
+/* ============================================================
+   RANGE SLIDERS
+   ============================================================ */
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-input);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  box-shadow: 0 0 10px rgba(167,139,250,0.3);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-em);
+  border: none;
+  box-shadow: 0 0 10px rgba(167,139,250,0.3);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .diagram-card { padding: 20px; }
+  .hero { padding: 56px 0 40px; }
+  .objectives-card { padding: 24px; }
+  .resource-block { padding: 20px; }
+  .exercise-block { padding: 20px; }
+}
+@media (max-width: 360px) {
+  .container { padding: 0 16px; }
+  h1 { font-size: 1.8rem; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══ NAVIGATION ═══ -->
-<nav class="site-nav">
-  <div class="container container--wide">
-    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
-    <ul class="site-nav-links">
-      <li><a href="../../../index.html">Dashboard</a></li>
-      <li><a href="../../frequency-bands.html">Spectrum</a></li>
-      <li><a href="../../antennas.html">Antennas</a></li>
-      <li><a href="../../learning-path.html">Learning Path</a></li>
-      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
-    </ul>
-  </div>
-</nav>
+<!-- PROGRESS BAR -->
+<div id="progress-bar" role="progressbar" aria-label="Lesson reading progress"></div>
 
-<!-- ═══ HERO ═══ -->
+<!-- HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">Unit 1 · Lesson 3</div>
-    <h1>Radiation Patterns: Where Does the Energy Go?</h1>
-    <p class="hero-subtitle">Reading 2D/3D patterns, isotropic reference, dipole doughnut, and key terminology</p>
+    <div class="hero-badge">RF-Hub · Lesson 3</div>
+    <h1>Where Does the Energy Go?</h1>
+    <p class="hero-subtitle">Unit 1 — How Antennas Work &nbsp;·&nbsp; No equipment needed &nbsp;·&nbsp; ~25 minutes</p>
   </div>
 </section>
 
-<!-- ═══ CONTENT ═══ -->
+<!-- MAIN CONTENT -->
 <div class="container">
-<div class="article">
 
-  <!-- Article Meta -->
-  <div class="article-meta">
-    <span class="article-meta-item">Unit 1 — How Antennas Work</span>
-    <span class="article-meta-item">Prerequisites: Lesson 2 (How Antennas Radiate)</span>
-    <span class="article-meta-item">Equipment: None</span>
-    <span class="article-meta-item">⏱ 30 min</span>
-    <span class="article-meta-item"><span class="badge badge--success">Beginner</span></span>
-  </div>
-
-  <!-- ─── CHAPTER 01: Learning Objectives ─── -->
-  <div class="chapter" id="objectives">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 01</span>
-      <div class="chapter-line"></div>
-    </div>
+  <!-- LEARNING OBJECTIVES -->
+  <div class="objectives-card">
     <h2>Learning Objectives</h2>
-    <p>By the end of this lesson you will be able to:</p>
     <ul class="objectives-list">
-      <li>Read and interpret 2D radiation patterns (azimuth and elevation cuts)</li>
-      <li>Read a 3D radiation pattern and identify its features</li>
-      <li>Identify main lobe, side lobes, nulls, back lobe, and half-power beamwidth</li>
-      <li>Explain why the isotropic radiator is useful as a reference even though it can't physically exist</li>
-      <li>Describe the radiation pattern shape of a half-wave dipole</li>
+      <li>Explain what a radiation pattern is, using the word "energy" correctly</li>
+      <li>Describe the 3D shape of a half-wave dipole's pattern and explain why it has that shape</li>
+      <li>Read a polar plot: identify the main lobe, nulls, and dB reference rings</li>
+      <li>State what the H-plane and E-plane are, and give the alternative names for each</li>
+      <li>Explain why the nulls on a dipole pattern occur at exactly the tips</li>
+      <li>Define directivity as a concept, without using any formula</li>
     </ul>
   </div>
 
-  <!-- ─── CHAPTER 02: The Isotropic Radiator ─── -->
-  <div class="chapter" id="isotropic">
+  <!-- ═══ SECTION 01 — BRIDGE FROM LESSON 2 ═══ -->
+  <div class="chapter" id="section-01">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 02</span>
+      <span class="chapter-num">SECTION 01</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>The Isotropic Radiator: A Useful Fiction</h2>
+    <h2 class="chapter-title">Bridge from Lesson 2</h2>
+
+    <p>In Lesson 2 you watched the EM wave detach from the wire and travel outward. The final image is a self-sustaining field packet moving through space, carrying energy away from the antenna.</p>
+
+    <p>That raised a question we didn't answer: <em>where</em> does that energy go?</p>
+
+    <p>Not "in what general direction" — we know it travels outward from the antenna. The real question is whether it travels equally in every direction, or whether some directions receive more energy than others. Does the antenna distribute its energy uniformly, like a bare light bulb? Or does it concentrate it, like a torch?</p>
+
+    <p>The answer is neither uniform nor random. Every antenna has a specific, predictable <strong>3D shape</strong> to its energy distribution. That shape is called the radiation pattern. Understanding it — visually, physically, and in terms of what it means for real-world performance — is what this lesson is about.</p>
+  </div>
+
+  <!-- ═══ SECTION 02 — WHAT IS A RADIATION PATTERN? ═══ -->
+  <div class="chapter" id="section-02">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 02</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">What is a Radiation Pattern?</h2>
+
+    <p>A radiation pattern is a three-dimensional map. At every point around an antenna — every direction, every angle — it shows how efficiently the antenna transfers energy in that direction.</p>
+
+    <p>That word "transfers" is doing important work. Let's be precise about it.</p>
+
+    <h3 class="section-title">The wrong model — and why it matters</h3>
+
+    <p>When most people first encounter radiation patterns, they read the description as: <em>"this is a map of where the signal is strongest."</em> That framing isn't completely wrong, but it hides something important — and the hidden part causes real confusion later, especially when thinking about receiving antennas.</p>
+
+    <p>Here is the wrong model in full:</p>
 
     <div class="callout">
-      <span class="callout-icon">💡</span>
+      <div class="callout-icon">✗</div>
       <div class="callout-text">
-        <strong>The Big Idea:</strong> In Lesson 2 we said that the current distribution on an antenna causes radiation to be stronger in some directions than others. A <strong>radiation pattern</strong> is simply a map of that directionality — it tells you where the antenna sends (or receives) the most energy.
+        <em>"The transmitting antenna sends out a signal. The E field from that signal arrives at the receiving antenna. The E field induces a voltage. That voltage drives a current. The receiver amplifies the current."</em>
       </div>
     </div>
 
-    <p>Imagine a theoretical point source that radiates equally in every direction — up, down, left, right, forward, backward. This is an <strong>isotropic radiator</strong>. Its 3D pattern would be a perfect sphere.</p>
+    <p>This makes voltage sound like the quantity being received — as if the antenna is a kind of field-to-voltage converter. And it makes the radiation pattern sound like a map of "field strength out there in space."</p>
 
-    <p>No real antenna does this. It's physically impossible. But it's enormously useful as a <strong>reference point</strong>. When we say an antenna has "6 dBi gain," the "i" stands for "isotropic" — it means the antenna focuses energy 6 dB better than this imaginary perfect sphere in its best direction.</p>
+    <p>Both of those pictures will mislead you.</p>
 
-    <p>Think of it like sea level for altitude measurements. Sea level isn't interesting by itself, but it gives everything else a reference.</p>
-  </div>
+    <h3 class="section-title">The right model</h3>
 
-  <!-- ─── CHAPTER 03: The Dipole Pattern ─── -->
-  <div class="chapter" id="dipole-pattern">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 03</span>
-      <div class="chapter-line"></div>
-    </div>
-    <h2>The Dipole Pattern: Your First Real Pattern</h2>
+    <p>Here is what is actually happening:</p>
 
-    <p>A half-wave dipole (from Lesson 2) produces a distinctive pattern:</p>
-    <ul>
-      <li><strong>3D shape:</strong> A doughnut (toroid) wrapped around the wire</li>
-      <li><strong>Maximum radiation:</strong> Broadside to the wire (perpendicular)</li>
-      <li><strong>Zero radiation (nulls):</strong> Off the tips of the wire (along its axis)</li>
-    </ul>
+    <p>The transmitting antenna converts electrical energy (current flowing in a conductor) into electromagnetic energy (a propagating wave). The wave carries that energy outward through space. When that wave reaches a receiving antenna, the receiving antenna converts some of that electromagnetic energy back into electrical energy — current flowing in a conductor.</p>
 
-    <p>If you hold a dipole vertically:</p>
-    <ul>
-      <li>It radiates strongly toward the horizon in all horizontal directions</li>
-      <li>It radiates nothing straight up or straight down</li>
-    </ul>
-
-    <p>If you hold it horizontally:</p>
-    <ul>
-      <li>It still radiates strongest broadside, but now the nulls are off the ends</li>
-    </ul>
-
-    <div class="callout callout--info">
-      <span class="callout-icon">🔧</span>
+    <div class="callout key-insight">
+      <div class="callout-icon">◆</div>
       <div class="callout-text">
-        <strong>Interactive:</strong> <a href="../../../resources/radiation-3d-v5.html">3D Radiation Pattern Viewer</a><br>
-        Load the dipole pattern and rotate it. Find the doughnut shape. Identify where the nulls are. Try rotating your mental model to match a vertical installation vs. a horizontal one.
+        <strong>The quantity being transferred is energy. The result at the feedpoint is current.</strong>
+      </div>
+    </div>
+
+    <p>The radiation pattern is a map of <em>where that energy transfer is most efficient</em>. In directions where the pattern is strong, a receiving antenna placed there would couple a large fraction of the wave's energy into usable current. In directions where the pattern is weak or zero, very little energy couples — even though the wave may be passing through that region.</p>
+
+    <p>This framing does something useful immediately: it makes the TX and RX patterns identical in a way that feels natural. The pattern isn't a map of "where the transmitter throws its signal." It's a map of the antenna's <em>energy coupling geometry</em>. That geometry is the same whether energy is flowing in or out — which is exactly what reciprocity (from Lesson 2) tells us.</p>
+
+    <p>Keep this model in mind throughout this lesson. Every time you see the word "pattern," replace it mentally with "energy coupling map."</p>
+
+    <!-- RESOURCE: radiation-3d-v5.html — first look -->
+    <div class="resource-block">
+      <div class="resource-block-icon">▶</div>
+      <div class="resource-block-content">
+        <h3>First Look — 3D Radiation Pattern Viewer</h3>
+        <p>Open the interactive 3D pattern viewer. Have a look at the dipole's 3D radiation pattern shape before reading further. We'll explain exactly why it looks like this in Section 3. No guided tasks yet — just observe the shape from all angles.</p>
+        <a class="btn-resource" href="../../../resources/radiation-3d-v5.html" target="_blank" rel="noopener">Open 3D Pattern Viewer →</a>
       </div>
     </div>
   </div>
 
-  <!-- ─── CHAPTER 04: Reading 2D Pattern Plots ─── -->
-  <div class="chapter" id="2d-patterns">
+  <!-- ═══ SECTION 03 — WHY A DONUT? THE PHYSICS OF THE SHAPE ═══ -->
+  <div class="chapter" id="section-03">
     <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 04</span>
+      <span class="chapter-num">SECTION 03</span>
       <div class="chapter-line"></div>
     </div>
-    <h2>Reading 2D Pattern Plots</h2>
+    <h2 class="chapter-title">Why a Donut? The Physics of the Shape</h2>
 
-    <p>A 3D pattern is informative but hard to print or compare precisely. So we typically slice through it to create <strong>2D plots</strong>:</p>
+    <p>The 3D radiation pattern of a half-wave dipole is a toroid — a donut shape. The wire passes through the hole in the middle. Energy radiates outward strongly in all directions perpendicular to the wire, and not at all along the wire's axis.</p>
 
-    <h3>Azimuth (Horizontal) Plane</h3>
-    <p>Imagine slicing through the 3D pattern horizontally — like cutting through the doughnut at its widest point. The result is a circular plot showing signal strength at each compass bearing.</p>
+    <p>This shape is not arbitrary. It follows directly from the current distribution you learned in Lesson 2.</p>
+
+    <h3 class="section-title">The connection back to Lesson 2</h3>
+
+    <p>Recall what you know about current on a half-wave dipole:</p>
+
     <ul>
-      <li>For a vertical dipole: the azimuth cut is a perfect circle (equal radiation in all horizontal directions — this is called <strong>omnidirectional</strong>)</li>
-      <li>For a Yagi pointing north: the azimuth cut shows a strong lobe to the north and smaller lobes or nulls in other directions</li>
+      <li>The feedpoint (centre) has <strong>maximum current</strong></li>
+      <li>The tips have <strong>zero current</strong> — forced to zero by the open-end boundary condition</li>
+      <li>Between feedpoint and tip, the current tapers smoothly following a half-sinusoid</li>
     </ul>
 
-    <h3>Elevation (Vertical) Plane</h3>
-    <p>Now slice vertically — like cutting the doughnut in half from top to bottom. This shows signal strength at each elevation angle.</p>
-    <ul>
-      <li>For a vertical dipole: the elevation cut shows a figure-eight shape — strong at the horizon, null straight up</li>
-      <li>The angle of maximum radiation above the horizon is called the <strong>takeoff angle</strong> — critical for HF communications</li>
-    </ul>
+    <p>You also know that it is <em>accelerating charges</em> — changing current — that create EM radiation. Where current is high and changing rapidly, radiation is strong. Where current is zero, there is nothing to radiate.</p>
 
-    <h3>How to Read the Scales</h3>
-    <p>Pattern plots use either:</p>
-    <ul>
-      <li><strong>Linear scale</strong> — signal strength shown as distance from centre (intuitive but compresses detail)</li>
-      <li><strong>Logarithmic (dB) scale</strong> — each concentric ring represents a fixed dB step (reveals detail in the sidelobes)</li>
-    </ul>
-    <p>Most engineering plots use dB scale. The outermost ring is the maximum (0 dB reference), and inner rings might be -3 dB, -10 dB, -20 dB, etc.</p>
-  </div>
+    <p>Now look at the geometry.</p>
 
-  <!-- ─── CHAPTER 05: Pattern Terminology ─── -->
-  <div class="chapter" id="terminology">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 05</span>
-      <div class="chapter-line"></div>
-    </div>
-    <h2>Pattern Terminology</h2>
+    <p>Current flows <em>along the length of the wire</em>. The wire is vertical (say). The radiation from each tiny section of wire goes out perpendicular to the current direction in that section — perpendicular to the wire, that is. Stack up all those small contributions from every section of the wire, and the result is strongest in the horizontal plane (broadside, equatorial) and weakest above and below along the wire's axis.</p>
 
-    <p>Here are the key terms you'll encounter on every antenna data sheet and in every antenna discussion:</p>
+    <p>The donut shape falls out naturally. It doesn't need to be memorised as a separate fact — it is the direct consequence of the current distribution shape.</p>
 
-    <div class="term-block">
-      <strong>MAIN LOBE (MAIN BEAM)</strong>
-      <p style="margin: 4px 0 0 0;">The direction of strongest radiation. This is where the antenna is "pointing."</p>
-    </div>
+    <!-- VISUAL 1 — Current Distribution → Radiation Pattern -->
+    <div class="diagram-card glow-em" id="v1-current-to-pattern">
+      <div class="diagram-label">Visual 1 — From Current Distribution to Radiation Pattern</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 780 300" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Two-panel diagram. Left: vertical half-wave dipole with current distribution overlaid as amber sinusoidal lobe; outward arrows strongest broadside, absent at tips. Right: 3D donut cross-section showing the resulting radiation pattern."
+             role="img" style="min-width:520px;">
 
-    <div class="term-block">
-      <strong>SIDE LOBES</strong>
-      <p style="margin: 4px 0 0 0;">Smaller lobes of radiation in unwanted directions. All real antennas have some side lobes — the goal is usually to minimise them.</p>
-    </div>
+          <!-- === Panel labels === -->
+          <text x="195" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">CURRENT DISTRIBUTION</text>
+          <text x="585" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">RADIATION PATTERN</text>
 
-    <div class="term-block">
-      <strong>BACK LOBE</strong>
-      <p style="margin: 4px 0 0 0;">Radiation in the direction opposite the main beam. For a Yagi pointed north, the back lobe is to the south.</p>
-    </div>
+          <!-- Divider -->
+          <line x1="390" y1="30" x2="390" y2="290" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,6"/>
 
-    <div class="term-block">
-      <strong>NULLS</strong>
-      <p style="margin: 4px 0 0 0;">Directions where radiation drops to zero (or very close to it). The dipole has nulls off its tips.</p>
-    </div>
+          <!-- ═══ LEFT PANEL — Dipole + current distribution ═══ -->
+          <!-- Wire -->
+          <line x1="195" y1="55" x2="195" y2="255" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
 
-    <div class="term-block">
-      <strong>HALF-POWER BEAMWIDTH (HPBW)</strong>
-      <p style="margin: 4px 0 0 0;">The angular width of the main beam measured between the points where power drops to half (-3 dB). A narrow beamwidth means a focused beam; a wide beamwidth means broad coverage.</p>
-    </div>
+          <!-- Feedpoint dot -->
+          <circle cx="195" cy="155" r="5" fill="#f59e0b"/>
 
-    <div class="term-block">
-      <strong>FRONT-TO-BACK RATIO (F/B)</strong>
-      <p style="margin: 4px 0 0 0;">The ratio in dB between the main lobe and the back lobe. A Yagi with 20 dB F/B ratio has 100× more power going forward than backward.</p>
-    </div>
+          <!-- Current distribution lobe (amber, sinusoidal shape around wire) -->
+          <!-- Left lobe -->
+          <path d="M 195 55
+                   C 165 65, 120 100, 120 155
+                   C 120 210, 165 245, 195 255"
+                fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
+          <!-- Right lobe -->
+          <path d="M 195 55
+                   C 225 65, 270 100, 270 155
+                   C 270 210, 225 245, 195 255"
+                fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
 
-    <div class="term-block">
-      <strong>FRONT-TO-SIDE RATIO</strong>
-      <p style="margin: 4px 0 0 0;">Similar concept but comparing main lobe to the worst side lobe.</p>
-    </div>
+          <!-- Radiation arrows — broadside (strongest at mid) -->
+          <!-- Left arrows -->
+          <line x1="120" y1="155" x2="58"  y2="155" stroke="#a78bfa" stroke-width="2.2" marker-end="url(#arr-em1)"/>
+          <line x1="128" y1="130" x2="72"  y2="118" stroke="#a78bfa" stroke-width="1.6" marker-end="url(#arr-em1)"/>
+          <line x1="128" y1="180" x2="72"  y2="192" stroke="#a78bfa" stroke-width="1.6" marker-end="url(#arr-em1)"/>
+          <line x1="150" y1="108" x2="110" y2="90"  stroke="#a78bfa" stroke-width="1"   marker-end="url(#arr-em1)"/>
+          <line x1="150" y1="202" x2="110" y2="220" stroke="#a78bfa" stroke-width="1"   marker-end="url(#arr-em1)"/>
+          <!-- Right arrows -->
+          <line x1="270" y1="155" x2="332" y2="155" stroke="#a78bfa" stroke-width="2.2" marker-end="url(#arr-em1)"/>
+          <line x1="262" y1="130" x2="318" y2="118" stroke="#a78bfa" stroke-width="1.6" marker-end="url(#arr-em1)"/>
+          <line x1="262" y1="180" x2="318" y2="192" stroke="#a78bfa" stroke-width="1.6" marker-end="url(#arr-em1)"/>
+          <line x1="240" y1="108" x2="280" y2="90"  stroke="#a78bfa" stroke-width="1"   marker-end="url(#arr-em1)"/>
+          <line x1="240" y1="202" x2="280" y2="220" stroke="#a78bfa" stroke-width="1"   marker-end="url(#arr-em1)"/>
 
-    <h3>Putting It Together: A Practical Example</h3>
-    <p>Imagine you're setting up a Yagi antenna for receiving ADS-B signals from aircraft at a distant airport to the east:</p>
-    <ul>
-      <li>The <strong>main lobe</strong> points east toward the airport</li>
-      <li>The <strong>HPBW</strong> tells you how accurately you need to aim</li>
-      <li>The <strong>F/B ratio</strong> tells you how well it rejects signals from behind</li>
-      <li>The <strong>side lobes</strong> might pick up interfering signals from other directions</li>
-      <li>The <strong>nulls</strong> are directions where you'll receive nothing</li>
-    </ul>
-  </div>
+          <!-- Null axis labels -->
+          <text x="195" y="46"  text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#ef4444">zero current at tip →</text>
+          <text x="195" y="272" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#ef4444">zero current at tip →</text>
+          <text x="195" y="282" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#ef4444" opacity="0.7">no radiation in this direction</text>
 
-  <!-- ─── CHAPTER 06: Common Pattern Shapes ─── -->
-  <div class="chapter" id="pattern-shapes">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 06</span>
-      <div class="chapter-line"></div>
-    </div>
-    <h2>Common Pattern Shapes to Recognise</h2>
+          <!-- Key labels -->
+          <text x="195" y="148" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#f59e0b">max I</text>
+          <text x="195" y="162" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#f59e0b">feedpoint</text>
 
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Antenna</th>
-            <th>3D Pattern Shape</th>
-            <th>Azimuth (H-plane)</th>
-            <th>Elevation (E-plane)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Isotropic</td>
-            <td>Sphere</td>
-            <td>Circle</td>
-            <td>Circle</td>
-          </tr>
-          <tr>
-            <td>Vertical dipole</td>
-            <td>Doughnut (horizontal)</td>
-            <td>Circle (omni)</td>
-            <td>Figure-eight</td>
-          </tr>
-          <tr>
-            <td>Horizontal dipole</td>
-            <td>Doughnut (vertical)</td>
-            <td>Figure-eight</td>
-            <td>Depends on height</td>
-          </tr>
-          <tr>
-            <td>Yagi</td>
-            <td>Elongated egg</td>
-            <td>Strong front lobe</td>
-            <td>Narrow main beam</td>
-          </tr>
-          <tr>
-            <td>Discone</td>
-            <td>Flattened doughnut</td>
-            <td>Circle (omni)</td>
-            <td>Broad, low angle</td>
-          </tr>
-          <tr>
-            <td>Dish</td>
-            <td>Pencil beam</td>
-            <td>Very narrow lobe</td>
-            <td>Very narrow lobe</td>
-          </tr>
-        </tbody>
-      </table>
+          <text x="40" y="160" text-anchor="end" font-family="IBM Plex Sans,sans-serif" font-size="8" fill="#a78bfa" opacity="0.8">max</text>
+          <text x="40" y="170" text-anchor="end" font-family="IBM Plex Sans,sans-serif" font-size="8" fill="#a78bfa" opacity="0.8">radiation</text>
+          <text x="350" y="160" text-anchor="start" font-family="IBM Plex Sans,sans-serif" font-size="8" fill="#a78bfa" opacity="0.8">max</text>
+          <text x="350" y="170" text-anchor="start" font-family="IBM Plex Sans,sans-serif" font-size="8" fill="#a78bfa" opacity="0.8">radiation</text>
+
+          <!-- ═══ RIGHT PANEL — Donut cross-section ═══ -->
+          <!-- Wire through hole -->
+          <line x1="585" y1="55" x2="585" y2="255" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Donut cross-section lobes (figure-of-eight rotated 90°) -->
+          <!-- Left lobe of donut cross-section -->
+          <ellipse cx="510" cy="155" rx="62" ry="42" fill="rgba(167,139,250,0.18)" stroke="#a78bfa" stroke-width="1.8"/>
+          <!-- Right lobe of donut cross-section -->
+          <ellipse cx="660" cy="155" rx="62" ry="42" fill="rgba(167,139,250,0.18)" stroke="#a78bfa" stroke-width="1.8"/>
+
+          <!-- Null markers at tips -->
+          <circle cx="585" cy="55"  r="4" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+          <circle cx="585" cy="255" r="4" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+
+          <!-- Caption -->
+          <text x="585" y="283" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#64748b">Cross-section of 3D toroid — wire through the hole</text>
+
+          <!-- Labels -->
+          <text x="510" y="152" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#a78bfa" opacity="0.85">lobe</text>
+          <text x="660" y="152" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#a78bfa" opacity="0.85">lobe</text>
+          <text x="585" y="44"  text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#ef4444" opacity="0.8">null</text>
+          <text x="585" y="270" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#ef4444" opacity="0.8">null</text>
+
+          <!-- === Arrowhead marker === -->
+          <defs>
+            <marker id="arr-em1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L0,7 L7,3.5 z" fill="#a78bfa"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:14px;">The pattern shape is the current distribution mapped onto 3D space.</p>
     </div>
 
-    <div class="callout callout--info">
-      <span class="callout-icon">🔧</span>
-      <div class="callout-text">
-        <strong>Interactive (future):</strong> Pattern comparison tool — toggle between different antenna types and see their 2D and 3D patterns side by side.
+    <h3 class="section-title">The nulls are not a quirk</h3>
+
+    <p>There is zero radiation along the axis of the wire. Not weak radiation — zero. This often surprises students, who assume there must be <em>something</em> in every direction.</p>
+
+    <p>But think about what would have to be happening for energy to couple at a point directly above the tip of the dipole. The only current on the wire near that direction is at the very tip — and the current at the tip is zero, by the hard boundary condition. There is no changing current there to drive radiation. The geometry simply cannot transfer energy in that direction.</p>
+
+    <p>On the receive side, the same logic applies. An EM wave arriving from directly along the wire's axis — from above the tip — would need to drive current along the conductor. But the wave's electric field, which points in the direction the wave is polarised, would be aligned perpendicular to the wire at that angle of arrival. There is no component of the field that can drive current along the wire's length. Energy does not couple. The null is exact.</p>
+
+    <p>This is the energy coupling geometry in action: it's not that the antenna "ignores" signals from that direction. It's that the physical structure, at that arrival angle, provides no mechanism for energy transfer.</p>
+
+    <h3 class="section-title">The guitar string payoff</h3>
+
+    <p>In Lesson 2, the current distribution on a dipole was compared to a vibrating guitar string pinned at both ends: maximum movement at the centre, zero movement at the pins.</p>
+
+    <p>A guitar string also has directional properties in what it radiates. The string makes no sound at the bridge pins — not because the bridge absorbs it, but because there is no movement there to generate it. The acoustic radiation from the string is maximum where displacement is maximum.</p>
+
+    <p>The dipole is the same physics in a different medium. The radiation is maximum where the current (the "movement") is maximum. Zero where the current is zero.</p>
+
+    <!-- RESOURCE: radiation-3d-v5.html — Part 1 guided exercise -->
+    <div class="resource-block">
+      <div class="resource-block-icon">▶</div>
+      <div class="resource-block-content">
+        <h3>Interactive Exercise — 3D Pattern Viewer (Part 1)</h3>
+        <p>Open the 3D pattern viewer. You are looking at the radiation pattern of a half-wave dipole. Take your time with the exercises below before moving to Section 4.</p>
+        <a class="btn-resource" href="../../../resources/radiation-3d-v5.html" target="_blank" rel="noopener">Open 3D Pattern Viewer →</a>
       </div>
     </div>
-  </div>
 
-  <!-- ─── CHAPTER 07: Knowledge Check ─── -->
-  <div class="chapter knowledge-check" id="knowledge-check">
-    <div class="chapter-header">
-      <span class="chapter-num">CHAPTER 07</span>
-      <div class="chapter-line"></div>
-    </div>
-    <h2>Knowledge Check</h2>
-    <p>Test yourself before moving on. Answers are hidden in HTML comments.</p>
-    <ol>
-      <li>
-        <strong>What is the 3D radiation pattern shape of a half-wave dipole?</strong>
-        <!-- A toroid (doughnut) shape centred on the wire -->
-      </li>
-      <li>
-        <strong>Where are the nulls on a vertical dipole?</strong>
-        <!-- Straight up and straight down (along the axis of the wire) -->
-      </li>
-      <li>
-        <strong>An antenna has a half-power beamwidth of 30°. Is this a focused beam or broad coverage?</strong>
-        <!-- Focused beam — 30° is relatively narrow (compare to a dipole at ~78°) -->
-      </li>
-      <li>
-        <strong>What does front-to-back ratio tell you?</strong>
-        <!-- How much stronger the main beam is compared to radiation in the opposite direction -->
-      </li>
-      <li>
-        <strong>On a dB-scale pattern plot, what does the -3 dB contour represent?</strong>
-        <!-- The half-power boundary — signal strength is half the maximum -->
-      </li>
-    </ol>
-  </div>
+    <div class="exercise-block">
+      <h4>Guided Exercise — radiation-3d-v5.html Part 1</h4>
 
-  <!-- ─── Summary ─── -->
-  <div class="callout callout--success" style="margin-top: 32px;">
-    <span class="callout-icon">✅</span>
-    <div class="callout-text">
-      <strong>Lesson 3 Summary</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li>A <strong>radiation pattern</strong> maps where an antenna sends/receives energy</li>
-        <li>The <strong>isotropic radiator</strong> is a theoretical reference — perfect sphere, equal in all directions</li>
-        <li>A dipole pattern is a <strong>doughnut</strong> — strong broadside, null off the tips</li>
-        <li>2D cuts show <strong>azimuth</strong> (horizontal) and <strong>elevation</strong> (vertical) slices</li>
-        <li>Key terms: main lobe, side lobes, nulls, HPBW, front-to-back ratio</li>
-        <li>Pattern plots use dB scale for detail — -3 dB = half power</li>
-        <li>Different antenna types produce characteristically different pattern shapes</li>
+      <h5>Task 1 — Explore the shape</h5>
+      <p>Click and drag to rotate the pattern. Look at it from all angles: from the side, from above, from below.</p>
+      <ul>
+        <li>Find the two null points. Which direction do they face relative to the wire?</li>
+        <li>Find the region of maximum radiation. Which direction is that?</li>
       </ul>
+
+      <h5>Task 2 — Connect to Lesson 2</h5>
+      <p>Look at the null points. You know from Lesson 2 exactly what is happening at those physical points on the antenna.</p>
+      <ul>
+        <li><em>What is the current doing at those points?</em></li>
+        <li><em>Why does zero current at a physical point on the wire produce zero radiation in the direction that point faces?</em></li>
+      </ul>
+
+      <h5>Task 3 — Receiving antenna placement</h5>
+      <p>Imagine you are placing a receiving antenna somewhere around this transmitting dipole, trying to couple as much energy as possible.</p>
+      <ul>
+        <li><em>Where in 3D space would you place your receiving antenna to maximise energy coupling?</em></li>
+        <li><em>Where would you place it to get the absolute minimum? Why?</em></li>
+      </ul>
+
+      <h5>Task 4 — Toggle the view modes</h5>
+      <p>Use the rings and shells buttons to switch between the two display modes.</p>
+      <ul>
+        <li>The rings mode shows wavefronts expanding outward in the equatorial plane.</li>
+        <li>The shells mode shows them expanding as spherical-ish shells.</li>
+        <li><em>Which mode makes it easier to see the null? Which makes it easier to see the 3D shape of the energy distribution?</em></li>
+      </ul>
+
+      <p>After this exercise, close the interactive and write one sentence describing the dipole's radiation pattern as a map of energy coupling efficiency — without using the words "signal" or "wave."</p>
     </div>
   </div>
 
-  <!-- ─── Lesson Navigation ─── -->
-  <div class="lesson-nav">
-    <a href="lesson-02-how-antennas-radiate.html" class="btn btn--ghost">← Lesson 2: How Antennas Radiate</a>
-    <a href="lesson-04-antenna-types.html" class="btn btn--primary">Next: Lesson 4 — Antenna Types →</a>
+  <!-- ═══ SECTION 04 — READING A POLAR PLOT ═══ -->
+  <div class="chapter" id="section-04">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 04</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Reading a Polar Plot</h2>
+
+    <p>The 3D pattern is the complete picture, but it's unwieldy in print, in datasheets, and when comparing antennas. In practice, engineers take 2D slices through the 3D pattern. These slices are called <strong>polar plots</strong>.</p>
+
+    <p>There are two standard slices, and each has two names — both in common use, depending on whether you're reading an academic textbook or a practical antenna datasheet. You need to know both.</p>
+
+    <h3 class="section-title">The two planes</h3>
+
+    <p><strong>The H-plane</strong> (also called the <strong>azimuth plane</strong>)</p>
+
+    <p>This is a horizontal slice — a cut through the widest part of the donut, looking down from above. For a vertical dipole, this is the plane that circles around the antenna in the horizontal direction.</p>
+
+    <p>For a half-wave dipole, the H-plane polar plot is a perfect circle. That tells you something directly useful: in the horizontal plane, the dipole radiates equally in all directions. It is omnidirectional in azimuth. A signal arriving from any compass direction couples energy equally well.</p>
+
+    <p><strong>The E-plane</strong> (also called the <strong>elevation plane</strong>)</p>
+
+    <p>This is a vertical slice — a cut through the donut from the side, showing the pattern from tip to tip. For a vertical dipole, this shows the elevation shape: how the pattern changes as you look up toward the sky or down toward the ground.</p>
+
+    <p>For a half-wave dipole, the E-plane polar plot shows two lobes — one on each side, bulging outward in the equatorial direction — with a null at top and bottom (directly above and below the tip). The shape looks like a figure-of-eight on its side, or like the cross-section of the donut.</p>
+
+    <!-- VISUAL 2 — H-plane and E-plane polar plots -->
+    <div class="diagram-card glow-em" id="v2-he-plane">
+      <div class="diagram-label">Visual 2 — H-Plane and E-Plane Polar Plots</div>
+      <div class="polar-row">
+        <div class="polar-panel">
+          <div class="polar-panel-label">H-Plane (Azimuth Plane)</div>
+          <canvas id="cv-hplane" data-aspect="1.0"
+            aria-label="H-plane polar plot of half-wave dipole: perfect circle showing omnidirectional response in azimuth. Concentric dB rings at 0, minus 3, minus 10, minus 20 dB."
+            role="img"></canvas>
+          <div class="polar-panel-sublabel">Omnidirectional in azimuth · looking down the wire</div>
+        </div>
+        <div class="polar-panel">
+          <div class="polar-panel-label">E-Plane (Elevation Plane)</div>
+          <canvas id="cv-eplane" data-aspect="1.0"
+            aria-label="E-plane polar plot of half-wave dipole: figure-of-eight with two lobes horizontal, nulls at top and bottom. Concentric dB rings at 0, minus 3, minus 10, minus 20 dB."
+            role="img"></canvas>
+          <div class="polar-panel-sublabel">Figure-of-eight · nulls at wire tips</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Reading the dB rings</h3>
+
+    <p>Polar plots have concentric reference rings marked in decibels (dB). These tell you how much energy couples in each direction <em>relative to the peak direction</em>.</p>
+
+    <p>The outermost ring is always <strong>0 dB</strong> — the peak coupling direction. Interior rings show weaker directions:</p>
+
+    <ul>
+      <li><strong>−3 dB ring:</strong> half the energy of the peak direction (in power terms). Any direction that falls on this ring has coupling efficiency half of peak.</li>
+      <li><strong>−10 dB ring:</strong> one tenth the energy of peak. A direction on this ring couples ten times less energy than the peak.</li>
+    </ul>
+
+    <p>Notice this is all <em>relative</em>. The polar plot does not tell you how much absolute energy the antenna radiates in any direction, or how it compares to any other antenna. It only tells you how directions compare to each other <em>within this one antenna's pattern</em>.</p>
+
+    <p>That is intentional. Comparing antennas to each other — expressing gain in absolute terms — requires a reference and a calculation. That lives in Lesson 9. For now: <strong>the dB rings on a polar plot are a relative scale. 0 dB means peak, not "strong."</strong></p>
+
+    <div class="callout">
+      <div class="callout-icon">📝</div>
+      <div class="callout-text">
+        <strong>A note for students encountering "dBi" in the wild:</strong> You may see antenna specifications quoted in "dBi" — decibels relative to an isotropic radiator. This is an absolute gain figure and is different from the relative dB rings on a polar plot. We will define it properly in Lesson 9. For now, ignore dBi. The relative polar plot is sufficient.
+      </div>
+    </div>
+
+    <!-- VISUAL 3 — Annotated dB Polar Plot -->
+    <div class="diagram-card glow-em" id="v3-db-polar">
+      <div class="diagram-label">Visual 3 — Annotated E-Plane Polar Plot with dB Rings</div>
+      <canvas id="cv-db-polar" data-aspect="0.7"
+        aria-label="Annotated E-plane polar plot with leader lines identifying: main lobe at peak coupling direction, nulls at top and bottom, minus 3 dB boundary at half-power directions. Concentric dB rings labelled 0, minus 3, and minus 10 dB."
+        role="img"></canvas>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:12px;">0 dB here means peak for this antenna — not a comparison to anything else.</p>
+    </div>
   </div>
 
-</div><!-- /.article -->
+  <!-- ═══ SECTION 05 — FRONT-TO-BACK RATIO ═══ -->
+  <div class="chapter" id="section-05">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 05</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Front-to-Back Ratio</h2>
+
+    <p>Some antennas are designed to concentrate energy in one direction much more than the opposite direction. When that's the case, there's a useful single number that captures how asymmetric the pattern is: the <strong>front-to-back ratio</strong>.</p>
+
+    <p>The front-to-back ratio (often abbreviated F/B) is simply:</p>
+
+    <div class="callout key-insight">
+      <div class="callout-icon">◆</div>
+      <div class="callout-text">
+        <strong>How many dB quieter is the back lobe than the main lobe?</strong>
+      </div>
+    </div>
+
+    <p>You read it directly off a polar plot. Find the peak of the main lobe (0 dB). Then find the level in the exact opposite direction (the "back"). The difference in dB between those two points is the front-to-back ratio.</p>
+
+    <p>A high F/B ratio means the antenna strongly favours one direction over the other. A low F/B ratio means front and back are similar. An F/B ratio of 0 dB would mean the antenna radiates equally in both directions.</p>
+
+    <!-- VISUAL 4 — Front-to-back ratio polar canvas -->
+    <div class="diagram-card glow-e" id="v4-fb-ratio">
+      <div class="diagram-label">Visual 4 — Front-to-Back Ratio Concept</div>
+      <canvas id="cv-fb-ratio" data-aspect="0.72"
+        aria-label="Asymmetric polar plot showing a generic directional antenna. Main lobe reaches 0 dB on the right. Back lobe reaches approximately minus 15 dB on the left. A double-headed arrow between the two peaks is labelled front-to-back ratio approximately 15 dB."
+        role="img"></canvas>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:12px;">Example directional antenna — no construction detail. Lesson 4 introduces real antenna types.</p>
+    </div>
+
+    <h3 class="section-title">What about the dipole?</h3>
+
+    <p>A half-wave dipole has a symmetric pattern — the two lobes in the E-plane are identical. From the left, you couple exactly as much energy as from the right. The H-plane is a circle. There is no "front" or "back" in any meaningful sense.</p>
+
+    <p>This means the dipole has <strong>no useful front-to-back ratio</strong>. It's omnidirectional in the horizontal plane and symmetric in elevation. For a dipole, F/B ratio isn't a design target — it's not a design parameter at all.</p>
+
+    <p>When we reach directional antennas in Lesson 4, front-to-back ratio becomes one of the key figures on the specification sheet. A high F/B ratio is often exactly what you want: to receive a signal from one direction while rejecting interference coming from behind.</p>
+  </div>
+
+  <!-- ═══ SECTION 06 — DIRECTIVITY ═══ -->
+  <div class="chapter" id="section-06">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 06</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Directivity: Concentrating Energy</h2>
+
+    <p>Here is a thought experiment.</p>
+
+    <p>Take a half-wave dipole. It radiates in a donut shape — strong in the equatorial plane, nothing along the axis. Now suppose you could somehow squash that donut — flatten it, concentrate the energy into a thinner disc, squeeze more energy into the equatorial directions.</p>
+
+    <p>What happens? The total energy radiated stays the same (you haven't changed the transmitter power). But in the directions where the disc is thickest, there is <em>more</em> energy per unit area than before. You've redistributed it without creating any new energy.</p>
+
+    <p>This is <strong>directivity</strong>. It is the result of shaping the radiation pattern to concentrate energy in fewer directions — at the expense of other directions.</p>
+
+    <h3 class="section-title">The reference: an isotropic radiator</h3>
+
+    <p>Every directivity measurement needs a reference. The universal reference in antenna engineering is the <strong>isotropic radiator</strong>: a theoretical point source that radiates with exactly equal energy in every direction. Its pattern is a perfect sphere.</p>
+
+    <p>No real antenna is isotropic. It's physically impossible to build one (it would require a symmetrical point source that doesn't interact with the world in any directional way). But it is a clean mathematical reference: if you imagine all your transmitted power spread perfectly uniformly over the surface of a sphere, you have a baseline to compare everything else against.</p>
+
+    <p>The half-wave dipole is slightly more directional than isotropic. Its donut shape concentrates a little more energy in the equatorial plane than a perfect sphere would deliver there. Correspondingly, it has nulls where an isotropic source would still deliver some energy. The total is the same; the shape is different.</p>
+
+    <!-- VISUAL 5 — Isotropic sphere vs half-wave dipole toroid -->
+    <div class="diagram-card glow-em" id="v5-isotropic-vs-dipole">
+      <div class="diagram-label">Visual 5 — Isotropic Radiator vs Half-Wave Dipole</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Side-by-side comparison. Left: perfect sphere labelled Isotropic, equal energy in all directions. Right: half-wave dipole toroid at the same scale, labelled Half-wave dipole, more energy equatorially, none at the tips. Caption: Same total energy budget, different shape."
+             role="img" style="min-width:440px;">
+
+          <!-- Panel labels -->
+          <text x="170" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">ISOTROPIC</text>
+          <text x="510" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#64748b" letter-spacing="2">HALF-WAVE DIPOLE</text>
+
+          <!-- Divider -->
+          <line x1="340" y1="30" x2="340" y2="250" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,6"/>
+
+          <!-- ═══ LEFT — Isotropic sphere ═══ -->
+          <!-- Wireframe sphere (approximate 3D look) -->
+          <!-- Main sphere -->
+          <ellipse cx="170" cy="135" rx="90" ry="90" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Equatorial circle (foreshortened) -->
+          <ellipse cx="170" cy="135" rx="90" ry="22" fill="none" stroke="#a78bfa" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+          <!-- Meridian circles -->
+          <ellipse cx="170" cy="135" rx="22" ry="90" fill="none" stroke="#a78bfa" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+          <!-- Labels -->
+          <text x="170" y="238" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#a78bfa" opacity="0.75">Equal energy in all directions</text>
+          <!-- Centre dot -->
+          <circle cx="170" cy="135" r="3" fill="#a78bfa" opacity="0.6"/>
+
+          <!-- ═══ RIGHT — Dipole toroid ═══ -->
+          <!-- Wire -->
+          <line x1="510" y1="45"  x2="510" y2="225" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Toroid cross-section: two offset lobes -->
+          <!-- Left lobe -->
+          <ellipse cx="440" cy="135" rx="55" ry="36" fill="rgba(167,139,250,0.14)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Right lobe -->
+          <ellipse cx="580" cy="135" rx="55" ry="36" fill="rgba(167,139,250,0.14)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Equatorial band hint (inner donut) -->
+          <ellipse cx="510" cy="135" rx="90" ry="18" fill="none" stroke="#a78bfa" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.35"/>
+          <!-- Null markers -->
+          <circle cx="510" cy="45"  r="5" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+          <circle cx="510" cy="225" r="5" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+          <text x="536" y="46"  font-family="IBM Plex Mono,monospace" font-size="8" fill="#ef4444" opacity="0.75">null</text>
+          <text x="536" y="228" font-family="IBM Plex Mono,monospace" font-size="8" fill="#ef4444" opacity="0.75">null</text>
+          <!-- Centre feedpoint -->
+          <circle cx="510" cy="135" r="3" fill="#f59e0b"/>
+          <!-- Label -->
+          <text x="510" y="245" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#a78bfa" opacity="0.75">More energy equatorially, none at tips</text>
+
+          <!-- Caption -->
+          <text x="340" y="258" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b" letter-spacing="0.5">Same total energy budget. Different shape.</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3 class="section-title">What directivity is not</h3>
+
+    <p>Directivity is a property of the <em>pattern shape</em> only. It says nothing about how efficiently the antenna converts transmitter power into radiated energy. An antenna could be very directional but also lossy — it focuses what it does radiate, but wastes some of the input power as heat in the conductor.</p>
+
+    <p>That distinction — directivity vs gain vs efficiency — is a Lesson 9 topic. For now, directivity simply means: <em>how much does this antenna concentrate energy compared to an isotropic source, in its best direction?</em></p>
+
+    <p>No formulas here. No dBi. Just the concept: shaped patterns redistribute energy; the isotropic sphere is the reference; real antennas compare to it.</p>
+  </div>
+
+  <!-- ═══ SECTION 07 — A FIRST LOOK AT OTHER PATTERN SHAPES ═══ -->
+  <div class="chapter" id="section-07">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 07</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">A First Look at Other Pattern Shapes</h2>
+
+    <p>The half-wave dipole's donut is the foundation. But it's not the only shape antennas can produce, and it's worth a brief look at how different geometries produce different patterns before we take the full tour in Lesson 4.</p>
+
+    <p>Two simple variations:</p>
+
+    <p><strong>Vertical antenna (quarter-wave vertical over ground)</strong><br>
+    The radiation pattern is still a toroid — the same donut physics — but rotated 90°. The wire is vertical, so the donut lies on its side: energy concentrates near the horizon, with a null pointing straight up. This makes vertical antennas useful for ground-level communication where you want to reach out along the earth's surface, not waste energy shooting into the sky.</p>
+
+    <p><strong>A directional antenna</strong><br>
+    When an antenna design deliberately concentrates energy into a narrow region, the pattern transforms from a donut or sphere into something more like a searchlight beam: one strong lobe pointing forward, weaker lobes to the sides, a much quieter back. The 3D shape is elongated — not omnidirectional at all.</p>
+
+    <!-- VISUAL 6 — Three pattern shapes -->
+    <div class="diagram-card glow-em" id="v6-three-patterns">
+      <div class="diagram-label">Visual 6 — Three Pattern Shape Examples</div>
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 840 260" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Three pattern shapes side by side. Left: half-wave dipole toroid. Centre: same toroid rotated 90 degrees, labelled Vertical antenna. Right: elongated pencil shape with small back lobe, labelled Example directional antenna."
+             role="img" style="min-width:560px;">
+
+          <!-- Panel labels -->
+          <text x="140" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b" letter-spacing="1.5">HALF-WAVE DIPOLE</text>
+          <text x="420" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b" letter-spacing="1.5">VERTICAL ANTENNA</text>
+          <text x="700" y="20" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#64748b" letter-spacing="1.5">DIRECTIONAL ANTENNA</text>
+
+          <!-- Dividers -->
+          <line x1="280" y1="30" x2="280" y2="250" stroke="#1e293b" stroke-width="1" stroke-dasharray="3,5"/>
+          <line x1="560" y1="30" x2="560" y2="250" stroke="#1e293b" stroke-width="1" stroke-dasharray="3,5"/>
+
+          <!-- ═══ LEFT — Half-wave dipole toroid (cross-section) ═══ -->
+          <!-- Wire (vertical) -->
+          <line x1="140" y1="55" x2="140" y2="225" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left lobe -->
+          <ellipse cx="85"  cy="140" rx="46" ry="30" fill="rgba(167,139,250,0.16)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Right lobe -->
+          <ellipse cx="195" cy="140" rx="46" ry="30" fill="rgba(167,139,250,0.16)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Nulls -->
+          <circle cx="140" cy="55"  r="4" fill="none" stroke="#ef4444" stroke-width="1.2"/>
+          <circle cx="140" cy="225" r="4" fill="none" stroke="#ef4444" stroke-width="1.2"/>
+          <text x="140" y="248" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#94a3b8">toroid — wire through hole</text>
+
+          <!-- ═══ CENTRE — Vertical antenna (toroid rotated 90°) ═══ -->
+          <!-- Ground line -->
+          <line x1="330" y1="205" x2="510" y2="205" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <!-- Wire (vertical, above ground) -->
+          <line x1="420" y1="205" x2="420" y2="115" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Toroid rotated 90°: flatter lobes hugging the ground plane -->
+          <!-- Upper lobe (toward horizon, left) -->
+          <ellipse cx="420" cy="175" rx="72" ry="20" fill="rgba(167,139,250,0.16)" stroke="#a78bfa" stroke-width="1.5"/>
+          <!-- Null pointing up -->
+          <circle cx="420" cy="115" r="4" fill="none" stroke="#ef4444" stroke-width="1.2"/>
+          <text x="448" y="117" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#ef4444" opacity="0.8">null (sky)</text>
+          <text x="420" y="220" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8" fill="#94a3b8" opacity="0.7">ground</text>
+          <text x="420" y="248" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#94a3b8">energy hugs the horizon</text>
+
+          <!-- ═══ RIGHT — Directional antenna (pencil/cigar) ═══ -->
+          <!-- Centre reference dot -->
+          <circle cx="660" cy="140" r="3" fill="#475569"/>
+          <!-- Main forward lobe (large, to right) -->
+          <path d="M 660 140
+                   C 680 115, 760 100, 790 140
+                   C 760 180, 680 165, 660 140"
+                fill="rgba(245,158,11,0.14)" stroke="#f59e0b" stroke-width="1.8"/>
+          <!-- Back lobe (small, to left) -->
+          <path d="M 660 140
+                   C 645 130, 620 128, 618 140
+                   C 620 152, 645 150, 660 140"
+                fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1.2"/>
+          <!-- F/B arrow hint -->
+          <text x="710" y="130" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#f59e0b" opacity="0.8">main lobe</text>
+          <text x="610" y="130" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#a78bfa" opacity="0.7">back</text>
+          <text x="700" y="248" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#94a3b8">energy concentrated forward</text>
+        </svg>
+      </div>
+      <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:14px;">Pattern shape is a design choice. Lesson 4 introduces the antennas that create these shapes.</p>
+    </div>
+
+    <p>These patterns raise a question that Lesson 4 answers: <em>what changes in the antenna's physical design produces these different shapes?</em> The short answer is geometry — the length, orientation, and arrangement of conducting elements. Every pattern shape is a direct consequence of the current distribution on whatever structure produces it.</p>
+  </div>
+
+  <!-- ═══ SECTION 08 — SELF-CHECK ═══ -->
+  <div class="chapter" id="section-08">
+    <div class="chapter-header">
+      <span class="chapter-num">SECTION 08</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Self-Check</h2>
+
+    <p>Work through all parts before looking back at the lesson.</p>
+
+    <!-- Part A — Polar Plot Reading -->
+    <div class="self-check-group">
+      <h3>Part A — Polar Plot Reading</h3>
+
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:20px;">Three polar plots are shown below. For each one, identify: (a) the main lobe direction, (b) any nulls, (c) the approximate front-to-back ratio in dB where applicable.</p>
+
+      <!-- VISUAL 7 — Self-check polar plots (3) -->
+      <div class="diagram-card glow-em" id="v7-sc-plots">
+        <div class="diagram-label">Visual 7 — Self-Check: Read These Polar Plots</div>
+        <div class="sc-polar-row">
+          <div class="sc-polar-panel">
+            <div class="sc-polar-label">Plot 1 — H-Plane Dipole</div>
+            <canvas id="cv-sc1" data-aspect="1.0"
+              aria-label="Self-check polar plot 1: H-plane of half-wave dipole, perfect circle"
+              role="img"></canvas>
+          </div>
+          <div class="sc-polar-panel">
+            <div class="sc-polar-label">Plot 2 — E-Plane Dipole</div>
+            <canvas id="cv-sc2" data-aspect="1.0"
+              aria-label="Self-check polar plot 2: E-plane of half-wave dipole, figure-of-eight with nulls top and bottom, dB rings visible"
+              role="img"></canvas>
+          </div>
+          <div class="sc-polar-panel">
+            <div class="sc-polar-label">Plot 3 — Directional Antenna</div>
+            <canvas id="cv-sc3" data-aspect="1.0"
+              aria-label="Self-check polar plot 3: generic directional antenna E-plane, main lobe at 0 dB, back lobe at approximately minus 18 dB, two side lobes at approximately minus 12 dB"
+              role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A1 — What does Plot 1 tell you?</h4>
+        <p>Plot 1 is a circular polar plot. What does the circular shape tell you about energy coupling in the horizontal plane?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a1">
+          <p><strong>The circular shape tells you the antenna is omnidirectional in azimuth.</strong> Every compass direction couples the same amount of energy — there is no "favoured" direction in the horizontal plane. This is the H-plane of the half-wave dipole. If you rotate the antenna around its own axis, the pattern does not change. A receiving antenna placed anywhere in this horizontal plane will couple equal energy regardless of its compass bearing.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A2 — Nulls in Plot 2</h4>
+        <p>In Plot 2, the nulls are at the top and bottom. What is physically happening at those points on the antenna?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a2">
+          <p><strong>The nulls are at the wire tips, where current is zero.</strong> This is the hard open-end boundary condition from Lesson 2: no conductor beyond the tip means no path for current, so current must be zero there. With zero current at the tips, there is nothing to radiate in the direction those tips face — along the wire axis. The null is not a design choice or a quirk; it is a mathematical consequence of the current distribution shape. The same logic applies on receive: a wave arriving from that axis direction cannot drive current along the wire, so zero energy couples.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>A3 — Front-to-back ratio from Plot 3</h4>
+        <p>Estimate the front-to-back ratio from Plot 3. If you were using this antenna to receive from the main lobe direction, how many dB of rejection would you get from an interferer coming from the back?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-a3">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-a3">
+          <p><strong>Front-to-back ratio ≈ 18 dB.</strong> The main lobe reaches 0 dB (the outer ring). The back lobe reaches approximately −18 dB. The F/B ratio is the difference: 18 dB. This means an interferer coming from the back would be attenuated by approximately 18 dB compared to a signal arriving from the main lobe direction. In power terms, 18 dB corresponds to a factor of about 63 — the antenna couples roughly 63 times less energy from the back than from the front. Note: the two side lobes at roughly −12 dB provide somewhat less rejection than the back (about 16× less than the main lobe).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part B — Concept Questions -->
+    <div class="self-check-group">
+      <h3>Part B — Concept Questions</h3>
+
+      <div class="self-check">
+        <h4>B1 — Define radiation pattern precisely</h4>
+        <p>A radiation pattern is often described as "where the signal is strongest." Write a more precise description using the word "energy."</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b1">
+          <p><strong>A radiation pattern is a 3D map of energy coupling efficiency.</strong> At every direction around the antenna, it shows how efficiently the antenna transfers energy in that direction — on transmit or receive. Directions where the pattern is strong couple more energy; directions where it is zero couple none. The pattern does not show "where the signal is" or "where the voltage is strongest" — it shows where the antenna's energy coupling geometry is most and least effective.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B2 — The null above the tip</h4>
+        <p>A half-wave dipole is placed vertically. A radio operator is positioned directly above the tip of the antenna, at the null. The operator is transmitting at full power. How much energy does your antenna couple from that transmission? What is the reason?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b2">
+          <p><strong>Zero energy couples.</strong> The null is exact, not approximate. The reason is geometrical: a wave arriving from directly above the tip has its electric field oriented perpendicular to the wire (since the wave is polarised in the direction it propagates, and the wire is vertical, the field lies in the horizontal plane at that arrival angle). This field component has no projection along the wire's length — it cannot drive longitudinal current. Without current being driven, no energy transfers from the wave to the antenna. The physical mechanism for energy coupling simply does not exist in that direction.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B3 — Why at the tips specifically?</h4>
+        <p>Why are the nulls on a half-wave dipole located specifically at the tips — not somewhere in the middle of the wire, not at an angle?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b3">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b3">
+          <p><strong>Because the tips are the only points where current is exactly zero.</strong> The dipole's current distribution follows a half-sinusoid, with a hard zero at the tips enforced by the open-end boundary condition (no current can flow beyond an open end). Radiation from any wire segment is proportional to the current in that segment. The tips contribute zero radiation because there is zero current there. Every other point on the wire carries some current, so every other region of the wire contributes some radiation. The null exists precisely at the axis facing the tips — and only there — because that is where the current-zero boundary condition maps onto the radiation pattern.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B4 — H-plane vs E-plane</h4>
+        <p>What is the difference between the H-plane and the E-plane of a radiation pattern? Give both naming conventions for each.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b4">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b4">
+          <p><strong>H-plane (also: azimuth plane)</strong> — a horizontal slice through the 3D pattern, taken at the widest point of the donut. For a vertical dipole, this is the top-down view, showing how the pattern varies with compass bearing. For a half-wave dipole the H-plane is a perfect circle (omnidirectional in azimuth).</p>
+          <p><strong>E-plane (also: elevation plane)</strong> — a vertical slice through the 3D pattern, taken from the side. This shows how the pattern varies with elevation angle (from horizon to zenith). For a half-wave dipole the E-plane is a figure-of-eight with nulls above and below the wire axis.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>B5 — Directivity vs total power</h4>
+        <p>A colleague says: "I want a more directional antenna so I can receive more total power." What is wrong with this statement, and what should they have said?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-b5">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-b5">
+          <p><strong>Directivity does not increase total received power — it redistributes it.</strong> A more directional antenna concentrates its energy coupling into a narrower region of space. In the favoured direction, it couples more energy per unit area of wavefront than an isotropic or omnidirectional antenna would. But it couples less (or nothing) in other directions. The total energy budget is unchanged. What your colleague should have said: "I want a more directional antenna so I can receive <em>more power from one specific direction</em> while reducing coupling from other directions." Directivity is about redistribution, not amplification.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part C — Energy Coupling Question -->
+    <div class="self-check-group">
+      <h3>Part C — Energy Coupling</h3>
+
+      <div class="self-check">
+        <h4>C1 — Horizontal dipole, axial wave</h4>
+        <p>A half-wave dipole is positioned horizontally (wire running left-right). An EM wave is travelling horizontally, from left to right, along the wire's axis. Will energy couple from this wave into the antenna? Now the same wave travels from front to back — broadside to the antenna. How does the energy coupling change?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-c1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-c1">
+          <p><strong>Along the wire axis: zero coupling.</strong> The wave's E-field is perpendicular to the propagation direction (electromagnetic waves are transverse). A wave travelling along the wire's axis has its E-field pointing perpendicular to the wire — it cannot drive current along the wire's length. This is the null direction: zero energy couples.</p>
+          <p><strong>Broadside (front to back): maximum coupling.</strong> Now the wave travels perpendicular to the wire. Its E-field, which is polarised parallel to the wire's length, can drive current along the conductor efficiently. This is the broadside direction — the peak of the dipole's radiation pattern. Energy coupling is at its maximum.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part D — Sketch from Memory -->
+    <div class="self-check-group">
+      <h3>Part D — Sketch from Memory</h3>
+      <div class="self-check">
+        <h4>D — Draw both planes</h4>
+        <p>Without looking at any diagrams, draw: (1) the E-plane radiation pattern for a vertical half-wave dipole — label main lobes, nulls, 0 dB reference direction, and the axis. (2) The H-plane pattern for the same antenna — label what the shape tells you about azimuthal energy distribution. Add both naming conventions to each plot.</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-d1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-d1">
+          <p><strong>E-plane (elevation plane):</strong> Figure-of-eight with two horizontal lobes. The wire (vertical) appears as a vertical line at the centre. Main lobes point left and right (broadside). Nulls at top and bottom (above and below the wire tips). 0 dB ring touches the widest point of each lobe. Axis label: elevation angle (0° = horizon, 90° = zenith). Both names: "E-plane" or "elevation plane."</p>
+          <p><strong>H-plane (azimuth plane):</strong> A perfect circle. The wire appears as a dot at the centre (you're looking down the wire axis). The circle tells you the antenna is omnidirectional in azimuth — every compass direction couples equal energy. There are no nulls in this plane. 0 dB ring coincides with the circle. Both names: "H-plane" or "azimuth plane."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part E — Optional Stretch -->
+    <div class="self-check-group">
+      <h3>Part E — Apply and Connect (optional)</h3>
+
+      <div class="self-check">
+        <h4>E1 — Moonbounce with a horizontal dipole</h4>
+        <p>The moon is roughly above the horizon — not exactly in the null, but fairly high in elevation. If you are using a horizontal half-wave dipole to attempt moonbounce (EME communication), what does the radiation pattern tell you about your energy coupling to that path? What would you do differently?</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-e1">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-e1">
+          <p><strong>A horizontal dipole couples poorly toward high elevation angles.</strong> The E-plane null is along the wire axis (for a horizontal dipole, that means broadside in elevation — pointing up/down for a horizontal wire). As the moon rises in elevation, the coupling angle moves toward the null, and energy coupling diminishes. At very high elevation angles, coupling approaches zero. To maximise coupling to the moon path, you would want to <strong>orient the antenna so the broadside direction (maximum coupling) points toward the moon</strong>. For a dipole, broadside is perpendicular to the wire. You might also consider a directional antenna array (like a Yagi) pointed at the moon's current position to maximise energy coupling in that specific direction.</p>
+        </div>
+      </div>
+
+      <div class="self-check">
+        <h4>E2 — Full-wavelength dipole and nulls</h4>
+        <p>What if you extended the dipole to a full wavelength? Would the null disappear? (Hint: think about the current distribution at full wavelength — don't calculate, reason qualitatively.)</p>
+        <button class="btn-reveal" aria-expanded="false" data-target="sc-e2">Show Answer ▸</button>
+        <div class="self-check__reveal" id="sc-e2">
+          <p><strong>The null at the tips would persist, but the pattern shape would change.</strong> A full-wavelength dipole has current distribution with a zero at each tip (same open-end boundary condition), a zero at the centre (a node), and two half-sine lobes between centre and each tip. The current distribution is no longer a single half-sinusoid — it now has a node in the middle. This changes the interference pattern from all the radiating segments: contributions that were constructively adding in the broadside direction for a half-wave dipole now partially cancel each other because the two half-segments have opposite current directions. The result is that the main lobes are no longer simply broadside — the E-plane pattern becomes more complex, with four lobes rather than two, tilted away from broadside. The tips still have zero current, so there are still nulls along the axis at the tips. But the familiar figure-of-eight is replaced by a four-lobe cloverleaf shape.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LESSON SUMMARY ═══ -->
+  <div class="chapter" id="section-summary">
+    <div class="chapter-header">
+      <span class="chapter-num">LESSON SUMMARY</span>
+      <div class="chapter-line"></div>
+    </div>
+    <h2 class="chapter-title">Key Takeaways</h2>
+
+    <div class="summary-grid">
+      <div class="summary-card em-card">
+        <h4>Radiation Pattern</h4>
+        <p><strong>A 3D map of energy coupling efficiency.</strong> Not "where the signal is strong" — where the antenna transfers energy efficiently in that direction, on transmit or receive equally.</p>
+      </div>
+      <div class="summary-card e-card">
+        <h4>Dipole Pattern Shape</h4>
+        <p><strong>A toroid — a donut.</strong> Wire through the hole. Strong coupling broadside (perpendicular to wire). Exact zero coupling along the wire's axis. Follows directly from the current distribution.</p>
+      </div>
+      <div class="summary-card h-card">
+        <h4>H-Plane &amp; E-Plane</h4>
+        <p><strong>H-plane (azimuth)</strong> = top-down slice. Perfect circle for a dipole — omnidirectional in azimuth. <strong>E-plane (elevation)</strong> = side-on slice. Figure-of-eight with nulls at the tips.</p>
+      </div>
+      <div class="summary-card em-card">
+        <h4>dB Rings</h4>
+        <p><strong>Relative scale only.</strong> 0 dB = peak for this antenna. −3 dB = half energy of peak. −10 dB = one tenth. No comparison to other antennas until Lesson 9.</p>
+      </div>
+      <div class="summary-card power-card">
+        <h4>Front-to-Back Ratio</h4>
+        <p><strong>How many dB quieter is the back than the main lobe?</strong> Dipole has no meaningful F/B — it is symmetric. Directional antennas make F/B a key spec. Read directly from the polar plot.</p>
+      </div>
+      <div class="summary-card e-card">
+        <h4>Directivity</h4>
+        <p><strong>Pattern shape property only.</strong> Concentrating energy into fewer directions makes those directions "louder" without creating new energy. Isotropic sphere is the reference. No formula needed yet.</p>
+      </div>
+    </div>
+
+    <!-- What's Next -->
+    <div class="next-card">
+      <div class="next-card-icon">→</div>
+      <div class="next-card-content">
+        <h3>What's Next: Antenna Types</h3>
+        <p>Lesson 4 is the Antenna Types Tour. You now know what a radiation pattern is and how to read one. In Lesson 4 you will meet the main antenna families — vertical, Yagi, loop, patch, dish — and see how each produces a different pattern shape through different physical design choices. For each antenna type, the question will be: what does the current distribution look like, and what pattern shape does that produce?</p>
+        <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2: How Antennas Radiate</a>
+        <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types.html">Lesson 4: Antenna Types →</a>
+      </div>
+    </div>
+
+    <!-- Lesson navigation -->
+    <nav class="lesson-nav" aria-label="Lesson navigation" style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+      <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2</a>
+      <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types.html">Lesson 4 →</a>
+    </nav>
+  </div>
+
 </div><!-- /.container -->
 
-<!-- ═══ FOOTER ═══ -->
-<footer class="site-footer">
+<footer>
   <div class="container">
-    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
-    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+    <p>Lesson 3 of 20 &nbsp;·&nbsp; Unit 1: How Antennas Work &nbsp;·&nbsp;
+       <a href="../index.html">Course index</a> &nbsp;·&nbsp;
+       <a href="lesson-02-how-antennas-radiate.html">← Lesson 2</a> &nbsp;·&nbsp;
+       <a href="lesson-04-antenna-types.html">Lesson 4 →</a>
+    </p>
   </div>
 </footer>
+
+<script>
+/* ============================================================
+   SHARED CONSTANTS & CANVAS UTILITY
+   ============================================================ */
+var AMBER  = '#f59e0b';
+var CYAN   = '#06b6d4';
+var PURPLE = '#a78bfa';
+var RED    = '#ef4444';
+var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setupCv(id) {
+  var cv  = document.getElementById(id);
+  if (!cv) return null;
+  var dpr = window.devicePixelRatio || 1;
+  var w   = cv.parentElement.getBoundingClientRect().width || 300;
+  var asp = parseFloat(cv.dataset.aspect) || 1.0;
+  var h   = w * asp;
+  cv.width  = Math.round(w * dpr);
+  cv.height = Math.round(h * dpr);
+  var ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx: ctx, w: w, h: h };
+}
+
+/* Draw polar grid: concentric dB rings */
+function drawPolarGrid(ctx, cx, cy, R, rings) {
+  /* rings: array of {db, label} e.g. [{db:0},{db:-3},{db:-10},{db:-20}] */
+  rings.forEach(function(ring) {
+    var r = R * Math.pow(10, ring.db / 20);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = ring.db === 0 ? 1.2 : 0.7;
+    ctx.stroke();
+    if (ring.label !== false) {
+      ctx.font = '300 8px "IBM Plex Mono", monospace';
+      ctx.fillStyle = 'rgba(100,116,139,0.7)';
+      ctx.textAlign = 'left';
+      ctx.fillText(ring.db + ' dB', cx + r + 3, cy - 3);
+    }
+  });
+  /* Axis lines */
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 0.5;
+  [0, 45, 90, 135].forEach(function(deg) {
+    var rad = deg * Math.PI / 180;
+    ctx.beginPath();
+    ctx.moveTo(cx - R * Math.cos(rad), cy - R * Math.sin(rad));
+    ctx.lineTo(cx + R * Math.cos(rad), cy + R * Math.sin(rad));
+    ctx.stroke();
+  });
+}
+
+/* ============================================================
+   VISUAL 2 — H-PLANE AND E-PLANE POLAR PLOTS
+   ============================================================ */
+(function() {
+  var rings = [{db:0},{db:-3},{db:-10},{db:-20,label:false}];
+
+  /* --- H-plane: perfect circle --- */
+  function drawHplane() {
+    var cvEl = document.getElementById('cv-hplane');
+    if (!cvEl) return;
+    var r = setupCv('cv-hplane');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w / 2, cy = h / 2;
+    var R  = Math.min(w, h) * 0.4;
+
+    ctx.clearRect(0, 0, w, h);
+    drawPolarGrid(ctx, cx, cy, R, rings);
+
+    /* Circle pattern */
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.strokeStyle = PURPLE;
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.07)';
+    ctx.fill();
+
+    /* Centre antenna dot */
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(245,158,11,0.6)';
+    ctx.fill();
+
+    /* Labels */
+    ctx.font = '300 8px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(167,139,250,0.65)';
+    ctx.textAlign = 'center';
+    ctx.fillText('0°', cx, cy - R - 6);
+    ctx.fillText('180°', cx, cy + R + 14);
+    ctx.textAlign = 'left';
+    ctx.fillText('90°', cx + R + 6, cy + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('270°', cx - R - 4, cy + 4);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(167,139,250,0.45)';
+    ctx.font = '300 7px "IBM Plex Mono", monospace';
+    ctx.fillText('omnidirectional', cx, cy + R + 26);
+  }
+
+  /* --- E-plane: figure-of-eight (dipole elevation) --- */
+  function drawEplane() {
+    var cvEl = document.getElementById('cv-eplane');
+    if (!cvEl) return;
+    var r = setupCv('cv-eplane');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w / 2, cy = h / 2;
+    var R  = Math.min(w, h) * 0.4;
+
+    ctx.clearRect(0, 0, w, h);
+    drawPolarGrid(ctx, cx, cy, R, rings);
+
+    /* E-plane dipole: |cos(theta)|^1.5 approximation gives nice fig-8 */
+    ctx.beginPath();
+    var first = true;
+    for (var deg = 0; deg <= 360; deg += 1) {
+      var theta = deg * Math.PI / 180;
+      var gain  = Math.pow(Math.abs(Math.cos(theta)), 1.64); /* dipole E-plane */
+      var rr    = gain * R;
+      var px    = cx + rr * Math.sin(theta);
+      var py    = cy - rr * Math.cos(theta);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = PURPLE;
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.1)';
+    ctx.fill();
+
+    /* Null markers (top and bottom) */
+    [0, 180].forEach(function(deg) {
+      var theta = deg * Math.PI / 180;
+      var nx = cx + 0 * Math.sin(theta);
+      var ny = cy - 0 * Math.cos(theta);
+      /* Draw null label at edge */
+      var lx = cx + (R + 14) * Math.sin(theta);
+      var ly = cy - (R + 14) * Math.cos(theta);
+      ctx.beginPath();
+      ctx.arc(cx + (R * 0.04) * Math.sin(theta), cy - (R * 0.04) * Math.cos(theta), 4, 0, Math.PI * 2);
+      ctx.strokeStyle = RED;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
+
+    /* Wire line (vertical) */
+    ctx.strokeStyle = 'rgba(71,85,105,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R * 0.9);
+    ctx.lineTo(cx, cy + R * 0.9);
+    ctx.stroke();
+
+    /* Labels */
+    ctx.font = '300 8px "IBM Plex Mono", monospace';
+    ctx.fillStyle = RED;
+    ctx.textAlign = 'center';
+    ctx.fillText('null', cx, cy - R - 6);
+    ctx.fillText('null', cx, cy + R + 14);
+    ctx.fillStyle = 'rgba(167,139,250,0.65)';
+    ctx.textAlign = 'right';
+    ctx.fillText('max', cx - 6, cy + 3);
+    ctx.textAlign = 'left';
+    ctx.fillText('max', cx + 6, cy + 3);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(100,116,139,0.5)';
+    ctx.font = '300 7px "IBM Plex Mono", monospace';
+    ctx.fillText('elevation', cx, cy + R + 26);
+  }
+
+  function initHE() {
+    drawHplane();
+    drawEplane();
+    var ro = new ResizeObserver(function() {
+      drawHplane();
+      drawEplane();
+    });
+    var cvH = document.getElementById('cv-hplane');
+    var cvE = document.getElementById('cv-eplane');
+    if (cvH) ro.observe(cvH.parentElement);
+    if (cvE) ro.observe(cvE.parentElement);
+  }
+
+  var cvH = document.getElementById('cv-hplane');
+  if (cvH) {
+    var io = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { initHE(); io.disconnect(); }
+    }, { threshold: 0.1 });
+    io.observe(cvH);
+  }
+}());
+</script>
+
+<script>
+/* ============================================================
+   VISUAL 3 — ANNOTATED dB POLAR PLOT
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-db-polar');
+  if (!cv) return;
+
+  function draw() {
+    var r = setupCv('cv-db-polar');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w * 0.48, cy = h * 0.5;
+    var R  = Math.min(w * 0.35, h * 0.38);
+
+    ctx.clearRect(0, 0, w, h);
+
+    /* dB rings */
+    var ringDefs = [{db:0},{db:-3},{db:-10}];
+    ringDefs.forEach(function(ring) {
+      var rr = R * Math.pow(10, ring.db / 20);
+      ctx.beginPath();
+      ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = ring.db === 0 ? 'rgba(167,139,250,0.35)' : 'rgba(255,255,255,0.07)';
+      ctx.lineWidth = ring.db === 0 ? 1.4 : 0.8;
+      ctx.stroke();
+    });
+
+    /* E-plane figure-of-eight pattern */
+    ctx.beginPath();
+    var first = true;
+    for (var deg = 0; deg <= 360; deg++) {
+      var theta = deg * Math.PI / 180;
+      var gain  = Math.pow(Math.abs(Math.cos(theta)), 1.64);
+      var rr    = gain * R;
+      var px    = cx + rr * Math.sin(theta);
+      var py    = cy - rr * Math.cos(theta);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = PURPLE;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.1)';
+    ctx.fill();
+
+    /* Wire */
+    ctx.strokeStyle = 'rgba(71,85,105,0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R * 0.96);
+    ctx.lineTo(cx, cy + R * 0.96);
+    ctx.stroke();
+
+    /* Leader line → Main lobe */
+    var mlX = cx - R - 2, mlY = cy;
+    ctx.strokeStyle = 'rgba(167,139,250,0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(mlX, mlY); ctx.lineTo(mlX - 30, mlY - 28); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '300 8px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = 'rgba(167,139,250,0.75)';
+    ctx.textAlign = 'right';
+    ctx.fillText('Main lobe —', mlX - 32, mlY - 30);
+    ctx.fillText('peak coupling direction', mlX - 32, mlY - 19);
+
+    /* Leader line → Null */
+    ctx.strokeStyle = 'rgba(239,68,68,0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(cx + 4, cy - R - 2); ctx.lineTo(cx + 30, cy - R - 28); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = RED;
+    ctx.font = '300 8px "IBM Plex Sans", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Null — zero coupling', cx + 32, cy - R - 24);
+
+    /* Leader line → −3 dB ring */
+    var r3 = R * Math.pow(10, -3 / 20);
+    var ang3 = 35 * Math.PI / 180;
+    var px3 = cx - r3 * Math.sin(ang3);
+    var py3 = cy + r3 * Math.cos(ang3);
+    ctx.strokeStyle = 'rgba(6,182,212,0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(px3, py3); ctx.lineTo(px3 - 24, py3 + 32); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = CYAN;
+    ctx.textAlign = 'right';
+    ctx.fillText('−3 dB boundary —', px3 - 26, py3 + 30);
+    ctx.fillText('half-power directions', px3 - 26, py3 + 41);
+
+    /* −3 dB and −10 dB ring labels */
+    ctx.font = '300 8px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(100,116,139,0.7)';
+    ctx.textAlign = 'right';
+    ctx.fillText('−3 dB', cx + r3 * 0.72, cy + r3 * 0.72 - 4);
+    var r10 = R * Math.pow(10, -10 / 20);
+    ctx.fillText('−10 dB', cx + r10 * 0.72, cy + r10 * 0.72 - 4);
+    ctx.fillStyle = 'rgba(167,139,250,0.65)';
+    ctx.textAlign = 'right';
+    ctx.fillText('0 dB', cx + R * 0.72 - 2, cy + R * 0.72 - 4);
+  }
+
+  function init() {
+    draw();
+    var ro = new ResizeObserver(function() { draw(); });
+    ro.observe(cv.parentElement);
+  }
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+</script>
+
+<script>
+/* ============================================================
+   VISUAL 4 — FRONT-TO-BACK RATIO POLAR PLOT
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-fb-ratio');
+  if (!cv) return;
+
+  function draw() {
+    var r = setupCv('cv-fb-ratio');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w * 0.5, cy = h * 0.5;
+    var R  = Math.min(w, h) * 0.36;
+
+    ctx.clearRect(0, 0, w, h);
+
+    /* dB rings */
+    [-0, -5, -10, -15, -20].forEach(function(db) {
+      var rr = R * Math.pow(10, db / 20);
+      ctx.beginPath();
+      ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = db === 0 ? 'rgba(167,139,250,0.3)' : 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = db === 0 ? 1.2 : 0.6;
+      ctx.stroke();
+    });
+
+    /* Axis lines */
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    [0, 90].forEach(function(deg) {
+      var rad = deg * Math.PI / 180;
+      ctx.beginPath();
+      ctx.moveTo(cx - R * Math.cos(rad), cy - R * Math.sin(rad));
+      ctx.lineTo(cx + R * Math.cos(rad), cy + R * Math.sin(rad));
+      ctx.stroke();
+    });
+
+    /* Asymmetric pattern:
+       Main lobe forward (right, theta=90°) — reaches 0dB
+       Back lobe (left, theta=270°) — reaches ~-15dB
+       Side lobes at ~-12dB */
+    ctx.beginPath();
+    var first = true;
+    for (var deg = 0; deg <= 360; deg++) {
+      var theta = (deg - 90) * Math.PI / 180; /* 0 = right */
+      var gain;
+      var t2 = theta;
+      /* cardioid-like shape rotated so max is to the right */
+      var mainLobe  = Math.pow(Math.max(0, Math.cos(t2)), 2.2);
+      var backLobe  = 0.18 * Math.pow(Math.max(0, -Math.cos(t2)), 1.8);
+      var sideLobe  = 0.25 * Math.pow(Math.abs(Math.sin(t2)), 3);
+      gain = mainLobe + backLobe + sideLobe * (1 - mainLobe);
+      gain = Math.max(gain, 0.001);
+      var rr = gain * R;
+      var px = cx + rr * Math.cos((deg - 90) * Math.PI / 180);
+      var py = cy + rr * Math.sin((deg - 90) * Math.PI / 180);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = AMBER;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(245,158,11,0.08)';
+    ctx.fill();
+
+    /* F/B arrow — from main lobe peak to back lobe peak */
+    var mainX = cx + R;        /* 0 dB, right */
+    var backX = cx - 0.18 * R; /* -15 dB approx, left */
+    var arY   = cy - 18;
+
+    ctx.strokeStyle = 'rgba(245,158,11,0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(backX, arY); ctx.lineTo(mainX, arY); ctx.stroke();
+    /* Arrowheads */
+    ctx.fillStyle = 'rgba(245,158,11,0.6)';
+    ctx.beginPath(); ctx.moveTo(mainX, arY); ctx.lineTo(mainX - 8, arY - 4); ctx.lineTo(mainX - 8, arY + 4); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(backX, arY); ctx.lineTo(backX + 8, arY - 4); ctx.lineTo(backX + 8, arY + 4); ctx.fill();
+
+    /* F/B label */
+    ctx.font = '400 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = AMBER;
+    ctx.textAlign = 'center';
+    ctx.fillText('F/B \u2248 15 dB', (mainX + backX) / 2, arY - 7);
+
+    /* Axis labels */
+    ctx.font = '300 8px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(100,116,139,0.6)';
+    ctx.textAlign = 'center';
+    ctx.fillText('front', cx + R + 20, cy + 4);
+    ctx.fillText('back',  cx - R - 20, cy + 4);
+    ctx.fillText('0 dB', cx + R * 0.7, cy - R * 0.6);
+
+    /* −15 dB marker */
+    var r15 = R * Math.pow(10, -15 / 20);
+    ctx.fillStyle = 'rgba(100,116,139,0.55)';
+    ctx.textAlign = 'right';
+    ctx.fillText('\u221215 dB', cx - r15 - 4, cy + 4);
+  }
+
+  function init() {
+    draw();
+    var ro = new ResizeObserver(function() { draw(); });
+    ro.observe(cv.parentElement);
+  }
+
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { init(); io.disconnect(); }
+  }, { threshold: 0.1 });
+  io.observe(cv);
+}());
+</script>
+
+<script>
+/* ============================================================
+   VISUAL 7 — SELF-CHECK POLAR PLOTS (3 plots)
+   ============================================================ */
+(function() {
+  var rings3 = [{db:0},{db:-3},{db:-10},{db:-20}];
+
+  function drawSC1() {
+    var cv = document.getElementById('cv-sc1');
+    if (!cv) return;
+    var r = setupCv('cv-sc1');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+    ctx.clearRect(0, 0, w, h);
+    drawPolarGrid(ctx, cx, cy, R, rings3);
+    /* Perfect circle */
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.strokeStyle = PURPLE; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.08)'; ctx.fill();
+    /* Antenna dot */
+    ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(245,158,11,0.55)'; ctx.fill();
+    /* Label */
+    ctx.font = '300 7px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(167,139,250,0.55)';
+    ctx.textAlign = 'center';
+    ctx.fillText('H-plane — dipole', cx, h - 4);
+  }
+
+  function drawSC2() {
+    var cv = document.getElementById('cv-sc2');
+    if (!cv) return;
+    var r = setupCv('cv-sc2');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+    ctx.clearRect(0, 0, w, h);
+    drawPolarGrid(ctx, cx, cy, R, rings3);
+    /* Figure-of-eight */
+    ctx.beginPath();
+    var first = true;
+    for (var deg = 0; deg <= 360; deg++) {
+      var theta = deg * Math.PI / 180;
+      var gain  = Math.pow(Math.abs(Math.cos(theta)), 1.64);
+      var rr    = gain * R;
+      var px    = cx + rr * Math.sin(theta);
+      var py    = cy - rr * Math.cos(theta);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = PURPLE; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(167,139,250,0.09)'; ctx.fill();
+    /* Null circles */
+    ctx.beginPath(); ctx.arc(cx, cy - 4, 4, 0, Math.PI * 2); ctx.strokeStyle = RED; ctx.lineWidth = 1; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy + 4, 4, 0, Math.PI * 2); ctx.stroke();
+    /* Wire */
+    ctx.strokeStyle = 'rgba(71,85,105,0.45)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(cx, cy - R * 0.9); ctx.lineTo(cx, cy + R * 0.9); ctx.stroke();
+    ctx.font = '300 7px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(167,139,250,0.55)';
+    ctx.textAlign = 'center';
+    ctx.fillText('E-plane — dipole', cx, h - 4);
+  }
+
+  function drawSC3() {
+    var cv = document.getElementById('cv-sc3');
+    if (!cv) return;
+    var r = setupCv('cv-sc3');
+    if (!r) return;
+    var ctx = r.ctx, w = r.w, h = r.h;
+    var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+    ctx.clearRect(0, 0, w, h);
+    drawPolarGrid(ctx, cx, cy, R, rings3);
+    /* Directional pattern: main lobe right (0°=right), back lobe left ~-18dB, side lobes ~-12dB */
+    ctx.beginPath();
+    var first2 = true;
+    for (var deg2 = 0; deg2 <= 360; deg2++) {
+      var theta2 = (deg2 - 90) * Math.PI / 180;
+      var mainL  = Math.pow(Math.max(0, Math.cos(theta2)), 2.5);
+      var backL  = 0.12 * Math.pow(Math.max(0, -Math.cos(theta2)), 2.2);
+      var sideL  = 0.25 * Math.pow(Math.abs(Math.sin(theta2 * 2)), 3);
+      var gain2  = Math.max(mainL + backL + sideL * (1 - mainL * 0.5), 0.001);
+      var rr2    = gain2 * R;
+      var px2    = cx + rr2 * Math.cos((deg2 - 90) * Math.PI / 180);
+      var py2    = cy + rr2 * Math.sin((deg2 - 90) * Math.PI / 180);
+      if (first2) { ctx.moveTo(px2, py2); first2 = false; }
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = AMBER; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(245,158,11,0.07)'; ctx.fill();
+    ctx.font = '300 7px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(245,158,11,0.55)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Directional antenna', cx, h - 4);
+  }
+
+  function initAll() {
+    drawSC1(); drawSC2(); drawSC3();
+    var ro = new ResizeObserver(function() { drawSC1(); drawSC2(); drawSC3(); });
+    var cv1 = document.getElementById('cv-sc1');
+    if (cv1) ro.observe(cv1.parentElement);
+  }
+
+  var cv1 = document.getElementById('cv-sc1');
+  if (cv1) {
+    var io = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { initAll(); io.disconnect(); }
+    }, { threshold: 0.1 });
+    io.observe(cv1);
+  }
+}());
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  function update() {
+    var scrolled = window.scrollY;
+    var total    = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}());
+
+/* ============================================================
+   SELF-CHECK REVEAL TOGGLES
+   ============================================================ */
+document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target   = document.getElementById(this.dataset.target);
+    var expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    this.textContent = expanded ? 'Show Answer ▸' : 'Hide Answer ▾';
+    target.classList.toggle('open', !expanded);
+  });
+});
+</script>
 
 <script src="/assets/js/dev-pages.js"></script>
 <script src="/assets/js/dev-nav.js"></script>
