@@ -2,7 +2,7 @@
 
 **Living Document** — Updated each session  
 **Last Updated:** 7 March 2026  
-**Current Focus:** Lesson 2 — From Waves to Wires (DRAFT complete)
+**Current Focus:** Lesson 3 — Radiation Patterns (DRAFT complete)
 
 ---
 
@@ -58,8 +58,8 @@ Each .md contains:
 |---|--------|--------|-------|
 | 1 | What is EM Radiation? | 📝 DRAFT | Startup chat complete, plan agreed. Writing chat complete, .md drafted |
 | 2 | From Waves to Wires | 📝 DRAFT | Startup + writing (7 Mar 2026). lesson-02-how-antennas-radiate.md written. Note: HTML existed in frontend folder from unknown prior session — .md is now the canonical source. |
-| 3 | Radiation Patterns | ⬜ NOT STARTED | |
-| 4 | Antenna Types Tour | ⬜ NOT STARTED | |
+| 3 | Radiation Patterns | 📝 DRAFT | Startup chat 7 Mar 2026. Plan agreed. Writing chat 7 Mar 2026. lesson-03-radiation-patterns.md written. |
+| 4 | Antenna Types Tour | 📝 DRAFT | Startup chat 7 Mar 2026. Plan agreed. Writing chat 7 Mar 2026. lesson-04-antenna-types-tour.md written. |
 | 5 | Polarisation | ⬜ NOT STARTED | |
 
 ### Unit 2: Antenna Characteristics & Measurement (Lessons 6–10)
@@ -220,11 +220,251 @@ Each .md contains:
 
 ---
 
+## Lesson 3 — Radiation Patterns (DETAILED PLAN)
+
+**Status:** 📋 PLANNED
+**Agreed:** 7 March 2026 (startup chat)
+**Target file:** `unit-1/lesson-03-radiation-patterns.md`
+
+### Core Teaching Goal
+Establish the radiation pattern as a **3D map of energy distribution** — not "signal strength," not "where the wave goes," but where this antenna couples energy most efficiently. This framing unifies TX and RX naturally (same map, both directions) and directly corrects the common wrong model of the receive antenna as a passive voltage pickup.
+
+### Energy Coupling — Wrong Model Correction (runs through entire lesson)
+This is a persistent thread, not a single correction:
+- **One explicit correction** in Section 2 (naming the wrong model and replacing it)
+- **Consistent language** throughout: "energy couples," "efficient coupling," "energy transfer geometry"
+
+Wrong models to correct:
+- ❌ "E field induces a voltage, which drives a current" — makes voltage the received quantity
+- ❌ "The signal hits the antenna and is absorbed" — wave-as-projectile
+- ✅ The EM wave carries energy. The antenna couples that energy into current flow. Every antenna property (length, orientation, resonance, pattern) is a factor in how efficiently that coupling occurs.
+
+### Theory Sections (Layer 1)
+
+1. **Bridge from Lesson 2**
+   - L2 ended: "the detached wave propagates outward carrying energy." L3 opens: where does that energy go?
+   - Plant energy language immediately: "an antenna doesn't just emit a signal — it distributes electromagnetic energy in a specific 3D shape."
+
+2. **What is a radiation pattern?**
+   - A 3D map of energy distribution — at every direction in space, how efficiently does this antenna couple energy?
+   - Explicit wrong-model correction here: "you might think of it as 'where the signal is strongest' — roughly right, but the more precise picture is: where does energy transfer most efficiently between this antenna and the wave?"
+   - Works identically TX and RX (same geometry, same coupling efficiency) — reciprocity lands naturally here
+   - VISUAL: radiation-3d-v5.html introduced here — "look at this shape before we explain it"
+
+3. **Why a donut? Current distribution drives the shape**
+   - Direct connection back to L2 current distribution: the pattern shape is *caused by* the current distribution
+   - Maximum current at centre → maximum radiation broadside
+   - Zero current at tips → zero radiation along the wire axis (the nulls are not random — they are the boundary condition from L2)
+   - On the RX side: "along the null axis, no energy couples — not because the wave missed the antenna, but because the geometry cannot transfer energy from that direction"
+   - Guitar string payoff from L2: same null-at-boundary physics, different medium
+   - VISUAL: dipole with current distribution overlaid (from L2), arrows showing "maximum current here → maximum energy radiates this way," null axis clearly marked
+
+4. **Reading a polar plot**
+   - 2D slices of the 3D pattern — two key planes
+   - Both naming conventions introduced: H-plane / azimuth plane (top-down), E-plane / elevation plane (side)
+   - dB scale: relative only. 0 dB = peak. Reference rings at −3 dB and −10 dB. Framed as: "how much less energy couples at this angle compared to peak"
+   - VISUAL: E-plane and H-plane polar plots for the half-wave dipole, annotated with: main lobe, nulls, −3 dB ring, −10 dB ring, axis labels with both naming conventions
+
+5. **Front-to-back ratio** *(short)*
+   - Introduced via a generic asymmetric polar plot (labelled "example directional antenna — not yet explained")
+   - No antenna type, no construction — just: how many dB quieter is the back lobe vs main lobe? Read it off the plot.
+   - Dipole teaching point: dipole is symmetric, so no meaningful F/B ratio. "When we reach directional antennas in Lesson 4, F/B ratio becomes a key design target."
+   - VISUAL: generic asymmetric polar plot with F/B annotation. NOT a Yagi — a schematic/abstract shape.
+
+6. **Directivity: concentrating energy** *(concept only, no formulas)*
+   - If you reshape the pattern to concentrate energy in fewer directions, those directions receive more — total energy budget unchanged, just redistributed
+   - Isotropic radiator as reference: a theoretical point source radiating equally in all directions (a sphere). Every real antenna is compared to this.
+   - The dipole is slightly better than isotropic in the broadside plane — it steals energy from the null axes and redirects it
+   - Hard stop: no dBi, no efficiency formula, no gain number. L9 owns this.
+   - VISUAL: sphere (isotropic) vs donut (dipole), same total energy, different shape. Simple side-by-side.
+
+7. **Pattern preview** *(very short — 1–2 paragraphs)*
+   - Static visuals: dipole toroid, vertical (same toroid rotated 90°), one generic directional pencil shape
+   - One paragraph: "different antenna geometries produce different energy distribution shapes — Lesson 4 is the tour"
+   - NOTE: radiation-3d-v5.html is currently dipole-only. Static visuals carry this section for now.
+   - DEFERRED TASK: radiation-3d-v5.html needs enhancement (see below) — when built, HTML conversion swaps static visuals for interactive
+
+### Interactive Layer (Layer 2)
+
+- **radiation-3d-v5.html** — current dipole-only version, used after Section 2 and Section 3
+  - After Section 2: "just look at this shape before we explain it" — free exploration, no specific task
+  - After Section 3 (guided exercise):
+    1. Rotate the 3D pattern — identify the toroid, identify the two nulls
+    2. "Where would you place a receiving antenna to get maximum energy coupling?"
+    3. "Where would you place it to get zero coupling? Why does zero coupling occur at exactly those points?" (connect to L2 current distribution)
+    4. Toggle rings vs shells — "what does each view show about how energy propagates outward?"
+
+### Self-Check (Layer 3)
+
+- Polar plot reading: 3 diagrams (dipole E-plane, dipole H-plane, generic directional), identify main lobe, nulls, estimate F/B ratio where applicable
+- Concept questions: why are dipole nulls at the tips? What does a circular polar plot imply about energy distribution? What does directivity mean without using any numbers?
+- **Energy coupling question:** "A dipole is placed in the path of an EM wave, but its axis is aligned with the wave's direction of travel. What happens to energy coupling? Why?" (tests null understanding through the energy lens)
+- Sketch from memory: E-plane and H-plane patterns for a vertical half-wave dipole, with both naming convention labels
+
+### Key Decisions
+
+- dB scale is relative only (0 dB = peak). No dBi, no absolute gain. L9 owns that.
+- Both plane naming conventions introduced together (H-plane/E-plane AND azimuth/elevation)
+- F/B ratio via generic asymmetric polar plot — no Yagi, no specific antenna type
+- Light pattern preview at end (static visuals) to motivate L4
+- radiation-3d-v5.html used for dipole pattern only — static briefs cover other pattern shapes
+- "Energy coupling" is the consistent language throughout (not "signal strength," not "voltage induced")
+
+### Deferred — radiation-3d-v5.html Enhancement
+**Separate task for Claude Code agent.** The interactive needs:
+- Vertical antenna pattern (same toroid, rotated 90°)
+- At minimum one directional pattern (Yagi-style or generic pencil lobe)
+- Antenna type selector to switch between patterns
+- This is a prerequisite for a future revision of L3 and for L4 (Antenna Types Tour)
+- Log this in the project's deferred interactive tasks when that project is active
+
+---
+
 ## Session Log
 
 | Date | Lesson | Chat Type | Outcome |
 |------|--------|-----------|---------|
+| 7 Mar 2026 | L4 | Startup | Plan agreed. 6 antenna families in directivity order. Polarisation seeds planted at vertical, collinear, Yagi, patch/GPS, and dish. radiation-3d-v5.html used for vertical comparison only; static briefs for all other types. |
+| 7 Mar 2026 | L4 | Writing | Draft .md written (424 lines). 8 theory sections + interactive exercise + 4-part self-check + summary. 6 antenna families (monopole, collinear, loop, Yagi, patch, dish). 5 polarisation seeds. 9 visual briefs. Directivity spectrum closing section with explicit L05 handoff. |
 | 1 Mar 2026 | L1 | Startup | Plan agreed. Design principles established. PROGRESS.md created |
 | 1 Mar 2026 | L1 | Writing | Draft .md written (440 lines, 26KB). 6 theory sections, 7 visual briefs, 1 guided interactive exercise (em-animato-2.html), 1 optional deep-dive link (em-radiation.html), 4 self-check exercise groups |
 | 7 Mar 2026 | L2 | Startup + Writing | Combined chat. Plan agreed + .md written. 5 sections, 5 visual briefs, 4-act detachment story, dipole length formula + 3 worked examples, 2 guided interactives (em-radiation.html + tx-rx-complete.html), 5-part self-check. Written to unit-1 folder as canonical source. |
+| 7 Mar 2026 | L3 | Startup | Plan agreed. Energy coupling as lesson thread confirmed. radiation-3d-v5.html enhancement logged as separate deferred task. |
+| 7 Mar 2026 | L3 | Writing | Draft .md written. 7 sections + 5-part self-check. Energy coupling wrong-model correction in S2, consistent language throughout. 3D pattern, polar plot reading, F/B ratio, directivity, pattern preview. Static visual briefs for multi-antenna comparison. |
 
+
+---
+
+## Lesson 4 — Antenna Types Tour (DETAILED PLAN)
+
+**Status:** 📋 PLANNED
+**Agreed:** 7 March 2026 (startup chat)
+**Target file:** `unit-1/lesson-04-antenna-types-tour.md`
+
+### Core Teaching Goal
+Build a mental map of the main antenna families. For each: what does the current distribution look like → what pattern shape does that produce → where and why would you use it? Organising principle is **increasing directivity** — from omnidirectional to pencil-beam — so the lesson has a coherent through-line rather than a random list.
+
+### What L04 Does NOT Cover
+No impedance values, design equations, construction specifics, or absolute dBi gain numbers. Those belong to Units 2 and 3. L04 is a conceptual map, not a design guide. Forward references are used liberally.
+
+### Polarisation Seed Strategy
+L04 plants five seeds for L05, all lightweight. Each seed names the concept "polarisation" without explaining it — the student hears the word in context, sees why it matters, and is pointed to L05. No definition is given in L04.
+
+---
+
+### Theory Sections (Layer 1)
+
+**1. Bridge from L03**
+- L03 closed: "you'll meet the main antenna families and see how each produces a different pattern shape through different physical design choices."
+- Restate the analytical lens: current distribution → pattern shape. This is the question to ask about every antenna type in this lesson.
+- Introduce the organising axis: we'll move from antennas that spread energy in all horizontal directions equally, to antennas that concentrate it into a narrow beam. The physics driving that progression is the same throughout.
+
+**2. Vertical / Monopole**
+- Half a dipole above a ground plane. The ground plane acts as a mirror — it supplies the missing half of the dipole via its image.
+- Quarter-wave monopole: most common variant. Current maximum at the base (feed point), zero at the tip.
+- Pattern: same toroid as the dipole but truncated — the lower hemisphere is replaced by the ground plane. Energy radiates outward in all horizontal directions equally (omnidirectional in azimuth).
+- Low radiation angle: the ground plane redirects some energy toward the horizon — useful for ground-to-ground communication.
+- VISUAL: side-by-side — full dipole with its toroid vs quarter-wave monopole with ground plane and its half-toroid. Current distribution overlaid on both.
+- **Guided exercise with radiation-3d-v5.html**: "Load the dipole pattern. Imagine slicing the toroid at the equator and removing the bottom half. That's what the ground plane does. Where does that energy go?" (Conceptual — student reasons from what they see, not from a monopole pattern they don't have.)
+- **POLARISATION SEED:** "Notice the antenna element is vertical. The E field in the wave it produces oscillates vertically — in the same plane as the wire. This is called polarisation. We'll build the full picture in Lesson 5, but keep this in mind: the orientation of the conductor sets the orientation of the E field in the wave."
+
+**3. Collinear Array**
+- Multiple half-wave elements stacked end-to-end on a single vertical axis, with phasing sections between them.
+- Each element adds its radiation to the others in the horizontal plane. The donut gets squashed — more energy concentrates toward the horizon, less goes skyward.
+- The pattern stays omnidirectional in azimuth (circle in H-plane) — the symmetry is preserved. The E-plane pattern compresses.
+- This is directivity in action from L03: same total energy, redistributed. The student can visualise the donut being pressed flatter by a hand from above and below.
+- Real-world use: base station antennas — every direction on the horizon matters, but you don't want to waste energy pointing at the sky or into the ground.
+- VISUAL: E-plane comparison — single vertical dipole pattern (wide donut) vs 4-element collinear (flattened donut). H-plane for both: both circles. Same total energy, different distribution shown by equal area.
+- **POLARISATION SEED:** "Stacking vertical elements keeps the overall polarisation vertical. When we reach Lesson 5, this will be relevant: a horizontally polarised antenna at the other end of the link would not couple efficiently with this signal."
+
+**4. Loop**
+- A closed conducting loop. Current circulates around the loop — the current distribution is fundamentally different from an open dipole.
+- Small loop (circumference << λ): the pattern has a figure-of-eight with nulls **broadside to the loop plane** (perpendicular to the loop face). This is the opposite null orientation from a dipole.
+- This matters enormously for direction finding (DF): rotate a small loop until the null points at a signal source — the loop face is then perpendicular to the incoming wave. The null is sharp and easy to detect.
+- Large loop (circumference ≈ λ): different current distribution, different pattern. Briefly noted — not the focus.
+- VISUAL: small loop diagram with current flow arrows around the loop; radiation pattern showing null broadside to the loop face and maximum edge-on; comparison to dipole showing opposite null orientation.
+- VISUAL: DF use diagram — loop being rotated to find the null, with signal source direction indicated.
+
+**5. Yagi-Uda**
+- One driven element (half-wave dipole) + one reflector (slightly longer, behind the driven element) + one or more directors (slightly shorter, in front).
+- The parasitic elements are not connected to the transmitter — they are driven by the near-field of the driven element and re-radiate with a phase shift that either adds (directors, forward) or subtracts (reflector, backward).
+- Pattern consequence: energy is concentrated forward, suppressed backward. The toroid of the dipole is reshaped into a forward lobe.
+- F/B ratio from L03 is applied here for the first time to a real antenna. The more elements, the more forward gain — and usually the better the F/B.
+- Real-world use: terrestrial TV receiving antennas are Yagis. Ham radio VHF/UHF directional links. Satellite ground stations.
+- VISUAL: Yagi diagram with element labels (reflector, driven element, directors). Current distribution on each element — amplitude and phase relationship shown qualitatively. Radiation pattern showing forward lobe + suppressed back lobe + F/B ratio marked.
+- NOTE: no element lengths, no design equations. The physical principle only.
+- **POLARISATION SEED:** "Notice that it's the orientation of the **driven element** that determines polarisation — not the direction the boom points. A horizontal Yagi (boom pointing toward the target, elements horizontal) produces horizontally polarised waves. Rotate the whole Yagi 90° around the boom axis — now the elements are vertical, and so is the polarisation. The gain pattern is the same; the polarisation is different. We will return to this in Lesson 5."
+
+**6. Patch / Microstrip**
+- A flat rectangular (or circular) conductor above a ground plane, separated by a thin dielectric. Fed from the edge or a probe through the substrate.
+- The current distribution is along the patch surface. Radiation occurs primarily from the two radiating edges (the sides where the E field fringe outward).
+- Pattern: broadside — the main lobe points perpendicular to the patch surface, not along it. Wide beamwidth in both planes. Low gain compared to Yagi or dish, but compact and low-profile.
+- Real-world use: WiFi and Bluetooth antennas inside laptops and phones. GPS receivers. Phased arrays (many patches together — Unit 4).
+- VISUAL: patch cross-section showing dielectric layer, ground plane, fringing E fields at edges; 3D pattern showing broadside main lobe.
+- **POLARISATION SEED:** "GPS uses patch antennas, but not ordinary linearly polarised ones. GPS satellite signals are circularly polarised — meaning the E field vector rotates as the wave travels. A circularly polarised GPS patch works no matter how you tilt your receiver. That's the trick. Lesson 5 will explain what circular polarisation is and why it's useful. For now: GPS patches are an example of an antenna designed specifically for a polarisation property, not just a pattern property."
+
+**7. Dish / Parabolic Reflector**
+- Not an antenna on its own — it is a reflector. A feed antenna (dipole, horn, patch) sits at the focal point. The dish converts the feed's near-spherical radiation into a narrow parallel beam.
+- The physics: any ray from the focal point reflects off the parabola parallel to the axis. The wavefront emerging from the dish is flat (planar), which produces a very narrow, high-gain beam.
+- The larger the dish relative to wavelength, the narrower the beam. Satellite dishes, microwave backhaul links, radio telescopes — all the same principle, different scales.
+- Pattern: extreme pencil beam. Very high directivity. Very high F/B ratio. Narrow beamwidth requires precise pointing.
+- VISUAL: parabolic dish cross-section with ray diagram — focal point, reflection paths, emerging parallel beam. 3D pattern showing pencil lobe.
+- **POLARISATION SEED:** "The dish itself is polarisation-neutral — it just reflects. The polarisation of the beam is set entirely by the feed antenna at the focus. Point a vertically polarised dipole feed at the dish: vertically polarised beam. Replace it with a circularly polarised horn: circularly polarised beam. The dish amplifies the pattern; the feed antenna defines the polarisation."
+
+**8. Pattern Preview and the Directivity Spectrum**
+- Short closing section (~2 paragraphs).
+- Recap the six families as a spectrum: vertical/monopole → collinear → loop (omnidirectional but different null) → Yagi → patch → dish.
+- The directivity progression: from "same energy in all horizontal directions" to "almost all energy in one narrow direction."
+- The same physics throughout: current distribution determines pattern shape. More complex current distributions can produce more concentrated patterns.
+- Forward reference to L05: "Before we go further into antenna design, we need to talk about polarisation — a property that sits alongside the pattern and matters just as much for whether two antennas actually couple energy."
+- No new VISUAL needed here — the summary is conceptual.
+
+---
+
+### Interactive Layer (Layer 2)
+
+- **radiation-3d-v5.html** — used in Section 2 only (vertical/monopole).
+  - Exercise: load the dipole 3D pattern. Student reasons from it to the monopole pattern by imagining the ground-plane truncation. Guided prompt: "Which half of this pattern does the ground plane replace? What does the antenna do with that energy?"
+  - This is deliberately conceptual — the student doesn't have a monopole pattern to look at, they have to reason from what they know.
+
+- Static visual briefs carry all other sections (collinear, loop, Yagi, patch, dish). The radiation-3d-v5.html enhancement (multi-type selector) is a deferred task — when complete, this lesson's interactive layer gets upgraded.
+
+---
+
+### Self-Check (Layer 3)
+
+**Part A — Pattern Matching**
+Six unlabelled polar plots (E-plane or H-plane). Student matches each to: vertical monopole, collinear, loop, Yagi, patch, dish. One sentence of justification required for each.
+
+**Part B — Directivity Ranking**
+Rank the six antenna families from most omnidirectional to most directional. Write one sentence explaining why each step in the ranking occurs — what physical change drives the increase in directivity?
+
+**Part C — Concept Questions**
+1. A collinear array has more gain on the horizon than a single vertical, but its H-plane pattern is still a circle. How is that possible? What did directivity tell us about this in Lesson 3?
+2. A small loop and a half-wave dipole are both placed vertically. A signal arrives from the front. Which couples more energy? Now the signal arrives broadside. Which couples more? (Tests understanding of opposite null orientations.)
+3. Why do Yagi directors need to be slightly shorter than the driven element? (Qualitative answer only — what effect does this produce on the radiated wave?)
+4. The dish is described as "polarisation-neutral." What does that mean, and what determines the polarisation of a dish antenna in practice?
+
+**Part D — Antenna Selection Scenario**
+Given each communication requirement, choose an antenna family and give a one-paragraph justification referencing pattern shape and energy coupling:
+1. A mobile repeater base station serving vehicles in all directions on a flat plain.
+2. A point-to-point microwave link between two buildings 15 km apart.
+3. A direction-finding receiver trying to locate an emergency beacon.
+4. A GPS receiver in a handheld device that gets tilted in all orientations.
+
+---
+
+### Key Decisions
+
+- Organising principle is increasing directivity — not alphabet order or random list
+- No design equations, no element lengths, no construction details — conceptual map only
+- Polarisation seeds planted at 5 points (vertical, collinear, Yagi, patch, dish) — word "polarisation" used, concept named, explanation deferred to L05
+- Loop included for null orientation contrast and DF relevance — small loop only
+- radiation-3d-v5.html used for vertical section only (dipole reasoning exercise)
+- Patch section used to introduce circular polarisation by name via GPS example — no definition, pure hook
+- Dish closes the directivity spectrum — feed sets polarisation is the seed
+- L05 "What's Next" transition: polarisation as the next property alongside pattern
+
+### Open Items / Deferred
+- radiation-3d-v5.html enhancement (multi-type selector) remains deferred to Claude Code project
+- When enhancement complete: Sections 2–7 get interactive comparison exercises added; static briefs remain in .md as fallback
