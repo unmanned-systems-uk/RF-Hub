@@ -596,6 +596,7 @@ patternGroup.add(new THREE.Mesh(torusGeo.clone(), patternWireMat));
 
 scene.add(patternGroup);
 let activePatternGroup = patternGroup;
+let loopElement = null; // amber loop ring — lives outside activePatternGroup so pattern toggle doesn't hide it
 
 // ============================================
 // ELECTRON PARTICLES
@@ -1282,7 +1283,14 @@ function updateWaves() {
     const polarity = Math.floor(ring.birth / waveInterval) % 2;
     ring.mesh.material.color.setHex(polarity === 0 ? 0xa78bfa : 0x8b7bd4);
 
-    ring.mesh.scale.set(radius, radius, radius);
+    if (currentAntennaType === 'patch') {
+      // Patch radiates upward — rings rise along +Y with small fixed XZ footprint
+      ring.mesh.position.y = age * expandSpeed;
+      ring.mesh.scale.setScalar(0.3);
+    } else {
+      ring.mesh.position.y = 0;
+      ring.mesh.scale.set(radius, radius, radius);
+    }
     ring.mesh.material.opacity = alpha;
     ring.mesh.visible = (waveMode === 'rings' || waveMode === 'both');
 
@@ -1331,8 +1339,8 @@ function updateWaves() {
 // ELECTRONS
 // ============================================
 function updateElectrons() {
-  electronGroup.visible = showElectrons;
-  if (!showElectrons) return;
+  electronGroup.visible = showElectrons && currentAntennaType !== 'loop';
+  if (!electronGroup.visible) return;
 
   const sinT = Math.sin(time * 4);
   for (const e of electrons) {
@@ -2211,6 +2219,13 @@ function setAntenna(type) {
   if (activePatternGroup && activePatternGroup !== patternGroup) {
     scene.remove(activePatternGroup);
   }
+  // Remove previous loop ring element (lives outside pattern group)
+  if (loopElement) {
+    scene.remove(loopElement);
+    loopElement.geometry.dispose();
+    loopElement.material.dispose();
+    loopElement = null;
+  }
 
   if (type === 'dipole') {
     patternGroup.visible = showPattern;
@@ -2230,16 +2245,19 @@ function setAntenna(type) {
       color: 0xa78bfa, transparent: true, opacity: 0.10,
       wireframe: true
     })));
-    // Loop antenna: add ring element in YZ plane (normal = +X, null through hole)
-    if (type === 'loop') {
-      const loopRingGeo = new THREE.TorusGeometry(5, 0.4, 8, 48);
-      loopRingGeo.rotateY(Math.PI / 2); // ring in YZ plane, opening faces +X
-      newGroup.add(new THREE.Mesh(loopRingGeo, new THREE.MeshBasicMaterial({
-        color: 0xf59e0b, transparent: true, opacity: 0.7
-      })));
-    }
     scene.add(newGroup);
     activePatternGroup = newGroup;
+  }
+
+  // Loop antenna: add amber ring element directly to scene (not in activePatternGroup)
+  // so it stays visible when the pattern envelope is toggled off
+  if (type === 'loop') {
+    const loopRingGeo = new THREE.TorusGeometry(5, 0.4, 8, 48);
+    loopRingGeo.rotateY(Math.PI / 2); // ring in YZ plane, opening faces +X
+    loopElement = new THREE.Mesh(loopRingGeo, new THREE.MeshBasicMaterial({
+      color: 0xf59e0b, transparent: true, opacity: 0.7
+    }));
+    scene.add(loopElement);
   }
 
   // Hide dipole rod, tips, and electrons for loop antenna — it uses a ring element instead
