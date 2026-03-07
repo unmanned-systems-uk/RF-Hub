@@ -35,18 +35,29 @@ Each .md contains:
 - Every abstract term gets a concrete visual anchor
 - Spiral learning — introduce then revisit at depth in later lessons
 - No equipment needed for Unit 1
+- **Interactive embedding — Option 1 (iframe):** All interactive HTML tools are embedded via `<iframe>`. Each interactive remains a fully isolated, standalone `.html` file. Lesson `.md` files reference the target file by path. The `<!-- VISUAL: -->` brief for that section notes the iframe `src` path and suggested height. Updates to an interactive file are automatically reflected in every lesson that embeds it — no lesson file needs to change.
+- **radiation-3d-v5.html — single configurable file (query parameter architecture):** One file only — never separate versioned copies. Lesson context is set via URL query parameter in the iframe `src`. If a specific antenna is passed (e.g. `?antenna=dipole`), the file loads that pattern and hides the selector. If no parameter is passed, the full selector is shown. This lets early lessons constrain student focus while later lessons open up full interactivity. Example usage per lesson:
+  - L03: `radiation-3d-v5.html?antenna=dipole` — dipole only, no selector
+  - L04 (sections): `radiation-3d-v5.html?antenna=vertical` — vertical pattern, reasoning exercise
+  - L04 (closing): `radiation-3d-v5.html` — full selector, all families visible
+  - L09: `radiation-3d-v5.html?antenna=yagi` — Yagi pattern for gain discussion
+  - Claude Code enhancement brief must specify: single file, `?antenna=` query param support, selector hidden when param is present, selector shown when no param.
 
 ---
 
 ## Existing Resources
 
-### Interactive HTML Files (D:\live_code\RF-Hub\resources)
+### Interactive HTML Files
+**Canonical location:** `D:\live_code\RF-Hub\frontend\interactives\`  
+**Config & parameter spec:** `D:\live_code\RF-Hub\frontend\interactives\CONFIG.md`  
+*(Moved from `resources\` on 7 Mar 2026 — `resources\` no longer holds HTML interactives)*
+
 | File | Description | Used In |
 |------|-------------|---------|
 | `em-radiation.html` | "How Antennas Radiate" — 4-act narrative: current→fields→detachment→reception. SVG diagrams with animations | L1 (optional deep-dive), L2 (primary) |
 | `em-animato-2.html` | EM Field & Radiation Pattern Animator — freq slider, wavelength readout, E/H wave views, antenna type selector | L1 (centrepiece interactive) |
 | `tx-rx-complete.html` | TX to RX complete link visualisation | L2 |
-| `radiation-3d-v5.html` | 3D radiation pattern viewer | L3, L9 |
+| `radiation-3d-v5.html` | 3D radiation pattern viewer — query parameter controlled (see CONFIG.md) | L3, L4, L9 |
 
 ---
 
@@ -154,7 +165,7 @@ Each .md contains:
 - Concept questions ("Can you have E without H in a propagating wave? Why not?")
 
 ### Open Decisions
-- How HTML interactives are embedded (iframe vs direct link) — deferred to HTML conversion project
+- ~~How HTML interactives are embedded (iframe vs direct link)~~ — **Resolved 7 Mar 2026: iframe (Option 1). See Key Rules.**
 
 ---
 
@@ -311,12 +322,12 @@ Wrong models to correct:
 - "Energy coupling" is the consistent language throughout (not "signal strength," not "voltage induced")
 
 ### Deferred — radiation-3d-v5.html Enhancement
-**Separate task for Claude Code agent.** The interactive needs:
+**Separate task for Claude Code agent.** Architecture confirmed: single file, query parameter control (see Key Rules). The enhancement needs:
 - Vertical antenna pattern (same toroid, rotated 90°)
 - At minimum one directional pattern (Yagi-style or generic pencil lobe)
-- Antenna type selector to switch between patterns
-- This is a prerequisite for a future revision of L3 and for L4 (Antenna Types Tour)
-- Log this in the project's deferred interactive tasks when that project is active
+- `?antenna=` query parameter support — loads specified pattern, hides selector
+- No parameter = full selector shown, all antenna types available
+- When built, HTML conversion updates affected lesson iframes to use correct `?antenna=` parameters
 
 ---
 
@@ -324,6 +335,9 @@ Wrong models to correct:
 
 | Date | Lesson | Chat Type | Outcome |
 |------|--------|-----------|---------|
+| 7 Mar 2026 | All | Architecture | **Interactives relocated to `frontend\interactives\`.** All four HTML files moved from `resources\`. CONFIG.md created with full query parameter spec for `radiation-3d-v5.html` and iframe embed format. See `frontend\interactives\CONFIG.md`. |
+| 7 Mar 2026 | All | Architecture | **radiation-3d-v5.html query parameter architecture locked.** Single file, `?antenna=` param controls which pattern loads and whether selector is visible. No versioned copies ever. See Key Rules for full spec and per-lesson usage table. |
+| 7 Mar 2026 | All | Architecture | **iframe embedding rule locked (Option 1).** All interactives embedded via iframe. See Key Rules. |
 | 7 Mar 2026 | L4 | Startup | Plan agreed. 6 antenna families in directivity order. Polarisation seeds planted at vertical, collinear, Yagi, patch/GPS, and dish. radiation-3d-v5.html used for vertical comparison only; static briefs for all other types. |
 | 7 Mar 2026 | L4 | Writing | Draft .md written (424 lines). 8 theory sections + interactive exercise + 4-part self-check + summary. 6 antenna families (monopole, collinear, loop, Yagi, patch, dish). 5 polarisation seeds. 9 visual briefs. Directivity spectrum closing section with explicit L05 handoff. |
 | 1 Mar 2026 | L1 | Startup | Plan agreed. Design principles established. PROGRESS.md created |
