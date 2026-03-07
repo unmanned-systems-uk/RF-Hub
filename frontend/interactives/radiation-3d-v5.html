@@ -1080,11 +1080,9 @@ function patternF(type, theta, phi) {
   switch(type) {
     case 'dipole':
       return Math.abs(Math.sin(theta));
-    case 'vertical': {
-      // Null along +X, max along Z — horizontal element along X
-      const cosX = Math.sin(theta) * Math.cos(phi);
-      return 1 - cosX * cosX;
-    }
+    case 'vertical':
+      // Upper hemisphere only — same as dipole above ground plane, zero below
+      return theta <= Math.PI / 2 ? Math.abs(Math.sin(theta)) : 0;
     case 'collinear':
       return Math.pow(Math.abs(Math.sin(theta)), 4);
     case 'yagi': {
@@ -2174,9 +2172,8 @@ function makePatternGeo(rFunc) {
 // Pattern functions for each antenna type (dipole uses existing torus)
 const patternBuilders = {
   vertical: () => makePatternGeo((theta, phi) => {
-    // Null along X (horizontal), max in YZ plane — horizontal dipole orientation
-    const cosX = Math.sin(theta) * Math.cos(phi);
-    return (1 - cosX * cosX) * MAX_PATTERN_R;
+    // Vertical monopole: upper hemisphere only, identical to dipole above ground
+    return theta <= Math.PI / 2 ? Math.abs(Math.sin(theta)) * MAX_PATTERN_R : 0;
   }),
   yagi: () => makePatternGeo((theta, phi) => {
     // Forward lobe along +X, cardioid-squared (suppressed back lobe)
