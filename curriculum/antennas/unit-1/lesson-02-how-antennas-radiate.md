@@ -90,33 +90,9 @@ This is electromagnetic radiation. Not a by-product of the process — *the proc
 
 <!-- VISUAL: Four-panel sequential diagram. Panel 1: Wire with current flowing upward, field lines (E and H) expanding outward like expanding rings. Panel 2: Current slowing — field lines shown at maximum extent, arrow on current reversing. Panel 3: New field forming close to wire (opposite direction), old field shown detaching — a "pinch point" visible where the field separates. Panel 4: Detached field packet propagating outward freely, wire now generating next cycle's field, previous packet already distant. Each panel labelled Act 1–4 with a one-line caption. -->
 
-The interactive `em-radiation.html` animates this exact process — 4 acts, step by step. **Do the guided exercise below before reading further.** The animation will make the text above click into place.
+If the text story above clicked, continue reading. If you'd rather see it animated first, `em-radiation.html` walks through the same four acts with live SVG diagrams — current building, fields expanding, the pinch-off, the free wave. It covers the same ground in a different medium. Either path leads to the same understanding.
 
----
-
-### ▶ Interactive Exercise — em-radiation.html
-
-**Open:** `em-radiation.html` (link in the lesson resources bar)
-
-Work through the four acts in order. For each act, read the annotation on screen, then answer the question before advancing.
-
-**Act 1 — Current and fields build**
-- Watch the field lines expand outward from the wire.
-- *Question to yourself: where are these field lines travelling — and how fast?*
-
-**Act 2 — Current reverses**
-- The current direction indicator flips. Watch the field lines at the furthest extent.
-- *Question: why can't those distant field lines instantly snap back to the wire?*
-
-**Act 3 — Detachment**
-- Watch the pinch point form. The outer field separates.
-- *Question: what does the soap bubble analogy from Lesson 1 have to do with this moment?*
-
-**Act 4 — Free propagation**
-- The detached packet moves outward. The wire is already generating its next cycle.
-- *Question: what keeps this packet moving? What "feeds" it now that it's separated from the wire?*
-
-After completing all four acts: close the interactive and write two sentences in your own words explaining why the wave cannot simply return to the wire once it detaches.
+<!-- RESOURCE LINK: em-radiation.html — Layer 2 visual path for the detachment story. Standalone page, no guided questions, no "come back after." Simple off-ramp for visual learners. HTML conversion: render as a resource block with a direct link, consistent with the resource block style used elsewhere in the lesson. -->
 
 ---
 
