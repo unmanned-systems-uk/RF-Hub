@@ -90,9 +90,9 @@ This is electromagnetic radiation. Not a by-product of the process — *the proc
 
 <!-- VISUAL: Four-panel sequential diagram. Panel 1: Wire with current flowing upward, field lines (E and H) expanding outward like expanding rings. Panel 2: Current slowing — field lines shown at maximum extent, arrow on current reversing. Panel 3: New field forming close to wire (opposite direction), old field shown detaching — a "pinch point" visible where the field separates. Panel 4: Detached field packet propagating outward freely, wire now generating next cycle's field, previous packet already distant. Each panel labelled Act 1–4 with a one-line caption. -->
 
-If the text story above clicked, continue reading. If you'd rather see it animated first, `em-radiation.html` walks through the same four acts with live SVG diagrams — current building, fields expanding, the pinch-off, the free wave. It covers the same ground in a different medium. Either path leads to the same understanding.
+Want the full story in more depth? `em-radiation.html` covers the same four acts with detailed text and illustrations — it goes further into the physics than this lesson requires. It is optional reading, not a prerequisite. Continue below when you're ready.
 
-<!-- RESOURCE LINK: em-radiation.html — Layer 2 visual path for the detachment story. Standalone page, no guided questions, no "come back after." Simple off-ramp for visual learners. HTML conversion: render as a resource block with a direct link, consistent with the resource block style used elsewhere in the lesson. -->
+<!-- RESOURCE LINK: em-radiation.html — optional deep-dive reading, Layer 1 extended. Same detachment story told in more detail with static illustrations. Not an animation, not an interactive. HTML conversion: render as a simple resource link block — "Go deeper" style, low visual weight, clearly optional. -->
 
 ---
 
