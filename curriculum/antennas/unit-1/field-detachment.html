@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Detachment — Acts 1–3 | RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0e1a;
+  --card:    #111827;
+  --border:  #1e293b;
+  --amber:   #f59e0b;
+  --cyan:    #06b6d4;
+  --purple:  #a78bfa;
+  --slate:   #94a3b8;
+  --dim:     #64748b;
+  --text:    #e2e8f0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: inset 0 0 80px -40px rgba(167,139,250,0.07);
+}
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.act-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--purple);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 20px;
+  padding: 5px 14px;
+}
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--dim);
+}
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.legend-dot.e  { background: var(--amber); }
+.legend-dot.h  { background: var(--cyan); }
+.legend-dot.em { background: var(--purple); }
+canvas {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.25);
+}
+.desc-box {
+  margin: 16px 0 20px;
+  padding: 14px 18px;
+  background: rgba(167,139,250,0.05);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  min-height: 54px;
+}
+.desc-act {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  color: var(--purple);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.desc-text {
+  font-size: 0.92rem;
+  color: var(--slate);
+  line-height: 1.6;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 8px 22px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.btn:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.btn.primary {
+  background: rgba(167,139,250,0.1);
+  color: var(--purple);
+  border-color: rgba(167,139,250,0.25);
+}
+.step-counter {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 1px;
+  min-width: 60px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top-row">
+    <div class="act-badge" id="act-badge">ACT 1 OF 3</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot e"></div>E field</div>
+      <div class="legend-item"><div class="legend-dot h"></div>H field</div>
+      <div class="legend-item"><div class="legend-dot em"></div>detached wave</div>
+    </div>
+  </div>
+
+  <canvas id="cv" aria-label="Field detachment animation" role="img"></canvas>
+
+  <div class="desc-box">
+    <div class="desc-act" id="desc-act">Act 1 — The field expands</div>
+    <div class="desc-text" id="desc-text">Current flows toward the feedpoint. E and H fields build around the wire and push outward into space. The further they reach, the further they would have to travel to collapse back.</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="btn-prev" aria-label="Previous act">← Prev</button>
+    <span class="step-counter" id="step-counter">1 / 3</span>
+    <button class="btn primary" id="btn-play" aria-label="Pause animation">⏸ Pause</button>
+    <button class="btn" id="btn-next" aria-label="Next act">Next →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONSTANTS & SETUP
+   ============================================================ */
+var AMBER  = '245,158,11';
+var CYAN   = '6,182,212';
+var PURPLE = '167,139,250';
+var SLATE  = '148,163,184';
+var DIM    = '100,116,139';
+
+var act     = 1;
+var t       = 0;
+var playing = true;
+var rafId;
+var ctx, W, H;
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var ACTS = [
+  {
+    badge: 'ACT 1 OF 3',
+    title: 'Act 1 — The field expands',
+    text:  'Current flows toward the feedpoint. E and H fields build around the wire and push outward into space. The further they reach, the further they would have to travel to collapse back.'
+  },
+  {
+    badge: 'ACT 2 OF 3',
+    title: 'Act 2 — The current reverses',
+    text:  'The AC source flips. Current now flows away from the feedpoint. A new E field forms close to the wire — opposite in direction. The old outer field is already too far away to follow instantly: it travels at c, not instantly.'
+  },
+  {
+    badge: 'ACT 3 — DETACHMENT',
+    title: 'Act 3 — The field pinches off',
+    text:  'The old field can no longer connect to the reversing wire. The loops close and break free — self-sustaining. Each changing E creates H, each changing H creates E. The wave no longer needs the wire.'
+  }
+];
+
+function setupCanvas() {
+  var cv  = document.getElementById('cv');
+  var dpr = window.devicePixelRatio || 1;
+  W = cv.parentElement.getBoundingClientRect().width - 56; /* card padding */
+  H = Math.round(W * 0.52);
+  cv.width  = Math.round(W * dpr);
+  cv.height = Math.round(H * dpr);
+  cv.style.width  = W + 'px';
+  cv.style.height = H + 'px';
+  ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+}
+
+/* ============================================================
+   DRAW HELPERS
+   ============================================================ */
+function rgba(rgb, a) { return 'rgba(' + rgb + ',' + a + ')'; }
+
+/* Draw a smooth arch from (x1,wireY) to (x2,wireY) curving by 'height' pixels.
+   Negative height = arch above wire, positive = below. */
+function drawArch(x1, x2, wireY, height, rgb, alpha, lw) {
+  var cx1 = x1 + (x2 - x1) * 0.22;
+  var cx2 = x1 + (x2 - x1) * 0.78;
+  var cy  = wireY - height;
+  ctx.beginPath();
+  ctx.moveTo(x1, wireY);
+  ctx.bezierCurveTo(cx1, cy, cx2, cy, x2, wireY);
+  ctx.strokeStyle = rgba(rgb, alpha);
+  ctx.lineWidth   = lw || 1.5;
+  ctx.stroke();
+}
+
+/* Draw E field "generation" — a lens shape (arch above + arch below) */
+function drawLens(wL, wR, wireY, height, rgb, alpha, lw) {
+  drawArch(wL, wR, wireY,  height, rgb, alpha, lw); /* above */
+  drawArch(wL, wR, wireY, -height, rgb, alpha, lw); /* below */
+}
+
+/* Draw a closed floating loop (detached field) centered at (cx, cy) */
+function drawDetachedLoop(cx, cy, rx, ry, rgb, alpha) {
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = rgba(rgb, alpha);
+  ctx.lineWidth   = 1.8;
+  ctx.stroke();
+  /* Faint fill */
+  ctx.fillStyle = rgba(rgb, alpha * 0.06);
+  ctx.fill();
+}
+
+/* Draw a direction arrow (triangle) at (ax, wireY) pointing in dir (+1 or -1) */
+function drawArrow(ax, wireY, dir, size, rgb, alpha) {
+  ctx.fillStyle = rgba(rgb, alpha);
+  ctx.beginPath();
+  ctx.moveTo(ax - dir * size, wireY - size * 0.55);
+  ctx.lineTo(ax + dir * size * 0.35, wireY);
+  ctx.lineTo(ax - dir * size, wireY + size * 0.55);
+  ctx.closePath();
+  ctx.fill();
+}
+
+/* ============================================================
+   DRAW DIPOLE STRUCTURE (wire, feedpoint, TX box, tips)
+   ============================================================ */
+function drawDipole(wireY, wL, wR) {
+  var cx = (wL + wR) / 2;
+
+  /* Wire — two halves (gap at feedpoint) */
+  ctx.strokeStyle = rgba(SLATE, 0.65);
+  ctx.lineWidth   = 3;
+  ctx.lineCap     = 'round';
+  ctx.beginPath(); ctx.moveTo(wL, wireY); ctx.lineTo(cx - 9, wireY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx + 9, wireY); ctx.lineTo(wR, wireY); ctx.stroke();
+
+  /* TX box */
+  var bW = 44, bH = 22;
+  ctx.fillStyle   = rgba('17,24,39', 0.95);
+  ctx.strokeStyle = rgba(SLATE, 0.35);
+  ctx.lineWidth   = 1;
+  ctx.beginPath();
+  ctx.roundRect(cx - bW/2, wireY + 14, bW, bH, 4);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle  = rgba(SLATE, 0.75);
+  ctx.font       = '500 11px "IBM Plex Mono", monospace';
+  ctx.textAlign  = 'center';
+  ctx.fillText('TX', cx, wireY + 29);
+
+  /* Dashed line from TX to feedpoint */
+  ctx.strokeStyle  = rgba(SLATE, 0.2);
+  ctx.lineWidth    = 1;
+  ctx.setLineDash([3,4]);
+  ctx.beginPath(); ctx.moveTo(cx, wireY + 14); ctx.lineTo(cx, wireY + 8); ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* Feedpoint dot */
+  ctx.beginPath();
+  ctx.arc(cx, wireY, 7, 0, Math.PI * 2);
+  ctx.fillStyle = rgba(AMBER, 0.95);
+  ctx.fill();
+
+  /* Tip dots (HIGH V) */
+  ctx.beginPath(); ctx.arc(wL, wireY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = rgba(PURPLE, 0.9); ctx.fill();
+  ctx.beginPath(); ctx.arc(wR, wireY, 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/* ============================================================
+   DRAW LABELS (HIGH I, LOW I, HIGH V, FEED POINT)
+   ============================================================ */
+function drawLabels(wireY, wL, wR, currentDir) {
+  var cx = (wL + wR) / 2;
+  var hs = (wR - wL) / 2; /* half span */
+  ctx.font      = '300 10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+
+  /* Voltage labels at tips */
+  ctx.fillStyle = rgba(PURPLE, 0.75);
+  ctx.fillText('HIGH V', wL, wireY - 14);
+  ctx.fillText('HIGH V', wR, wireY - 14);
+
+  /* Current labels — size reflects magnitude (sinusoidal distribution) */
+  ctx.fillStyle = rgba(AMBER, 0.75);
+  ctx.fillText('HIGH I', cx, wireY - 14);
+  ctx.fillStyle = rgba(AMBER, 0.45);
+  ctx.fillText('LOW I',  cx - hs * 0.62, wireY - 14);
+  ctx.fillText('LOW I',  cx + hs * 0.62, wireY - 14);
+
+  /* Feed point label */
+  ctx.fillStyle = rgba(SLATE, 0.45);
+  ctx.fillText('FEED POINT', cx, wireY + 52);
+}
+
+/* ============================================================
+   DRAW CURRENT ARROWS
+   direction: +1 = toward centre, -1 = away from centre
+   magnitude: 0..1 (controls alpha & size)
+   ============================================================ */
+function drawCurrentArrows(wireY, wL, wR, direction, magnitude) {
+  var cx = (wL + wR) / 2;
+  var hs = (wR - wL) / 2;
+  /* positions as fraction of half-span from centre outward */
+  var fracs = [0.18, 0.40, 0.62, 0.82];
+  var sizes  = [11,   9,    7,    5  ];
+
+  for (var side = -1; side <= 1; side += 2) {
+    for (var i = 0; i < fracs.length; i++) {
+      var x = cx + side * fracs[i] * hs;
+      /* current magnitude at this point: sin(π/2 * (1-frac)) — max at centre */
+      var localMag = Math.sin((1 - fracs[i]) * Math.PI * 0.5 + 0.08) * magnitude;
+      if (localMag < 0.08) continue;
+      /* arrowDir: +1 = pointing right, -1 = pointing left
+         direction=+1 (toward centre): left side (side=-1) arrow points right (+1)
+                                       right side (side=+1) arrow points left (-1)
+         direction=-1 (away): opposite */
+      var arrowDir = direction * side * -1;
+      var pulse = reduced ? 1 : (0.82 + 0.18 * Math.sin(t * 2.8 + i * 0.9));
+      drawArrow(x, wireY, arrowDir, sizes[i] * pulse, AMBER, localMag * 0.9 * pulse);
+    }
+  }
+}
+
+/* ============================================================
+   DRAW H FIELD RINGS (subtle concentric dashed circles)
+   ============================================================ */
+function drawHField(wireY, cx, tOffset) {
+  var radii = [H * 0.055, H * 0.10, H * 0.155];
+  for (var i = 0; i < radii.length; i++) {
+    var pulse = reduced ? 0.3 : (0.28 + 0.12 * Math.sin(t * 1.4 + i * 1.1 + tOffset));
+    ctx.beginPath();
+    ctx.arc(cx, wireY, radii[i], 0, Math.PI * 2);
+    ctx.strokeStyle  = rgba(CYAN, pulse);
+    ctx.lineWidth    = 1;
+    ctx.setLineDash([3, 5]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+/* ============================================================
+   ACT 1 — FIELD EXPANDING
+   ============================================================ */
+function drawAct1(wireY, wL, wR) {
+  var cx = (wL + wR) / 2;
+
+  /* H field rings — faint, subtle */
+  drawHField(wireY, cx, 0);
+
+  /* E field lines — 4 generations expanding outward */
+  /* Each gently breathes to show expansion */
+  var gens = [
+    { base: 0.10, speed: 0.012, phase: 0.0, alpha: 0.80 },
+    { base: 0.18, speed: 0.010, phase: 1.2, alpha: 0.62 },
+    { base: 0.28, speed: 0.008, phase: 2.4, alpha: 0.42 },
+    { base: 0.40, speed: 0.006, phase: 3.6, alpha: 0.24 }
+  ];
+  for (var i = 0; i < gens.length; i++) {
+    var g = gens[i];
+    var age = reduced ? g.base : g.base + Math.sin(t * 2.2 + g.phase) * g.speed;
+    var h = age * H;
+    drawLens(wL, wR, wireY, h, AMBER, g.alpha, 1.6 - i * 0.25);
+  }
+
+  /* Expansion arrows (faint, showing outward direction) */
+  var arrowY = wireY - H * 0.44;
+  ctx.fillStyle = rgba(AMBER, 0.20);
+  ctx.font = '300 9px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('↑ expanding', cx, arrowY);
+
+  /* Dipole */
+  drawCurrentArrows(wireY, wL, wR, 1, 0.9);
+  drawDipole(wireY, wL, wR);
+  drawLabels(wireY, wL, wR, 1);
+}
+
+/* ============================================================
+   ACT 2 — CURRENT REVERSAL
+   ============================================================ */
+function drawAct2(wireY, wL, wR) {
+  var cx = (wL + wR) / 2;
+
+  /* OLD field (amber) — larger, drifting slowly outward */
+  var oldGens = [
+    { base: 0.22, drift: 0.006, phase: 0.0, alpha: 0.58 },
+    { base: 0.34, drift: 0.005, phase: 1.0, alpha: 0.42 },
+    { base: 0.46, drift: 0.004, phase: 2.0, alpha: 0.26 }
+  ];
+  for (var i = 0; i < oldGens.length; i++) {
+    var g = oldGens[i];
+    var age = reduced ? g.base : g.base + Math.sin(t * 1.2 + g.phase) * g.drift;
+    drawLens(wL, wR, wireY, age * H, AMBER, g.alpha, 1.5 - i * 0.2);
+  }
+
+  /* NEW reversed field (cyan) forming close to wire */
+  var newAge = reduced ? 0.09 : 0.08 + 0.015 * Math.sin(t * 2.5);
+  drawLens(wL, wR, wireY, newAge * H, CYAN, 0.75, 1.8);
+
+  /* Annotations */
+  ctx.font = '300 9px "IBM Plex Mono", monospace';
+  ctx.fillStyle = rgba(AMBER, 0.40);
+  ctx.textAlign = 'left';
+  ctx.fillText('old field — still out here', wR + 12, wireY - H * 0.38);
+
+  ctx.fillStyle = rgba(CYAN, 0.65);
+  ctx.textAlign = 'right';
+  ctx.fillText('new reversed field', wL - 10, wireY + H * 0.10);
+
+  /* H field */
+  drawHField(wireY, cx, Math.PI);
+
+  /* Current reversed */
+  drawCurrentArrows(wireY, wL, wR, -1, 0.75);
+  drawDipole(wireY, wL, wR);
+  drawLabels(wireY, wL, wR, -1);
+}
+
+/* ============================================================
+   ACT 3 — DETACHMENT / PINCH-OFF
+   ============================================================ */
+function drawAct3(wireY, wL, wR) {
+  var cx   = (wL + wR) / 2;
+  var wHalf = (wR - wL) / 2;
+
+  /* DETACHED loops (old field — closed ellipses drifting outward)
+     rx grows with drift, ry is the loop height, center drifts away from wire */
+  var detached = [
+    { ry: H * 0.26, drift: reduced ? 0.18 : 0.18 + 0.015 * Math.sin(t * 0.9), alpha: 0.52 },
+    { ry: H * 0.38, drift: reduced ? 0.28 : 0.28 + 0.010 * Math.sin(t * 0.7 + 1), alpha: 0.32 }
+  ];
+  for (var i = 0; i < detached.length; i++) {
+    var d   = detached[i];
+    var ry  = d.ry;
+    var rx  = wHalf * 0.55;
+    /* Center above and below the wire, offset by ry */
+    var cyAbove = wireY - ry - d.drift * H;
+    var cyBelow = wireY + ry + d.drift * H;
+    drawDetachedLoop(cx, cyAbove, rx, ry * 0.7, AMBER, d.alpha);
+    drawDetachedLoop(cx, cyBelow, rx, ry * 0.7, AMBER, d.alpha);
+
+    /* Faint outward arrow */
+    if (!reduced) {
+      var arrA = 0.22 + 0.12 * Math.sin(t * 1.5 + i);
+      ctx.fillStyle = rgba(PURPLE, arrA);
+      ctx.font = '9px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('↑', cx + rx + 16, cyAbove);
+      ctx.fillText('↓', cx + rx + 16, cyBelow);
+    }
+  }
+
+  /* PINCH POINT markers at the wire tips */
+  var pinchAlpha = reduced ? 0.7 : (0.55 + 0.25 * Math.abs(Math.sin(t * 2.2)));
+  ctx.beginPath(); ctx.arc(wL, wireY, 6, 0, Math.PI * 2);
+  ctx.strokeStyle = rgba(PURPLE, pinchAlpha);
+  ctx.lineWidth   = 1.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(wR, wireY, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  /* NEW cycle starting close to wire */
+  var newAge1 = reduced ? 0.09 : 0.08 + 0.014 * Math.sin(t * 2.8);
+  var newAge2 = reduced ? 0.05 : 0.045 + 0.010 * Math.sin(t * 2.8 + 1.2);
+  drawLens(wL, wR, wireY, newAge1 * H, AMBER, 0.82, 1.8);
+  drawLens(wL, wR, wireY, newAge2 * H, AMBER, 0.50, 1.3);
+
+  /* Annotations */
+  ctx.font      = '300 9px "IBM Plex Mono", monospace';
+  ctx.fillStyle = rgba(PURPLE, 0.55);
+  ctx.textAlign = 'right';
+  ctx.fillText('← pinch point', wL - 8, wireY - 10);
+  ctx.textAlign = 'left';
+  ctx.fillText('pinch point →', wR + 8, wireY - 10);
+
+  ctx.fillStyle = rgba(AMBER, 0.40);
+  ctx.textAlign = 'center';
+  ctx.fillText('self-sustaining wave', cx, wireY - H * 0.48);
+  ctx.fillStyle = rgba(AMBER, 0.25);
+  ctx.font      = '300 8px "IBM Plex Mono", monospace';
+  ctx.fillText('no longer needs the wire', cx, wireY - H * 0.48 + 14);
+
+  /* H field */
+  drawHField(wireY, cx, 0);
+
+  /* Current — toward centre (new half-cycle) */
+  drawCurrentArrows(wireY, wL, wR, 1, 0.7);
+  drawDipole(wireY, wL, wR);
+  drawLabels(wireY, wL, wR, 1);
+}
+
+/* ============================================================
+   MAIN DRAW LOOP
+   ============================================================ */
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  var wireY = H * 0.50;
+  var wL    = W * 0.13;
+  var wR    = W * 0.87;
+
+  if      (act === 1) drawAct1(wireY, wL, wR);
+  else if (act === 2) drawAct2(wireY, wL, wR);
+  else                drawAct3(wireY, wL, wR);
+
+  if (playing && !reduced) { t += 0.022; rafId = requestAnimationFrame(draw); }
+}
+
+function setAct(n) {
+  act = Math.max(1, Math.min(3, n));
+  t   = 0;
+  var a = ACTS[act - 1];
+  document.getElementById('act-badge').textContent    = a.badge;
+  document.getElementById('desc-act').textContent     = a.title;
+  document.getElementById('desc-text').textContent    = a.text;
+  document.getElementById('step-counter').textContent = act + ' / 3';
+  document.getElementById('btn-prev').disabled = (act === 1);
+  document.getElementById('btn-next').disabled = (act === 3);
+  cancelAnimationFrame(rafId);
+  draw();
+  if (playing && !reduced) rafId = requestAnimationFrame(draw);
+}
+
+/* ============================================================
+   INIT & EVENT LISTENERS
+   ============================================================ */
+document.getElementById('btn-prev').addEventListener('click', function() { setAct(act - 1); });
+document.getElementById('btn-next').addEventListener('click', function() { setAct(act + 1); });
+
+document.getElementById('btn-play').addEventListener('click', function() {
+  playing = !playing;
+  this.textContent = playing ? '⏸ Pause' : '▶ Play';
+  if (playing) { t = 0; rafId = requestAnimationFrame(draw); }
+  else           cancelAnimationFrame(rafId);
+});
+
+window.addEventListener('resize', function() {
+  cancelAnimationFrame(rafId);
+  setupCanvas();
+  draw();
+  if (playing && !reduced) rafId = requestAnimationFrame(draw);
+});
+
+/* Boot */
+setupCanvas();
+setAct(1);
+if (reduced) draw();
+</script>
+</body>
+</html>
