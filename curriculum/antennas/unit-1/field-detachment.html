@@ -186,7 +186,12 @@ input[type=range].speed-slider {
     <span class="speed-label">SLOW</span>
     <input type="range" class="speed-slider" id="sl-speed" min="1" max="10" value="4" step="1" aria-label="Animation speed">
     <span class="speed-label">FAST</span>
-    <button class="btn" id="btn-highlight" aria-pressed="false" style="margin-left:16px;font-size:10px;padding:6px 14px;letter-spacing:0.5px;">Highlight detached</button>
+    <button class="btn" id="btn-highlight" aria-pressed="false" style="margin-left:16px;font-size:10px;padding:6px 14px;letter-spacing:0.5px;">Highlight stages</button>
+    <span id="highlight-key" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.5px;line-height:1.8;color:rgba(148,163,184,0.7);margin-left:12px;">
+      <span style="color:rgba(245,158,11,0.9);">■</span> expanding &nbsp;
+      <span style="color:rgba(239,68,68,0.9);">■</span> pinching off &nbsp;
+      <span style="color:rgba(167,139,250,0.9);">■</span> free wave
+    </span>
   </div>
 </div>
 
@@ -197,6 +202,7 @@ input[type=range].speed-slider {
 var AMBER  = '245,158,11';
 var CYAN   = '6,182,212';
 var PURPLE = '167,139,250';
+var RED    = '239,68,68';
 var SLATE  = '148,163,184';
 var DIM    = '100,116,139';
 
@@ -658,8 +664,10 @@ function drawFieldGen(wireY, wL, wR, age) {
     var yLift = pinchT * ry_ell * 0.35;
     var archH = lensH + yLift * 0.6;
 
-    /* Colour: amber while expanding, switches to purple at pinch-off moment */
-    var fieldCol = (highlightDetached && age > EXPAND) ? PURPLE : AMBER;
+    /* Colour: amber = expanding, red = pinching (detaching), purple = free wave */
+    var fieldCol = highlightDetached
+      ? (age > EXPAND ? RED : AMBER)
+      : AMBER;
 
     /* Above wire */
     drawArchFree(xL, wireY - yLift, xR, wireY - yLift, archH,    fieldCol, alpha,       1.7);
@@ -771,6 +779,7 @@ document.getElementById('btn-highlight').addEventListener('click', function() {
   this.style.background  = highlightDetached ? 'rgba(167,139,250,0.18)' : '';
   this.style.color       = highlightDetached ? 'var(--purple)'          : '';
   this.style.borderColor = highlightDetached ? 'rgba(167,139,250,0.35)' : '';
+  document.getElementById('highlight-key').style.display = highlightDetached ? 'inline' : 'none';
 });
 
 document.getElementById('btn-play').addEventListener('click', function() {
