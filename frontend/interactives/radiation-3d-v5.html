@@ -2425,18 +2425,33 @@ function applyUIMode(mode) {
     });
   };
 
+  // Chrome-only show/hide (no scene state change)
   showHide('show_antenna_selector', '#antenna-selector');
   showHide('show_speed',            '#ctrl-speed');
   showHide('show_frequency',        '#ctrl-frequency');
   showHide('show_camera',           '#ctrl-camera');
   showHide('show_wavefront',        '#ctrl-wavefront');
-  showHide('show_tog_pattern',      '#tog-pattern');
-  showHide('show_tog_axes',         '#tog-axes');
-  showHide('show_tog_electrons',    '#tog-electrons');
-  showHide('show_tog_ewave',        '#tog-waveform');
-  showHide('show_tog_hwave',        '#tog-hwave');
-  showHide('show_tog_aperture',     '#tog-aperture');
   showHide('show_hud',              '.hud');
+
+  // Toggle buttons — hide button AND force feature state so scene matches
+  const applyTog = (paramName, btnId, getter, setter) => {
+    const val = params.get(paramName);
+    if (val === null) return;
+    const on = val !== '0';
+    const btn = document.getElementById(btnId);
+    if (btn) btn.style.display = on ? '' : 'none';
+    setter(on);
+  };
+
+  applyTog('show_tog_pattern',   'tog-pattern',   () => showPattern,   v => { showPattern = v; });
+  applyTog('show_tog_axes',      'tog-axes',      () => showAxes,      v => { showAxes = v; });
+  applyTog('show_tog_electrons', 'tog-electrons', () => showElectrons, v => { showElectrons = v; });
+  applyTog('show_tog_ewave',     'tog-waveform',  () => showWaveform,  v => {
+    showWaveform = v;
+    document.getElementById('hud-2d').textContent = v ? 'ON' : 'OFF';
+  });
+  applyTog('show_tog_hwave',     'tog-hwave',     () => showHWave,     v => { showHWave = v; });
+  applyTog('show_tog_aperture',  'tog-aperture',  () => showAperture,  v => { showAperture = v; });
 
   // show_rx hides/shows RX antenna, height slider, hint, and instruments as one unit
   const rxVal = params.get('show_rx');
