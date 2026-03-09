@@ -544,9 +544,10 @@ function drawBroadside(t) {
 
   const cx = w * 0.12;
   const cy = h / 2;
-  const waveLen = w * 0.35;
+  const freqFactor = frequency / 145;
+  const waveLen = Math.max(w * 0.07, Math.min(w * 1.0, w * 0.35 / freqFactor));
   const amp = h * 0.28;
-  const phaseSpeed = t * 3;
+  const phaseSpeed = t * 3 * freqFactor;
 
   // Propagation axis
   ctx.setLineDash([4, 4]);
@@ -664,7 +665,9 @@ function drawIsometric(t) {
   const len = w * 0.75;
   const ampE = h * 0.25;
   const ampH = w * 0.12;
-  const phaseSpeed = t * 3;
+  const freqFactor = frequency / 145;
+  const cycles = Math.max(0.5, Math.min(8, 2 * freqFactor));
+  const phaseSpeed = t * 3 * freqFactor;
   const segments = 200;
 
   // 3D projection helpers (simple oblique)
@@ -691,7 +694,7 @@ function drawIsometric(t) {
   for (let i = 0; i <= segments; i++) {
     const frac = i / segments;
     const x = frac * len;
-    const phase = frac * Math.PI * 4 - phaseSpeed;
+    const phase = frac * Math.PI * 2 * cycles - phaseSpeed;
     const hz = Math.sin(phase) * ampH;
     const px = isoX(x, hz);
     const py = isoY(0, hz);
@@ -701,11 +704,11 @@ function drawIsometric(t) {
   ctx.stroke();
 
   // H field vertical reference lines at quarter-waves
-  const waveLen = len / 2;
+  const waveLen = len / cycles;
   for (let i = 0; i < 8; i++) {
     const x = ((phaseSpeed / (Math.PI * 2)) % 0.5) * waveLen + i * (waveLen / 4);
     if (x > 0 && x < len) {
-      const phase = (x / len) * Math.PI * 4 - phaseSpeed;
+      const phase = (x / len) * Math.PI * 2 * cycles - phaseSpeed;
       const hz = Math.sin(phase) * ampH;
       if (Math.abs(hz) > ampH * 0.3) {
         ctx.strokeStyle = H_COLOR;
@@ -727,7 +730,7 @@ function drawIsometric(t) {
   for (let i = 0; i <= segments; i++) {
     const frac = i / segments;
     const x = frac * len;
-    const phase = frac * Math.PI * 4 - phaseSpeed;
+    const phase = frac * Math.PI * 2 * cycles - phaseSpeed;
     const ey = Math.sin(phase) * ampE;
     const px = isoX(x, 0);
     const py = isoY(ey, 0);
@@ -740,7 +743,7 @@ function drawIsometric(t) {
   for (let i = 0; i < 8; i++) {
     const x = ((phaseSpeed / (Math.PI * 2)) % 0.5) * waveLen + i * (waveLen / 4);
     if (x > 0 && x < len) {
-      const phase = (x / len) * Math.PI * 4 - phaseSpeed;
+      const phase = (x / len) * Math.PI * 2 * cycles - phaseSpeed;
       const ey = Math.sin(phase) * ampE;
       if (Math.abs(ey) > ampE * 0.3) {
         ctx.strokeStyle = E_COLOR;
@@ -1059,6 +1062,19 @@ document.querySelectorAll('.btn-antenna').forEach(btn => {
 window.addEventListener('resize', () => {
   initCanvases();
 });
+
+// ?freq= query parameter — pre-set frequency slider on load
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const freqParam = params.get('freq');
+  if (freqParam !== null) {
+    const f = parseInt(freqParam, 10);
+    if (!isNaN(f) && f >= parseInt(freqSlider.min) && f <= parseInt(freqSlider.max)) {
+      frequency = f;
+      freqSlider.value = f;
+    }
+  }
+})();
 
 // Set initial values
 document.getElementById('freq-val').textContent = frequency + ' MHz';
