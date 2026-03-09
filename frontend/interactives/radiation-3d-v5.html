@@ -353,15 +353,15 @@ footer a { color: var(--accent-em); text-decoration: none; }
   </div>
 
   <div class="controls-bar" id="main-controls">
-    <div class="control-group">
+    <div class="control-group" id="ctrl-speed">
       <div class="control-label"><span>Speed</span><span class="control-val" id="speed-val">1.0×</span></div>
       <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
     </div>
-    <div class="control-group">
+    <div class="control-group" id="ctrl-frequency">
       <div class="control-label"><span>Frequency</span><span class="control-val" id="density-val">6</span></div>
       <input type="range" id="density" min="3" max="12" step="1" value="6">
     </div>
-    <div>
+    <div id="ctrl-camera">
       <div class="control-label"><span>Camera</span></div>
       <div class="btn-group">
         <button class="ctrl-btn" data-view="orbit">Auto Orbit</button>
@@ -370,7 +370,7 @@ footer a { color: var(--accent-em); text-decoration: none; }
         <button class="ctrl-btn" data-view="side">Side</button>
       </div>
     </div>
-    <div>
+    <div id="ctrl-wavefront">
       <div class="control-label"><span>Wavefront Mode</span></div>
       <div class="btn-group">
         <button class="ctrl-btn primary-active" id="mode-rings">Flat Rings</button>
@@ -2408,22 +2408,66 @@ function applyUIMode(mode) {
   const params = new URLSearchParams(window.location.search);
   const validAntennas = ['dipole', 'vertical', 'yagi', 'collinear', 'loop', 'patch', 'dish'];
 
-  // ?antenna=
-  const antennaParam = params.get('antenna');
-  if (antennaParam !== null) {
-    const type = validAntennas.includes(antennaParam) ? antennaParam : 'dipole';
-    setAntenna(type);
-    const sel = document.getElementById('antenna-selector');
-    if (sel) sel.style.display = 'none';
-  }
-
-  // ?ui=
+  // 1. ?ui= — broad mode applied first; granular params can override below
   const uiParam = params.get('ui');
   if (uiParam === 'minimal' || uiParam === 'standard' || uiParam === 'full') {
     applyUIMode(uiParam);
   }
 
-  // ?view=
+  // 2. Granular show/hide params — each accepts 0 (hide) or 1 (show)
+  //    Absent = no change (fully backwards-compatible)
+  const showHide = (paramName, selector) => {
+    const val = params.get(paramName);
+    if (val === null) return;
+    const show = val !== '0';
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
+  };
+
+  showHide('show_antenna_selector', '#antenna-selector');
+  showHide('show_speed',            '#ctrl-speed');
+  showHide('show_frequency',        '#ctrl-frequency');
+  showHide('show_camera',           '#ctrl-camera');
+  showHide('show_wavefront',        '#ctrl-wavefront');
+  showHide('show_tog_pattern',      '#tog-pattern');
+  showHide('show_tog_axes',         '#tog-axes');
+  showHide('show_tog_electrons',    '#tog-electrons');
+  showHide('show_tog_ewave',        '#tog-waveform');
+  showHide('show_tog_hwave',        '#tog-hwave');
+  showHide('show_tog_aperture',     '#tog-aperture');
+  showHide('show_hud',              '.hud');
+
+  // show_rx hides/shows RX antenna, height slider, hint, and instruments as one unit
+  const rxVal = params.get('show_rx');
+  if (rxVal !== null) {
+    const showRx = rxVal !== '0';
+    ['#rx-controls', '.rx-hint', '.instruments-row'].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => { el.style.display = showRx ? '' : 'none'; });
+    });
+    rxGroup.visible = showRx;
+  }
+
+  // 3. ?antenna= — single type or comma-separated list
+  const antennaParam = params.get('antenna');
+  if (antennaParam !== null) {
+    const types = antennaParam.split(',').map(s => s.trim()).filter(s => validAntennas.includes(s));
+    const firstType = types.length > 0 ? types[0] : 'dipole';
+    setAntenna(firstType);
+
+    if (types.length <= 1) {
+      // Single type: hide selector entirely (existing behaviour)
+      const sel = document.getElementById('antenna-selector');
+      if (sel) sel.style.display = 'none';
+    } else {
+      // Multiple types: show selector, hide buttons not in the list
+      document.querySelectorAll('[data-antenna]').forEach(btn => {
+        if (!types.includes(btn.dataset.antenna)) btn.style.display = 'none';
+      });
+    }
+  }
+
+  // 4. ?view=
   const viewParam = params.get('view');
   if (['orbit', 'top', 'side', 'free'].includes(viewParam)) {
     setCameraMode(viewParam);
