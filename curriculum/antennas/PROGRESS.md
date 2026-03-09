@@ -1,7 +1,7 @@
 # RF-Hub Antenna Curriculum — Content & Progress Tracker
 
 **Living Document** — Updated each session  
-**Last Updated:** 7 March 2026  
+**Last Updated:** 9 March 2026  
 **Current Focus:** Lesson 3 — Radiation Patterns (DRAFT complete)
 
 ---
@@ -42,6 +42,7 @@ Each .md contains:
   - L04 (closing): `radiation-3d-v5.html` — full selector, all families visible
   - L09: `radiation-3d-v5.html?antenna=yagi` — Yagi pattern for gain discussion
   - Claude Code enhancement brief must specify: single file, `?antenna=` query param support, selector hidden when param is present, selector shown when no param.
+- **field-detachment.html — shared configurable resource, planned evolution across lessons:** Created 9 Mar 2026. Shows the field detachment lifecycle in canvas animation (4 acts). URL parameters control which acts are shown, start act, highlight mode, and UI chrome. L2 uses it as-is (all 4 acts, full UI). L3 uses Act 4 with minimal UI as visual context before introducing radiation-3d-v5.html. **Planned growth path:** for L3 the propagating loops are rudimentary but pedagogically useful — the directionality is technically inaccurate (treats all directions equally) but visually communicates propagation at foundation level. In later lessons, the animation will be enhanced toward technical accuracy (correct dipole toroid energy distribution). **Long-term goal:** synchronise loop propagation timing and pattern shape with radiation-3d-v5.html so the two tools can be used side by side and tell the same story from different angles. This is a deferred Claude Code task — see CONFIG.md for current parameter spec.
 
 ---
 
@@ -58,6 +59,7 @@ Each .md contains:
 | `em-animato-2.html` | EM Field & Radiation Pattern Animator — freq slider, wavelength readout, E/H wave views, antenna type selector | L1 (centrepiece interactive) |
 | `tx-rx-complete.html` | TX to RX complete link visualisation | L2 |
 | `radiation-3d-v5.html` | 3D radiation pattern viewer — query parameter controlled (see CONFIG.md) | L3, L4, L9 |
+| `field-detachment.html` | Field detachment canvas animation — 4 acts: field expands, current reverses, pinch-off, full cycle. Three-stage colour highlight (amber/red/purple). Speed slider. URL-configurable acts, start act, highlight, and UI mode. **Foundation for L3 radiation pattern visualisation — planned to grow in accuracy across lessons.** (see CONFIG.md for full parameter spec) | L2 (all acts), L3 (Act 4, minimal UI as radiation pattern context), future lessons |
 
 ---
 
@@ -335,6 +337,8 @@ Wrong models to correct:
 
 | Date | Lesson | Chat Type | Outcome |
 |------|--------|-----------|---------|
+| 9 Mar 2026 | All | Architecture | **field-detachment.html created and moved to shared interactives.** Canvas animation — 4 acts, three-stage colour highlight (amber/red/purple), speed slider. URL params: `?acts=`, `?start=`, `?highlight=`, `?ui=`. Moved to `frontend/interactives/`. CONFIG.md updated with full param spec and per-lesson usage table. PROGRESS.md updated with evolution plan. |
+| 9 Mar 2026 | All | Architecture | **field-detachment.html evolution decision.** L2 uses as-is (all acts, full UI). L3 uses `?acts=4&start=4&ui=minimal` as radiation pattern visual context. Long-term: enhance toward technically accurate dipole pattern, synchronise with radiation-3d-v5.html. Deferred Claude Code task. |
 | 7 Mar 2026 | All | Architecture | **Interactives relocated to `frontend\interactives\`.** All four HTML files moved from `resources\`. CONFIG.md created with full query parameter spec for `radiation-3d-v5.html` and iframe embed format. See `frontend\interactives\CONFIG.md`. |
 | 7 Mar 2026 | All | Architecture | **radiation-3d-v5.html query parameter architecture locked.** Single file, `?antenna=` param controls which pattern loads and whether selector is visible. No versioned copies ever. See Key Rules for full spec and per-lesson usage table. |
 | 7 Mar 2026 | All | Architecture | **iframe embedding rule locked (Option 1).** All interactives embedded via iframe. See Key Rules. |
