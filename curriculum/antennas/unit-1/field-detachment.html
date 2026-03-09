@@ -658,10 +658,13 @@ function drawFieldGen(wireY, wL, wR, age) {
     var yLift = pinchT * ry_ell * 0.35;
     var archH = lensH + yLift * 0.6;
 
+    /* Colour: amber while expanding, switches to purple at pinch-off moment */
+    var fieldCol = (highlightDetached && age > EXPAND) ? PURPLE : AMBER;
+
     /* Above wire */
-    drawArchFree(xL, wireY - yLift, xR, wireY - yLift, archH,       AMBER, alpha,       1.7);
+    drawArchFree(xL, wireY - yLift, xR, wireY - yLift, archH,    fieldCol, alpha,       1.7);
     /* Below wire */
-    drawArchFree(xL, wireY + yLift, xR, wireY + yLift, -(archH),    AMBER, alpha * 0.85, 1.5);
+    drawArchFree(xL, wireY + yLift, xR, wireY + yLift, -(archH), fieldCol, alpha * 0.85, 1.5);
 
   } else {
     /* Closed ellipse propagating outward */
