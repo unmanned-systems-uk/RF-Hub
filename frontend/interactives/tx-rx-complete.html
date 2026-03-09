@@ -25,31 +25,22 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: var(--bg-deep);
+  background: transparent;
   color: var(--text-primary);
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
-
 .container {
-  max-width: 1100px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 16px;
   position: relative;
   z-index: 1;
 }
+
+.embedded header, .embedded footer { display: none; }
 
 /* Header */
 header {
@@ -324,6 +315,7 @@ footer {
 }
 footer a { color: var(--accent-em); text-decoration: none; }
 </style>
+<script>if (window.top !== window.self) { document.documentElement.classList.add('embedded'); }</script>
 </head>
 <body>
 

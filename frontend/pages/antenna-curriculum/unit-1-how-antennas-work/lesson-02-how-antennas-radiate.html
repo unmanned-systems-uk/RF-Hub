@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lesson 2 — From Waves to Wires: How Antennas Radiate | RF-Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
 <style>
 /* ============================================================
    CSS CUSTOM PROPERTIES — RF-Hub Design System
@@ -486,6 +487,9 @@ input[type="range"]::-moz-range-thumb {
 .btn-resource:hover { background: rgba(167,139,250,0.22); transform: translateY(-1px); }
 .btn-resource:focus-visible { outline: 2px solid var(--accent-em); outline-offset: 2px; }
 @media (max-width: 560px) { .resource-block { flex-direction: column; } }
+.resource-embed { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-subtle); margin: 16px 0; }
+.resource-embed iframe { width: 100%; height: 520px; border: none; display: block; }
+@media (max-width: 600px) { .resource-embed iframe { height: 380px; } }
 
 /* ============================================================
    GUIDED EXERCISE BLOCKS
@@ -840,6 +844,19 @@ footer a:hover { text-decoration: underline; }
 </head>
 <body>
 
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
 <!-- PROGRESS BAR -->
 <div id="progress-bar" role="progressbar" aria-label="Lesson reading progress"></div>
 
@@ -1074,26 +1091,29 @@ footer a:hover { text-decoration: underline; }
       </div>
     </div>
 
-    <!-- RESOURCE: em-radiation.html -->
-    <div class="resource-block">
-      <div class="resource-block-icon">▶</div>
-      <div class="resource-block-content">
-        <h3>Interactive — em-radiation.html</h3>
-        <p>The interactive animates the four-act detachment story step by step. <strong>Do the guided exercise below before reading further.</strong> The animation will make the text above click into place.</p>
-        <a class="btn-resource" href="../../../resources/em-radiation.html" target="_blank" rel="noopener">Open em-radiation interactive →</a>
+    <!-- INTERACTIVE: field-detachment.html — Layer 2 visual, Section 03 -->
+    <div style="position:sticky;top:20px;z-index:10;">
+      <div class="diagram-card glow-em" id="v-field-detachment" style="padding:0;overflow:hidden;">
+        <iframe
+          src="../../../interactives/field-detachment.html"
+          title="Field detachment canvas animation — four acts showing field expansion, reversal, pinch-off and free propagation"
+          width="100%"
+          height="760"
+          style="border:none;display:block;background:transparent;"
+          allowtransparency="true"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
       </div>
     </div>
 
-    <div class="exercise-block">
-      <h4>Guided Exercise — em-radiation.html</h4>
-      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:14px;">Work through the four acts in order. For each act, read the annotation on screen, then answer the question before advancing.</p>
-      <ol>
-        <li><em>Act 1 — Current and fields build.</em> Watch the field lines expand outward from the wire. Question to yourself: where are these field lines travelling — and how fast?</li>
-        <li><em>Act 2 — Current reverses.</em> The current direction indicator flips. Watch the field lines at the furthest extent. Question: why can't those distant field lines instantly snap back to the wire?</li>
-        <li><em>Act 3 — Detachment.</em> Watch the pinch point form. The outer field separates. Question: what does the soap bubble analogy have to do with this moment?</li>
-        <li><em>Act 4 — Free propagation.</em> The detached packet moves outward. The wire is already generating its next cycle. Question: what keeps this packet moving? What "feeds" it now that it's separated from the wire?</li>
-      </ol>
-      <p class="exercise-closing">After completing all four acts: close the interactive and write two sentences in your own words explaining why the wave cannot simply return to the wire once it detaches.</p>
+    <!-- RESOURCE: em-radiation.html — optional deep-dive, low visual weight -->
+    <div class="resource-block" style="opacity:0.75;">
+      <div class="resource-block-icon" style="font-size:20px;">📖</div>
+      <div class="resource-block-content">
+        <p style="margin-bottom:8px;"><strong>Want more detail?</strong> em-radiation.html walks through the same four acts with static diagrams and more explanatory text — useful if you want to sit with each step before moving on.</p>
+        <a class="btn-resource" href="../../../interactives/em-radiation.html" target="_blank" rel="noopener">Optional deeper reading: em-radiation →</a>
+      </div>
     </div>
 
   </div>
@@ -1373,15 +1393,8 @@ footer a:hover { text-decoration: underline; }
       <p style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:10px;">Reciprocity Theorem — same antenna, same pattern, both directions</p>
     </div>
 
-    <!-- RESOURCE: tx-rx-complete.html -->
-    <div class="resource-block">
-      <div class="resource-block-icon">▶</div>
-      <div class="resource-block-content">
-        <h3>Interactive — tx-rx-complete.html</h3>
-        <p>This interactive shows the full transmit and receive chains side by side. Work through the guided exercise below before moving to the self-check.</p>
-        <a class="btn-resource" href="../../../resources/tx-rx-complete.html" target="_blank" rel="noopener">Open TX/RX interactive →</a>
-      </div>
-    </div>
+    <!-- INTERACTIVE: tx-rx-complete.html -->
+    <iframe src="../../../interactives/tx-rx-complete.html" title="TX to RX Complete Link Visualisation" allowtransparency="true" loading="lazy" allowfullscreen style="border:none;display:block;width:100%;height:800px;background:transparent;"></iframe>
 
     <div class="exercise-block">
       <h4>Guided Exercise — tx-rx-complete.html</h4>
