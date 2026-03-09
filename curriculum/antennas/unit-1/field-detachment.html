@@ -136,6 +136,26 @@ canvas {
   min-width: 60px;
   text-align: center;
 }
+.speed-row {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.speed-row.visible { display: flex; }
+.speed-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  white-space: nowrap;
+}
+input[type=range].speed-slider {
+  width: 160px;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -158,9 +178,14 @@ canvas {
 
   <div class="controls">
     <button class="btn" id="btn-prev" aria-label="Previous act">← Prev</button>
-    <span class="step-counter" id="step-counter">1 / 3</span>
+    <span class="step-counter" id="step-counter">1 / 4</span>
     <button class="btn primary" id="btn-play" aria-label="Pause animation">⏸ Pause</button>
     <button class="btn" id="btn-next" aria-label="Next act">Next →</button>
+  </div>
+  <div class="speed-row" id="speed-row">
+    <span class="speed-label">SLOW</span>
+    <input type="range" class="speed-slider" id="sl-speed" min="1" max="10" value="4" step="1" aria-label="Animation speed">
+    <span class="speed-label">FAST</span>
   </div>
 </div>
 
@@ -177,6 +202,7 @@ var DIM    = '100,116,139';
 var act     = 1;
 var t       = 0;
 var phase4  = 0;
+var phaseSpeed = 0.016;
 var playing = true;
 var rafId;
 var ctx, W, H;
@@ -651,7 +677,7 @@ function drawAct4(wireY, wL, wR) {
   var cx = (wL + wR) / 2;
 
   /* Advance phase */
-  if (!reduced && playing) phase4 += 0.016;
+  if (!reduced && playing) phase4 += phaseSpeed;
 
   var HALF = Math.PI;
 
@@ -715,6 +741,9 @@ function setAct(n) {
   document.getElementById('step-counter').textContent = act + ' / 4';
   document.getElementById('btn-prev').disabled = (act === 1);
   document.getElementById('btn-next').disabled = (act === 4);
+  /* Show speed slider only on Act 4 */
+  var sr = document.getElementById('speed-row');
+  if (act === 4) sr.classList.add('visible'); else sr.classList.remove('visible');
   cancelAnimationFrame(rafId);
   draw();
   if (playing && !reduced) rafId = requestAnimationFrame(draw);
@@ -725,6 +754,11 @@ function setAct(n) {
    ============================================================ */
 document.getElementById('btn-prev').addEventListener('click', function() { setAct(act - 1); });
 document.getElementById('btn-next').addEventListener('click', function() { setAct(act + 1); });
+
+document.getElementById('sl-speed').addEventListener('input', function() {
+  /* Slider 1–10 maps to phase speed 0.006 – 0.040 */
+  phaseSpeed = 0.006 + (parseInt(this.value) - 1) * (0.034 / 9);
+});
 
 document.getElementById('btn-play').addEventListener('click', function() {
   playing = !playing;
