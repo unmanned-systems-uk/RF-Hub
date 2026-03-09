@@ -2487,6 +2487,13 @@ function applyUIMode(mode) {
   if (['orbit', 'top', 'side', 'free'].includes(viewParam)) {
     setCameraMode(viewParam);
   }
+
+  // 5. ?zoom= — set initial camera distance (orbitRadius); valid range 15–120, default 55
+  const zoomParam = params.get('zoom');
+  if (zoomParam !== null) {
+    const z = parseFloat(zoomParam);
+    if (!isNaN(z)) orbitRadius = Math.max(15, Math.min(120, z));
+  }
 })();
 
 // ============================================
