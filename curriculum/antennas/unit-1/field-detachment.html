@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Field Detachment — Acts 1–3 | RF-Hub</title>
+<title>Field Detachment — Acts 1–4 | RF-Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -176,6 +176,7 @@ var DIM    = '100,116,139';
 
 var act     = 1;
 var t       = 0;
+var phase4  = 0;
 var playing = true;
 var rafId;
 var ctx, W, H;
@@ -196,6 +197,11 @@ var ACTS = [
     badge: 'ACT 3 — DETACHMENT',
     title: 'Act 3 — The field pinches off',
     text:  'The old field can no longer connect to the reversing wire. The loops close and break free — self-sustaining. Each changing E creates H, each changing H creates E. The wave no longer needs the wire.'
+  },
+  {
+    badge: 'ACT 4 — ALL TOGETHER',
+    title: 'Act 4 — Putting it all together',
+    text:  'The full cycle: AC current drives the feedpoint, E and H fields build and expand, each half-cycle a new field generation pinches off the tips and propagates away as a self-sustaining wave.'
   }
 ];
 
@@ -531,8 +537,158 @@ function drawAct3(wireY, wL, wR) {
 }
 
 /* ============================================================
-   MAIN DRAW LOOP
+   ACT 4 — PUTTING IT ALL TOGETHER
    ============================================================ */
+
+/* Arch helper that allows y-offset at endpoints (for pinch transition) */
+function drawArchFree(x1, y1, x2, y2, height, rgb, alpha, lw) {
+  var mx = (x1 + x2) / 2;
+  var my = (y1 + y2) / 2;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.bezierCurveTo(
+    x1 + (x2 - x1) * 0.22, my - height,
+    x2 - (x2 - x1) * 0.22, my - height,
+    x2, y2
+  );
+  ctx.strokeStyle = rgba(rgb, alpha);
+  ctx.lineWidth   = lw || 1.5;
+  ctx.stroke();
+}
+
+/* AC cycle indicator — sine wave with phase dot */
+function drawACIndicator(cx, wireY, phase) {
+  var sw  = W * 0.30;
+  var sh  = H * 0.045;
+  var ox  = cx - sw / 2;
+  var oy  = wireY + H * 0.32;
+
+  ctx.font      = '300 8px "IBM Plex Mono", monospace';
+  ctx.fillStyle = rgba(DIM, 0.55);
+  ctx.textAlign = 'center';
+  ctx.fillText('AC CYCLE', cx, oy - 7);
+
+  /* Sine trace */
+  ctx.beginPath();
+  for (var i = 0; i <= sw; i++) {
+    var x = ox + i;
+    var y = oy + Math.sin((i / sw) * Math.PI * 2) * sh;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = rgba(AMBER, 0.22);
+  ctx.lineWidth   = 1;
+  ctx.stroke();
+
+  /* Phase dot */
+  var norm = (phase % (Math.PI * 2)) / (Math.PI * 2);
+  var dotX = ox + norm * sw;
+  var dotY = oy + Math.sin(norm * Math.PI * 2) * sh;
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 4, 0, Math.PI * 2);
+  ctx.fillStyle = rgba(AMBER, 0.92);
+  ctx.fill();
+  /* Glow ring */
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+  ctx.strokeStyle = rgba(AMBER, 0.22);
+  ctx.lineWidth   = 1;
+  ctx.stroke();
+}
+
+/* One field generation — lifecycle from lens → pinch → propagating ellipse */
+function drawFieldGen(wireY, wL, wR, age) {
+  /* age: 0.0 = just born, 1.0 = off canvas */
+  if (age < 0 || age > 1.0) return;
+
+  var cx     = (wL + wR) / 2;
+  var wHalf  = (wR - wL) / 2;
+  var EXPAND = 0.28;   /* 0 → EXPAND: lens grows */
+  var PINCH  = 0.50;   /* EXPAND → PINCH: endpoints close, loop forms */
+  /* PINCH → 1.0: ellipse propagates away */
+
+  /* Alpha: fade in at birth, hold, fade out near end */
+  var alpha;
+  if      (age < 0.05) alpha = (age / 0.05) * 0.72;
+  else if (age > 0.78) alpha = (1 - (age - 0.78) / 0.22) * 0.72;
+  else                  alpha = 0.72;
+  if (alpha < 0.02) return;
+
+  var maxLensH = H * 0.33;
+  var rx_ell   = wHalf * 0.50;
+  var ry_ell   = H * 0.19;
+
+  if (age <= PINCH) {
+    var expandT = Math.min(age / EXPAND, 1.0);
+    var lensH   = expandT * maxLensH;
+    var pinchT  = age <= EXPAND ? 0 : (age - EXPAND) / (PINCH - EXPAND);
+
+    /* Endpoints converge toward cx ± rx_ell */
+    var xL = wL + pinchT * (cx - rx_ell - wL);
+    var xR = wR - pinchT * (wR - (cx + rx_ell));
+
+    /* Endpoints lift slightly off wire as pinch progresses */
+    var yLift = pinchT * ry_ell * 0.35;
+    var archH = lensH + yLift * 0.6;
+
+    /* Above wire */
+    drawArchFree(xL, wireY - yLift, xR, wireY - yLift, archH,       AMBER, alpha,       1.7);
+    /* Below wire */
+    drawArchFree(xL, wireY + yLift, xR, wireY + yLift, -(archH),    AMBER, alpha * 0.85, 1.5);
+
+  } else {
+    /* Closed ellipse propagating outward */
+    var propT    = (age - PINCH) / (1.0 - PINCH);
+    var dist     = propT * H * 0.90;
+    var cyAbove  = wireY - ry_ell * 0.45 - dist;
+    var cyBelow  = wireY + ry_ell * 0.45 + dist;
+
+    drawDetachedLoop(cx, cyAbove, rx_ell, ry_ell, AMBER, alpha);
+    drawDetachedLoop(cx, cyBelow, rx_ell, ry_ell, AMBER, alpha * 0.85);
+  }
+}
+
+function drawAct4(wireY, wL, wR) {
+  var cx = (wL + wR) / 2;
+
+  /* Advance phase */
+  if (!reduced && playing) phase4 += 0.016;
+
+  var HALF = Math.PI;
+
+  /* Current from AC source */
+  var current = Math.sin(phase4);
+  var currDir = current >= 0 ? 1 : -1;
+  var currMag = Math.abs(current);
+
+  /* H field rings — intensity follows current magnitude */
+  if (currMag > 0.08) {
+    ctx.globalAlpha = currMag * 0.85;
+    drawHField(wireY, cx, phase4);
+    ctx.globalAlpha = 1;
+  }
+
+  /* Field generations — one born per half-cycle */
+  var LIFECYCLE = HALF * 6.5;   /* phase units a generation lives */
+  var currentGen = Math.floor(phase4 / HALF);
+
+  for (var k = currentGen; k >= currentGen - 7; k--) {
+    if (k < 0) continue;
+    var birthPhase = k * HALF;
+    var age = (phase4 - birthPhase) / LIFECYCLE;
+    if (age > 1.0) continue;
+    drawFieldGen(wireY, wL, wR, age);
+  }
+
+  /* Dipole + current arrows */
+  drawCurrentArrows(wireY, wL, wR, currDir, currMag);
+  drawDipole(wireY, wL, wR);
+  drawLabels(wireY, wL, wR, currDir);
+
+  /* AC cycle indicator */
+  drawACIndicator(cx, wireY, phase4);
+}
+
+
 function draw() {
   ctx.clearRect(0, 0, W, H);
 
@@ -542,21 +698,23 @@ function draw() {
 
   if      (act === 1) drawAct1(wireY, wL, wR);
   else if (act === 2) drawAct2(wireY, wL, wR);
-  else                drawAct3(wireY, wL, wR);
+  else if (act === 3) drawAct3(wireY, wL, wR);
+  else                drawAct4(wireY, wL, wR);
 
   if (playing && !reduced) { t += 0.022; rafId = requestAnimationFrame(draw); }
 }
 
 function setAct(n) {
-  act = Math.max(1, Math.min(3, n));
+  act = Math.max(1, Math.min(4, n));
   t   = 0;
+  if (act === 4) phase4 = 0;
   var a = ACTS[act - 1];
   document.getElementById('act-badge').textContent    = a.badge;
   document.getElementById('desc-act').textContent     = a.title;
   document.getElementById('desc-text').textContent    = a.text;
-  document.getElementById('step-counter').textContent = act + ' / 3';
+  document.getElementById('step-counter').textContent = act + ' / 4';
   document.getElementById('btn-prev').disabled = (act === 1);
-  document.getElementById('btn-next').disabled = (act === 3);
+  document.getElementById('btn-next').disabled = (act === 4);
   cancelAnimationFrame(rafId);
   draw();
   if (playing && !reduced) rafId = requestAnimationFrame(draw);
