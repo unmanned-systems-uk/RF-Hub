@@ -14,6 +14,7 @@
 | `em-animato-2.html` | EM field animator — frequency slider, E/H wave views, wavelength readout, antenna type selector | L01 |
 | `em-radiation.html` | "How Antennas Radiate" — 4-act SVG narrative: current → fields → detachment → reception | L01 (deep-dive), L02 (primary) |
 | `tx-rx-complete.html` | TX→RX complete link visualisation | L02 |
+| `field-detachment.html` | Field detachment canvas animation — 4 acts: field expands, current reverses, pinch-off, full cycle. Stage highlight toggle (amber/red/purple). Speed slider. URL-configurable acts, start act, highlight, and UI mode. | L02, L03+ |
 
 ---
 
@@ -91,6 +92,58 @@ No query parameter support currently. Used as full 4-act narrative in L01 (optio
 ### `tx-rx-complete.html` Parameters
 
 No query parameter support currently. Used as full interactive in L02.
+
+---
+
+### `field-detachment.html` Parameters
+
+#### `?acts=`
+Controls which acts are available and shown in the step counter.
+
+| Value | Acts shown | Step counter |
+|-------|-----------|--------------|
+| `1-4` | All four acts | 1 / 4 (default) |
+| `1-3` | Acts 1–3 only (no Act 4) | 1 / 3 |
+| `4` | Act 4 only | 1 / 1 |
+| *(absent)* | All four acts | 1 / 4 |
+
+#### `?start=`
+Sets which act opens on load. Must be within the `?acts=` range.
+
+| Value | Opens on |
+|-------|---------|
+| `1`–`4` | That act number |
+| *(absent)* | First act in the `?acts=` range |
+
+#### `?highlight=`
+Pre-enables the stage highlight colour toggle on load.
+
+| Value | Effect |
+|-------|--------|
+| `on` | Highlight active on load (amber/red/purple stages visible immediately) |
+| *(absent)* | Highlight off — all amber (physically correct default) |
+
+#### `?ui=`
+Controls interface chrome.
+
+| Value | Effect |
+|-------|--------|
+| `minimal` | Hides description box and step counter — canvas + prev/next/play only |
+| `full` | Full UI with description, step counter, speed slider, highlight toggle |
+| *(absent)* | Defaults to `full` |
+
+---
+
+### Per-Lesson Usage Table — `field-detachment.html`
+
+| Lesson | Context | iframe src | Rationale |
+|--------|---------|-----------|-----------|
+| L02 — Section 3 | Detachment story | `field-detachment.html` | Full 4 acts, student works through the story step by step |
+| L02 — Section 3 embed | Alongside text | `field-detachment.html?acts=1-3` | Acts 1–3 only — Act 4 belongs in its own section below |
+| L02 — "Putting it together" | Full cycle | `field-detachment.html?acts=4&highlight=on` | Act 4 only, highlight pre-enabled to show the three stages clearly |
+| L03 — Radiation pattern intro | Pattern context | `field-detachment.html?acts=4&start=4&ui=minimal` | Act 4 minimal — propagating loops as visual context before 3D pattern viewer |
+
+---
 
 ---
 

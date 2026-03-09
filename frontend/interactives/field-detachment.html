@@ -206,11 +206,34 @@ var RED    = '239,68,68';
 var SLATE  = '148,163,184';
 var DIM    = '100,116,139';
 
-var act     = 1;
+/* ============================================================
+   URL PARAMETER CONFIG
+   ?acts=1-4   which acts are available (default: 1-4)
+   ?start=N    which act to open on load (default: first act in range)
+   ?highlight=on   pre-enable stage highlight toggle
+   ?ui=minimal     hide description box and step counter
+   ============================================================ */
+var CFG = (function() {
+  var p = new URLSearchParams(window.location.search);
+  var actsParam = (p.get('acts') || '1-4').split('-');
+  var minA = parseInt(actsParam[0]);
+  var maxA = actsParam.length === 2 ? parseInt(actsParam[1]) : minA;
+  var startA = p.get('start') ? parseInt(p.get('start')) : minA;
+  startA = Math.max(minA, Math.min(maxA, startA));
+  return {
+    minAct:        minA,
+    maxAct:        maxA,
+    startAct:      startA,
+    startHighlight: p.get('highlight') === 'on',
+    uiMinimal:      p.get('ui') === 'minimal'
+  };
+}());
+
+var act     = CFG.startAct;
 var t       = 0;
 var phase4  = 0;
 var phaseSpeed = 0.016;
-var highlightDetached = false;
+var highlightDetached = CFG.startHighlight;
 var playing = true;
 var rafId;
 var ctx, W, H;
@@ -744,17 +767,19 @@ function draw() {
 }
 
 function setAct(n) {
-  act = Math.max(1, Math.min(4, n));
+  act = Math.max(CFG.minAct, Math.min(CFG.maxAct, n));
   t   = 0;
   if (act === 4) phase4 = 0;
   var a = ACTS[act - 1];
   document.getElementById('act-badge').textContent    = a.badge;
   document.getElementById('desc-act').textContent     = a.title;
   document.getElementById('desc-text').textContent    = a.text;
-  document.getElementById('step-counter').textContent = act + ' / 4';
-  document.getElementById('btn-prev').disabled = (act === 1);
-  document.getElementById('btn-next').disabled = (act === 4);
-  /* Show speed slider only on Act 4 */
+  var relPos   = act - CFG.minAct + 1;
+  var relTotal = CFG.maxAct - CFG.minAct + 1;
+  document.getElementById('step-counter').textContent = relPos + ' / ' + relTotal;
+  document.getElementById('btn-prev').disabled = (act === CFG.minAct);
+  document.getElementById('btn-next').disabled = (act === CFG.maxAct);
+  /* Speed slider + highlight only on Act 4 */
   var sr = document.getElementById('speed-row');
   if (act === 4) sr.classList.add('visible'); else sr.classList.remove('visible');
   cancelAnimationFrame(rafId);
@@ -798,7 +823,18 @@ window.addEventListener('resize', function() {
 
 /* Boot */
 setupCanvas();
-setAct(1);
+if (CFG.uiMinimal) {
+  document.querySelector('.desc-box').style.display  = 'none';
+  document.getElementById('step-counter').style.display = 'none';
+}
+if (CFG.startHighlight) {
+  var hBtn = document.getElementById('btn-highlight');
+  hBtn.style.background  = 'rgba(167,139,250,0.18)';
+  hBtn.style.color       = 'var(--purple)';
+  hBtn.style.borderColor = 'rgba(167,139,250,0.35)';
+  document.getElementById('highlight-key').style.display = 'inline';
+}
+setAct(CFG.startAct);
 if (reduced) draw();
 </script>
 </body>
