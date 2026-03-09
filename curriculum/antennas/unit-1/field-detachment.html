@@ -186,6 +186,7 @@ input[type=range].speed-slider {
     <span class="speed-label">SLOW</span>
     <input type="range" class="speed-slider" id="sl-speed" min="1" max="10" value="4" step="1" aria-label="Animation speed">
     <span class="speed-label">FAST</span>
+    <button class="btn" id="btn-highlight" aria-pressed="false" style="margin-left:16px;font-size:10px;padding:6px 14px;letter-spacing:0.5px;">Highlight detached</button>
   </div>
 </div>
 
@@ -203,6 +204,7 @@ var act     = 1;
 var t       = 0;
 var phase4  = 0;
 var phaseSpeed = 0.016;
+var highlightDetached = false;
 var playing = true;
 var rafId;
 var ctx, W, H;
@@ -668,8 +670,8 @@ function drawFieldGen(wireY, wL, wR, age) {
     var cyAbove  = wireY - ry_ell * 0.45 - dist;
     var cyBelow  = wireY + ry_ell * 0.45 + dist;
 
-    drawDetachedLoop(cx, cyAbove, rx_ell, ry_ell, AMBER, alpha);
-    drawDetachedLoop(cx, cyBelow, rx_ell, ry_ell, AMBER, alpha * 0.85);
+    drawDetachedLoop(cx, cyAbove, rx_ell, ry_ell, highlightDetached ? PURPLE : AMBER, alpha);
+    drawDetachedLoop(cx, cyBelow, rx_ell, ry_ell, highlightDetached ? PURPLE : AMBER, alpha * 0.85);
   }
 }
 
@@ -758,6 +760,14 @@ document.getElementById('btn-next').addEventListener('click', function() { setAc
 document.getElementById('sl-speed').addEventListener('input', function() {
   /* Slider 1–10 maps to phase speed 0.006 – 0.040 */
   phaseSpeed = 0.006 + (parseInt(this.value) - 1) * (0.034 / 9);
+});
+
+document.getElementById('btn-highlight').addEventListener('click', function() {
+  highlightDetached = !highlightDetached;
+  this.setAttribute('aria-pressed', String(highlightDetached));
+  this.style.background  = highlightDetached ? 'rgba(167,139,250,0.18)' : '';
+  this.style.color       = highlightDetached ? 'var(--purple)'          : '';
+  this.style.borderColor = highlightDetached ? 'rgba(167,139,250,0.35)' : '';
 });
 
 document.getElementById('btn-play').addEventListener('click', function() {
