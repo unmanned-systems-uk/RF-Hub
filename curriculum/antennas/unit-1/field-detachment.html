@@ -441,11 +441,11 @@ function drawAct2(wireY, wL, wR) {
   ctx.font = '300 9px "IBM Plex Mono", monospace';
   ctx.fillStyle = rgba(AMBER, 0.40);
   ctx.textAlign = 'left';
-  ctx.fillText('old field — still out here', wR + 12, wireY - H * 0.38);
+  ctx.fillText('old field — still out here', wR *0.88, wireY - H * 0.38);
 
   ctx.fillStyle = rgba(CYAN, 0.65);
   ctx.textAlign = 'left';
-  ctx.fillText('new reversed field ↑', wL + 8, wireY + H * 0.10);
+  ctx.fillText('new reversed field ↑', W * 0.01, wireY + H * 0.10);
 
   /* H field */
   drawHField(wireY, cx, Math.PI);
@@ -463,31 +463,33 @@ function drawAct3(wireY, wL, wR) {
   var cx   = (wL + wR) / 2;
   var wHalf = (wR - wL) / 2;
 
-  /* DETACHED loops (old field — closed ellipses drifting outward)
-     rx grows with drift, ry is the loop height, center drifts away from wire */
-  var detached = [
-    { ry: H * 0.26, drift: reduced ? 0.18 : 0.18 + 0.015 * Math.sin(t * 0.9), alpha: 0.52 },
-    { ry: H * 0.38, drift: reduced ? 0.28 : 0.28 + 0.010 * Math.sin(t * 0.7 + 1), alpha: 0.32 }
-  ];
-  for (var i = 0; i < detached.length; i++) {
-    var d   = detached[i];
-    var ry  = d.ry;
-    var rx  = wHalf * 0.55;
-    /* Center above and below the wire, offset by ry */
-    var cyAbove = wireY - ry - d.drift * H;
-    var cyBelow = wireY + ry + d.drift * H;
-    drawDetachedLoop(cx, cyAbove, rx, ry * 0.7, AMBER, d.alpha);
-    drawDetachedLoop(cx, cyBelow, rx, ry * 0.7, AMBER, d.alpha);
+  /* PROPAGATING detached loops — spawn near wire, travel outward, exit canvas */
+  var rx        = wHalf * 0.52;
+  var ry        = H * 0.20;
+  var spawnY    = H * 0.10;           /* how far from wire each loop starts */
+  var travel    = H * 0.92;           /* total travel distance before respawn */
+  var speed     = reduced ? 0 : 1.15; /* pixels per t tick */
+  var nLoops    = 3;
+  var gap       = travel / nLoops;    /* phase offset between loops */
 
-    /* Faint outward arrow */
-    if (!reduced) {
-      var arrA = 0.22 + 0.12 * Math.sin(t * 1.5 + i);
-      ctx.fillStyle = rgba(PURPLE, arrA);
-      ctx.font = '9px "IBM Plex Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('↑', cx + rx + 16, cyAbove);
-      ctx.fillText('↓', cx + rx + 16, cyBelow);
+  for (var i = 0; i < nLoops; i++) {
+    var dist    = ((t * speed + i * gap) % travel); /* 0 = just spawned, travel = off canvas */
+    var cyAbove = wireY - spawnY - dist;
+    var cyBelow = wireY + spawnY + dist;
+
+    /* Fade in near wire, fade out as it exits */
+    var alpha;
+    if (dist < gap * 0.3) {
+      alpha = (dist / (gap * 0.3)) * 0.68; /* fade in */
+    } else if (dist > travel * 0.72) {
+      alpha = (1 - (dist - travel * 0.72) / (travel * 0.28)) * 0.68; /* fade out */
+    } else {
+      alpha = 0.68;
     }
+    if (alpha <= 0.02) continue;
+
+    drawDetachedLoop(cx, cyAbove, rx, ry, AMBER, alpha);
+    drawDetachedLoop(cx, cyBelow, rx, ry, AMBER, alpha);
   }
 
   /* PINCH POINT markers at the wire tips */
@@ -508,9 +510,9 @@ function drawAct3(wireY, wL, wR) {
   ctx.font      = '300 9px "IBM Plex Mono", monospace';
   ctx.fillStyle = rgba(PURPLE, 0.55);
   ctx.textAlign = 'right';
-  ctx.fillText('← pinch point', wL - 8, wireY - 5);
+  ctx.fillText('← pinch point', wL - 8, wireY - 0);
   ctx.textAlign = 'left';
-  ctx.fillText('pinch point →', wR + 8, wireY - 5);
+  ctx.fillText('pinch point →', wR + 8, wireY - 0);
 
   ctx.fillStyle = rgba(AMBER, 0.40);
   ctx.textAlign = 'center';
