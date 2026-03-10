@@ -910,14 +910,125 @@ input[type="range"]::-moz-range-thumb {
 
     <p>The dipole is the same physics in a different medium. The radiation is maximum where the current (the "movement") is maximum. Zero where the current is zero.</p>
 
+    <!-- VISUAL: current distribution → radiation pattern (two-panel SVG) -->
+    <div class="diagram-card" id="v-current-to-pattern">
+      <svg viewBox="0 0 780 422" width="100%" xmlns="http://www.w3.org/2000/svg"
+           aria-label="Two-panel diagram. Left: half-wave dipole with sinusoidal current distribution lobe (amber) and outward radiation arrows (purple), strongest at centre, absent at tips. Right: E-plane cross-section of the resulting toroid pattern showing two purple lobes beside the wire, null zones along the wire axis."
+           role="img">
+        <defs>
+          <!-- Single arrowhead — orient=auto rotates it to match line direction -->
+          <marker id="v3cp-arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <polygon points="0 0,7 2.5,0 5" fill="#a78bfa"/>
+          </marker>
+        </defs>
+
+        <!-- Panel divider -->
+        <line x1="390" y1="18" x2="390" y2="408" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+        <!-- ══════════ LEFT PANEL — current distribution ══════════ -->
+        <text x="192" y="14" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" letter-spacing="2" fill="#4b5563">CURRENT DISTRIBUTION</text>
+
+        <!-- Wire: x=190, y=45–385, centre y=215, half-length=170px -->
+        <line x1="190" y1="45"  x2="190" y2="215" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+        <line x1="190" y1="215" x2="190" y2="385" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+        <!-- Feed-point dot -->
+        <circle cx="190" cy="215" r="4" fill="#f59e0b"/>
+
+        <!-- Current distribution lobe (amber ellipse): rx=78, ry=165 -->
+        <ellipse cx="190" cy="215" rx="78" ry="165"
+                 fill="rgba(245,158,11,0.10)" stroke="rgba(245,158,11,0.40)" stroke-width="1.5"/>
+
+        <!-- Tip tick-marks (zero-current nodes) -->
+        <line x1="180" y1="45"  x2="200" y2="45"  stroke="#4b5563" stroke-width="1.5"/>
+        <line x1="180" y1="385" x2="200" y2="385" stroke="#4b5563" stroke-width="1.5"/>
+
+        <!-- Null-zone labels -->
+        <text x="190" y="36" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#4b5563">I = 0 · no radiation</text>
+        <text x="190" y="400" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#4b5563">I = 0 · no radiation</text>
+
+        <!-- Max-current label -->
+        <text x="204" y="212" font-family="IBM Plex Mono,monospace" font-size="9" fill="rgba(245,158,11,0.90)">I max</text>
+
+        <!--
+          Radiation arrows — lobe edge precomputed: lobe_rx = 78·√(1−((y−215)/165)²)
+          Right arrow: from (lobe_x, y) → (lobe_x+len, y)   [x increasing → arr points right]
+          Left  arrow: from (380−lobe_x, y) → (380−lobe_x−len, y)  [x decreasing → arr points left]
+
+          y   | lobe_rx | lobe_x | left_x | len
+          85  |  47.9   |  238   |  142   |  15
+          120 |  63.7   |  254   |  126   |  27
+          155 |  72.7   |  263   |  117   |  37
+          185 |  76.7   |  267   |  113   |  43
+          215 |  78.0   |  268   |  112   |  46   ← centre
+          245 |  76.7   |  267   |  113   |  43
+          275 |  72.7   |  263   |  117   |  37
+          310 |  63.7   |  254   |  126   |  27
+          345 |  47.9   |  238   |  142   |  15
+        -->
+
+        <!-- RIGHT arrows -->
+        <line x1="238" y1="85"  x2="253" y2="85"  stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="254" y1="120" x2="281" y2="120" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="263" y1="155" x2="300" y2="155" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="267" y1="185" x2="310" y2="185" stroke="#a78bfa" stroke-width="2"   marker-end="url(#v3cp-arr)"/>
+        <line x1="268" y1="215" x2="314" y2="215" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="267" y1="245" x2="310" y2="245" stroke="#a78bfa" stroke-width="2"   marker-end="url(#v3cp-arr)"/>
+        <line x1="263" y1="275" x2="300" y2="275" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="254" y1="310" x2="281" y2="310" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="238" y1="345" x2="253" y2="345" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+
+        <!-- LEFT arrows (x decreasing → auto-orient flips arrowhead left) -->
+        <line x1="142" y1="85"  x2="127" y2="85"  stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="126" y1="120" x2="99"  y2="120" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="117" y1="155" x2="80"  y2="155" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="113" y1="185" x2="70"  y2="185" stroke="#a78bfa" stroke-width="2"   marker-end="url(#v3cp-arr)"/>
+        <line x1="112" y1="215" x2="66"  y2="215" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="113" y1="245" x2="70"  y2="245" stroke="#a78bfa" stroke-width="2"   marker-end="url(#v3cp-arr)"/>
+        <line x1="117" y1="275" x2="80"  y2="275" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="126" y1="310" x2="99"  y2="310" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+        <line x1="142" y1="345" x2="127" y2="345" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#v3cp-arr)"/>
+
+        <!-- "radiated energy" label between arrows and divider -->
+        <text x="352" y="209" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="rgba(167,139,250,0.65)">radiated</text>
+        <text x="352" y="221" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="rgba(167,139,250,0.65)">energy</text>
+
+        <!-- ══════════ RIGHT PANEL — E-plane cross-section ══════════ -->
+        <text x="585" y="14" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" letter-spacing="2" fill="#4b5563">E-PLANE CROSS-SECTION</text>
+
+        <!-- Wire: x=580, y=45–385 -->
+        <line x1="580" y1="45"  x2="580" y2="215" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+        <line x1="580" y1="215" x2="580" y2="385" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="580" cy="215" r="4" fill="#f59e0b"/>
+
+        <!-- Null-axis dashed extensions beyond wire tips -->
+        <line x1="580" y1="28"  x2="580" y2="45"  stroke="rgba(107,114,128,0.35)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="580" y1="385" x2="580" y2="400" stroke="rgba(107,114,128,0.35)" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Pattern lobes: cx=648/512, inner edge at x=580 (wire), rx=68, ry=65 -->
+        <ellipse cx="648" cy="215" rx="68" ry="65" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.55)" stroke-width="1.5"/>
+        <ellipse cx="512" cy="215" rx="68" ry="65" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.55)" stroke-width="1.5"/>
+
+        <!-- NULL labels along wire axis -->
+        <text x="580" y="22"  text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#4b5563">NULL</text>
+        <text x="580" y="413" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#4b5563">NULL</text>
+
+        <!-- MAX labels at outer lobe edges (x=716 and x=444) -->
+        <text x="722" y="218" font-family="IBM Plex Mono,monospace" font-size="9" fill="rgba(167,139,250,0.75)">MAX</text>
+        <text x="438" y="218" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="rgba(167,139,250,0.75)">MAX</text>
+
+        <!-- Caption -->
+        <text x="585" y="416" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#4b5563">The pattern shape is the current distribution mapped onto 3D space</text>
+      </svg>
+    </div>
+
     <!-- INTERACTIVE: radiation-3d-v5.html — guided exercise -->
-    <iframe src="../../../interactives/radiation-3d-v5.html?antenna=dipole&ui=standard" title="3D Radiation Pattern Viewer" allowtransparency="true" loading="lazy" allowfullscreen style="border:none;display:block;width:100%;height:860px;background:transparent;"></iframe>
+    <iframe src="../../../interactives/radiation-3d-v5.html?antenna=dipole&show_antenna_selector=0&show_speed=0&show_frequency=0&show_tog_electrons=0&show_tog_ewave=0&show_tog_hwave=0&show_tog_aperture=0&show_rx=1&show_hud=1&zoom=80" title="3D Radiation Pattern Viewer" allowtransparency="true" loading="lazy" allowfullscreen style="border:none;display:block;width:100%;height:1400px;background:transparent;"></iframe>
 
     <div class="exercise-block">
-      <h4>Guided Exercise — radiation-3d-v5.html Part 1</h4>
+      <h4>Guided Exercise — radiation-3d-v5</h4>
 
       <h5>Task 1 — Explore the shape</h5>
-      <p>Click and drag to rotate the pattern. Look at it from all angles: from the side, from above, from below.</p>
+      <p>Click and drag to rotate the pattern. Look at it from all angles: from the side, from above, from below. The cyan object in the scene is a receiving antenna — ignore it for now.</p>
       <ul>
         <li>Find the two null points. Which direction do they face relative to the wire?</li>
         <li>Find the region of maximum radiation. Which direction is that?</li>
@@ -930,22 +1041,30 @@ input[type="range"]::-moz-range-thumb {
         <li><em>Why does zero current at a physical point on the wire produce zero radiation in the direction that point faces?</em></li>
       </ul>
 
-      <h5>Task 3 — Receiving antenna placement</h5>
-      <p>Imagine you are placing a receiving antenna somewhere around this transmitting dipole, trying to couple as much energy as possible.</p>
+      <h5>Task 3 — Measure with the RX antenna</h5>
+      <p>The cyan object is a real receiving antenna. Drag it broadside to the dipole — roughly level with the feedpoint, out to the side — and watch the signal meter in the corner of the viewer.</p>
       <ul>
-        <li><em>Where in 3D space would you place your receiving antenna to maximise energy coupling?</em></li>
-        <li><em>Where would you place it to get the absolute minimum? Why?</em></li>
+        <li>Note the dBm reading at the broadside position. This is close to the maximum coupling point.</li>
+        <li>Now use the <strong>height slider</strong> to move the RX antenna upward toward the wire tip. Watch the meter as you go.</li>
+        <li><em>What happens to the reading as the RX approaches the null zone?</em></li>
+        <li><em>What does a meter reading near minimum tell you about the energy density at that location in space?</em></li>
+      </ul>
+      <p>The meter is reading energy coupling efficiency at that point in space. Moving the RX into a null is not a signal processing effect — it is a physical absence of energy in that direction.</p>
+
+      <h5>Task 4 — Camera presets and wavefront modes</h5>
+      <p>Use the camera preset buttons to lock to specific views:</p>
+      <ul>
+        <li><strong>Top Down</strong> — looking straight down the wire axis. The pattern appears as a circle: the dipole radiates equally in all azimuth directions. This is the H-plane view. <em>Does this match the H-plane polar plot in Section 4?</em></li>
+        <li><strong>Side</strong> — looking perpendicular to the wire. The pattern appears as a figure-of-eight: two lobes with nulls at top and bottom where the wire tips are. This is the E-plane view. <em>Does this match the E-plane polar plot in Section 4?</em></li>
+      </ul>
+      <p>Finally, toggle between the <strong>rings</strong> and <strong>shells</strong> wavefront display modes:</p>
+      <ul>
+        <li>Rings show wavefronts expanding in the equatorial plane — useful for confirming the azimuth symmetry seen in the H-plane.</li>
+        <li>Shells show them expanding as 3D surfaces — useful for seeing the full toroid shape and where energy is absent along the wire axis.</li>
+        <li><em>Which mode makes the null zones along the wire axis most obvious?</em></li>
       </ul>
 
-      <h5>Task 4 — Toggle the view modes</h5>
-      <p>Use the rings and shells buttons to switch between the two display modes.</p>
-      <ul>
-        <li>The rings mode shows wavefronts expanding outward in the equatorial plane.</li>
-        <li>The shells mode shows them expanding as spherical-ish shells.</li>
-        <li><em>Which mode makes it easier to see the null? Which makes it easier to see the 3D shape of the energy distribution?</em></li>
-      </ul>
-
-      <p>After this exercise, close the interactive and write one sentence describing the dipole's radiation pattern as a map of energy coupling efficiency — without using the words "signal" or "wave."</p>
+      <p>After completing this exercise, write one sentence describing the dipole's radiation pattern as a map of energy coupling efficiency — referencing what the meter showed at the null versus at the broadside position — without using the words "signal" or "wave."</p>
     </div>
   </div>
 
@@ -1457,14 +1576,14 @@ input[type="range"]::-moz-range-thumb {
         <h3>What's Next: Antenna Types</h3>
         <p>Lesson 4 is the Antenna Types Tour. You now know what a radiation pattern is and how to read one. In Lesson 4 you will meet the main antenna families — vertical, Yagi, loop, patch, dish — and see how each produces a different pattern shape through different physical design choices. For each antenna type, the question will be: what does the current distribution look like, and what pattern shape does that produce?</p>
         <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2: How Antennas Radiate</a>
-        <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types.html">Lesson 4: Antenna Types →</a>
+        <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types-tour.html">Lesson 4: Antenna Types →</a>
       </div>
     </div>
 
     <!-- Lesson navigation -->
     <nav class="lesson-nav" aria-label="Lesson navigation" style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
       <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2</a>
-      <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types.html">Lesson 4 →</a>
+      <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types-tour.html">Lesson 4 →</a>
     </nav>
   </div>
 
@@ -1475,7 +1594,7 @@ input[type="range"]::-moz-range-thumb {
     <p>Lesson 3 of 20 &nbsp;·&nbsp; Unit 1: How Antennas Work &nbsp;·&nbsp;
        <a href="../index.html">Course index</a> &nbsp;·&nbsp;
        <a href="lesson-02-how-antennas-radiate.html">← Lesson 2</a> &nbsp;·&nbsp;
-       <a href="lesson-04-antenna-types.html">Lesson 4 →</a>
+       <a href="lesson-04-antenna-types-tour.html">Lesson 4 →</a>
     </p>
   </div>
 </footer>

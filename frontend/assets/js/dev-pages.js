@@ -30,7 +30,7 @@ window.DEV_PAGES = [
       { label: 'L01 EM Radiation',        url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html' },
       { label: 'L02 How Antennas Radiate', url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-02-how-antennas-radiate.html' },
       { label: 'L03 Radiation Patterns',  url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-03-radiation-patterns.html' },
-      { label: 'L04 Antenna Types',       url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-04-antenna-types.html' },
+      { label: 'L04 Antenna Types',       url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-04-antenna-types-tour.html' },
       { label: 'L05 Polarisation',        url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-05-polarisation.html' },
     ]
   },
