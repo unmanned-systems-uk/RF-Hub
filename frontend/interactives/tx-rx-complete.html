@@ -516,13 +516,16 @@ function computeStageAlphas(stage, cycleT) {
   // Wire layers: full through stage 1, dim progressively
   const wireDim = stage <= 1 ? 1 : (stage === 2 ? 0.45 : 0.30);
 
-  // Detachment: fades in at stage 2, fades out quickly at start of stage 3
+  // Detachment: fades in at stage 2, stays visible through stage 3 (propagation),
+  // fades out at stage 4 as RX fields take over
   let detachAlpha = 0;
   if (stage === 2) {
     detachAlpha = fadeIn(2);
   } else if (stage === 3) {
-    const p = (cycleT - 0.55) / (0.80 - 0.55);
-    detachAlpha = Math.max(0, 1 - p / 0.15);
+    detachAlpha = 1;
+  } else if (stage === 4) {
+    const p = (cycleT - 0.80) / (1.0 - 0.80);
+    detachAlpha = Math.max(0, 1 - p / 0.30);
   }
 
   return {
@@ -609,7 +612,7 @@ function drawFieldGenV(age, sa) {
   } else {
     // Closed ellipse propagating rightward toward RX
     const propT = (age - PINCH) / (1.0 - PINCH);
-    const dist  = propT * L.propLen * 0.65;
+    const dist  = propT * L.propLen * 0.92;
     const cx    = L.txX + rx_ell * 0.45 + dist;
 
     ctx.beginPath();
