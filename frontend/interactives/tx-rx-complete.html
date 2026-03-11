@@ -499,6 +499,133 @@ function drawGrid() {
 }
 
 // ============================================
+// STAGE-DRIVEN ALPHA SYSTEM
+// ============================================
+function computeStageAlphas(stage, cycleT) {
+  const BOUNDS = [0, 0.15, 0.35, 0.55, 0.80, 1.0];
+
+  function fadeIn(stageIdx, fadeFrac) {
+    fadeFrac = fadeFrac == null ? 0.30 : fadeFrac;
+    if (stage < stageIdx) return 0;
+    if (stage > stageIdx) return 1;
+    const start = BOUNDS[stageIdx];
+    const span  = BOUNDS[stageIdx + 1] - start;
+    return Math.min(1, (cycleT - start) / (span * fadeFrac));
+  }
+
+  // Wire layers: full through stage 1, dim progressively
+  const wireDim = stage <= 1 ? 1 : (stage === 2 ? 0.45 : 0.30);
+
+  // Detachment: fades in at stage 2, fades out quickly at start of stage 3
+  let detachAlpha = 0;
+  if (stage === 2) {
+    detachAlpha = fadeIn(2);
+  } else if (stage === 3) {
+    const p = (cycleT - 0.55) / (0.80 - 0.55);
+    detachAlpha = Math.max(0, 1 - p / 0.15);
+  }
+
+  return {
+    electrons:  fadeIn(0) * wireDim,
+    current:    fadeIn(0) * wireDim,
+    voltage:    fadeIn(0) * wireDim,
+    efield:     fadeIn(1) * (stage >= 3 ? 0.35 : 1),
+    hfield:     fadeIn(1) * (stage >= 3 ? 0.35 : 1),
+    detachment: detachAlpha,
+    wavefronts: fadeIn(3),
+    rxfields:   fadeIn(4),
+    antennas:   1,
+  };
+}
+
+// ============================================
+// FIELD DETACHMENT HELPERS
+// ============================================
+// Bezier arch from (x1,y1) to (x2,y2) bulging sideways by `width`
+// (positive width = bulges right, negative = bulges left)
+function drawArchFreeV(x1, y1, x2, y2, width, color, alpha, lw) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.bezierCurveTo(
+    x1 + width, y1 + (y2 - y1) * 0.22,
+    x2 + width, y2 - (y2 - y1) * 0.22,
+    x2, y2
+  );
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = alpha;
+  ctx.lineWidth = lw || 1.5;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+// One field generation lifecycle: lens attached to antenna → pinch → propagating ellipse
+function drawFieldGenV(age, sa) {
+  if (age < 0 || age > 1.0) return;
+
+  const EXPAND = 0.28;   // 0 → EXPAND: lens grows from antenna
+  const PINCH  = 0.50;   // EXPAND → PINCH: endpoints converge, loop forms
+                          // PINCH → 1.0: closed ellipse propagates rightward
+
+  // Alpha: fade in at birth, hold, fade out near end
+  let alpha;
+  if      (age < 0.05) alpha = (age / 0.05) * 0.72 * sa;
+  else if (age > 0.78) alpha = (1 - (age - 0.78) / 0.22) * 0.72 * sa;
+  else                  alpha = 0.72 * sa;
+  if (alpha < 0.02) return;
+
+  const maxArchW = L.antHalf * 0.80;  // max horizontal extent of arch
+  const ry_ell   = L.antHalf * 0.55;  // vertical semi-axis of detached loop
+  const rx_ell   = maxArchW * 0.45;   // horizontal semi-axis of detached loop
+
+  if (age <= PINCH) {
+    const expandT = Math.min(age / EXPAND, 1.0);
+    const archW   = expandT * maxArchW;
+    const pinchT  = age <= EXPAND ? 0 : (age - EXPAND) / (PINCH - EXPAND);
+
+    // Endpoints converge from dipole tips toward centre ± ry_ell
+    const yT = L.txTop + pinchT * (L.cy - ry_ell - L.txTop);
+    const yB = L.txBot - pinchT * (L.txBot - (L.cy + ry_ell));
+
+    // Lift endpoints slightly off antenna as pinch progresses
+    const xLift = pinchT * rx_ell * 0.35;
+
+    const fieldCol = age > EXPAND ? COL.wave : COL.efield;
+
+    // Right arch (bulges right)
+    drawArchFreeV(L.txX + xLift, yT, L.txX + xLift, yB,  archW, fieldCol, alpha,       1.7);
+    // Left arch (bulges left)
+    drawArchFreeV(L.txX - xLift, yT, L.txX - xLift, yB, -archW, fieldCol, alpha * 0.85, 1.5);
+
+    // Pinch markers at dipole tips
+    if (pinchT > 0.1) {
+      ctx.strokeStyle = COL.wave;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = alpha * pinchT * 0.8;
+      ctx.beginPath(); ctx.arc(L.txX, L.txTop, 5, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(L.txX, L.txBot, 5, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+  } else {
+    // Closed ellipse propagating rightward toward RX
+    const propT = (age - PINCH) / (1.0 - PINCH);
+    const dist  = propT * L.propLen * 0.65;
+    const cx    = L.txX + rx_ell * 0.45 + dist;
+
+    ctx.beginPath();
+    ctx.ellipse(cx, L.cy, rx_ell, ry_ell, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = COL.wave;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    ctx.fillStyle = COL.wave;
+    ctx.globalAlpha = alpha * 0.06;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ============================================
 // LAYER: ANTENNA WIRES (always drawn)
 // ============================================
 function drawAntennas(phase) {
@@ -590,8 +717,8 @@ function drawAntennas(phase) {
 // ============================================
 // LAYER: ELECTRONS
 // ============================================
-function drawElectrons(phase) {
-  if (!state.layers.electrons) return;
+function drawElectrons(phase, sa = 1) {
+  if (!state.layers.electrons || sa <= 0.01) return;
 
   const sinP = Math.sin(phase);
   const numElectrons = 18;
@@ -609,7 +736,7 @@ function drawElectrons(phase) {
     const ey = baseY + displacement;
     const alpha = 0.3 + standingWave * 0.6;
 
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = alpha * sa;
     ctx.fillStyle = COL.electron;
     ctx.beginPath();
     ctx.arc(L.txX, ey, 2.5, 0, Math.PI * 2);
@@ -619,7 +746,7 @@ function drawElectrons(phase) {
     if (Math.abs(displacement) > 2) {
       ctx.strokeStyle = COL.electron;
       ctx.lineWidth = 1;
-      ctx.globalAlpha = alpha * 0.3;
+      ctx.globalAlpha = alpha * 0.3 * sa;
       ctx.beginPath();
       ctx.moveTo(L.txX, ey);
       ctx.lineTo(L.txX, ey - displacement * 0.5);
@@ -639,7 +766,7 @@ function drawElectrons(phase) {
     const ey = baseY + displacement;
     const alpha = (0.2 + standingWave * 0.4) * rxStrength;
 
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = alpha * sa;
     ctx.fillStyle = COL.electron;
     ctx.beginPath();
     ctx.arc(L.rxX, ey, 2, 0, Math.PI * 2);
@@ -652,8 +779,8 @@ function drawElectrons(phase) {
 // ============================================
 // LAYER: CURRENT DISTRIBUTION
 // ============================================
-function drawCurrent(phase) {
-  if (!state.layers.current) return;
+function drawCurrent(phase, sa = 1) {
+  if (!state.layers.current || sa <= 0.01) return;
 
   const sinP = Math.sin(phase);
   const halfLen = L.antHalf;
@@ -666,7 +793,7 @@ function drawCurrent(phase) {
   const maxWidth = 20;
 
   // Right side (shows magnitude)
-  ctx.globalAlpha = 0.7;
+  ctx.globalAlpha = 0.7 * sa;
   ctx.beginPath();
   for (let y = -halfLen; y <= halfLen; y += 1) {
     const frac = (y + halfLen) / (2 * halfLen); // 0=top, 1=bottom
@@ -679,7 +806,7 @@ function drawCurrent(phase) {
 
   // Fill
   ctx.fillStyle = COL.current;
-  ctx.globalAlpha = 0.08;
+  ctx.globalAlpha = 0.08 * sa;
   ctx.beginPath();
   ctx.moveTo(L.txX + 8, L.txTop);
   for (let y = -halfLen; y <= halfLen; y += 1) {
@@ -700,7 +827,7 @@ function drawCurrent(phase) {
   if (Math.abs(sinP) > 0.2) {
     const dir = sinP > 0 ? -1 : 1;
     ctx.fillStyle = COL.current;
-    ctx.globalAlpha = Math.abs(sinP) * 0.6;
+    ctx.globalAlpha = Math.abs(sinP) * 0.6 * sa;
     // Arrow at feed point
     const ay = L.cy + dir * 15;
     ctx.beginPath();
@@ -716,8 +843,8 @@ function drawCurrent(phase) {
 // ============================================
 // LAYER: VOLTAGE DISTRIBUTION
 // ============================================
-function drawVoltage(phase) {
-  if (!state.layers.voltage) return;
+function drawVoltage(phase, sa = 1) {
+  if (!state.layers.voltage || sa <= 0.01) return;
 
   const sinP = Math.sin(phase);
   const halfLen = L.antHalf;
@@ -728,7 +855,7 @@ function drawVoltage(phase) {
   ctx.lineWidth = 1.5;
 
   // Left side
-  ctx.globalAlpha = 0.7;
+  ctx.globalAlpha = 0.7 * sa;
   ctx.beginPath();
   for (let y = -halfLen; y <= halfLen; y += 1) {
     const frac = (y + halfLen) / (2 * halfLen);
@@ -743,7 +870,7 @@ function drawVoltage(phase) {
 
   // Fill
   ctx.fillStyle = COL.voltage;
-  ctx.globalAlpha = 0.06;
+  ctx.globalAlpha = 0.06 * sa;
   ctx.beginPath();
   ctx.moveTo(L.txX - 8, L.txTop);
   for (let y = -halfLen; y <= halfLen; y += 1) {
@@ -760,7 +887,7 @@ function drawVoltage(phase) {
   // +/- charge labels at tips
   const charge = sinP > 0 ? ['+', '−'] : ['−', '+'];
   if (Math.abs(sinP) > 0.3) {
-    ctx.globalAlpha = Math.abs(sinP) * 0.8;
+    ctx.globalAlpha = Math.abs(sinP) * 0.8 * sa;
     drawText(charge[0], L.txX - 4, L.txTop - 4, COL.voltage, 14, 'center');
     drawText(charge[1], L.txX - 4, L.txBot + 14, COL.voltage, 14, 'center');
     ctx.globalAlpha = 1;
@@ -772,8 +899,8 @@ function drawVoltage(phase) {
 // ============================================
 // LAYER: E FIELD
 // ============================================
-function drawEField(phase) {
-  if (!state.layers.efield) return;
+function drawEField(phase, sa = 1) {
+  if (!state.layers.efield || sa <= 0.01) return;
 
   const sinP = Math.sin(phase);
 
@@ -787,7 +914,7 @@ function drawEField(phase) {
 
     ctx.strokeStyle = COL.efield;
     ctx.lineWidth = 1.2;
-    ctx.globalAlpha = (1 - spread * 0.6) * Math.abs(sinP) * 0.7;
+    ctx.globalAlpha = (1 - spread * 0.6) * Math.abs(sinP) * 0.7 * sa;
 
     // Top half field lines (curves from + to -)
     ctx.beginPath();
@@ -823,7 +950,7 @@ function drawEField(phase) {
     // Draw standalone E wave
     ctx.strokeStyle = COL.efield;
     ctx.lineWidth = 1.5;
-    ctx.globalAlpha = 0.6;
+    ctx.globalAlpha = 0.6 * sa;
     ctx.beginPath();
     for (let x = L.propStart; x < L.propEnd; x += 1) {
       const frac = (x - L.propStart) / L.propLen;
@@ -841,8 +968,8 @@ function drawEField(phase) {
 // ============================================
 // LAYER: H FIELD
 // ============================================
-function drawHField(phase) {
-  if (!state.layers.hfield) return;
+function drawHField(phase, sa = 1) {
+  if (!state.layers.hfield || sa <= 0.01) return;
 
   const sinP = Math.sin(phase);
 
@@ -855,7 +982,7 @@ function drawHField(phase) {
 
     ctx.strokeStyle = COL.hfield;
     ctx.lineWidth = 1;
-    ctx.globalAlpha = (1 - spread * 0.5) * Math.abs(sinP) * 0.5;
+    ctx.globalAlpha = (1 - spread * 0.5) * Math.abs(sinP) * 0.5 * sa;
 
     // Draw as horizontal ellipses at different heights along antenna
     const positions = [-0.5, 0, 0.5];
@@ -887,8 +1014,8 @@ function drawHField(phase) {
 // ============================================
 // LAYER: WAVEFRONTS (propagating E+H)
 // ============================================
-function drawWavefronts(phase) {
-  if (!state.layers.wavefronts) return;
+function drawWavefronts(phase, sa = 1) {
+  if (!state.layers.wavefronts || sa <= 0.01) return;
 
   const numWaves = 8;
   const waveSpacing = L.propLen / numWaves;
@@ -913,7 +1040,7 @@ function drawWavefronts(phase) {
     if (Math.abs(eAmp) > 3) {
       ctx.strokeStyle = COL.efield;
       ctx.lineWidth = 1.5;
-      ctx.globalAlpha = Math.abs(sinW) * 0.6 * alpha;
+      ctx.globalAlpha = Math.abs(sinW) * 0.6 * alpha * sa;
       ctx.beginPath();
       ctx.moveTo(baseX, L.cy);
       ctx.lineTo(baseX, L.cy - eAmp);
@@ -937,7 +1064,7 @@ function drawWavefronts(phase) {
     const hSize = Math.abs(hVal) * 5;
 
     if (hSize > 1.5) {
-      ctx.globalAlpha = Math.abs(hVal) * 0.5 * alpha;
+      ctx.globalAlpha = Math.abs(hVal) * 0.5 * alpha * sa;
       if (hVal > 0) {
         // Dot (toward viewer)
         ctx.fillStyle = COL.hfield;
@@ -966,7 +1093,7 @@ function drawWavefronts(phase) {
   // Continuous E wave line
   ctx.strokeStyle = COL.efield;
   ctx.lineWidth = 1.8;
-  ctx.globalAlpha = 0.5;
+  ctx.globalAlpha = 0.5 * sa;
   ctx.beginPath();
   for (let x = L.propStart; x <= L.propEnd; x += 2) {
     const progress = (x - L.propStart) / L.propLen;
@@ -986,7 +1113,7 @@ function drawWavefronts(phase) {
   ctx.setLineDash([6, 4]);
   ctx.strokeStyle = COL.wave;
   ctx.lineWidth = 1;
-  ctx.globalAlpha = 0.4;
+  ctx.globalAlpha = 0.4 * sa;
   ctx.beginPath();
   ctx.moveTo(L.propStart + 20, L.cy);
   ctx.lineTo(L.propEnd - 20, L.cy);
@@ -1011,56 +1138,28 @@ function drawWavefronts(phase) {
 // ============================================
 // FIELD DETACHMENT VISUALIZATION
 // ============================================
-function drawDetachment(phase) {
+function drawDetachment(phase, sa = 1) {
   if (!state.layers.efield && !state.layers.wavefronts) return;
+  if (sa <= 0.01) return;
 
-  // Show field loops detaching from TX antenna
-  const numLoops = 4;
-  const cyclePhase = (phase % (Math.PI * 2)) / (Math.PI * 2); // 0-1 per cycle
+  // Spawn one field generation per half-cycle; each lives for LIFECYCLE phase units
+  const HALF      = Math.PI;
+  const LIFECYCLE = HALF * 5;
+  const curGen    = Math.floor(phase / HALF);
 
-  for (let i = 0; i < numLoops; i++) {
-    const loopPhase = ((phase / (Math.PI * 2)) + i / numLoops) % 1;
-    const x = L.txX + 30 + loopPhase * 80;
-    const expanding = loopPhase;
-
-    if (x > L.propStart - 10) continue; // Don't draw past propagation start
-
-    const loopHeight = L.antHalf * 0.3 * (0.3 + expanding * 0.7);
-    const loopWidth = 8 + expanding * 20;
-    const alpha = (1 - expanding) * 0.5;
-
-    if (alpha < 0.05) continue;
-
-    // Polarity alternates
-    const polarity = i % 2 === 0 ? 1 : -1;
-
-    ctx.strokeStyle = polarity > 0 ? COL.efield : COL.efield;
-    ctx.lineWidth = 1.2;
-    ctx.globalAlpha = alpha;
-
-    // Draw as elongated ellipse (field loop)
-    ctx.beginPath();
-    ctx.ellipse(x, L.cy, loopWidth, loopHeight, 0, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Pinch-off effect for nearly detached loops
-    if (expanding > 0.6) {
-      ctx.globalAlpha = alpha * 0.3;
-      ctx.fillStyle = COL.efield;
-      ctx.beginPath();
-      ctx.ellipse(x, L.cy, loopWidth, loopHeight, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  for (let k = curGen; k >= curGen - 8; k--) {
+    if (k < 0) continue;
+    const age = (phase - k * HALF) / LIFECYCLE;
+    if (age < 0 || age > 1.0) continue;
+    drawFieldGenV(age, sa);
   }
-
-  ctx.globalAlpha = 1;
 }
 
 // ============================================
 // RX FIELD INTERACTION
 // ============================================
-function drawRXFields(phase) {
-  if (!state.layers.efield) return;
+function drawRXFields(phase, sa = 1) {
+  if (!state.layers.efield || sa <= 0.01) return;
 
   const rxPhase = phase - 4;
   const sinP = Math.sin(rxPhase);
@@ -1073,7 +1172,7 @@ function drawRXFields(phase) {
 
     ctx.strokeStyle = COL.efield;
     ctx.lineWidth = 1;
-    ctx.globalAlpha = (1 - spread * 0.7) * Math.abs(sinP) * 0.35;
+    ctx.globalAlpha = (1 - spread * 0.7) * Math.abs(sinP) * 0.35 * sa;
 
     // Arriving wavefront curves
     ctx.beginPath();
@@ -1114,26 +1213,28 @@ function updateStageUI(stage) {
 // MAIN RENDER
 // ============================================
 function render() {
-  const phase = state.usingManualPhase
+  const phase  = state.usingManualPhase
     ? state.manualPhase * Math.PI / 180
     : state.time;
+
+  const cycleT = (phase % (Math.PI * 8)) / (Math.PI * 8);
+  const stage  = getCurrentStage(phase);
+  const SA     = computeStageAlphas(stage, cycleT);
 
   ctx.clearRect(0, 0, W, H);
   drawGrid();
 
-  // Draw layers in order (back to front)
-  drawWavefronts(phase);
-  drawDetachment(phase);
-  drawHField(phase);
-  drawEField(phase);
-  drawRXFields(phase);
+  // Draw layers in order (back to front) with stage-driven alpha
+  drawWavefronts(phase, SA.wavefronts);
+  drawDetachment(phase, SA.detachment);
+  drawHField(phase, SA.hfield);
+  drawEField(phase, SA.efield);
+  drawRXFields(phase, SA.rxfields);
   drawAntennas(phase);
-  drawVoltage(phase);
-  drawCurrent(phase);
-  drawElectrons(phase);
+  drawVoltage(phase, SA.voltage);
+  drawCurrent(phase, SA.current);
+  drawElectrons(phase, SA.electrons);
 
-  // Stage indicator
-  const stage = getCurrentStage(phase);
   updateStageUI(stage);
 }
 
