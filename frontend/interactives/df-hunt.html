@@ -109,51 +109,17 @@
       text-align: right;
     }
 
-    /* Signal strength bar */
-    .sig-wrap { margin-top: 0.1rem; }
+    /* FFT graph */
+    .fft-wrap { margin-top: 0.35rem; }
 
-    .sig-label {
+    .fft-label {
       font-size: 0.65rem;
       color: #64748b;
       font-family: 'IBM Plex Mono', monospace;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       margin-bottom: 0.28rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
-
-    .null-badge {
-      font-size: 0.6rem;
-      background: #22c55e;
-      color: #0a0e1a;
-      border-radius: 3px;
-      padding: 0 4px;
-      font-weight: 400;
-      letter-spacing: 0.05em;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .null-badge.visible { opacity: 1; }
-
-    .sig-track {
-      background: #1a2234;
-      border: 1px solid #1e293b;
-      border-radius: 4px;
-      height: 10px;
-      overflow: hidden;
-    }
-
-    .sig-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.05s linear;
-    }
-
-    .sig-fill.amber-fill { background: #f59e0b; }
-    .sig-fill.cyan-fill  { background: #06b6d4; }
 
     /* Divider between loops */
     .loop-divider {
@@ -250,14 +216,9 @@
                oninput="onRotateA(+this.value)">
         <span class="slider-val" id="degA">0°</span>
       </div>
-      <div class="sig-wrap">
-        <div class="sig-label">
-          Signal Strength — seek minimum
-          <span class="null-badge" id="nullA">NULL</span>
-        </div>
-        <div class="sig-track">
-          <div class="sig-fill amber-fill" id="sigFillA" style="width:100%"></div>
-        </div>
+      <div class="fft-wrap" id="fftWrapA">
+        <div class="fft-label">Spectrum — seek null (min)</div>
+        <canvas id="fftCanvasA"></canvas>
       </div>
     </div>
 
@@ -274,14 +235,9 @@
                oninput="onRotateB(+this.value)">
         <span class="slider-val" id="degB">45°</span>
       </div>
-      <div class="sig-wrap">
-        <div class="sig-label">
-          Signal Strength — seek minimum
-          <span class="null-badge" id="nullB">NULL</span>
-        </div>
-        <div class="sig-track">
-          <div class="sig-fill cyan-fill" id="sigFillB" style="width:100%"></div>
-        </div>
+      <div class="fft-wrap" id="fftWrapB">
+        <div class="fft-label">Spectrum — seek null (min)</div>
+        <canvas id="fftCanvasB"></canvas>
       </div>
     </div>
 
@@ -316,8 +272,12 @@ var TOLERANCE    = 38;     // px — success threshold
 var LOOP_RADIUS  = 12;     // loop icon radius on map
 var terrain      = [];     // static terrain dots (regenerated each game)
 
-var mapCanvas = document.getElementById('mapCanvas');
-var ctx       = mapCanvas.getContext('2d');
+var mapCanvas  = document.getElementById('mapCanvas');
+var ctx        = mapCanvas.getContext('2d');
+var fftCanvasA = document.getElementById('fftCanvasA');
+var fftCtxA    = fftCanvasA.getContext('2d');
+var fftCanvasB = document.getElementById('fftCanvasB');
+var fftCtxB    = fftCanvasB.getContext('2d');
 
 // ================================================================
 // Geometry helpers
@@ -413,6 +373,14 @@ function resize() {
   loopA.y = Math.round(H * 0.54);
   loopB.x = Math.round(W * 0.80);
   loopB.y = Math.round(H * 0.48);
+
+  // Size FFT canvases after flex layout settles
+  requestAnimationFrame(function() {
+    var wA = document.getElementById('fftWrapA');
+    var wB = document.getElementById('fftWrapB');
+    if (wA && wA.clientWidth > 10) { fftCanvasA.width = wA.clientWidth; fftCanvasA.height = 112; }
+    if (wB && wB.clientWidth > 10) { fftCanvasB.width = wB.clientWidth; fftCanvasB.height = 112; }
+  });
 }
 
 window.addEventListener('resize', function() { resize(); placeTX(); });
@@ -692,19 +660,126 @@ function drawTX(W, H, intersection) {
 }
 
 // ================================================================
-// Update DOM signal bars
+// Draw — spectrum analyser (FFT graph), parameterised
+// Ported from radiation-3d-v5.html — log scale, 0 to -90 dBm
 // ================================================================
-function updateBars() {
+function drawFFT(c, W, H, dBm, peakColor) {
+  if (!c || !W || !H) return;
+
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = '#080c14';
+  c.fillRect(0, 0, W, H);
+
+  var margin = { top: 8, bottom: 20, left: 4, right: 38 };
+  var plotW  = W - margin.left - margin.right;
+  var plotH  = H - margin.top - margin.bottom;
+  var plotX  = margin.left;
+  var plotY  = margin.top;
+
+  // Grid
+  var gx = W / 10, gy = H / 8;
+  c.strokeStyle = '#1a2234'; c.lineWidth = 0.5;
+  for (var gxi = gx; gxi < W; gxi += gx) {
+    c.beginPath(); c.moveTo(gxi, 0); c.lineTo(gxi, H); c.stroke();
+  }
+  for (var gyi = gy; gyi < H; gyi += gy) {
+    c.beginPath(); c.moveTo(0, gyi); c.lineTo(W, gyi); c.stroke();
+  }
+
+  // dB → Y mapping (0 dBm at top, -90 at bottom)
+  var dbTop = 0, dbBottom = -90, dbRange = 90;
+  function dbToY(db) { return plotY + ((dbTop - db) / dbRange) * plotH; }
+
+  // Scale labels
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#3a4a5e';
+  for (var db = 0; db >= -90; db -= 10) {
+    var ly = dbToY(db);
+    c.fillText(db + '', W - 34, ly + 3);
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(W - 37, ly); c.lineTo(W - 35, ly); c.stroke();
+  }
+
+  // 0 dBm reference
+  c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(plotX, dbToY(0)); c.lineTo(plotX + plotW, dbToY(0)); c.stroke();
+
+  // -3 dBm reference
+  c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2, 4]);
+  c.beginPath(); c.moveTo(plotX, dbToY(-3)); c.lineTo(plotX + plotW, dbToY(-3)); c.stroke();
+  c.setLineDash([]);
+  c.font = '500 7px IBM Plex Mono'; c.fillStyle = '#334155';
+  c.fillText('-3 dB', plotX + 2, dbToY(-3) - 2);
+
+  var noiseY = dbToY(-90);
+  var cx     = W * 0.45;
+  var pw     = 16;
+
+  // Noise floor
+  c.strokeStyle = peakColor; c.lineWidth = 1; c.globalAlpha = 0.15;
+  c.beginPath();
+  for (var nx = plotX; nx < plotX + plotW; nx++) {
+    var ny = noiseY + (Math.random() - 0.5) * 5;
+    nx === plotX ? c.moveTo(nx, ny) : c.lineTo(nx, ny);
+  }
+  c.stroke(); c.globalAlpha = 1;
+
+  // Signal peak
+  if (dBm > -85) {
+    var peakY = dbToY(dBm);
+    c.shadowColor = peakColor; c.shadowBlur = 10;
+    c.strokeStyle = peakColor; c.lineWidth = 2;
+    c.beginPath();
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g  = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      var py = noiseY - (noiseY - peakY) * g;
+      xi === cx - pw * 3 ? c.moveTo(xi, py) : c.lineTo(xi, py);
+    }
+    c.stroke();
+
+    // Fill under peak
+    c.globalAlpha = 0.1; c.fillStyle = peakColor;
+    c.beginPath(); c.moveTo(cx - pw * 3, noiseY);
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      c.lineTo(xi, noiseY - (noiseY - peakY) * g);
+    }
+    c.lineTo(cx + pw * 3, noiseY); c.closePath(); c.fill();
+    c.globalAlpha = 1; c.shadowBlur = 0;
+
+    // Peak marker
+    c.strokeStyle = peakColor; c.lineWidth = 1;
+    c.setLineDash([3, 3]); c.globalAlpha = 0.5;
+    c.beginPath(); c.moveTo(cx, peakY); c.lineTo(W - 38, peakY); c.stroke();
+    c.setLineDash([]); c.globalAlpha = 1;
+
+    // Peak label
+    c.font = '500 9px IBM Plex Mono'; c.fillStyle = peakColor;
+    c.fillText(dBm.toFixed(1) + ' dB', cx + pw * 3 + 3, peakY + 3);
+  }
+  c.shadowBlur = 0;
+
+  // Frequency axis labels
+  c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#4a5568';
+  c.fillText('FREQ \u2192', W - 62, H - 4);
+  c.fillText('145 MHz', cx - 20, H - 4);
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = peakColor;
+  c.globalAlpha = 0.5; c.fillText('LOG', plotX + 2, plotY + 10); c.globalAlpha = 1;
+}
+
+// signal (0-1 power) → dBm (0 to -90)
+function toDBm(signal) {
+  if (signal < 1e-8) return -90;
+  return Math.max(-90, 10 * Math.log10(signal));
+}
+
+// ================================================================
+// Draw both FFT graphs
+// ================================================================
+function drawFFTs() {
   var sigA = getSignal(loopA.angle, loopA, tx);
   var sigB = getSignal(loopB.angle, loopB, tx);
-
-  document.getElementById('sigFillA').style.width = Math.round(sigA * 100) + '%';
-  document.getElementById('sigFillB').style.width = Math.round(sigB * 100) + '%';
-
-  var nullA = document.getElementById('nullA');
-  var nullB = document.getElementById('nullB');
-  nullA.classList.toggle('visible', sigA < 0.04);
-  nullB.classList.toggle('visible', sigB < 0.04);
+  drawFFT(fftCtxA, fftCanvasA.width, fftCanvasA.height, toDBm(sigA), '#f59e0b');
+  drawFFT(fftCtxB, fftCanvasB.width, fftCanvasB.height, toDBm(sigB), '#06b6d4');
 }
 
 // ================================================================
@@ -782,8 +857,6 @@ function newGame() {
   document.getElementById('feedback').className = 'feedback';
   document.getElementById('feedback').textContent =
     'Rotate each loop to find the signal null, then click Found It!';
-  document.getElementById('nullA').classList.remove('visible');
-  document.getElementById('nullB').classList.remove('visible');
 
   // New TX
   placeTX();
@@ -806,7 +879,7 @@ function hexToRGB(hex) {
 function loop() {
   animT += 0.04;
   drawMap();
-  updateBars();
+  drawFFTs();
   requestAnimationFrame(loop);
 }
 
