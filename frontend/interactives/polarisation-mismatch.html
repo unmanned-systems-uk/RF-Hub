@@ -160,31 +160,6 @@
     .rval.red   { color: #ef4444; }
     .rval.cyan  { color: #06b6d4; }
 
-    /* Signal power bar */
-    .bar-row { margin-top: 0.8rem; }
-
-    .bar-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
-      color: #64748b;
-      font-family: 'IBM Plex Mono', monospace;
-      margin-bottom: 0.28rem;
-    }
-
-    .bar-track {
-      background: #1a2234;
-      border: 1px solid #1e293b;
-      border-radius: 4px;
-      height: 10px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.06s linear, background-color 0.25s;
-    }
   </style>
 </head>
 <body>
@@ -237,21 +212,18 @@
     </div>
   </div>
 
-  <div class="bar-row">
-    <div class="bar-meta">
-      <span>Received Signal Level</span>
-      <span id="barPct">100%</span>
-    </div>
-    <div class="bar-track">
-      <div class="bar-fill" id="barFill" style="width:100%; background-color:#22c55e;"></div>
-    </div>
-  </div>
 </div>
 
 <!-- Oscilloscope -->
 <div class="card">
   <div class="card-label">Received Signal — Oscilloscope</div>
   <canvas id="scopeCanvas"></canvas>
+</div>
+
+<!-- Spectrum Analyser -->
+<div class="card">
+  <div class="card-label">Received Signal — Spectrum Analyser</div>
+  <canvas id="fftCanvas"></canvas>
 </div>
 
 <script>
@@ -266,6 +238,8 @@ var mainCanvas  = document.getElementById('mainCanvas');
 var mainCtx     = mainCanvas.getContext('2d');
 var scopeCanvas = document.getElementById('scopeCanvas');
 var scopeCtx    = scopeCanvas.getContext('2d');
+var fftCanvas   = document.getElementById('fftCanvas');
+var fftCtx      = fftCanvas.getContext('2d');
 
 // ================================================================
 // Math
@@ -322,6 +296,9 @@ function resize() {
 
   scopeCanvas.width  = w;
   scopeCanvas.height = 148;
+
+  fftCanvas.width  = w;
+  fftCanvas.height = 130;
 }
 
 window.addEventListener('resize', resize);
@@ -657,11 +634,120 @@ function updateReadouts() {
     rMode.style.color = '';
   }
 
-  // Power bar (|cos θ| as percentage)
-  var pct = Math.round(amplitude * 100);
-  document.getElementById('barFill').style.width           = pct + '%';
-  document.getElementById('barFill').style.backgroundColor = signalColor(amplitude);
-  document.getElementById('barPct').textContent            = pct + '%';
+}
+
+// ================================================================
+// Draw — spectrum analyser (FFT graph)
+// Ported from radiation-3d-v5.html — log scale, 0 to -90 dBm
+// ================================================================
+function drawFFT() {
+  var W = fftCanvas.width, H = fftCanvas.height;
+  if (!W || !H) return;
+
+  var amplitude = getAmplitude();
+  // dBm: 0 dBm = perfect match; -90 = noise floor
+  var dBm = amplitude < 1e-4 ? -90 : 20 * Math.log10(amplitude);
+  dBm = Math.max(-90, dBm);
+
+  var c = fftCtx;
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = '#080c14';
+  c.fillRect(0, 0, W, H);
+
+  var margin = { top: 8, bottom: 20, left: 4, right: 38 };
+  var plotW  = W - margin.left - margin.right;
+  var plotH  = H - margin.top - margin.bottom;
+  var plotX  = margin.left;
+  var plotY  = margin.top;
+
+  // Grid
+  var gx = W / 10, gy = H / 8;
+  c.strokeStyle = '#1a2234'; c.lineWidth = 0.5;
+  for (var gxi = gx; gxi < W; gxi += gx) {
+    c.beginPath(); c.moveTo(gxi, 0); c.lineTo(gxi, H); c.stroke();
+  }
+  for (var gyi = gy; gyi < H; gyi += gy) {
+    c.beginPath(); c.moveTo(0, gyi); c.lineTo(W, gyi); c.stroke();
+  }
+
+  // dB → Y mapping (0 dBm at top, -90 at bottom)
+  var dbTop = 0, dbBottom = -90, dbRange = 90;
+  function dbToY(db) { return plotY + ((dbTop - db) / dbRange) * plotH; }
+
+  // Scale labels
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#3a4a5e';
+  for (var db = 0; db >= -90; db -= 10) {
+    var ly = dbToY(db);
+    c.fillText(db + '', W - 34, ly + 3);
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(W - 37, ly); c.lineTo(W - 35, ly); c.stroke();
+  }
+
+  // 0 dBm reference line
+  c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(plotX, dbToY(0)); c.lineTo(plotX + plotW, dbToY(0)); c.stroke();
+
+  // -3 dBm reference (RHCP landmark)
+  c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2, 4]);
+  c.beginPath(); c.moveTo(plotX, dbToY(-3)); c.lineTo(plotX + plotW, dbToY(-3)); c.stroke();
+  c.setLineDash([]);
+  c.font = '500 7px IBM Plex Mono'; c.fillStyle = '#334155';
+  c.fillText('-3 dB', plotX + 2, dbToY(-3) - 2);
+
+  var noiseY = dbToY(-90);
+  var cx     = W * 0.45;
+  var pw     = 18;
+
+  // Noise floor
+  c.strokeStyle = '#f59e0b'; c.lineWidth = 1; c.globalAlpha = 0.15;
+  c.beginPath();
+  for (var nx = plotX; nx < plotX + plotW; nx++) {
+    var ny = noiseY + (Math.random() - 0.5) * 5;
+    nx === plotX ? c.moveTo(nx, ny) : c.lineTo(nx, ny);
+  }
+  c.stroke(); c.globalAlpha = 1;
+
+  // Signal peak
+  if (dBm > -85) {
+    var peakY = dbToY(dBm);
+    c.shadowColor = '#f59e0b'; c.shadowBlur = 10;
+    c.strokeStyle = '#f59e0b'; c.lineWidth = 2;
+    c.beginPath();
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      var py = noiseY - (noiseY - peakY) * g;
+      xi === cx - pw * 3 ? c.moveTo(xi, py) : c.lineTo(xi, py);
+    }
+    c.stroke();
+
+    // Fill under peak
+    c.globalAlpha = 0.1; c.fillStyle = '#f59e0b';
+    c.beginPath(); c.moveTo(cx - pw * 3, noiseY);
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      c.lineTo(xi, noiseY - (noiseY - peakY) * g);
+    }
+    c.lineTo(cx + pw * 3, noiseY); c.closePath(); c.fill();
+    c.globalAlpha = 1; c.shadowBlur = 0;
+
+    // Peak marker
+    c.strokeStyle = '#f59e0b'; c.lineWidth = 1;
+    c.setLineDash([3, 3]); c.globalAlpha = 0.5;
+    c.beginPath(); c.moveTo(cx, peakY); c.lineTo(W - 38, peakY); c.stroke();
+    c.setLineDash([]); c.globalAlpha = 1;
+
+    // Peak label
+    c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#f59e0b';
+    c.fillText(dBm.toFixed(1) + ' dB', cx + pw * 3 + 3, peakY + 3);
+  }
+  c.shadowBlur = 0;
+
+  // Frequency axis labels
+  c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#4a5568';
+  c.fillText('FREQ \u2192', W - 62, H - 4);
+  c.fillText('145 MHz', cx - 20, H - 4);
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#f59e0b';
+  c.globalAlpha = 0.5; c.fillText('LOG', plotX + 2, plotY + 10); c.globalAlpha = 1;
 }
 
 // ================================================================
@@ -681,6 +767,7 @@ function loop() {
   animT += 0.042;
   drawMain();
   drawScope();
+  drawFFT();
   updateReadouts();
   requestAnimationFrame(loop);
 }
