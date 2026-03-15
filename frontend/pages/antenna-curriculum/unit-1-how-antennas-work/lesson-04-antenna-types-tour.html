@@ -1065,6 +1065,7 @@ footer a:hover { color: var(--accent-em); }
         <button id="interf-play-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Pause</button>
         <button id="interf-spd-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Speed 1×</button>
         <button id="interf-rings-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Rings on</button>
+        <button id="interf-restart-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Restart</button>
       </div>
       <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:3px;background:#a855f7;border-radius:1px;"></div>Reflector (longer — phase lag)</div>
@@ -1209,6 +1210,7 @@ footer a:hover { color: var(--accent-em); }
     document.getElementById('interf-play-btn').onclick=function(){playing=!playing;this.textContent=playing?'Pause':'Play';};
     document.getElementById('interf-spd-btn').onclick=function(){spd=spd===1?2:spd===2?0.5:1;this.textContent='Speed '+spd+'×';};
     document.getElementById('interf-rings-btn').onclick=function(){rings=!rings;this.textContent=rings?'Rings on':'Rings off';};
+    document.getElementById('interf-restart-btn').onclick=function(){yT=0;};
     var last=null;
     function loop(ts){
       var dt=last?Math.min((ts-last)/1000,0.05):0.016;last=ts;
