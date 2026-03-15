@@ -327,7 +327,7 @@ input[type="range"] {
 }
 .resource-embed iframe {
   width: 100%;
-  height: 520px;
+  height: 1030px;
   border: none;
   display: block;
 }
@@ -669,14 +669,17 @@ footer a:hover { color: var(--accent-em); }
       <!-- Panel label -->
       <text x="180" y="22" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#9ca3af" letter-spacing="1.5" text-transform="uppercase">HALF-WAVE DIPOLE</text>
 
-      <!-- Full toroid pattern (top ellipse + bottom ellipse) -->
-      <ellipse cx="180" cy="165" rx="68" ry="30" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <!-- Upper lobe -->
-      <path d="M 150,170 Q 112,120 150,80 Q 180,55 210,80 Q 248,120 210,170 Z"
+      <!-- Toroid equatorial ring (perspective cue) -->
+      <ellipse cx="180" cy="165" rx="72" ry="22" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- Left lobe — null at antenna tips, maximum broadside left -->
+      <path d="M 180,80 C 125,82 108,125 108,165 C 108,205 125,248 180,250 Z"
             fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
-      <!-- Lower lobe -->
-      <path d="M 150,160 Q 112,210 150,250 Q 180,275 210,250 Q 248,210 210,160 Z"
+      <!-- Right lobe — null at antenna tips, maximum broadside right -->
+      <path d="M 180,80 C 235,82 252,125 252,165 C 252,205 235,248 180,250 Z"
             fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <!-- Null markers at antenna tips -->
+      <circle cx="180" cy="80"  r="3.5" fill="none" stroke="rgba(220,60,60,0.7)" stroke-width="1.2"/>
+      <circle cx="180" cy="250" r="3.5" fill="none" stroke="rgba(220,60,60,0.7)" stroke-width="1.2"/>
 
       <!-- Dipole arms -->
       <line x1="180" y1="80" x2="180" y2="165" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
@@ -727,16 +730,21 @@ footer a:hover { color: var(--accent-em); }
       <path d="M 540,228 Q 574,208 574,193 Q 574,173 540,158"
             fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>
 
-      <!-- Half-toroid pattern (upper half only) -->
-      <path d="M 506,233 Q 468,183 506,143 Q 540,118 574,143 Q 612,183 574,233 Z"
+      <!-- Half-toroid: left lobe — maximum at horizon, null at tip -->
+      <path d="M 540,228 C 462,228 458,163 540,158 Z"
             fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <!-- Half-toroid: right lobe -->
+      <path d="M 540,228 C 618,228 622,163 540,158 Z"
+            fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <!-- Null marker at tip -->
+      <circle cx="540" cy="158" r="3.5" fill="none" stroke="rgba(220,60,60,0.7)" stroke-width="1.2"/>
 
       <!-- Labels -->
-      <text x="550" y="186" font-family="IBM Plex Mono,monospace" font-size="9" fill="#9ca3af">λ/4</text>
-      <text x="550" y="236" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b">feed</text>
-      <text x="476" y="183" font-family="IBM Plex Mono,monospace" font-size="9" fill="#a78bfa" text-anchor="middle">half</text>
-      <text x="476" y="194" font-family="IBM Plex Mono,monospace" font-size="9" fill="#a78bfa" text-anchor="middle">toroid</text>
-      <text x="584" y="200" font-family="IBM Plex Mono,monospace" font-size="8" fill="rgba(245,158,11,0.7)">I(x)</text>
+      <text x="548" y="186" font-family="IBM Plex Mono,monospace" font-size="9" fill="#9ca3af">λ/4</text>
+      <text x="548" y="236" font-family="IBM Plex Mono,monospace" font-size="9" fill="#f59e0b">feed</text>
+      <text x="490" y="183" font-family="IBM Plex Mono,monospace" font-size="9" fill="#a78bfa" text-anchor="middle">half</text>
+      <text x="490" y="194" font-family="IBM Plex Mono,monospace" font-size="9" fill="#a78bfa" text-anchor="middle">toroid</text>
+      <text x="548" y="202" font-family="IBM Plex Mono,monospace" font-size="8" fill="rgba(245,158,11,0.7)">I(x)</text>
 
       <!-- Horizon annotation line on right panel -->
       <line x1="400" y1="228" x2="680" y2="228" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="6,4"/>

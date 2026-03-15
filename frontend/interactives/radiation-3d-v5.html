@@ -2021,11 +2021,13 @@ function animate() {
   updateWaveform();
 
   // RX antenna + instruments
-  updateSignalPath();
-  const sig = calculateSignal();
-  drawScope(sig);
-  drawSpectrum(sig);
-  updateRxInfo(sig);
+  if (rxGroup.visible) {
+    updateSignalPath();
+    const sig = calculateSignal();
+    drawScope(sig);
+    drawSpectrum(sig);
+    updateRxInfo(sig);
+  }
   updateAperture();
 
   activePatternGroup.visible = showPattern;
@@ -2461,6 +2463,7 @@ function applyUIMode(mode) {
       document.querySelectorAll(sel).forEach(el => { el.style.display = showRx ? '' : 'none'; });
     });
     rxGroup.visible = showRx;
+    signalPath.visible = showRx;
   }
 
   // 3. ?antenna= — single type or comma-separated list

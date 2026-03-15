@@ -2390,6 +2390,159 @@ document.querySelectorAll('.btn-reveal').forEach(function(btn) {
 </script>
 
 
+<script>
+/* ============================================================
+   VISUAL 5 — Dipole Length Formula Calculator
+   L = c / (2f)   |   f = c / (2L)   |   c = 2f × L
+   ============================================================ */
+(function() {
+  'use strict';
+
+  var C = 299792458; // m/s (exact by definition)
+
+  // Carry input values between mode switches
+  var last = { f: 145, L: 1.034 };
+
+  // Formula display HTML per solve mode
+  var fHTML = {
+    L: '<span class="fvar fvar--L" data-var="L" tabindex="0" role="button" aria-label="Solve for L">L</span>' +
+       '<span class="fop">=</span>' +
+       '<span class="fvar fvar--c" data-var="c" tabindex="0" role="button" aria-label="Solve for c">c</span>' +
+       '<span class="fop">/</span><span class="fop">(2 ×</span>' +
+       '<span class="fvar fvar--f" data-var="f" tabindex="0" role="button" aria-label="Solve for f">f</span>' +
+       '<span class="fop">)</span>',
+    f: '<span class="fvar fvar--f" data-var="f" tabindex="0" role="button" aria-label="Solve for f">f</span>' +
+       '<span class="fop">=</span>' +
+       '<span class="fvar fvar--c" data-var="c" tabindex="0" role="button" aria-label="Solve for c">c</span>' +
+       '<span class="fop">/</span><span class="fop">(2 ×</span>' +
+       '<span class="fvar fvar--L" data-var="L" tabindex="0" role="button" aria-label="Solve for L">L</span>' +
+       '<span class="fop">)</span>',
+    c: '<span class="fvar fvar--c" data-var="c" tabindex="0" role="button" aria-label="Solve for c">c</span>' +
+       '<span class="fop">=</span>' +
+       '<span class="fop">2 ×</span>' +
+       '<span class="fvar fvar--f" data-var="f" tabindex="0" role="button" aria-label="Solve for f">f</span>' +
+       '<span class="fop">×</span>' +
+       '<span class="fvar fvar--L" data-var="L" tabindex="0" role="button" aria-label="Solve for L">L</span>'
+  };
+
+  // Calc section HTML per solve mode
+  var cHTML = {
+    L: '<h4>Live Calculator</h4>' +
+       '<div class="calc-row"><label for="calc-freq">Frequency (f)</label>' +
+       '<input type="number" id="calc-freq" min="0.001" step="1" aria-label="Frequency in megahertz">' +
+       '<span class="calc-unit">MHz</span></div>' +
+       '<div class="calc-divider"></div>' +
+       '<div class="calc-row"><label>Total length (L)</label><span class="calc-result" id="calc-total-L">—</span></div>' +
+       '<div class="calc-row"><label>Each arm (λ/4)</label><span class="calc-result" id="calc-arm-L">—</span></div>',
+    f: '<h4>Live Calculator</h4>' +
+       '<div class="calc-row"><label for="calc-length">Total length (L)</label>' +
+       '<input type="number" id="calc-length" min="0.001" step="0.001" aria-label="Total dipole length in metres">' +
+       '<span class="calc-unit">m</span></div>' +
+       '<div class="calc-divider"></div>' +
+       '<div class="calc-row"><label>Frequency (f)</label><span class="calc-result" id="calc-freq-out">—</span></div>',
+    c: '<h4>Live Calculator</h4>' +
+       '<div class="calc-row"><label for="calc-freq-c">Frequency (f)</label>' +
+       '<input type="number" id="calc-freq-c" min="0.001" step="1" aria-label="Frequency in megahertz">' +
+       '<span class="calc-unit">MHz</span></div>' +
+       '<div class="calc-row"><label for="calc-length-c">Total length (L)</label>' +
+       '<input type="number" id="calc-length-c" min="0.001" step="0.001" aria-label="Total dipole length in metres">' +
+       '<span class="calc-unit">m</span></div>' +
+       '<div class="calc-divider"></div>' +
+       '<div class="calc-row"><label>Speed of light (c)</label><span class="calc-result" id="calc-c-out">—</span></div>'
+  };
+
+  function calculate(mode) {
+    if (mode === 'L') {
+      var inp = document.getElementById('calc-freq');
+      var f = parseFloat(inp ? inp.value : 0) || 0;
+      last.f = f;
+      var fHz = f * 1e6;
+      var L = fHz > 0 ? C / (2 * fHz) : 0;
+      var tEl = document.getElementById('calc-total-L');
+      var aEl = document.getElementById('calc-arm-L');
+      if (tEl) tEl.textContent = L > 0 ? L.toFixed(3) + ' m' : '—';
+      if (aEl) aEl.textContent = L > 0 ? (L / 2).toFixed(3) + ' m' : '—';
+
+    } else if (mode === 'f') {
+      var inp = document.getElementById('calc-length');
+      var Lv = parseFloat(inp ? inp.value : 0) || 0;
+      last.L = Lv;
+      var fHz = Lv > 0 ? C / (2 * Lv) : 0;
+      var oEl = document.getElementById('calc-freq-out');
+      if (oEl) oEl.textContent = fHz > 0 ? (fHz / 1e6).toFixed(3) + ' MHz' : '—';
+
+    } else if (mode === 'c') {
+      var fi  = document.getElementById('calc-freq-c');
+      var li  = document.getElementById('calc-length-c');
+      var fv  = parseFloat(fi ? fi.value : 0) || 0;
+      var Lv  = parseFloat(li ? li.value : 0) || 0;
+      var cv  = 2 * (fv * 1e6) * Lv;
+      var oEl = document.getElementById('calc-c-out');
+      if (oEl) oEl.textContent = (fv > 0 && Lv > 0) ? cv.toFixed(0) + ' m/s' : '—';
+    }
+  }
+
+  function bindInputs(mode) {
+    if (mode === 'L') {
+      var el = document.getElementById('calc-freq');
+      if (el) { el.value = last.f; el.addEventListener('input', function() { calculate('L'); }); }
+    } else if (mode === 'f') {
+      var el = document.getElementById('calc-length');
+      if (el) { el.value = last.L; el.addEventListener('input', function() { calculate('f'); }); }
+    } else if (mode === 'c') {
+      var fe = document.getElementById('calc-freq-c');
+      var le = document.getElementById('calc-length-c');
+      if (fe) { fe.value = last.f; fe.addEventListener('input', function() { calculate('c'); }); }
+      if (le) { le.value = last.L; le.addEventListener('input', function() { calculate('c'); }); }
+    }
+  }
+
+  function bindFvars(mode) {
+    document.querySelectorAll('#v5-card .fvar').forEach(function(el) {
+      el.addEventListener('click', function() { setMode(el.dataset.var); });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setMode(el.dataset.var); }
+      });
+    });
+    // Highlight the active fvar
+    document.querySelectorAll('#v5-card .fvar').forEach(function(el) {
+      el.style.fontWeight = el.dataset.var === mode ? '700' : '';
+      el.style.textDecoration = el.dataset.var === mode ? 'underline' : '';
+    });
+  }
+
+  function setMode(mode) {
+    // Update formula display
+    var fEl = document.getElementById('formula-display');
+    if (fEl) { fEl.innerHTML = fHTML[mode] || fHTML.L; }
+
+    // Update solve buttons
+    document.querySelectorAll('#v5-card .solve-btn').forEach(function(btn) {
+      var active = btn.dataset.solve === mode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    // Rebuild calc section
+    var cEl = document.querySelector('#v5-card .formula-calc');
+    if (cEl) { cEl.innerHTML = cHTML[mode] || cHTML.L; }
+
+    bindInputs(mode);
+    bindFvars(mode);
+    calculate(mode);
+  }
+
+  // Wire solve buttons
+  document.querySelectorAll('#v5-card .solve-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { setMode(btn.dataset.solve); });
+  });
+
+  // Initialise
+  setMode('L');
+
+})();
+</script>
+
 <footer>
   <div class="container">
     <p>Lesson 2 of 20 &nbsp;·&nbsp; Unit 1: How Antennas Work &nbsp;·&nbsp;
