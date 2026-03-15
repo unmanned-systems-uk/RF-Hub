@@ -2,7 +2,7 @@
 
 **Living Document** — Updated each session  
 **Last Updated:** 15 March 2026  
-**Current Focus:** Lesson 5 — Polarisation (PLANNED)
+**Current Focus:** Lesson 5 — Polarisation (DRAFT)
 
 ---
 
@@ -75,7 +75,7 @@ Each .md contains:
 | 2 | From Waves to Wires | 📝 DRAFT | Startup + writing (7 Mar 2026). lesson-02-how-antennas-radiate.md written. Note: HTML existed in frontend folder from unknown prior session — .md is now the canonical source. |
 | 3 | Radiation Patterns | 📝 DRAFT | Startup chat 7 Mar 2026. Plan agreed. Writing chat 7 Mar 2026. lesson-03-radiation-patterns.md written. |
 | 4 | Antenna Types Tour | 📝 DRAFT | Startup chat 7 Mar 2026. Plan agreed. Writing chat 7 Mar 2026. lesson-04-antenna-types-tour.md written. |
-| 5 | Polarisation | 📋 PLANNED | Startup chat 15 Mar 2026. Plan agreed. 7 sections + 2 interactives + capstone. Three agent tasks defined (MD writing, polarisation-mismatch.html, df-hunt.html). |
+| 5 | Polarisation | 📝 DRAFT | Startup chat 15 Mar 2026. Writing chat 15 Mar 2026. lesson-05-polarisation.md written. 7 sections + 4-part self-check + 2 interactive exercises + capstone. All 5 L04 seeds harvested. L02 wrong-model resolved. |
 
 ### Unit 2: Antenna Characteristics & Measurement (Lessons 6–10)
 
@@ -339,6 +339,7 @@ Wrong models to correct:
 
 | Date | Lesson | Chat Type | Outcome |
 |------|--------|-----------|---------|
+| 15 Mar 2026 | L5 | Writing | Draft .md written (lesson-05-polarisation.md). 7 sections: bridge from L04 (5 seeds named) → what polarisation is (definition, Seed 1) → wrong-model resolution from L02 (elicit-confront-resolve, two-panel visual, Seed 2) → mismatch and coupling loss (cos θ formula, 3 worked examples, mismatch table, polarisation-mismatch.html guided exercise, Seed 3) → circular polarisation (RHCP/LHCP, right-hand rule, GPS/satellite rationale, 3 dB penalty, Seed 4) → practical guide (10-row applications table, dual-pol, Faraday rotation, Seed 5) → Unit 1 close + df-hunt.html capstone. Self-check: Parts A–D (concepts, calculations, cross-lesson energy coupling, optional scavenger hunt). 7 visual briefs. |
 | 15 Mar 2026 | L5 | Startup | Plan agreed. 7 sections: bridge from L04 → what polarisation is → wrong-model resolution (L02 deferral) → mismatch and coupling loss → circular polarisation → practical guide → Unit 1 close + capstone. Two new interactives specified: polarisation-mismatch.html (TX/RX rotation with oscilloscope/FFT) and df-hunt.html (loop DF triangulation game). Three agent tasks defined. Reviewed lesson-05-polarisation.old — rejected as retrofit, retained as reference. |
 | 9 Mar 2026 | All | Architecture | **field-detachment.html created and moved to shared interactives.** Canvas animation — 4 acts, three-stage colour highlight (amber/red/purple), speed slider. URL params: `?acts=`, `?start=`, `?highlight=`, `?ui=`. Moved to `frontend/interactives/`. CONFIG.md updated with full param spec and per-lesson usage table. PROGRESS.md updated with evolution plan. |
 | 9 Mar 2026 | All | Architecture | **field-detachment.html evolution decision.** L2 uses as-is (all acts, full UI). L3 uses `?acts=4&start=4&ui=minimal` as radiation pattern visual context. Long-term: enhance toward technically accurate dipole pattern, synchronise with radiation-3d-v5.html. Deferred Claude Code task. |
