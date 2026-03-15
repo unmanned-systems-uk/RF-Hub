@@ -1031,6 +1031,195 @@ footer a:hover { color: var(--accent-em); }
   <div class="chapter-label">Section 5</div>
   <h2>The Yagi-Uda Antenna</h2>
 
+  <h3>Before we begin — constructive and destructive interference</h3>
+
+  <p class="chapter-intro">The key to understanding the Yagi is phase. When two waves arrive at the same point in space, what happens depends entirely on how their peaks and troughs line up. If the peaks coincide, the combined amplitude doubles — this is <strong>constructive interference</strong>. If a peak meets a trough, the waves cancel — this is <strong>destructive interference</strong>. Everything in between produces a partial result proportional to the phase offset.</p>
+
+  <p>This is not specific to antennas. It is a fundamental property of all waves. The Yagi exploits it deliberately: each parasitic element is sized so that its re-radiated wave arrives at the forward direction in phase with the driven element (constructive), and at the backward direction out of phase (destructive). Use the interactive below to build the intuition, then carry it directly into the explanation that follows.</p>
+
+  <!-- INTERACTIVE — Wave interference primer + Yagi phase steering -->
+  <div class="diagram-card glow-em" id="v-yagi-phase-interactive" style="padding:0;overflow:hidden;">
+    <div class="diagram-label" style="padding:14px 18px 0;">Interactive — Wave Interference and Yagi Phase Steering</div>
+
+    <div style="padding:16px 18px 0;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">01 &mdash; Wave interference</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-secondary);">Phase difference</span>
+        <input type="range" min="0" max="180" value="0" id="interf-ph-slider"
+          style="flex:1;max-width:280px;accent-color:#f59e0b;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;color:var(--text-primary);min-width:36px;" id="interf-ph-val">0°</span>
+      </div>
+      <canvas id="interf-wave-cv" height="180" style="display:block;width:100%;border-radius:6px;background:#060a12;"></canvas>
+      <div id="interf-int-lbl" style="font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:center;margin-top:8px;min-height:16px;color:#4ade80;">Constructive — waves reinforce at double amplitude</div>
+      <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:2px;background:#f59e0b;border-radius:1px;"></div>Wave A</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:2px;background:#06b6d4;border-radius:1px;"></div>Wave B (phase shifted)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:3px;background:#4ade80;border-radius:1px;"></div>Combined result</div>
+      </div>
+    </div>
+
+    <div style="padding:20px 18px 0;border-top:0.5px solid rgba(255,255,255,0.06);margin-top:18px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">02 &mdash; Yagi phase steering — top-down view</div>
+      <canvas id="interf-yagi-cv" height="320" style="display:block;width:100%;border-radius:6px;background:#060a12;"></canvas>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button id="interf-play-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Pause</button>
+        <button id="interf-spd-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Speed 1×</button>
+        <button id="interf-rings-btn" style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--text-secondary);border-radius:5px;cursor:pointer;">Rings on</button>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:3px;background:#a855f7;border-radius:1px;"></div>Reflector (longer — phase lag)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:3px;background:#f59e0b;border-radius:1px;"></div>Driven element</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;"><div style="width:16px;height:3px;background:#06b6d4;border-radius:1px;"></div>Directors (shorter — phase lead)</div>
+      </div>
+    </div>
+    <div style="height:18px;"></div>
+  </div>
+
+  <script>
+  (function(){
+    var dpr = window.devicePixelRatio||1;
+    function setupCv(el){
+      var w=el.parentElement.clientWidth||640,h=parseInt(el.getAttribute('height'));
+      el.width=w*dpr;el.height=h*dpr;el.style.width=w+'px';el.style.height=h+'px';
+      var ctx=el.getContext('2d');ctx.scale(dpr,dpr);return{ctx:ctx,w:w,h:h};
+    }
+    var wEl=document.getElementById('interf-wave-cv');
+    var yEl=document.getElementById('interf-yagi-cv');
+    if(!wEl||!yEl)return;
+    var wR,yR;
+    wR=setupCv(wEl);yR=setupCv(yEl);
+    var WW=wR.w,WH=wR.h,wCtx=wR.ctx;
+    var YW=yR.w,YH=yR.h,yCtx=yR.ctx,CY=YH/2;
+    var SPEED=90,LAMBDA=150,PERIOD=LAMBDA/SPEED;
+    var FWD_X=YW-55;
+    var rawX=[0.203,0.398,0.539,0.656].map(function(r){return Math.round(r*YW);});
+    function computePhi(positions,fwdX){
+      var tRef=(fwdX-positions[1])/SPEED;
+      return positions.map(function(x){
+        var raw=(tRef-(fwdX-x)/SPEED)/PERIOD;
+        return((raw%1)+1)%1;
+      });
+    }
+    var phis=computePhi(rawX,FWD_X);
+    var elems=[
+      {label:'Reflector',color:'#a855f7',glow:'168,85,247',h:52},
+      {label:'Driven',   color:'#f59e0b',glow:'245,158,11',h:42},
+      {label:'Dir 1',    color:'#06b6d4',glow:'6,182,212', h:36},
+      {label:'Dir 2',    color:'#06b6d4',glow:'6,182,212', h:32}
+    ].map(function(e,i){return Object.assign({},e,{x:rawX[i],phi:phis[i]});});
+    var wT=0,yT=0,playing=true,spd=1,rings=true;
+    var phSlider=document.getElementById('interf-ph-slider');
+    var phVal=document.getElementById('interf-ph-val');
+    var intLbl=document.getElementById('interf-int-lbl');
+    phSlider.oninput=function(){phVal.textContent=phSlider.value+'°';};
+    function drawWaves(t){
+      var phi=+phSlider.value*Math.PI/180;
+      wCtx.fillStyle='#060a12';wCtx.fillRect(0,0,WW,WH);
+      var rowH=WH/3,amp=rowH*0.31,CYCS=2.5;
+      var ycs=[rowH*0.5,rowH*1.5,rowH*2.5];
+      wCtx.strokeStyle='rgba(255,255,255,0.04)';wCtx.lineWidth=0.5;
+      ycs.forEach(function(yc){wCtx.beginPath();wCtx.moveTo(0,yc);wCtx.lineTo(WW,yc);wCtx.stroke();});
+      function sine(yc,phase,col,lw){
+        wCtx.strokeStyle=col;wCtx.lineWidth=lw;wCtx.beginPath();
+        for(var x=0;x<=WW;x++){var y=yc-amp*Math.sin(2*Math.PI*(CYCS*x/WW-t*0.5)+phase);x===0?wCtx.moveTo(x,y):wCtx.lineTo(x,y);}
+        wCtx.stroke();
+      }
+      sine(ycs[0],0,'#f59e0b',1.5);
+      sine(ycs[1],phi,'#06b6d4',1.5);
+      wCtx.strokeStyle='#4ade80';wCtx.lineWidth=2.5;wCtx.beginPath();
+      for(var x=0;x<=WW;x++){var base=2*Math.PI*(CYCS*x/WW-t*0.5);var y=ycs[2]-amp*(Math.sin(base)+Math.sin(base+phi));x===0?wCtx.moveTo(x,y):wCtx.lineTo(x,y);}
+      wCtx.stroke();
+      wCtx.font="11px 'IBM Plex Mono',monospace";wCtx.textAlign='left';
+      ['A','B','Sum'].forEach(function(l,i){wCtx.fillStyle='rgba(255,255,255,0.22)';wCtx.fillText(l,8,ycs[i]-amp*1.1-2);});
+      var sAmp=2*Math.abs(Math.cos(phi/2));
+      wCtx.textAlign='right';
+      wCtx.fillStyle=sAmp>1.8?'#4ade80':sAmp<0.2?'#f87171':'#94a3b8';
+      wCtx.fillText(sAmp.toFixed(2)+'× amplitude',WW-8,ycs[2]-amp*1.1-2);
+      var deg=+phSlider.value,pct=(sAmp/2*100).toFixed(0);
+      intLbl.textContent=deg===0?'Constructive — waves reinforce at double amplitude':deg===180?'Destructive — waves cancel, zero sum':deg<90?deg+'° offset — partial reinforcement ('+pct+'% of maximum)':deg+'° offset — partial cancellation ('+pct+'% of maximum)';
+      intLbl.style.color=deg<45?'#4ade80':deg>135?'#f87171':'var(--text-secondary)';
+    }
+    function getRings(t,el){
+      var ringsArr=[],head=(t-el.phi*PERIOD)*SPEED;
+      var maxR=Math.hypot(Math.max(el.x,YW-el.x),CY)+20;
+      for(var n=0;n<10;n++){var r=head-n*LAMBDA;if(r>2&&r<maxR)ringsArr.push({r:r,op:(1-r/maxR)*0.55});}
+      return ringsArr;
+    }
+    function fieldAt(px,t){
+      var s=0;
+      elems.forEach(function(el){var arrive=(t-el.phi*PERIOD-Math.abs(px-el.x)/SPEED)/PERIOD;s+=Math.sin(2*Math.PI*arrive);});
+      return s;
+    }
+    function drawIndicator(x,t,fwd){
+      var f=Math.abs(fieldAt(x,t))/4;
+      var g=fwd?'6,182,212':'168,85,247';
+      var BH=44;
+      yCtx.strokeStyle='rgba('+g+',0.1)';yCtx.lineWidth=0.5;
+      yCtx.strokeRect(x-20,CY-BH-16,40,BH*2+10);
+      var fh=Math.max(0,f*BH);
+      yCtx.fillStyle='rgba('+g+',0.13)';yCtx.fillRect(x-10,CY-fh,20,fh*2);
+      yCtx.fillStyle='rgba('+g+',0.5)';yCtx.fillRect(x-8,CY-Math.max(0,fh-2),16,Math.max(0,(fh-2)*2));
+      yCtx.fillStyle='rgba('+g+',0.6)';yCtx.font="9px 'IBM Plex Mono',monospace";yCtx.textAlign='center';
+      yCtx.fillText(fwd?'FORWARD':'BACKWARD',x,CY-BH-5);
+      yCtx.fillStyle='rgba(255,255,255,0.25)';
+      yCtx.fillText(f>0.7?'strong':f>0.4?'partial':'weak',x,CY+BH+5);
+    }
+    function drawClock(x,y,t,el){
+      var r=8,phase=((t/PERIOD-el.phi)*Math.PI*2)%(Math.PI*2);
+      yCtx.beginPath();yCtx.arc(x,y,r,0,Math.PI*2);
+      yCtx.strokeStyle='rgba(255,255,255,0.06)';yCtx.lineWidth=1;yCtx.stroke();
+      if(phase>0.01){
+        yCtx.beginPath();yCtx.arc(x,y,r,-Math.PI/2,-Math.PI/2+phase,false);
+        yCtx.strokeStyle=el.color;yCtx.lineWidth=2;yCtx.stroke();
+      }
+      var cx=x+Math.cos(-Math.PI/2+phase)*r,cy=y+Math.sin(-Math.PI/2+phase)*r;
+      yCtx.beginPath();yCtx.arc(cx,cy,2,0,Math.PI*2);yCtx.fillStyle=el.color;yCtx.fill();
+    }
+    function drawYagi(t){
+      yCtx.fillStyle='#060a12';yCtx.fillRect(0,0,YW,YH);
+      yCtx.strokeStyle='rgba(255,255,255,0.025)';yCtx.lineWidth=0.5;
+      for(var x=0;x<YW;x+=60){yCtx.beginPath();yCtx.moveTo(x,0);yCtx.lineTo(x,YH);yCtx.stroke();}
+      for(var y=0;y<YH;y+=60){yCtx.beginPath();yCtx.moveTo(0,y);yCtx.lineTo(YW,y);yCtx.stroke();}
+      if(rings)elems.forEach(function(el){getRings(t,el).forEach(function(ring){
+        yCtx.beginPath();yCtx.arc(el.x,CY,ring.r,0,Math.PI*2);
+        yCtx.strokeStyle='rgba('+el.glow+','+ring.op+')';yCtx.lineWidth=1.5;yCtx.stroke();
+      });});
+      yCtx.strokeStyle='rgba(255,255,255,0.08)';yCtx.lineWidth=3;
+      yCtx.beginPath();yCtx.moveTo(75,CY);yCtx.lineTo(YW-80,CY);yCtx.stroke();
+      drawIndicator(FWD_X,t,true);drawIndicator(35,t,false);
+      yCtx.font="10px 'IBM Plex Mono',monospace";
+      yCtx.fillStyle='rgba(6,182,212,0.55)';yCtx.textAlign='right';yCtx.fillText('forward >',YW-8,16);
+      yCtx.fillStyle='rgba(168,85,247,0.55)';yCtx.textAlign='left';yCtx.fillText('< backward',8,16);
+      elems.forEach(function(el){
+        var grad=yCtx.createLinearGradient(el.x,CY-el.h,el.x,CY+el.h);
+        grad.addColorStop(0,'rgba('+el.glow+',0)');grad.addColorStop(0.35,'rgba('+el.glow+',0.28)');
+        grad.addColorStop(0.5,'rgba('+el.glow+',0.5)');grad.addColorStop(0.65,'rgba('+el.glow+',0.28)');
+        grad.addColorStop(1,'rgba('+el.glow+',0)');
+        yCtx.strokeStyle=grad;yCtx.lineWidth=5;
+        yCtx.beginPath();yCtx.moveTo(el.x,CY-el.h);yCtx.lineTo(el.x,CY+el.h);yCtx.stroke();
+        yCtx.strokeStyle=el.color;yCtx.lineWidth=2;
+        yCtx.beginPath();yCtx.moveTo(el.x,CY-el.h+4);yCtx.lineTo(el.x,CY+el.h-4);yCtx.stroke();
+        yCtx.fillStyle=el.color;yCtx.font="10px 'IBM Plex Mono',monospace";yCtx.textAlign='center';
+        yCtx.fillText(el.label,el.x,CY-el.h-6);
+        drawClock(el.x,CY+el.h+16,t,el);
+      });
+      yCtx.fillStyle='rgba(255,255,255,0.12)';yCtx.font="9px 'IBM Plex Mono',monospace";
+      yCtx.textAlign='left';yCtx.fillText('top-down view — elements point into/out of page',8,YH-7);
+    }
+    document.getElementById('interf-play-btn').onclick=function(){playing=!playing;this.textContent=playing?'Pause':'Play';};
+    document.getElementById('interf-spd-btn').onclick=function(){spd=spd===1?2:spd===2?0.5:1;this.textContent='Speed '+spd+'×';};
+    document.getElementById('interf-rings-btn').onclick=function(){rings=!rings;this.textContent=rings?'Rings on':'Rings off';};
+    var last=null;
+    function loop(ts){
+      var dt=last?Math.min((ts-last)/1000,0.05):0.016;last=ts;
+      wT+=dt;if(playing)yT+=dt*spd;
+      drawWaves(wT);drawYagi(yT);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  })();
+  </script>
+
   <h3>A driven element with company</h3>
 
   <p class="chapter-intro">Everything so far has been a single radiating element or a stack of identical elements. The Yagi-Uda antenna — almost always shortened to just Yagi — is different. It uses one driven element (the one connected to the transmitter or receiver) and a set of additional elements that are not connected to anything. These are called <strong>parasitic elements</strong>, and they are the key to understanding how the Yagi works.</p>
