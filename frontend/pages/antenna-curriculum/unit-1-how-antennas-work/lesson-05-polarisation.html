@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5 — Polarisation: Orientation Matters — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --text-dim:      #6b7280;
+
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+
+  --color-e-field:  var(--amber);
+  --color-h-field:  var(--cyan);
+  --color-em-wave:  var(--purple);
+
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --border-accent: rgba(245,158,11,0.3);
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+img, canvas, svg { max-width: 100%; display: block; }
+
+a { color: var(--accent-em); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--purple));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV (rf-hub-v2.css supplement)
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #111827 60%, #1a1040 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--em {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--purple);
+}
+.objectives {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+}
+.objectives h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.objectives ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+.objectives li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--purple);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   CHAPTER SECTIONS
+   ============================================================ */
+.chapter {
+  margin-top: 64px;
+}
+.chapter-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.chapter > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chapter h3 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 32px 0 12px;
+}
+.chapter p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 18px;
+}
+.chapter p strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.chapter ul,
+.chapter ol {
+  color: var(--text-secondary);
+  padding-left: 24px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chapter li { line-height: 1.65; }
+.chapter li strong { color: var(--text-primary); }
+
+/* ============================================================
+   DIAGRAM CARDS
+   ============================================================ */
+.diagram-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin: 32px 0;
+  overflow: hidden;
+}
+.diagram-card--wide {
+  margin-left: -24px;
+  margin-right: -24px;
+  border-radius: var(--radius-md);
+}
+.diagram-card .card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.diagram-card canvas {
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  width: 100%;
+}
+
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout {
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 24px 0;
+  border-left: 3px solid;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.callout--amber {
+  background: rgba(245,158,11,0.08);
+  border-color: var(--amber);
+}
+.callout--cyan {
+  background: rgba(6,182,212,0.08);
+  border-color: var(--cyan);
+}
+.callout--purple {
+  background: rgba(167,139,250,0.08);
+  border-color: var(--purple);
+}
+.callout strong { color: var(--text-primary); }
+
+/* ============================================================
+   FORMULA BLOCK
+   ============================================================ */
+.formula-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin: 24px 0;
+  text-align: center;
+}
+.formula-display {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.formula-display .fvar--theta { color: var(--amber); }
+.formula-display .fvar--loss  { color: var(--purple); }
+.formula-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.formula-label span { color: var(--text-secondary); }
+
+/* ============================================================
+   MISMATCH TABLE
+   ============================================================ */
+.mismatch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 24px 0;
+}
+.mismatch-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.mismatch-table td {
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.mismatch-table tr:last-child td { border-bottom: none; }
+.mismatch-table td:last-child {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.loss--matched  { color: var(--cyan); }
+.loss--partial  { color: var(--amber); }
+.loss--bad      { color: #f87171; }
+
+/* ============================================================
+   APPLICATIONS TABLE
+   ============================================================ */
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin: 24px 0;
+}
+.apps-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.apps-table td {
+  padding: 9px 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.apps-table tr:last-child td { border-bottom: none; }
+.apps-table td:first-child { color: var(--text-primary); font-weight: 500; white-space: nowrap; }
+.apps-table td:nth-child(2) { color: var(--amber); font-family: var(--font-mono); font-size: 0.82rem; }
+
+/* ============================================================
+   INTERACTIVE CALCULATOR
+   ============================================================ */
+.calc-widget {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-top: 20px;
+}
+.calc-widget .calc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.calc-row label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  width: 180px;
+  flex-shrink: 0;
+}
+.calc-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
+.calc-row .calc-readout {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  width: 60px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.calc-result {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: rgba(167,139,250,0.08);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  text-align: center;
+}
+.calc-result .result-value {
+  font-size: 1.3rem;
+  color: var(--purple);
+}
+.calc-result .result-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ============================================================
+   IFRAME EMBED
+   ============================================================ */
+.resource-embed {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 24px 0;
+  background: var(--bg-secondary);
+}
+.resource-embed iframe {
+  display: block;
+  width: 100%;
+  border: none;
+}
+.embed-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 12px;
+  text-align: center;
+}
+.embed-fallback .fallback-icon {
+  font-size: 2rem;
+  opacity: 0.4;
+}
+.embed-fallback p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+.embed-fallback .fallback-path {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--purple);
+  background: rgba(167,139,250,0.08);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   UNIT SUMMARY (Section 7)
+   ============================================================ */
+.unit-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 28px 0;
+}
+.unit-summary-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+}
+.unit-summary-card .lesson-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.unit-summary-card h4 {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.unit-summary-card p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ============================================================
+   SELF-CHECK
+   ============================================================ */
+.self-check {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 32px;
+}
+.self-check h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.self-check h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.self-check > p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 32px;
+}
+.check-part {
+  margin-bottom: 36px;
+}
+.check-part h3 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.check-item {
+  margin-bottom: 20px;
+}
+.check-item p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.check-item p strong { color: var(--text-primary); }
+.btn-reveal {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(167,139,250,0.3);
+  background: rgba(167,139,250,0.08);
+  color: var(--purple);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-reveal:hover {
+  background: rgba(167,139,250,0.16);
+  border-color: rgba(167,139,250,0.5);
+}
+.self-check__reveal {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.self-check__reveal p { margin-bottom: 8px; }
+.self-check__reveal p:last-child { margin-bottom: 0; }
+.self-check__reveal strong { color: var(--text-primary); }
+
+/* ============================================================
+   LESSON SUMMARY
+   ============================================================ */
+.lesson-summary {
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 48px;
+}
+.lesson-summary h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+.lesson-summary ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lesson-summary li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding-left: 20px;
+  position: relative;
+}
+.lesson-summary li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--purple);
+  font-size: 0.75rem;
+  top: 3px;
+}
+.lesson-summary li strong { color: var(--text-primary); }
+
+/* ============================================================
+   LESSON NAV
+   ============================================================ */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+  text-decoration: none;
+  border-color: rgba(255,255,255,0.15);
+}
+.nav-btn--next {
+  background: rgba(167,139,250,0.1);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--purple);
+}
+.nav-btn--next:hover {
+  background: rgba(167,139,250,0.18);
+  color: var(--purple);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   CANVAS LABEL ROWS
+   ============================================================ */
+.canvas-labels {
+  display: flex;
+  gap: 0;
+  margin-bottom: 8px;
+}
+.canvas-labels .col-label {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.canvas-labels .col-label--v { color: var(--amber); }
+.canvas-labels .col-label--h { color: var(--cyan); }
+.canvas-labels .col-label--lp { color: var(--amber); }
+.canvas-labels .col-label--cp { color: var(--cyan); }
+.canvas-labels .col-label--ep { color: var(--purple); }
+
+/* ============================================================
+   WORKED EXAMPLES
+   ============================================================ */
+.worked-example {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-size: 0.9rem;
+}
+.worked-example .ex-heading {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+.worked-example p {
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+.worked-example .ex-result {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--purple);
+  margin-top: 10px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero { padding: 40px 16px 32px; }
+  main { padding: 0 16px 60px; }
+  .objectives { padding: 18px 20px; }
+  .self-check { padding: 20px; }
+  .lesson-summary { padding: 20px; }
+  .diagram-card { padding: 16px; }
+  .unit-summary-grid { grid-template-columns: 1fr; }
+  .calc-row { flex-wrap: wrap; }
+  .calc-row label { width: 100%; }
+  .site-nav-links { display: none; }
+  .lesson-nav { flex-direction: column; align-items: stretch; }
+  .nav-btn { text-align: center; }
+}
+
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.6rem; }
+  .hero-badges { gap: 6px; }
+  .hero-badge { font-size: 10px; padding: 4px 8px; }
+  main { padding: 0 12px 48px; }
+}
+
+@media (min-width: 1200px) {
+  main { max-width: 900px; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress-bar { transition: none; }
+}
+</style>
+</head>
+<body>
+<!-- ============================================================
+     SITE NAV
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../index.html">Dashboard</a></li>
+      <li><a href="../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../antennas.html">Antennas</a></li>
+      <li><a href="../../learning-path.html" class="active">Learning Path</a></li>
+      <li><a href="../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-meta">Unit 1: How Antennas Work &nbsp;·&nbsp; Lesson 5 of 5</div>
+  <h1>Polarisation: Orientation Matters</h1>
+  <p class="hero-subtitle">The E field orientation of the wave determines whether two antennas can couple energy. Matched polarisation costs nothing. Cross-polarisation costs everything.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">Prerequisite: Lessons 1 – 4</span>
+    <span class="hero-badge">Reading: 20 – 25 min</span>
+    <span class="hero-badge hero-badge--em">6 Visuals + 2 Interactives</span>
+  </div>
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Define polarisation as the orientation of the E field in the propagating wave</li>
+      <li>Explain why only the E field component parallel to the conductor drives current</li>
+      <li>Apply the mismatch loss formula: −20 × log₁₀(cos θ)</li>
+      <li>Describe how circular polarisation produces orientation independence</li>
+      <li>Explain the constant 3 dB penalty for circular-to-linear coupling</li>
+      <li>Identify the polarisation used by GPS, satellite downlinks, FM, and amateur VHF</li>
+      <li>Resolve all five polarisation seeds planted in Lesson 4</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- ============================================================
+     SECTION 1 — Bridge from Lesson 4
+     ============================================================ -->
+<section class="chapter" id="section-1">
+  <div class="chapter-label">Section 1</div>
+  <h2>Bridge from Lesson 4: Five Seeds, One Lesson</h2>
+
+  <p>Lesson 4 planted five observations about polarisation. Before we define the concept, it is worth naming them explicitly so you know what this lesson will resolve.</p>
+
+  <p><strong>Seed 1 — Vertical monopole (Section 2):</strong> "The orientation of the conductor sets the orientation of the E field in the wave." You saw that a vertical wire produces a wave whose E field oscillates vertically. That observation is about to become the definition.</p>
+
+  <p><strong>Seed 2 — Collinear (Section 3):</strong> "A receiving antenna with a different polarisation orientation would not couple efficiently with this signal." You were told this matters — but not yet told why.</p>
+
+  <p><strong>Seed 3 — Yagi (Section 5):</strong> Rotating the Yagi's elements 90° around the boom changes the polarisation without changing the radiation pattern. Two Yagis on the same tower with different element orientations will not couple energy well between them.</p>
+
+  <p><strong>Seed 4 — GPS patch (Section 6):</strong> GPS uses circular polarisation so the receiver works regardless of how you tilt it. You heard the term but not the mechanism.</p>
+
+  <p><strong>Seed 5 — Dish feed (Section 7):</strong> The dish is polarisation-neutral. The feed antenna at the focal point sets the polarisation. Satellite operators use dual-polarisation to double capacity on a single frequency.</p>
+
+  <p>Each of these seeds connects to a different section of this lesson. By the end, every one of them will be resolved.</p>
+
+  <p>One framing note before we begin. In Lesson 3 you learned to think about antenna performance through the lens of energy coupling efficiency. Polarisation is another factor in that coupling — alongside the radiation pattern. Getting the pattern right and the polarisation wrong can cost you most of your signal.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — What Is Polarisation?
+     ============================================================ -->
+<section class="chapter" id="section-2">
+  <div class="chapter-label">Section 2</div>
+  <h2>What Is Polarisation?</h2>
+
+  <p>Polarisation is the orientation of the E field oscillation in a propagating electromagnetic wave.</p>
+
+  <p>That is the entire definition. One sentence.</p>
+
+  <p>When you learned in Lesson 1 that an EM wave consists of an E field and an H field oscillating perpendicular to each other and perpendicular to the direction of travel, there was a question we did not ask: <em>which way is the E field oscillating?</em> The wave is travelling horizontally toward a distant receiver — but is the E field moving up and down, or side to side, or at some angle in between?</p>
+
+  <p>The answer depends entirely on the antenna that created the wave.</p>
+
+  <p>A vertical conductor — like the monopole from Lesson 4 — drives current up and down. The changing current produces an E field that oscillates in the same plane: vertically. The wave that propagates outward from this antenna carries a vertically oscillating E field. We call this a <strong>vertically polarised</strong> wave.</p>
+
+  <p>A horizontal conductor — a dipole mounted flat — drives current side to side. The E field oscillates horizontally. The wave is <strong>horizontally polarised</strong>.</p>
+
+  <p>This is exactly what Lesson 4 Seed 1 told you: the wire's orientation and the wave's E field orientation are the same thing. That observation is now the formal definition.</p>
+
+  <!-- VISUAL SLOT: V1 — Vertical vs Horizontal polarisation side-by-side animation -->
+  <div class="diagram-card diagram-card--wide" id="v1-card">
+    <div class="card-title">Visual 1 — Vertical vs Horizontal Polarisation</div>
+    <div class="canvas-labels">
+      <div class="col-label col-label--v">Vertically Polarised</div>
+      <div class="col-label col-label--h">Horizontally Polarised</div>
+    </div>
+    <canvas id="cv-polarisation-sidebyside"
+            data-height="240"
+            aria-label="Side-by-side animation: vertically polarised wave (left) and horizontally polarised wave (right), each propagating from a source antenna">
+    </canvas>
+    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:10px; font-family:var(--font-mono);">
+      Left: vertical conductor → E field oscillates vertically (amber).
+      Right: horizontal conductor → E field oscillates horizontally (cyan).
+    </p>
+  </div>
+
+  <p>The H field is still there, oscillating perpendicular to the E field as always. But when we talk about polarisation, we describe the wave by its E field orientation. This is a convention — and it is universal. If someone tells you a signal is "vertically polarised," they mean the E field oscillates vertically.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — Why Polarisation Affects Energy Coupling
+     ============================================================ -->
+<section class="chapter" id="section-3">
+  <div class="chapter-label">Section 3</div>
+  <h2>Why Polarisation Affects Energy Coupling</h2>
+
+  <p>This is the section that Lesson 2 promised you.</p>
+
+  <p>In Lesson 2, Section 5, we said: "the wave doesn't hit the antenna — the antenna samples the field already threading through it. This distinction matters — we'll return to it in Lesson 5 because it's the reason that rotating an antenna changes signal strength."</p>
+
+  <p>Now you know what polarisation is. We can resolve the wrong model and replace it with the correct one.</p>
+
+  <h3>The wrong picture</h3>
+
+  <p>You might still be carrying a mental image of the receive process that looks something like this: a wave travelling through space arrives at the antenna and <em>hits</em> it, like a ball hitting a stick. The wave crashes into the antenna, the antenna absorbs it, and signal comes out.</p>
+
+  <p>This picture is wrong, and here is why it leads you astray. In the "wave hits antenna" model, the wave's arrival direction matters most. The antenna is a target, and the wave is a projectile. In that picture, rotating the antenna would not change much — the wave would still arrive and still "hit" it.</p>
+
+  <p>But anyone who has ever rotated an antenna knows that orientation matters enormously. You can take a perfectly good antenna, point it in the right direction with full radiation pattern coverage, and lose almost all of your signal simply by twisting it 90°. The "wave hits antenna" model cannot explain this.</p>
+
+  <h3>The correct picture</h3>
+
+  <p>Here is what actually happens.</p>
+
+  <p>The electromagnetic wave does not arrive as a projectile. It is a region of oscillating E and H fields that passes <em>through</em> the space where the antenna sits. The wave does not stop at the antenna. It passes through and continues. The antenna is immersed in the field — it samples what is already there.</p>
+
+  <p>Now: the E field component that is <strong>parallel</strong> to the conductor drives current along the conductor. This is the mechanism. The E field pushes electrons in the direction the field points. If the field points along the wire, the electrons move along the wire, and a current flows. The receiver amplifies that current.</p>
+
+  <p>But the E field component that is <strong>perpendicular</strong> to the conductor does nothing useful. There is no conductor length in that direction for the field to push electrons along. The electrons have nowhere to go. No current flows. No energy couples.</p>
+
+  <p>This is why rotating an antenna changes signal strength. When the E field is aligned with the conductor, maximum current flows and maximum energy couples. When the E field is perpendicular to the conductor, zero current flows and zero energy couples. At any angle in between, only the component of the E field that projects onto the conductor axis drives current.</p>
+
+  <!-- VISUAL SLOT: V2 — Wrong model vs correct model two-panel canvas -->
+  <div class="diagram-card" id="v2-card">
+    <div class="card-title">Visual 2 — Wrong Model vs Correct Model</div>
+    <canvas id="cv-model-comparison"
+            data-height="220"
+            aria-label="Two-panel diagram: wrong model shows wave hitting antenna end-on (crossed out); correct model shows wavefront passing broadside through antenna with parallel E field driving current">
+    </canvas>
+    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:10px; font-family:var(--font-mono);">
+      Left: the wave does not hit the antenna. &nbsp;Right: the wave passes through — the parallel E field component drives current.
+    </p>
+  </div>
+
+  <h3>Three positions — one wave, one antenna</h3>
+
+  <p>To see this mechanism clearly, imagine a single vertically polarised wave arriving at a receive antenna. The antenna can be oriented in three ways:</p>
+
+  <p><strong>Position 1 — Antenna vertical (aligned with E field).</strong> The E field oscillates up and down. The conductor runs up and down. The entire E field drives current along the full length of the conductor. Maximum energy couples. This is matched polarisation.</p>
+
+  <p><strong>Position 2 — Antenna tilted at 45°.</strong> The E field still oscillates vertically, but the conductor is now at an angle. Only the component of the E field that projects onto the conductor axis drives current. That component is smaller than the full field — specifically, it is the field strength multiplied by cos 45°, which is 0.707. You couple about 71% of the field strength, which means about half the power.</p>
+
+  <p><strong>Position 3 — Antenna horizontal (perpendicular to E field).</strong> The E field oscillates up and down. The conductor runs side to side. The E field has zero component along the conductor. No current flows. Zero energy couples. This is cross-polarisation.</p>
+
+  <!-- VISUAL SLOT: V3 — Three-position coupling sequence canvas -->
+  <div class="diagram-card diagram-card--wide" id="v3-card">
+    <div class="card-title">Visual 3 — Three Positions: One Wave, One Antenna</div>
+    <canvas id="cv-three-positions"
+            data-height="220"
+            aria-label="Three-panel diagram showing a vertically polarised wave arriving at an antenna oriented at 0°, 45°, and 90°, with coupling projections illustrated">
+    </canvas>
+    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:10px; font-family:var(--font-mono);">
+      Same wave — three orientations. Only the E field component parallel to the conductor drives current.
+    </p>
+  </div>
+
+  <p>This resolves Lesson 4 Seed 2 — the collinear observation. "A receiving antenna with a different polarisation orientation would not couple efficiently with this signal." Now you know the mechanism: only the E field component parallel to the conductor drives current. A vertical collinear transmitting a vertically polarised wave will couple poorly with a horizontal receiving antenna because the E field and the conductor are perpendicular.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — Polarisation Mismatch and Coupling Loss
+     ============================================================ -->
+<section class="chapter" id="section-4">
+  <div class="chapter-label">Section 4</div>
+  <h2>Polarisation Mismatch and Coupling Loss</h2>
+
+  <p>Section 3 explained the mechanism. Now we put a number on it.</p>
+
+  <p>When two linearly polarised antennas are misaligned by an angle θ (theta), the coupling loss in decibels is:</p>
+
+  <div class="formula-block">
+    <div class="formula-display">
+      <span class="fvar--loss">Loss (dB)</span> = −20 × log₁₀(cos <span class="fvar--theta">θ</span>)
+    </div>
+    <div class="formula-label">
+      where <span><strong>θ</strong></span> is the angle between the two polarisation planes —
+      the angle between the orientations of the two conductors.
+    </div>
+  </div>
+
+  <!-- VISUAL SLOT: V4 — Formula + live mismatch calculator -->
+  <div class="diagram-card" id="v4-card">
+    <div class="card-title">Visual 4 — Live Mismatch Calculator</div>
+    <canvas id="cv-mismatch-diagram"
+            data-height="140"
+            aria-label="Diagram showing TX antenna (fixed vertical) and RX antenna rotated by angle theta, with the mismatch angle arc labelled">
+    </canvas>
+    <div class="calc-widget">
+      <div class="calc-label">Interactive — Adjust θ to see mismatch loss</div>
+      <div class="calc-row">
+        <label for="theta-slider">Angle θ</label>
+        <input type="range" id="theta-slider" min="0" max="90" value="0" step="1" aria-label="Mismatch angle theta in degrees">
+        <output id="theta-readout" class="calc-readout">0°</output>
+      </div>
+      <div class="calc-result">
+        <div class="result-value" id="loss-result">0.0 dB</div>
+        <div class="result-label">Polarisation mismatch loss</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Worked examples at three key angles</h3>
+
+  <div class="worked-example">
+    <div class="ex-heading">θ = 0° — Matched Polarisation</div>
+    <p>cos 0° = 1</p>
+    <p>Loss = −20 × log₁₀(1) = −20 × 0 = <strong>0 dB</strong></p>
+    <p>No loss. The E field is fully aligned with the conductor. All of it drives current. This is the ideal case — and the reason you match polarisation whenever you can.</p>
+  </div>
+
+  <div class="worked-example">
+    <div class="ex-heading">θ = 45° — Half-Power Point</div>
+    <p>cos 45° = 0.707</p>
+    <p>Loss = −20 × log₁₀(0.707) = −20 × (−0.15) = <strong>3 dB</strong></p>
+    <p>Three decibels of loss. Half the power is gone — simply because the antenna is tilted 45° from the polarisation of the incoming wave. The field has not weakened. Nothing has changed about the transmitter. You have lost half your received power purely from orientation mismatch.</p>
+  </div>
+
+  <div class="worked-example">
+    <div class="ex-heading">θ = 90° — Cross-Polarised</div>
+    <p>cos 90° = 0</p>
+    <p>Loss = −20 × log₁₀(0) = <strong>theoretically infinite</strong></p>
+    <p>The E field is entirely perpendicular to the conductor. Zero component drives current. In theory, no energy couples at all. In practice, you can still lose 20 dB or more — a factor of 100 in power — because reflections from buildings, terrain, and the ionosphere mix the polarisation slightly and prevent a perfect null. But 20+ dB of loss is devastating to a communication link.</p>
+  </div>
+
+  <h3>The mismatch summary</h3>
+
+  <table class="mismatch-table" aria-label="Polarisation mismatch loss summary">
+    <thead>
+      <tr>
+        <th>TX Polarisation</th>
+        <th>RX Polarisation</th>
+        <th>Approximate Loss</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Vertical</td><td>Vertical</td><td class="loss--matched">0 dB (matched)</td></tr>
+      <tr><td>Horizontal</td><td>Horizontal</td><td class="loss--matched">0 dB (matched)</td></tr>
+      <tr><td>Vertical</td><td>Horizontal</td><td class="loss--bad">20+ dB (cross-polarised)</td></tr>
+      <tr><td>Vertical</td><td>45° slant</td><td class="loss--partial">3 dB</td></tr>
+      <tr><td>Any linear</td><td>Circular</td><td class="loss--partial">3 dB</td></tr>
+      <tr><td>RHCP</td><td>RHCP</td><td class="loss--matched">0 dB (matched)</td></tr>
+      <tr><td>RHCP</td><td>LHCP</td><td class="loss--bad">20+ dB (cross-polarised)</td></tr>
+    </tbody>
+  </table>
+
+  <p>We have not yet explained circular polarisation — that is Section 5. For now, note the two circular rows at the bottom. They follow a pattern: matched circular is lossless, opposite-hand circular is cross-polarised. And any linear antenna receiving a circular signal pays exactly 3 dB — always, regardless of rotation. That constant 3 dB will make sense after Section 5.</p>
+
+  <h3>Interactive Exercise — Polarisation Mismatch</h3>
+
+  <p>The interactive below lets you discover the mismatch relationship before the formula tells you what to expect.</p>
+
+  <div class="resource-embed">
+    <iframe id="polarisation-mismatch-iframe"
+            src="../../../interactives/polarisation-mismatch.html"
+            height="1150"
+            title="Polarisation mismatch interactive: rotate the RX antenna and observe signal loss"
+            loading="lazy"
+            onerror="this.style.display='none'; document.getElementById('polmismatch-fallback').style.display='flex';">
+    </iframe>
+    <div class="embed-fallback" id="polmismatch-fallback" style="display:none;">
+      <div class="fallback-icon">📡</div>
+      <p>Interactive not yet available</p>
+      <div class="fallback-path">../../../interactives/polarisation-mismatch.html</div>
+    </div>
+  </div>
+
+  <p><strong>Part 1 — Linear mode (default)</strong></p>
+  <ol>
+    <li>The TX antenna is transmitting a vertically polarised signal. The RX antenna starts at 0° — matched. Look at the oscilloscope waveform and the FFT peak. This is your reference: full signal.</li>
+    <li>Slowly rotate the RX antenna from 0° toward 90°. Watch both displays as you go. At what angle does the FFT peak drop noticeably? At what angle has it dropped by about half its original height?</li>
+    <li>Continue to 90°. What happens to the oscilloscope waveform? What does the FFT peak show?</li>
+    <li>Keep rotating past 90° toward 180°. What happens? Does the signal return?</li>
+    <li>Complete the full 360° rotation. Describe the pattern you see. Where are the peaks and where are the nulls?</li>
+  </ol>
+
+  <p style="margin-top:16px;"><strong>Part 2 — Circular mode</strong></p>
+  <ol start="6">
+    <li>Switch the TX to RHCP (circular) mode using the toggle. Set the RX back to 0°.</li>
+    <li>Now rotate the RX through the full 360° — slowly. Watch the FFT peak level.</li>
+    <li>Compare this to what you saw in linear mode. What is different? What is the FFT peak level compared to the linear-matched reference?</li>
+    <li>Why is the circular-to-linear loss constant regardless of RX rotation angle? (Hint: think about what component of the rotating E field a linear antenna can respond to at any given instant.)</li>
+  </ol>
+
+  <h3>The Yagi observation resolved</h3>
+
+  <p>This resolves Lesson 4 Seed 3 — the Yagi polarisation observation. In Lesson 4 you saw that rotating a Yagi 90° around its boom changes the polarisation without changing the radiation pattern. Two Yagis on the same tower, one with horizontal elements and one with vertical elements, both pointing at the same distant station, will not couple energy well between them.</p>
+
+  <p>Now you can calculate the loss. The two Yagis have their driven elements perpendicular to each other: θ = 90°. The polarisation mismatch loss is 20+ dB — a factor of 100 in power. Same direction, same gain, same frequency, same path — but 99% of the signal is lost because the E field orientation and the conductor orientation are perpendicular.</p>
+
+  <p>This is not a defect. It is a feature that is deliberately exploited. Two Yagis on the same tower can operate on the same frequency with different polarisations and barely interfere with each other. Satellite operators and broadcasters use this technique routinely — and we will return to it in Section 6.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — Circular Polarisation
+     ============================================================ -->
+<section class="chapter" id="section-5">
+  <div class="chapter-label">Section 5</div>
+  <h2>Circular Polarisation</h2>
+
+  <p>Everything so far has involved <strong>linear</strong> polarisation — the E field oscillates back and forth in a single fixed plane. Vertical, horizontal, or some angle in between, but always a straight line.</p>
+
+  <p>Circular polarisation is different. The E field vector does not oscillate in one plane. Instead, it <strong>rotates</strong> as the wave propagates. If you could freeze the wave and look at it from the front — looking at the oncoming wave as it travels toward you — the tip of the E field vector traces out a circle.</p>
+
+  <p>Imagine pointing your right hand toward the oncoming wave, thumb pointing at you. If the E field rotates in the direction your fingers curl — clockwise, looking at the approaching wave — this is <strong>right-hand circular polarisation (RHCP)</strong>.</p>
+
+  <p>If the rotation is counter-clockwise looking at the approaching wave, it is <strong>left-hand circular polarisation (LHCP)</strong>.</p>
+
+  <!-- VISUAL SLOT: V5 — Three-column LP/CP/EP diagram -->
+  <div class="diagram-card diagram-card--wide" id="v5-card">
+    <div class="card-title">Visual 5 — Polarisation Types (looking at oncoming wave)</div>
+    <div class="canvas-labels">
+      <div class="col-label col-label--lp">Linear (LP)</div>
+      <div class="col-label col-label--cp">Circular (RHCP)</div>
+      <div class="col-label col-label--ep">Elliptical (EP)</div>
+    </div>
+    <canvas id="cv-pol-types"
+            data-height="240"
+            aria-label="Three-column diagram showing E field traces from the perspective of an oncoming wave: linear oscillates in a line, circular traces a perfect circle (RHCP), elliptical traces an ellipse">
+    </canvas>
+    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:10px; font-family:var(--font-mono);">
+      Viewed from the front (wave travelling toward you). LP traces a line — CP traces a circle — EP traces an ellipse.
+    </p>
+  </div>
+
+  <!-- VISUAL SLOT: V6 — Right-hand rule diagram -->
+  <div class="diagram-card" id="v6-card">
+    <div class="card-title">Visual 6 — Right-Hand Rule for RHCP</div>
+    <canvas id="cv-rh-rule"
+            data-height="200"
+            aria-label="Right-hand rule diagram: right hand with thumb pointing toward viewer (direction of wave travel), fingers curling clockwise to indicate RHCP">
+    </canvas>
+    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:10px; font-family:var(--font-mono);">
+      Right hand: thumb in direction of travel → fingers curl in direction of E field rotation = RHCP.
+      LHCP = same rule with the left hand.
+    </p>
+  </div>
+
+  <h3>Why satellites use circular polarisation</h3>
+
+  <p>A satellite in orbit does not stay at a fixed angle relative to a ground station. As it crosses the sky, the geometry between the satellite's antenna and the ground antenna changes continuously. If the satellite transmitted a linearly polarised signal — say, vertically polarised — the ground antenna would receive full signal when the relative orientations matched, but the signal would fade as the satellite moved and the relative angle shifted. At certain positions, the mismatch could be severe.</p>
+
+  <p>Circular polarisation solves this. Because the E field rotates continuously, there is no single orientation that the ground antenna needs to match. As long as the receiving antenna is designed for the same hand of circular polarisation (RHCP or LHCP), the coupling is constant regardless of how the relative orientation changes.</p>
+
+  <p>This is exactly why GPS works the way it does — and why Lesson 4 Seed 4 mentioned it.</p>
+
+  <h3>The GPS seed resolved</h3>
+
+  <p>GPS satellites transmit RHCP at around 1575 MHz. The GPS patch antenna in your phone or car is designed to receive RHCP. It does not matter how you tilt your device — face up, tilted sideways, held at an angle — the circular polarisation handles the orientation change automatically. This is a deliberate engineering choice, not an accident. The patch geometry is modified slightly (typically with a corner truncation or dual feed) to produce a rotating E field instead of a linearly oscillating one.</p>
+
+  <h3>The 3 dB penalty — circular to linear</h3>
+
+  <p>What happens if you try to receive a circularly polarised signal with a linearly polarised antenna?</p>
+
+  <p>At any instant, the rotating E field has a component along the linear antenna's axis and a component perpendicular to it. The linear antenna responds only to the parallel component — just as Section 3 explained. But because the E field is rotating, the parallel component is constantly changing. Sometimes it is fully aligned, sometimes it is zero, and it cycles between the two.</p>
+
+  <p>Averaged over time, the linear antenna captures exactly half the power of the circularly polarised wave. Half the power is 3 dB. This loss is constant — it does not depend on which way the linear antenna is oriented. Whether the linear antenna is vertical, horizontal, or at 45°, it always loses the same 3 dB from a circular signal. That constancy is the trade-off: you accept a fixed 3 dB penalty in exchange for orientation independence.</p>
+
+  <p>This is what you saw in the interactive exercise (Part 2): the FFT peak stayed constant as you rotated the RX through 360°, but it was 3 dB below the peak you saw in linear-matched mode.</p>
+
+  <h3>Opposite-hand is cross-polarised</h3>
+
+  <p>RHCP and LHCP are as different from each other as vertical and horizontal.</p>
+
+  <p>If a satellite transmits RHCP and you receive with an LHCP antenna, the mismatch is not 3 dB — it is 20 dB or more. The opposite-hand circular antenna actively rejects the signal. The rotating E field and the antenna's response rotate in opposite directions, and the net coupling over a full cycle is near zero.</p>
+
+  <p>This is the same row in the mismatch table: RHCP → LHCP gives 20+ dB loss, just as V → H gives 20+ dB loss. Circular polarisation has its own version of cross-polarisation — and it is just as severe.</p>
+
+  <h3>A note on elliptical polarisation</h3>
+
+  <p>In practice, most real signals fall somewhere between perfect linear and perfect circular — the E field traces an ellipse rather than a straight line or a perfect circle. This is called <strong>elliptical polarisation</strong>, and it is the general case of which linear and circular are special extremes. The details — axial ratio, tilt angle — belong to later units.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 6 — Practical Polarisation Guide
+     ============================================================ -->
+<section class="chapter" id="section-6">
+  <div class="chapter-label">Section 6</div>
+  <h2>Practical Polarisation Guide</h2>
+
+  <p>You now understand the mechanism (Section 3), the mismatch cost (Section 4), and the circular option (Section 5). This section puts that knowledge to work across the applications you are most likely to encounter.</p>
+
+  <h3>Applications by service</h3>
+
+  <table class="apps-table" aria-label="Polarisation by service">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Typical Polarisation</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>FM broadcast (UK)</td>
+        <td>Vertical (or mixed V+H)</td>
+        <td>Vehicles use vertical whip antennas — vertical polarisation reaches the largest audience. Some stations transmit mixed (slant or dual) to serve both car and home antennas.</td>
+      </tr>
+      <tr>
+        <td>Amateur VHF/UHF FM</td>
+        <td>Vertical</td>
+        <td>Convention and practicality — handheld and mobile antennas are vertical whips. Repeater systems are vertically polarised.</td>
+      </tr>
+      <tr>
+        <td>Amateur VHF/UHF SSB/CW</td>
+        <td>Horizontal</td>
+        <td>Convention — long-distance (tropospheric, EME) work uses horizontal Yagis. Separates SSB/CW traffic from FM traffic by polarisation.</td>
+      </tr>
+      <tr>
+        <td>Amateur HF</td>
+        <td>Varies / does not matter</td>
+        <td>The ionosphere rotates the polarisation plane unpredictably (Faraday rotation). By the time an HF signal arrives via skywave, its polarisation has been scrambled — matching at the receive end is futile.</td>
+      </tr>
+      <tr>
+        <td>Satellite downlinks</td>
+        <td>RHCP or LHCP</td>
+        <td>Orientation independence as the satellite crosses the sky. Hand is chosen per mission and published in link budgets.</td>
+      </tr>
+      <tr>
+        <td>GPS (L1 band, 1575 MHz)</td>
+        <td>RHCP</td>
+        <td>All GPS satellites transmit RHCP. Receivers use RHCP patches. Works regardless of device tilt.</td>
+      </tr>
+      <tr>
+        <td>Wi-Fi (2.4 / 5 GHz)</td>
+        <td>Typically vertical, often mixed</td>
+        <td>Consumer access points usually have vertical antennas. Indoor multipath reflections scramble polarisation somewhat, reducing the penalty for mismatched devices.</td>
+      </tr>
+      <tr>
+        <td>TV broadcast (UK, legacy analogue)</td>
+        <td>Horizontal</td>
+        <td>Historical convention — rooftop Yagi antennas are mounted with horizontal elements.</td>
+      </tr>
+      <tr>
+        <td>DAB radio (UK)</td>
+        <td>Vertical (some transmitters)</td>
+        <td>Chosen to suit car whip antennas.</td>
+      </tr>
+      <tr>
+        <td>ADS-B (1090 MHz)</td>
+        <td>Vertical</td>
+        <td>Aircraft use vertical monopole antennas on the fuselage. Ground receivers use vertical antennas to match.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The dish feed — Seed 5 resolved</h3>
+
+  <p>Lesson 4 told you that the dish is polarisation-neutral and that the feed antenna at the focal point sets the polarisation. Now you can see why this matters in practice.</p>
+
+  <p>A satellite operator wants to maximise the data capacity of a single frequency allocation. One powerful technique is <strong>dual-polarisation</strong>: transmit two independent data streams on the same frequency, one on vertical polarisation and one on horizontal polarisation. Because V and H are cross-polarised (20+ dB isolation), the two streams barely interfere with each other. A receiving dish with a dual-polarisation feed can separate the two streams and effectively double the capacity of the link — without using any additional spectrum.</p>
+
+  <p>The dish reflects both polarisations identically. It does not care. The engineering challenge is entirely in the feed design — building a feed that can simultaneously handle two orthogonal polarisations and route them to separate receivers. The dish just reflects.</p>
+
+  <h3>A note on Faraday rotation</h3>
+
+  <p>The HF row in the table above deserves a brief explanation. When a radio wave passes through the ionosphere — the electrically charged layer in the upper atmosphere — the Earth's magnetic field causes the polarisation plane to rotate. This is called <strong>Faraday rotation</strong>. The amount of rotation depends on frequency, ionospheric conditions, and path length, and it changes unpredictably over time.</p>
+
+  <p>At HF frequencies (3–30 MHz), where skywave propagation bounces signals off the ionosphere over hundreds or thousands of kilometres, the polarisation at the receive end bears little relation to the polarisation at the transmit end. This is why HF operators generally do not worry about polarisation matching — the ionosphere has already scrambled it. At VHF and above, Faraday rotation is negligible for terrestrial paths, and polarisation matching matters a great deal.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 7 — Unit 1 Close and Capstone
+     ============================================================ -->
+<section class="chapter" id="section-7">
+  <div class="chapter-label">Section 7</div>
+  <h2>Unit 1 Close and Capstone</h2>
+
+  <h3>What you have built</h3>
+
+  <p>This is the final lesson of Unit 1. Over five lessons you have built a complete conceptual foundation for understanding antennas.</p>
+
+  <div class="unit-summary-grid">
+    <div class="unit-summary-card">
+      <div class="lesson-num">Lesson 1</div>
+      <h4>What is EM Radiation?</h4>
+      <p>A changing electric field creates a magnetic field; a changing magnetic field creates an electric field. Together they form a self-sustaining wave. λ = c/f connects wavelength, frequency, and the speed of light.</p>
+    </div>
+    <div class="unit-summary-card">
+      <div class="lesson-num">Lesson 2</div>
+      <h4>From Waves to Wires</h4>
+      <p>An antenna radiates because AC current means accelerating charges, and accelerating charges produce changing fields that detach and propagate freely. The half-wave dipole carries maximum current at its centre and zero at its tips. Reciprocity means the antenna works identically for TX and RX.</p>
+    </div>
+    <div class="unit-summary-card">
+      <div class="lesson-num">Lesson 3</div>
+      <h4>Radiation Patterns</h4>
+      <p>The radiation pattern is a 3D map of energy coupling efficiency. The dipole's toroid shape is a direct consequence of its current distribution. Directivity means reshaping the pattern — redistributing the same total energy into fewer directions.</p>
+    </div>
+    <div class="unit-summary-card">
+      <div class="lesson-num">Lesson 4</div>
+      <h4>Antenna Types Tour</h4>
+      <p>Six antenna families, from omnidirectional to pencil-beam, each with a different current distribution producing a different pattern. Current distribution is the analytical lens that explains every pattern shape.</p>
+    </div>
+    <div class="unit-summary-card">
+      <div class="lesson-num">Lesson 5</div>
+      <h4>Polarisation</h4>
+      <p>The E field orientation of the wave determines whether two antennas can couple energy. Only the E field component parallel to the conductor drives current. Mismatch costs decibels — up to 20+ dB for cross-polarisation.</p>
+    </div>
+  </div>
+
+  <p>Together, these five lessons give you the wave, the pattern, and the polarisation. You can now look at any antenna and reason about what it does: what current distribution it carries, what pattern shape that produces, what polarisation the wave has, and whether it will couple efficiently with a given receive antenna.</p>
+
+  <h3>What comes next</h3>
+
+  <p>What you do not yet know is what happens at the feedpoint.</p>
+
+  <p>When you connect a transmission line to an antenna, the antenna presents an impedance — a combination of resistance and reactance that determines how much of the transmitter's power actually reaches the antenna and how much bounces back. Getting impedance wrong means wasted power, reflected energy, and potential damage to equipment.</p>
+
+  <p>Unit 2 begins with <strong>impedance</strong> — the concept that connects the antenna to the radio. You will learn what impedance is, what SWR and return loss mean, how the Smith Chart works, and how to measure all of it with a VNA. By the end of Unit 2 you will be able to connect a real antenna to a real instrument and interpret what you see.</p>
+
+  <h3>Capstone Exercise — Hunt the Source</h3>
+
+  <p>This exercise synthesises two lessons: the loop antenna's sharp broadside null from Lesson 4, and the polarisation coupling mechanism from this lesson.</p>
+
+  <div class="resource-embed">
+    <iframe id="df-hunt-iframe"
+            src="../../../interactives/df-hunt.html"
+            height="1080"
+            title="Direction finding exercise: rotate two loop antennas to find signal nulls and triangulate the hidden transmitter"
+            loading="lazy">
+    </iframe>
+  </div>
+
+  <p>You see a 2D overhead map. Somewhere on it, a hidden transmitter is broadcasting. You cannot see it. Your job is to find it using two small loop antennas placed at known positions on the map.</p>
+
+  <p>Remember from Lesson 4: a small loop antenna has a sharp null broadside to the loop face. When the loop's face is perpendicular to the incoming wave — when the broadside axis points directly at the signal source — the received signal drops to minimum. The null is sharp and precise, which makes it ideal for direction finding.</p>
+
+  <ol>
+    <li>Look at the map. You have two loop antennas — Loop A and Loop B — at fixed positions. Each has a rotation control and a signal strength display.</li>
+    <li>Start with Loop A. Rotate it slowly and watch the signal strength. The signal will rise and fall as you rotate. Find the angle where the signal drops to its lowest point — the null. This is the direction in which the loop's broadside axis is pointing directly at the hidden transmitter. A faint bearing line shows the direction of the null.</li>
+    <li>Now do the same with Loop B. Find its null bearing.</li>
+    <li>The two bearing lines will intersect at a point on the map. That intersection is where the hidden transmitter is located.</li>
+    <li>When you think you have found it, press the "Found" button. The system will check whether the intersection of your two bearings falls within tolerance of the actual transmitter position.</li>
+  </ol>
+
+  <div class="callout callout--amber">
+    <strong>Tips:</strong> You are looking for the <em>minimum</em>, not the maximum. The null is sharper and more precise than the peak, which is why DF operators hunt the null. Move slowly near the null point. Small changes in angle produce large changes in signal strength.
+  </div>
+
+  <p><strong>Reflection question after you have found the source:</strong> The loop null occurs broadside to the loop face. In Lesson 4 we explained this by saying the current circulates around the loop and the magnetic axis is perpendicular to the loop plane. Now think about it through the polarisation lens from this lesson: when the loop face points at the source, what is the relationship between the incoming E field and the current path around the loop? Why does this produce a null?</p>
+</section>
+
+<!-- ============================================================
+     SELF-CHECK
+     ============================================================ -->
+<section class="self-check" id="self-check">
+  <h3>Self-Check</h3>
+  <h2>Test Your Understanding</h2>
+  <p>Work through these without looking back at the lesson. If you get stuck, re-read the relevant section — don't just peek at the answer.</p>
+
+  <!-- Part A -->
+  <div class="check-part">
+    <h3>Part A — Quick Concepts</h3>
+
+    <div class="check-item">
+      <p><strong>1.</strong> What polarisation does a vertical whip antenna produce? Why?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-a1">Show answer</button>
+      <div class="self-check__reveal" id="ans-a1" hidden>
+        <p>A vertical whip produces a <strong>vertically polarised</strong> wave. The conductor runs vertically, so current flows up and down along it. The changing current creates an E field that oscillates in the same vertical plane. The conductor's orientation and the wave's E field orientation are the same thing — that is the definition of polarisation.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>2.</strong> A satellite transmits RHCP. You receive it with a vertical dipole. How much signal do you lose from the polarisation mismatch alone? Why is the loss that specific amount?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-a2">Show answer</button>
+      <div class="self-check__reveal" id="ans-a2" hidden>
+        <p>You lose <strong>3 dB</strong> (half the power). The rotating E field of the RHCP wave has a component along the dipole's vertical axis at every instant — but because the field rotates, this component cycles between full alignment and zero. Averaged over time, the vertical dipole captures exactly half the power of the circularly polarised wave. This 3 dB penalty is constant and does not depend on the dipole's exact orientation.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>3.</strong> Why is circular polarisation preferred for satellite communications rather than linear?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-a3">Show answer</button>
+      <div class="self-check__reveal" id="ans-a3" hidden>
+        <p>Because the relative orientation between a satellite in orbit and a ground antenna changes continuously as the satellite crosses the sky. A linearly polarised signal would suffer variable and sometimes severe polarisation mismatch as the geometry changes. Circular polarisation solves this — the E field rotates continuously, so there is no single orientation the receiving antenna needs to match. The coupling is constant (for matched-hand circular) regardless of how the relative geometry changes.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>4.</strong> Your neighbour has mounted their FM receiving antenna horizontally. Most local FM broadcasts in your area are vertically polarised. What problem will they experience, and approximately how severe is it in decibels?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-a4">Show answer</button>
+      <div class="self-check__reveal" id="ans-a4" hidden>
+        <p>The horizontal antenna is cross-polarised relative to the vertical FM signals — θ = 90°. The polarisation mismatch loss is theoretically infinite, and in practice 20 dB or more. This is a factor of 100 in received power. In a strong signal area, the signal may still be receivable because FM broadcasts are powerful and close-range, but in fringe areas the cross-polarisation could mean the difference between a strong clear signal and nothing. Mixed V+H transmissions (some UK FM stations) would reduce the penalty somewhat.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>5.</strong> GPS signals are RHCP. If you attempted to receive them with an LHCP antenna, what would happen? Why?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-a5">Show answer</button>
+      <div class="self-check__reveal" id="ans-a5" hidden>
+        <p>The LHCP antenna would suffer <strong>20+ dB of polarisation mismatch loss</strong> — the opposite hand of circular polarisation is cross-polarised. The rotating E fields of the RHCP signal and the LHCP antenna's response rotate in opposite directions; their net coupling over a full cycle is near zero. In practice, you would almost certainly lose GPS lock entirely. The signal would not be usable.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part B -->
+  <div class="check-part">
+    <h3>Part B — Calculations</h3>
+
+    <div class="check-item">
+      <p><strong>1.</strong> Two linearly polarised antennas are misaligned by 30°. Calculate the polarisation mismatch loss in dB using the formula from Section 4.</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-b1">Show answer</button>
+      <div class="self-check__reveal" id="ans-b1" hidden>
+        <p>Formula: Loss (dB) = −20 × log₁₀(cos θ)</p>
+        <p>θ = 30°, so cos 30° = 0.866</p>
+        <p>Loss = −20 × log₁₀(0.866) = −20 × (−0.0625) = <strong>1.25 dB</strong></p>
+        <p>A relatively modest penalty — 30° misalignment costs about 1.25 dB, or roughly 25% of received power.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>2.</strong> At what angle does the mismatch loss reach exactly 3 dB? Show your working by solving the formula for θ.</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-b2">Show answer</button>
+      <div class="self-check__reveal" id="ans-b2" hidden>
+        <p>Start with: Loss (dB) = −20 × log₁₀(cos θ)</p>
+        <p>Set Loss = 3 dB: 3 = −20 × log₁₀(cos θ)</p>
+        <p>Divide both sides by −20: log₁₀(cos θ) = −0.15</p>
+        <p>Raise both sides as powers of 10: cos θ = 10^(−0.15) = 0.707</p>
+        <p>Take arccos: θ = arccos(0.707) = <strong>45°</strong></p>
+        <p>At 45° misalignment, you lose exactly 3 dB — half the power. This is the half-power point for polarisation mismatch.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>3.</strong> A Yagi is mounted with horizontal elements. A second Yagi on the same tower is mounted with vertical elements. Both are pointed at the same distant station. What is the approximate coupling loss between these two antennas due to polarisation alone? What does this tell you about using polarisation to isolate signals?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-b3">Show answer</button>
+      <div class="self-check__reveal" id="ans-b3" hidden>
+        <p>θ = 90° between vertical and horizontal elements.</p>
+        <p>Loss = −20 × log₁₀(cos 90°) = −20 × log₁₀(0) = <strong>theoretically infinite; in practice 20+ dB</strong></p>
+        <p>This tells us that polarisation isolation is a powerful tool for frequency reuse. Two antennas on the same tower, on the same frequency, pointing at the same target — but with orthogonal polarisations — will barely interfere with each other. The cross-polarisation rejection provides 20+ dB of isolation without any additional filtering or frequency separation. Satellite operators, cellular base stations, and broadcasters exploit this to double spectral efficiency.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part C -->
+  <div class="check-part">
+    <h3>Part C — Connect It Back</h3>
+
+    <div class="check-item">
+      <p><strong>Pattern + Polarisation together:</strong> A half-wave dipole is mounted vertically. An EM wave arrives from the broadside direction — the direction of maximum radiation in the pattern. The wave is horizontally polarised.</p>
+      <p>Does the antenna couple energy from this wave? Explain your answer using <strong>both</strong> the radiation pattern (from Lesson 3) and polarisation (from this lesson).</p>
+      <p>What does this tell you about the relationship between pattern and polarisation as factors in energy coupling? Can you have good pattern alignment and still lose the signal?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-c1">Show answer</button>
+      <div class="self-check__reveal" id="ans-c1" hidden>
+        <p><strong>Pattern analysis:</strong> The broadside direction is the direction of maximum radiation for a vertical dipole — the equatorial plane of the toroid. From a radiation pattern perspective, this is the ideal arrival direction. Full pattern coupling efficiency.</p>
+        <p><strong>Polarisation analysis:</strong> The vertical dipole responds to E fields along its vertical axis. The arriving wave is horizontally polarised — its E field oscillates horizontally. This is θ = 90° mismatch. The E field has zero component along the vertical conductor. No current flows. Zero energy couples.</p>
+        <p><strong>Combined answer:</strong> Despite perfect pattern alignment (wave arriving from the direction of maximum gain), the antenna couples <strong>zero</strong> energy from this wave because the polarisations are orthogonal. Pattern and polarisation are independent factors — you need both to be aligned for maximum energy coupling. Yes: you can have ideal pattern alignment and still lose the entire signal due to polarisation mismatch. This is why real antenna system design must consider both the radiation pattern <em>and</em> the polarisation of both antennas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part D -->
+  <div class="check-part">
+    <h3>Part D — Antenna Scavenger Hunt (Optional)</h3>
+    <div class="check-item">
+      <p><strong>Portfolio Exercise:</strong> Find and document 10 different antennas in the real world. For each, identify: type, likely frequency range (use λ = c/f and physical size), polarisation (reason from element orientation), probable purpose, and a photo or screenshot.</p>
+      <p><strong>Bonus challenges:</strong> Find at least one example from each of the six antenna families in Lesson 4. Spot a polarisation mismatch in the wild. Estimate the gain of one antenna based on its type and size.</p>
+      <div class="callout callout--purple" style="margin-top:14px;">
+        <strong>No reveal button for this one</strong> — it is a real-world exercise with no single correct answer. Compare your findings with the applications table in Section 6.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LESSON SUMMARY
+     ============================================================ -->
+<section class="lesson-summary" id="lesson-summary">
+  <h2>Lesson Summary</h2>
+  <ul>
+    <li><strong>Polarisation is the orientation of the E field in a propagating wave.</strong> A vertical conductor produces a vertically polarised wave. A horizontal conductor produces a horizontally polarised wave. The conductor's orientation determines the E field orientation.</li>
+    <li><strong>Only the E field component parallel to the conductor drives current.</strong> This is the mechanism behind polarisation mismatch. A perpendicular E field component has no conductor length to push electrons along. This is also why the "wave hits antenna" model from Lesson 2 was wrong — the wave passes through the antenna, and the field component matters, not the arrival direction.</li>
+    <li><strong>Mismatch is quantified by the cos θ formula.</strong> Polarisation mismatch loss (dB) = −20 × log₁₀(cos θ). At 0° the loss is zero (matched). At 45° the loss is 3 dB (half power). At 90° the loss is theoretically infinite (cross-polarised). In practice, reflections prevent a perfect null, but 20+ dB of loss is common and devastating.</li>
+    <li><strong>Circular polarisation trades a fixed 3 dB penalty for orientation independence.</strong> The E field rotates as the wave propagates. A matching circular antenna (same hand) couples fully regardless of relative orientation. A linear antenna receiving circular always loses 3 dB — but that 3 dB is constant, which is exactly the property that makes circular useful for satellites and GPS.</li>
+    <li><strong>Opposite-hand circular is cross-polarised.</strong> RHCP to LHCP gives 20+ dB loss, the same as vertical to horizontal. Circular polarisation has its own version of cross-polarisation.</li>
+    <li><strong>All five L04 seeds are resolved.</strong> The vertical monopole's conductor orientation sets the E field orientation (definition). The collinear's polarisation mismatch now has a mechanism (parallel component drives current). The Yagi's element rotation changes polarisation without changing the pattern (and you can calculate the loss). The GPS patch uses RHCP for orientation independence. The dish feed sets the polarisation, enabling dual-polarisation for capacity doubling.</li>
+  </ul>
+</section>
+
+<!-- LESSON NAVIGATION -->
+<nav class="lesson-nav" aria-label="Lesson navigation">
+  <a href="lesson-04-antenna-types-tour.html" class="nav-btn">← Lesson 4: Antenna Types Tour</a>
+  <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">End of Unit 1</span>
+</nav>
+
+</main>
+
+<footer>
+  Lesson 5 of 20 &nbsp;·&nbsp; Unit 1: How Antennas Work &nbsp;·&nbsp;
+  <a href="../index.html">← Course Index</a>
+</footer>
+
+<!-- SCRIPTS IN NEXT SECTION -->
+<script>
+/* ============================================================
+   SHARED CONSTANTS & UTILITIES
+   ============================================================ */
+var DPR    = window.devicePixelRatio || 1;
+var AMBER  = '#f59e0b';
+var CYAN   = '#06b6d4';
+var PURPLE = '#a78bfa';
+var GREEN  = '#4ade80';
+var RED    = '#f87171';
+var DIM    = 'rgba(255,255,255,0.08)';
+
+function setupFixedCanvas(cv) {
+  var h = parseInt(cv.dataset.height, 10) || 200;
+  var w = cv.parentElement.getBoundingClientRect().width;
+  if (w <= 0) w = 600;
+  cv.width  = Math.round(w * DPR);
+  cv.height = Math.round(h * DPR);
+  cv.style.width  = w + 'px';
+  cv.style.height = h + 'px';
+  var ctx = cv.getContext('2d');
+  ctx.scale(DPR, DPR);
+  return ctx;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  if (!bar) return;
+  function update() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+/* ============================================================
+   REVEAL TOGGLES
+   ============================================================ */
+document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target = document.getElementById(this.dataset.target);
+    if (!target) return;
+    var expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    this.textContent = expanded ? 'Show answer' : 'Hide answer';
+    target.hidden = expanded;
+  });
+});
+
+/* ============================================================
+   V1 — cv-polarisation-sidebyside
+   Side-by-side: vertical polarisation (left) vs horizontal polarisation (right)
+   Each half shows: source conductor + propagating wave with E field vectors
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-polarisation-sidebyside');
+  if (!cv) return;
+
+  var ctx, W, H, t = 0;
+  var raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawWave(ctx, ox, oy, panelW, panelH, color, isVertical, t) {
+    /* Draws a single propagating wave in a panel.
+       ox,oy = origin of panel, panelW/H = dimensions.
+       isVertical: true = E field vertical (amber), false = horizontal (cyan).
+       The wave propagates left→right. */
+
+    var waveY  = oy + panelH / 2;
+    var waveX0 = ox + panelW * 0.28;
+    var waveX1 = ox + panelW * 0.95;
+    var A      = panelH * 0.28;   /* amplitude */
+    var lam    = panelW * 0.45;   /* spatial wavelength */
+
+    /* --- source conductor --- */
+    var condX = ox + panelW * 0.12;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    if (isVertical) {
+      /* vertical bar */
+      ctx.beginPath();
+      ctx.moveTo(condX, waveY - panelH * 0.30);
+      ctx.lineTo(condX, waveY + panelH * 0.30);
+      ctx.stroke();
+      /* current arrow (animated) */
+      var arrowDir = Math.sin(t) > 0 ? -1 : 1;
+      var ay = waveY + arrowDir * panelH * 0.12;
+      drawArrow(ctx, condX, waveY, condX, ay, color, 6);
+    } else {
+      /* horizontal bar */
+      ctx.beginPath();
+      ctx.moveTo(condX - panelW * 0.07, waveY);
+      ctx.lineTo(condX + panelW * 0.07, waveY);
+      ctx.stroke();
+      /* current arrow (animated) */
+      var arrowDir2 = Math.sin(t) > 0 ? -1 : 1;
+      var ax = condX + arrowDir2 * panelW * 0.055;
+      drawArrow(ctx, condX, waveY, ax, waveY, color, 6);
+    }
+    ctx.restore();
+
+    /* --- propagation arrow (direction indicator) --- */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 1;
+    drawArrow(ctx, ox + panelW * 0.22, waveY, ox + panelW * 0.95, waveY, 'rgba(255,255,255,0.18)', 5);
+    ctx.restore();
+
+    /* --- E field wave (sine) --- */
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    for (var x = waveX0; x <= waveX1; x += 1.5) {
+      var phase = ((x - waveX0) / lam) * Math.PI * 2 - t;
+      var eAmp  = A * Math.sin(phase);
+      var px = x;
+      var py;
+      if (isVertical) {
+        px = x;
+        py = waveY + eAmp;
+      } else {
+        /* For horizontal: E field oscillates horizontally, so we draw a
+           perspective-style wave — project horizontal oscillation as
+           slight vertical offset (side-view of the horizontal E field) */
+        px = x + eAmp * 0.5;
+        py = waveY + eAmp * 0.25;
+      }
+      if (x === waveX0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    /* --- E field vectors (arrows at intervals) --- */
+    ctx.save();
+    var nVec = 5;
+    for (var i = 0; i < nVec; i++) {
+      var xv = waveX0 + (waveX1 - waveX0) * (i + 0.5) / nVec;
+      var phase2 = ((xv - waveX0) / lam) * Math.PI * 2 - t;
+      var eVal   = A * 0.75 * Math.sin(phase2);
+      if (Math.abs(eVal) < 2) continue;
+      if (isVertical) {
+        drawArrow(ctx, xv, waveY, xv, waveY + eVal, color, 4);
+      } else {
+        drawArrow(ctx, xv, waveY, xv + eVal * 0.5, waveY + eVal * 0.25, color, 4);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawArrow(ctx, x1, y1, x2, y2, color, size) {
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    if (len < 1) return;
+    var ux = dx/len, uy = dy/len;
+    var s = size || 5;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    /* arrowhead */
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ux*s + uy*s*0.5, y2 - uy*s - ux*s*0.5);
+    ctx.lineTo(x2 - ux*s - uy*s*0.5, y2 - uy*s + ux*s*0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* divider */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, 0);
+    ctx.lineTo(W / 2, H);
+    ctx.stroke();
+    ctx.restore();
+
+    /* left panel: vertical polarisation */
+    drawWave(ctx, 0, 0, W / 2, H, AMBER, true, t);
+
+    /* right panel: horizontal polarisation */
+    drawWave(ctx, W / 2, 0, W / 2, H, CYAN, false, t);
+
+    t += 0.035;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    if (reduced) { t = Math.PI * 0.3; draw(); }
+    else draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  if (reduced) { t = Math.PI * 0.3; draw(); }
+  else draw();
+})();
+
+/* ============================================================
+   V2 — cv-model-comparison
+   Wrong model vs correct model — two panels
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-model-comparison');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0;
+  var raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, lw, hs) {
+    var dx = x2-x1, dy = y2-y1;
+    var len = Math.sqrt(dx*dx+dy*dy);
+    if (len < 1) return;
+    var ux = dx/len, uy = dy/len;
+    hs = hs || 7;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = lw || 1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ux*hs + uy*hs*0.45, y2 - uy*hs - ux*hs*0.45);
+    ctx.lineTo(x2 - ux*hs - uy*hs*0.45, y2 - uy*hs + ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPanel(ox, panelW, panelH, isWrong, t) {
+    var cx = ox + panelW / 2;
+    var cy = panelH / 2;
+
+    /* ---- WRONG PANEL ---- */
+    if (isWrong) {
+      /* antenna: vertical bar at right side */
+      var antX = ox + panelW * 0.72;
+      var antH = panelH * 0.45;
+      ctx.save();
+      ctx.strokeStyle = AMBER;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(antX, cy - antH/2);
+      ctx.lineTo(antX, cy + antH/2);
+      ctx.stroke();
+      ctx.restore();
+
+      /* "wave" as a bold arrow projectile approaching */
+      var waveTailX = ox + panelW * 0.08;
+      var waveHeadX = antX - 14;
+      ctx.save();
+      ctx.strokeStyle = CYAN;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(waveTailX, cy - 10);
+      ctx.lineTo(waveTailX + (waveHeadX - waveTailX) * 0.4, cy - 10);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(waveTailX, cy);
+      ctx.lineTo(waveHeadX, cy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(waveTailX, cy + 10);
+      ctx.lineTo(waveTailX + (waveHeadX - waveTailX) * 0.4, cy + 10);
+      ctx.stroke();
+      /* arrow tip on main line */
+      drawArrow(waveTailX, cy, waveHeadX, cy, CYAN, 3, 9);
+
+      /* "WAVE" label */
+      ctx.save();
+      ctx.fillStyle = CYAN;
+      ctx.font = '10px IBM Plex Mono, monospace';
+      ctx.fillText('WAVE', waveTailX + 4, cy - 16);
+      ctx.restore();
+
+      /* "ANTENNA" label */
+      ctx.save();
+      ctx.fillStyle = AMBER;
+      ctx.font = '10px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ANTENNA', antX, cy + antH/2 + 16);
+      ctx.restore();
+
+      /* red X */
+      var xs = 20;
+      var xc = ox + panelW * 0.5;
+      var yc = cy - panelH * 0.30;
+      ctx.save();
+      ctx.strokeStyle = RED;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(xc-xs, yc-xs); ctx.lineTo(xc+xs, yc+xs); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(xc+xs, yc-xs); ctx.lineTo(xc-xs, yc+xs); ctx.stroke();
+      ctx.restore();
+
+      /* label */
+      ctx.save();
+      ctx.fillStyle = RED;
+      ctx.font = '500 11px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Not this — wave does not hit the antenna', cx, panelH - 12);
+      ctx.restore();
+
+    } else {
+      /* ---- CORRECT PANEL ---- */
+      /* antenna: vertical bar in centre */
+      var antX2 = cx;
+      var antH2 = panelH * 0.50;
+      ctx.save();
+      ctx.strokeStyle = AMBER;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(antX2, cy - antH2/2);
+      ctx.lineTo(antX2, cy + antH2/2);
+      ctx.stroke();
+      ctx.restore();
+
+      /* wavefronts: vertical dashed lines passing through */
+      var spacing = panelW * 0.12;
+      var nFronts = 6;
+      for (var i = 0; i < nFronts; i++) {
+        var fx = ox + panelW * 0.06 + i * spacing + (t * 18 % spacing);
+        if (fx > ox + panelW * 0.97) continue;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(6,182,212,0.35)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(fx, 8);
+        ctx.lineTo(fx, panelH - 24);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      /* E field parallel component arrows on antenna */
+      var nArr = 3;
+      for (var j = 0; j < nArr; j++) {
+        var ay2 = cy - antH2 * 0.3 + j * antH2 * 0.3;
+        var aLen = 18 * Math.sin(t + j * 0.8);
+        if (Math.abs(aLen) > 2) {
+          drawArrow(antX2 + 6, ay2, antX2 + 6, ay2 + aLen, GREEN, 1.5, 5);
+        }
+      }
+
+      /* propagation direction arrow at top */
+      drawArrow(ox + 10, 16, ox + panelW - 10, 16, 'rgba(255,255,255,0.25)', 1, 6);
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = '9px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('wave travels →', ox + panelW/2, 12);
+      ctx.restore();
+
+      /* E field label */
+      ctx.save();
+      ctx.fillStyle = GREEN;
+      ctx.font = '9px IBM Plex Mono, monospace';
+      ctx.fillText('E‖ drives current', antX2 + 12, cy - antH2/2 - 6);
+      ctx.restore();
+
+      /* label */
+      ctx.save();
+      ctx.fillStyle = GREEN;
+      ctx.font = '500 11px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('This — E‖ component drives current along conductor', cx, panelH - 12);
+      ctx.restore();
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* divider */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(W/2, 4);
+    ctx.lineTo(W/2, H - 4);
+    ctx.stroke();
+    ctx.restore();
+
+    drawPanel(0, W/2, H, true, t);
+    drawPanel(W/2, W/2, H, false, t);
+
+    t += 0.025;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    if (reduced) { t = 1.2; draw(); }
+    else draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  if (reduced) { t = 1.2; draw(); }
+  else draw();
+})();
+
+/* ============================================================
+   V3 — cv-three-positions
+   Three panels: antenna at 0°, 45°, 90° to a V-polarised wave
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-three-positions');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, lw, hs) {
+    var dx = x2-x1, dy = y2-y1;
+    var len = Math.sqrt(dx*dx+dy*dy);
+    if (len < 1) return;
+    var ux = dx/len, uy = dy/len;
+    hs = hs || 6;
+    ctx.save();
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = lw||1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hs+uy*hs*0.45, y2-uy*hs-ux*hs*0.45);
+    ctx.lineTo(x2-ux*hs-uy*hs*0.45, y2-uy*hs+ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPanel(ox, pw, ph, angleDeg) {
+    var cx = ox + pw / 2;
+    var cy = ph / 2;
+    var angleRad = angleDeg * Math.PI / 180;
+    var antLen = ph * 0.36;
+
+    /* E-field wave arrows arriving from left — always vertical */
+    var nArr = 4;
+    for (var i = 0; i < nArr; i++) {
+      var ax = ox + pw * (0.1 + i * 0.06);
+      var eLen = ph * 0.20;
+      drawArrow(ax, cy + eLen/2, ax, cy - eLen/2, AMBER, 1.2, 5);
+    }
+
+    /* antenna conductor */
+    var ax2 = Math.cos(angleRad + Math.PI/2) * antLen;
+    var ay2 = Math.sin(angleRad + Math.PI/2) * antLen;
+    ctx.save();
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - ax2/2, cy - ay2/2);
+    ctx.lineTo(cx + ax2/2, cy + ay2/2);
+    ctx.stroke();
+    ctx.restore();
+
+    /* projection of E field onto antenna */
+    var coupling = Math.abs(Math.cos(angleRad));
+    var projLen = antLen * coupling;
+    var projColor = coupling > 0.8 ? GREEN : (coupling > 0.2 ? AMBER : RED);
+
+    if (projLen > 4) {
+      /* projected component arrow along antenna axis */
+      var pax = Math.cos(angleRad + Math.PI/2) * projLen * 0.5;
+      var pay = Math.sin(angleRad + Math.PI/2) * projLen * 0.5;
+      ctx.save();
+      ctx.strokeStyle = projColor;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx - pax, cy + pay);
+      ctx.lineTo(cx + pax, cy - pay);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    /* coupling % label */
+    var pct = Math.round(coupling * coupling * 100);
+    var lossDb = coupling > 0 ? (-20 * Math.log10(coupling)).toFixed(1) : '∞';
+    ctx.save();
+    ctx.fillStyle = projColor;
+    ctx.font = '600 12px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(pct + '% power', cx, cy + antLen/2 + 22);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.fillText(lossDb + ' dB loss', cx, cy + antLen/2 + 36);
+    ctx.restore();
+
+    /* angle label */
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '11px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('θ = ' + angleDeg + '°', cx, 18);
+    ctx.restore();
+
+    /* angle arc */
+    if (angleDeg > 0) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 20, -Math.PI/2, -Math.PI/2 + angleRad, false);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var pw = W / 3;
+
+    /* panel dividers */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(pw, 4); ctx.lineTo(pw, H-4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pw*2, 4); ctx.lineTo(pw*2, H-4); ctx.stroke();
+    ctx.restore();
+
+    drawPanel(0,      pw, H, 0);
+    drawPanel(pw,     pw, H, 45);
+    drawPanel(pw * 2, pw, H, 90);
+  }
+
+  function resize() { init(); draw(); }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   V4 — cv-mismatch-diagram + theta-slider calculator
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-mismatch-diagram');
+  if (!cv) return;
+
+  var ctx, W, H;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, lw, hs) {
+    var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
+    if (len<1) return;
+    var ux=dx/len, uy=dy/len; hs=hs||6;
+    ctx.save();
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw||1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hs+uy*hs*0.45, y2-uy*hs-ux*hs*0.45);
+    ctx.lineTo(x2-ux*hs-uy*hs*0.45, y2-uy*hs+ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function draw(thetaDeg) {
+    ctx.clearRect(0, 0, W, H);
+    var thetaRad = thetaDeg * Math.PI / 180;
+    var cy = H / 2;
+    var antLen = Math.min(H * 0.40, 52);
+
+    /* TX antenna (left, always vertical) */
+    var txX = W * 0.22;
+    ctx.save();
+    ctx.strokeStyle = AMBER;
+    ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(txX, cy - antLen); ctx.lineTo(txX, cy + antLen);
+    ctx.stroke();
+    ctx.fillStyle = AMBER;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('TX', txX, cy + antLen + 16);
+    ctx.restore();
+
+    /* TX label */
+    ctx.save();
+    ctx.fillStyle = 'rgba(245,158,11,0.5)';
+    ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vertical', txX, cy - antLen - 6);
+    ctx.restore();
+
+    /* RX antenna (right, rotated by theta) */
+    var rxX = W * 0.78;
+    var rax = Math.cos(thetaRad + Math.PI/2) * antLen;
+    var ray = Math.sin(thetaRad + Math.PI/2) * antLen;
+    ctx.save();
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(rxX - rax, cy - ray); ctx.lineTo(rxX + rax, cy + ray);
+    ctx.stroke();
+    ctx.fillStyle = CYAN;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('RX', rxX, cy + antLen + 16);
+    ctx.restore();
+
+    /* angle arc between TX and RX */
+    if (thetaDeg > 2) {
+      ctx.save();
+      ctx.strokeStyle = PURPLE;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      var midX = (txX + rxX) / 2;
+      /* draw arc from vertical (−90°) to rotated angle */
+      ctx.arc(rxX, cy, 26, -Math.PI/2, -Math.PI/2 + thetaRad);
+      ctx.stroke();
+      /* theta label */
+      var labelAngle = -Math.PI/2 + thetaRad/2;
+      ctx.fillStyle = PURPLE;
+      ctx.font = '11px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('θ', rxX + 36*Math.cos(labelAngle), cy + 36*Math.sin(labelAngle));
+      ctx.restore();
+    }
+
+    /* dashed "signal path" line */
+    var coupling = Math.abs(Math.cos(thetaRad));
+    var lineAlpha = 0.15 + coupling * 0.55;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(167,139,250,' + lineAlpha + ')';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(txX + 12, cy);
+    ctx.lineTo(rxX - 12, cy);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /* slider handler */
+  var slider = document.getElementById('theta-slider');
+  var readout = document.getElementById('theta-readout');
+  var lossEl  = document.getElementById('loss-result');
+
+  function updateCalc(deg) {
+    var rad = deg * Math.PI / 180;
+    var cosVal = Math.cos(rad);
+    var lossDb;
+    if (deg >= 90) {
+      lossDb = '∞ (cross-pol)';
+    } else if (deg === 0) {
+      lossDb = '0.0 dB';
+    } else {
+      lossDb = (-20 * Math.log10(cosVal)).toFixed(1) + ' dB';
+    }
+    readout.textContent = deg + '°';
+    lossEl.textContent  = lossDb;
+    draw(deg);
+  }
+
+  if (slider) {
+    slider.addEventListener('input', function() { updateCalc(parseInt(this.value, 10)); });
+  }
+
+  function resize() { init(); updateCalc(slider ? parseInt(slider.value, 10) : 0); }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  updateCalc(0);
+})();
+
+/* ============================================================
+   V5 — cv-pol-types
+   Three-column: LP / RHCP / EP — E field traces looking at oncoming wave
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-pol-types');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawPanel(ox, pw, ph, type, t) {
+    /* type: 'lp', 'cp', 'ep' */
+    var cx = ox + pw / 2;
+    var cy = ph / 2 - 10;
+    var R  = Math.min(pw, ph) * 0.28;
+
+    /* trace history: draw fading trail */
+    var nPoints = 80;
+    var traceColor = type === 'lp' ? AMBER : (type === 'cp' ? CYAN : PURPLE);
+
+    /* draw axes (faint) */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath(); ctx.moveTo(cx - R*1.1, cy); ctx.lineTo(cx + R*1.1, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy - R*1.1); ctx.lineTo(cx, cy + R*1.1); ctx.stroke();
+    ctx.restore();
+
+    /* draw trace */
+    ctx.save();
+    ctx.strokeStyle = traceColor;
+    ctx.lineWidth = 2;
+    ctx.shadowColor = traceColor;
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    for (var i = 0; i <= nPoints; i++) {
+      var phase = t - (i / nPoints) * Math.PI * 2;
+      var ex, ey;
+      if (type === 'lp') {
+        ex = cx;
+        ey = cy + R * Math.sin(phase);
+      } else if (type === 'cp') {
+        ex = cx + R * Math.cos(phase);
+        ey = cy + R * Math.sin(phase);
+      } else { /* ep */
+        ex = cx + R * 0.55 * Math.cos(phase + 0.4);
+        ey = cy + R * Math.sin(phase);
+      }
+      var alpha = i / nPoints;
+      if (i === 0) ctx.moveTo(ex, ey);
+      else ctx.lineTo(ex, ey);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    /* current E field tip (dot) */
+    var tipEx, tipEy;
+    if (type === 'lp') {
+      tipEx = cx;
+      tipEy = cy + R * Math.sin(t);
+    } else if (type === 'cp') {
+      tipEx = cx + R * Math.cos(t);
+      tipEy = cy + R * Math.sin(t);
+    } else {
+      tipEx = cx + R * 0.55 * Math.cos(t + 0.4);
+      tipEy = cy + R * Math.sin(t);
+    }
+    ctx.save();
+    ctx.fillStyle = traceColor;
+    ctx.shadowColor = traceColor;
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(tipEx, tipEy, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    /* line from origin to tip */
+    ctx.save();
+    ctx.strokeStyle = traceColor;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(tipEx, tipEy);
+    ctx.stroke();
+    ctx.restore();
+
+    /* panel label */
+    var labels = { lp: 'Linear', cp: 'Circular (RHCP)', ep: 'Elliptical' };
+    var descs  = { lp: 'E traces a line', cp: 'E traces a circle', ep: 'E traces an ellipse' };
+    ctx.save();
+    ctx.fillStyle = traceColor;
+    ctx.font = '600 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(labels[type], cx, cy + R + 24);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.fillText(descs[type], cx, cy + R + 38);
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var pw = W / 3;
+
+    /* dividers */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(pw, 4); ctx.lineTo(pw, H-4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pw*2, 4); ctx.lineTo(pw*2, H-4); ctx.stroke();
+    ctx.restore();
+
+    drawPanel(0,      pw, H, 'lp', t);
+    drawPanel(pw,     pw, H, 'cp', t);
+    drawPanel(pw * 2, pw, H, 'ep', t);
+
+    t += 0.04;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    if (reduced) { t = Math.PI / 4; draw(); }
+    else draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  if (reduced) { t = Math.PI / 4; draw(); }
+  else draw();
+})();
+
+/* ============================================================
+   V6 — cv-rh-rule
+   Right-hand rule diagram: stylised hand + rotation indicator
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-rh-rule');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    var cx = W * 0.38;
+    var cy = H * 0.50;
+    var scale = Math.min(W, H) * 0.0032;
+
+    /* ---- stylised right hand (geometric) ---- */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillStyle   = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1.5;
+
+    /* palm */
+    var pw2 = 28 * scale, ph2 = 34 * scale;
+    ctx.beginPath();
+    ctx.roundRect(cx - pw2/2, cy - ph2*0.3, pw2, ph2, 6*scale);
+    ctx.fill(); ctx.stroke();
+
+    /* thumb (pointing toward viewer = circle with dot) */
+    ctx.beginPath();
+    ctx.arc(cx - pw2*0.72, cy - ph2*0.05, 9*scale, 0, Math.PI*2);
+    ctx.fill(); ctx.stroke();
+    /* dot in thumb circle */
+    ctx.fillStyle = AMBER;
+    ctx.beginPath();
+    ctx.arc(cx - pw2*0.72, cy - ph2*0.05, 3.5*scale, 0, Math.PI*2);
+    ctx.fill();
+
+    /* fingers (curled = short arcs) */
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 8*scale;
+    ctx.lineCap = 'round';
+    for (var f = 0; f < 4; f++) {
+      var fx = cx - pw2*0.3 + f * pw2*0.22;
+      /* finger stub curling right (clockwise direction) */
+      ctx.beginPath();
+      ctx.arc(fx, cy - ph2*0.25, 10*scale, -Math.PI*0.9, -Math.PI*0.1);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    /* ---- rotation arc (animated, clockwise = RHCP) ---- */
+    var arcR = 55 * scale;
+    var arcStart = t;
+    var arcEnd   = t + Math.PI * 1.5;
+    ctx.save();
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(cx, cy, arcR, arcStart, arcEnd);
+    ctx.stroke();
+    /* arrowhead on arc tip */
+    var tipAngle = arcEnd;
+    var tx2 = cx + arcR * Math.cos(tipAngle);
+    var ty2 = cy + arcR * Math.sin(tipAngle);
+    var perp = tipAngle + Math.PI/2;
+    var hs = 7*scale;
+    ctx.fillStyle = CYAN;
+    ctx.beginPath();
+    ctx.moveTo(tx2, ty2);
+    ctx.lineTo(tx2 - Math.cos(perp-0.5)*hs*2, ty2 - Math.sin(perp-0.5)*hs*2);
+    ctx.lineTo(tx2 - Math.cos(perp+0.5)*hs*2, ty2 - Math.sin(perp+0.5)*hs*2);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    /* ---- labels (right side) ---- */
+    var lx = W * 0.64;
+    var ly = H * 0.22;
+    var lineH = H * 0.115;
+
+    ctx.save();
+    ctx.font = '600 12px IBM Plex Sans, sans-serif';
+    ctx.fillStyle = AMBER;
+    ctx.textAlign = 'left';
+    ctx.fillText('Thumb →', lx, ly);
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = '11px IBM Plex Sans, sans-serif';
+    ctx.fillText('direction of travel', lx, ly + 16);
+
+    ctx.fillStyle = CYAN;
+    ctx.font = '600 12px IBM Plex Sans, sans-serif';
+    ctx.fillText('Fingers curl →', lx, ly + lineH);
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = '11px IBM Plex Sans, sans-serif';
+    ctx.fillText('direction of E rotation', lx, ly + lineH + 16);
+
+    ctx.fillStyle = PURPLE;
+    ctx.font = '700 13px IBM Plex Sans, sans-serif';
+    ctx.fillText('= RHCP', lx, ly + lineH*2);
+
+    ctx.strokeStyle = PURPLE;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly + lineH*2 + 6);
+    ctx.lineTo(lx + 58, ly + lineH*2 + 6);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.fillText('Left hand = LHCP', lx, ly + lineH*3);
+    ctx.restore();
+
+    t += 0.025;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    if (reduced) { t = 0; draw(); }
+    else draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  if (reduced) { t = 0; draw(); }
+  else draw();
+})();
+
+/* ============================================================
+   IFRAME FALLBACK — polarisation-mismatch.html
+   If the iframe fails to load (file doesn't exist yet), show fallback
+   ============================================================ */
+(function() {
+  var iframe = document.getElementById('polarisation-mismatch-iframe');
+  var fallback = document.getElementById('polmismatch-fallback');
+  if (!iframe || !fallback) return;
+  iframe.addEventListener('error', function() {
+    iframe.style.display = 'none';
+    fallback.style.display = 'flex';
+  });
+  /* Also check via fetch if possible — for same-origin */
+  fetch('../../../interactives/polarisation-mismatch.html', { method: 'HEAD' })
+    .catch(function() {
+      iframe.style.display = 'none';
+      fallback.style.display = 'flex';
+    });
+})();
+</script>
+</body>
+</html>
