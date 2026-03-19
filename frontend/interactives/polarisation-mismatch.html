@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polarisation Mismatch — RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      color: #e2e8f0;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-label {
+      font-size: 0.67rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.55rem;
+    }
+
+    canvas { display: block; border-radius: 4px; }
+
+    /* Controls */
+    .controls-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .ctrl-group { display: flex; flex-direction: column; }
+
+    .group-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .toggle-group button {
+      background: #1a2234;
+      color: #94a3b8;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      white-space: nowrap;
+    }
+
+    .toggle-group button.active {
+      background: #a78bfa;
+      color: #0a0e1a;
+      font-weight: 400;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex: 1;
+      min-width: 230px;
+    }
+
+    .slider-row label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-family: 'IBM Plex Mono', monospace;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: #a78bfa;
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      min-width: 3.8ch;
+      text-align: right;
+    }
+
+    /* Readouts */
+    .readouts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .rbox {
+      background: #1a2234;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 0.6rem 0.85rem;
+    }
+
+    .rlabel {
+      font-size: 0.63rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.18rem;
+    }
+
+    .rval {
+      font-size: 1.25rem;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #e2e8f0;
+      transition: color 0.2s;
+    }
+
+    .rval.green { color: #22c55e; }
+    .rval.amber { color: #f59e0b; }
+    .rval.red   { color: #ef4444; }
+    .rval.cyan  { color: #06b6d4; }
+
+  </style>
+</head>
+<body>
+
+<h1>Polarisation Mismatch</h1>
+<p class="subtitle">Rotate the receive antenna — discover the cos&thinsp;&theta; coupling relationship</p>
+
+<!-- Main antenna + wave visualisation -->
+<div class="card" id="mainCard">
+  <canvas id="mainCanvas"></canvas>
+</div>
+
+<!-- Controls + readouts -->
+<div class="card">
+  <div class="controls-row">
+    <div class="ctrl-group">
+      <div class="group-label">TX Polarisation</div>
+      <div class="toggle-group">
+        <button id="btnLinear" class="active" onclick="setMode('linear')">Linear (V)</button>
+        <button id="btnCircular" onclick="setMode('circular')">RHCP Circular</button>
+      </div>
+    </div>
+    <div class="ctrl-group" style="flex:1; min-width:230px;">
+      <div class="group-label">RX Rotation Angle</div>
+      <div class="slider-row">
+        <label>0°</label>
+        <input type="range" id="rotSlider" min="0" max="360" value="0" step="1"
+               oninput="onRotate(+this.value)">
+        <span class="slider-val" id="rotDeg">0°</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="readouts">
+    <div class="rbox">
+      <div class="rlabel">Mismatch &theta;</div>
+      <div class="rval green" id="rTheta">0°</div>
+    </div>
+    <div class="rbox">
+      <div class="rlabel">Pol. Loss</div>
+      <div class="rval green" id="rLoss">0.0 dB</div>
+    </div>
+    <div class="rbox">
+      <div class="rlabel">cos &theta;</div>
+      <div class="rval green" id="rCos">1.000</div>
+    </div>
+    <div class="rbox">
+      <div class="rlabel">TX Mode</div>
+      <div class="rval" id="rMode" style="font-size:0.9rem; padding-top:0.15rem;">Linear (V)</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Oscilloscope -->
+<div class="card">
+  <div class="card-label">Received Signal — Oscilloscope</div>
+  <canvas id="scopeCanvas"></canvas>
+</div>
+
+<!-- Spectrum Analyser -->
+<div class="card">
+  <div class="card-label">Received Signal — Spectrum Analyser</div>
+  <canvas id="fftCanvas"></canvas>
+</div>
+
+<script>
+// ================================================================
+// State
+// ================================================================
+var mode   = 'linear';  // 'linear' | 'circular'
+var rxDeg  = 0;         // RX rotation in degrees (0 = vertical, matched to TX)
+var animT  = 0;         // animation time counter
+
+var mainCanvas  = document.getElementById('mainCanvas');
+var mainCtx     = mainCanvas.getContext('2d');
+var scopeCanvas = document.getElementById('scopeCanvas');
+var scopeCtx    = scopeCanvas.getContext('2d');
+var fftCanvas   = document.getElementById('fftCanvas');
+var fftCtx      = fftCanvas.getContext('2d');
+
+// ================================================================
+// Math
+// ================================================================
+function getCoupling() {
+  if (mode === 'circular') return 1 / Math.SQRT2;   // RHCP: constant -3 dB
+  return Math.cos(rxDeg * Math.PI / 180);
+}
+
+function getAmplitude() { return Math.abs(getCoupling()); }
+
+function getLoss() {
+  var a = getAmplitude();
+  if (a < 1e-4) return Infinity;
+  return -20 * Math.log10(a);
+}
+
+function signalColor(amplitude) {
+  if (amplitude >= 0.92) return '#22c55e';  // green  — good coupling
+  if (amplitude >= 0.45) return '#f59e0b';  // amber  — partial
+  return '#ef4444';                          // red    — cross-polarised
+}
+
+function signalClass(amplitude) {
+  if (amplitude >= 0.92) return 'green';
+  if (amplitude >= 0.45) return 'amber';
+  return 'red';
+}
+
+// ================================================================
+// Controls
+// ================================================================
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnLinear').classList.toggle('active',   m === 'linear');
+  document.getElementById('btnCircular').classList.toggle('active', m === 'circular');
+}
+
+function onRotate(v) {
+  rxDeg = v;
+  document.getElementById('rotDeg').textContent = v + '\u00b0';
+}
+
+// ================================================================
+// Canvas sizing
+// ================================================================
+function resize() {
+  var mainCard = document.getElementById('mainCard');
+  var w = mainCard.clientWidth - 40;  // subtract 2 × 1.25rem padding
+  if (w < 10) return;
+
+  mainCanvas.width  = w;
+  mainCanvas.height = Math.min(300, Math.max(200, Math.round(w * 0.4)));
+
+  scopeCanvas.width  = w;
+  scopeCanvas.height = 148;
+
+  fftCanvas.width  = w;
+  fftCanvas.height = 130;
+}
+
+window.addEventListener('resize', resize);
+
+// ================================================================
+// Draw a single dipole element (line + endcaps + glow)
+// ================================================================
+function drawDipole(ctx, x, y, angleDeg, color, halfLen) {
+  var rad = angleDeg * Math.PI / 180;
+  var dx  = Math.sin(rad) * halfLen;
+  var dy  = -Math.cos(rad) * halfLen;
+
+  // Glow
+  var rgb  = hexToRGB(color);
+  var glow = ctx.createRadialGradient(x, y, 0, x, y, halfLen + 14);
+  glow.addColorStop(0, 'rgba(' + rgb + ',0.18)');
+  glow.addColorStop(1, 'rgba(' + rgb + ',0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, halfLen + 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Shaft
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 3;
+  ctx.lineCap     = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x + dx, y + dy);
+  ctx.lineTo(x - dx, y - dy);
+  ctx.stroke();
+
+  // Endcaps (perpendicular ticks)
+  var px = Math.cos(rad) * 7;
+  var py = Math.sin(rad) * 7;
+  ctx.lineWidth = 5;
+  [[x + dx, y + dy], [x - dx, y - dy]].forEach(function(pt) {
+    ctx.beginPath();
+    ctx.moveTo(pt[0] - px, pt[1] - py);
+    ctx.lineTo(pt[0] + px, pt[1] + py);
+    ctx.stroke();
+  });
+}
+
+// Draw RHCP circular indicator around TX antenna
+function drawRHCPIndicator(ctx, x, y, radius) {
+  var t = animT * 1.4;
+  var sweepEnd = Math.PI * 1.65;
+
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth   = 1.5;
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, t, t + sweepEnd);
+  ctx.stroke();
+
+  // Arrow tip at sweep end
+  var tipAngle = t + sweepEnd;
+  var ax = x + radius * Math.cos(tipAngle);
+  var ay = y + radius * Math.sin(tipAngle);
+  ctx.fillStyle = '#06b6d4';
+  ctx.beginPath();
+  ctx.arc(ax, ay, 3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+// ================================================================
+// Draw — main antenna + propagating wave canvas
+// ================================================================
+function drawMain() {
+  var W = mainCanvas.width, H = mainCanvas.height;
+  if (!W || !H) return;
+
+  var cy        = H / 2;
+  var amplitude = getAmplitude();
+  var coupling  = getCoupling();
+  var color     = signalColor(amplitude);
+
+  mainCtx.clearRect(0, 0, W, H);
+  mainCtx.fillStyle = '#0a0e1a';
+  mainCtx.fillRect(0, 0, W, H);
+
+  var txX    = Math.round(W * 0.13);
+  var rxX    = Math.round(W * 0.87);
+  var antLen = Math.min(58, H * 0.35);
+
+  // --- TX antenna ---
+  drawDipole(mainCtx, txX, cy, 0, '#f59e0b', antLen);
+  if (mode === 'circular') {
+    drawRHCPIndicator(mainCtx, txX, cy, antLen + 14);
+  }
+
+  // TX label
+  mainCtx.fillStyle  = '#94a3b8';
+  mainCtx.font       = '11px "IBM Plex Mono", monospace';
+  mainCtx.textAlign  = 'center';
+  mainCtx.fillText('TX', txX, cy - antLen - 16);
+  mainCtx.fillStyle  = '#64748b';
+  mainCtx.font       = '10px "IBM Plex Mono", monospace';
+  mainCtx.fillText(mode === 'circular' ? 'RHCP' : 'Vertical', txX, cy + antLen + 20);
+
+  // --- Propagating wave ---
+  var wX0    = W * 0.22;
+  var wX1    = W * 0.78;
+  var wLen   = wX1 - wX0;
+  var wAmp   = Math.min(40, H * 0.24) * amplitude;
+  var cycles = 3.5;
+  var speed  = 2.0;
+
+  // Centre axis track
+  mainCtx.strokeStyle = '#1e293b';
+  mainCtx.lineWidth   = 1;
+  mainCtx.setLineDash([4, 6]);
+  mainCtx.beginPath();
+  mainCtx.moveTo(wX0, cy);
+  mainCtx.lineTo(wX1, cy);
+  mainCtx.stroke();
+  mainCtx.setLineDash([]);
+
+  // Ghost full-amplitude wave (shows maximum possible)
+  if (amplitude < 0.98) {
+    var ghostAmp = Math.min(40, H * 0.24);
+    mainCtx.strokeStyle = '#1e293b';
+    mainCtx.lineWidth   = 1;
+    mainCtx.beginPath();
+    for (var i = 0; i <= 240; i++) {
+      var frac  = i / 240;
+      var gx    = wX0 + frac * wLen;
+      var phase = frac * cycles * 2 * Math.PI - animT * speed;
+      var gy    = cy + Math.sin(phase) * ghostAmp;
+      if (i === 0) mainCtx.moveTo(gx, gy); else mainCtx.lineTo(gx, gy);
+    }
+    mainCtx.stroke();
+  }
+
+  // Live wave
+  if (amplitude > 0.005) {
+    mainCtx.strokeStyle = color;
+    mainCtx.lineWidth   = 2;
+    mainCtx.globalAlpha = 0.9;
+    mainCtx.beginPath();
+    for (var i = 0; i <= 240; i++) {
+      var frac  = i / 240;
+      var wx    = wX0 + frac * wLen;
+      var phase = frac * cycles * 2 * Math.PI - animT * speed;
+      var wy    = cy + Math.sin(phase) * wAmp;
+      if (i === 0) mainCtx.moveTo(wx, wy); else mainCtx.lineTo(wx, wy);
+    }
+    mainCtx.stroke();
+    mainCtx.globalAlpha = 1;
+  }
+
+  // Propagation direction arrow
+  var arrowX = wX0 + wLen * 0.5;
+  mainCtx.fillStyle = '#334155';
+  mainCtx.beginPath();
+  mainCtx.moveTo(arrowX + 13, cy);
+  mainCtx.lineTo(arrowX + 5,  cy - 5);
+  mainCtx.lineTo(arrowX + 5,  cy + 5);
+  mainCtx.closePath();
+  mainCtx.fill();
+
+  // --- RX antenna ---
+  // Ghost reference — dashed vertical (shows where TX polarisation is)
+  mainCtx.strokeStyle = '#1e293b';
+  mainCtx.lineWidth   = 1;
+  mainCtx.setLineDash([3, 5]);
+  mainCtx.beginPath();
+  mainCtx.moveTo(rxX, cy - antLen - 8);
+  mainCtx.lineTo(rxX, cy + antLen + 8);
+  mainCtx.stroke();
+  mainCtx.setLineDash([]);
+
+  drawDipole(mainCtx, rxX, cy, rxDeg, color, antLen);
+
+  // Mismatch arc (shows the angle visually)
+  if (rxDeg > 2 && rxDeg < 358) {
+    var arcR   = antLen + 14;
+    var startA = -Math.PI / 2;        // pointing up (0° = vertical = TX)
+    var endA   = startA + rxDeg * Math.PI / 180;
+    mainCtx.strokeStyle = color;
+    mainCtx.lineWidth   = 1;
+    mainCtx.globalAlpha = 0.35;
+    mainCtx.beginPath();
+    mainCtx.arc(rxX, cy, arcR, startA, endA, false);
+    mainCtx.stroke();
+    mainCtx.globalAlpha = 1;
+  }
+
+  // RX labels
+  mainCtx.fillStyle  = '#94a3b8';
+  mainCtx.font       = '11px "IBM Plex Mono", monospace';
+  mainCtx.textAlign  = 'center';
+  mainCtx.fillText('RX', rxX, cy - antLen - 16);
+  mainCtx.fillStyle  = color;
+  mainCtx.font       = '10px "IBM Plex Mono", monospace';
+  mainCtx.fillText(rxDeg + '\u00b0', rxX, cy + antLen + 20);
+}
+
+// ================================================================
+// Draw — oscilloscope
+// ================================================================
+function drawScope() {
+  var W         = scopeCanvas.width;
+  var H         = scopeCanvas.height;
+  if (!W || !H) return;
+
+  var cy        = H / 2;
+  var amplitude = getAmplitude();
+  var color     = signalColor(amplitude);
+  var maxAmp    = H * 0.38;
+  var cycles    = 4;
+  var speed     = 2.0;
+
+  scopeCtx.clearRect(0, 0, W, H);
+  scopeCtx.fillStyle = '#0a0e1a';
+  scopeCtx.fillRect(0, 0, W, H);
+
+  // Grid
+  scopeCtx.strokeStyle = '#1e293b';
+  scopeCtx.lineWidth   = 1;
+
+  // Centre line
+  scopeCtx.beginPath();
+  scopeCtx.moveTo(0, cy);
+  scopeCtx.lineTo(W, cy);
+  scopeCtx.stroke();
+
+  // ±50% lines
+  scopeCtx.globalAlpha = 0.45;
+  [cy - H * 0.25, cy + H * 0.25].forEach(function(yl) {
+    scopeCtx.beginPath();
+    scopeCtx.moveTo(0, yl);
+    scopeCtx.lineTo(W, yl);
+    scopeCtx.stroke();
+  });
+
+  // Vertical divisions
+  for (var vi = 1; vi < 8; vi++) {
+    scopeCtx.beginPath();
+    scopeCtx.moveTo(W * vi / 8, 0);
+    scopeCtx.lineTo(W * vi / 8, H);
+    scopeCtx.stroke();
+  }
+  scopeCtx.globalAlpha = 1;
+
+  // Ghost reference — full-amplitude waveform (dim, shows maximum)
+  scopeCtx.strokeStyle = '#1e293b';
+  scopeCtx.lineWidth   = 1;
+  scopeCtx.setLineDash([2, 5]);
+  scopeCtx.beginPath();
+  for (var i = 0; i <= W; i++) {
+    var phase = (i / W) * cycles * 2 * Math.PI - animT * speed;
+    var gy    = cy - Math.sin(phase) * maxAmp;
+    if (i === 0) scopeCtx.moveTo(i, gy); else scopeCtx.lineTo(i, gy);
+  }
+  scopeCtx.stroke();
+  scopeCtx.setLineDash([]);
+
+  // Live waveform at current amplitude
+  if (amplitude > 0.005) {
+    scopeCtx.strokeStyle = color;
+    scopeCtx.lineWidth   = 2;
+    scopeCtx.beginPath();
+    for (var i = 0; i <= W; i++) {
+      var phase = (i / W) * cycles * 2 * Math.PI - animT * speed;
+      var sy    = cy - Math.sin(phase) * maxAmp * amplitude;
+      if (i === 0) scopeCtx.moveTo(i, sy); else scopeCtx.lineTo(i, sy);
+    }
+    scopeCtx.stroke();
+  } else {
+    // Flatline at null
+    scopeCtx.strokeStyle = '#ef4444';
+    scopeCtx.lineWidth   = 2;
+    scopeCtx.globalAlpha = 0.55;
+    scopeCtx.beginPath();
+    scopeCtx.moveTo(0, cy);
+    scopeCtx.lineTo(W, cy);
+    scopeCtx.stroke();
+    scopeCtx.globalAlpha = 1;
+  }
+
+  // Y-axis labels
+  scopeCtx.fillStyle  = '#64748b';
+  scopeCtx.font       = '10px "IBM Plex Mono", monospace';
+  scopeCtx.textAlign  = 'left';
+  scopeCtx.fillText('+1', 4, 13);
+  scopeCtx.fillText(' 0', 4, cy + 4);
+  scopeCtx.fillText('-1', 4, H - 4);
+
+  // Amplitude annotation
+  if (amplitude > 0.02) {
+    scopeCtx.fillStyle  = color;
+    scopeCtx.font       = '10px "IBM Plex Mono", monospace';
+    scopeCtx.textAlign  = 'right';
+    var pctLabel = Math.round(amplitude * 100) + '%';
+    scopeCtx.fillText(pctLabel, W - 6, cy - maxAmp * amplitude - 5);
+  }
+}
+
+// ================================================================
+// Update DOM readouts
+// ================================================================
+function updateReadouts() {
+  var amplitude = getAmplitude();
+  var coupling  = getCoupling();
+  var loss      = getLoss();
+  var cls       = signalClass(amplitude);
+
+  // θ
+  var rTheta = document.getElementById('rTheta');
+  rTheta.textContent = rxDeg + '\u00b0';
+  rTheta.className   = 'rval ' + cls;
+
+  // Loss
+  var rLoss = document.getElementById('rLoss');
+  rLoss.textContent = isFinite(loss) ? loss.toFixed(1) + ' dB' : '\u221e dB';
+  rLoss.className   = 'rval ' + cls;
+
+  // cos θ
+  var rCos = document.getElementById('rCos');
+  rCos.textContent = coupling.toFixed(3);
+  rCos.className   = 'rval ' + cls;
+
+  // TX Mode
+  var rMode = document.getElementById('rMode');
+  if (mode === 'circular') {
+    rMode.textContent = 'RHCP';
+    rMode.className   = 'rval cyan';
+  } else {
+    rMode.textContent = 'Linear (V)';
+    rMode.className   = 'rval';
+    rMode.style.color = '';
+  }
+
+}
+
+// ================================================================
+// Draw — spectrum analyser (FFT graph)
+// Ported from radiation-3d-v5.html — log scale, 0 to -90 dBm
+// ================================================================
+function drawFFT() {
+  var W = fftCanvas.width, H = fftCanvas.height;
+  if (!W || !H) return;
+
+  var amplitude = getAmplitude();
+  // dBm: 0 dBm = perfect match; -90 = noise floor
+  var dBm = amplitude < 1e-4 ? -90 : 20 * Math.log10(amplitude);
+  dBm = Math.max(-90, dBm);
+
+  var c = fftCtx;
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = '#080c14';
+  c.fillRect(0, 0, W, H);
+
+  var margin = { top: 8, bottom: 20, left: 4, right: 38 };
+  var plotW  = W - margin.left - margin.right;
+  var plotH  = H - margin.top - margin.bottom;
+  var plotX  = margin.left;
+  var plotY  = margin.top;
+
+  // Grid
+  var gx = W / 10, gy = H / 8;
+  c.strokeStyle = '#1a2234'; c.lineWidth = 0.5;
+  for (var gxi = gx; gxi < W; gxi += gx) {
+    c.beginPath(); c.moveTo(gxi, 0); c.lineTo(gxi, H); c.stroke();
+  }
+  for (var gyi = gy; gyi < H; gyi += gy) {
+    c.beginPath(); c.moveTo(0, gyi); c.lineTo(W, gyi); c.stroke();
+  }
+
+  // dB → Y mapping (0 dBm at top, -90 at bottom)
+  var dbTop = 0, dbBottom = -90, dbRange = 90;
+  function dbToY(db) { return plotY + ((dbTop - db) / dbRange) * plotH; }
+
+  // Scale labels
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#3a4a5e';
+  for (var db = 0; db >= -90; db -= 10) {
+    var ly = dbToY(db);
+    c.fillText(db + '', W - 34, ly + 3);
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(W - 37, ly); c.lineTo(W - 35, ly); c.stroke();
+  }
+
+  // 0 dBm reference line
+  c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(plotX, dbToY(0)); c.lineTo(plotX + plotW, dbToY(0)); c.stroke();
+
+  // -3 dBm reference (RHCP landmark)
+  c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2, 4]);
+  c.beginPath(); c.moveTo(plotX, dbToY(-3)); c.lineTo(plotX + plotW, dbToY(-3)); c.stroke();
+  c.setLineDash([]);
+  c.font = '500 7px IBM Plex Mono'; c.fillStyle = '#334155';
+  c.fillText('-3 dB', plotX + 2, dbToY(-3) - 2);
+
+  var noiseY = dbToY(-90);
+  var cx     = W * 0.45;
+  var pw     = 18;
+
+  // Noise floor
+  c.strokeStyle = '#f59e0b'; c.lineWidth = 1; c.globalAlpha = 0.15;
+  c.beginPath();
+  for (var nx = plotX; nx < plotX + plotW; nx++) {
+    var ny = noiseY + (Math.random() - 0.5) * 5;
+    nx === plotX ? c.moveTo(nx, ny) : c.lineTo(nx, ny);
+  }
+  c.stroke(); c.globalAlpha = 1;
+
+  // Signal peak
+  if (dBm > -85) {
+    var peakY = dbToY(dBm);
+    c.shadowColor = '#f59e0b'; c.shadowBlur = 10;
+    c.strokeStyle = '#f59e0b'; c.lineWidth = 2;
+    c.beginPath();
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      var py = noiseY - (noiseY - peakY) * g;
+      xi === cx - pw * 3 ? c.moveTo(xi, py) : c.lineTo(xi, py);
+    }
+    c.stroke();
+
+    // Fill under peak
+    c.globalAlpha = 0.1; c.fillStyle = '#f59e0b';
+    c.beginPath(); c.moveTo(cx - pw * 3, noiseY);
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      c.lineTo(xi, noiseY - (noiseY - peakY) * g);
+    }
+    c.lineTo(cx + pw * 3, noiseY); c.closePath(); c.fill();
+    c.globalAlpha = 1; c.shadowBlur = 0;
+
+    // Peak marker
+    c.strokeStyle = '#f59e0b'; c.lineWidth = 1;
+    c.setLineDash([3, 3]); c.globalAlpha = 0.5;
+    c.beginPath(); c.moveTo(cx, peakY); c.lineTo(W - 38, peakY); c.stroke();
+    c.setLineDash([]); c.globalAlpha = 1;
+
+    // Peak label
+    c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#f59e0b';
+    c.fillText(dBm.toFixed(1) + ' dB', cx + pw * 3 + 3, peakY + 3);
+  }
+  c.shadowBlur = 0;
+
+  // Frequency axis labels
+  c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#4a5568';
+  c.fillText('FREQ \u2192', W - 62, H - 4);
+  c.fillText('145 MHz', cx - 20, H - 4);
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#f59e0b';
+  c.globalAlpha = 0.5; c.fillText('LOG', plotX + 2, plotY + 10); c.globalAlpha = 1;
+}
+
+// ================================================================
+// Utility
+// ================================================================
+function hexToRGB(hex) {
+  var h = hex.replace('#', '');
+  return parseInt(h.slice(0, 2), 16) + ',' +
+         parseInt(h.slice(2, 4), 16) + ',' +
+         parseInt(h.slice(4, 6), 16);
+}
+
+// ================================================================
+// Animation loop
+// ================================================================
+function loop() {
+  animT += 0.042;
+  drawMain();
+  drawScope();
+  drawFFT();
+  updateReadouts();
+  requestAnimationFrame(loop);
+}
+
+// ================================================================
+// Boot
+// ================================================================
+resize();
+loop();
+</script>
+</body>
+</html>
