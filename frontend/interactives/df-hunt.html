@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DF Hunt — RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      color: #e2e8f0;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 4px;
+      cursor: default;
+    }
+
+    /* Loop controls */
+    .loops-row {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .loop-ctrl {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .loop-header {
+      font-size: 0.78rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 400;
+      margin-bottom: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .loop-header.amber { color: #f59e0b; }
+    .loop-header.cyan  { color: #06b6d4; }
+
+    .loop-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .loop-dot.amber { background: #f59e0b; }
+    .loop-dot.cyan  { background: #06b6d4; }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .slider-row label {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-family: 'IBM Plex Mono', monospace;
+      white-space: nowrap;
+      min-width: 4.5ch;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: #a78bfa;
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      min-width: 3.8ch;
+      text-align: right;
+    }
+
+    /* FFT graph */
+    .fft-wrap { margin-top: 0.35rem; }
+
+    .fft-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.28rem;
+    }
+
+    /* Divider between loops */
+    .loop-divider {
+      width: 1px;
+      background: #1e293b;
+      align-self: stretch;
+      margin: 0 0.25rem;
+    }
+
+    @media (max-width: 540px) { .loop-divider { display: none; } }
+
+    /* Actions */
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #a78bfa;
+      color: #0a0e1a;
+      border: none;
+      border-radius: 6px;
+      padding: 0.55rem 1.2rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+
+    .btn-secondary {
+      background: #1a2234;
+      color: #94a3b8;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 0.55rem 1.2rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 300;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: #334155; color: #e2e8f0; }
+
+    .feedback {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .feedback.success { color: #22c55e; }
+    .feedback.fail    { color: #f59e0b; }
+    .feedback.warn    { color: #ef4444; }
+
+    .hint {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 0.7rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<h1>DF Hunt</h1>
+<p class="subtitle">Direction-Finding Exercise — triangulate the hidden transmitter using loop antenna nulls</p>
+
+<!-- Map canvas -->
+<div class="card" id="mapCard">
+  <canvas id="mapCanvas"></canvas>
+</div>
+
+<!-- Loop controls -->
+<div class="card">
+  <div class="loops-row">
+
+    <!-- Loop A -->
+    <div class="loop-ctrl">
+      <div class="loop-header amber">
+        <span class="loop-dot amber"></span>Loop A
+      </div>
+      <div class="slider-row">
+        <label>Bearing</label>
+        <input type="range" id="sliderA" min="0" max="360" value="0" step="1"
+               oninput="onRotateA(+this.value)">
+        <span class="slider-val" id="degA">0°</span>
+      </div>
+      <div class="fft-wrap" id="fftWrapA">
+        <div class="fft-label">Spectrum — seek null (min)</div>
+        <canvas id="fftCanvasA"></canvas>
+      </div>
+    </div>
+
+    <div class="loop-divider"></div>
+
+    <!-- Loop B -->
+    <div class="loop-ctrl">
+      <div class="loop-header cyan">
+        <span class="loop-dot cyan"></span>Loop B
+      </div>
+      <div class="slider-row">
+        <label>Bearing</label>
+        <input type="range" id="sliderB" min="0" max="360" value="45" step="1"
+               oninput="onRotateB(+this.value)">
+        <span class="slider-val" id="degB">45°</span>
+      </div>
+      <div class="fft-wrap" id="fftWrapB">
+        <div class="fft-label">Spectrum — seek null (min)</div>
+        <canvas id="fftCanvasB"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Actions -->
+<div class="card">
+  <div class="actions-row">
+    <button class="btn-primary" id="btnFound" onclick="checkFound()">Found It!</button>
+    <button class="btn-secondary" onclick="newGame()">New Game</button>
+    <div class="feedback" id="feedback">Rotate each loop to find the signal null, then click Found It!</div>
+  </div>
+  <div class="hint">
+    Tip: a loop antenna has a sharp null (minimum signal) when its face is broadside to the transmitter.
+    Find the null bearing from both loops — where the dashed lines cross is the TX location.
+  </div>
+</div>
+
+<script>
+// ================================================================
+// State
+// ================================================================
+var loopA = { x: 0, y: 0, angle: 0 };
+var loopB = { x: 0, y: 0, angle: 45 };
+var tx    = { x: 0, y: 0 };
+
+var txRevealed   = false;
+var gameWon      = false;
+var animT        = 0;
+var TOLERANCE    = 38;     // px — success threshold
+var LOOP_RADIUS  = 12;     // loop icon radius on map
+var terrain      = [];     // static terrain dots (regenerated each game)
+
+var mapCanvas  = document.getElementById('mapCanvas');
+var ctx        = mapCanvas.getContext('2d');
+var fftCanvasA = document.getElementById('fftCanvasA');
+var fftCtxA    = fftCanvasA.getContext('2d');
+var fftCanvasB = document.getElementById('fftCanvasB');
+var fftCtxB    = fftCanvasB.getContext('2d');
+
+// ================================================================
+// Geometry helpers
+// ================================================================
+
+// Compass bearing (0=North/up, clockwise) from point p1 to p2 in canvas coords
+function compassBearing(p1, p2) {
+  var dx  = p2.x - p1.x;
+  var dy  = p2.y - p1.y;  // canvas Y down → dy positive = southward
+  var rad = Math.atan2(dx, -dy); // atan2(east, north)
+  return ((rad * 180 / Math.PI) + 360) % 360;
+}
+
+// Smallest angle between two compass bearings (0–180)
+function bearingDiff(a, b) {
+  var d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+// Unit direction vector from compass bearing (0=North=up in canvas)
+function bearingToDir(angleDeg) {
+  var rad = angleDeg * Math.PI / 180;
+  return { x: Math.sin(rad), y: -Math.cos(rad) };
+}
+
+// Signal strength: sin² of angle between loop normal (= bearing line direction) and bearing to TX
+// Null (0) when loop face points at TX, peak (1) when loop edge faces TX
+function getSignal(loopAngle, loop, txPos) {
+  var bTX   = compassBearing(loop, txPos);
+  var alpha = bearingDiff(loopAngle, bTX) * Math.PI / 180;
+  return Math.pow(Math.sin(alpha), 2);
+}
+
+// Intersection of two infinite lines through p1/p2 with directions d1/d2
+// Returns {x,y} or null if parallel
+function lineIntersect(p1, d1, p2, d2) {
+  // p1 + t*d1 = p2 + s*d2  →  t*d1.x - s*d2.x = p2.x - p1.x, etc.
+  var D = d1.x * (-d2.y) + d2.x * d1.y;
+  if (Math.abs(D) < 0.04) return null;
+  var ex = p2.x - p1.x, ey = p2.y - p1.y;
+  var t  = (ex * (-d2.y) + d2.x * ey) / D;
+  return { x: p1.x + t * d1.x, y: p1.y + t * d1.y };
+}
+
+function dist(a, b) {
+  var dx = a.x - b.x, dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Find endpoints where a bearing line through (px, py) exits the canvas [0,W]×[0,H]
+function clipLine(px, py, angleDeg, W, H) {
+  var d     = bearingToDir(angleDeg);
+  var ts    = [];
+  var eps   = 1;
+
+  if (Math.abs(d.x) > 1e-6) {
+    ts.push((-px) / d.x);
+    ts.push((W - px) / d.x);
+  }
+  if (Math.abs(d.y) > 1e-6) {
+    ts.push((-py) / d.y);
+    ts.push((H - py) / d.y);
+  }
+
+  // Keep only t values whose endpoint lies inside canvas (with eps margin)
+  var valid = ts.filter(function(t) {
+    var x = px + t * d.x, y = py + t * d.y;
+    return x >= -eps && x <= W + eps && y >= -eps && y <= H + eps;
+  });
+  if (valid.length < 2) return null;
+  valid.sort(function(a, b) { return a - b; });
+  var t0 = valid[0], t1 = valid[valid.length - 1];
+  return [
+    { x: px + t0 * d.x, y: py + t0 * d.y },
+    { x: px + t1 * d.x, y: py + t1 * d.y }
+  ];
+}
+
+// ================================================================
+// Map canvas sizing
+// ================================================================
+function resize() {
+  var card = document.getElementById('mapCard');
+  var W    = card.clientWidth - 40;
+  if (W < 10) return;
+  var H    = Math.min(480, Math.max(300, Math.round(W * 0.6)));
+
+  mapCanvas.width  = W;
+  mapCanvas.height = H;
+
+  // Reposition loops (fixed proportional positions)
+  loopA.x = Math.round(W * 0.20);
+  loopA.y = Math.round(H * 0.54);
+  loopB.x = Math.round(W * 0.80);
+  loopB.y = Math.round(H * 0.48);
+
+  // Size FFT canvases after flex layout settles
+  requestAnimationFrame(function() {
+    var wA = document.getElementById('fftWrapA');
+    var wB = document.getElementById('fftWrapB');
+    if (wA && wA.clientWidth > 10) { fftCanvasA.width = wA.clientWidth; fftCanvasA.height = 112; }
+    if (wB && wB.clientWidth > 10) { fftCanvasB.width = wB.clientWidth; fftCanvasB.height = 112; }
+  });
+}
+
+window.addEventListener('resize', function() { resize(); placeTX(); });
+
+// ================================================================
+// TX placement
+// ================================================================
+function placeTX() {
+  var W = mapCanvas.width, H = mapCanvas.height;
+  if (!W || !H) return;
+
+  var minDist = Math.min(W, H) * 0.15 + 40;  // minimum dist from each loop
+  var margin  = 0.12;                          // edge margin fraction
+  var maxTries = 200;
+
+  for (var i = 0; i < maxTries; i++) {
+    var x = W * margin + Math.random() * W * (1 - 2 * margin);
+    var y = H * margin + Math.random() * H * (1 - 2 * margin);
+    var dA = dist({ x: x, y: y }, loopA);
+    var dB = dist({ x: x, y: y }, loopB);
+    if (dA >= minDist && dB >= minDist) {
+      tx.x = Math.round(x);
+      tx.y = Math.round(y);
+      return;
+    }
+  }
+  // Fallback: just pick something central
+  tx.x = Math.round(W * 0.5);
+  tx.y = Math.round(H * 0.3);
+}
+
+// ================================================================
+// Terrain generation (decorative static dots)
+// ================================================================
+function genTerrain() {
+  terrain = [];
+  var W = mapCanvas.width, H = mapCanvas.height;
+  var count = Math.floor(W * H / 9000) + 4;
+  for (var i = 0; i < count; i++) {
+    terrain.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 3 + Math.random() * 8,
+      a: 0.04 + Math.random() * 0.08
+    });
+  }
+}
+
+// ================================================================
+// Drawing
+// ================================================================
+
+function drawMap() {
+  var W = mapCanvas.width, H = mapCanvas.height;
+  if (!W || !H) return;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  var gridStep = Math.round(Math.min(W, H) / 8);
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth   = 1;
+  for (var gx = gridStep; gx < W; gx += gridStep) {
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+  }
+  for (var gy = gridStep; gy < H; gy += gridStep) {
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+  }
+
+  // Terrain blobs
+  terrain.forEach(function(t) {
+    ctx.fillStyle = 'rgba(30,41,59,' + t.a + ')';
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // --- Bearing lines ---
+  var sigA = getSignal(loopA.angle, loopA, tx);
+  var sigB = getSignal(loopB.angle, loopB, tx);
+
+  drawBearingLine(loopA, '#f59e0b', W, H);
+  drawBearingLine(loopB, '#06b6d4', W, H);
+
+  // --- Intersection crosshair ---
+  var dA = bearingToDir(loopA.angle);
+  var dB = bearingToDir(loopB.angle);
+  var ix = lineIntersect(loopA, dA, loopB, dB);
+  var parallels = ix === null;
+
+  if (!parallels && !txRevealed) {
+    // Show faint intersection marker
+    var inCanvas = ix.x >= 0 && ix.x <= W && ix.y >= 0 && ix.y <= H;
+    if (inCanvas) {
+      ctx.strokeStyle = 'rgba(167,139,250,0.35)';
+      ctx.lineWidth   = 1;
+      var cs = 8;
+      ctx.beginPath();
+      ctx.moveTo(ix.x - cs, ix.y); ctx.lineTo(ix.x + cs, ix.y);
+      ctx.moveTo(ix.x, ix.y - cs); ctx.lineTo(ix.x, ix.y + cs);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(ix.x, ix.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(167,139,250,0.4)';
+      ctx.fill();
+    }
+  }
+
+  // --- TX (revealed) ---
+  if (txRevealed) {
+    drawTX(W, H, ix);
+  }
+
+  // --- Loop antennas (drawn on top) ---
+  drawLoop(loopA, loopA.angle, '#f59e0b', 'A', sigA);
+  drawLoop(loopB, loopB.angle, '#06b6d4', 'B', sigB);
+}
+
+function drawBearingLine(loop, color, W, H) {
+  var pts = clipLine(loop.x, loop.y, loop.angle, W, H);
+  if (!pts) return;
+
+  // Faint full line
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 1;
+  ctx.globalAlpha = 0.18;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  ctx.lineTo(pts[1].x, pts[1].y);
+  ctx.stroke();
+
+  // Dashed overlay
+  ctx.globalAlpha = 0.55;
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  ctx.lineTo(pts[1].x, pts[1].y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+}
+
+function drawLoop(loop, angleDeg, color, label, signal) {
+  var x = loop.x, y = loop.y;
+  var R = LOOP_RADIUS;
+  var rgb = hexToRGB(color);
+
+  // Glow
+  var glow = ctx.createRadialGradient(x, y, 0, x, y, R + 18);
+  glow.addColorStop(0, 'rgba(' + rgb + ',0.22)');
+  glow.addColorStop(1, 'rgba(' + rgb + ',0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, R + 18, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Loop circle (antenna icon)
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 2;
+  ctx.fillStyle   = 'rgba(' + rgb + ',0.12)';
+  ctx.beginPath();
+  ctx.arc(x, y, R, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Broadside (null direction) indicator arrow
+  var rad = angleDeg * Math.PI / 180;
+  var dx  = Math.sin(rad), dy = -Math.cos(rad);
+  var arrowLen = R + 14;
+  var ax  = x + dx * arrowLen, ay = y + dy * arrowLen;
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(ax, ay);
+  ctx.stroke();
+
+  // Arrowhead
+  var arrowSize = 5;
+  var perpX = -dy * arrowSize * 0.5, perpY = dx * arrowSize * 0.5;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(ax, ay);
+  ctx.lineTo(ax - dx * arrowSize + perpX, ay - dy * arrowSize + perpY);
+  ctx.lineTo(ax - dx * arrowSize - perpX, ay - dy * arrowSize - perpY);
+  ctx.closePath();
+  ctx.fill();
+
+  // Also draw opposite indicator (dashed) for the bidirectional null
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 1;
+  ctx.globalAlpha = 0.35;
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x - dx * arrowLen, y - dy * arrowLen);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+
+  // Label
+  ctx.fillStyle  = color;
+  ctx.font       = 'bold 11px "IBM Plex Mono", monospace';
+  ctx.textAlign  = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, x, y);
+  ctx.textBaseline = 'alphabetic';
+
+  // Small signal bar on map (below the loop icon)
+  var barW = 36, barH = 5;
+  var barX = x - barW / 2, barY = y + R + 8;
+  ctx.fillStyle = '#1e293b';
+  ctx.fillRect(barX, barY, barW, barH);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.7 + signal * 0.3;
+  ctx.fillRect(barX, barY, barW * signal, barH);
+  ctx.globalAlpha = 1;
+}
+
+function drawTX(W, H, intersection) {
+  var pulse = 0.5 + 0.5 * Math.sin(animT * 3.5);
+
+  // Outer pulsing ring
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth   = 2;
+  ctx.globalAlpha = 0.3 * pulse;
+  ctx.beginPath();
+  ctx.arc(tx.x, tx.y, 18 + pulse * 8, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Inner glow
+  var txGlow = ctx.createRadialGradient(tx.x, tx.y, 0, tx.x, tx.y, 18);
+  txGlow.addColorStop(0, 'rgba(167,139,250,0.5)');
+  txGlow.addColorStop(1, 'rgba(167,139,250,0)');
+  ctx.fillStyle = txGlow;
+  ctx.beginPath();
+  ctx.arc(tx.x, tx.y, 18, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Dot
+  ctx.fillStyle = '#a78bfa';
+  ctx.beginPath();
+  ctx.arc(tx.x, tx.y, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // TX label
+  ctx.fillStyle    = '#a78bfa';
+  ctx.font         = '11px "IBM Plex Mono", monospace';
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('TX', tx.x, tx.y - 14);
+
+  // Draw line from intersection to TX (shows error)
+  if (intersection && gameWon) {
+    var inC = intersection.x >= 0 && intersection.x <= W &&
+              intersection.y >= 0 && intersection.y <= H;
+    if (inC) {
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth   = 1;
+      ctx.globalAlpha = 0.4;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(intersection.x, intersection.y);
+      ctx.lineTo(tx.x, tx.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+// ================================================================
+// Draw — spectrum analyser (FFT graph), parameterised
+// Ported from radiation-3d-v5.html — log scale, 0 to -90 dBm
+// ================================================================
+function drawFFT(c, W, H, dBm, peakColor) {
+  if (!c || !W || !H) return;
+
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = '#080c14';
+  c.fillRect(0, 0, W, H);
+
+  var margin = { top: 8, bottom: 20, left: 4, right: 38 };
+  var plotW  = W - margin.left - margin.right;
+  var plotH  = H - margin.top - margin.bottom;
+  var plotX  = margin.left;
+  var plotY  = margin.top;
+
+  // Grid
+  var gx = W / 10, gy = H / 8;
+  c.strokeStyle = '#1a2234'; c.lineWidth = 0.5;
+  for (var gxi = gx; gxi < W; gxi += gx) {
+    c.beginPath(); c.moveTo(gxi, 0); c.lineTo(gxi, H); c.stroke();
+  }
+  for (var gyi = gy; gyi < H; gyi += gy) {
+    c.beginPath(); c.moveTo(0, gyi); c.lineTo(W, gyi); c.stroke();
+  }
+
+  // dB → Y mapping (0 dBm at top, -90 at bottom)
+  var dbTop = 0, dbBottom = -90, dbRange = 90;
+  function dbToY(db) { return plotY + ((dbTop - db) / dbRange) * plotH; }
+
+  // Scale labels
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = '#3a4a5e';
+  for (var db = 0; db >= -90; db -= 10) {
+    var ly = dbToY(db);
+    c.fillText(db + '', W - 34, ly + 3);
+    c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(W - 37, ly); c.lineTo(W - 35, ly); c.stroke();
+  }
+
+  // 0 dBm reference
+  c.strokeStyle = '#2a3448'; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(plotX, dbToY(0)); c.lineTo(plotX + plotW, dbToY(0)); c.stroke();
+
+  // -3 dBm reference
+  c.strokeStyle = '#334155'; c.lineWidth = 0.5; c.setLineDash([2, 4]);
+  c.beginPath(); c.moveTo(plotX, dbToY(-3)); c.lineTo(plotX + plotW, dbToY(-3)); c.stroke();
+  c.setLineDash([]);
+  c.font = '500 7px IBM Plex Mono'; c.fillStyle = '#334155';
+  c.fillText('-3 dB', plotX + 2, dbToY(-3) - 2);
+
+  var noiseY = dbToY(-90);
+  var cx     = W * 0.45;
+  var pw     = 16;
+
+  // Noise floor
+  c.strokeStyle = peakColor; c.lineWidth = 1; c.globalAlpha = 0.15;
+  c.beginPath();
+  for (var nx = plotX; nx < plotX + plotW; nx++) {
+    var ny = noiseY + (Math.random() - 0.5) * 5;
+    nx === plotX ? c.moveTo(nx, ny) : c.lineTo(nx, ny);
+  }
+  c.stroke(); c.globalAlpha = 1;
+
+  // Signal peak
+  if (dBm > -85) {
+    var peakY = dbToY(dBm);
+    c.shadowColor = peakColor; c.shadowBlur = 10;
+    c.strokeStyle = peakColor; c.lineWidth = 2;
+    c.beginPath();
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g  = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      var py = noiseY - (noiseY - peakY) * g;
+      xi === cx - pw * 3 ? c.moveTo(xi, py) : c.lineTo(xi, py);
+    }
+    c.stroke();
+
+    // Fill under peak
+    c.globalAlpha = 0.1; c.fillStyle = peakColor;
+    c.beginPath(); c.moveTo(cx - pw * 3, noiseY);
+    for (var xi = cx - pw * 3; xi <= cx + pw * 3; xi++) {
+      var g = Math.exp(-Math.pow(xi - cx, 2) / (2 * Math.pow(pw / 2, 2)));
+      c.lineTo(xi, noiseY - (noiseY - peakY) * g);
+    }
+    c.lineTo(cx + pw * 3, noiseY); c.closePath(); c.fill();
+    c.globalAlpha = 1; c.shadowBlur = 0;
+
+    // Peak marker
+    c.strokeStyle = peakColor; c.lineWidth = 1;
+    c.setLineDash([3, 3]); c.globalAlpha = 0.5;
+    c.beginPath(); c.moveTo(cx, peakY); c.lineTo(W - 38, peakY); c.stroke();
+    c.setLineDash([]); c.globalAlpha = 1;
+
+    // Peak label
+    c.font = '500 9px IBM Plex Mono'; c.fillStyle = peakColor;
+    c.fillText(dBm.toFixed(1) + ' dB', cx + pw * 3 + 3, peakY + 3);
+  }
+  c.shadowBlur = 0;
+
+  // Frequency axis labels
+  c.font = '500 9px IBM Plex Mono'; c.fillStyle = '#4a5568';
+  c.fillText('FREQ \u2192', W - 62, H - 4);
+  c.fillText('145 MHz', cx - 20, H - 4);
+  c.font = '500 8px IBM Plex Mono'; c.fillStyle = peakColor;
+  c.globalAlpha = 0.5; c.fillText('LOG', plotX + 2, plotY + 10); c.globalAlpha = 1;
+}
+
+// signal (0-1 power) → dBm (0 to -90)
+function toDBm(signal) {
+  if (signal < 1e-8) return -90;
+  return Math.max(-90, 10 * Math.log10(signal));
+}
+
+// ================================================================
+// Draw both FFT graphs
+// ================================================================
+function drawFFTs() {
+  var sigA = getSignal(loopA.angle, loopA, tx);
+  var sigB = getSignal(loopB.angle, loopB, tx);
+  drawFFT(fftCtxA, fftCanvasA.width, fftCanvasA.height, toDBm(sigA), '#f59e0b');
+  drawFFT(fftCtxB, fftCanvasB.width, fftCanvasB.height, toDBm(sigB), '#06b6d4');
+}
+
+// ================================================================
+// Controls
+// ================================================================
+function onRotateA(v) {
+  loopA.angle = v;
+  document.getElementById('degA').textContent = v + '\u00b0';
+}
+
+function onRotateB(v) {
+  loopB.angle = v;
+  document.getElementById('degB').textContent = v + '\u00b0';
+}
+
+// ================================================================
+// Game logic
+// ================================================================
+function checkFound() {
+  var dA  = bearingToDir(loopA.angle);
+  var dB  = bearingToDir(loopB.angle);
+  var ix  = lineIntersect(loopA, dA, loopB, dB);
+
+  var fb = document.getElementById('feedback');
+
+  if (ix === null) {
+    fb.className   = 'feedback warn';
+    fb.textContent = 'Bearings are parallel — rotate the loops to different angles.';
+    return;
+  }
+
+  // Check if intersection is far off-canvas (happens when lines are nearly parallel)
+  var W = mapCanvas.width, H = mapCanvas.height;
+  if (ix.x < -W || ix.x > 2 * W || ix.y < -H || ix.y > 2 * H) {
+    fb.className   = 'feedback warn';
+    fb.textContent = 'Bearings nearly parallel — try a greater angle difference.';
+    return;
+  }
+
+  var error = dist(ix, tx);
+
+  if (error <= TOLERANCE) {
+    // Success!
+    txRevealed = true;
+    gameWon    = true;
+    document.getElementById('btnFound').disabled = true;
+
+    var errUnits = Math.round(error);
+    fb.className   = 'feedback success';
+    fb.textContent = '\u2713 TX found! Triangulation error: ' + errUnits + 'px. Well done.';
+  } else {
+    // Fail — allow retry
+    fb.className   = 'feedback fail';
+    if (error > TOLERANCE * 3) {
+      fb.textContent = 'Way off — keep tuning. Find the null on each loop, not the peak.';
+    } else {
+      fb.textContent = 'Close! Refine your bearings — look for the sharpest null.';
+    }
+  }
+}
+
+function newGame() {
+  // Reset loops
+  loopA.angle = 0;
+  loopB.angle = 45;
+  document.getElementById('sliderA').value = 0;
+  document.getElementById('sliderB').value = 45;
+  document.getElementById('degA').textContent = '0\u00b0';
+  document.getElementById('degB').textContent = '45\u00b0';
+
+  // Reset game state
+  txRevealed = false;
+  gameWon    = false;
+  document.getElementById('btnFound').disabled = false;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent =
+    'Rotate each loop to find the signal null, then click Found It!';
+
+  // New TX
+  placeTX();
+  genTerrain();
+}
+
+// ================================================================
+// Utility
+// ================================================================
+function hexToRGB(hex) {
+  var h = hex.replace('#', '');
+  return parseInt(h.slice(0, 2), 16) + ',' +
+         parseInt(h.slice(2, 4), 16) + ',' +
+         parseInt(h.slice(4, 6), 16);
+}
+
+// ================================================================
+// Animation loop
+// ================================================================
+function loop() {
+  animT += 0.04;
+  drawMap();
+  drawFFTs();
+  requestAnimationFrame(loop);
+}
+
+// ================================================================
+// Boot
+// ================================================================
+resize();
+placeTX();
+genTerrain();
+loop();
+</script>
+</body>
+</html>
