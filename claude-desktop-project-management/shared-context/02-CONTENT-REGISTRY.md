@@ -2,7 +2,7 @@
 
 > **Purpose:** Maps all content across RF-Hub — curriculum lessons, blog posts, Unsquelched episodes, and interactive visualisations. All Claude Desktop projects can read this via Desktop Commander for cross-references.
 >
-> **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\
+> **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\
 > **Last updated:** 2026-03-24
 
 ---

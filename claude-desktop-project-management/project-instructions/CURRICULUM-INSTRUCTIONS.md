@@ -29,7 +29,7 @@ Design and development of the structured 4-unit, 20-lesson RF/antenna curriculum
 
 ## Cross-Project Shared Context
 When you need context from other workstreams, read the shared files via Desktop Commander:
-- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\`
+- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\`
 - `01-PROJECT-MAP.md` — overall project status
 - `02-CONTENT-REGISTRY.md` — maps lessons to blogs and visualisations
 - `03-EQUIPMENT-TRACKER.md` — what's available for curriculum lab exercises

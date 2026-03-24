@@ -2,7 +2,7 @@
 
 > **Purpose:** Central inventory of RF equipment and planned/completed experiments.
 >
-> **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\
+> **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\
 > **Last updated:** 2026-03-24
 
 ---

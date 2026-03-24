@@ -2,7 +2,7 @@
 
 > **Purpose:** Records key learning moments, terminology corrections, independent reasoning breakthroughs, and RF insights. Feeds the "DC-to-Light" meta-blog series and Unsquelched content. Also helps Claude across all projects understand Anthony's current knowledge level.
 >
-> **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\
+> **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\
 > **Last updated:** 2026-03-24
 > **Convention:** Most recent entries at the top. Tag each entry with relevant curriculum lesson(s).
 

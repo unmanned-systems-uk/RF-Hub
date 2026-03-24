@@ -19,7 +19,7 @@ Platform infrastructure, website deployment, agent coordination, and MKDocs gene
 
 ## Cross-Project Shared Context
 When you need context from other workstreams, read the shared files via Desktop Commander:
-- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\`
+- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\`
 - `01-PROJECT-MAP.md` — orientation and status of all workstreams
 - `02-CONTENT-REGISTRY.md` — what curriculum/blog/visualisation content exists
 - `03-EQUIPMENT-TRACKER.md` — RF equipment inventory and experiment status

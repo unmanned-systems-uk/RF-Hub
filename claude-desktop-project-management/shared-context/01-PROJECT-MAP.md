@@ -2,7 +2,7 @@
 
 > **Purpose:** Single source of truth for all RF-Hub workstreams. All Claude Desktop projects should read this file via Desktop Commander at startup when cross-project context is needed.
 >
-> **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\
+> **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\
 > **Last updated:** 2026-03-24
 
 ---
@@ -66,7 +66,7 @@
 
 ### Shared Context Files = cross-project knowledge layer
 All Claude Desktop projects read these via Desktop Commander:
-- **Location:** `D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\`
+- **Location:** `D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\`
 - **01-PROJECT-MAP.md** (this file) — orientation and status
 - **02-CONTENT-REGISTRY.md** — what exists, what links to what
 - **03-EQUIPMENT-TRACKER.md** — what we own, what we've tested
@@ -100,4 +100,4 @@ All Claude Desktop projects read these via Desktop Commander:
 | Task handoffs | GitHub Issues |
 | Agent rules | CC-RULES.md, START-HERE-CC.md (Git) |
 | Schedule | Google Calendar |
-| Project instructions | D:\live_code\RF-Hub\claude-desktop-project-managment\project-instructions\ |
+| Project instructions | D:\live_code\RF-Hub\claude-desktop-project-management\project-instructions\ |

@@ -30,7 +30,7 @@ Weekly content production work is capped at 3 hours. This protects the hobby fro
 
 ## Cross-Project Shared Context
 When you need context from other workstreams, read the shared files via Desktop Commander:
-- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\`
+- **Path:** `D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\`
 - `01-PROJECT-MAP.md` — orientation and status of all workstreams
 - `02-CONTENT-REGISTRY.md` — maps curriculum lessons to blogs and visualisations
 - `03-EQUIPMENT-TRACKER.md` — what equipment is available for experiments

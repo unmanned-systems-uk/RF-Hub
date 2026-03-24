@@ -31,7 +31,7 @@ documentation and writing the output to the inter-project management system.
 ## What to write
 
 **Output file:**
-`claude-desktop-project-managment/shared-context/02-CONTENT-REGISTRY.md`
+`claude-desktop-project-management/shared-context/02-CONTENT-REGISTRY.md`
 
 **Overwrite the entire file.** The current version contains placeholder data. Your output
 replaces it with accurate data from the source files above.
@@ -74,7 +74,7 @@ From CURRICULUM-STATUS.md — one per unit, all currently not started.
   ```
   # Content Registry
   > **Purpose:** Maps all content across RF-Hub...
-  > **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\shared-context\
+  > **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\shared-context\
   > **Last updated:** [today's date]
   ```
 - The status key must match what's used in CURRICULUM-STATUS.md and PROGRESS.md
@@ -101,7 +101,7 @@ Read the following source files:
 6. curriculum/Blogs/phase2-lwhf160-checklist.md
 
 Then generate a consolidated Content Registry and write it to:
-claude-desktop-project-managment/shared-context/02-CONTENT-REGISTRY.md
+claude-desktop-project-management/shared-context/02-CONTENT-REGISTRY.md
 
 The file must accurately map:
 - All 20 curriculum lessons with MD draft status, HTML build status, review status, linked interactives, and related blog posts

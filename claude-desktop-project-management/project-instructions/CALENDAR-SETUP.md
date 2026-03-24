@@ -1,7 +1,7 @@
 # Google Calendar Setup Guide
 
 > **Purpose:** How to use Google Calendar for RF-Hub project scheduling.
-> **Location:** D:\live_code\RF-Hub\claude-desktop-project-managment\project-instructions\
+> **Location:** D:\live_code\RF-Hub\claude-desktop-project-management\project-instructions\
 
 ---
 

@@ -1,7 +1,7 @@
 # Workflow System Deployment Guide
 
 > **What this is:** Complete package to restructure RF-Hub workflow across Claude Desktop projects, GitHub Issues, and Google Calendar.
-> **Shared context location:** `D:\live_code\RF-Hub\claude-desktop-project-managment\`
+> **Shared context location:** `D:\live_code\RF-Hub\claude-desktop-project-management\`
 
 ---
 
@@ -63,7 +63,7 @@ Confirm items marked ⚠️ in `03-EQUIPMENT-TRACKER.md`.
 ## Step 5: Git commit
 
 ```powershell
-cd D:\live_code\RF-Hub\claude-desktop-project-managment
+cd D:\live_code\RF-Hub\claude-desktop-project-management
 git add .
 git commit -m 'Add inter-project management system: shared context, project instructions, workflow docs'
 git push
@@ -75,7 +75,7 @@ git push
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  D:\live_code\RF-Hub\claude-desktop-project-managment\       │
+│  D:\live_code\RF-Hub\claude-desktop-project-management\       │
 │  shared-context\                                             │
 │                                                              │
 │  01-PROJECT-MAP  02-CONTENT-REGISTRY                         │
