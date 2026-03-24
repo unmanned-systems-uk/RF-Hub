@@ -10,7 +10,7 @@
 | 2 | How Antennas Radiate | ✅ Done | ⬜ | ✅ Built |
 | 3 | Radiation Patterns | ✅ Done | ⬜ | ✅ Built |
 | 4 | Antenna Types Tour | ✅ Done | ⬜ | ✅ Built |
-| 5 | Polarisation | ✅ Done | ⬜ | ⬜ |
+| 5 | Polarisation | ✅ Done | ⬜ | ✅ Built |
 
 ## Unit 2: Characteristics & Measurement
 
