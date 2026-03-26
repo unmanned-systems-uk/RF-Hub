@@ -3,6 +3,7 @@
 ## Master Index & Progress Tracker
 
 **Project:** RF-Hub Blog Series — First entry
+**GitHub Issue:** [#13](https://github.com/unmanned-systems-uk/RF-Hub/issues/13)
 **Status:** Pre-build editorial drafting — ALL FOUR POINTS COMPLETE
 **Started:** 2026-03-24
 **Last updated:** 2026-03-24
@@ -168,3 +169,4 @@ docs/blog-1.0/
 | 2026-03-24 | Directory structure created. Master index established. |
 | 2026-03-24 | Migrated all files to D:\live_code\RF-Hub\docs\blog-1.0\ |
 | 2026-03-24 | Point 4 (Counterpoise) v1 drafted. All pre-build editorial text complete. |
+| 2026-03-26 | GitHub Issue #13 created. Linked in master index. |
