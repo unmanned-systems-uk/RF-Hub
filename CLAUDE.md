@@ -14,6 +14,7 @@ RF-Hub is an interactive RF engineering learning platform. Static HTML/CSS/JS fr
 2. `docs/11-V2-STYLING-SPEC.md` — Design tokens, colour palette, all component classes
 3. `frontend/pages/blog/understanding-s11.html` — **Reference template. DO NOT MODIFY.**
 4. `docs/CCPM-TASK-V2-MIGRATION.md` — Full task list with acceptance criteria
+5. `docs/SIDEBANDS-DEFINITION.md` — **Sideband component spec. Read before creating any Sideband.**
 
 ## Project Structure
 ```

@@ -755,7 +755,103 @@ input[type="range"]::-moz-range-thumb {
 }
 
 
-/* ─── 19. RESPONSIVE ────────────────────────────────────────── */
+/* ─── 19. SIDEBANDS ─────────────────────────────────────────── */
+/* Reusable knowledge snippets — see docs/SIDEBANDS-DEFINITION.md */
+
+.sideband {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.sideband:hover {
+  border-left-color: var(--accent-h);
+}
+
+.sideband-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.sideband-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.sideband-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-em);
+  margin: 0;
+  flex: 1;
+}
+
+.sideband-body {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.sideband-body strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.sideband-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--accent-em);
+}
+
+.sideband-footer {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+.sideband-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.sideband-tags .badge {
+  font-size: 10px;
+  padding: 3px 10px;
+  opacity: 0.7;
+}
+
+/* Category accent variants */
+.sideband[data-category="fundamentals"]  { border-left-color: var(--accent-em); }
+.sideband[data-category="antennas"]      { border-left-color: var(--accent-e); }
+.sideband[data-category="measurement"]   { border-left-color: var(--accent-h); }
+.sideband[data-category="propagation"]   { border-left-color: var(--accent-electron); }
+.sideband[data-category="sdr"]           { border-left-color: var(--accent-current); }
+.sideband[data-category="components"]    { border-left-color: var(--accent-power); }
+
+/* Grid layout for standalone glossary pages */
+.sideband-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+
+/* ─── 20. RESPONSIVE ────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   .container {
@@ -766,7 +862,8 @@ input[type="range"]::-moz-range-thumb {
     padding: var(--space-2xl) 0 var(--space-xl);
   }
 
-  .summary-grid {
+  .summary-grid,
+  .sideband-grid {
     grid-template-columns: 1fr;
   }
 
