@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Energy Flow Comparison — RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    canvas { display: block; border-radius: 4px; }
+
+    /* Loop panels — horizontal desktop, vertical mobile */
+    .loops-wrap {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .loop-panel {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .loop-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .loop-canvas-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    .loop-canvas-wrap canvas {
+      width: 100%;
+    }
+
+    .loop-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 0.6rem;
+      line-height: 1.45;
+      color: #64748b;
+    }
+
+    /* X toggle */
+    .toggle-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+
+    .x-btn {
+      background: #1a2234;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 0.3rem 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .x-btn.active-cap { border-color: #06b6d4; color: #06b6d4; }
+    .x-btn.active-ind { border-color: #22c55e; color: #22c55e; }
+
+    /* Controls row */
+    .bottom-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .pause-btn {
+      background: #1a2234;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 0.4rem 0.85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .pause-btn:hover { border-color: #a78bfa; color: #a78bfa; }
+  </style>
+</head>
+<body>
+
+<h1>Energy Flow Comparison</h1>
+<p class="subtitle">Resistance, reactance, and impedance &mdash; three different stories for energy</p>
+
+<div class="card">
+  <div class="loops-wrap">
+
+    <!-- Loop 1: Resistance -->
+    <div class="loop-panel">
+      <div class="loop-title">Loop 1 &mdash; Resistance (R)</div>
+      <div class="loop-canvas-wrap">
+        <canvas id="canvasR"></canvas>
+      </div>
+      <div class="loop-label" style="color:#f59e0b">
+        Energy destroyed<br>converted to heat
+      </div>
+    </div>
+
+    <!-- Loop 2: Reactance -->
+    <div class="loop-panel">
+      <div class="loop-title">Loop 2 &mdash; Reactance (X)</div>
+      <div class="loop-canvas-wrap">
+        <canvas id="canvasX"></canvas>
+      </div>
+      <div class="toggle-row">
+        <button class="x-btn active-cap" id="btnCap" onclick="setXType('cap')">Capacitor</button>
+        <button class="x-btn" id="btnInd" onclick="setXType('ind')">Inductor</button>
+      </div>
+      <div class="loop-label" id="xLabel" style="color:#06b6d4">
+        Energy borrowed<br>stored and returned each cycle
+      </div>
+    </div>
+
+    <!-- Loop 3: Impedance -->
+    <div class="loop-panel">
+      <div class="loop-title">Loop 3 &mdash; Impedance (Z)</div>
+      <div class="loop-canvas-wrap">
+        <canvas id="canvasZ"></canvas>
+      </div>
+      <div class="loop-label" style="color:#94a3b8">
+        Energy partly destroyed<br>partly borrowed
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-row">
+    <button class="pause-btn" id="pauseBtn" onclick="togglePause()">&#9646;&#9646; Pause</button>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// State
+// ================================================================
+var paused   = false;
+var xType    = 'cap';    // 'cap' | 'ind'
+var phase    = 0;        // animation phase (radians)
+var OMEGA    = 0.038;    // angular velocity (rad/frame)
+var T        = 2 * Math.PI / OMEGA;  // period in frames
+
+var canvasR = document.getElementById('canvasR');
+var canvasX = document.getElementById('canvasX');
+var canvasZ = document.getElementById('canvasZ');
+var ctxR    = canvasR.getContext('2d');
+var ctxX    = canvasX.getContext('2d');
+var ctxZ    = canvasZ.getContext('2d');
+
+// ================================================================
+// Circuit geometry — computed once per resize
+// ================================================================
+var CW, CH;  // canvas width/height per panel (square)
+
+// Circuit path waypoints (relative, 0-1):
+//   TL = top-left, TR = top-right, BR = bottom-right, BL = bottom-left
+// Left side = AC source, Right side = component(s)
+var PAD = 0.12;
+
+function pts() {
+  var p = PAD * CW;
+  return {
+    TL: { x: p,      y: p      },
+    TR: { x: CW - p, y: p      },
+    BR: { x: CW - p, y: CH - p },
+    BL: { x: p,      y: CH - p },
+    // Midpoints on right side
+    MR: { x: CW - p, y: CH / 2 },
+  };
+}
+
+// Full loop path (closed) as ordered waypoints
+function loopPath(P) {
+  return [P.TL, P.TR, P.BR, P.BL, P.TL];
+}
+
+// Path length (approximate, sum of segments)
+function pathLen(waypoints) {
+  var len = 0;
+  for (var i = 1; i < waypoints.length; i++) {
+    var dx = waypoints[i].x - waypoints[i-1].x;
+    var dy = waypoints[i].y - waypoints[i-1].y;
+    len += Math.sqrt(dx*dx + dy*dy);
+  }
+  return len;
+}
+
+// Interpolate along a waypoint path, t in [0, total_length]
+function pathPoint(waypoints, t, total) {
+  t = ((t % total) + total) % total;
+  var acc = 0;
+  for (var i = 1; i < waypoints.length; i++) {
+    var dx  = waypoints[i].x - waypoints[i-1].x;
+    var dy  = waypoints[i].y - waypoints[i-1].y;
+    var seg = Math.sqrt(dx*dx + dy*dy);
+    if (t <= acc + seg) {
+      var u = (t - acc) / seg;
+      return { x: waypoints[i-1].x + u*dx, y: waypoints[i-1].y + u*dy };
+    }
+    acc += seg;
+  }
+  return waypoints[waypoints.length - 1];
+}
+
+// Which segment does position t fall on? Returns 0..3
+// 0=top, 1=right, 2=bottom, 3=left (source side)
+function whichSegment(waypoints, t, total) {
+  t = ((t % total) + total) % total;
+  var acc = 0;
+  for (var i = 1; i < waypoints.length; i++) {
+    var dx  = waypoints[i].x - waypoints[i-1].x;
+    var dy  = waypoints[i].y - waypoints[i-1].y;
+    var seg = Math.sqrt(dx*dx + dy*dy);
+    if (t <= acc + seg) return i - 1;
+    acc += seg;
+  }
+  return waypoints.length - 2;
+}
+
+// ================================================================
+// Heat particles (Loop 1, R)
+// ================================================================
+var heatParticles = [];
+
+function spawnHeat(x, y) {
+  for (var i = 0; i < 2; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var speed = 0.5 + Math.random() * 1.2;
+    heatParticles.push({
+      x: x + (Math.random()-0.5)*6,
+      y: y + (Math.random()-0.5)*6,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 0.3,  // slight upward drift
+      life: 1.0,
+      size: 1.5 + Math.random() * 2
+    });
+  }
+}
+
+function updateHeat() {
+  for (var i = heatParticles.length - 1; i >= 0; i--) {
+    var h = heatParticles[i];
+    h.x += h.vx;
+    h.y += h.vy;
+    h.life -= 0.025;
+    if (h.life <= 0) heatParticles.splice(i, 1);
+  }
+}
+
+// ================================================================
+// Drawing helpers
+// ================================================================
+
+// Draw a wire segment
+function drawWire(ctx, x1, y1, x2, y2) {
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth   = 2;
+  ctx.lineCap     = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+// Draw AC source symbol (circle with ~ inside) on left wire segment
+function drawSource(ctx, P) {
+  var cx = P.TL.x;
+  var cy = (P.TL.y + P.BL.y) / 2;
+  var r  = CW * 0.08;
+
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // ~ symbol
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  var sw = r * 0.7;
+  ctx.moveTo(cx - sw, cy);
+  ctx.bezierCurveTo(cx - sw*0.5, cy - sw*0.6, cx, cy + sw*0.6, cx + sw, cy);
+  ctx.stroke();
+}
+
+// Draw resistor (zigzag) on right wire segment, centered
+function drawResistor(ctx, x, y1, y2, color) {
+  var cy  = (y1 + y2) / 2;
+  var rh  = Math.abs(y2 - y1) * 0.45;
+  var rw  = CW * 0.055;
+  var col = color || '#f59e0b';
+
+  // Body rectangle
+  ctx.strokeStyle = col;
+  ctx.lineWidth   = 1.5;
+  ctx.strokeRect(x - rw, cy - rh, rw*2, rh*2);
+
+  // Label
+  ctx.fillStyle  = col;
+  ctx.font       = '500 9px IBM Plex Mono';
+  ctx.textAlign  = 'right';
+  ctx.fillText('R', x - rw - 4, cy + 3);
+}
+
+// Draw capacitor (two parallel lines)
+function drawCapacitor(ctx, x, y1, y2, color) {
+  var cy  = (y1 + y2) / 2;
+  var gap = CW * 0.025;
+  var hw  = CW * 0.065;
+  var col = color || '#06b6d4';
+
+  // Wire stubs
+  ctx.strokeStyle = col;
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x, y1);
+  ctx.lineTo(x, cy - gap);
+  ctx.moveTo(x, cy + gap);
+  ctx.lineTo(x, y2);
+  ctx.stroke();
+
+  // Plates
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x - hw, cy - gap);
+  ctx.lineTo(x + hw, cy - gap);
+  ctx.moveTo(x - hw, cy + gap);
+  ctx.lineTo(x + hw, cy + gap);
+  ctx.stroke();
+
+  ctx.fillStyle  = col;
+  ctx.font       = '500 9px IBM Plex Mono';
+  ctx.textAlign  = 'right';
+  ctx.fillText('C', x - hw - 4, cy + 3);
+}
+
+// Draw inductor (bumps)
+function drawInductor(ctx, x, y1, y2, color) {
+  var cy   = (y1 + y2) / 2;
+  var rh   = Math.abs(y2 - y1) * 0.42;
+  var nb   = 4;
+  var br   = rh / nb;
+  var col  = color || '#22c55e';
+  var hw   = CW * 0.06;
+
+  ctx.strokeStyle = col;
+  ctx.lineWidth   = 1.5;
+  // Wire stubs
+  ctx.beginPath();
+  ctx.moveTo(x, y1);
+  ctx.lineTo(x, cy - rh);
+  ctx.moveTo(x, cy + rh);
+  ctx.lineTo(x, y2);
+  ctx.stroke();
+
+  // Bumps (semicircles on the right side)
+  ctx.beginPath();
+  for (var i = 0; i < nb; i++) {
+    var by = cy - rh + i * br * 2 + br;
+    ctx.arc(x, by, br, -Math.PI/2, Math.PI/2, false);
+  }
+  ctx.stroke();
+
+  ctx.fillStyle  = col;
+  ctx.font       = '500 9px IBM Plex Mono';
+  ctx.textAlign  = 'right';
+  ctx.fillText('L', x - hw - 4, cy + 3);
+}
+
+// ================================================================
+// Draw energy dot
+// ================================================================
+function drawDot(ctx, x, y, color, size, alpha, glow) {
+  ctx.globalAlpha = alpha || 1;
+  if (glow) {
+    ctx.shadowColor = color;
+    ctx.shadowBlur  = 8;
+  }
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, size || 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur  = 0;
+  ctx.globalAlpha = 1;
+}
+
+// ================================================================
+// Loop 1: Resistance
+// ================================================================
+function drawLoopR() {
+  var ctx = ctxR;
+  var W = canvasR.width, H = canvasR.height;
+  if (!W) return;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#080c14';
+  ctx.fillRect(0, 0, W, H);
+
+  var P    = pts();
+  var path = loopPath(P);
+  var plen = pathLen(path);
+
+  // Draw wires
+  drawWire(ctx, P.TL.x, P.TL.y, P.TR.x, P.TR.y);
+  drawWire(ctx, P.TR.x, P.TR.y, P.BR.x, P.BR.y);
+  drawWire(ctx, P.BR.x, P.BR.y, P.BL.x, P.BL.y);
+  drawWire(ctx, P.BL.x, P.BL.y, P.TL.x, P.TL.y);
+
+  // Components
+  drawSource(ctx, P);
+  drawResistor(ctx, P.TR.x, P.TR.y, P.BR.y, '#f59e0b');
+
+  // Heat particles
+  updateHeat();
+  heatParticles.forEach(function(h) {
+    var r = Math.floor(255);
+    var g = Math.floor(100 * h.life);
+    drawDot(ctx, h.x, h.y, '#f59e0b', h.size, h.life * 0.7);
+  });
+
+  // Dots — 6 evenly spaced, constant speed
+  var N     = 6;
+  var speed = CW * 0.008;
+  for (var i = 0; i < N; i++) {
+    var t    = ((phase * speed * T / (2 * Math.PI)) + (plen / N) * i) % plen;
+    var seg  = whichSegment(path, t, plen);
+    var pos  = pathPoint(path, t, plen);
+
+    // On resistor (right side, segment 1): red + spawn heat
+    if (seg === 1) {
+      drawDot(ctx, pos.x, pos.y, '#ef4444', 4, 1, true);
+      if (!paused && Math.random() < 0.12) spawnHeat(pos.x, pos.y);
+    } else {
+      drawDot(ctx, pos.x, pos.y, '#f59e0b', 4, 1, false);
+    }
+  }
+}
+
+// ================================================================
+// Loop 2: Reactance
+// ================================================================
+function drawLoopX() {
+  var ctx  = ctxX;
+  var W    = canvasX.width, H = canvasX.height;
+  if (!W) return;
+
+  var isInd = xType === 'ind';
+  var xcol  = isInd ? '#22c55e' : '#06b6d4';
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#080c14';
+  ctx.fillRect(0, 0, W, H);
+
+  var P    = pts();
+  var path = loopPath(P);
+  var plen = pathLen(path);
+
+  // Draw wires
+  drawWire(ctx, P.TL.x, P.TL.y, P.TR.x, P.TR.y);
+  drawWire(ctx, P.TR.x, P.TR.y, P.BR.x, P.BR.y);
+  drawWire(ctx, P.BR.x, P.BR.y, P.BL.x, P.BL.y);
+  drawWire(ctx, P.BL.x, P.BL.y, P.TL.x, P.TL.y);
+
+  drawSource(ctx, P);
+  if (isInd) {
+    drawInductor(ctx, P.TR.x, P.TR.y, P.BR.y, xcol);
+  } else {
+    drawCapacitor(ctx, P.TR.x, P.TR.y, P.BR.y, xcol);
+  }
+
+  // Dots oscillate: velocity ∝ cos(phase), position shifts as integral
+  // Position offset = A * sin(phase), where A is path fraction
+  var N      = 5;
+  var A      = plen * 0.20;   // amplitude of oscillation along path
+  var center = plen * 0.25;   // center of oscillation (on top wire, near middle)
+
+  var sinVal = Math.sin(phase);
+
+  for (var i = 0; i < N; i++) {
+    var spread  = (i - (N-1)/2) * (A * 0.35);
+    var t       = center + sinVal * A + spread;
+    t           = ((t % plen) + plen) % plen;
+
+    var pos     = pathPoint(path, t, plen);
+    var seg     = whichSegment(path, t, plen);
+
+    // Near component (segment 1 = right side): stored color with glow
+    var isStored = (seg === 1) || (sinVal > 0.6 && seg === 0 && t > plen*0.22);
+    drawDot(ctx, pos.x, pos.y, xcol, 4, 1, isStored);
+  }
+
+  // Sine trace at bottom of canvas
+  var traceY0 = CH - PAD * CW * 0.5;
+  var traceH  = CH * 0.08;
+  var traceX0 = P.TL.x;
+  var traceX1 = P.BR.x;
+
+  ctx.strokeStyle = xcol;
+  ctx.lineWidth   = 1;
+  ctx.globalAlpha = 0.35;
+  ctx.beginPath();
+  for (var px = traceX0; px <= traceX1; px++) {
+    var u  = (px - traceX0) / (traceX1 - traceX0);
+    var sy = traceY0 - Math.sin(u * 2 * Math.PI + phase) * traceH;
+    px === traceX0 ? ctx.moveTo(px, sy) : ctx.lineTo(px, sy);
+  }
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+// ================================================================
+// Loop 3: Impedance (R + X in series)
+// ================================================================
+function drawLoopZ() {
+  var ctx  = ctxZ;
+  var W    = canvasZ.width, H = canvasZ.height;
+  if (!W) return;
+
+  var isInd = xType === 'ind';
+  var xcol  = isInd ? '#22c55e' : '#06b6d4';
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#080c14';
+  ctx.fillRect(0, 0, W, H);
+
+  var P    = pts();
+
+  // For Z loop: R on top half of right side, X on bottom half
+  var rY1  = P.TR.y;
+  var rY2  = P.MR.y;
+  var xY1  = P.MR.y;
+  var xY2  = P.BR.y;
+
+  // Draw wires
+  drawWire(ctx, P.TL.x, P.TL.y, P.TR.x, P.TR.y);
+  drawWire(ctx, P.TR.x, P.TR.y, P.MR.x, P.MR.y);  // R segment
+  drawWire(ctx, P.MR.x, P.MR.y, P.BR.x, P.BR.y);  // X segment
+  drawWire(ctx, P.BR.x, P.BR.y, P.BL.x, P.BL.y);
+  drawWire(ctx, P.BL.x, P.BL.y, P.TL.x, P.TL.y);
+
+  drawSource(ctx, P);
+  drawResistor(ctx, P.TR.x, rY1, rY2, '#f59e0b');
+  if (isInd) {
+    drawInductor(ctx, P.MR.x, xY1, xY2, xcol);
+  } else {
+    drawCapacitor(ctx, P.MR.x, xY1, xY2, xcol);
+  }
+
+  // Build Z-loop path (same loop, just different component layout)
+  var pathZ = [P.TL, P.TR, P.MR, P.BR, P.BL, P.TL];
+  var plen  = pathLen(pathZ);
+
+  // Segment IDs: 0=top, 1=R-zone, 2=X-zone, 3=bottom, 4=left(source)
+  function segZ(t) { return whichSegment(pathZ, t, plen); }
+
+  var speed = CW * 0.008;
+
+  // R-type dots (constant flow, 4 dots)
+  var NR = 4;
+  for (var i = 0; i < NR; i++) {
+    var t   = ((phase * speed * T / (2*Math.PI)) + (plen/NR)*i) % plen;
+    var seg = segZ(t);
+    var pos = pathPoint(pathZ, t, plen);
+    if (seg === 1) {
+      // At R component — red, spawn occasional heat
+      drawDot(ctx, pos.x, pos.y, '#ef4444', 3.5, 1, true);
+      if (!paused && Math.random() < 0.08) spawnHeat(pos.x, pos.y);
+    } else {
+      drawDot(ctx, pos.x, pos.y, '#f59e0b', 3.5, 0.8, false);
+    }
+  }
+
+  // X-type dots (oscillating near X component, 3 dots)
+  var NX    = 3;
+  var A     = plen * 0.12;
+  var ctr   = plen * 0.48; // roughly in the X-zone region
+  var sinV  = Math.sin(phase);
+
+  for (var i = 0; i < NX; i++) {
+    var spread = (i - (NX-1)/2) * (A * 0.4);
+    var t      = ctr + sinV * A + spread;
+    t          = ((t % plen) + plen) % plen;
+    var seg    = segZ(t);
+    var pos    = pathPoint(pathZ, t, plen);
+    var stored = (seg === 2);
+    drawDot(ctx, pos.x, pos.y, xcol, 3.5, 0.9, stored);
+  }
+
+  // Heat particles (shared pool)
+  heatParticles.forEach(function(h) {
+    // Only draw heat near Z loop area
+    if (h.x > P.TR.x - CW*0.1 && h.x < P.TR.x + CW*0.15) {
+      drawDot(ctx, h.x, h.y, '#f59e0b', h.size, h.life * 0.6);
+    }
+  });
+}
+
+// ================================================================
+// Controls
+// ================================================================
+function setXType(t) {
+  xType = t;
+  document.getElementById('btnCap').className = 'x-btn' + (t === 'cap' ? ' active-cap' : '');
+  document.getElementById('btnInd').className = 'x-btn' + (t === 'ind' ? ' active-ind' : '');
+  var label = document.getElementById('xLabel');
+  if (t === 'ind') {
+    label.style.color = '#22c55e';
+  } else {
+    label.style.color = '#06b6d4';
+  }
+}
+
+function togglePause() {
+  paused = !paused;
+  var btn = document.getElementById('pauseBtn');
+  btn.textContent = paused ? '\u25b6 Play' : '\u23f8 Pause';
+  if (!paused) loop();
+}
+
+// ================================================================
+// Sizing
+// ================================================================
+function resize() {
+  var panels = document.querySelectorAll('.loop-canvas-wrap');
+  panels.forEach(function(wrap, i) {
+    var w = wrap.clientWidth;
+    if (w < 10) return;
+    var canv = wrap.querySelector('canvas');
+    canv.width  = w;
+    canv.height = Math.min(w, 220);
+  });
+
+  CW = canvasR.width;
+  CH = canvasR.height;
+}
+
+window.addEventListener('resize', function() {
+  resize();
+});
+
+// ================================================================
+// Animation loop
+// ================================================================
+function loop() {
+  if (!paused) {
+    phase += OMEGA;
+    drawLoopR();
+    drawLoopX();
+    drawLoopZ();
+    requestAnimationFrame(loop);
+  }
+}
+
+// ================================================================
+// Boot
+// ================================================================
+resize();
+loop();
+</script>
+</body>
+</html>
