@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reactance vs Frequency — RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    canvas {
+      display: block;
+      border-radius: 4px;
+      cursor: crosshair;
+    }
+
+    /* Controls */
+    .ctrl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 520px) { .ctrl-grid { grid-template-columns: 1fr; } }
+
+    .ctrl-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: #a78bfa;
+      cursor: pointer;
+    }
+
+    .slider-readout {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      min-width: 6ch;
+      text-align: right;
+    }
+
+    /* Resonance readout */
+    .resonance-row {
+      margin-top: 0.85rem;
+      padding: 0.55rem 0.85rem;
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-left: 2px solid #f59e0b;
+      border-radius: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    .resonance-row span { color: #f59e0b; }
+
+    /* Tooltip */
+    #tooltip {
+      position: fixed;
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      pointer-events: none;
+      display: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Reactance vs Frequency</h1>
+<p class="subtitle">X<sub>L</sub> = 2&pi;fL &nbsp;|&nbsp; X<sub>C</sub> = 1/(2&pi;fC) &nbsp;|&nbsp; hover the chart to read values</p>
+
+<!-- Chart canvas -->
+<div class="card" id="chartCard">
+  <canvas id="chartCanvas"></canvas>
+</div>
+
+<!-- Controls -->
+<div class="card">
+  <div class="ctrl-grid">
+
+    <div>
+      <div class="ctrl-label" style="color:#22c55e">Inductance (L) &mdash; X<sub>L</sub> curve</div>
+      <div class="slider-wrap">
+        <input type="range" id="lSlider" min="0" max="100" value="43" step="0.5"
+               oninput="onL(+this.value)">
+        <span class="slider-readout" id="lVal">1.0 &mu;H</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="ctrl-label" style="color:#06b6d4">Capacitance (C) &mdash; X<sub>C</sub> curve</div>
+      <div class="slider-wrap">
+        <input type="range" id="cSlider" min="0" max="100" value="33" step="0.5"
+               oninput="onC(+this.value)">
+        <span class="slider-readout" id="cVal">100 pF</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="resonance-row">
+    Resonant frequency: <span id="resFreq">159.2 kHz</span>
+    &nbsp;&mdash;&nbsp; X<sub>L</sub> = X<sub>C</sub> at this frequency
+  </div>
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+// ================================================================
+// State
+// ================================================================
+var L = 1e-6;    // 1 µH default
+var C = 100e-12; // 100 pF default
+
+var mouseX = -1, mouseY = -1, hoverActive = false;
+
+var chartCanvas = document.getElementById('chartCanvas');
+var ctx         = chartCanvas.getContext('2d');
+
+// ================================================================
+// Log slider helpers
+// ================================================================
+// L: 1nH (1e-9) to 10mH (1e-2) — 7 decades
+function sliderToL(v) { return Math.pow(10, -9 + v * 7 / 100); }
+function LtoSlider(L) { return (Math.log10(L) + 9) * 100 / 7; }
+
+// C: 1pF (1e-12) to 1µF (1e-6) — 6 decades
+function sliderToC(v) { return Math.pow(10, -12 + v * 6 / 100); }
+function CtoSlider(C) { return (Math.log10(C) + 12) * 100 / 6; }
+
+function formatL(val) {
+  if (val >= 1e-3) return (val * 1e3).toPrecision(3) + ' mH';
+  if (val >= 1e-6) return (val * 1e6).toPrecision(3) + ' \u00b5H';
+  if (val >= 1e-9) return (val * 1e9).toPrecision(3) + ' nH';
+  return val.toExponential(2) + ' H';
+}
+
+function formatC(val) {
+  if (val >= 1e-6) return (val * 1e6).toPrecision(3) + ' \u00b5F';
+  if (val >= 1e-9) return (val * 1e9).toPrecision(3) + ' nF';
+  if (val >= 1e-12) return (val * 1e12).toPrecision(3) + ' pF';
+  return val.toExponential(2) + ' F';
+}
+
+function formatFreq(f) {
+  if (f >= 1e9) return (f / 1e9).toPrecision(4) + ' GHz';
+  if (f >= 1e6) return (f / 1e6).toPrecision(4) + ' MHz';
+  if (f >= 1e3) return (f / 1e3).toPrecision(4) + ' kHz';
+  return f.toPrecision(3) + ' Hz';
+}
+
+function formatX(x) {
+  if (x >= 1e3) return (x / 1e3).toPrecision(3) + ' k\u03a9';
+  return x.toPrecision(3) + ' \u03a9';
+}
+
+// ================================================================
+// Controls
+// ================================================================
+function onL(v) {
+  L = sliderToL(v);
+  document.getElementById('lVal').textContent = formatL(L);
+  updateResonance();
+  draw();
+}
+
+function onC(v) {
+  C = sliderToC(v);
+  document.getElementById('cVal').textContent = formatC(C);
+  updateResonance();
+  draw();
+}
+
+function updateResonance() {
+  var fr = 1 / (2 * Math.PI * Math.sqrt(L * C));
+  document.getElementById('resFreq').textContent = formatFreq(fr);
+}
+
+// ================================================================
+// Chart geometry
+// ================================================================
+var F_MIN = 1e3,   F_MAX = 1e9;   // 1 kHz to 1 GHz
+var X_MIN = 0.1,   X_MAX = 1e5;   // 0.1 Ω to 100 kΩ
+
+var margin = { top: 18, bottom: 38, left: 55, right: 20 };
+var plotW, plotH, plotX, plotY, W, H;
+
+function updateGeometry() {
+  W = chartCanvas.width;
+  H = chartCanvas.height;
+  plotW = W - margin.left - margin.right;
+  plotH = H - margin.top - margin.bottom;
+  plotX = margin.left;
+  plotY = margin.top;
+}
+
+// Map frequency → canvas x (log)
+function freqToX(f) {
+  return plotX + (Math.log10(f) - Math.log10(F_MIN)) /
+         (Math.log10(F_MAX) - Math.log10(F_MIN)) * plotW;
+}
+
+// Map reactance → canvas y (log, inverted)
+function reactToY(x) {
+  x = Math.max(X_MIN, Math.min(X_MAX, x));
+  return plotY + plotH - (Math.log10(x) - Math.log10(X_MIN)) /
+         (Math.log10(X_MAX) - Math.log10(X_MIN)) * plotH;
+}
+
+// Map canvas x → frequency
+function xToFreq(cx) {
+  return Math.pow(10, Math.log10(F_MIN) +
+    (cx - plotX) / plotW * (Math.log10(F_MAX) - Math.log10(F_MIN)));
+}
+
+// ================================================================
+// Draw
+// ================================================================
+function draw() {
+  if (!W) return;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#080c14';
+  ctx.fillRect(0, 0, W, H);
+
+  // --- Frequency band shading ---
+  var bands = [
+    { f0: 3e4,  f1: 3e5,  label: 'HF',  color: 'rgba(167,139,250,0.04)' },
+    { f0: 3e6,  f1: 3e7,  label: 'HF',  color: 'rgba(167,139,250,0.04)' },
+    { f0: 3e7,  f1: 3e8,  label: 'VHF', color: 'rgba(6,182,212,0.04)'   },
+    { f0: 3e8,  f1: 3e9,  label: 'UHF', color: 'rgba(245,158,11,0.04)'  },
+  ];
+  var bandLabels = [
+    { f: 1.5e5, label: 'MF' },
+    { f: 1e7,   label: 'HF' },
+    { f: 1e8,   label: 'VHF'},
+    { f: 6e8,   label: 'UHF'},
+  ];
+
+  bands.forEach(function(b) {
+    var bx0 = freqToX(Math.max(b.f0, F_MIN));
+    var bx1 = freqToX(Math.min(b.f1, F_MAX));
+    if (bx1 > bx0) {
+      ctx.fillStyle = b.color;
+      ctx.fillRect(bx0, plotY, bx1 - bx0, plotH);
+    }
+  });
+
+  // --- Grid lines ---
+  ctx.strokeStyle = '#1a2234';
+  ctx.lineWidth   = 0.5;
+
+  // Vertical grid (decades in frequency)
+  for (var fe = 3; fe <= 9; fe++) {
+    var gx = freqToX(Math.pow(10, fe));
+    ctx.beginPath(); ctx.moveTo(gx, plotY); ctx.lineTo(gx, plotY + plotH); ctx.stroke();
+    // Minor ticks (2-9 within each decade)
+    for (var mi = 2; mi <= 9; mi++) {
+      var mgx = freqToX(mi * Math.pow(10, fe - 1));
+      if (mgx > plotX && mgx < plotX + plotW) {
+        ctx.globalAlpha = 0.4;
+        ctx.beginPath(); ctx.moveTo(mgx, plotY); ctx.lineTo(mgx, plotY + plotH); ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // Horizontal grid (decades in reactance)
+  for (var xe = -1; xe <= 5; xe++) {
+    var gy = reactToY(Math.pow(10, xe));
+    ctx.beginPath(); ctx.moveTo(plotX, gy); ctx.lineTo(plotX + plotW, gy); ctx.stroke();
+    // Minor
+    for (var mi = 2; mi <= 9; mi++) {
+      var mgy = reactToY(mi * Math.pow(10, xe - 1));
+      if (mgy > plotY && mgy < plotY + plotH) {
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath(); ctx.moveTo(plotX, mgy); ctx.lineTo(plotX + plotW, mgy); ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // --- Axes labels ---
+  ctx.font = '500 9px IBM Plex Mono';
+  ctx.fillStyle = '#3a4a5e';
+
+  // Frequency labels (bottom)
+  var fLabels = [
+    { f: 1e3, t: '1kHz' }, { f: 1e4, t: '10k' }, { f: 1e5, t: '100k' },
+    { f: 1e6, t: '1MHz' }, { f: 1e7, t: '10M' }, { f: 1e8, t: '100M' },
+    { f: 1e9, t: '1GHz' }
+  ];
+  ctx.textAlign = 'center';
+  fLabels.forEach(function(fl) {
+    var fx = freqToX(fl.f);
+    if (fx > plotX && fx < plotX + plotW) {
+      ctx.fillText(fl.t, fx, plotY + plotH + 14);
+    }
+  });
+
+  // Reactance labels (left)
+  var xLabels = [
+    { x: 0.1, t: '0.1\u03a9' }, { x: 1, t: '1\u03a9' }, { x: 10, t: '10' },
+    { x: 100, t: '100' }, { x: 1e3, t: '1k\u03a9' }, { x: 1e4, t: '10k' }, { x: 1e5, t: '100k' }
+  ];
+  ctx.textAlign = 'right';
+  xLabels.forEach(function(xl) {
+    var gy = reactToY(xl.x);
+    if (gy > plotY && gy < plotY + plotH) {
+      ctx.fillText(xl.t, plotX - 4, gy + 3);
+    }
+  });
+
+  // Band labels
+  ctx.fillStyle = '#2a3448';
+  ctx.textAlign = 'center';
+  bandLabels.forEach(function(bl) {
+    var bx = freqToX(bl.f);
+    if (bx > plotX && bx < plotX + plotW) {
+      ctx.fillText(bl.label, bx, plotY + 11);
+    }
+  });
+
+  // Axis titles
+  ctx.fillStyle = '#4a5568';
+  ctx.textAlign = 'center';
+  ctx.fillText('Frequency \u2192', plotX + plotW / 2, plotY + plotH + 30);
+
+  ctx.save();
+  ctx.translate(12, plotY + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Reactance (\u03a9) \u2192', 0, 0);
+  ctx.restore();
+
+  // --- XL curve (green, rising) ---
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth   = 2;
+  ctx.shadowColor = '#22c55e';
+  ctx.shadowBlur  = 4;
+  ctx.beginPath();
+  var first = true;
+  for (var px = plotX; px <= plotX + plotW; px++) {
+    var f  = xToFreq(px);
+    var xl = 2 * Math.PI * f * L;
+    if (xl >= X_MIN && xl <= X_MAX) {
+      var py = reactToY(xl);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // XL label
+  var fMid = Math.sqrt(F_MIN * F_MAX);
+  var xlMid = 2 * Math.PI * fMid * L;
+  if (xlMid >= X_MIN * 2 && xlMid <= X_MAX / 2) {
+    var labX = freqToX(fMid);
+    var labY = reactToY(xlMid);
+    ctx.fillStyle  = '#22c55e';
+    ctx.font       = '500 10px IBM Plex Mono';
+    ctx.textAlign  = 'left';
+    ctx.fillText('Inductive (X\u2097)', labX + 5, labY - 6);
+  }
+
+  // --- XC curve (cyan, falling) ---
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth   = 2;
+  ctx.shadowColor = '#06b6d4';
+  ctx.shadowBlur  = 4;
+  ctx.beginPath();
+  first = true;
+  for (var px = plotX; px <= plotX + plotW; px++) {
+    var f  = xToFreq(px);
+    var xc = 1 / (2 * Math.PI * f * C);
+    if (xc >= X_MIN && xc <= X_MAX) {
+      var py = reactToY(xc);
+      if (first) { ctx.moveTo(px, py); first = false; }
+      else ctx.lineTo(px, py);
+    }
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // XC label
+  var xcMid = 1 / (2 * Math.PI * fMid * C);
+  if (xcMid >= X_MIN * 2 && xcMid <= X_MAX / 2) {
+    var labX2 = freqToX(fMid);
+    var labY2 = reactToY(xcMid);
+    ctx.fillStyle  = '#06b6d4';
+    ctx.font       = '500 10px IBM Plex Mono';
+    ctx.textAlign  = 'right';
+    ctx.fillText('Capacitive (X\u1d04)', labX2 - 5, labY2 + 13);
+  }
+
+  // --- Resonance dot ---
+  var fr = 1 / (2 * Math.PI * Math.sqrt(L * C));
+  if (fr >= F_MIN && fr <= F_MAX) {
+    var rx  = freqToX(fr);
+    var xlr = 2 * Math.PI * fr * L;
+    if (xlr >= X_MIN && xlr <= X_MAX) {
+      var ry = reactToY(xlr);
+      var pulse = 0.5 + 0.5 * Math.sin(Date.now() / 220);
+
+      // Outer ring
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth   = 1.5;
+      ctx.globalAlpha = 0.4 * pulse;
+      ctx.beginPath();
+      ctx.arc(rx, ry, 10 + pulse * 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // Dot
+      ctx.shadowColor = '#f59e0b';
+      ctx.shadowBlur  = 12;
+      ctx.fillStyle   = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(rx, ry, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Resonance label
+      ctx.font = '500 9px IBM Plex Mono';
+      ctx.fillStyle  = '#f59e0b';
+      ctx.textAlign  = rx > plotX + plotW * 0.7 ? 'right' : 'left';
+      var resLabelX  = rx > plotX + plotW * 0.7 ? rx - 12 : rx + 12;
+      ctx.fillText('Resonance', resLabelX, ry - 10);
+      ctx.fillText(formatFreq(fr), resLabelX, ry + 2);
+    }
+  }
+
+  // --- Hover crosshair ---
+  if (hoverActive && mouseX >= plotX && mouseX <= plotX + plotW) {
+    var hf  = xToFreq(mouseX);
+    var hxl = 2 * Math.PI * hf * L;
+    var hxc = 1 / (2 * Math.PI * hf * C);
+
+    ctx.strokeStyle = '#2a3448';
+    ctx.lineWidth   = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(mouseX, plotY);
+    ctx.lineTo(mouseX, plotY + plotH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dots on curves
+    if (hxl >= X_MIN && hxl <= X_MAX) {
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath(); ctx.arc(mouseX, reactToY(hxl), 4, 0, Math.PI*2); ctx.fill();
+    }
+    if (hxc >= X_MIN && hxc <= X_MAX) {
+      ctx.fillStyle = '#06b6d4';
+      ctx.beginPath(); ctx.arc(mouseX, reactToY(hxc), 4, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Schedule next frame for resonance pulse animation
+  requestAnimationFrame(draw);
+}
+
+// ================================================================
+// Hover
+// ================================================================
+chartCanvas.addEventListener('mousemove', function(e) {
+  var rect = chartCanvas.getBoundingClientRect();
+  var scaleX = chartCanvas.width / rect.width;
+  mouseX = (e.clientX - rect.left) * scaleX;
+  mouseY = (e.clientY - rect.top) * (chartCanvas.height / rect.height);
+  hoverActive = true;
+
+  var tip = document.getElementById('tooltip');
+  if (mouseX >= plotX && mouseX <= plotX + plotW) {
+    var hf  = xToFreq(mouseX);
+    var hxl = 2 * Math.PI * hf * L;
+    var hxc = 1 / (2 * Math.PI * hf * C);
+    tip.textContent = 'At ' + formatFreq(hf) + ':  X\u2097 = ' + formatX(hxl) + '  |  X\u1d04 = ' + formatX(hxc);
+    tip.style.display = 'block';
+    tip.style.left = (e.clientX + 12) + 'px';
+    tip.style.top  = (e.clientY - 30) + 'px';
+  } else {
+    tip.style.display = 'none';
+  }
+});
+
+chartCanvas.addEventListener('mouseleave', function() {
+  hoverActive = false;
+  document.getElementById('tooltip').style.display = 'none';
+});
+
+// ================================================================
+// Sizing
+// ================================================================
+function resize() {
+  var card = document.getElementById('chartCard');
+  var w = card.clientWidth - 40;
+  if (w < 10) return;
+  chartCanvas.width  = w;
+  chartCanvas.height = Math.min(380, Math.max(240, Math.round(w * 0.55)));
+  updateGeometry();
+}
+
+window.addEventListener('resize', function() { resize(); });
+
+// ================================================================
+// Boot
+// ================================================================
+resize();
+// Set default display values
+document.getElementById('lVal').textContent = formatL(L);
+document.getElementById('cVal').textContent = formatC(C);
+updateResonance();
+draw();
+</script>
+</body>
+</html>
