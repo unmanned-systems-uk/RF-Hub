@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resistance, Reactance, and Impedance — RF-Hub Sideband</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+img, canvas, svg { max-width: 100%; display: block; }
+a { color: var(--accent-em); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  background: rgba(167,139,250,0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88em;
+  color: var(--purple);
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO — Sideband variant (purple/cyan gradient)
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #130f1e 55%, #0a1018 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 56px 24px 40px;
+  text-align: center;
+}
+.hero-series {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 580px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--level {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--purple);
+}
+.hero-badge--rsgb {
+  background: rgba(245,158,11,0.10);
+  border-color: rgba(245,158,11,0.25);
+  color: var(--amber);
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   INTRO / CONTENT SECTIONS
+   ============================================================ */
+.intro {
+  margin-top: 48px;
+  margin-bottom: 8px;
+}
+.intro p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 18px;
+  font-size: 1.05rem;
+}
+.intro p strong { color: var(--text-primary); }
+
+.content-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle);
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.content-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
+.content-section p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.content-section p:last-child { margin-bottom: 0; }
+.content-section p strong { color: var(--text-primary); }
+.content-section blockquote {
+  margin: 18px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--purple);
+  background: rgba(167,139,250,0.07);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.content-section blockquote code {
+  background: transparent;
+  padding: 0;
+  color: var(--amber);
+}
+.key-property {
+  font-style: normal;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.key-property strong { color: var(--purple); }
+
+/* ============================================================
+   INTERACTIVE FRAMES
+   ============================================================ */
+.interactive-frame {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-top: 2px solid var(--purple);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin: 32px 0;
+  overflow: hidden;
+  position: relative;
+}
+.interactive-frame .frame-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(167,139,250,0.05);
+}
+.interactive-frame .frame-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.interactive-frame .frame-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+}
+.interactive-frame .frame-body {
+  position: relative;
+}
+.interactive-frame iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  background: var(--bg-primary);
+}
+.frame-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-primary);
+  z-index: 1;
+  pointer-events: none;
+}
+.frame-fallback p {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.frame-fallback .fallback-icon {
+  font-size: 24px;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   QUICK REFERENCE TABLE
+   ============================================================ */
+.quick-ref {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 48px;
+}
+.quick-ref h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.ref-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+.ref-table td {
+  padding: 11px 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table td:first-child {
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ref-table td:nth-child(2) {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  font-size: 1rem;
+}
+.ref-table td sub { font-size: 0.75em; }
+
+/* Row accent colours */
+.ref-row--r td:first-child { color: var(--amber); }
+.ref-row--xc td:first-child { color: var(--cyan); }
+.ref-row--xl td:first-child { color: var(--green); }
+.ref-row--z td:first-child { color: var(--purple); }
+
+/* ============================================================
+   CROSS-REFS FOOTER CALLOUT
+   ============================================================ */
+.cross-ref-bar {
+  margin-top: 40px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.cross-ref-bar strong { color: var(--text-secondary); }
+.cross-ref-bar a { color: var(--purple); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero { padding: 36px 16px 28px; }
+  main { padding: 0 16px 60px; }
+  .quick-ref { padding: 20px; }
+  .site-nav-links { display: none; }
+  .interactive-frame .frame-header { padding: 10px 14px; }
+}
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.6rem; }
+  main { padding: 0 12px 48px; }
+}
+@media (min-width: 1200px) { main { max-width: 900px; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress-bar { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SITE NAV
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html" class="active">Learning Path</a></li>
+      <li><a href="../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-series">Sideband — Topic Snippets for RF-Hub</div>
+  <h1>Resistance, Reactance, and Impedance</h1>
+  <p class="hero-subtitle">Three Flavours of Opposition — all measured in ohms, but behaving very differently.</p>
+  <div class="hero-badges">
+    <span class="hero-badge hero-badge--level">[F] Foundation</span>
+    <span class="hero-badge hero-badge--level">[I] Intermediate</span>
+    <span class="hero-badge hero-badge--level">[FL] Foundation Licence</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2A1, 2C1</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2E3–2E6</span>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- Intro -->
+<div class="intro">
+  <p>Every circuit opposes the flow of current. But not all opposition works the same way. Understanding the distinction between <strong>resistance</strong>, <strong>reactance</strong>, and <strong>impedance</strong> — and knowing when each one matters — is fundamental to RF electronics.</p>
+  <p>All three are measured in ohms (Ω). That's where the similarity ends.</p>
+</div>
+
+<!-- ============================================================
+     INTERACTIVE 1 — Energy Flow Comparison
+     ============================================================ -->
+<div class="interactive-frame" id="frame-energy-flow">
+  <div class="frame-header">
+    <span class="frame-label">Interactive</span>
+    <span class="frame-title">Energy Flow: Resistance vs Reactance vs Impedance</span>
+  </div>
+  <div class="frame-body">
+    <div class="frame-fallback" id="fallback-1" aria-hidden="true">
+      <span class="fallback-icon">⚡</span>
+      <p>Interactive loading…</p>
+    </div>
+    <iframe
+      src="../../interactives/energy-flow-comparison.html"
+      height="400"
+      title="Animated comparison: energy flow through resistance, reactance, and impedance"
+      loading="lazy"
+      id="iframe-energy-flow">
+    </iframe>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION 1 — Resistance
+     ============================================================ -->
+<section class="content-section" id="section-resistance">
+  <div class="section-label">Section 1</div>
+  <h2>Resistance (R) — The Energy Destroyer</h2>
+
+  <p>Resistance is opposition that <strong>converts electrical energy into heat</strong>. When current flows through a resistor, energy leaves the circuit permanently — it's dissipated. A 100 Ω resistor behaves the same whether you feed it DC or AC at any frequency. Resistance doesn't care about frequency.</p>
+
+  <p>This is the opposition you meet first. Ohm's law — <strong>V = IR</strong> — describes it completely. A resistor carrying 1 A with 10 V across it dissipates 10 W as heat. That energy is gone.</p>
+
+  <div class="key-property">
+    <strong>Key property:</strong> Resistance is purely real. It has no frequency dependence. Current and voltage are always in phase.
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — Reactance
+     ============================================================ -->
+<section class="content-section" id="section-reactance">
+  <div class="section-label">Section 2</div>
+  <h2>Reactance (X) — The Energy Borrower</h2>
+
+  <p>Reactance is opposition that <strong>stores energy temporarily and returns it</strong> to the circuit. No energy is destroyed — it's borrowed and given back each cycle. This only occurs in AC circuits, and it comes in two forms:</p>
+
+  <p><strong>Capacitive reactance (X<sub>C</sub>)</strong> — A capacitor stores energy in its electric field. It opposes changes in voltage. As frequency increases, the capacitor charges and discharges more rapidly, offering <em>less</em> opposition:</p>
+
+  <blockquote>X<sub>C</sub> = 1 / (2πfC)</blockquote>
+
+  <p>A capacitor is a high impedance at low frequencies and a low impedance at high frequencies. At DC (f = 0), reactance is infinite — the capacitor blocks completely.</p>
+
+  <p><strong>Inductive reactance (X<sub>L</sub>)</strong> — An inductor stores energy in its magnetic field. It opposes changes in current. As frequency increases, the rate of current change increases, so the inductor offers <em>more</em> opposition:</p>
+
+  <blockquote>X<sub>L</sub> = 2πfL</blockquote>
+
+  <p>An inductor is a low impedance at low frequencies and a high impedance at high frequencies. At DC (f = 0), reactance is zero — the inductor is just a piece of wire.</p>
+
+  <div class="key-property">
+    <strong>Key property:</strong> Reactance is frequency-dependent. Voltage and current are 90° out of phase (voltage leads current in an inductor; current leads voltage in a capacitor). No power is dissipated — energy sloshes back and forth.
+  </div>
+
+  <!-- INTERACTIVE 2 — Reactance vs Frequency -->
+  <div class="interactive-frame" id="frame-reactance-freq" style="margin-top:28px;">
+    <div class="frame-header">
+      <span class="frame-label">Interactive</span>
+      <span class="frame-title">Reactance vs Frequency — Adjust L and C with live sliders</span>
+    </div>
+    <div class="frame-body">
+      <div class="frame-fallback" id="fallback-2" aria-hidden="true">
+        <span class="fallback-icon">📈</span>
+        <p>Interactive loading…</p>
+      </div>
+      <iframe
+        src="../../interactives/reactance-vs-frequency.html"
+        height="500"
+        title="Interactive chart: X_C and X_L plotted against frequency with adjustable L and C sliders"
+        loading="lazy"
+        id="iframe-reactance-freq">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — Impedance
+     ============================================================ -->
+<section class="content-section" id="section-impedance">
+  <div class="section-label">Section 3</div>
+  <h2>Impedance (Z) — The Complete Picture</h2>
+
+  <p>In any real AC circuit, you rarely have pure resistance or pure reactance alone. A coil of wire has both inductance <em>and</em> resistance. A capacitor connected by leads has tiny amounts of inductance. A practical circuit combines both energy-destroying and energy-storing opposition.</p>
+
+  <p><strong>Impedance is the total opposition to current flow in an AC circuit.</strong> It combines resistance and reactance into a single quantity:</p>
+
+  <blockquote>Z = R + jX</blockquote>
+
+  <p>The <strong>j</strong> (engineers use <em>j</em> because <em>i</em> is already taken by current) indicates that resistance and reactance act at right angles to each other — they can't simply be added. They combine as a right-angle triangle:</p>
+
+  <blockquote>|Z| = √(R² + X²)</blockquote>
+
+  <p>where |Z| is the magnitude of impedance — the number your meter reads.</p>
+
+  <p>The <strong>phase angle</strong> (φ) between voltage and current depends on the ratio of reactance to resistance:</p>
+
+  <blockquote>φ = arctan(X / R)</blockquote>
+
+  <p>If X = 0, the circuit is purely resistive and φ = 0° — voltage and current are in step. If R = 0, the circuit is purely reactive and φ = 90° — they're completely out of step.</p>
+
+  <!-- INTERACTIVE 3 — Impedance Triangle -->
+  <div class="interactive-frame" id="frame-impedance-triangle" style="margin-top:28px;">
+    <div class="frame-header">
+      <span class="frame-label">Interactive</span>
+      <span class="frame-title">Impedance Triangle — Drag R and X to see |Z| and φ update live</span>
+    </div>
+    <div class="frame-body">
+      <div class="frame-fallback" id="fallback-3" aria-hidden="true">
+        <span class="fallback-icon">📐</span>
+        <p>Interactive loading…</p>
+      </div>
+      <iframe
+        src="../../interactives/impedance-triangle.html"
+        height="550"
+        title="Interactive impedance triangle: adjust R and X sliders to visualise Z and phase angle"
+        loading="lazy"
+        id="iframe-impedance-triangle">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — Why This Matters in RF
+     ============================================================ -->
+<section class="content-section" id="section-rf">
+  <div class="section-label">Section 4</div>
+  <h2>Why This Matters in RF</h2>
+
+  <p>At audio frequencies and below, reactance is often small enough to ignore — circuits behave roughly as if only resistance matters. But at radio frequencies, reactance dominates. A few centimetres of wire becomes a significant inductor. A connector has measurable capacitance. Impedance — the full R + jX picture — becomes essential.</p>
+
+  <p>This is why RF engineers think in impedance, not just resistance. When you see a specification like "50 Ω" for a coaxial cable or antenna system, that's an impedance — and at the design frequency, the goal is to make the reactive part as close to zero as possible, leaving only the 50 Ω of resistance doing useful work.</p>
+
+  <p>Every time you connect a NanoVNA to measure an antenna, you're measuring impedance — resistance and reactance together — and the job of matching is to cancel the reactance while presenting the right resistance to your transmitter.</p>
+</section>
+
+<!-- ============================================================
+     QUICK REFERENCE TABLE
+     ============================================================ -->
+<div class="quick-ref">
+  <h2>Quick Reference</h2>
+  <div style="overflow-x:auto;">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Symbol</th>
+          <th>Energy</th>
+          <th>Frequency dependent?</th>
+          <th>Phase angle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="ref-row--r">
+          <td>Resistance</td>
+          <td>R</td>
+          <td>Dissipated as heat</td>
+          <td>No</td>
+          <td>0°</td>
+        </tr>
+        <tr class="ref-row--xc">
+          <td>Capacitive reactance</td>
+          <td>X<sub>C</sub></td>
+          <td>Stored in electric field</td>
+          <td>Yes — decreases with f</td>
+          <td>−90°</td>
+        </tr>
+        <tr class="ref-row--xl">
+          <td>Inductive reactance</td>
+          <td>X<sub>L</sub></td>
+          <td>Stored in magnetic field</td>
+          <td>Yes — increases with f</td>
+          <td>+90°</td>
+        </tr>
+        <tr class="ref-row--z">
+          <td>Impedance</td>
+          <td>Z</td>
+          <td>Both (combined)</td>
+          <td>Yes (via X component)</td>
+          <td>0° to ±90°</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Cross-references -->
+<div class="cross-ref-bar">
+  <strong>Cross-references:</strong>
+  Electronics Curriculum Unit 1 Lesson 2 (Ohm's Law) &nbsp;·&nbsp;
+  Unit 3 Lessons 13–16 (Impedance matching, transmission lines) &nbsp;·&nbsp;
+  NanoVNA measurement guides
+</div>
+
+</main>
+
+<footer>
+  <p>Sideband: Resistance, Reactance, and Impedance &nbsp;·&nbsp; RSGB 2A1, 2C1, 2E3–2E6 &nbsp;·&nbsp; <a href="../../index.html">RF-Hub</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = pct.toFixed(1) + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+  }, { passive: true });
+})();
+
+/* ============================================================
+   IFRAME LOAD HANDLERS — hide fallback when iframe loads
+   ============================================================ */
+(function() {
+  var pairs = [
+    ['iframe-energy-flow',       'fallback-1'],
+    ['iframe-reactance-freq',    'fallback-2'],
+    ['iframe-impedance-triangle','fallback-3']
+  ];
+  pairs.forEach(function(pair) {
+    var iframe = document.getElementById(pair[0]);
+    var fallback = document.getElementById(pair[1]);
+    if (!iframe || !fallback) return;
+    iframe.addEventListener('load', function() {
+      fallback.style.display = 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

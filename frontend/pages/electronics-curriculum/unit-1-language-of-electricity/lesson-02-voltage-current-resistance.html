@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 — Voltage, Current, and Resistance — RF-Hub Electronics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --border-accent: rgba(245,158,11,0.3);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+img, canvas, svg { max-width: 100%; display: block; }
+a { color: var(--accent-em); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO — Electronics variant
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #0f1a2e 60%, #0a1a1a 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--elec {
+  background: rgba(6,182,212,0.12);
+  border-color: rgba(6,182,212,0.3);
+  color: var(--cyan);
+}
+.objectives {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+}
+.objectives h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.objectives ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+.objectives li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   CHAPTER SECTIONS
+   ============================================================ */
+.chapter { margin-top: 64px; }
+.chapter-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.chapter > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chapter h3 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 32px 0 12px;
+}
+.chapter p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 18px;
+}
+.chapter p strong { color: var(--text-primary); font-weight: 600; }
+.chapter ul, .chapter ol {
+  color: var(--text-secondary);
+  padding-left: 24px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chapter li { line-height: 1.65; }
+.chapter li strong { color: var(--text-primary); }
+
+/* ============================================================
+   DIAGRAM CARDS
+   ============================================================ */
+.diagram-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin: 32px 0;
+  overflow: hidden;
+}
+.diagram-card .card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.diagram-card canvas {
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  width: 100%;
+}
+.diagram-card .card-caption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   CALLOUTS / BLOCKQUOTES
+   ============================================================ */
+.callout {
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 24px 0;
+  border-left: 3px solid;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.callout--amber { background: rgba(245,158,11,0.08); border-color: var(--amber); }
+.callout--cyan  { background: rgba(6,182,212,0.08);  border-color: var(--cyan);  }
+.callout--purple{ background: rgba(167,139,250,0.08); border-color: var(--purple);}
+.callout strong { color: var(--text-primary); }
+blockquote {
+  margin: 20px 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--cyan);
+  background: rgba(6,182,212,0.07);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+blockquote p { margin-bottom: 8px; }
+blockquote p:last-child { margin-bottom: 0; }
+blockquote strong { color: var(--text-primary); }
+
+/* ============================================================
+   PREFIX TABLE
+   ============================================================ */
+.prefix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 20px 0;
+}
+.prefix-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.prefix-table td {
+  padding: 9px 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.prefix-table tr:last-child td { border-bottom: none; }
+.prefix-table td:first-child { color: var(--text-primary); font-weight: 500; font-family: var(--font-mono); }
+.prefix-table td:nth-child(2) { font-family: var(--font-mono); color: var(--amber); }
+.prefix-table td:nth-child(3) { font-family: var(--font-mono); color: var(--cyan); }
+
+/* ============================================================
+   INTERACTIVE CONTROLS
+   ============================================================ */
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.ctrl-row label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.ctrl-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(6,182,212,0.35);
+  background: rgba(6,182,212,0.08);
+  color: var(--cyan);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.ctrl-btn:hover { background: rgba(6,182,212,0.18); }
+.ctrl-btn.active {
+  background: rgba(6,182,212,0.22);
+  border-color: rgba(6,182,212,0.6);
+  color: #fff;
+}
+
+/* ============================================================
+   V3 — RESISTOR SYMBOLS (SVG)
+   ============================================================ */
+.resistor-symbols-wrap {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 16px 0 8px;
+}
+.resistor-sym-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.resistor-sym-item svg { width: 160px; height: 60px; }
+.resistor-sym-item .sym-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+}
+.resistor-sym-item .sym-caption {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 160px;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   V4 — OHM'S LAW TRIANGLE + CALCULATOR
+   ============================================================ */
+.ohm-tri-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.ohm-tri-wrap svg {
+  width: 220px;
+  height: 180px;
+  cursor: default;
+}
+.tri-zone {
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+.tri-label {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  fill: var(--text-primary);
+  pointer-events: none;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+.tri-divider { stroke: rgba(255,255,255,0.25); stroke-width: 1.5; }
+.ohm-formula-display {
+  text-align: center;
+  min-height: 36px;
+  margin-bottom: 20px;
+}
+.ohm-formula-eq {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.ohm-formula-eq.active { color: var(--amber); }
+.ohm-calc {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.calc-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 80px 30px;
+  gap: 8px;
+  align-items: center;
+}
+.calc-row label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.calc-row input[type="number"] {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.calc-row input[type="number"]:focus {
+  outline: none;
+  border-color: rgba(6,182,212,0.5);
+}
+.calc-row input.calc-result {
+  border-color: rgba(245,158,11,0.5);
+  color: var(--amber);
+  background: rgba(245,158,11,0.06);
+}
+.calc-row select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 7px 4px;
+  cursor: pointer;
+}
+.calc-row .calc-unit {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+@media (max-width: 480px) {
+  .calc-row { grid-template-columns: 70px 1fr 65px 24px; }
+}
+
+/* ============================================================
+   V5 — WORKED EXAMPLES TABS
+   ============================================================ */
+.example-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0;
+}
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  position: relative;
+  bottom: -1px;
+}
+.tab-btn:hover { color: var(--text-secondary); background: rgba(255,255,255,0.04); }
+.tab-btn.active {
+  color: var(--amber);
+  background: var(--bg-secondary);
+  border-color: var(--border-subtle);
+  border-bottom-color: var(--bg-secondary);
+}
+.example-panel {
+  padding: 20px 0 0;
+  display: none;
+}
+.example-panel.active { display: block; }
+.example-problem {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.65;
+}
+.example-problem strong { color: var(--text-primary); }
+.example-steps {
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.example-steps p {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.example-steps p:last-child { margin-bottom: 0; }
+.example-steps .step-answer {
+  color: var(--amber);
+  font-weight: 500;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.example-try {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.example-try label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   V6 — SCHEMATIC SVG
+   ============================================================ */
+.schematic-wrap {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.schematic-wrap svg { max-width: 500px; width: 100%; }
+.schematic-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.schematic-toggle:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+
+/* ============================================================
+   EXPERIMENT BLOCK
+   ============================================================ */
+.experiment-block {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin: 32px 0;
+}
+.experiment-block .exp-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+}
+.experiment-block h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.experiment-block p, .experiment-block li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+.experiment-block ol { padding-left: 20px; }
+.experiment-block strong { color: var(--text-primary); }
+
+/* ============================================================
+   SELF-CHECK
+   ============================================================ */
+.self-check {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 32px;
+}
+.self-check h3.sc-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.self-check h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.self-check > p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+.check-part { margin-bottom: 36px; }
+.check-part h3 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.check-item { margin-bottom: 20px; }
+.check-item p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.check-item p strong { color: var(--text-primary); }
+.btn-reveal {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(6,182,212,0.3);
+  background: rgba(6,182,212,0.08);
+  color: var(--cyan);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-reveal:hover { background: rgba(6,182,212,0.16); }
+.self-check__reveal {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.self-check__reveal p { margin-bottom: 8px; }
+.self-check__reveal p:last-child { margin-bottom: 0; }
+.self-check__reveal strong { color: var(--text-primary); }
+.self-check__reveal code {
+  font-family: var(--font-mono);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* ============================================================
+   LESSON SUMMARY
+   ============================================================ */
+.lesson-summary {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 48px;
+}
+.lesson-summary h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+.lesson-summary ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lesson-summary li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding-left: 20px;
+  position: relative;
+}
+.lesson-summary li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-size: 0.75rem;
+  top: 3px;
+}
+.lesson-summary li strong { color: var(--text-primary); }
+
+/* ============================================================
+   LESSON NAV + FOOTER
+   ============================================================ */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.nav-btn--next {
+  background: rgba(6,182,212,0.1);
+  border-color: rgba(6,182,212,0.3);
+  color: var(--cyan);
+}
+.nav-btn--next:hover { background: rgba(6,182,212,0.18); }
+footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero { padding: 40px 16px 32px; }
+  main { padding: 0 16px 60px; }
+  .objectives { padding: 18px 20px; }
+  .self-check { padding: 20px; }
+  .lesson-summary { padding: 20px; }
+  .diagram-card { padding: 16px; }
+  .site-nav-links { display: none; }
+  .lesson-nav { flex-direction: column; align-items: stretch; }
+  .nav-btn { text-align: center; }
+  .ctrl-row { flex-direction: column; align-items: stretch; }
+  .resistor-symbols-wrap { gap: 24px; }
+}
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.6rem; }
+  main { padding: 0 12px 48px; }
+}
+@media (min-width: 1200px) { main { max-width: 900px; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress-bar { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SITE NAV
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../../index.html">Dashboard</a></li>
+      <li><a href="../../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../../antennas.html">Antennas</a></li>
+      <li><a href="../../../learning-path.html" class="active">Learning Path</a></li>
+      <li><a href="../../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-meta">Electronics — Unit 1: The Language of Electricity &nbsp;·&nbsp; Lesson 2 of 5</div>
+  <h1>Voltage, Current, and Resistance</h1>
+  <p class="hero-subtitle">Three quantities, one equation. Learn why charge moves, what opposes it, and the relationship that ties everything together: V = IR.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">Level: Foundation [F]</span>
+    <span class="hero-badge">RSGB 2A1, 2A2, 2C1</span>
+    <span class="hero-badge">Prerequisites: Lesson 1</span>
+    <span class="hero-badge">Reading: 30 min</span>
+    <span class="hero-badge hero-badge--elec">6 Visuals</span>
+  </div>
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what voltage is in physical terms — why a potential difference causes current to flow</li>
+      <li>State the unit of voltage (volt) and relate it to energy and charge</li>
+      <li>Explain what resistance is and why it exists at the atomic level</li>
+      <li>State the unit of resistance (ohm) and recognise the Ω symbol</li>
+      <li>Apply Ohm's law (V = IR) to calculate any one quantity given the other two</li>
+      <li>Rearrange Ohm's law confidently and apply it to RF-relevant examples</li>
+      <li>Read a basic circuit schematic showing a voltage source, resistor, and current path</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- ============================================================
+     SECTION 1 — Voltage
+     ============================================================ -->
+<section class="chapter" id="section-1">
+  <div class="chapter-label">Section 1</div>
+  <h2>Voltage: The Force That Drives Current</h2>
+
+  <p>Lesson 1 established that current is charge in motion. But we left a question unanswered: what makes the charge move?</p>
+
+  <p>Charge does not flow spontaneously. Electrons in a copper wire have plenty of freedom to move — they are part of the electron sea — but without something pushing them, they drift randomly in all directions and go nowhere useful. For a net current to flow, something must push charge consistently in one direction.</p>
+
+  <p>That something is <strong>voltage</strong>.</p>
+
+  <h3>The Energy Picture</h3>
+
+  <p>Voltage is a difference in electrical energy between two points. The formal name is <strong>potential difference</strong> (often abbreviated <strong>PD</strong>), and its unit is the <strong>volt</strong> (symbol <strong>V</strong>), named after Alessandro Volta.</p>
+
+  <p>Here is the precise definition:</p>
+
+  <blockquote>
+    <p><strong>One volt</strong> means that one joule of energy is transferred for every coulomb of charge that moves between the two points.</p>
+    <p><strong>1 V = 1 J/C</strong> — one volt equals one joule per coulomb.</p>
+  </blockquote>
+
+  <p>That definition is correct but abstract. Let's make it physical.</p>
+
+  <h3>The Water Analogy — Useful, Then Discarded</h3>
+
+  <p>Imagine a water tank elevated above the ground, connected by a pipe to a lower tank. Water flows downhill through the pipe — from high pressure to low pressure. The height difference between the tanks determines how hard the water pushes. A bigger height difference means more pressure, more flow.</p>
+
+  <p>In a circuit:</p>
+  <ul>
+    <li>The <strong>battery</strong> is the elevated tank — it provides the energy that creates the pressure difference</li>
+    <li>The <strong>wire</strong> is the pipe — it provides the path</li>
+    <li>The <strong>voltage</strong> is the height difference — it determines how hard the charge is pushed</li>
+    <li>The <strong>current</strong> is the water flow — how much charge moves per second</li>
+  </ul>
+
+  <p>This analogy is helpful for about five minutes. It gives you the right intuition: voltage is the <em>push</em>, current is the <em>flow</em>, and you need both for anything to happen.</p>
+
+  <p>But the analogy breaks down quickly. Water is incompressible; charge is not. Water flows through a pipe's interior; at RF frequencies, current flows on a conductor's surface. Water has momentum; electrons in a circuit essentially do not — their drift velocity adjusts almost instantaneously. We will use the water picture once here, acknowledge its limits, and then leave it behind. From this point forward, we work with the electrical quantities directly.</p>
+
+  <div class="callout callout--cyan">
+    <strong>Terminology note:</strong> "Voltage" and "potential difference" mean the same thing in circuit analysis. "Voltage" is the informal term; "potential difference" is the formal one. The RSGB syllabus uses both. So do we. There is a related but distinct concept called "electromotive force" (EMF) — the voltage a source provides when no current flows. We will distinguish EMF from PD properly in Lesson 5. For now, treat "voltage" as the potential difference between two points.
+  </div>
+
+  <h3>Voltage Is Always Between Two Points</h3>
+
+  <p>This is critical, and beginners get it wrong constantly: <strong>voltage does not exist at a single point.</strong> It is always a <em>difference</em> between two points. When someone says "the voltage at this node is 5 V," they mean "the voltage between this node and the reference point (usually ground) is 5 V."</p>
+
+  <p>A battery labelled 12 V means there is a 12-volt potential difference between its positive terminal and its negative terminal. Connect a voltmeter across the battery — one probe on +, one probe on − — and it reads 12 V. Touch both probes to the same terminal and it reads 0 V. There is no potential <em>difference</em> between a point and itself.</p>
+
+  <p>This "always between two points" rule will become essential when we reach Kirchhoff's voltage law in Lesson 4 and when we analyse RF circuits where the "ground" reference is not always obvious.</p>
+
+  <!-- VISUAL SLOT: V1 — voltage-two-points -->
+  <div class="diagram-card" id="card-voltage-points">
+    <p class="card-title">Voltage is Always Between Two Points</p>
+    <canvas id="cv-voltage-points" data-height="280" aria-label="Circuit diagram showing three voltmeter probe positions: across battery (12V), same terminal (0V), and across resistor (12V)"></canvas>
+    <div class="ctrl-row">
+      <label>Probe position:</label>
+      <button class="ctrl-btn active" data-pos="A" id="btn-pos-a">A — Across Battery</button>
+      <button class="ctrl-btn" data-pos="B" id="btn-pos-b">B — Same Terminal</button>
+      <button class="ctrl-btn" data-pos="C" id="btn-pos-c">C — Across Resistor</button>
+    </div>
+    <p class="card-caption">Click each position to see where the probes connect and what the voltmeter reads</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     SECTION 2 — Resistance
+     ============================================================ -->
+<section class="chapter" id="section-2">
+  <div class="chapter-label">Section 2</div>
+  <h2>Resistance: Opposition to Current</h2>
+
+  <p>If voltage is the push, <strong>resistance</strong> is the opposition. Every material, every component, every piece of wire resists the flow of current to some degree.</p>
+
+  <p>The unit of resistance is the <strong>ohm</strong> (symbol <strong>Ω</strong>, the Greek capital letter omega), named after Georg Simon Ohm. A component with a resistance of one ohm allows one ampere of current to flow when one volt is applied across it.</p>
+
+  <h3>What Resistance Actually Is</h3>
+
+  <p>At the atomic level, resistance exists because electrons moving through a material collide with things. In a metal conductor, the free electrons are constantly bumping into the lattice of atoms, into impurities, into each other. Each collision transfers some of the electron's kinetic energy to the lattice as heat. The electrons lose speed, get pushed forward by the electric field again, collide again, lose speed again.</p>
+
+  <p>The resistance of a material depends on:</p>
+  <ul>
+    <li><strong>What it is made of.</strong> Copper has low resistance because its atomic structure provides a clear path for electrons. Nichrome (an alloy used in heating elements) has high resistance because its structure scatters electrons much more. Every material has a property called <strong>resistivity</strong> — an intrinsic measure of how strongly it opposes current.</li>
+    <li><strong>How long it is.</strong> A longer conductor means more collisions along the way. Double the length, double the resistance. This is why long cable runs matter in antenna feed systems — the resistance of the conductor itself causes measurable signal loss.</li>
+    <li><strong>How thick it is.</strong> A thicker conductor provides more parallel paths for electrons. Double the cross-sectional area, halve the resistance. This is why high-current power cables are thick and why PCB traces carrying significant current are made wider.</li>
+    <li><strong>Temperature.</strong> In most metals, resistance increases with temperature. The atoms vibrate more vigorously, creating more obstacles for the electrons. This matters in power amplifiers where components get hot — the resistance of the transistor's channel changes with temperature, affecting bias and gain. (Carbon and some other materials behave oppositely — resistance decreases with temperature. We will encounter this in Unit 2 when we discuss resistor types.)</li>
+  </ul>
+
+  <!-- VISUAL SLOT: V2 — resistance-atomic-collisions -->
+  <div class="diagram-card" id="card-resistance-collisions">
+    <p class="card-title">Resistance: Electron Collisions in the Lattice</p>
+    <canvas id="cv-resistance-collisions" data-height="200" aria-label="Animation of electrons drifting through an atomic lattice, showing collisions that transfer energy as heat"></canvas>
+    <div class="ctrl-row">
+      <label>Compare:</label>
+      <button class="ctrl-btn tab-factor active" data-factor="length">Length</button>
+      <button class="ctrl-btn tab-factor" data-factor="area">Cross-section</button>
+      <button class="ctrl-btn tab-factor" data-factor="temp">Temperature</button>
+    </div>
+    <canvas id="cv-resistance-compare" data-height="140" aria-label="Comparison diagram showing how resistance changes with length, cross-section, or temperature"></canvas>
+    <p class="card-caption" id="compare-caption">Longer path → more collisions → more resistance</p>
+  </div>
+
+  <h3>The Resistor: A Component That Provides Resistance</h3>
+
+  <p>In Lesson 1, we said every circuit needs a load. The simplest load is a <strong>resistor</strong> — a component designed to provide a specific, controlled amount of resistance.</p>
+
+  <p>Resistors are everywhere in electronics. They limit current, divide voltage, set bias points for transistors, terminate transmission lines, and form part of filters. We will study them in depth in Unit 2 (Lesson 6 — Resistors In Depth), including colour codes, tolerance, power ratings, and types. For now, you need to know three things:</p>
+  <ol>
+    <li>A resistor has a specific resistance value, measured in ohms (Ω).</li>
+    <li>The circuit symbol for a resistor is a rectangle (IEC standard, used in the UK and most of Europe) or a zigzag line (US/ANSI standard). Both are widely used. This curriculum uses the IEC rectangle.</li>
+    <li>When current flows through a resistor, the resistor converts electrical energy into heat. This is not a side effect — it is the fundamental mechanism of resistance. Every collision between an electron and the lattice transfers energy. That energy has to go somewhere, and it goes into heat.</li>
+  </ol>
+
+  <!-- VISUAL SLOT: V3 — resistor-symbols -->
+  <div class="diagram-card" id="card-resistor-symbols">
+    <p class="card-title">Resistor Circuit Symbols</p>
+    <div class="resistor-symbols-wrap">
+      <!-- IEC Rectangle -->
+      <div class="resistor-sym-item">
+        <svg viewBox="0 0 160 60" aria-label="IEC resistor symbol — rectangle">
+          <!-- Lead in from left -->
+          <line x1="0" y1="30" x2="30" y2="30" stroke="#f9fafb" stroke-width="2"/>
+          <!-- Rectangle body -->
+          <rect x="30" y="16" width="100" height="28" fill="none" stroke="#f9fafb" stroke-width="2" rx="2"/>
+          <!-- Lead out to right -->
+          <line x1="130" y1="30" x2="160" y2="30" stroke="#f9fafb" stroke-width="2"/>
+          <!-- Value label -->
+          <text x="80" y="34" text-anchor="middle" dominant-baseline="middle" fill="#9ca3af" font-family="IBM Plex Mono, monospace" font-size="12">470 Ω</text>
+        </svg>
+        <span class="sym-label">IEC Standard</span>
+        <span class="sym-caption">UK, Europe, and this curriculum</span>
+      </div>
+      <!-- ANSI Zigzag -->
+      <div class="resistor-sym-item">
+        <svg viewBox="0 0 160 60" aria-label="ANSI resistor symbol — zigzag">
+          <!-- Lead in from left -->
+          <line x1="0" y1="30" x2="25" y2="30" stroke="#f9fafb" stroke-width="2"/>
+          <!-- Zigzag -->
+          <polyline points="25,30 35,12 50,48 65,12 80,48 95,12 110,48 125,30" fill="none" stroke="#f9fafb" stroke-width="2" stroke-linejoin="round"/>
+          <!-- Lead out to right -->
+          <line x1="125" y1="30" x2="160" y2="30" stroke="#f9fafb" stroke-width="2"/>
+        </svg>
+        <span class="sym-label">ANSI Standard</span>
+        <span class="sym-caption">US textbooks and datasheets</span>
+      </div>
+    </div>
+    <p class="card-caption">Both symbols mean the same component. You will encounter both.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     SECTION 3 — Ohm's Law
+     ============================================================ -->
+<section class="chapter" id="section-3">
+  <div class="chapter-label">Section 3</div>
+  <h2>Ohm's Law: The Equation That Runs Everything</h2>
+
+  <p>We now have three quantities:</p>
+  <ul>
+    <li><strong>Voltage</strong> (V) — the push, measured in volts</li>
+    <li><strong>Current</strong> (I) — the flow, measured in amperes</li>
+    <li><strong>Resistance</strong> (R) — the opposition, measured in ohms</li>
+  </ul>
+
+  <p>Georg Ohm discovered the relationship between them in 1827:</p>
+
+  <blockquote>
+    <p><strong>V = I × R</strong></p>
+    <p>Voltage equals current multiplied by resistance.</p>
+  </blockquote>
+
+  <p>This is <strong>Ohm's law</strong>. It is the single most-used equation in all of electronics. You will use it in every unit of this curriculum, in every circuit you analyse, and in every piece of RF equipment you ever design, build, or troubleshoot.</p>
+
+  <p>The equation says: if you know any two of the three quantities, you can calculate the third.</p>
+
+  <h3>The Three Forms</h3>
+
+  <p>Ohm's law rearranges into three forms depending on what you need to find:</p>
+  <ul>
+    <li><strong>To find voltage:</strong> V = I × R — "What voltage appears across this component if I know the current through it and its resistance?"</li>
+    <li><strong>To find current:</strong> I = V / R — "How much current flows through this resistance when I apply this voltage?"</li>
+    <li><strong>To find resistance:</strong> R = V / I — "What resistance would produce this current at this voltage?"</li>
+  </ul>
+
+  <p>These are not three separate laws. They are one equation, rearranged. If you can rearrange V = IR, you never need to memorise the other two forms — you derive them on the spot.</p>
+
+  <!-- VISUAL SLOT: V4 — ohms-law-triangle-interactive -->
+  <div class="diagram-card" id="card-ohm-triangle">
+    <p class="card-title">Ohm's Law Triangle — Click to Solve, Then Calculate</p>
+    <div class="ohm-tri-wrap">
+      <svg id="ohm-tri-svg" viewBox="0 0 280 220" aria-label="Ohm's law triangle — click V, I, or R to select which quantity to solve for">
+        <!-- Outer triangle outline -->
+        <polygon points="140,14 16,196 264,196" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <!-- Dividing lines -->
+        <line id="tri-hdiv" x1="78" y1="105" x2="202" y2="105" class="tri-divider"/>
+        <line id="tri-vdiv" x1="140" y1="105" x2="140" y2="196" class="tri-divider"/>
+        <!-- V zone (top triangle) -->
+        <polygon id="tri-v" class="tri-zone" points="140,14 78,105 202,105"
+          fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+        <!-- I zone (bottom-left) -->
+        <polygon id="tri-i" class="tri-zone" points="78,105 16,196 140,196 140,105"
+          fill="rgba(6,182,212,0.10)" stroke="rgba(6,182,212,0.35)" stroke-width="1"/>
+        <!-- R zone (bottom-right) -->
+        <polygon id="tri-r" class="tri-zone" points="202,105 140,105 140,196 264,196"
+          fill="rgba(167,139,250,0.10)" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+        <!-- Variable labels -->
+        <text id="tri-lbl-v" class="tri-label" x="140" y="68" fill="#f59e0b">V</text>
+        <text id="tri-lbl-i" class="tri-label" x="96" y="158" fill="#06b6d4">I</text>
+        <text id="tri-lbl-r" class="tri-label" x="186" y="158" fill="#a78bfa">R</text>
+        <!-- × symbol between I and R -->
+        <text x="140" y="162" text-anchor="middle" dominant-baseline="middle"
+          fill="rgba(255,255,255,0.25)" font-family="IBM Plex Mono, monospace" font-size="18">×</text>
+      </svg>
+    </div>
+    <div class="ohm-formula-display">
+      <div class="ohm-formula-eq" id="ohm-formula-eq">Click V, I, or R above to see the formula</div>
+    </div>
+    <div class="ohm-calc">
+      <div class="calc-row">
+        <label for="calc-v">Voltage (V)</label>
+        <input type="number" id="calc-v" step="any" placeholder="—">
+        <select id="pfx-v" aria-label="Voltage prefix">
+          <option value="1e-6">μV</option>
+          <option value="1e-3">mV</option>
+          <option value="1" selected>V</option>
+          <option value="1e3">kV</option>
+        </select>
+        <span class="calc-unit">V</span>
+      </div>
+      <div class="calc-row">
+        <label for="calc-i">Current (I)</label>
+        <input type="number" id="calc-i" step="any" placeholder="—">
+        <select id="pfx-i" aria-label="Current prefix">
+          <option value="1e-6">μA</option>
+          <option value="1e-3">mA</option>
+          <option value="1" selected>A</option>
+        </select>
+        <span class="calc-unit">A</span>
+      </div>
+      <div class="calc-row">
+        <label for="calc-r">Resistance (R)</label>
+        <input type="number" id="calc-r" step="any" placeholder="—">
+        <select id="pfx-r" aria-label="Resistance prefix">
+          <option value="1">Ω</option>
+          <option value="1e3">kΩ</option>
+          <option value="1e6">MΩ</option>
+        </select>
+        <span class="calc-unit">Ω</span>
+      </div>
+    </div>
+    <p class="card-caption" style="margin-top:14px;">Enter any two values — the third calculates automatically</p>
+  </div>
+
+  <h3>Why "I" for Current?</h3>
+
+  <p>You might wonder why current is represented by the letter <strong>I</strong> rather than <strong>C</strong> (which is already taken by the coulomb). The convention comes from the French <em>intensité de courant</em> — intensity of current. André-Marie Ampère used it, and it stuck. Every equation, every circuit diagram, every datasheet uses I for current.</p>
+
+</section>
+
+<!-- ============================================================
+     SECTION 4 — Worked Examples
+     ============================================================ -->
+<section class="chapter" id="section-4">
+  <div class="chapter-label">Section 4</div>
+  <h2>Ohm's Law in Practice: Worked Examples</h2>
+
+  <p>Theory means nothing until you can use it. Here are four worked examples at increasing complexity. Work through each one with a calculator before reading the solution.</p>
+
+  <h3>Example 1: Finding Current</h3>
+  <p>A 9 V battery is connected across a 1 kΩ resistor. What current flows?</p>
+  <p><strong>Given:</strong> V = 9 V, R = 1 kΩ = 1000 Ω &nbsp;&nbsp; <strong>Find:</strong> I</p>
+  <p>I = V / R = 9 / 1000 = 0.009 A = <strong>9 mA</strong></p>
+  <p>Nine milliamps. This is a typical current for a small signal circuit — an LED indicator, a bias network, a sensor input.</p>
+
+  <h3>Example 2: Finding Voltage</h3>
+  <p>A current of 250 mA flows through a 47 Ω resistor. What voltage appears across the resistor?</p>
+  <p><strong>Given:</strong> I = 250 mA = 0.25 A, R = 47 Ω &nbsp;&nbsp; <strong>Find:</strong> V</p>
+  <p>V = I × R = 0.25 × 47 = <strong>11.75 V</strong></p>
+  <p>Notice that we had to convert milliamps to amps before multiplying — always work in base units (V, A, Ω) to avoid errors. Alternatively, learn the shortcut: milliamps × ohms gives millivolts, then convert. But base units are safer until the prefix arithmetic is second nature.</p>
+
+  <h3>Example 3: Finding Resistance</h3>
+  <p>You want to limit the current through an LED to 20 mA. Your supply voltage is 5 V, and the LED drops about 2 V across itself (we will explain why in Unit 4 — for now, take it as given). What value resistor do you need in series with the LED?</p>
+  <p><strong>Given:</strong> The resistor must drop the remaining voltage: V = 5 − 2 = 3 V. I = 20 mA = 0.02 A. &nbsp;&nbsp; <strong>Find:</strong> R</p>
+  <p>R = V / I = 3 / 0.02 = <strong>150 Ω</strong></p>
+  <p>A 150 Ω resistor. This is a real-world calculation you will do dozens of times.</p>
+
+  <h3>Example 4: An RF-Relevant Example</h3>
+  <p>A 50 Ω dummy load is connected to a transmitter producing 100 W. We have not covered power yet (that is Lesson 3), but here is a preview: power, voltage, and resistance are related by P = V²/R. Rearranging: V = √(P × R) = √(100 × 50) = √5000 ≈ 70.7 V.</p>
+  <p>Now use Ohm's law: I = V / R = 70.7 / 50 = <strong>1.41 A</strong>.</p>
+  <p>So a 100 W HF transmitter driving a 50 Ω load produces about 70.7 V RMS and draws about 1.41 A of RF current through the load. These are real numbers. When you key up on 100 W into a dummy load, that is what is happening inside the resistor — 1.41 amps of current through 50 ohms, converting 100 watts into heat.</p>
+
+  <div class="callout callout--amber">
+    <strong>Why 50 Ω?</strong> You will encounter "50 ohms" everywhere in RF engineering — coaxial cables, antenna inputs, test equipment, dummy loads. The reason is historical and practical: 50 Ω is a compromise between the impedance that gives minimum loss in a coaxial cable (~77 Ω) and the impedance that handles maximum power (~30 Ω). Almost all RF systems are standardised on 50 Ω. We will return to this in the antenna curriculum (feed impedance) and in Unit 3 (impedance matching).
+  </div>
+
+  <!-- VISUAL SLOT: V5 — ohms-law-worked-examples -->
+  <div class="diagram-card" id="card-worked-examples">
+    <p class="card-title">Worked Example Solver — Four Examples + Try It Yourself</p>
+    <div class="example-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="ex1" role="tab" aria-selected="true">9V + 1kΩ</button>
+      <button class="tab-btn" data-tab="ex2" role="tab" aria-selected="false">250mA + 47Ω</button>
+      <button class="tab-btn" data-tab="ex3" role="tab" aria-selected="false">LED limiter</button>
+      <button class="tab-btn" data-tab="ex4" role="tab" aria-selected="false">50Ω dummy load</button>
+      <button class="tab-btn" data-tab="ex5" role="tab" aria-selected="false">Try it</button>
+    </div>
+
+    <div class="example-panel active" id="panel-ex1">
+      <p class="example-problem"><strong>Example 1 — Finding current.</strong> A 9 V battery is connected across a 1 kΩ resistor. What current flows?</p>
+      <div class="example-steps">
+        <p>Given: V = 9 V, R = 1 kΩ = 1000 Ω</p>
+        <p>Find: I</p>
+        <p>Use: I = V ÷ R</p>
+        <p>I = 9 ÷ 1000 = 0.009 A</p>
+        <p class="step-answer">Answer: I = 9 mA</p>
+      </div>
+    </div>
+
+    <div class="example-panel" id="panel-ex2">
+      <p class="example-problem"><strong>Example 2 — Finding voltage.</strong> A current of 250 mA flows through a 47 Ω resistor. What voltage appears across it?</p>
+      <div class="example-steps">
+        <p>Given: I = 250 mA = 0.25 A, R = 47 Ω</p>
+        <p>Find: V</p>
+        <p>Use: V = I × R</p>
+        <p>V = 0.25 × 47 = 11.75 V</p>
+        <p class="step-answer">Answer: V = 11.75 V</p>
+      </div>
+    </div>
+
+    <div class="example-panel" id="panel-ex3">
+      <p class="example-problem"><strong>Example 3 — Finding resistance.</strong> Limit LED current to 20 mA from a 5 V supply. The LED itself drops 2 V. What series resistor is needed?</p>
+      <div class="example-steps">
+        <p>Resistor must drop: V = 5 − 2 = 3 V</p>
+        <p>Current: I = 20 mA = 0.02 A</p>
+        <p>Use: R = V ÷ I</p>
+        <p>R = 3 ÷ 0.02 = 150 Ω</p>
+        <p class="step-answer">Answer: R = 150 Ω</p>
+      </div>
+    </div>
+
+    <div class="example-panel" id="panel-ex4">
+      <p class="example-problem"><strong>Example 4 — RF application.</strong> A 100 W transmitter drives a 50 Ω dummy load. Using P = V²/R, find the voltage and current in the load.</p>
+      <div class="example-steps">
+        <p>Step 1 — Find V: V = √(P × R) = √(100 × 50) = √5000 ≈ 70.71 V</p>
+        <p>Step 2 — Find I: I = V ÷ R = 70.71 ÷ 50 ≈ 1.414 A</p>
+        <p>Check: P = V × I = 70.71 × 1.414 ≈ 100 W ✓</p>
+        <p class="step-answer">Answer: V ≈ 70.7 V, I ≈ 1.41 A</p>
+      </div>
+    </div>
+
+    <div class="example-panel" id="panel-ex5">
+      <p class="example-problem"><strong>Try it yourself.</strong> Enter any two values below — the third calculates automatically.</p>
+      <div class="ohm-calc" id="ohm-calc-try" style="padding-top:12px;">
+        <div class="calc-row">
+          <label for="try-v">Voltage (V)</label>
+          <input type="number" id="try-v" step="any" placeholder="—">
+          <select id="try-pfx-v" aria-label="Voltage prefix">
+            <option value="1e-3">mV</option>
+            <option value="1" selected>V</option>
+            <option value="1e3">kV</option>
+          </select>
+          <span class="calc-unit">V</span>
+        </div>
+        <div class="calc-row">
+          <label for="try-i">Current (I)</label>
+          <input type="number" id="try-i" step="any" placeholder="—">
+          <select id="try-pfx-i" aria-label="Current prefix">
+            <option value="1e-6">μA</option>
+            <option value="1e-3">mA</option>
+            <option value="1" selected>A</option>
+          </select>
+          <span class="calc-unit">A</span>
+        </div>
+        <div class="calc-row">
+          <label for="try-r">Resistance (R)</label>
+          <input type="number" id="try-r" step="any" placeholder="—">
+          <select id="try-pfx-r" aria-label="Resistance prefix">
+            <option value="1">Ω</option>
+            <option value="1e3" selected>kΩ</option>
+            <option value="1e6">MΩ</option>
+          </select>
+          <span class="calc-unit">Ω</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     SECTION 5 — Schematics
+     ============================================================ -->
+<section class="chapter" id="section-5">
+  <div class="chapter-label">Section 5</div>
+  <h2>Reading Your First Schematic</h2>
+
+  <p>Before we leave this lesson, let's connect the theory to the way circuits are actually drawn in practice.</p>
+
+  <p>A <strong>schematic</strong> (also called a <strong>circuit diagram</strong>) is a drawing that shows how components are connected using standard symbols. It is the universal language of electronics — every engineer, every technician, every amateur radio operator reads schematics.</p>
+
+  <p>The simplest schematic you can draw matches the circuits we have been discussing:</p>
+
+  <!-- VISUAL SLOT: V6 — first-schematic -->
+  <div class="diagram-card" id="card-schematic">
+    <p class="card-title">Your First Schematic — Battery + Resistor Loop</p>
+    <div class="schematic-wrap">
+      <!-- Single-resistor schematic (default) -->
+      <svg id="schem-svg-1" viewBox="0 0 500 280" aria-label="Schematic: 12V battery connected to a 1kΩ resistor with current arrows and annotations">
+        <!-- Wires -->
+        <line x1="80" y1="80" x2="80" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="80" y1="80" x2="420" y2="80" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="420" y1="80" x2="420" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="80" y1="200" x2="420" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <!-- Battery symbol (left side, vertical) -->
+        <!-- long line = +, short line = − -->
+        <line x1="65" y1="125" x2="95" y2="125" stroke="#f59e0b" stroke-width="3"/>
+        <line x1="71" y1="140" x2="89" y2="140" stroke="#f59e0b" stroke-width="2"/>
+        <!-- Plus and minus labels -->
+        <text x="104" y="122" fill="#f59e0b" font-family="IBM Plex Mono,monospace" font-size="14">+</text>
+        <text x="104" y="147" fill="#06b6d4" font-family="IBM Plex Mono,monospace" font-size="16">−</text>
+        <!-- Battery value label -->
+        <text x="40" y="137" text-anchor="middle" fill="#9ca3af" font-family="IBM Plex Sans,sans-serif" font-size="12">V = 12 V</text>
+        <!-- Resistor (IEC rectangle, top wire) -->
+        <rect x="210" y="66" width="80" height="28" fill="none" stroke="#f9fafb" stroke-width="2" rx="2"/>
+        <text x="250" y="84" text-anchor="middle" dominant-baseline="middle" fill="#9ca3af" font-family="IBM Plex Mono,monospace" font-size="11">R = 1 kΩ</text>
+        <!-- Conventional current arrows (amber, clockwise in external circuit) -->
+        <!-- Top arrow → right -->
+        <polygon points="320,72 330,79 320,86" fill="#f59e0b"/>
+        <text x="340" y="72" fill="#f59e0b" font-family="IBM Plex Sans,sans-serif" font-size="11">I = 12 mA</text>
+        <!-- Right arrow ↓ -->
+        <polygon points="414,155 421,165 428,155" fill="#f59e0b"/>
+        <!-- Bottom arrow ← left -->
+        <polygon points="180,194 170,200 180,207" fill="#f59e0b"/>
+        <!-- Left arrow ↑ -->
+        <polygon points="74,115 80,105 86,115" fill="#f59e0b"/>
+        <!-- Annotation: battery -->
+        <text x="40" y="168" text-anchor="middle" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="10">Voltage</text>
+        <text x="40" y="178" text-anchor="middle" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="10">source</text>
+        <!-- Annotation: resistor -->
+        <text x="250" y="52" text-anchor="middle" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="10">Load</text>
+        <!-- Annotation: current direction -->
+        <text x="370" y="67" fill="#f59e0b" font-family="IBM Plex Sans,sans-serif" font-size="10" opacity="0.8">→ conventional</text>
+        <!-- Ground symbol at bottom of battery (−) -->
+        <line x1="68" y1="200" x2="92" y2="200" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="72" y1="205" x2="88" y2="205" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="76" y1="210" x2="84" y2="210" stroke="#9ca3af" stroke-width="1.5"/>
+        <!-- Symbol key at bottom -->
+        <text x="80" y="248" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="11">— Battery (long = +, short = −)</text>
+        <text x="80" y="264" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="11">□ Resistor (IEC)  &nbsp; — Wire (ideal)  &nbsp; → Current direction</text>
+      </svg>
+      <!-- Two-resistor schematic (hidden by default) -->
+      <svg id="schem-svg-2" viewBox="0 0 500 280" aria-label="Schematic: 12V battery connected to two resistors in series" hidden>
+        <!-- Wires -->
+        <line x1="80" y1="80" x2="80" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="80" y1="80" x2="420" y2="80" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="420" y1="80" x2="420" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <line x1="80" y1="200" x2="420" y2="200" stroke="#f9fafb" stroke-width="2"/>
+        <!-- Battery -->
+        <line x1="65" y1="125" x2="95" y2="125" stroke="#f59e0b" stroke-width="3"/>
+        <line x1="71" y1="140" x2="89" y2="140" stroke="#f59e0b" stroke-width="2"/>
+        <text x="104" y="122" fill="#f59e0b" font-family="IBM Plex Mono,monospace" font-size="14">+</text>
+        <text x="104" y="147" fill="#06b6d4" font-family="IBM Plex Mono,monospace" font-size="16">−</text>
+        <text x="40" y="137" text-anchor="middle" fill="#9ca3af" font-family="IBM Plex Sans,sans-serif" font-size="12">V = 12 V</text>
+        <!-- R1 (first resistor) -->
+        <rect x="160" y="66" width="70" height="28" fill="none" stroke="#06b6d4" stroke-width="2" rx="2"/>
+        <text x="195" y="84" text-anchor="middle" dominant-baseline="middle" fill="#06b6d4" font-family="IBM Plex Mono,monospace" font-size="11">R1</text>
+        <!-- R2 (second resistor) -->
+        <rect x="270" y="66" width="70" height="28" fill="none" stroke="#a78bfa" stroke-width="2" rx="2"/>
+        <text x="305" y="84" text-anchor="middle" dominant-baseline="middle" fill="#a78bfa" font-family="IBM Plex Mono,monospace" font-size="11">R2</text>
+        <!-- Current arrow -->
+        <polygon points="380,72 390,79 380,86" fill="#f59e0b"/>
+        <!-- Ground -->
+        <line x1="68" y1="200" x2="92" y2="200" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="72" y1="205" x2="88" y2="205" stroke="#9ca3af" stroke-width="1.5"/>
+        <line x1="76" y1="210" x2="84" y2="210" stroke="#9ca3af" stroke-width="1.5"/>
+        <!-- Note -->
+        <text x="250" y="240" text-anchor="middle" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="11">Two resistors in series — Lesson 4 will analyse this</text>
+        <text x="250" y="258" text-anchor="middle" fill="#6b7280" font-family="IBM Plex Sans,sans-serif" font-size="11">Same current flows through both; voltages add up</text>
+      </svg>
+      <button class="schematic-toggle" id="schem-toggle">Show: Two Resistors in Series →</button>
+    </div>
+  </div>
+
+  <p>A schematic is not a physical layout. The wires on a schematic do not show where the actual wires run on a circuit board. They show <em>electrical connections</em> — what is connected to what. Two components that are centimetres apart on a PCB might be drawn right next to each other on the schematic because they are electrically connected. Conversely, components drawn far apart on the schematic might sit side by side on the board.</p>
+
+  <p>This distinction matters: a schematic tells you the <em>electrical truth</em> about a circuit. A physical layout tells you where things are in space. Both are important, but they serve different purposes. In this curriculum, we work primarily with schematics.</p>
+
+  <h3>Schematic Conventions You Need Now</h3>
+
+  <p><strong>Lines are wires.</strong> A straight line on a schematic is an electrical connection. It is assumed to have zero resistance unless explicitly marked otherwise.</p>
+
+  <p><strong>Junctions are dots.</strong> Where two wires connect, a dot is drawn at the junction. Two wires crossing <em>without</em> a dot are not connected (they just happen to cross on the drawing).</p>
+
+  <p><strong>Current flows clockwise by convention</strong> in simple loop circuits drawn in the standard orientation. This is not a physical law — it is a drawing convention that makes schematics easier to read.</p>
+
+  <p><strong>Ground symbols</strong> indicate the reference point for voltage measurements. You will see them from Lesson 4 onward. For now, just know that "ground" means "the point we call 0 V."</p>
+
+</section>
+
+<!-- ============================================================
+     SECTION 6 — Units & Prefixes
+     ============================================================ -->
+<section class="chapter" id="section-6">
+  <div class="chapter-label">Section 6</div>
+  <h2>Units, Prefixes, and Avoiding Mistakes</h2>
+
+  <p>Ohm's law is simple. The most common errors are not mathematical — they are unit errors. This section exists to prevent them.</p>
+
+  <h3>The Prefix Trap</h3>
+
+  <p>Most real-world values in electronics use prefixed units: milliamps, kilohms, microvolts. The single most common Ohm's law mistake is mixing prefixes without converting.</p>
+
+  <div class="callout callout--amber">
+    <strong>Wrong:</strong> "V = I × R = 20 mA × 4.7 kΩ = 94" — 94 <em>what?</em> Not volts. Not millivolts. This is nonsense because you multiplied milliamps by kilohms without converting either one.
+  </div>
+
+  <p><strong>Right — Method 1 (convert to base units):</strong></p>
+  <p>I = 20 mA = 0.020 A &nbsp; R = 4.7 kΩ = 4700 Ω &nbsp; → &nbsp; V = 0.020 × 4700 = <strong>94 V</strong></p>
+
+  <p><strong>Right — Method 2 (learn the shortcut):</strong></p>
+  <p>mA × kΩ = V &nbsp;(the milli and kilo cancel: 10⁻³ × 10³ = 10⁰ = 1) &nbsp; → &nbsp; 20 mA × 4.7 kΩ = <strong>94 V</strong> directly.</p>
+
+  <p>Method 2 is faster once you are confident, but Method 1 never fails. Use Method 1 until you trust your prefix handling.</p>
+
+  <h3>Common Prefix Pairs in Ohm's Law</h3>
+
+  <table class="prefix-table">
+    <thead>
+      <tr><th>If you multiply…</th><th>You get…</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>A × Ω</td><td>V</td><td>Base units — always works</td></tr>
+      <tr><td>mA × Ω</td><td>mV</td><td>Both have the milli factor</td></tr>
+      <tr><td>mA × kΩ</td><td>V</td><td>milli × kilo = unity (10⁻³ × 10³)</td></tr>
+      <tr><td>μA × MΩ</td><td>V</td><td>micro × mega = unity (10⁻⁶ × 10⁶)</td></tr>
+      <tr><td>μA × kΩ</td><td>mV</td><td>micro × kilo = milli (10⁻⁶ × 10³)</td></tr>
+    </tbody>
+  </table>
+
+  <p>You do not need to memorise this table. If you always convert to base units (A, V, Ω) first, you will never make a prefix error. The shortcuts emerge naturally with practice.</p>
+
+</section>
+
+<!-- ============================================================
+     BENCH EXPERIMENT (optional)
+     ============================================================ -->
+<div class="experiment-block">
+  <div class="exp-label">Optional Bench Experiment</div>
+  <h3>Verify Ohm's Law on the Bench</h3>
+  <p><strong>What you need:</strong> A multimeter (any basic DMM), a battery or DC power supply (1.5 V, 9 V, or any known voltage), two or three resistors of known value (e.g., 100 Ω, 470 Ω, 1 kΩ), and connecting leads.</p>
+  <ol>
+    <li>Measure the battery voltage with the multimeter set to DC volts. Record the value — this is your V.</li>
+    <li>Connect one resistor across the battery. Measure the current by placing the multimeter in series (set to mA or A range). Record the value — this is your I.</li>
+    <li>Calculate: does V / I equal the resistor's marked value? It should be close (within the resistor's tolerance — typically 5% or 10%).</li>
+    <li>Repeat with a different resistor. A higher resistance should give a lower current, and vice versa.</li>
+    <li>Try two resistors in series (wire them end to end and measure the total current). Is it less than with either resistor alone? It should be. Lesson 4 will explain why.</li>
+  </ol>
+  <p>This experiment is referenced here but exists as a standalone entity in the RF-Hub experiment library.</p>
+</div>
+
+<!-- ============================================================
+     LESSON SUMMARY
+     ============================================================ -->
+<div class="lesson-summary">
+  <h2>Lesson Summary</h2>
+  <ul>
+    <li><strong>Voltage</strong> (potential difference) is the energy per unit charge between two points. Measured in volts (V). One volt = one joule per coulomb. Voltage is always between two points — never at a single point.</li>
+    <li><strong>Resistance</strong> is the opposition to current flow, caused by collisions between moving electrons and the atomic lattice. Measured in ohms (Ω). Resistance depends on material, length, cross-sectional area, and temperature.</li>
+    <li><strong>Ohm's law: V = I × R.</strong> The single most important equation in electronics. Rearranges to I = V/R and R = V/I. Know one equation, derive the rest.</li>
+    <li><strong>Unit discipline matters.</strong> Always convert to base units (V, A, Ω) before calculating, or learn the prefix shortcuts (mA × kΩ = V). Mixing prefixes without converting is the most common source of error.</li>
+    <li><strong>Schematics</strong> use standard symbols to show electrical connections. Lines are wires, dots are junctions, and the diagram shows electrical truth, not physical layout.</li>
+    <li><strong>50 Ω</strong> appears everywhere in RF engineering — it is the standard system impedance. The full explanation comes in later units.</li>
+  </ul>
+</div>
+
+<!-- ============================================================
+     SELF-CHECK EXERCISES
+     ============================================================ -->
+<div class="self-check">
+  <h3 class="sc-label">Self-Check</h3>
+  <h2>Check Your Understanding</h2>
+  <p>Work through each question before revealing the answer. Show your working for the calculations.</p>
+
+  <!-- Ohm's Law Calculations -->
+  <div class="check-part">
+    <h3>Ohm's Law Calculations</h3>
+
+    <div class="check-item">
+      <p><strong>Q1.</strong> A 12 V power supply is connected across a 680 Ω resistor. What current flows?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q1">Show answer</button>
+      <div class="self-check__reveal" id="ans-q1" hidden>
+        <p>I = V / R = 12 / 680 = 0.01765 A</p>
+        <p>Convert to milliamps: 0.01765 × 1000 = <strong>17.65 mA</strong></p>
+        <p>About 17.6 milliamps. A typical small-signal current.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q2.</strong> A current of 500 mA flows through a 22 Ω resistor. What voltage is dropped across it?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q2">Show answer</button>
+      <div class="self-check__reveal" id="ans-q2" hidden>
+        <p>Convert mA to A first: 500 mA = 0.5 A</p>
+        <p>V = I × R = 0.5 × 22 = <strong>11.0 V</strong></p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q3.</strong> You measure 3.3 V across a resistor and 1.5 mA through it. What is the resistance?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q3">Show answer</button>
+      <div class="self-check__reveal" id="ans-q3" hidden>
+        <p>Convert mA to A: 1.5 mA = 0.0015 A</p>
+        <p>R = V / I = 3.3 / 0.0015 = 2200 Ω = <strong>2.2 kΩ</strong></p>
+        <p>Shortcut: V / mA = kΩ → 3.3 / 1.5 = 2.2 kΩ ✓</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q4.</strong> An RF dummy load is rated at 50 Ω. A transmitter delivers 25 W into it. Using P = V²/R, calculate the voltage across the load and the current through it.</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q4">Show answer</button>
+      <div class="self-check__reveal" id="ans-q4" hidden>
+        <p>Step 1 — Find voltage: V = √(P × R) = √(25 × 50) = √1250 ≈ 35.36 V</p>
+        <p>Step 2 — Find current: I = V / R = 35.36 / 50 ≈ 0.707 A</p>
+        <p>Check: P = V × I = 35.36 × 0.707 ≈ 25.0 W ✓</p>
+        <p><strong>Answer: V ≈ 35.4 V, I ≈ 707 mA</strong></p>
+        <p>At 100 W (as in Section 4): V would be 70.7 V and I would be 1.41 A.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q5.</strong> A receiver's front-end amplifier has an input impedance of 50 Ω. A signal of 10 μV appears at its input. What current does the signal drive into the amplifier?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q5">Show answer</button>
+      <div class="self-check__reveal" id="ans-q5" hidden>
+        <p>I = V / R = 10 × 10⁻⁶ / 50 = 2 × 10⁻⁷ A</p>
+        <p>= 0.2 μA = <strong>200 nA</strong></p>
+        <p>Two hundred nanoamps. This illustrates why receiver front ends must be extremely sensitive — they work with currents measured in nanoamps.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prefix Practice -->
+  <div class="check-part">
+    <h3>Prefix Practice</h3>
+
+    <div class="check-item">
+      <p><strong>Q6.</strong> 47 kΩ = ? Ω</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q6">Show answer</button>
+      <div class="self-check__reveal" id="ans-q6" hidden>
+        <p>47 kΩ = 47 × 10³ = <strong>47,000 Ω</strong></p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q7.</strong> 2.2 MΩ = ? Ω</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q7">Show answer</button>
+      <div class="self-check__reveal" id="ans-q7" hidden>
+        <p>2.2 MΩ = 2.2 × 10⁶ = <strong>2,200,000 Ω</strong></p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q8.</strong> 330 mA = ? A</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q8">Show answer</button>
+      <div class="self-check__reveal" id="ans-q8" hidden>
+        <p>330 mA = 330 × 10⁻³ = <strong>0.330 A</strong></p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q9.</strong> 15 μV = ? V</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q9">Show answer</button>
+      <div class="self-check__reveal" id="ans-q9" hidden>
+        <p>15 μV = 15 × 10⁻⁶ = <strong>0.000015 V</strong></p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q10.</strong> 0.0068 A = ? mA</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q10">Show answer</button>
+      <div class="self-check__reveal" id="ans-q10" hidden>
+        <p>0.0068 A = 6.8 × 10⁻³ A = <strong>6.8 mA</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Concept Questions -->
+  <div class="check-part">
+    <h3>Concept Questions</h3>
+
+    <div class="check-item">
+      <p><strong>Q11.</strong> Two identical resistors are connected to identical batteries. Resistor A is made of copper wire. Resistor B is made of nichrome wire of the same dimensions. Which one passes more current? Why?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q11">Show answer</button>
+      <div class="self-check__reveal" id="ans-q11" hidden>
+        <p>Resistor A (copper) passes more current. Copper has much lower resistivity than nichrome, so for the same physical dimensions, the copper resistor has lower resistance. Lower resistance with the same voltage means higher current (I = V/R).</p>
+        <p>This is why nichrome is used in heater elements — its high resistance converts more electrical energy to heat — and copper is used for wiring — its low resistance wastes minimal energy in the wire itself.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q12.</strong> You double the voltage across a resistor. What happens to the current through it? What happens to the resistance?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q12">Show answer</button>
+      <div class="self-check__reveal" id="ans-q12" hidden>
+        <p>The current doubles (I = V/R — if V doubles and R stays the same, I doubles).</p>
+        <p>The resistance does not change — it is a property of the component, not of the voltage or current applied to it. (Exception: at very high temperatures, resistance can change — but Ohm's law assumes resistance is constant for a given set of conditions.)</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q13.</strong> You measure 0 V across a resistor in a circuit. What can you conclude about the current through it?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q13">Show answer</button>
+      <div class="self-check__reveal" id="ans-q13" hidden>
+        <p>If V = 0 across the resistor, then by Ohm's law I = V/R = 0/R = 0 A. No current flows through it. This could mean the circuit is open somewhere, or it could mean this resistor is in a part of the circuit where no current path exists.</p>
+        <p>Zero voltage across a resistor always means zero current through it (assuming the resistance is not zero — a zero-ohm "resistor" is a wire, and you can have current through a wire with zero voltage across it).</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q14.</strong> Why is voltage always measured <em>across</em> (between two points) and current always measured <em>through</em> (in series with a component)?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q14">Show answer</button>
+      <div class="self-check__reveal" id="ans-q14" hidden>
+        <p>Voltage is a potential <em>difference</em> between two points — it only has meaning as a comparison between two locations. A voltmeter must connect to both points to measure the difference. This is why it connects in parallel (across the component).</p>
+        <p>Current is the rate of charge flow <em>through</em> a point or component. To measure it, the meter must be placed in the path of the current so that all the charge flows through the meter. This is why an ammeter connects in series.</p>
+        <p>Connecting a voltmeter in series or an ammeter in parallel are classic beginner mistakes — and both can damage the meter or the circuit.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     WHAT'S NEXT
+     ============================================================ -->
+<div class="callout callout--cyan" style="margin-top:48px;">
+  <strong>What's Next — Lesson 3: Power and Energy</strong><br>
+  You now have the three pillars: voltage, current, and resistance, linked by Ohm's law. But we have not yet asked: where does the energy go? In Lesson 3 we introduce <strong>power</strong> (the rate of energy transfer), the equations P = VI, P = I²R, and P = V²/R, and connect them to real-world consequences: heat dissipation in resistors, transmitter power output, and why component ratings matter.
+</div>
+
+<!-- ============================================================
+     LESSON NAV
+     ============================================================ -->
+<nav class="lesson-nav" aria-label="Lesson navigation">
+  <a class="nav-btn" href="lesson-01-what-is-electricity.html">← Lesson 1: What Is Electricity?</a>
+  <a class="nav-btn nav-btn--next" href="lesson-03-power-and-energy.html">Lesson 3: Power and Energy →</a>
+</nav>
+
+</main>
+
+<footer>
+  <p>Lesson 2 &nbsp;·&nbsp; Unit 1: The Language of Electricity &nbsp;·&nbsp; <a href="../index.html">Electronics Curriculum</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = pct.toFixed(1) + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+  }, { passive: true });
+})();
+
+/* ============================================================
+   REVEAL TOGGLES
+   ============================================================ */
+document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target = document.getElementById(this.dataset.target);
+    var expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    this.textContent = expanded ? 'Show answer' : 'Hide answer';
+    target.hidden = expanded;
+  });
+});
+
+/* ============================================================
+   V1 — VOLTAGE-TWO-POINTS CANVAS
+   ============================================================ */
+(function() {
+  var canvas = document.getElementById('cv-voltage-points');
+  var ctx = canvas.getContext('2d');
+  var currentPos = 'A';
+
+  function setupCanvas() {
+    var parent = canvas.parentElement;
+    var w = parent.clientWidth - 48;
+    var h = parseInt(canvas.dataset.height, 10) || 280;
+    canvas.width = Math.round(w * window.devicePixelRatio);
+    canvas.height = Math.round(h * window.devicePixelRatio);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    draw();
+  }
+
+  function drawMeter(x, y, reading, label) {
+    // Meter box
+    ctx.fillStyle = '#1a2b1a';
+    ctx.strokeStyle = '#4ade80';
+    ctx.lineWidth = 1.5;
+    var mw = 90, mh = 50;
+    ctx.beginPath();
+    ctx.roundRect(x - mw/2, y - mh/2, mw, mh, 6);
+    ctx.fill(); ctx.stroke();
+    // LCD reading
+    ctx.fillStyle = '#4ade80';
+    ctx.font = '500 18px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(reading, x, y - 4);
+    ctx.font = '11px IBM Plex Mono, monospace';
+    ctx.fillStyle = '#6b7280';
+    ctx.fillText(label, x, y + 15);
+  }
+
+  function drawProbeWire(x1, y1, x2, y2, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.restore();
+    // Probe tip dot
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x2, y2, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    var w = parseInt(canvas.style.width, 10);
+    var h = parseInt(canvas.style.height, 10);
+    ctx.clearRect(0, 0, w, h);
+
+    // Scale-independent circuit layout
+    var cx = w / 2, cy = h / 2;
+    var rw = Math.min(w * 0.6, 320), rh = Math.min(h * 0.5, 140);
+    var left = cx - rw/2, right = cx + rw/2;
+    var top = cy - rh/2, bottom = cy + rh/2;
+
+    // Wires
+    ctx.strokeStyle = '#f9fafb';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    // top wire
+    ctx.moveTo(left, top); ctx.lineTo(right, top);
+    // right wire
+    ctx.lineTo(right, bottom);
+    // bottom wire
+    ctx.lineTo(left, bottom);
+    // left wire
+    ctx.lineTo(left, top);
+    ctx.stroke();
+
+    // Battery (left side, centred vertically)
+    var batX = left, batY = cy;
+    // Long line (+)
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(batX - 14, batY - 10); ctx.lineTo(batX + 14, batY - 10); ctx.stroke();
+    // Short line (−)
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(batX - 8, batY + 6); ctx.lineTo(batX + 8, batY + 6); ctx.stroke();
+    // Labels
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = '14px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('+', batX, batY - 22);
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillText('−', batX, batY + 22);
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '11px IBM Plex Sans, sans-serif';
+    ctx.fillText('12 V', batX, batY + 38);
+
+    // Resistor (IEC rectangle, top wire centred)
+    var resX = cx, resY = top;
+    var rRectW = 60, rRectH = 22;
+    ctx.strokeStyle = '#f9fafb';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(resX - rRectW/2, resY - rRectH/2, rRectW, rRectH);
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('R', resX, resY);
+
+    // Voltmeter and probes based on position
+    var meterX = cx + rw * 0.15, meterY = h * 0.78;
+
+    if (currentPos === 'A') {
+      // Probes across battery
+      drawProbeWire(meterX - 20, meterY - 25, batX - 2, cy - 16, '#ef4444');
+      drawProbeWire(meterX + 20, meterY - 25, batX - 2, cy + 12, '#1f2937');
+      // Black wire needs to be visible on dark bg — use dark grey
+      ctx.strokeStyle = '#d1d5db';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5,3]);
+      ctx.beginPath();
+      ctx.moveTo(meterX + 20, meterY - 25);
+      ctx.lineTo(batX - 2, cy + 12);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#d1d5db';
+      ctx.beginPath(); ctx.arc(batX - 2, cy + 12, 4, 0, Math.PI*2); ctx.fill();
+      drawMeter(meterX, meterY, '12.0 V', 'across battery');
+      // Annotation
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '11px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('PD between + and − = 12 V', cx, h - 18);
+    } else if (currentPos === 'B') {
+      // Both probes on + terminal
+      drawProbeWire(meterX - 20, meterY - 25, batX - 6, cy - 16, '#ef4444');
+      drawProbeWire(meterX + 20, meterY - 25, batX + 4, cy - 16, '#d1d5db');
+      drawMeter(meterX, meterY, ' 0.0 V', 'same point');
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '11px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('No difference between a point and itself', cx, h - 18);
+    } else {
+      // Probes across resistor
+      drawProbeWire(meterX - 20, meterY - 25, resX - rRectW/2 - 4, resY, '#ef4444');
+      drawProbeWire(meterX + 20, meterY - 25, resX + rRectW/2 + 4, resY, '#d1d5db');
+      drawMeter(meterX, meterY, '12.0 V', 'across load');
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '11px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Same 12 V across the load — energy transferred here', cx, h - 18);
+    }
+  }
+
+  // Probe position buttons
+  document.querySelectorAll('[data-pos]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      currentPos = this.dataset.pos;
+      document.querySelectorAll('[data-pos]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      draw();
+    });
+  });
+
+  var ro = new ResizeObserver(function() { setupCanvas(); });
+  ro.observe(canvas.parentElement);
+  setupCanvas();
+})();
+
+/* ============================================================
+   V2 — RESISTANCE ATOMIC COLLISIONS
+   ============================================================ */
+(function() {
+  var canvas = document.getElementById('cv-resistance-collisions');
+  var cmp = document.getElementById('cv-resistance-compare');
+  var capEl = document.getElementById('compare-caption');
+  var ctx = canvas.getContext('2d');
+  var cCtx = cmp.getContext('2d');
+  var activeFactor = 'length';
+  var t = 0;
+  var rafId = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Electrons for main animation
+  var electrons = [];
+  var collisionFlashes = [];
+
+  function setupCanvas(cv, dataHeight) {
+    var parent = cv.parentElement;
+    var w = parent.clientWidth - 48;
+    var h = parseInt(cv.dataset.height, 10) || 180;
+    cv.width = Math.round(w * window.devicePixelRatio);
+    cv.height = Math.round(h * window.devicePixelRatio);
+    cv.style.width = w + 'px';
+    cv.style.height = h + 'px';
+    cv.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  function initElectrons() {
+    var w = parseInt(canvas.style.width, 10) || 400;
+    var h = parseInt(canvas.style.height, 10) || 200;
+    electrons = [];
+    for (var i = 0; i < 8; i++) {
+      electrons.push({
+        x: Math.random() * w,
+        y: h * 0.2 + Math.random() * h * 0.6,
+        vx: 0.8 + Math.random() * 0.5,
+        vy: (Math.random() - 0.5) * 0.3,
+        collide: 0
+      });
+    }
+  }
+
+  function drawMain() {
+    var w = parseInt(canvas.style.width, 10) || 400;
+    var h = parseInt(canvas.style.height, 10) || 200;
+    ctx.clearRect(0, 0, w, h);
+
+    // Conductor tube
+    ctx.fillStyle = 'rgba(6,182,212,0.06)';
+    ctx.strokeStyle = 'rgba(6,182,212,0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(12, h * 0.15, w - 24, h * 0.7, 8);
+    ctx.fill(); ctx.stroke();
+
+    // Direction arrow
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = '11px IBM Plex Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('e⁻ drift →', 14, h * 0.12);
+
+    // Lattice atoms (amber dots in grid)
+    var cols = 10, rows = 3;
+    var padX = 28, padY = h * 0.25;
+    var stepX = (w - padX * 2) / (cols - 1);
+    var stepY = (h * 0.5) / (rows - 1);
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var ax = padX + c * stepX;
+        var ay = padY + r * stepY;
+        ctx.beginPath();
+        ctx.arc(ax, ay, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fill();
+      }
+    }
+
+    // Collision flashes
+    collisionFlashes = collisionFlashes.filter(function(f) {
+      f.life--;
+      if (f.life > 0) {
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.life * 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(239,68,68,' + (f.life / 12) + ')';
+        ctx.fill();
+      }
+      return f.life > 0;
+    });
+
+    // Electrons
+    electrons.forEach(function(e) {
+      e.x += e.vx;
+      if (e.x > w + 10) e.x = -10;
+      e.y += e.vy;
+      if (e.y < h * 0.2) e.vy = Math.abs(e.vy);
+      if (e.y > h * 0.8) e.vy = -Math.abs(e.vy);
+
+      // Check proximity to lattice atoms for collision
+      if (!reduced && Math.random() < 0.004) {
+        e.vy = (Math.random() - 0.5) * 0.8;
+        collisionFlashes.push({ x: e.x, y: e.y, life: 12 });
+      }
+
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fill();
+    });
+  }
+
+  function drawCompare() {
+    var w = parseInt(cmp.style.width, 10) || 400;
+    var h = parseInt(cmp.style.height, 10) || 140;
+    cCtx.clearRect(0, 0, w, h);
+
+    var halfW = w / 2 - 8;
+    var tubePad = 16;
+
+    if (activeFactor === 'length') {
+      // Left: short conductor (few atoms)
+      drawTube(cCtx, tubePad, h*0.2, halfW - tubePad, h*0.6, 4, '#06b6d4', 'Short');
+      // Right: long conductor (extends full)
+      drawTube(cCtx, halfW + 16, h*0.2, w - halfW - 24, h*0.6, 9, '#a78bfa', 'Long');
+      // Labels
+      cCtx.fillStyle = '#9ca3af'; cCtx.font = '11px IBM Plex Sans,sans-serif';
+      cCtx.textAlign = 'center';
+      cCtx.fillText('Few collisions', halfW/2 + tubePad/2, h - 10);
+      cCtx.fillText('More collisions', halfW + 16 + (w - halfW - 24)/2, h - 10);
+      capEl.textContent = 'Longer path → more collisions → more resistance';
+
+    } else if (activeFactor === 'area') {
+      // Left: thin conductor
+      drawTube(cCtx, tubePad, h*0.3, halfW - tubePad, h*0.4, 5, '#06b6d4', 'Thin');
+      // Right: thick conductor
+      drawTube(cCtx, halfW + 16, h*0.15, w - halfW - 24, h*0.7, 5, '#a78bfa', 'Thick');
+      cCtx.fillStyle = '#9ca3af'; cCtx.font = '11px IBM Plex Sans,sans-serif';
+      cCtx.textAlign = 'center';
+      cCtx.fillText('Crowded electrons', halfW/2 + tubePad/2, h - 10);
+      cCtx.fillText('More parallel paths', halfW + 16 + (w - halfW - 24)/2, h - 10);
+      capEl.textContent = 'Larger cross-section → more parallel paths → less resistance';
+
+    } else {
+      // Temperature
+      drawTubeThermal(cCtx, tubePad, h*0.2, halfW - tubePad, h*0.6, 5, 0.5, '#06b6d4', 'Cold');
+      drawTubeThermal(cCtx, halfW + 16, h*0.2, w - halfW - 24, h*0.6, 5, 2.5, '#f59e0b', 'Hot');
+      cCtx.fillStyle = '#9ca3af'; cCtx.font = '11px IBM Plex Sans,sans-serif';
+      cCtx.textAlign = 'center';
+      cCtx.fillText('Small vibration', halfW/2 + tubePad/2, h - 10);
+      cCtx.fillText('Large vibration', halfW + 16 + (w - halfW - 24)/2, h - 10);
+      capEl.textContent = 'Higher temperature → more atomic vibration → more resistance';
+    }
+  }
+
+  function drawTube(c, x, y, w, h, atoms, color, label) {
+    c.fillStyle = 'rgba(6,182,212,0.06)';
+    c.strokeStyle = 'rgba(255,255,255,0.15)';
+    c.lineWidth = 1;
+    c.beginPath(); c.roundRect(x, y, w, h, 5); c.fill(); c.stroke();
+    // Atoms
+    var step = w / (atoms + 1);
+    for (var i = 1; i <= atoms; i++) {
+      c.beginPath();
+      c.arc(x + i * step, y + h/2, 4, 0, Math.PI*2);
+      c.fillStyle = '#f59e0b'; c.fill();
+    }
+    c.fillStyle = color; c.font = 'bold 11px IBM Plex Mono,monospace';
+    c.textAlign = 'center'; c.textBaseline = 'top';
+    c.fillText(label, x + w/2, y - 14);
+  }
+
+  function drawTubeThermal(c, x, y, w, h, atoms, vibAmp, color, label) {
+    c.fillStyle = 'rgba(6,182,212,0.06)';
+    c.strokeStyle = 'rgba(255,255,255,0.15)';
+    c.lineWidth = 1;
+    c.beginPath(); c.roundRect(x, y, w, h, 5); c.fill(); c.stroke();
+    var step = w / (atoms + 1);
+    for (var i = 1; i <= atoms; i++) {
+      var jitter = vibAmp * (Math.random() - 0.5) * 2;
+      c.beginPath();
+      c.arc(x + i * step, y + h/2 + jitter, 4 + vibAmp * 0.3, 0, Math.PI*2);
+      c.fillStyle = color; c.fill();
+    }
+    c.fillStyle = color; c.font = 'bold 11px IBM Plex Mono,monospace';
+    c.textAlign = 'center'; c.textBaseline = 'top';
+    c.fillText(label, x + w/2, y - 14);
+  }
+
+  function loop() {
+    t++;
+    drawMain();
+    if (t % 3 === 0) drawCompare(); // redraw compare less often
+    if (!reduced) {
+      rafId = requestAnimationFrame(loop);
+    }
+  }
+
+  // Tab buttons
+  document.querySelectorAll('.tab-factor').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activeFactor = this.dataset.factor;
+      document.querySelectorAll('.tab-factor').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      drawCompare();
+    });
+  });
+
+  function init() {
+    setupCanvas(canvas, 200);
+    setupCanvas(cmp, 140);
+    initElectrons();
+    if (reduced) {
+      drawMain(); drawCompare();
+    } else {
+      loop();
+    }
+  }
+
+  var ro = new ResizeObserver(function() {
+    if (rafId) cancelAnimationFrame(rafId);
+    setupCanvas(canvas, 200);
+    setupCanvas(cmp, 140);
+    initElectrons();
+    if (!reduced) loop();
+  });
+  ro.observe(canvas.parentElement);
+  init();
+})();
+
+/* ============================================================
+   V4 — OHM'S LAW TRIANGLE + CALCULATOR
+   ============================================================ */
+(function() {
+  var triV = document.getElementById('tri-v');
+  var triI = document.getElementById('tri-i');
+  var triR = document.getElementById('tri-r');
+  var lblV = document.getElementById('tri-lbl-v');
+  var lblI = document.getElementById('tri-lbl-i');
+  var lblR = document.getElementById('tri-lbl-r');
+  var fmEq = document.getElementById('ohm-formula-eq');
+  var inV = document.getElementById('calc-v');
+  var inI = document.getElementById('calc-i');
+  var inR = document.getElementById('calc-r');
+  var pfxV = document.getElementById('pfx-v');
+  var pfxI = document.getElementById('pfx-i');
+  var pfxR = document.getElementById('pfx-r');
+
+  var selected = null;
+  var formulas = {
+    V: { text: 'V = I × R', fill: 'rgba(245,158,11,0.35)' },
+    I: { text: 'I = V ÷ R', fill: 'rgba(6,182,212,0.35)' },
+    R: { text: 'R = V ÷ I', fill: 'rgba(167,139,250,0.35)' }
+  };
+
+  function selectVar(v) {
+    selected = v;
+    triV.setAttribute('fill', v === 'V' ? formulas.V.fill : 'rgba(245,158,11,0.12)');
+    triI.setAttribute('fill', v === 'I' ? formulas.I.fill : 'rgba(6,182,212,0.10)');
+    triR.setAttribute('fill', v === 'R' ? formulas.R.fill : 'rgba(167,139,250,0.10)');
+    fmEq.textContent = formulas[v].text;
+    fmEq.className = 'ohm-formula-eq active';
+    inV.classList.toggle('calc-result', v === 'V');
+    inI.classList.toggle('calc-result', v === 'I');
+    inR.classList.toggle('calc-result', v === 'R');
+    calculate();
+  }
+
+  function getVal(inp, pfx) {
+    var v = parseFloat(inp.value);
+    var m = parseFloat(pfx.value);
+    return isNaN(v) ? NaN : v * m;
+  }
+
+  function setResult(inp, pfx, baseVal) {
+    if (!isFinite(baseVal) || baseVal <= 0) { inp.value = ''; return; }
+    var m = parseFloat(pfx.value);
+    var disp = baseVal / m;
+    inp.value = disp < 100 ? +disp.toPrecision(4) : Math.round(disp * 10000) / 10000;
+  }
+
+  function calculate() {
+    if (!selected) return;
+    var v = getVal(inV, pfxV), i = getVal(inI, pfxI), r = getVal(inR, pfxR);
+    if (selected === 'V' && !isNaN(i) && !isNaN(r)) setResult(inV, pfxV, i * r);
+    if (selected === 'I' && !isNaN(v) && !isNaN(r)) setResult(inI, pfxI, v / r);
+    if (selected === 'R' && !isNaN(v) && !isNaN(i)) setResult(inR, pfxR, v / i);
+  }
+
+  triV.addEventListener('click', function() { selectVar('V'); });
+  triI.addEventListener('click', function() { selectVar('I'); });
+  triR.addEventListener('click', function() { selectVar('R'); });
+  [inV, inI, inR, pfxV, pfxI, pfxR].forEach(function(el) {
+    el.addEventListener('input', calculate);
+  });
+})();
+
+/* ============================================================
+   V5 — WORKED EXAMPLES TABS
+   ============================================================ */
+(function() {
+  var tabBtns = document.querySelectorAll('#card-worked-examples .tab-btn');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      this.classList.add('active'); this.setAttribute('aria-selected','true');
+      document.querySelectorAll('#card-worked-examples .example-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    });
+  });
+
+  // "Try it" calculator (panel-ex5)
+  var tryV = document.getElementById('try-v');
+  var tryI = document.getElementById('try-i');
+  var tryR = document.getElementById('try-r');
+  var tryPV = document.getElementById('try-pfx-v');
+  var tryPI = document.getElementById('try-pfx-i');
+  var tryPR = document.getElementById('try-pfx-r');
+
+  function tryCalc() {
+    var vm = parseFloat(tryPV.value), im = parseFloat(tryPI.value), rm = parseFloat(tryPR.value);
+    var v = parseFloat(tryV.value) * vm;
+    var i = parseFloat(tryI.value) * im;
+    var r = parseFloat(tryR.value) * rm;
+    var vFilled = !isNaN(v), iFilled = !isNaN(i), rFilled = !isNaN(r);
+    var count = (vFilled ? 1 : 0) + (iFilled ? 1 : 0) + (rFilled ? 1 : 0);
+    if (count !== 2) return;
+    function setDisp(inp, pfx, val) {
+      var m = parseFloat(pfx.value);
+      var d = val / m;
+      inp.value = d < 100 ? +d.toPrecision(4) : Math.round(d * 1000) / 1000;
+      inp.classList.add('calc-result');
+    }
+    tryV.classList.remove('calc-result');
+    tryI.classList.remove('calc-result');
+    tryR.classList.remove('calc-result');
+    if (!vFilled) setDisp(tryV, tryPV, i * r);
+    else if (!iFilled) setDisp(tryI, tryPI, v / r);
+    else setDisp(tryR, tryPR, v / i);
+  }
+
+  [tryV, tryI, tryR, tryPV, tryPI, tryPR].forEach(function(el) {
+    el.addEventListener('input', tryCalc);
+  });
+})();
+
+/* ============================================================
+   V6 — SCHEMATIC TOGGLE
+   ============================================================ */
+(function() {
+  var btn = document.getElementById('schem-toggle');
+  var s1 = document.getElementById('schem-svg-1');
+  var s2 = document.getElementById('schem-svg-2');
+  var showing1 = true;
+  btn.addEventListener('click', function() {
+    showing1 = !showing1;
+    s1.hidden = !showing1;
+    s2.hidden = showing1;
+    btn.textContent = showing1
+      ? 'Show: Two Resistors in Series →'
+      : '← Show: Single Resistor Circuit';
+  });
+})();
+</script>
+</body>
+</html>

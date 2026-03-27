@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 — What Is Electricity? — RF-Hub Electronics</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --border-accent: rgba(245,158,11,0.3);
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+img, canvas, svg { max-width: 100%; display: block; }
+a { color: var(--accent-em); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO — Electronics variant (amber→cyan gradient)
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #0f1a2e 60%, #0a1a1a 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--elec {
+  background: rgba(6,182,212,0.12);
+  border-color: rgba(6,182,212,0.3);
+  color: var(--cyan);
+}
+.objectives {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+}
+.objectives h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.objectives ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.objectives li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+.objectives li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   CHAPTER SECTIONS
+   ============================================================ */
+.chapter {
+  margin-top: 64px;
+}
+.chapter-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.chapter > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.chapter h3 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 32px 0 12px;
+}
+.chapter p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 18px;
+}
+.chapter p strong { color: var(--text-primary); font-weight: 600; }
+.chapter ul, .chapter ol {
+  color: var(--text-secondary);
+  padding-left: 24px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chapter li { line-height: 1.65; }
+.chapter li strong { color: var(--text-primary); }
+
+/* ============================================================
+   DIAGRAM CARDS
+   ============================================================ */
+.diagram-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin: 32px 0;
+  overflow: hidden;
+}
+.diagram-card--wide {
+  margin-left: -24px;
+  margin-right: -24px;
+  border-radius: var(--radius-md);
+}
+.diagram-card .card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.diagram-card canvas {
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  width: 100%;
+}
+.diagram-card .card-caption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   CALLOUTS / BLOCKQUOTES
+   ============================================================ */
+.callout {
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 24px 0;
+  border-left: 3px solid;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.callout--amber { background: rgba(245,158,11,0.08); border-color: var(--amber); }
+.callout--cyan  { background: rgba(6,182,212,0.08);  border-color: var(--cyan);  }
+.callout--purple{ background: rgba(167,139,250,0.08); border-color: var(--purple);}
+.callout strong { color: var(--text-primary); }
+
+blockquote {
+  margin: 20px 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--cyan);
+  background: rgba(6,182,212,0.07);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+blockquote strong { color: var(--text-primary); }
+
+/* ============================================================
+   CURRENT PREFIX TABLE
+   ============================================================ */
+.prefix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 20px 0;
+}
+.prefix-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.prefix-table td {
+  padding: 9px 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.prefix-table tr:last-child td { border-bottom: none; }
+.prefix-table td:first-child { color: var(--text-primary); font-weight: 500; }
+.prefix-table td:nth-child(2) { font-family: var(--font-mono); color: var(--amber); }
+
+/* ============================================================
+   INTERACTIVE CONTROLS (V2, V5)
+   ============================================================ */
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.ctrl-row label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.ctrl-row input[type="range"] {
+  flex: 1;
+  min-width: 120px;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
+.ctrl-row .ctrl-readout {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--amber);
+  min-width: 80px;
+  text-align: right;
+}
+.ctrl-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(6,182,212,0.4);
+  background: rgba(6,182,212,0.1);
+  color: var(--cyan);
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.ctrl-btn:hover { background: rgba(6,182,212,0.2); }
+.ctrl-btn.closed {
+  border-color: rgba(74,222,128,0.4);
+  background: rgba(74,222,128,0.1);
+  color: var(--green);
+}
+
+/* ============================================================
+   BENCH EXPERIMENT CALLOUT
+   ============================================================ */
+.experiment-block {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin: 32px 0;
+}
+.experiment-block .exp-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+}
+.experiment-block h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.experiment-block p, .experiment-block li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+.experiment-block ol { padding-left: 20px; }
+
+/* ============================================================
+   SELF-CHECK
+   ============================================================ */
+.self-check {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 32px;
+}
+.self-check h3.sc-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.self-check h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.self-check > p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+.check-part { margin-bottom: 36px; }
+.check-part h3 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.check-item { margin-bottom: 20px; }
+.check-item p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.check-item p strong { color: var(--text-primary); }
+.btn-reveal {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(6,182,212,0.3);
+  background: rgba(6,182,212,0.08);
+  color: var(--cyan);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-reveal:hover { background: rgba(6,182,212,0.16); }
+.self-check__reveal {
+  margin-top: 12px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.self-check__reveal p { margin-bottom: 8px; }
+.self-check__reveal p:last-child { margin-bottom: 0; }
+.self-check__reveal strong { color: var(--text-primary); }
+
+/* ============================================================
+   LESSON SUMMARY
+   ============================================================ */
+.lesson-summary {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 48px;
+}
+.lesson-summary h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+.lesson-summary ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lesson-summary li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding-left: 20px;
+  position: relative;
+}
+.lesson-summary li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-size: 0.75rem;
+  top: 3px;
+}
+.lesson-summary li strong { color: var(--text-primary); }
+
+/* ============================================================
+   LESSON NAV + FOOTER
+   ============================================================ */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.nav-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.nav-btn--next {
+  background: rgba(6,182,212,0.1);
+  border-color: rgba(6,182,212,0.3);
+  color: var(--cyan);
+}
+.nav-btn--next:hover { background: rgba(6,182,212,0.18); }
+footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero { padding: 40px 16px 32px; }
+  main { padding: 0 16px 60px; }
+  .objectives { padding: 18px 20px; }
+  .self-check { padding: 20px; }
+  .lesson-summary { padding: 20px; }
+  .diagram-card { padding: 16px; }
+  .site-nav-links { display: none; }
+  .lesson-nav { flex-direction: column; align-items: stretch; }
+  .nav-btn { text-align: center; }
+  .ctrl-row { flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.6rem; }
+  main { padding: 0 12px 48px; }
+}
+@media (min-width: 1200px) { main { max-width: 900px; } }
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress-bar { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SITE NAV
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../../../index.html">Dashboard</a></li>
+      <li><a href="../../../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../../../antennas.html">Antennas</a></li>
+      <li><a href="../../../learning-path.html" class="active">Learning Path</a></li>
+      <li><a href="../../../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-meta">Electronics — Unit 1: The Language of Electricity &nbsp;·&nbsp; Lesson 1 of ?</div>
+  <h1>What Is Electricity?</h1>
+  <p class="hero-subtitle">Everything in electronics comes back to one physical quantity: electric charge. Learn what it is, how it moves, and why it needs a complete path to flow.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">Level: Foundation [F]</span>
+    <span class="hero-badge">RSGB 2A1</span>
+    <span class="hero-badge">Prerequisites: None</span>
+    <span class="hero-badge">Reading: 25 min</span>
+    <span class="hero-badge hero-badge--elec">5 Visuals</span>
+  </div>
+  <div class="objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what electric charge is and why it is the starting point for all of electronics</li>
+      <li>Describe how current flows in a conductor at the particle level</li>
+      <li>State the unit of current (ampere) and relate it to the physical movement of charge</li>
+      <li>Distinguish between conductors and insulators at the atomic level</li>
+      <li>Recognise the difference between conventional current and electron flow</li>
+      <li>Explain why a complete circuit is necessary for sustained current flow</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- ============================================================
+     SECTION 1 — Charge
+     ============================================================ -->
+<section class="chapter" id="section-1">
+  <div class="chapter-label">Section 1</div>
+  <h2>Charge: Where It All Starts</h2>
+
+  <p>Everything in this curriculum — every component, every circuit, every signal you will ever transmit or receive — comes back to one physical quantity: <strong>electric charge</strong>.</p>
+
+  <p>Charge is a fundamental property of matter, as fundamental as mass. You cannot see it directly, but its effects are everywhere: the spark from your finger to a metal door handle, lightning crossing kilometres of sky, the 100 W signal from an HF transmitter reaching the other side of the world.</p>
+
+  <p>Here is what you need to know about charge at this stage.</p>
+
+  <p><strong>Atoms contain charged particles.</strong> Every atom has a nucleus of positively charged <strong>protons</strong> and uncharged <strong>neutrons</strong>, surrounded by negatively charged <strong>electrons</strong>. In a neutral atom, the number of protons equals the number of electrons and the charges balance to zero.</p>
+
+  <p><strong>Charge comes in two types: positive and negative.</strong> This is not a labelling convention — positive and negative charges behave in physically opposite ways. Like charges repel each other. Unlike charges attract. This attraction and repulsion is the engine that drives everything in electronics.</p>
+
+  <p><strong>The electron carries the smallest freely-moving unit of charge.</strong> A single electron's charge is unimaginably small: about 1.6 × 10⁻¹⁹ coulombs. The <strong>coulomb</strong> (symbol <strong>C</strong>) is the SI unit of charge. In practice we never work with individual electrons — we work with incomprehensibly large numbers of them moving together.</p>
+
+  <p><strong>Charge is conserved.</strong> You cannot create or destroy charge. You can only move it from one place to another. This is not just a theoretical principle — it is the foundation of every circuit analysis technique you will learn. When charge flows into one end of a component, exactly the same amount flows out the other end. No exceptions. Ever.</p>
+
+  <div class="callout callout--cyan">
+    <strong>A note on the word "electricity."</strong> In everyday English, "electricity" means everything from the energy that lights your house to the spark from a Van de Graaff generator. It is surprisingly imprecise. In this curriculum we avoid it as a technical term. Instead we talk about <strong>charge</strong>, <strong>current</strong>, <strong>voltage</strong>, and <strong>power</strong> — each with a precise definition and a measurable unit. When we say "electricity" informally, we mean the general phenomenon. When precision matters, we use the specific quantity.
+  </div>
+
+  <!-- VISUAL SLOT: V1 — atom-charge-model -->
+  <div class="diagram-card" id="v1-card">
+    <div class="card-title">Visual 1 — Atomic Structure and Charge</div>
+    <canvas id="cv-atom"
+            data-height="280"
+            aria-label="Stylised atom diagram showing nucleus (amber protons, grey neutrons) surrounded by cyan electron cloud, with like-charges-repel and unlike-charges-attract panels below">
+    </canvas>
+    <p class="card-caption">Nucleus: amber protons (+), grey neutrons. Electron cloud: cyan (−). Like charges repel — unlike charges attract.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — Current
+     ============================================================ -->
+<section class="chapter" id="section-2">
+  <div class="chapter-label">Section 2</div>
+  <h2>Current: Charge in Motion</h2>
+
+  <p>Charge sitting still is electrostatics — interesting for understanding lightning, but not much use for building a radio. Electronics begins when charge <em>moves</em>.</p>
+
+  <p><strong>Electric current is the rate at which charge flows past a point.</strong> That is the definition. Not "the amount of charge" — the <em>rate</em>. How much charge passes per second.</p>
+
+  <p>The unit of current is the <strong>ampere</strong> (symbol <strong>A</strong>), named after the French physicist André-Marie Ampère. One ampere means one coulomb of charge flowing past a point every second.</p>
+
+  <blockquote><strong>1 A = 1 C/s</strong> — one ampere equals one coulomb per second.</blockquote>
+
+  <p>What does one ampere actually look like at the particle level? One coulomb contains approximately 6.24 × 10¹⁸ electrons. That is 6,240,000,000,000,000,000 electrons passing a single point in one second. Even a tiny current of one milliamp (1 mA = 0.001 A) involves about 6.24 × 10¹⁵ electrons per second. The numbers are absurd, which is exactly why we use amperes instead of counting electrons.</p>
+
+  <p>In RF electronics, the currents you encounter span a huge range:</p>
+  <ul>
+    <li>A sensitive receiver might detect a signal that induces <strong>microamps</strong> (μA, millionths of an ampere) in the antenna</li>
+    <li>A typical circuit might draw <strong>milliamps</strong> (mA, thousandths of an ampere) from its power supply</li>
+    <li>An HF transmitter's final amplifier might pull <strong>several amperes</strong> from a 13.8 V supply</li>
+    <li>A high-power broadcast transmitter can demand <strong>hundreds of amperes</strong></li>
+  </ul>
+
+  <p>The prefixes matter. You will use them constantly:</p>
+
+  <table class="prefix-table" aria-label="Current unit prefixes">
+    <thead>
+      <tr><th>Prefix</th><th>Symbol</th><th>Multiplier</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>micro</td><td>μ</td><td>× 10⁻⁶ (÷ 1,000,000)</td><td>50 μA received signal</td></tr>
+      <tr><td>milli</td><td>m</td><td>× 10⁻³ (÷ 1,000)</td><td>250 mA circuit draw</td></tr>
+      <tr><td>(none)</td><td>A</td><td>× 1</td><td>3 A transmitter PA</td></tr>
+      <tr><td>kilo</td><td>k</td><td>× 10³ (× 1,000)</td><td>(rare in current — common in frequency and resistance)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- VISUAL SLOT: V2 — current-flow-pipe interactive -->
+  <div class="diagram-card" id="v2-card">
+    <div class="card-title">Visual 2 — Current: Charge Flow Rate (Interactive)</div>
+    <canvas id="cv-current-pipe"
+            data-height="180"
+            aria-label="Animated wire cross-section showing electrons drifting left, with counter showing electrons per second and ampere readout. Slider adjusts current from 0.1 mA to 5 A.">
+    </canvas>
+    <div class="ctrl-row">
+      <label for="current-slider">Current</label>
+      <input type="range" id="current-slider" min="0" max="100" value="30" aria-label="Adjust current level">
+      <output id="current-readout" class="ctrl-readout">250 mA</output>
+    </div>
+    <p class="card-caption">Electrons drift slowly (~0.1 mm/s at 1 A in copper). The electric field that pushes them travels at nearly the speed of light — that's why the lamp turns on instantly.</p>
+  </div>
+
+  <h3>The Speed Misconception</h3>
+
+  <p>There is a common misconception worth addressing now, because it will come back to bite you later if left uncorrected.</p>
+
+  <p>When you flip a light switch, the lamp turns on almost instantly. It is natural to assume the electrons must be racing through the wire at enormous speed. They are not.</p>
+
+  <p>In a typical copper wire carrying one ampere, the electrons drift at roughly <strong>0.1 millimetres per second</strong>. That is not a typo. A tenth of a millimetre. Per second. A snail would leave them behind.</p>
+
+  <p>So why does the lamp turn on instantly? Because the <strong>electric field</strong> that pushes the electrons propagates through the wire at close to the speed of light. When you close the switch, the field reaches every electron in the circuit almost simultaneously, and they all start moving at once. It is like a pipe already full of water: push on one end and water comes out the other end immediately, even though no individual water molecule has travelled the full length.</p>
+
+  <p>The current you measure — amperes — is the collective drift of enormous numbers of very slow electrons. The signal that tells them to move travels fast. The electrons themselves do not.</p>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — Conventional Current vs Electron Flow
+     ============================================================ -->
+<section class="chapter" id="section-3">
+  <div class="chapter-label">Section 3</div>
+  <h2>Conventional Current vs Electron Flow</h2>
+
+  <p>Here is something that trips up every beginner, and it has tripped up students since the 18th century.</p>
+
+  <p>When Benjamin Franklin was experimenting with static electricity in the 1740s, he had to pick a direction for current flow. He guessed that positive charge moved from the positive terminal, through the circuit, to the negative terminal. He was wrong — we now know that in metal conductors, it is the negatively charged electrons that move, and they flow from negative to positive.</p>
+
+  <p>But Franklin's convention stuck. Every circuit diagram, every textbook, every equation you will encounter in electronics defines current as flowing from <strong>positive to negative</strong>. This is called <strong>conventional current</strong>.</p>
+
+  <p>The actual electron movement — from <strong>negative to positive</strong> — is called <strong>electron flow</strong>.</p>
+
+  <p>Both descriptions produce the same results in circuit analysis. Ohm's law works. Kirchhoff's laws work. Power calculations work. The maths does not care which direction you call "positive," as long as you are consistent.</p>
+
+  <p><strong>This curriculum uses conventional current</strong>, as does virtually all electronics and RF engineering literature. Current flows from positive to negative. When we draw an arrow showing current direction on a circuit diagram, it points from + to −.</p>
+
+  <p>If this feels uncomfortable, here is the practical resolution: think of current as a flow of positive charge from + to −. The fact that electrons (negative charge) are actually flowing the other way means that a flow of negative charge in one direction is mathematically identical to a flow of positive charge in the opposite direction. The physics is the same either way.</p>
+
+  <blockquote><strong>Convention settled:</strong> In this curriculum, current flows from positive to negative (conventional current). All circuit diagrams, arrows, and analysis use this convention. This matches the RSGB syllabus, ARRL literature, and standard engineering practice.</blockquote>
+
+  <!-- VISUAL SLOT: V3 — conventional-vs-electron -->
+  <div class="diagram-card diagram-card--wide" id="v3-card">
+    <div class="card-title">Visual 3 — Conventional Current vs Electron Flow</div>
+    <canvas id="cv-convention"
+            data-height="200"
+            aria-label="Two identical circuits side by side: left shows conventional current (amber arrows, positive to negative), right shows electron flow (cyan arrows, negative to positive)">
+    </canvas>
+    <p class="card-caption">Left: conventional current (amber, + to −) — used in this curriculum. &nbsp; Right: electron flow (cyan, − to +) — what physically happens.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — Conductors and Insulators
+     ============================================================ -->
+<section class="chapter" id="section-4">
+  <div class="chapter-label">Section 4</div>
+  <h2>Conductors and Insulators</h2>
+
+  <p>Not all materials allow current to flow. Whether a material conducts depends on what is happening at the atomic level.</p>
+
+  <h3>Conductors</h3>
+
+  <p>In a <strong>conductor</strong>, some electrons are not tightly bound to individual atoms. In metals — copper, aluminium, silver, gold — the outermost electrons are shared across the entire material in what physicists call an "electron sea" or "conduction band." These <strong>free electrons</strong> can move through the material when pushed by an electric field.</p>
+
+  <p>Copper is the workhorse of electronics. It has excellent conductivity (one free electron per atom readily available for conduction), it is ductile enough to draw into thin wire, and it is affordable. Almost every wire, PCB trace, and connector you will encounter in RF work is copper or copper-plated.</p>
+
+  <p>Silver is slightly more conductive than copper — about 5% better. At RF frequencies, where current flows only in a thin skin on the conductor surface (the <strong>skin effect</strong> — we will cover this properly in a later unit), that 5% can matter. This is why some RF connectors and cavity filters are silver-plated.</p>
+
+  <p>Aluminium is lighter and cheaper than copper but less conductive. It is used for antenna elements, ground planes, and chassis where weight matters.</p>
+
+  <h3>Insulators</h3>
+
+  <p>In an <strong>insulator</strong>, all electrons are tightly bound to their atoms. There are no free electrons available to carry current. Apply an electric field and nothing moves — the electrons stay locked in place.</p>
+
+  <p>Common insulators in electronics: glass, ceramic, most plastics (PVC, PTFE, polyethylene), rubber, dry air. You encounter them as wire insulation, PCB substrate material, coaxial cable dielectric, and the dielectric in capacitors (a concept we will meet in Unit 2).</p>
+
+  <p><strong>PTFE</strong> (polytetrafluoroethylene, commonly known as Teflon) is particularly important in RF work. It has extremely low dielectric loss at high frequencies, which is why premium RF coaxial cables and PCB materials use PTFE as the dielectric. When you see cable types like RG-142 or substrate names like Rogers RT/duroid, they are PTFE-based.</p>
+
+  <h3>The Spectrum Between</h3>
+
+  <p>The conductor/insulator division is not binary. <strong>Semiconductors</strong> — silicon and germanium — sit between the two extremes. Their conductivity can be controlled by adding impurities (doping), by temperature, or by applying a voltage. This controllability is what makes transistors possible, and transistors are what make amplifiers, oscillators, and everything else in active electronics possible. We will reach semiconductors in Unit 4.</p>
+
+  <p>There are also materials whose conductivity depends on conditions: wet wood conducts (poorly), dry wood insulates. Salt water is a decent conductor; pure water is a reasonable insulator. In RF engineering, the conductivity of soil and sea water directly affects ground-wave propagation and antenna ground systems — a topic covered in the antenna curriculum.</p>
+
+  <!-- VISUAL SLOT: V4 — conductor-insulator-atomic -->
+  <div class="diagram-card diagram-card--wide" id="v4-card">
+    <div class="card-title">Visual 4 — Conductor vs Insulator at the Atomic Level</div>
+    <canvas id="cv-conductor-insulator"
+            data-height="240"
+            aria-label="Two panels: left shows copper lattice with free electrons drifting under an electric field; right shows glass with all electrons tightly bound and immobile. Below: conductivity scale from glass to silver.">
+    </canvas>
+    <p class="card-caption">Left: conductor — free electrons drift under the applied field. &nbsp; Right: insulator — all electrons bound, none free to move.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — Circuits: The Complete Path
+     ============================================================ -->
+<section class="chapter" id="section-5">
+  <div class="chapter-label">Section 5</div>
+  <h2>Circuits: The Complete Path</h2>
+
+  <p>Current does not flow in isolation. It needs a complete, unbroken path — from the energy source, through the circuit, and back to the source. This path is called a <strong>circuit</strong> (from the Latin <em>circuitus</em> — "a going around").</p>
+
+  <p>Break the path at any point and current stops everywhere in the circuit, instantly. This is why a switch works: it opens a gap in the conductor, breaking the circuit. Close the gap, current flows. Open it, current stops.</p>
+
+  <p>The simplest circuit has four elements:</p>
+  <ol>
+    <li><strong>A source of energy</strong> — a battery, power supply, or signal generator. It provides the force that pushes charge around the circuit. (We will define this force precisely in Lesson 2 — it is called <em>voltage</em>.)</li>
+    <li><strong>A conductor</strong> — wire connecting the components. It provides the path for current.</li>
+    <li><strong>A load</strong> — something that uses the energy: a lamp, a resistor, an amplifier, an antenna. Without a load, you have a short circuit.</li>
+    <li><strong>A return path</strong> — the conductor back to the source. The circuit must be complete.</li>
+  </ol>
+
+  <p>Every circuit you will ever analyse, no matter how complex, is built from these elements. A superhet receiver with hundreds of components is still, at its core, sources pushing current through loads along complete paths.</p>
+
+  <!-- VISUAL SLOT: V5 — simple-circuit-interactive -->
+  <div class="diagram-card" id="v5-card">
+    <div class="card-title">Visual 5 — The Complete Circuit (Interactive)</div>
+    <canvas id="cv-circuit"
+            data-height="220"
+            aria-label="Interactive simple circuit: battery, lamp, and switch. Click the switch to open or close the circuit. When closed, current flows and the lamp glows. When open, current stops everywhere.">
+    </canvas>
+    <div class="ctrl-row">
+      <button class="ctrl-btn" id="switch-btn" aria-pressed="false">Switch: OPEN — click to close</button>
+      <span id="circuit-status" style="font-family:var(--font-mono); font-size:0.82rem; color:var(--text-muted);">No current — circuit incomplete</span>
+    </div>
+    <p class="card-caption">Click the switch. Breaking the circuit at any point stops current everywhere — not just at the break.</p>
+  </div>
+
+  <h3>Why "Complete Path" Matters in RF</h3>
+
+  <p>At this point you might wonder: does a transmitting antenna have a complete circuit? The signal leaves the antenna and radiates into space — where is the return path?</p>
+
+  <p>Good question. The answer is that the antenna <em>does</em> form a complete circuit, but the return path is not always an obvious wire. In a dipole antenna, current flows up one half and back down the other — the two halves of the dipole are the outgoing and return paths. In a vertical monopole, the ground plane provides the return. In a transmission line, one conductor carries current out and the other carries it back.</p>
+
+  <p>The complete-circuit principle is never violated. It just gets more interesting in RF systems. The antenna curriculum covers this in detail.</p>
+</section>
+
+<!-- ============================================================
+     BENCH EXPERIMENT
+     ============================================================ -->
+<section class="chapter" id="section-bench">
+  <div class="experiment-block">
+    <div class="exp-label">🔧 Optional Bench Experiment</div>
+    <h3>Build Your First Circuit</h3>
+    <p>If you have a multimeter, a battery (AA or 9V), and a small torch bulb or LED (with a resistor), you can verify the complete-circuit principle directly.</p>
+    <p><strong>What you need:</strong> One battery (1.5 V AA or 9 V PP3), one small load (torch bulb, or LED with a 470 Ω resistor in series), two short pieces of wire (or crocodile clip leads), a multimeter set to DC current (mA range).</p>
+    <ol>
+      <li>Connect the battery, load, and multimeter in a loop — the multimeter in series so all the current flows through it.</li>
+      <li>Note the current reading. This is the current flowing in every part of the circuit — it is the same everywhere in a series loop.</li>
+      <li>Disconnect one wire. The current drops to zero everywhere. Not just at the break point — everywhere.</li>
+      <li>Reconnect. Current returns to the same value.</li>
+    </ol>
+    <p>You have just demonstrated charge conservation (same current everywhere in a series loop) and the complete-circuit principle (break anywhere, current stops everywhere).</p>
+    <p style="font-size:0.82rem; color:var(--text-muted); margin-top:8px;">Full write-up with equipment options, safety notes, and measurement recording templates is in the RF-Hub experiment library.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SELF-CHECK
+     ============================================================ -->
+<section class="self-check" id="self-check">
+  <h3 class="sc-label">Self-Check</h3>
+  <h2>Test Your Understanding</h2>
+  <p>Work through these without looking back at the lesson. If you get stuck, re-read the relevant section — don't just peek at the answer.</p>
+
+  <!-- Quick Calculations -->
+  <div class="check-part">
+    <h3>Quick Calculations</h3>
+
+    <div class="check-item">
+      <p><strong>Q1.</strong> A circuit carries a steady current of 2 A. How much charge passes a point in the wire in 10 seconds?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q1">Show answer</button>
+      <div class="self-check__reveal" id="ans-q1" hidden>
+        <p>Q = I × t = 2 A × 10 s = <strong>20 coulombs</strong>.</p>
+        <p>In 10 seconds, 20 coulombs of charge pass the point. That's approximately 1.25 × 10²⁰ electrons.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q2.</strong> A receiver's antenna input stage draws 50 μA. Express this in amperes.</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q2">Show answer</button>
+      <div class="self-check__reveal" id="ans-q2" hidden>
+        <p>50 μA = 50 × 10⁻⁶ A = <strong>0.000050 A = 5 × 10⁻⁵ A</strong>.</p>
+        <p>The prefix μ (micro) means "divided by one million."</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q3.</strong> An HF transmitter draws 22 A from a 13.8 V supply. A handheld VHF radio draws 350 mA on transmit. How many times more current does the HF transmitter draw?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q3">Show answer</button>
+      <div class="self-check__reveal" id="ans-q3" hidden>
+        <p>First, get both in the same units: 350 mA = 0.35 A.</p>
+        <p>Ratio: 22 / 0.35 = <strong>approximately 63 times more current</strong>.</p>
+        <p>This gives you a feel for the scale difference between HF and VHF handheld equipment.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Concept Questions -->
+  <div class="check-part">
+    <h3>Concept Questions</h3>
+
+    <div class="check-item">
+      <p><strong>Q4.</strong> You have a simple circuit: battery, switch, and lamp in a loop. The switch is closed and the lamp is lit. You now cut the wire between the lamp and the battery's negative terminal. What happens to the current flowing between the battery's positive terminal and the lamp?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q4">Show answer</button>
+      <div class="self-check__reveal" id="ans-q4" hidden>
+        <p>The current drops to <strong>zero everywhere</strong> in the circuit — including between the positive terminal and the lamp. Breaking the circuit at any point stops current at every point. There is no "current left over" between the battery and the lamp just because that section of wire is still connected. Current requires a complete path.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q5.</strong> Copper is used for almost all wiring in electronics. Silver is a slightly better conductor. Why isn't silver used instead?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q5">Show answer</button>
+      <div class="self-check__reveal" id="ans-q5" hidden>
+        <p><strong>Cost.</strong> Silver is far more expensive than copper, and the conductivity improvement is only about 5%. For most applications the difference doesn't justify the cost.</p>
+        <p>However, in RF applications where current flows in a thin skin on the surface (skin effect), even a small conductivity improvement matters — which is why RF connectors and cavity filters are sometimes silver-plated. You get the benefit of silver's conductivity where it counts (the surface) without the cost of making the entire component from silver.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q6.</strong> Is current a flow of electrons or a flow of positive charges?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q6">Show answer</button>
+      <div class="self-check__reveal" id="ans-q6" hidden>
+        <p>In a metal conductor, the physical reality is that electrons (negative charges) move. But conventional current — the universal convention in electronics — describes current as a flow of positive charge from + to −.</p>
+        <p>Both descriptions produce <strong>identical results</strong> in every equation and analysis technique. We use conventional current because it matches all standard references, schematics, and engineering practice. The key is consistency.</p>
+      </div>
+    </div>
+
+    <div class="check-item">
+      <p><strong>Q7.</strong> A friend says: "When I flip a light switch, electricity shoots through the wire at the speed of light and reaches the bulb." What is right and what is wrong about this statement?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-q7">Show answer</button>
+      <div class="self-check__reveal" id="ans-q7" hidden>
+        <p>Partially right, mostly wrong. What travels at near the speed of light is the <strong>electric field</strong> — the push that tells all the electrons in the wire to start moving. The electrons themselves drift at about 0.1 mm/s — extraordinarily slowly.</p>
+        <p>The bulb lights up almost instantly because the field arrives almost instantly, not because electrons sprint from the switch to the bulb. The wire was already full of free electrons; the field just nudged them all at once.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conductor or Insulator? -->
+  <div class="check-part">
+    <h3>Conductor or Insulator?</h3>
+    <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:16px;">For each material, state whether it is a conductor, insulator, or semiconductor, and give a one-sentence reason.</p>
+
+    <div class="check-item">
+      <p><strong>1.</strong> Copper wire &nbsp; <strong>2.</strong> Rubber mains cable insulation &nbsp; <strong>3.</strong> Silicon chip (undoped) &nbsp; <strong>4.</strong> Sea water &nbsp; <strong>5.</strong> PTFE coaxial cable dielectric &nbsp; <strong>6.</strong> Gold-plated SMA pin &nbsp; <strong>7.</strong> Dry air</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-ci">Show answers</button>
+      <div class="self-check__reveal" id="ans-ci" hidden>
+        <p><strong>1. Copper wire</strong> — Conductor. Copper has abundant free electrons in its conduction band.</p>
+        <p><strong>2. Rubber insulation</strong> — Insulator. Rubber has no free electrons; all electrons are tightly bound.</p>
+        <p><strong>3. Silicon chip (undoped)</strong> — Semiconductor. Pure silicon has very few free carriers at room temperature, but its conductivity can be controlled by doping.</p>
+        <p><strong>4. Sea water</strong> — Conductor (poor). Dissolved salt provides mobile ions (Na⁺ and Cl⁻) that carry current — not as good as a metal, but far better than an insulator.</p>
+        <p><strong>5. PTFE dielectric</strong> — Insulator. PTFE has extremely low conductivity, precisely why it's chosen as a dielectric in RF cables (low loss).</p>
+        <p><strong>6. Gold-plated SMA pin</strong> — Conductor. Gold is an excellent conductor and highly resistant to corrosion — ideal for connector surfaces where reliable contact matters.</p>
+        <p><strong>7. Dry air</strong> — Insulator (normally). Dry air has no free charges. At high enough voltages it breaks down and becomes conducting — this is what lightning is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LESSON SUMMARY
+     ============================================================ -->
+<section class="lesson-summary" id="lesson-summary">
+  <h2>Lesson Summary</h2>
+  <ul>
+    <li><strong>Electric charge</strong> is a fundamental property of matter. It comes in two types (positive and negative), is carried by protons and electrons, and is always conserved — never created or destroyed.</li>
+    <li><strong>Electric current</strong> is the rate of charge flow. One ampere equals one coulomb of charge passing a point per second. The electrons that carry current in a metal wire drift very slowly; the electric field that pushes them propagates at nearly the speed of light.</li>
+    <li><strong>Conventional current</strong> flows from positive to negative. Electron flow is the opposite direction. Both describe the same physics. This curriculum uses conventional current, matching standard engineering practice.</li>
+    <li><strong>Conductors</strong> (metals like copper, silver, aluminium) have free electrons that can move under an electric field. <strong>Insulators</strong> (glass, ceramic, PTFE, most plastics) have all electrons tightly bound. <strong>Semiconductors</strong> sit between the two — their controllable conductivity is the foundation of active electronics.</li>
+    <li><strong>A circuit requires a complete path.</strong> Break the path anywhere and current stops everywhere. Every circuit consists of a source, a conductor, a load, and a return path.</li>
+  </ul>
+</section>
+
+<!-- LESSON NAVIGATION -->
+<nav class="lesson-nav" aria-label="Lesson navigation">
+  <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">Start of Unit 1</span>
+  <a href="lesson-02-voltage-current-resistance.html" class="nav-btn nav-btn--next">Lesson 2: Voltage, Current and Resistance →</a>
+</nav>
+
+</main>
+
+<footer>
+  Lesson 1 &nbsp;·&nbsp; Unit 1: The Language of Electricity &nbsp;·&nbsp; Electronics Curriculum &nbsp;·&nbsp;
+  <a href="../index.html">← Unit Index</a>
+</footer>
+
+<script>
+/* ============================================================
+   SHARED UTILITIES
+   ============================================================ */
+var DPR    = window.devicePixelRatio || 1;
+var AMBER  = '#f59e0b';
+var CYAN   = '#06b6d4';
+var PURPLE = '#a78bfa';
+var GREEN  = '#4ade80';
+var RED    = '#f87171';
+var GREY   = '#6b7280';
+
+function setupFixedCanvas(cv) {
+  var h = parseInt(cv.dataset.height, 10) || 200;
+  var w = cv.parentElement.getBoundingClientRect().width;
+  if (w <= 0) w = 600;
+  cv.width  = Math.round(w * DPR);
+  cv.height = Math.round(h * DPR);
+  cv.style.width  = w + 'px';
+  cv.style.height = h + 'px';
+  var ctx = cv.getContext('2d');
+  ctx.scale(DPR, DPR);
+  return ctx;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+(function() {
+  var bar = document.getElementById('progress-bar');
+  if (!bar) return;
+  function update() {
+    var s = window.scrollY || document.documentElement.scrollTop;
+    var d = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (d > 0 ? (s / d) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+/* ============================================================
+   REVEAL TOGGLES
+   ============================================================ */
+document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var target = document.getElementById(this.dataset.target);
+    if (!target) return;
+    var exp = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!exp));
+    this.textContent = exp ? 'Show answer' : 'Hide answer';
+    target.hidden = exp;
+  });
+});
+
+/* ============================================================
+   V1 — cv-atom
+   Stylised atom: nucleus (protons + neutrons) + electron cloud
+   Below: like-charges-repel + unlike-charges-attract panels
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-atom');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* electron positions in cloud (random, stable) */
+  var electrons = [];
+
+  function initElectrons(cx, cy, cloudR) {
+    electrons = [];
+    for (var i = 0; i < 8; i++) {
+      var angle = (i / 8) * Math.PI * 2 + Math.random() * 0.5;
+      var r     = cloudR * (0.45 + Math.random() * 0.45);
+      electrons.push({ baseAngle: angle, r: r, speed: 0.008 + Math.random() * 0.006 });
+    }
+  }
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+    initElectrons(W * 0.35, H * 0.38, Math.min(W * 0.18, 58));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    var atomCX  = W * 0.35;
+    var atomCY  = H * 0.38;
+    var nucR    = Math.min(W * 0.045, 18);
+    var cloudR  = Math.min(W * 0.18, 60);
+
+    /* --- electron cloud (soft glow) --- */
+    var grad = ctx.createRadialGradient(atomCX, atomCY, nucR, atomCX, atomCY, cloudR * 1.1);
+    grad.addColorStop(0,   'rgba(6,182,212,0.0)');
+    grad.addColorStop(0.5, 'rgba(6,182,212,0.06)');
+    grad.addColorStop(1,   'rgba(6,182,212,0.0)');
+    ctx.beginPath();
+    ctx.arc(atomCX, atomCY, cloudR * 1.1, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    /* --- nucleus: protons (amber) + neutrons (grey) --- */
+    var particles = [
+      {x: -0.3, y: -0.3, c: AMBER,  l: '+'},
+      {x:  0.3, y: -0.2, c: AMBER,  l: '+'},
+      {x: -0.1, y:  0.3, c: AMBER,  l: '+'},
+      {x:  0.3, y:  0.3, c: GREY,   l: ''},
+      {x: -0.4, y:  0.05,c: GREY,   l: ''},
+      {x:  0.1, y: -0.0, c: AMBER,  l: '+'},
+    ];
+    particles.forEach(function(p) {
+      var px = atomCX + p.x * nucR * 1.8;
+      var py = atomCY + p.y * nucR * 1.8;
+      ctx.beginPath();
+      ctx.arc(px, py, nucR * 0.55, 0, Math.PI * 2);
+      ctx.fillStyle = p.c === AMBER ? 'rgba(245,158,11,0.85)' : 'rgba(107,114,128,0.7)';
+      ctx.fill();
+      if (p.l) {
+        ctx.fillStyle = '#0a0e1a';
+        ctx.font = '600 ' + Math.round(nucR * 0.55) + 'px IBM Plex Mono, monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.l, px, py);
+      }
+    });
+
+    /* --- electrons (animated orbit positions) --- */
+    electrons.forEach(function(e) {
+      var angle = e.baseAngle + (reduced ? 0 : t * e.speed * 60);
+      var ex = atomCX + Math.cos(angle) * e.r;
+      var ey = atomCY + Math.sin(angle) * e.r;
+      ctx.beginPath();
+      ctx.arc(ex, ey, 4, 0, Math.PI * 2);
+      ctx.fillStyle = CYAN;
+      ctx.fill();
+      /* label */
+      ctx.fillStyle = CYAN;
+      ctx.font = '8px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('−', ex, ey - 5);
+    });
+
+    /* --- annotation arrows --- */
+    ctx.textBaseline = 'alphabetic';
+    var annX = atomCX + cloudR * 1.25;
+    ctx.fillStyle = AMBER;
+    ctx.font = '11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Proton: positive charge (+)', annX, atomCY - 16);
+    ctx.fillStyle = GREY;
+    ctx.fillText('Neutron: no charge', annX, atomCY + 2);
+    ctx.fillStyle = CYAN;
+    ctx.fillText('Electron: negative charge (−)', annX, atomCY + 20);
+
+    /* note */
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Neutral atom: protons = electrons → net charge = 0', atomCX - cloudR, atomCY + cloudR + 16);
+
+    /* --- charge interaction panels (bottom) --- */
+    var panelY = H * 0.72;
+    var panelH = H * 0.24;
+    var pw     = W * 0.44;
+
+    /* Panel A — like charges repel */
+    drawChargePanel(8, panelY, pw, panelH, true);
+    /* Panel B — unlike charges attract */
+    drawChargePanel(W * 0.52, panelY, pw, panelH, false);
+
+    t += 0.016;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function drawChargePanel(ox, oy, pw, ph, likeCharges) {
+    var cy   = oy + ph / 2;
+    var cx   = ox + pw / 2;
+    /* two charges */
+    var sep  = pw * 0.22;
+    var c1x  = cx - sep, c2x = cx + sep;
+    var col1 = AMBER;
+    var col2 = likeCharges ? AMBER : CYAN;
+    var lbl2 = likeCharges ? '+' : '−';
+
+    /* repel/attract arrows */
+    var arrowLen = pw * 0.10;
+    if (likeCharges) {
+      /* arrows pointing away */
+      drawArrow(c1x, cy, c1x - arrowLen, cy, RED, 1.5, 5);
+      drawArrow(c2x, cy, c2x + arrowLen, cy, RED, 1.5, 5);
+    } else {
+      /* arrows pointing toward each other */
+      drawArrow(c1x - arrowLen, cy, c1x, cy, GREEN, 1.5, 5);
+      drawArrow(c2x + arrowLen, cy, c2x, cy, GREEN, 1.5, 5);
+    }
+
+    /* charge circles */
+    [{ x: c1x, c: col1, l: '+' }, { x: c2x, c: col2, l: lbl2 }].forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, cy, 11, 0, Math.PI * 2);
+      ctx.fillStyle = p.c === AMBER ? 'rgba(245,158,11,0.8)' : 'rgba(6,182,212,0.8)';
+      ctx.fill();
+      ctx.fillStyle = '#0a0e1a';
+      ctx.font = '600 11px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.l, p.x, cy);
+    });
+
+    /* label */
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = likeCharges ? RED : GREEN;
+    ctx.font = '600 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(likeCharges ? 'Like charges repel' : 'Unlike charges attract', cx, oy + ph - 4);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, lw, hs) {
+    var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
+    if (len < 1) return;
+    var ux=dx/len, uy=dy/len; hs=hs||6;
+    ctx.save();
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw||1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hs+uy*hs*0.45, y2-uy*hs-ux*hs*0.45);
+    ctx.lineTo(x2-ux*hs-uy*hs*0.45, y2-uy*hs+ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    if (reduced) { draw(); }
+    else draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   V2 — cv-current-pipe
+   Wire tube with drifting electrons + current slider
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-current-pipe');
+  if (!cv) return;
+  var slider   = document.getElementById('current-slider');
+  var readout  = document.getElementById('current-readout');
+  if (!slider) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* current slider: 0–100 maps to 0.1mA – 5A (log-ish) */
+  var currentA = 0.25; /* default */
+  var electrons2 = [];
+
+  function sliderToAmps(v) {
+    /* exponential mapping: 0→0.0001, 100→5 */
+    return 0.0001 * Math.pow(50000, v / 100);
+  }
+
+  function formatAmps(a) {
+    if (a < 0.001)  return (a * 1e6).toFixed(0) + ' μA';
+    if (a < 1)      return (a * 1000).toFixed(1) + ' mA';
+    return a.toFixed(2) + ' A';
+  }
+
+  function updateFromSlider() {
+    currentA = sliderToAmps(parseInt(slider.value, 10));
+    readout.textContent = formatAmps(currentA);
+  }
+  slider.addEventListener('input', updateFromSlider);
+  updateFromSlider();
+
+  function initElectrons2() {
+    electrons2 = [];
+    var nBase = 18;
+    for (var i = 0; i < nBase; i++) {
+      electrons2.push({
+        x: Math.random(),
+        y: 0.2 + Math.random() * 0.6,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+    initElectrons2();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    var wireY0 = H * 0.20;
+    var wireY1 = H * 0.80;
+    var wireX0 = W * 0.04;
+    var wireX1 = W * 0.82;
+
+    /* wire tube outline */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(156,163,175,0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(wireX0, wireY0); ctx.lineTo(wireX1, wireY0); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(wireX0, wireY1); ctx.lineTo(wireX1, wireY1); ctx.stroke();
+    /* end caps */
+    ctx.beginPath(); ctx.moveTo(wireX0, wireY0); ctx.lineTo(wireX0, wireY1); ctx.stroke();
+    /* label */
+    ctx.fillStyle = 'rgba(156,163,175,0.5)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Copper wire (cross-section)', (wireX0 + wireX1) / 2, wireY0 - 6);
+    ctx.restore();
+
+    /* fill */
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    ctx.fillRect(wireX0, wireY0, wireX1 - wireX0, wireY1 - wireY0);
+    ctx.restore();
+
+    /* dashed measurement line */
+    var measX = wireX1 + 10;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(245,158,11,0.4)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(measX, wireY0 - 4); ctx.lineTo(measX, wireY1 + 4); ctx.stroke();
+    ctx.restore();
+
+    /* measurement label */
+    ctx.save();
+    ctx.fillStyle = AMBER;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('I = ' + formatAmps(currentA), measX + 22, (wireY0 + wireY1) / 2);
+    ctx.restore();
+
+    /* electrons — drift left, speed proportional to current */
+    var speed   = 0.00015 + (currentA / 5) * 0.0012; /* normalised drift */
+    var density = Math.min(1 + Math.log10(currentA / 0.001 + 1) * 3.5, 12);
+
+    electrons2.forEach(function(e) {
+      var ex = (wireX0 + (1 - ((e.x - t * speed * 0.3) % 1 + 1) % 1) * (wireX1 - wireX0));
+      var ey = wireY0 + e.y * (wireY1 - wireY0);
+      var alpha = Math.min(density / 8, 1) * 0.85;
+      ctx.beginPath();
+      ctx.arc(ex, ey, 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(6,182,212,' + alpha + ')';
+      ctx.fill();
+      /* minus label */
+      ctx.fillStyle = 'rgba(6,182,212,' + alpha * 0.8 + ')';
+      ctx.font = '7px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('−', ex, ey);
+    });
+    ctx.textBaseline = 'alphabetic';
+
+    /* drift speed annotation */
+    var driftMmPerS = (currentA * 0.1).toFixed(currentA < 0.1 ? 4 : 2);
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('← electrons drift', wireX0 + 8, wireY1 + 16);
+    ctx.restore();
+
+    t += 0.006 + (currentA / 5) * 0.04;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   V3 — cv-convention
+   Two circuits: conventional current vs electron flow
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-convention');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, lw, hs) {
+    var dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
+    if (len<1) return;
+    var ux=dx/len, uy=dy/len; hs=hs||7;
+    ctx.save();
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw||2;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hs+uy*hs*0.45, y2-uy*hs-ux*hs*0.45);
+    ctx.lineTo(x2-ux*hs-uy*hs*0.45, y2-uy*hs+ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawCircuit(ox, panelW, panelH, isConventional) {
+    var cx = ox + panelW / 2;
+    var cy = panelH / 2;
+    var bw = panelW * 0.12, bh = panelH * 0.34;
+    var lw = panelW * 0.22, lh = panelH * 0.26;
+    var wireInset = 20;
+
+    /* circuit box outline */
+    var left   = ox + panelW * 0.08;
+    var right  = ox + panelW * 0.92;
+    var top    = cy - panelH * 0.33;
+    var bottom = cy + panelH * 0.33;
+
+    /* wires */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(156,163,175,0.5)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    /* top wire */
+    ctx.beginPath(); ctx.moveTo(left + bw/2, top); ctx.lineTo(right - lw/2, top); ctx.stroke();
+    /* bottom wire */
+    ctx.beginPath(); ctx.moveTo(left + bw/2, bottom); ctx.lineTo(right - lw/2, bottom); ctx.stroke();
+    ctx.restore();
+
+    /* battery (left) */
+    var battX = left + bw / 2;
+    /* battery body */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    ctx.beginPath();
+    ctx.roundRect(left, cy - bh/2, bw, bh, 3);
+    ctx.fill(); ctx.stroke();
+    /* + terminal */
+    ctx.fillStyle = AMBER;
+    ctx.font = '700 13px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+', battX, cy - bh * 0.28);
+    /* − terminal */
+    ctx.fillStyle = CYAN;
+    ctx.fillText('−', battX, cy + bh * 0.28);
+    ctx.restore();
+
+    /* lamp (right) */
+    var lampX = right - lw / 2;
+    var lampCY = cy;
+    var glowing = true;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    /* lamp glow */
+    if (glowing) {
+      var grd = ctx.createRadialGradient(lampX, lampCY, 2, lampX, lampCY, lh * 0.6);
+      grd.addColorStop(0, 'rgba(245,158,11,0.25)');
+      grd.addColorStop(1, 'rgba(245,158,11,0)');
+      ctx.beginPath(); ctx.arc(lampX, lampCY, lh * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = grd; ctx.fill();
+    }
+    /* lamp circle */
+    ctx.beginPath(); ctx.arc(lampX, lampCY, lh * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = glowing ? 'rgba(245,158,11,0.25)' : 'rgba(255,255,255,0.04)';
+    ctx.fill(); ctx.stroke();
+    /* filament X */
+    var fr = lh * 0.18;
+    ctx.strokeStyle = glowing ? AMBER : 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(lampX - fr, lampCY - fr); ctx.lineTo(lampX + fr, lampCY + fr); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lampX + fr, lampCY - fr); ctx.lineTo(lampX - fr, lampCY + fr); ctx.stroke();
+    ctx.restore();
+
+    /* wire connections from battery/lamp to circuit frame */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(156,163,175,0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(battX, cy - bh/2); ctx.lineTo(battX, top); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(battX, cy + bh/2); ctx.lineTo(battX, bottom); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lampX, lampCY - lh * 0.3); ctx.lineTo(lampX, top); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lampX, lampCY + lh * 0.3); ctx.lineTo(lampX, bottom); ctx.stroke();
+    ctx.restore();
+
+    /* current direction arrow */
+    var arrowColor = isConventional ? AMBER : CYAN;
+    var arrowY = top - 10;
+    var arrowX1, arrowX2;
+    if (isConventional) {
+      /* + to − : left to right on top wire */
+      arrowX1 = battX + 12;
+      arrowX2 = lampX - 12;
+    } else {
+      /* − to + : right to left on top wire */
+      arrowX1 = lampX - 12;
+      arrowX2 = battX + 12;
+    }
+    drawArrow(arrowX1, arrowY, arrowX2, arrowY, arrowColor, 2, 7);
+
+    /* animated flow dots */
+    if (isConventional) {
+      var dotPos = (t * 0.4) % 1;
+      var dx3 = battX + 12 + dotPos * (lampX - battX - 24);
+      ctx.beginPath(); ctx.arc(dx3, top, 4, 0, Math.PI * 2);
+      ctx.fillStyle = AMBER; ctx.fill();
+    } else {
+      var dotPos2 = (t * 0.4) % 1;
+      var dx4 = lampX - 12 - dotPos2 * (lampX - battX - 24);
+      ctx.beginPath(); ctx.arc(dx4, top, 4, 0, Math.PI * 2);
+      ctx.fillStyle = CYAN; ctx.fill();
+      /* electron symbol */
+      ctx.fillStyle = CYAN;
+      ctx.font = '8px IBM Plex Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('−', dx4, top);
+    }
+
+    /* panel label */
+    ctx.save();
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = arrowColor;
+    ctx.font = '600 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(isConventional ? 'Conventional current: + to −' : 'Electron flow: − to +', cx, bottom + 18);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.fillText(isConventional ? '← used in this curriculum' : '← what physically happens', cx, bottom + 32);
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* divider */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(W/2, 4); ctx.lineTo(W/2, H-4); ctx.stroke();
+    ctx.restore();
+
+    drawCircuit(0, W/2, H, true);
+    drawCircuit(W/2, W/2, H, false);
+
+    t += 0.02;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   V4 — cv-conductor-insulator
+   Two panels: atomic view of conductor vs insulator
+   + conductivity scale bar below
+   ============================================================ */
+(function() {
+  var cv = document.getElementById('cv-conductor-insulator');
+  if (!cv) return;
+
+  var ctx, W, H;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var freeElectrons = [];
+
+  function initFreeElectrons(ox, oy, pw, ph) {
+    freeElectrons = [];
+    for (var i = 0; i < 14; i++) {
+      freeElectrons.push({
+        x: ox + pw * 0.1 + Math.random() * pw * 0.8,
+        y: oy + ph * 0.1 + Math.random() * ph * 0.7,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        ox: 0, oy2: 0
+      });
+    }
+  }
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+    var panelH = H * 0.7;
+    initFreeElectrons(0, 0, W / 2, panelH);
+  }
+
+  function drawLattice(ox, oy, pw, ph, color) {
+    /* draw a grid of atoms */
+    var cols = 5, rows = 3;
+    var cellW = pw / (cols + 1), cellH = ph / (rows + 1);
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var ax = ox + cellW * (c + 1);
+        var ay = oy + cellH * (r + 1);
+        ctx.beginPath();
+        ctx.arc(ax, ay, 7, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var panelH = H * 0.68;
+    var scaleY = H * 0.73;
+
+    /* electric field arrow (across both panels) */
+    ctx.save();
+    ctx.strokeStyle = PURPLE;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    ctx.moveTo(W * 0.04, panelH / 2);
+    ctx.lineTo(W * 0.94, panelH / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    /* arrowhead */
+    ctx.fillStyle = PURPLE;
+    ctx.beginPath();
+    ctx.moveTo(W * 0.94, panelH/2);
+    ctx.lineTo(W * 0.94 - 8, panelH/2 - 5);
+    ctx.lineTo(W * 0.94 - 8, panelH/2 + 5);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = PURPLE;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Electric field →', W / 2, panelH / 2 - 8);
+    ctx.restore();
+
+    /* --- PANEL A: Conductor (left) --- */
+    var condOX = W * 0.02, condOY = H * 0.04;
+    var condW  = W * 0.44, condH  = panelH - condOY * 2;
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = 'rgba(245,158,11,0.04)';
+    ctx.beginPath();
+    ctx.roundRect(condOX, condOY, condW, condH, 6);
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    /* lattice atoms */
+    drawLattice(condOX, condOY, condW, condH, 'rgba(245,158,11,0.65)');
+
+    /* free electrons drifting right (toward positive) */
+    freeElectrons.forEach(function(e) {
+      /* drift right under field */
+      e.x += (reduced ? 0 : 0.25 + e.vx * 0.5);
+      e.y += (reduced ? 0 : e.vy * 0.3);
+      /* wrap horizontally */
+      if (e.x > condOX + condW - 4) e.x = condOX + 4;
+      /* bounce vertically */
+      if (e.y < condOY + 4 || e.y > condOY + condH - 4) e.vy = -e.vy;
+
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = CYAN;
+      ctx.fill();
+    });
+
+    /* conductor label */
+    ctx.save();
+    ctx.fillStyle = AMBER;
+    ctx.font = '600 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Conductor (Copper)', condOX + condW / 2, condOY - 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.fillText('Free electrons drift →', condOX + condW / 2, condOY + condH + 14);
+    ctx.restore();
+
+    /* --- PANEL B: Insulator (right) --- */
+    var insOX = W * 0.54, insOY = condOY;
+    var insW  = condW, insH  = condH;
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = 'rgba(107,114,128,0.04)';
+    ctx.beginPath();
+    ctx.roundRect(insOX, insOY, insW, insH, 6);
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    /* lattice atoms */
+    drawLattice(insOX, insOY, insW, insH, 'rgba(156,163,175,0.55)');
+
+    /* bound electrons (small, tight orbits, not drifting) */
+    var cols = 5, rows = 3;
+    var cellW = insW / (cols + 1), cellH = insH / (rows + 1);
+    for (var r2 = 0; r2 < rows; r2++) {
+      for (var c2 = 0; c2 < cols; c2++) {
+        var ax2 = insOX + cellW * (c2 + 1);
+        var ay2 = insOY + cellH * (r2 + 1);
+        var orbitR = 9;
+        var orbitAngle = (reduced ? 0 : t * 0.5) + (r2 * cols + c2) * 1.3;
+        var ex2 = ax2 + Math.cos(orbitAngle) * orbitR * 0.6;
+        var ey2 = ay2 + Math.sin(orbitAngle) * orbitR * 0.4;
+        ctx.beginPath();
+        ctx.arc(ex2, ey2, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(6,182,212,0.5)';
+        ctx.fill();
+      }
+    }
+
+    /* insulator label */
+    ctx.save();
+    ctx.fillStyle = GREY;
+    ctx.font = '600 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Insulator (Glass)', insOX + insW / 2, insOY - 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.fillText('All electrons bound — nothing moves', insOX + insW / 2, insOY + insH + 14);
+    ctx.restore();
+
+    /* --- Conductivity scale --- */
+    drawScale(W * 0.04, scaleY, W * 0.92, H * 0.22);
+
+    t += 0.018;
+    if (!reduced) raf = requestAnimationFrame(draw);
+  }
+
+  function drawScale(ox, oy, sw, sh) {
+    var cy2 = oy + sh * 0.35;
+    /* gradient bar */
+    var grad = ctx.createLinearGradient(ox, 0, ox + sw, 0);
+    grad.addColorStop(0,    'rgba(107,114,128,0.6)');
+    grad.addColorStop(0.35, 'rgba(245,158,11,0.5)');
+    grad.addColorStop(0.65, 'rgba(6,182,212,0.5)');
+    grad.addColorStop(1,    'rgba(6,182,212,0.9)');
+    ctx.save();
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(ox, cy2 - 5, sw, 10, 5);
+    ctx.fill();
+    ctx.restore();
+
+    /* labels */
+    var items = [
+      { x: 0.00, l: 'Glass',      c: GREY },
+      { x: 0.08, l: 'Rubber',     c: GREY },
+      { x: 0.28, l: 'Silicon',    c: AMBER },
+      { x: 0.40, l: 'Germanium',  c: AMBER },
+      { x: 0.60, l: 'Iron',       c: CYAN },
+      { x: 0.74, l: 'Aluminium',  c: CYAN },
+      { x: 0.87, l: 'Copper',     c: CYAN },
+      { x: 1.00, l: 'Silver',     c: CYAN },
+    ];
+    items.forEach(function(item) {
+      var ix = ox + item.x * sw;
+      /* tick */
+      ctx.save();
+      ctx.strokeStyle = item.c;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(ix, cy2 - 8);
+      ctx.lineTo(ix, cy2 + 8);
+      ctx.stroke();
+      /* label */
+      ctx.fillStyle = item.c;
+      ctx.font = '9px IBM Plex Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(item.l, ix, cy2 + 20);
+      ctx.restore();
+    });
+
+    /* axis labels */
+    ctx.save();
+    ctx.fillStyle = GREY;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('← Perfect insulator', ox, oy + sh - 4);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = CYAN;
+    ctx.fillText('Perfect conductor →', ox + sw, oy + sh - 4);
+    /* semiconductor label */
+    ctx.fillStyle = AMBER;
+    ctx.textAlign = 'center';
+    ctx.fillText('Semiconductor', ox + sw * 0.34, oy + sh * 0.1);
+    ctx.restore();
+  }
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+
+/* ============================================================
+   V5 — cv-circuit
+   Simple interactive circuit: battery + lamp + switch
+   ============================================================ */
+(function() {
+  var cv     = document.getElementById('cv-circuit');
+  var btn    = document.getElementById('switch-btn');
+  var status = document.getElementById('circuit-status');
+  if (!cv || !btn) return;
+
+  var ctx, W, H;
+  var closed = false;
+  var t = 0, raf = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    ctx = setupFixedCanvas(cv);
+    W = parseFloat(cv.style.width);
+    H = parseFloat(cv.style.height);
+  }
+
+  function drawArrow(x1,y1,x2,y2,color,lw,hs) {
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<1) return;
+    var ux=dx/len,uy=dy/len; hs=hs||7;
+    ctx.save();
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw||2;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-ux*hs+uy*hs*0.45, y2-uy*hs-ux*hs*0.45);
+    ctx.lineTo(x2-ux*hs-uy*hs*0.45, y2-uy*hs+ux*hs*0.45);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* layout */
+    var left   = W * 0.12;
+    var right  = W * 0.88;
+    var top    = H * 0.14;
+    var bottom = H * 0.78;
+    var cy3    = (top + bottom) / 2;
+
+    /* --- battery (left) --- */
+    var battW = W * 0.10, battH = (bottom - top) * 0.52;
+    var battX = left - battW / 2;
+    var battY = cy3 - battH / 2;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(battX, battY, battW, battH, 4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = AMBER;
+    ctx.font = '700 13px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('+', left, cy3 - battH * 0.24);
+    ctx.fillStyle = CYAN;
+    ctx.fillText('−', left, cy3 + battH * 0.24);
+    ctx.restore();
+
+    /* --- lamp (right) --- */
+    var lampR  = Math.min(W * 0.07, (bottom - top) * 0.22);
+    var lampX  = right;
+    if (closed) {
+      var lgrd = ctx.createRadialGradient(lampX, cy3, 2, lampX, cy3, lampR * 2.2);
+      lgrd.addColorStop(0, 'rgba(245,158,11,0.4)');
+      lgrd.addColorStop(1, 'rgba(245,158,11,0)');
+      ctx.beginPath(); ctx.arc(lampX, cy3, lampR * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = lgrd; ctx.fill();
+    }
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lampX, cy3, lampR, 0, Math.PI * 2);
+    ctx.fillStyle = closed ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.04)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
+    /* filament X */
+    var fr = lampR * 0.55;
+    ctx.strokeStyle = closed ? AMBER : 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(lampX-fr, cy3-fr); ctx.lineTo(lampX+fr, cy3+fr); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lampX+fr, cy3-fr); ctx.lineTo(lampX-fr, cy3+fr); ctx.stroke();
+    ctx.restore();
+
+    /* --- switch (top-centre) --- */
+    var swX = (left + right) / 2;
+    var swY = top;
+    var swLen = W * 0.14;
+    ctx.save();
+    ctx.strokeStyle = closed ? GREEN : AMBER;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    /* contact points */
+    ctx.beginPath(); ctx.arc(swX - swLen/2, swY, 3.5, 0, Math.PI*2); ctx.fillStyle = ctx.strokeStyle; ctx.fill();
+    ctx.beginPath(); ctx.arc(swX + swLen/2, swY, 3.5, 0, Math.PI*2); ctx.fill();
+    /* lever */
+    var leverEndY = closed ? swY : swY - 16;
+    ctx.beginPath();
+    ctx.moveTo(swX - swLen/2, swY);
+    ctx.lineTo(swX + swLen/2, leverEndY);
+    ctx.stroke();
+    ctx.restore();
+
+    /* --- wires --- */
+    ctx.save();
+    ctx.strokeStyle = closed ? 'rgba(245,158,11,0.55)' : 'rgba(156,163,175,0.3)';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    /* top wire: battery → switch-left → switch-right → lamp */
+    ctx.beginPath();
+    ctx.moveTo(left, cy3 - battH/2);
+    ctx.lineTo(left, top);
+    ctx.lineTo(swX - swLen/2, top);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(swX + swLen/2, top);
+    ctx.lineTo(right, top);
+    ctx.lineTo(right, cy3 - lampR);
+    ctx.stroke();
+    /* bottom wire: lamp → battery */
+    ctx.beginPath();
+    ctx.moveTo(right, cy3 + lampR);
+    ctx.lineTo(right, bottom);
+    ctx.lineTo(left, bottom);
+    ctx.lineTo(left, cy3 + battH/2);
+    ctx.stroke();
+    ctx.restore();
+
+    /* --- animated current dot (when closed) --- */
+    if (closed) {
+      /* travel around perimeter */
+      var perimPath = [
+        { x: left, y: cy3 - battH/2 },
+        { x: left, y: top },
+        { x: swX - swLen/2, y: top },
+        { x: swX + swLen/2, y: top },
+        { x: right, y: top },
+        { x: right, y: cy3 - lampR },
+        { x: right, y: cy3 + lampR },
+        { x: right, y: bottom },
+        { x: left, y: bottom },
+        { x: left, y: cy3 + battH/2 },
+      ];
+      /* compute total perim length */
+      var totalLen = 0;
+      for (var i = 0; i < perimPath.length - 1; i++) {
+        var dx2 = perimPath[i+1].x - perimPath[i].x;
+        var dy2 = perimPath[i+1].y - perimPath[i].y;
+        totalLen += Math.sqrt(dx2*dx2 + dy2*dy2);
+      }
+      var dotDist = ((t * 120) % totalLen);
+      var acc = 0, dotX2 = perimPath[0].x, dotY2 = perimPath[0].y;
+      for (var j = 0; j < perimPath.length - 1; j++) {
+        var sdx = perimPath[j+1].x - perimPath[j].x;
+        var sdy = perimPath[j+1].y - perimPath[j].y;
+        var slen = Math.sqrt(sdx*sdx + sdy*sdy);
+        if (dotDist <= acc + slen) {
+          var frac = (dotDist - acc) / slen;
+          dotX2 = perimPath[j].x + sdx * frac;
+          dotY2 = perimPath[j].y + sdy * frac;
+          break;
+        }
+        acc += slen;
+      }
+      ctx.save();
+      ctx.fillStyle = AMBER;
+      ctx.shadowColor = AMBER;
+      ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(dotX2, dotY2, 5, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    /* labels */
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('Battery', left, cy3 + battH/2 + 16);
+    ctx.fillText('Lamp', lampX, cy3 + lampR + 16);
+    ctx.fillText('Switch', swX, swY - 22);
+    ctx.restore();
+
+    t += 0.016;
+    if (!reduced && closed) raf = requestAnimationFrame(draw);
+    else if (!reduced && !closed) { raf = null; } /* stop animating when open */
+  }
+
+  /* switch button */
+  btn.addEventListener('click', function() {
+    closed = !closed;
+    if (closed) {
+      btn.textContent = 'Switch: CLOSED — click to open';
+      btn.classList.add('closed');
+      btn.setAttribute('aria-pressed', 'true');
+      status.textContent = 'Circuit complete → current flows → lamp glows';
+      status.style.color = 'var(--green)';
+      if (!reduced) { t = 0; draw(); }
+      else draw();
+    } else {
+      btn.textContent = 'Switch: OPEN — click to close';
+      btn.classList.remove('closed');
+      btn.setAttribute('aria-pressed', 'false');
+      status.textContent = 'Circuit broken → no current anywhere → lamp dark';
+      status.style.color = 'var(--text-muted)';
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      draw();
+    }
+  });
+
+  function resize() {
+    if (raf) cancelAnimationFrame(raf);
+    init();
+    draw();
+  }
+
+  var ro = new ResizeObserver(resize);
+  ro.observe(cv.parentElement);
+  init();
+  draw();
+})();
+</script>
+</body>
+</html>
