@@ -14,6 +14,7 @@ const progressRoutes = require('./routes/progress');
 const quizRoutes = require('./routes/quizzes');
 const badgeRoutes = require('./routes/badges');
 const calculationRoutes = require('./routes/calculations');
+const videoRoutes = require('./routes/videos');
 
 const app = express();
 
@@ -119,6 +120,7 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/calculations', calculationRoutes);
+app.use('/api/videos', videoRoutes);
 
 // 404 handler
 app.use((req, res) => {
