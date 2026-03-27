@@ -25,6 +25,25 @@ window.DEV_PAGES = [
     ]
   },
   {
+    group: 'Sidebands',
+    pages: [
+      { label: 'R, X & Z',         url: '/pages/sidebands/resistance-reactance-impedance.html' },
+    ]
+  },
+  {
+    group: 'Resources',
+    pages: [
+      { label: 'Must Watch',        url: '/pages/resources/must-watch.html' },
+    ]
+  },
+  {
+    group: 'Electronics — Unit 1',
+    pages: [
+      { label: 'E01 What Is Electricity',  url: '/pages/electronics-curriculum/unit-1-language-of-electricity/lesson-01-what-is-electricity.html' },
+      { label: 'E02 Voltage / Current / R', url: '/pages/electronics-curriculum/unit-1-language-of-electricity/lesson-02-voltage-current-resistance.html' },
+    ]
+  },
+  {
     group: 'Unit 1 — How Antennas Work',
     pages: [
       { label: 'L01 EM Radiation',        url: '/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html' },
