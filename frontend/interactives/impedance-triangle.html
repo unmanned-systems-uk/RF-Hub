@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impedance Triangle — RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    canvas { display: block; border-radius: 4px; }
+
+    /* Readouts */
+    .readouts {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .formula {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      padding: 0.4rem 0.7rem;
+      background: #0d1321;
+      border-radius: 4px;
+      border-left: 2px solid #1e293b;
+    }
+
+    .formula span { color: #e2e8f0; }
+    .formula .amber { color: #f59e0b; }
+    .formula .green { color: #22c55e; }
+    .formula .cyan  { color: #06b6d4; }
+    .formula .white { color: #e2e8f0; }
+    .formula .purple { color: #a78bfa; }
+
+    .case-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: #a78bfa;
+      text-align: center;
+      margin-top: 0.4rem;
+      min-height: 1.1em;
+    }
+
+    /* Controls */
+    .ctrl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 500px) { .ctrl-grid { grid-template-columns: 1fr; } }
+
+    .ctrl-block {}
+
+    .ctrl-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: #a78bfa;
+      cursor: pointer;
+    }
+
+    .slider-readout {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      min-width: 5.5ch;
+      text-align: right;
+    }
+
+    .x-axis-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.6rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 0.2rem;
+    }
+
+    /* Presets */
+    .presets-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .preset-btn {
+      background: #1a2234;
+      color: #94a3b8;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 0.38rem 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .preset-btn:hover { border-color: #a78bfa; color: #e2e8f0; }
+  </style>
+</head>
+<body>
+
+<h1>Impedance Triangle</h1>
+<p class="subtitle">Drag R and X to explore how impedance is composed</p>
+
+<!-- Triangle canvas + readouts -->
+<div class="card" id="triCard">
+  <canvas id="triCanvas"></canvas>
+  <div class="case-label" id="caseLabel"></div>
+  <div class="readouts">
+    <div class="formula" id="fZ">Z = R + jX = <span>50 + j0 &Omega;</span></div>
+    <div class="formula" id="fZmag">|Z| = &radic;(R&sup2; + X&sup2;) = <span class="white">50.0 &Omega;</span></div>
+    <div class="formula" id="fPhi">&phi; = arctan(X/R) = <span class="purple">0.0&deg;</span></div>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="card">
+  <div class="ctrl-grid">
+
+    <div class="ctrl-block">
+      <div class="ctrl-label">R &mdash; Resistance</div>
+      <div class="slider-wrap">
+        <input type="range" id="rSlider" min="0" max="200" value="50" step="1"
+               oninput="onR(+this.value)">
+        <span class="slider-readout" id="rVal">50 &Omega;</span>
+      </div>
+      <div class="x-axis-labels"><span>0 &Omega;</span><span>200 &Omega;</span></div>
+    </div>
+
+    <div class="ctrl-block">
+      <div class="ctrl-label">X &mdash; Reactance</div>
+      <div class="slider-wrap">
+        <input type="range" id="xSlider" min="-200" max="200" value="0" step="1"
+               oninput="onX(+this.value)">
+        <span class="slider-readout" id="xVal">0 &Omega;</span>
+      </div>
+      <div class="x-axis-labels">
+        <span style="color:#06b6d4">Capacitive (&minus;X<sub>C</sub>)</span>
+        <span style="color:#22c55e">Inductive (+X<sub>L</sub>)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="presets-label">Presets</div>
+  <div class="presets">
+    <button class="preset-btn" onclick="setPreset(50,0)">50 &Omega; pure</button>
+    <button class="preset-btn" onclick="setPreset(36,-22)">Typical antenna</button>
+    <button class="preset-btn" onclick="setPreset(50,0)">Resonant antenna</button>
+    <button class="preset-btn" onclick="setPreset(25,40)">Mismatched load</button>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// State
+// ================================================================
+var R = 50, X = 0;
+
+var triCanvas = document.getElementById('triCanvas');
+var ctx = triCanvas.getContext('2d');
+
+// ================================================================
+// Controls
+// ================================================================
+function onR(v) {
+  R = v;
+  document.getElementById('rVal').textContent = v + ' \u03a9';
+  draw();
+  updateReadouts();
+}
+
+function onX(v) {
+  X = v;
+  var sign = v >= 0 ? '+j' : '\u2212j';
+  document.getElementById('xVal').textContent = (v >= 0 ? '+' : '') + v + ' \u03a9';
+  draw();
+  updateReadouts();
+}
+
+function setPreset(r, x) {
+  R = r; X = x;
+  document.getElementById('rSlider').value = r;
+  document.getElementById('xSlider').value = x;
+  document.getElementById('rVal').textContent = r + ' \u03a9';
+  document.getElementById('xVal').textContent = (x >= 0 ? '+' : '') + x + ' \u03a9';
+  draw();
+  updateReadouts();
+}
+
+// ================================================================
+// Canvas sizing
+// ================================================================
+function resize() {
+  var card = document.getElementById('triCard');
+  var w = card.clientWidth - 40;
+  if (w < 10) return;
+  triCanvas.width  = w;
+  triCanvas.height = Math.min(280, Math.max(200, Math.round(w * 0.45)));
+  draw();
+}
+
+window.addEventListener('resize', resize);
+
+// ================================================================
+// Drawing helpers
+// ================================================================
+function xColor() {
+  if (X > 0) return '#22c55e';   // inductive — green
+  if (X < 0) return '#06b6d4';   // capacitive — cyan/blue
+  return '#94a3b8';               // zero
+}
+
+function drawArrow(ctx, x1, y1, x2, y2, color, lw) {
+  var dx = x2 - x1, dy = y2 - y1;
+  var len = Math.sqrt(dx*dx + dy*dy);
+  if (len < 2) return;
+  var ux = dx/len, uy = dy/len;
+  var hs = Math.min(10, len * 0.35);
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = lw || 2.5;
+  ctx.lineCap     = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2 - ux * hs, y2 - uy * hs);
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - ux*hs - uy*hs*0.45, y2 - uy*hs + ux*hs*0.45);
+  ctx.lineTo(x2 - ux*hs + uy*hs*0.45, y2 - uy*hs - ux*hs*0.45);
+  ctx.closePath();
+  ctx.fill();
+}
+
+// ================================================================
+// Main draw
+// ================================================================
+function draw() {
+  var W = triCanvas.width, H = triCanvas.height;
+  if (!W || !H) return;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#080c14';
+  ctx.fillRect(0, 0, W, H);
+
+  var padL = 48, padR = 55, padT = 30, padB = 30;
+  var availW = W - padL - padR;
+  var availH = (H - padT - padB) / 2;  // half height (one direction)
+
+  // Dynamic scale: fit triangle in 80% of available space
+  var rEff = Math.max(Math.abs(R), 1);
+  var xEff = Math.max(Math.abs(X), 1);
+  var scale = Math.min(availW * 0.82 / rEff, availH * 0.82 / xEff);
+  scale = Math.min(Math.max(scale, 0.25), 3.5);
+
+  // Triangle vertices (canvas coords)
+  var ox = padL;               // origin X — where R starts and Z starts
+  var oy = H / 2;              // origin Y — center of canvas
+
+  var ex = ox + R * scale;     // end of R (= start of X)
+  var ey = oy;                 // end of R (same Y as origin — horizontal)
+
+  var zx = ex;                 // tip of triangle (Z end)
+  var zy = oy - X * scale;     // X > 0 → up → negative Y in canvas
+
+  var xcol = xColor();
+
+  // --- Degenerate case: X=0 (purely resistive) ---
+  if (Math.abs(X) < 0.5) {
+    if (R < 0.5) {
+      // R=0, X=0: draw a dot
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath(); ctx.arc(ox, oy, 4, 0, Math.PI*2); ctx.fill();
+      return;
+    }
+    drawArrow(ctx, ox, oy, ex, ey, '#f59e0b', 2.5);
+    // Leg label
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = '500 11px IBM Plex Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('R = ' + R + '\u03a9', ox + R*scale/2, oy + 20);
+    // No angle arc for 0°
+    return;
+  }
+
+  // --- Degenerate case: R=0 (purely reactive) ---
+  if (R < 0.5) {
+    drawArrow(ctx, ox, oy, zx, zy, xcol, 2.5);
+    ctx.fillStyle = xcol;
+    ctx.font = '500 11px IBM Plex Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('X = ' + (X > 0 ? '+' : '') + X + '\u03a9', ox + 10, (oy + zy) / 2 + 4);
+    return;
+  }
+
+  // === Full triangle ===
+
+  // Shadow glow on hypotenuse
+  ctx.shadowColor = '#a78bfa';
+  ctx.shadowBlur  = 6;
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth   = 2.5;
+  ctx.lineCap     = 'round';
+  ctx.beginPath();
+  ctx.moveTo(ox, oy);
+  ctx.lineTo(zx, zy);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // R leg (amber, horizontal)
+  drawArrow(ctx, ox, oy, ex, ey, '#f59e0b', 2.5);
+
+  // X leg (vertical, color by sign)
+  drawArrow(ctx, ex, ey, zx, zy, xcol, 2.5);
+
+  // Right-angle marker at (ex, ey)
+  var sq = 8;
+  var yDir = X > 0 ? -1 : 1;  // X>0 goes up (negative canvas Y)
+  ctx.strokeStyle = '#4a5568';
+  ctx.lineWidth   = 1;
+  ctx.beginPath();
+  ctx.moveTo(ex - sq, ey);
+  ctx.lineTo(ex - sq, ey + yDir * sq);
+  ctx.lineTo(ex,      ey + yDir * sq);
+  ctx.stroke();
+
+  // Phase arc at origin (between R and Z)
+  var phi = Math.atan2(X, R);   // angle in radians, X>0 → above R → negative canvas angle
+  var arcR = Math.min(30, R * scale * 0.4, Math.abs(X * scale) * 0.4);
+  if (arcR > 5) {
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    // Canvas angles: 0 = right, positive = clockwise, X>0 → arc goes counterclockwise (up)
+    var canvasAngle = -phi;  // negate because canvas Y is flipped
+    ctx.arc(ox, oy, arcR, 0, canvasAngle, X < 0);
+    ctx.stroke();
+  }
+
+  // === Labels ===
+  ctx.font = '500 11px IBM Plex Mono';
+
+  // R label — below the R leg
+  ctx.fillStyle  = '#f59e0b';
+  ctx.textAlign  = 'center';
+  ctx.fillText('R = ' + R + '\u03a9', ox + R*scale/2, oy + 20);
+
+  // X label — to the right of the X leg
+  ctx.fillStyle  = xcol;
+  ctx.textAlign  = 'left';
+  var xlx = zx + 8;
+  var xly = (oy + zy) / 2 + 4;
+  ctx.fillText('X = ' + (X > 0 ? '+' : '') + X + '\u03a9', xlx, xly);
+
+  // Z (hypotenuse) label — offset perpendicular (to the left of Z)
+  var zmidX = (ox + zx) / 2;
+  var zmidY = (oy + zy) / 2;
+  var zdx   = zx - ox, zdy = zy - oy;
+  var zlen  = Math.sqrt(zdx*zdx + zdy*zdy);
+  // Perpendicular offset (to the left of Z direction)
+  var perpX = -zdy / zlen * 16;
+  var perpY =  zdx / zlen * 16;
+
+  var Zmag = Math.sqrt(R*R + X*X);
+  ctx.fillStyle = '#a78bfa';
+  ctx.textAlign = 'center';
+  ctx.fillText('|Z| = ' + Zmag.toFixed(1) + '\u03a9', zmidX + perpX, zmidY + perpY);
+
+  // φ label — near arc
+  if (arcR > 5) {
+    var phiHalf = Math.atan2(X, R) / 2;
+    var labR    = arcR + 18;
+    ctx.fillStyle  = '#a78bfa';
+    ctx.textAlign  = 'left';
+    ctx.font       = '500 10px IBM Plex Mono';
+    ctx.fillText('\u03c6=' + Math.abs(Math.atan2(X, R) * 180 / Math.PI).toFixed(1) + '\u00b0',
+      ox + labR * Math.cos(-phiHalf) + 2,
+      oy + labR * Math.sin(-phiHalf) + 3);
+  }
+
+  // Axis tick marks (subtle)
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([2, 4]);
+  // Horizontal axis reference
+  ctx.beginPath(); ctx.moveTo(ox - 8, oy); ctx.lineTo(ex, oy); ctx.stroke();
+  // Vertical reference at X end
+  ctx.beginPath(); ctx.moveTo(ex, oy); ctx.lineTo(zx, zy); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ================================================================
+// Readouts
+// ================================================================
+function updateReadouts() {
+  var Zmag = Math.sqrt(R*R + X*X);
+  var phi  = R === 0 ? (X > 0 ? 90 : -90) : Math.atan2(X, R) * 180 / Math.PI;
+
+  var xSign  = X >= 0 ? '+j' : '\u2212j';
+  var xcls   = X > 0 ? 'green' : (X < 0 ? 'cyan' : 'white');
+
+  document.getElementById('fZ').innerHTML =
+    'Z = R + jX = <span class="amber">' + R + '</span> ' + xSign +
+    '<span class="' + xcls + '">' + Math.abs(X) + '</span> \u03a9';
+
+  document.getElementById('fZmag').innerHTML =
+    '|Z| = &radic;(R&sup2; + X&sup2;) = <span class="white">' + Zmag.toFixed(1) + ' \u03a9</span>';
+
+  document.getElementById('fPhi').innerHTML =
+    '\u03c6 = arctan(X/R) = <span class="purple">' + phi.toFixed(1) + '\u00b0</span>';
+
+  // Case label
+  var label = '';
+  if (Math.abs(X) < 0.5 && R > 0.5)   label = 'Purely resistive \u2014 \u03c6 = 0\u00b0';
+  if (R < 0.5 && Math.abs(X) > 0.5)   label = 'Purely reactive \u2014 \u03c6 = \u00b190\u00b0';
+  if (R > 0.5 && Math.abs(X) > 0.5 && Math.abs(Math.abs(X) - R) / Math.max(R, Math.abs(X)) < 0.05)
+    label = 'Equal R and X \u2014 \u03c6 = 45\u00b0';
+  document.getElementById('caseLabel').textContent = label;
+}
+
+// ================================================================
+// Boot
+// ================================================================
+resize();
+updateReadouts();
+</script>
+</body>
+</html>
