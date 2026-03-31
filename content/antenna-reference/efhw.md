@@ -62,7 +62,7 @@ A short counterpoise wire (typically 0.05λ, around 2–3 metres) connects to th
 | **Pattern** | Figure-8 broadside (fundamental) | Becomes multi-lobed on harmonics — see Stage 2 |
 | **Polarisation** | Depends on orientation | Horizontal when wire is horizontal |
 | **Bandwidth (per band)** | Moderate (~2–3% of centre frequency) | Slightly narrower than centre-fed dipole |
-| **Bands** | Multi-band (harmonic operation) | 40/20/15/10 m from a single 40 m wire |
+| **Bands** | Multi-band (harmonic operation) | 40/20/15/10 m from a single wire cut for the 40 m band (~20 m long) |
 | **Height sensitivity** | Moderate | Pattern and impedance shift with height above ground |
 
 ### Sizing Formula
@@ -158,7 +158,7 @@ At the fundamental frequency, the EFHW behaves identically to a half-wave dipole
 
 On the fundamental, the EFHW delivers the same 2.15 dBi as any half-wave dipole. On harmonics, the peak lobe gain increases because energy is concentrated into narrower beams — but only in the lobe directions. Between lobes, gain drops sharply.
 
-| Band (40 m wire) | Harmonic | Peak Lobe Gain (dBi) | Coverage Pattern |
+| Band (40 m band EFHW) | Harmonic | Peak Lobe Gain (dBi) | Coverage Pattern |
 |-------------------|----------|---------------------|------------------|
 | 40 m (7 MHz) | 1st | ~2.15 | Broad, predictable |
 | 20 m (14 MHz) | 2nd | ~3.5–4.0 | Four directions, moderate nulls |
