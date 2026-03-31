@@ -8,11 +8,13 @@
 ### Required Images
 | Filename | Type | Description | Status |
 |----------|------|-------------|--------|
-| `D-efhw.png` | Diagram | EFHW schematic: half-wave wire, high-Z end, unun at feed, counterpoise | ✅ Added |
-| `P-efhw.png` | Photo | Portable EFHW field setup with 49:1 unun box and radio | ✅ Added |
-| `D-efhw-unun.png` | Diagram | 49:1 unun schematic (toroid winding detail) | ✅ Added |
-| `D-efhw-harmonics.png` | Diagram | Side-by-side lobe patterns: fundamental, 2nd, 3rd, 4th harmonic | ✅ Added |
-| `D-efhw-configs.png` | Diagram | Three deployment configs: horizontal, inverted-V, sloper | ✅ Added |
+| `D-efhw.png` | Diagram | EFHW schematic: half-wave wire, high-Z end, unun at feed, counterpoise | ✅ In assets |
+| `P-efhw.png` | Photo | Portable EFHW field setup with 49:1 unun box and radio | ✅ In assets |
+| `D-efhw-unun.png` | Diagram | 49:1 unun schematic (toroid winding detail) | ✅ In assets |
+| `D-efhw-harmonics.png` | Diagram | Side-by-side lobe patterns: fundamental, 2nd, 3rd, 4th harmonic | ✅ In assets |
+| `D-efhw-configs.png` | Diagram | Three deployment configs: horizontal, inverted-V, sloper | ✅ In assets |
+| `EFHW-BH7JYR.jpg` | Photo | BH7JYR EFHW antenna (commercial example) | ✅ In assets |
+| `Moonraker-LWEF.png` | Photo | Moonraker LWEF antenna (commercial example) | ✅ In assets |
 
 ### Curriculum Cross-References
 <!-- XREF: curriculum L01 "The Electromagnetic Wave" — wavelength/frequency fundamentals -->
