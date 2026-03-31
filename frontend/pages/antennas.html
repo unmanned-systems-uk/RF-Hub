@@ -58,6 +58,48 @@
 .toc-list a:hover {
   text-decoration: underline;
 }
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  font-size: 0.88rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--accent-em);
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 20px;
+  background: rgba(167,139,250,0.07);
+  transition: background 0.15s, border-color 0.15s;
+}
+.read-more:hover {
+  background: rgba(167,139,250,0.14);
+  border-color: rgba(167,139,250,0.45);
+  text-decoration: none;
+}
+.antenna-figure-placeholder {
+  background: #111827;
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 32px 20px;
+  text-align: center;
+  color: #6b7280;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.antenna-figure-placeholder-wrap {
+  margin: 16px 0;
+}
+.antenna-figure-placeholder-wrap figcaption {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+  font-style: italic;
+}
 </style>
 </head>
 <body>
@@ -282,25 +324,79 @@ f = frequency (Hz)</code></pre>
     </div>
 
     <h3>2. End-Fed Half-Wave (EFHW)</h3>
-    <p><strong>Type:</strong> Unbalanced, end-fed with matching transformer &nbsp;|&nbsp; <strong>Bands:</strong> Multi-band with appropriate transformer &nbsp;|&nbsp; <strong>Length:</strong> 0.95 × λ/2 for lowest frequency</p>
 
     <div class="table-wrapper">
       <table>
-        <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td><strong>Impedance</strong></td><td>~2500–5000 Ω at high-Z end, transformed to 50 Ω</td></tr>
-          <tr><td><strong>Pattern</strong></td><td>Similar to dipole</td></tr>
-          <tr><td><strong>Matching</strong></td><td>49:1 transformer typically used</td></tr>
+          <tr><td><strong>Feed type</strong></td><td>Unbalanced, end-fed</td></tr>
+          <tr><td><strong>Element type</strong></td><td>Single wire, half-wave resonant</td></tr>
+          <tr><td><strong>Matching</strong></td><td>High-Z to 50 Ω via 49:1 unun (ferrite toroid)</td></tr>
+          <tr><td><strong>Band coverage</strong></td><td>Multi-band via harmonic operation</td></tr>
+          <tr><td><strong>Category</strong></td><td>HF wire antenna</td></tr>
         </tbody>
       </table>
     </div>
 
+    <p>A half-wave dipole has low impedance (~73 Ω) at its centre but very high impedance (2,500–5,000 Ω) at its ends. An EFHW exploits this by feeding the antenna at one end through a 49:1 unun wound on a ferrite toroid, converting the high end-impedance down to approximately 50 Ω for a direct coax connection.</p>
+
+    <p>The wire is electrically a half-wavelength long at the lowest operating frequency. Because a half-wave is resonant at its integer harmonics (2nd, 3rd, 4th…), the same wire works on multiple HF bands without a tuner. A 40 m EFHW (~20 metres of wire) covers 40 m, 20 m, 15 m, and 10 m — four bands from one wire and one unun.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Gain</strong></td><td>2.15 dBi (fundamental)</td><td>Identical to a centre-fed dipole at the same height</td></tr>
+          <tr><td><strong>Impedance (end)</strong></td><td>~2,500–5,000 Ω</td><td>Transformed to 50 Ω via matching network</td></tr>
+          <tr><td><strong>Pattern</strong></td><td>Figure-8 broadside (fundamental)</td><td>Becomes multi-lobed on harmonics</td></tr>
+          <tr><td><strong>Polarisation</strong></td><td>Depends on orientation</td><td>Horizontal when wire is horizontal</td></tr>
+          <tr><td><strong>Bandwidth (per band)</strong></td><td>Moderate (~2–3% of centre frequency)</td><td>Slightly narrower than centre-fed dipole</td></tr>
+          <tr><td><strong>Bands</strong></td><td>Multi-band (harmonic operation)</td><td>40/20/15/10 m from a single 40 m wire</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Sizing Formula:</strong></p>
+    <pre><code>L (metres) = (300 / f_MHz) × 0.5 × VF
+
+Example — 40 m EFHW at 7.1 MHz (VF = 0.95):
+L = (300 / 7.1) × 0.5 × 0.95 = 20.07 metres
+Also resonant on: 20 m (2nd), 15 m (3rd), 10 m (4th)</code></pre>
+
+    <figure>
+      <img src="../assets/images/Antenna/D-efhw.png" alt="EFHW schematic diagram" loading="lazy" style="max-width:100%; border-radius: 8px;">
+      <figcaption style="margin-top: 8px; font-size: 0.8rem; color: #6b7280; text-align: center; font-style: italic;">EFHW schematic: wire, 49:1 unun, counterpoise, and common-mode choke</figcaption>
+    </figure>
+
     <div class="callout callout--success">
       <span class="callout-icon">✅</span>
       <div class="callout-text">
-        <strong>Advantages:</strong> Only one support point needed, multi-band operation possible, no radials required, good for portable/stealth installations.
+        <strong>Advantages:</strong>
+        <ul style="margin: 6px 0 0 16px; padding: 0;">
+          <li>Single support point — feed can be at ground level</li>
+          <li>Multi-band without a tuner (harmonic operation)</li>
+          <li>No radial system — short counterpoise only</li>
+          <li>Portable-friendly: lightweight wire and small unun</li>
+          <li>Stealth installations — thin wire nearly invisible</li>
+        </ul>
       </div>
     </div>
+
+    <div class="callout callout--warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-text">
+        <strong>Disadvantages:</strong>
+        <ul style="margin: 6px 0 0 16px; padding: 0;">
+          <li>Unun losses: 0.5–1.5 dB depending on core quality</li>
+          <li>Narrower bandwidth per band than a centre-fed dipole</li>
+          <li>Common-mode sensitivity — counterpoise and choke are mandatory</li>
+          <li>Non-harmonic bands (30/17/12 m) need a tuner</li>
+          <li>High end voltage on transmit — keep away from metal and people</li>
+        </ul>
+      </div>
+    </div>
+
+    <a href="antennas/efhw.html" class="read-more">Full EFHW reference →</a>
 
     <h3>3. Vertical Antennas (Quarter-Wave)</h3>
     <p><strong>Type:</strong> Ground plane, monopole &nbsp;|&nbsp; <strong>Bands:</strong> Any HF band &nbsp;|&nbsp; <strong>Length:</strong> λ/4 for vertical element</p>

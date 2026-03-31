@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>End-Fed Half-Wave (EFHW) Antenna — Full Reference — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+  --red:    #f87171;
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+img, canvas, svg { max-width: 100%; display: block; }
+a { color: var(--purple); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  background: rgba(167,139,250,0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88em;
+  color: var(--purple);
+}
+pre {
+  font-family: var(--font-mono);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 20px 24px;
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #e5e7eb;
+  margin: 20px 0;
+}
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #130f1e 55%, #0a1018 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 56px 24px 44px;
+  text-align: center;
+}
+.hero-series {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--level {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--purple);
+}
+.hero-badge--rsgb {
+  background: rgba(245,158,11,0.10);
+  border-color: rgba(245,158,11,0.25);
+  color: var(--amber);
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 40px;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.back-link:hover { color: var(--text-secondary); text-decoration: none; }
+
+/* ============================================================
+   STAGE HEADERS
+   ============================================================ */
+.stage-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 56px 0 36px;
+}
+.stage-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.25);
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.stage-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.stage-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* ============================================================
+   CONTENT SECTIONS
+   ============================================================ */
+.content-section {
+  margin-bottom: 48px;
+}
+.content-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+.content-section h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: 0.3px;
+  margin-top: 32px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1.2px;
+}
+.content-section p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.content-section p:last-child { margin-bottom: 0; }
+.content-section p strong { color: var(--text-primary); }
+.content-section ul,
+.content-section ol {
+  margin: 0 0 16px 20px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+.content-section li { margin-bottom: 6px; }
+.content-section li strong { color: var(--text-primary); }
+
+/* ============================================================
+   BLOCKQUOTES / NOTES
+   ============================================================ */
+blockquote {
+  margin: 20px 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--purple);
+  background: rgba(167,139,250,0.07);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+blockquote p { color: var(--text-secondary); margin-bottom: 0; }
+blockquote strong { color: var(--text-primary); }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 24px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+thead {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+th {
+  padding: 11px 16px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  vertical-align: top;
+  line-height: 1.55;
+}
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(255,255,255,0.02); }
+td strong { color: var(--text-primary); }
+td code { font-size: 0.82em; }
+
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  margin: 24px 0;
+  align-items: flex-start;
+}
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.callout-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+.callout-text strong { color: var(--text-primary); }
+.callout-text a { color: var(--purple); }
+.callout--info {
+  background: rgba(6,182,212,0.07);
+  border: 1px solid rgba(6,182,212,0.2);
+}
+.callout--warning {
+  background: rgba(245,158,11,0.07);
+  border: 1px solid rgba(245,158,11,0.2);
+}
+.callout--build {
+  background: rgba(74,222,128,0.07);
+  border: 1px solid rgba(74,222,128,0.2);
+}
+
+/* ============================================================
+   CROSS-REFERENCE CALLOUT
+   ============================================================ */
+.xref-callout {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(167,139,250,0.07);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 20px;
+  margin: 8px 0 20px;
+  font-size: 0.82rem;
+}
+.xref-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.xref-callout a { color: var(--purple); font-size: 0.82rem; }
+
+/* ============================================================
+   FIGURE / IMAGE PLACEHOLDERS
+   ============================================================ */
+figure {
+  margin: 28px 0;
+}
+.figure-placeholder {
+  background: #111827;
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  padding: 48px 32px;
+  text-align: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+figcaption {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   PROS / CONS LISTS
+   ============================================================ */
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+@media (max-width: 600px) {
+  .pros-cons { grid-template-columns: 1fr; }
+}
+.pros-cons__col {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+}
+.pros-cons__col--pros { border-top: 2px solid var(--green); }
+.pros-cons__col--cons { border-top: 2px solid var(--red); }
+.pros-cons__heading {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.pros-cons__col--pros .pros-cons__heading { color: var(--green); }
+.pros-cons__col--cons .pros-cons__heading { color: var(--red); }
+.pros-cons__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pros-cons__list li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 8px;
+  padding-left: 16px;
+  position: relative;
+}
+.pros-cons__list li::before {
+  position: absolute;
+  left: 0;
+  font-size: 0.75rem;
+  top: 2px;
+}
+.pros-cons__col--pros .pros-cons__list li::before { content: "+"; color: var(--green); }
+.pros-cons__col--cons .pros-cons__list li::before { content: "−"; color: var(--red); }
+.pros-cons__list li strong { color: var(--text-primary); }
+
+/* ============================================================
+   TUNING PROCEDURE (NUMBERED STEPS)
+   ============================================================ */
+.steps-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step-counter;
+}
+.steps-list li {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  counter-increment: step-counter;
+  align-items: flex-start;
+}
+.steps-list li::before {
+  content: counter(step-counter);
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.3);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--purple);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.steps-list li p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.93rem;
+}
+.steps-list li p strong { color: var(--text-primary); }
+
+/* ============================================================
+   KEY TRENDS LIST
+   ============================================================ */
+.key-trends {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  counter-reset: trend-counter;
+}
+.key-trends li {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+  counter-increment: trend-counter;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.93rem;
+}
+.key-trends li::before {
+  content: counter(trend-counter);
+  min-width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6,182,212,0.1);
+  border: 1px solid rgba(6,182,212,0.25);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cyan);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.key-trends li strong { color: var(--text-primary); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+  main { padding: 0 16px 80px; }
+  .hero { padding: 40px 16px 32px; }
+  .stage-header { margin: 40px 0 28px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html" class="active">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-series">Antenna Reference</div>
+    <h1>End-Fed Half-Wave (EFHW)</h1>
+    <p class="hero-subtitle">Multi-band HF wire antenna fed at the high-impedance end via a 49:1 unun — the most popular portable antenna for SOTA, POTA, and stealth installations.</p>
+    <div class="hero-badges">
+      <span class="hero-badge hero-badge--level">[F] Foundation</span>
+      <span class="hero-badge hero-badge--level">[I] Intermediate</span>
+      <span class="hero-badge hero-badge--rsgb">RSGB Refs</span>
+      <span class="hero-badge">HF Wire</span>
+      <span class="hero-badge">Multi-Band</span>
+      <span class="hero-badge">Portable</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CONTENT ────────────────────────────────────────── -->
+<main>
+
+  <a href="../antennas.html" class="back-link">← Back to Antenna Reference</a>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STAGE 1: FUNDAMENTALS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="stage-header">
+    <span class="stage-num">STAGE 01</span>
+    <span class="stage-title">Fundamentals</span>
+    <div class="stage-line"></div>
+  </div>
+
+  <!-- TYPE & CLASSIFICATION -->
+  <div class="content-section" id="classification">
+    <h2>Type &amp; Classification</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Feed type</strong></td><td>Unbalanced, end-fed</td></tr>
+          <tr><td><strong>Element type</strong></td><td>Single wire, half-wave resonant</td></tr>
+          <tr><td><strong>Matching</strong></td><td>High-Z to 50 Ω via transformer (typically 49:1)</td></tr>
+          <tr><td><strong>Band coverage</strong></td><td>Multi-band via harmonic operation</td></tr>
+          <tr><td><strong>Category</strong></td><td>HF wire antenna</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="content-section" id="how-it-works">
+    <h2>How It Works</h2>
+
+    <p>A half-wave dipole has low impedance (around 73 Ω) at its centre, but very high impedance (2,500–5,000 Ω) at its ends. An EFHW exploits this by feeding the antenna at one end through a 49:1 unun wound on a ferrite toroid, converting the high end-impedance down to approximately 50 Ω for a direct coax connection.</p>
+
+    <blockquote>
+      <p><strong>What's a unun?</strong> A unun (unbalanced-to-unbalanced transformer) transforms impedance between two unbalanced connections — in this case, from the high-impedance wire end down to the 50 Ω coax. It differs from a balun (balanced-to-unbalanced), which also converts between balanced and unbalanced systems. The EFHW uses a unun because both the wire end and the coax are unbalanced.</p>
+    </blockquote>
+
+    <p>The wire itself is electrically a half-wavelength long at the lowest operating frequency. Because a half-wave is also resonant at its integer harmonics (2nd, 3rd, 4th…), the same wire works on multiple HF bands without a tuner. A 40-metre EFHW (approximately 20 metres of wire) is resonant on 40 m, 20 m, 15 m, and 10 m — four bands from one wire and one unun.</p>
+
+    <p>A short counterpoise wire (typically 0.05λ, around 2–3 metres) connects to the ground side of the unun. This is not a radial system — it provides a return path for the small amount of common-mode current at the feed point.</p>
+
+    <p><strong>Without a counterpoise,</strong> the outer shield of the coax becomes the counterpoise by default. RF current flows back along the shield into the shack, causing RFI to nearby equipment, erratic SWR readings that change when you touch the coax, and potentially painful RF burns. A common-mode choke (ferrite choke balun) on the coax at the feed point helps suppress this, but the choke is a second line of defence — the counterpoise is the first. Use both.</p>
+
+    <p><strong>Counterpoise angle matters.</strong> Running the counterpoise straight down (90° vertical from a horizontal wire) is not ideal — it can couple to the coax and partially cancel the benefit. Angle the counterpoise away from both the antenna wire and the coax run, ideally 90–135° from the antenna element in the horizontal plane. If the wire runs east-west and the coax drops south, route the counterpoise north or north-west. The goal is to decouple the counterpoise from the coax shield path.</p>
+
+    <figure>
+      <img src="../../assets/images/Antenna/D-efhw.png" alt="EFHW schematic: half-wave wire, 49:1 unun, counterpoise, common-mode choke" loading="lazy">
+      <figcaption>Fig. 1 — EFHW schematic: wire, 49:1 unun, counterpoise, and common-mode choke. Note counterpoise angle — not straight down.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="../../assets/images/Antenna/P-efhw.png" alt="Portable EFHW field setup with 49:1 unun box and radio" loading="lazy">
+      <figcaption>Fig. 2 — EFHW in a typical portable deployment.</figcaption>
+    </figure>
+  </div>
+
+  <!-- KEY PARAMETERS -->
+  <div class="content-section" id="key-parameters">
+    <h2>Key Parameters</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Gain</strong></td><td>2.15 dBi (fundamental)</td><td>Identical to a centre-fed dipole at the same height</td></tr>
+          <tr><td><strong>Impedance (end)</strong></td><td>~2,500–5,000 Ω</td><td>Transformed to 50 Ω via matching network</td></tr>
+          <tr><td><strong>Pattern</strong></td><td>Figure-8 broadside (fundamental)</td><td>Becomes multi-lobed on harmonics — see Stage 2</td></tr>
+          <tr><td><strong>Polarisation</strong></td><td>Depends on orientation</td><td>Horizontal when wire is horizontal</td></tr>
+          <tr><td><strong>Bandwidth (per band)</strong></td><td>Moderate (~2–3% of centre frequency)</td><td>Slightly narrower than centre-fed dipole</td></tr>
+          <tr><td><strong>Bands</strong></td><td>Multi-band (harmonic operation)</td><td>40/20/15/10 m from a single 40 m wire</td></tr>
+          <tr><td><strong>Height sensitivity</strong></td><td>Moderate</td><td>Pattern and impedance shift with height above ground</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SIZING FORMULA -->
+  <div class="content-section" id="sizing-formula">
+    <h2>Sizing Formula</h2>
+
+<pre><code>L (metres) = (300 / f_MHz) × 0.5 × VF
+
+Where:
+  L    = total wire length
+  f    = lowest operating frequency in MHz
+  VF   = velocity factor (0.95 for bare wire, 0.93–0.97 depending on wire diameter and insulation)</code></pre>
+
+    <h3>Worked Example — 40 m band EFHW (7.1 MHz centre)</h3>
+
+<pre><code>L = (300 / 7.1) × 0.5 × 0.95
+L = 42.25 × 0.5 × 0.95
+L = 20.07 metres</code></pre>
+
+    <p>This wire is also resonant at:</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Harmonic</th><th>Frequency</th><th>Band</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2nd</td><td>14.2 MHz</td><td>20 m</td><td>✓ Resonant</td></tr>
+          <tr><td>3rd</td><td>21.3 MHz</td><td>15 m</td><td>✓ Resonant</td></tr>
+          <tr><td>4th</td><td>28.4 MHz</td><td>10 m</td><td>✓ Resonant</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <blockquote>
+      <p><strong>Note:</strong> The 3rd harmonic lands on 15 m because 40 m's 3rd harmonic (21 MHz) falls within the 15 m band (21.0–21.45 MHz). This is not a coincidence — the amateur band plan was designed with harmonic relationships in mind.</p>
+    </blockquote>
+  </div>
+
+  <!-- ADVANTAGES / DISADVANTAGES -->
+  <div class="content-section" id="pros-cons">
+    <h2>Advantages &amp; Disadvantages</h2>
+    <div class="pros-cons">
+      <div class="pros-cons__col pros-cons__col--pros">
+        <div class="pros-cons__heading">Advantages</div>
+        <ul class="pros-cons__list">
+          <li><strong>Single support point</strong> — only one end needs to be elevated; the feed point can be at ground level</li>
+          <li><strong>Multi-band without a tuner</strong> — harmonic operation covers 4+ bands from one wire</li>
+          <li><strong>No radial system</strong> — short counterpoise only, unlike a vertical which needs 16–120 radials</li>
+          <li><strong>Portable-friendly</strong> — lightweight wire, small unun, minimal hardware</li>
+          <li><strong>Stealth installations</strong> — thin wire is nearly invisible against sky or trees</li>
+          <li><strong>Simple construction</strong> — wire, toroid, a few turns of wire, and a connector</li>
+        </ul>
+      </div>
+      <div class="pros-cons__col pros-cons__col--cons">
+        <div class="pros-cons__heading">Disadvantages</div>
+        <ul class="pros-cons__list">
+          <li><strong>Unun losses</strong> — the 49:1 unun introduces 0.5–1.5 dB loss depending on quality and frequency</li>
+          <li><strong>Narrower bandwidth per band</strong> — SWR rises faster than a centre-fed dipole; may need trimming</li>
+          <li><strong>Common-mode sensitivity</strong> — poor counterpoise or missing choke causes RF on the coax shield</li>
+          <li><strong>Harmonic patterns are complex</strong> — on higher bands the pattern splits into multiple lobes</li>
+          <li><strong>Not ideal for all bands</strong> — 80/30/17/12 non-harmonic bands need a tuner</li>
+          <li><strong>High end voltage</strong> — the high-Z end can develop several kilovolts at 100 W; keep clear of metal and people</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STAGE 2: PERFORMANCE & BEHAVIOUR
+       ═══════════════════════════════════════════════════════ -->
+  <div class="stage-header">
+    <span class="stage-num">STAGE 02</span>
+    <span class="stage-title">Performance &amp; Behaviour</span>
+    <div class="stage-line"></div>
+  </div>
+
+  <!-- BANDWIDTH CHARACTERISTICS -->
+  <div class="content-section" id="bandwidth">
+    <h2>Bandwidth Characteristics</h2>
+
+    <p>The EFHW has moderate bandwidth on each band — typically narrower than a centre-fed dipole because the high-impedance feed point amplifies small reactance changes. Expect an SWR &lt; 2:1 window of roughly 100–200 kHz on 40 m, widening to 400–600 kHz on 10 m (bandwidth scales with frequency).</p>
+
+    <p>The SWR curve is asymmetric: it rises more steeply above resonance than below. This means if you need to choose, cut the wire slightly long — it's easier to trim wire shorter than to add it back.</p>
+
+    <p>The unun itself has a frequency-dependent loss profile. A well-wound 49:1 on a Fair-Rite #43 or #61 mix toroid will show lowest loss on 20 m and 15 m, with higher losses at the band edges (40 m low end, 10 m high end). Cheap ununs on unsuitable cores are the single biggest source of EFHW performance complaints.</p>
+
+    <div class="xref-callout">
+      <span class="xref-label">See also</span>
+      <a href="../antenna-curriculum/unit-2-characteristics-and-measurement/lesson-06-impedance.html">L06: Impedance — Z = R + jX, matching, transformation →</a>
+    </div>
+  </div>
+
+  <!-- HARMONIC BEHAVIOUR -->
+  <div class="content-section" id="harmonic-behaviour">
+    <h2>Harmonic Behaviour &amp; Pattern Evolution</h2>
+
+    <p>This is where the EFHW gets interesting — and where many operators are surprised by what their antenna is actually doing on higher bands.</p>
+
+    <p>At the fundamental frequency, the EFHW behaves identically to a half-wave dipole: a classic figure-8 pattern, broadside to the wire, with nulls off the ends. But on harmonics, the pattern fragments into multiple lobes. The number of lobes equals the harmonic number multiplied by two.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Harmonic</th><th>Electrical Length</th><th>Total Lobes</th><th>Lobe Angle from Wire</th><th>Pattern</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1st (fundamental)</strong></td>
+            <td>λ/2</td>
+            <td>2</td>
+            <td>90° (broadside)</td>
+            <td>Classic figure-8 perpendicular to wire</td>
+          </tr>
+          <tr>
+            <td><strong>2nd</strong></td>
+            <td>1λ</td>
+            <td>4</td>
+            <td>~45–50°</td>
+            <td>"X" pattern — radiation splits into four lobes at roughly 45° to the wire axis</td>
+          </tr>
+          <tr>
+            <td><strong>3rd</strong></td>
+            <td>1.5λ</td>
+            <td>6</td>
+            <td>~30–35°</td>
+            <td>Six tighter lobes; energy pulls toward the wire axis</td>
+          </tr>
+          <tr>
+            <td><strong>4th</strong></td>
+            <td>2λ</td>
+            <td>8</td>
+            <td>~25–30°</td>
+            <td>Highly multi-lobed with deep nulls; radiation increasingly end-fire</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure>
+      <img src="../../assets/images/Antenna/D-efhw-harmonics.png" alt="Radiation patterns at 1st, 2nd, 3rd, and 4th harmonics showing lobe multiplication and narrowing" loading="lazy">
+      <figcaption>Fig. 3 — Harmonic pattern evolution. As harmonic number increases, lobes multiply, narrow, and rotate toward the wire axis.</figcaption>
+    </figure>
+
+    <h3>Key Trends as Harmonic Number Increases</h3>
+    <ol class="key-trends">
+      <li><strong>Lobes multiply</strong> — each harmonic adds two more lobes to the pattern</li>
+      <li><strong>Lobes narrow</strong> — higher harmonics produce tighter, more directional lobes</li>
+      <li><strong>Lobes rotate toward the wire axis</strong> — radiation shifts from broadside (perpendicular to wire) toward end-fire (along the wire)</li>
+      <li><strong>Nulls deepen</strong> — the gaps between lobes become more pronounced, meaning more directions where the antenna is effectively deaf</li>
+      <li><strong>Gain per lobe increases</strong> — the energy is concentrated into narrower beams, so peak gain in the main lobes is higher than the fundamental</li>
+    </ol>
+
+    <p><strong>What this means in practice:</strong> On 40 m (fundamental), your EFHW hears and transmits broadside — great for general coverage. On 10 m (4th harmonic), it has eight narrow lobes with significant gain in specific directions but deep nulls between them. You might work strong DX off one lobe while completely missing a station 20° away. Rotating the wire orientation (or accepting the pattern) is part of using an EFHW on harmonics.</p>
+
+    <div class="xref-callout">
+      <span class="xref-label">See also</span>
+      <a href="../antenna-curriculum/unit-1-how-antennas-work/lesson-03-radiation-patterns.html">L03: Radiation Patterns — how to read pattern plots, lobes, and nulls →</a>
+    </div>
+  </div>
+
+  <!-- GAIN VS FREQUENCY -->
+  <div class="content-section" id="gain-frequency">
+    <h2>Gain vs. Frequency</h2>
+
+    <p>On the fundamental, the EFHW delivers the same 2.15 dBi as any half-wave dipole. On harmonics, the peak lobe gain increases because energy is concentrated into narrower beams — but only in the lobe directions. Between lobes, gain drops sharply.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Band (40 m wire)</th><th>Harmonic</th><th>Peak Lobe Gain (dBi)</th><th>Coverage Pattern</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>40 m (7 MHz)</strong></td><td>1st</td><td>~2.15</td><td>Broad, predictable</td></tr>
+          <tr><td><strong>20 m (14 MHz)</strong></td><td>2nd</td><td>~3.5–4.0</td><td>Four directions, moderate nulls</td></tr>
+          <tr><td><strong>15 m (21 MHz)</strong></td><td>3rd</td><td>~4.5–5.0</td><td>Six directions, noticeable nulls</td></tr>
+          <tr><td><strong>10 m (28 MHz)</strong></td><td>4th</td><td>~5.5–6.5</td><td>Eight directions, deep nulls</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">ℹ</span>
+      <div class="callout-text">
+        <strong>Important:</strong> These are free-space theoretical values. Real-world gain depends heavily on height above ground, ground quality, and surrounding objects. A low EFHW over poor ground will not achieve these figures.
+      </div>
+    </div>
+  </div>
+
+  <!-- ENVIRONMENTAL SENSITIVITY -->
+  <div class="content-section" id="environmental">
+    <h2>Environmental Sensitivity</h2>
+
+    <p><strong>Height above ground</strong> is the single biggest variable. The EFHW's pattern, gain, and impedance all change with height. Below λ/4, the antenna develops a high-angle radiation pattern (good for NVIS, poor for DX). At λ/2 height, the pattern compresses toward the horizon (ideal for DX). Most portable installations at 3–5 metres height are a compromise — acceptable on 20 m but suboptimal on 40 m where λ/4 is 10 metres.</p>
+
+    <p><strong>Trees and vegetation</strong> affect the EFHW more than many operators expect. Wet foliage absorbs RF, particularly above 14 MHz. A wire draped through tree branches will show higher SWR after rain. If using a tree as a support, route the wire away from dense canopy where possible and accept that performance will vary with seasons and weather.</p>
+
+    <p><strong>Nearby metal</strong> — the high-impedance end of the wire is particularly sensitive to nearby conductors. Metal roofing, gutters, fences, or other antennas within λ/4 of the high-Z end will detune the antenna and distort the pattern. Keep the high-Z end in the clear.</p>
+
+    <p><strong>Ground quality</strong> matters less than for a vertical (which depends on ground for its return current) but still affects the radiation pattern, especially the elevation angle of the main lobe.</p>
+  </div>
+
+  <!-- COMMON MISCONCEPTIONS -->
+  <div class="content-section" id="misconceptions">
+    <h2>Common Misconceptions</h2>
+
+    <blockquote>
+      <p><strong>"An EFHW is just a random wire with a tuner"</strong> — No. An EFHW is a resonant antenna, deliberately cut to a half-wavelength. A random wire is non-resonant and requires a tuner on every band. The EFHW's transformer provides a fixed impedance match at resonant frequencies; a random wire needs an adjustable matching network. The distinction matters because resonant operation is more efficient and more predictable.</p>
+    </blockquote>
+
+    <blockquote>
+      <p><strong>"EFHWs don't need a ground or counterpoise"</strong> — Misleading. They don't need a radial field like a vertical, but they absolutely need a counterpoise. Without one, the coax shield becomes the counterpoise by default, which causes common-mode current, RFI, and unpredictable SWR. The short counterpoise wire is not optional — it's a required part of the antenna system.</p>
+    </blockquote>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STAGE 3: PRACTICAL DEPLOYMENT
+       ═══════════════════════════════════════════════════════ -->
+  <div class="stage-header">
+    <span class="stage-num">STAGE 03</span>
+    <span class="stage-title">Practical Deployment</span>
+    <div class="stage-line"></div>
+  </div>
+
+  <!-- COMMON CONFIGURATIONS -->
+  <div class="content-section" id="configurations">
+    <h2>Common Configurations</h2>
+
+    <p>The same EFHW wire can be deployed in several configurations, each producing a different radiation pattern and trade-off between coverage and gain.</p>
+
+    <h3>1. Horizontal (Flat-Top)</h3>
+    <p>Wire runs horizontally between two supports at equal height. Produces the cleanest theoretical patterns — the textbook multi-lobe shapes described in Stage 2. Best for consistent broadside coverage on the fundamental and predictable lobe directions on harmonics. Requires two elevated supports (trees, masts, building corners).</p>
+
+    <h3>2. Inverted-V</h3>
+    <p>Centre of wire elevated (tree, mast), both ends slope down toward the ground. The drooping ends broaden the azimuth pattern toward omnidirectional at the cost of some gain — typically 1–2 dB less peak gain than flat-top. The elevation pattern tends toward higher angles, which helps NVIS/regional contacts but reduces DX performance. Most popular portable configuration because only one tall support is needed.</p>
+
+    <h3>3. Sloper</h3>
+    <p>Wire runs at an angle from a high point to a lower point. Produces a pattern that favours one direction (roughly toward the low end of the wire). On harmonics, the sloped geometry creates a complex elevation profile with multiple high-angle lobes — a "cloverleaf" pattern. Useful when you want to favour a specific azimuth. The steeper the slope, the more directional the pattern becomes.</p>
+
+    <h3>4. L-Shape (Bent)</h3>
+    <p>Wire makes a right-angle bend partway along its length (e.g., 15 m horizontal then 5 m vertical down a wall, or vice versa). The bend distorts the pattern and shifts the impedance slightly, but the antenna still functions. Common in space-constrained installations where a straight run isn't possible. Expect the SWR minimum to shift by 50–100 kHz from the straight-wire resonance.</p>
+
+    <figure>
+      <img src="../../assets/images/Antenna/D-efhw-configs.png" alt="EFHW deployment configurations: horizontal, inverted-V, sloper, and L-shape" loading="lazy">
+      <figcaption>Fig. 4 — Common EFHW deployment configurations, each producing a different radiation pattern.</figcaption>
+    </figure>
+  </div>
+
+  <!-- CONFIGURATION COMPARISON -->
+  <div class="content-section" id="config-comparison">
+    <h2>Configuration Comparison</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Configuration</th><th>Pattern (fundamental)</th><th>Peak Gain</th><th>DX Performance</th><th>Supports Needed</th><th>Best For</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Horizontal</strong></td>
+            <td>Figure-8 broadside</td>
+            <td>Highest</td>
+            <td>Good (if height ≥ λ/4)</td>
+            <td>2 at equal height</td>
+            <td>Fixed station, consistent patterns</td>
+          </tr>
+          <tr>
+            <td><strong>Inverted-V</strong></td>
+            <td>Near-omnidirectional</td>
+            <td>Moderate (−1–2 dB)</td>
+            <td>Fair</td>
+            <td>1 tall centre support</td>
+            <td>Portable, general coverage</td>
+          </tr>
+          <tr>
+            <td><strong>Sloper</strong></td>
+            <td>Directional (toward low end)</td>
+            <td>Moderate</td>
+            <td>Good (one direction)</td>
+            <td>1 high + 1 low anchor</td>
+            <td>Favouring a specific bearing</td>
+          </tr>
+          <tr>
+            <td><strong>L-Shape</strong></td>
+            <td>Distorted, unpredictable</td>
+            <td>Reduced</td>
+            <td>Variable</td>
+            <td>Flexible</td>
+            <td>Space-constrained sites</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MATCHING & FEEDING -->
+  <div class="content-section" id="matching-feeding">
+    <h2>Matching &amp; Feeding</h2>
+
+    <p><strong>The unun</strong> is the heart of the EFHW system. A 49:1 impedance ratio (7:1 turns ratio) is standard. The unun is wound on a ferrite toroid — core material and size matter significantly.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Recommended</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Core material</strong></td>
+            <td>Fair-Rite #43 (low bands) or #61 (high bands)</td>
+            <td>#43 handles 40/20 m well; #61 better for 15/10 m; some designs use stacked or binocular cores</td>
+          </tr>
+          <tr>
+            <td><strong>Core size</strong></td>
+            <td>FT-140 (100 W) or FT-240 (200+ W)</td>
+            <td>Bigger core = lower loss, better power handling, but heavier</td>
+          </tr>
+          <tr>
+            <td><strong>Turns ratio</strong></td>
+            <td>7:1 (49:1 impedance)</td>
+            <td>Primary: 2–3 turns, Secondary: 14–21 turns</td>
+          </tr>
+          <tr>
+            <td><strong>Compensation capacitor</strong></td>
+            <td>100–150 pF across primary</td>
+            <td>Improves SWR on higher bands by compensating for unun leakage inductance</td>
+          </tr>
+          <tr>
+            <td><strong>Connector</strong></td>
+            <td>SO-239 (fixed), BNC (portable)</td>
+            <td>SO-239 is standard; BNC saves weight for SOTA/POTA</td>
+          </tr>
+          <tr>
+            <td><strong>Counterpoise</strong></td>
+            <td>2–3 m insulated wire</td>
+            <td>Connected to coax shield side of unun; not a radial, just a common-mode return path</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Coax selection:</strong> RG-58 is adequate for portable use at 100 W on short runs (&lt; 15 m). For fixed installations or longer runs, use RG-213 or LMR-400. Always include a common-mode choke (5–10 turns of coax on a FT-240-43 toroid, or a string of clip-on ferrites) at the unun end to keep RF off the coax shield.</p>
+
+    <figure>
+      <img src="../../assets/images/Antenna/D-efhw-unun.png" alt="49:1 unun schematic: toroid winding with primary and secondary, compensation capacitor, SO-239 connector" loading="lazy">
+      <figcaption>Fig. 5 — 49:1 unun schematic. Primary: 2–3 turns. Secondary: 14–21 turns. Compensation cap across primary improves harmonic band SWR.</figcaption>
+    </figure>
+
+    <div class="xref-callout">
+      <span class="xref-label">See also</span>
+      <a href="../antenna-curriculum/unit-2-characteristics-and-measurement/lesson-06-impedance.html">L06: Impedance — why impedance transformation is needed and how it works →</a>
+    </div>
+  </div>
+
+  <!-- TUNING PROCEDURE -->
+  <div class="content-section" id="tuning">
+    <h2>Tuning Procedure</h2>
+
+    <ol class="steps-list">
+      <li><p><strong>Cut long.</strong> Start with wire 5–10% longer than the calculated length. You can always trim shorter; you cannot un-cut wire.</p></li>
+      <li><p><strong>Deploy at operating height.</strong> Tuning on the ground gives false readings — the ground couples to the wire and shifts resonance downward. Get the wire up first.</p></li>
+      <li><p><strong>Connect VNA or antenna analyser</strong> at the unun. Sweep the lowest band (e.g., 7.0–7.3 MHz for 40 m).</p></li>
+      <li><p><strong>Find the SWR minimum.</strong> If it's below your target frequency, the wire is too long — trim 2–3 cm at a time from the far (high-Z) end and re-sweep.</p></li>
+      <li><p><strong>Check all harmonic bands.</strong> After achieving SWR &lt; 2:1 on the fundamental, sweep 20 m, 15 m, and 10 m. Small adjustments to the compensation capacitor (if fitted) can improve higher-band SWR without affecting the fundamental.</p></li>
+      <li><p><strong>Check for common-mode current.</strong> Place your hand near the coax at the unun. If SWR changes when you touch or move the coax, you have common-mode issues — add or improve the choke.</p></li>
+      <li><p><strong>Record your results.</strong> Save SWR plots for each band. Note wire length, height, configuration, and weather conditions. This is your baseline for future troubleshooting.</p></li>
+    </ol>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">💡</span>
+      <div class="callout-text">
+        <strong>Tip:</strong> On a 40 m EFHW, trimming 1 cm of wire shifts resonance by approximately 5–10 kHz. On 10 m (4th harmonic), the same trim shifts resonance by roughly 20–40 kHz — four times the effect. Trim conservatively on the fundamental; check harmonics after every cut.
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMON PROBLEMS & FIXES -->
+  <div class="content-section" id="troubleshooting">
+    <h2>Common Problems &amp; Fixes</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SWR &gt; 3:1 on all bands</td>
+            <td>Unun failure or wrong turns ratio</td>
+            <td>Check winding count; verify 49:1 ratio; test unun with a 2.7 kΩ resistor — should show ~55 Ω</td>
+          </tr>
+          <tr>
+            <td>SWR good on 40 m, high on 10 m</td>
+            <td>Unun leakage inductance; missing compensation cap</td>
+            <td>Add 100–150 pF capacitor across primary winding</td>
+          </tr>
+          <tr>
+            <td>SWR changes when touching coax</td>
+            <td>Common-mode current on shield</td>
+            <td>Add choke balun at unun; check counterpoise length and connection</td>
+          </tr>
+          <tr>
+            <td>SWR shifts after rain</td>
+            <td>Wire running through wet foliage</td>
+            <td>Re-route wire away from tree canopy; accept seasonal variation</td>
+          </tr>
+          <tr>
+            <td>SWR minimum 200 kHz too low</td>
+            <td>Wire too long</td>
+            <td>Trim 5–10 cm from high-Z end; re-measure</td>
+          </tr>
+          <tr>
+            <td>SWR minimum 200 kHz too high</td>
+            <td>Wire too short</td>
+            <td>Add wire (solder or crimp joint); use a tuner as temporary fix</td>
+          </tr>
+          <tr>
+            <td>Good SWR but poor reports</td>
+            <td>Pattern nulls in desired direction (harmonic)</td>
+            <td>Rotate wire orientation; try different configuration; check height</td>
+          </tr>
+          <tr>
+            <td>RF burn at feed point</td>
+            <td>High common-mode current</td>
+            <td>Add choke; improve counterpoise; ensure coax routes away from antenna at 90°</td>
+          </tr>
+          <tr>
+            <td>Unun runs hot on transmit</td>
+            <td>Core saturation or wrong mix</td>
+            <td>Use larger core (FT-240); verify mix (#43 or #61); reduce power and re-test</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MULTI-BAND OPERATION -->
+  <div class="content-section" id="multiband">
+    <h2>Multi-Band Operation Notes</h2>
+
+    <p>Not all HF bands are harmonically related. An EFHW cut for 40 m covers:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Band</th><th>Frequency</th><th>Harmonic</th><th>EFHW Coverage</th><th>Tuner Needed?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>40 m</strong></td><td>7.0–7.3 MHz</td><td>1st (fundamental)</td><td>✅ Full band</td><td>No</td></tr>
+          <tr><td><strong>20 m</strong></td><td>14.0–14.35 MHz</td><td>2nd</td><td>✅ Full band</td><td>No</td></tr>
+          <tr><td><strong>15 m</strong></td><td>21.0–21.45 MHz</td><td>3rd</td><td>✅ Full band</td><td>No</td></tr>
+          <tr><td><strong>10 m</strong></td><td>28.0–29.7 MHz</td><td>4th</td><td>✅ Partial (SWR rises at band edges)</td><td>Possibly at extremes</td></tr>
+          <tr><td><strong>30 m</strong></td><td>10.1–10.15 MHz</td><td>—</td><td>❌ Non-harmonic</td><td>Yes</td></tr>
+          <tr><td><strong>17 m</strong></td><td>18.068–18.168 MHz</td><td>—</td><td>❌ Non-harmonic</td><td>Yes</td></tr>
+          <tr><td><strong>12 m</strong></td><td>24.89–24.99 MHz</td><td>—</td><td>❌ Non-harmonic</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>For the WARC bands (30/17/12 m), you need a tuner. Some operators carry a small manual tuner for these bands and use the EFHW direct on the harmonic bands. Alternatively, a separate EFHW cut for 30 m gives harmonic coverage of 15 m and (approximately) 10 m.</p>
+
+    <p>An 80 m EFHW (approximately 40 m of wire) covers 80/40/20/15/10 m — five bands — but requires significantly more space and a taller support.</p>
+  </div>
+
+  <!-- CONSTRUCTION MATERIALS & SOURCES -->
+  <div class="content-section" id="construction">
+    <h2>Construction Materials &amp; Sources</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Specification</th><th>Typical Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Wire</strong></td>
+            <td>0.5–1.0 mm² stranded or solid copper, PVC insulated</td>
+            <td>Electrical supplier; speaker wire works for portable</td>
+          </tr>
+          <tr>
+            <td><strong>Toroid core</strong></td>
+            <td>FT-140-43 (portable/QRP) or FT-240-43 (100 W)</td>
+            <td>Mouser, Farnell, TorroidKing, kitsandparts.com</td>
+          </tr>
+          <tr>
+            <td><strong>Winding wire</strong></td>
+            <td>0.5–1.0 mm enamelled copper</td>
+            <td>Electronics supplier; magnet wire</td>
+          </tr>
+          <tr>
+            <td><strong>Compensation cap</strong></td>
+            <td>100–150 pF ceramic, 1 kV+ rating</td>
+            <td>Standard electronics component</td>
+          </tr>
+          <tr>
+            <td><strong>Connector</strong></td>
+            <td>SO-239 or BNC chassis mount</td>
+            <td>Any RF connector supplier</td>
+          </tr>
+          <tr>
+            <td><strong>Enclosure</strong></td>
+            <td>Small ABS project box (~80 × 50 × 30 mm)</td>
+            <td>RS Components, Amazon, or 3D print</td>
+          </tr>
+          <tr>
+            <td><strong>Counterpoise</strong></td>
+            <td>2–3 m insulated wire with ring terminal</td>
+            <td>Same wire stock as antenna element</td>
+          </tr>
+          <tr>
+            <td><strong>Winder/spool</strong></td>
+            <td>Lightweight line winder for portable use</td>
+            <td>Kite shops, fishing tackle, or 3D print</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--info">
+      <span class="callout-icon">💰</span>
+      <div class="callout-text">
+        <strong>Estimated cost:</strong> £15–30 for a complete 100 W EFHW system (wire + unun + enclosure + connector). Commercial equivalents (e.g., MyAntennas EFHW, Chameleon EMCOMM III) cost £80–200+.
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON WITH SIMILAR TYPES -->
+  <div class="content-section" id="comparison">
+    <h2>Comparison with Similar Types</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>EFHW</th><th>Centre-Fed Dipole</th><th>Random Wire + Tuner</th><th>Vertical (λ/4)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Supports needed</strong></td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td>1 (self-supporting)</td>
+          </tr>
+          <tr>
+            <td><strong>Multi-band</strong></td>
+            <td>Yes (harmonics)</td>
+            <td>No (single-band)</td>
+            <td>Yes (with tuner)</td>
+            <td>Limited</td>
+          </tr>
+          <tr>
+            <td><strong>Tuner required</strong></td>
+            <td>No (harmonic bands)</td>
+            <td>No</td>
+            <td>Yes (always)</td>
+            <td>Yes (usually)</td>
+          </tr>
+          <tr>
+            <td><strong>Ground system</strong></td>
+            <td>Short counterpoise</td>
+            <td>Balanced feed, no ground</td>
+            <td>Ground/counterpoise</td>
+            <td>16–120 radials</td>
+          </tr>
+          <tr>
+            <td><strong>Efficiency</strong></td>
+            <td>Good (0.5–1.5 dB unun loss)</td>
+            <td>Excellent (lowest loss)</td>
+            <td>Variable (tuner loss + mismatch)</td>
+            <td>Good (if radials adequate)</td>
+          </tr>
+          <tr>
+            <td><strong>Pattern control</strong></td>
+            <td>Predictable (configuration-dependent)</td>
+            <td>Predictable</td>
+            <td>Unpredictable</td>
+            <td>Omnidirectional</td>
+          </tr>
+          <tr>
+            <td><strong>Portable suitability</strong></td>
+            <td>Excellent</td>
+            <td>Good</td>
+            <td>Fair</td>
+            <td>Poor (radials)</td>
+          </tr>
+          <tr>
+            <td><strong>Complexity</strong></td>
+            <td>Low (wire + unun)</td>
+            <td>Lowest (wire + balun)</td>
+            <td>Medium (wire + tuner)</td>
+            <td>Medium (element + radials)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <blockquote>
+      <p><strong>When to choose an EFHW over a dipole:</strong> When you have only one support point, need multi-band without a tuner, or want a portable antenna you can deploy solo. When space and supports aren't constrained, a centre-fed dipole is simpler and more efficient on a single band.</p>
+    </blockquote>
+
+    <figure>
+      <img src="../../assets/images/Antenna/EFHW-BH7JYR.jpg" alt="BH7JYR commercial EFHW antenna example" loading="lazy">
+      <figcaption>Commercial EFHW example (BH7JYR) — a typical packaged end-fed half-wave system with integrated unun.</figcaption>
+    </figure>
+  </div>
+
+  <!-- BUILD GUIDE CALLOUT -->
+  <div class="callout callout--build">
+    <span class="callout-icon">🔧</span>
+    <div class="callout-text">
+      <strong>Build one yourself:</strong> The build guide walks through unun winding, wire preparation, testing, and deployment step by step with photos.<br>
+      <a href="../blog/build-efhw.html">EFHW Build Guide →</a> <em style="color: var(--text-muted); font-size: 0.85em;">(coming soon)</em>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ──────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll progress bar
+  window.addEventListener('scroll', function() {
+    var bar = document.getElementById('progress-bar');
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    bar.style.width = (scrollTop / scrollHeight * 100) + '%';
+  });
+</script>
+
+</body>
+</html>
