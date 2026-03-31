@@ -8,11 +8,11 @@
 ### Required Images
 | Filename | Type | Description | Status |
 |----------|------|-------------|--------|
-| `D-efhw.png` | Diagram | EFHW schematic: half-wave wire, high-Z end, transformer at feed, counterpoise | ⬜ Needed |
-| `P-efhw.jpg` | Photo | Real EFHW deployed in the field (portable setup preferred) | ⬜ Anthony sourcing |
-| `D-efhw-transformer.png` | Diagram | 49:1 matching transformer schematic (toroid winding) | ⬜ Needed |
-| `D-efhw-harmonics.png` | Diagram | Side-by-side lobe patterns: fundamental, 2nd, 3rd, 4th harmonic | ⬜ Needed |
-| `D-efhw-configs.png` | Diagram | Three deployment configs: horizontal, inverted-V, sloper | ⬜ Needed |
+| `D-efhw.png` | Diagram | EFHW schematic: half-wave wire, high-Z end, unun at feed, counterpoise | ✅ Added |
+| `P-efhw.png` | Photo | Portable EFHW field setup with 49:1 unun box and radio | ✅ Added |
+| `D-efhw-unun.png` | Diagram | 49:1 unun schematic (toroid winding detail) | ✅ Added |
+| `D-efhw-harmonics.png` | Diagram | Side-by-side lobe patterns: fundamental, 2nd, 3rd, 4th harmonic | ✅ Added |
+| `D-efhw-configs.png` | Diagram | Three deployment configs: horizontal, inverted-V, sloper | ✅ Added |
 
 ### Curriculum Cross-References
 <!-- XREF: curriculum L01 "The Electromagnetic Wave" — wavelength/frequency fundamentals -->
