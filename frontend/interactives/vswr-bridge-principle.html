@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSWR Bridge Principle</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e2e8f0;font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;padding:16px}
+h1{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#e2e8f0;margin-bottom:3px}
+.sub{color:#94a3b8;font-size:0.78rem;margin-bottom:14px}
+.card{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:14px;margin-bottom:10px}
+canvas{display:block;width:100%;border-radius:4px;background:#0a0e1a}
+.sl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.sl-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#94a3b8;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;width:180px;height:4px;background:#1e293b;border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:#a78bfa;border-radius:50%;cursor:pointer}
+.presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+.pb{background:#1a2234;border:1px solid #1e293b;color:#64748b;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:4px 10px;border-radius:4px;cursor:pointer;transition:.15s}
+.pb:hover{border-color:#94a3b8;color:#94a3b8}
+.readouts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
+.ro{background:#0a0e1a;border:1px solid #1e293b;border-radius:6px;padding:7px 14px;text-align:center;min-width:100px}
+.ro-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:#64748b;margin-bottom:2px}
+.ro-val{font-family:'IBM Plex Mono',monospace;font-size:0.88rem;font-weight:bold}
+.badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:bold;padding:5px 16px;border-radius:20px;text-align:center;margin:8px auto;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<h1>VSWR Bridge Principle</h1>
+<p class="sub">Wheatstone bridge — reflectometer for impedance measurement</p>
+
+<div class="card">
+  <canvas id="cv" width="560" height="360"></canvas>
+
+  <div class="sl-row">
+    <span class="sl-lbl">Z<sub>DUT</sub></span>
+    <input type="range" id="zsl" min="0" max="200" value="50" oninput="setZ(+this.value)">
+    <span class="sl-lbl" id="zVal">50 Ω</span>
+  </div>
+
+  <div class="presets">
+    <button class="pb" onclick="preset(50)">Matched (50 Ω)</button>
+    <button class="pb" onclick="preset(75)">75 Ω cable</button>
+    <button class="pb" onclick="preset(35)">Mismatched antenna</button>
+    <button class="pb" onclick="preset(200)">Open (200 Ω)</button>
+    <button class="pb" onclick="preset(0)">Short (0 Ω)</button>
+  </div>
+</div>
+
+<div class="card">
+  <div style="text-align:center">
+    <div id="badge" class="badge">—</div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><div class="ro-lbl">Z<sub>DUT</sub></div><div class="ro-val" id="vZ" style="color:#e2e8f0">—</div></div>
+    <div class="ro"><div class="ro-lbl">Mismatch</div><div class="ro-val" id="vMis" style="color:#f59e0b">—</div></div>
+    <div class="ro"><div class="ro-lbl">|Γ|</div><div class="ro-val" id="vGam" style="color:#94a3b8">—</div></div>
+    <div class="ro"><div class="ro-lbl">VSWR</div><div class="ro-val" id="vVSWR" style="color:#94a3b8">—</div></div>
+    <div class="ro"><div class="ro-lbl">Detected</div><div class="ro-val" id="vDet" style="color:#ef4444">—</div></div>
+  </div>
+</div>
+
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const W = 560, H = 360;
+
+let zdut = 50;   // ohms
+let dots = [];
+let frame = 0;
+const Z0 = 50;   // reference / bridge arm impedance
+
+// Bridge diamond geometry (pixel coords)
+// Top node: RF source.  Bottom node: load/GND.  Left/Right: detector terminals.
+// Center: virtual (bridge centre between left and right)
+const TOP  = {x: W/2,    y:  42};
+const BOT  = {x: W/2,    y: 318};
+const LEFT = {x: W/2-130, y: (42+318)/2};  // left arm node
+const RIGHT= {x: W/2+130, y: (42+318)/2};  // right arm node (DUT side)
+const DET_L= {x: W/2-50,  y: (42+318)/2};  // detector left
+const DET_R= {x: W/2+50,  y: (42+318)/2};  // detector right
+
+function gamma() {
+  return (zdut - Z0) / (zdut + Z0);
+}
+function absGamma() { return Math.abs(gamma()); }
+function vswr() {
+  const G = absGamma();
+  return G >= 0.999 ? Infinity : (1+G)/(1-G);
+}
+function mismatchPct() { return absGamma() * 100; }
+function detectedDb() {
+  const G = absGamma();
+  return G < 0.001 ? -Infinity : 20*Math.log10(G);
+}
+
+// --- Dot class (current flow along an arm) ---
+class Dot {
+  constructor(ax, ay, bx, by, col, speed) {
+    this.ax=ax; this.ay=ay; this.bx=bx; this.by=by;
+    this.col=col; this.t=Math.random();
+    this.speed = speed || 0.012;
+    this.alive = true;
+  }
+  step() {
+    this.t += this.speed;
+    if (this.t > 1) this.t -= 1;
+  }
+  draw() {
+    const x = this.ax + (this.bx - this.ax)*this.t;
+    const y = this.ay + (this.by - this.ay)*this.t;
+    ctx.save();
+    ctx.shadowColor = this.col; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.283);
+    ctx.fillStyle = this.col; ctx.fill();
+    ctx.restore();
+  }
+}
+
+// Arms: top→left (ref arm R1), left→bot (R3), top→right (R2), right→bot (R4=DUT)
+// Create dots per arm
+let armDots = [];
+function rebuildDots() {
+  armDots = [];
+  const refCol = '#06b6d4';  // reference arms — cyan
+  const dutCol = '#f59e0b';  // DUT arm — amber
+  const detCol = '#ef4444';  // detector — red (if unbalanced)
+
+  // Each arm gets 3 continuously cycling dots
+  for (let i=0;i<3;i++) {
+    armDots.push(new Dot(TOP.x, TOP.y, LEFT.x, LEFT.y, refCol));
+    armDots.push(new Dot(LEFT.x, LEFT.y, BOT.x, BOT.y, refCol));
+    armDots.push(new Dot(TOP.x, TOP.y, RIGHT.x, RIGHT.y, refCol));
+    armDots.push(new Dot(RIGHT.x, RIGHT.y, BOT.x, BOT.y, dutCol));
+  }
+}
+
+rebuildDots();
+
+// Detector dots (only visible when unbalanced)
+let detDots = [];
+function rebuildDetDots() {
+  detDots = [];
+  const G = absGamma();
+  if (G > 0.02) {
+    const col = '#ef4444';
+    for (let i=0;i<2;i++) {
+      detDots.push(new Dot(DET_L.x, DET_L.y, DET_R.x, DET_R.y, col, 0.018));
+      detDots.push(new Dot(DET_R.x, DET_R.y, DET_L.x, DET_L.y, col, 0.018));
+    }
+  }
+}
+rebuildDetDots();
+
+// --- Draw ---
+function drawBg() {
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawWire(a, b, col, dashed) {
+  ctx.save();
+  if (dashed) ctx.setLineDash([5,5]);
+  ctx.strokeStyle = col; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  ctx.restore();
+}
+
+function node(p, label, col, r) {
+  r = r||6;
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = 6;
+  ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.283);
+  ctx.fillStyle = col; ctx.fill();
+  ctx.restore();
+  if (label) {
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = "10px 'IBM Plex Mono',monospace";
+    ctx.textAlign = 'center';
+    ctx.fillText(label, p.x, p.y - r - 4);
+  }
+}
+
+function armLabel(a, b, text, col, offset) {
+  // mid-point of arm, offset perpendicular
+  const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+  const dx = b.x-a.x, dy = b.y-a.y;
+  const len = Math.sqrt(dx*dx+dy*dy)||1;
+  const nx = -dy/len, ny = dx/len;
+  const ox = offset||18;
+  ctx.fillStyle = col;
+  ctx.font = "bold 10px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText(text, mx + nx*ox, my + ny*ox + 4);
+}
+
+function drawDetector() {
+  // Draw detector instrument between LEFT and RIGHT nodes
+  const G = absGamma();
+  const balanced = G < 0.05;
+  const col = balanced ? '#22c55e' : '#ef4444';
+
+  // Detector wire
+  drawWire(LEFT, DET_L, '#334155', true);
+  drawWire(RIGHT, DET_R, '#334155', true);
+
+  // Detector box
+  const bw = 100, bh = 34;
+  const bx = W/2 - bw/2, by = LEFT.y - bh/2;
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = balanced ? 4 : 12;
+  ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+  ctx.fillStyle = balanced ? '#001a00' : '#1a0000';
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeRect(bx, by, bw, bh);
+  ctx.restore();
+
+  // Needle bar inside
+  const signal = Math.min(1, G * 1.4);
+  const barW = (bw - 20) * signal;
+  ctx.fillStyle = col;
+  ctx.fillRect(bx + 10, by + bh/2, barW, 6);
+
+  ctx.fillStyle = col;
+  ctx.font = "bold 9px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText('DETECTOR', W/2, by - 7);
+
+  // Signal level text inside box
+  const sigDb = G < 0.001 ? '−∞ dB' : (20*Math.log10(G)).toFixed(1)+' dB';
+  ctx.fillStyle = col;
+  ctx.font = "8px 'IBM Plex Mono',monospace";
+  ctx.fillText(sigDb, W/2, by + bh - 7);
+}
+
+function drawRFSource() {
+  // Symbol at TOP
+  const r = 16;
+  ctx.save();
+  ctx.shadowColor = '#a78bfa'; ctx.shadowBlur = 8;
+  ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(TOP.x, TOP.y - r - 2, r, 0, 6.283); ctx.stroke();
+  ctx.restore();
+  // Sine wave inside
+  ctx.save();
+  ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i=0; i<=20; i++) {
+    const sx = TOP.x - 10 + i;
+    const sy = (TOP.y - r - 2) + 7*Math.sin((i/20)*Math.PI*2);
+    i===0 ? ctx.moveTo(sx,sy) : ctx.lineTo(sx,sy);
+  }
+  ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = '#a78bfa';
+  ctx.font = "9px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText('RF', TOP.x, TOP.y - r*2 - 10);
+}
+
+function drawGround() {
+  const x = BOT.x, y = BOT.y;
+  ctx.save();
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5;
+  for (let i=0;i<3;i++) {
+    const hw = 14 - i*4;
+    ctx.beginPath();
+    ctx.moveTo(x - hw, y + 8 + i*6);
+    ctx.lineTo(x + hw, y + 8 + i*6);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawDUTBox() {
+  // Box hanging off RIGHT node
+  const bw=64, bh=34;
+  const bx = RIGHT.x + 20, by = RIGHT.y - bh/2;
+  const G = absGamma();
+  const col = G < 0.1 ? '#22c55e' : G < 0.5 ? '#f59e0b' : '#ef4444';
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = 6;
+  ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+  ctx.fillStyle = '#0d1525';
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeRect(bx, by, bw, bh);
+  ctx.restore();
+  // Wire to node
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(RIGHT.x, RIGHT.y); ctx.lineTo(bx, RIGHT.y); ctx.stroke();
+  ctx.fillStyle = col;
+  ctx.font = "bold 9px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText('DUT', bx + bw/2, by - 6);
+  ctx.fillStyle = '#e2e8f0';
+  ctx.font = "9px 'IBM Plex Mono',monospace";
+  ctx.fillText(zdut + ' Ω', bx + bw/2, by + bh/2 + 4);
+}
+
+function updateReadouts() {
+  const G = absGamma();
+  const V = vswr();
+  const M = mismatchPct();
+  const D = detectedDb();
+
+  document.getElementById('vZ').textContent = zdut + ' Ω';
+  document.getElementById('vMis').textContent = M.toFixed(1) + ' %';
+  document.getElementById('vGam').textContent = G.toFixed(3);
+  document.getElementById('vVSWR').textContent = V === Infinity ? '∞' : V.toFixed(2)+':1';
+  document.getElementById('vDet').textContent = D === -Infinity ? '−∞ dB' : D.toFixed(1)+' dB';
+
+  const badge = document.getElementById('badge');
+  const balanced = G < 0.05;
+  badge.textContent = balanced ? '✓  BALANCED' : '✗  UNBALANCED — mismatch detected';
+  badge.style.background = balanced ? '#052e16' : '#1a0500';
+  badge.style.color       = balanced ? '#22c55e' : '#ef4444';
+  badge.style.border      = `1px solid ${balanced ? '#22c55e' : '#ef4444'}`;
+}
+
+function tick() {
+  frame++;
+
+  drawBg();
+
+  // Bridge arms
+  drawWire(TOP,  LEFT,  '#06b6d4');
+  drawWire(LEFT,  BOT,  '#06b6d4');
+  drawWire(TOP,  RIGHT, '#06b6d4');
+  drawWire(RIGHT, BOT,  '#f59e0b');
+
+  // Arm labels
+  ctx.textAlign = 'center';
+  armLabel(TOP, LEFT,  'R₁ = 50Ω', '#06b6d4', -20);
+  armLabel(LEFT,  BOT, 'R₃ = 50Ω', '#06b6d4',  20);
+  armLabel(TOP, RIGHT, 'R₂ = 50Ω', '#06b6d4',  20);
+  armLabel(RIGHT, BOT, 'Z\u2080 = 50Ω', '#64748b', -22);
+
+  drawDetector();
+  drawDUTBox();
+  drawRFSource();
+  drawGround();
+
+  // Nodes
+  node(TOP,  null,  '#a78bfa');
+  node(BOT,  null,  '#334155');
+  node(LEFT, null,  '#06b6d4', 5);
+  node(RIGHT,null,  '#f59e0b', 5);
+
+  // Animate dots
+  for (const d of armDots) { d.step(); d.draw(); }
+
+  // Detector dots (only if unbalanced)
+  const G = absGamma();
+  if (G > 0.05) {
+    if (detDots.length === 0) rebuildDetDots();
+    for (const d of detDots) { d.step(); d.draw(); }
+  } else {
+    detDots = [];
+  }
+
+  updateReadouts();
+  requestAnimationFrame(tick);
+}
+
+function setZ(v) {
+  zdut = v;
+  document.getElementById('zVal').textContent = v + ' Ω';
+  rebuildDetDots();
+}
+
+function preset(v) {
+  zdut = v;
+  document.getElementById('zsl').value = v;
+  document.getElementById('zVal').textContent = v + ' Ω';
+  rebuildDetDots();
+}
+
+tick();
+</script>
+</body>
+</html>

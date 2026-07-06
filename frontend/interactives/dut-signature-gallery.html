@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUT Signature Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e2e8f0;font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;padding:16px}
+h1{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#e2e8f0;margin-bottom:3px}
+.sub{color:#94a3b8;font-size:0.78rem;margin-bottom:14px}
+.card{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:14px;margin-bottom:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tab{background:#1a2234;border:1px solid #1e293b;color:#64748b;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:5px 11px;border-radius:4px;cursor:pointer;transition:.15s}
+.tab.on{background:#f59e0b18;border-color:#f59e0b;color:#f59e0b}
+.panels{display:flex;gap:10px;flex-wrap:wrap}
+.panel-wrap{flex:1;min-width:260px}
+.panel-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#94a3b8;margin-bottom:4px;text-align:center}
+canvas{display:block;width:100%;border-radius:4px;cursor:crosshair}
+.desc{background:#0a0e1a;border:1px solid #1e293b;border-radius:6px;padding:10px 14px;font-size:0.78rem;color:#94a3b8;line-height:1.55;margin-top:10px}
+.hint{color:#64748b;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;text-align:center;margin-top:6px}
+.mkr-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;justify-content:center}
+.mkr{background:#0a0e1a;border:1px solid #1e293b;border-radius:6px;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;min-width:140px;text-align:center}
+.mkr-lbl{color:#64748b;margin-bottom:2px;font-size:0.65rem}
+</style>
+</head>
+<body>
+<h1>DUT Signature Gallery</h1>
+<p class="sub">S11 &amp; S21 signatures — dual-panel with linked cursor</p>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab on" onclick="selectDut(0)">Antenna</button>
+    <button class="tab"    onclick="selectDut(1)">Bandpass Filter</button>
+    <button class="tab"    onclick="selectDut(2)">Attenuator 6 dB</button>
+    <button class="tab"    onclick="selectDut(3)">Coax 10 m</button>
+    <button class="tab"    onclick="selectDut(4)">Open</button>
+    <button class="tab"    onclick="selectDut(5)">Short</button>
+  </div>
+
+  <div class="panels">
+    <div class="panel-wrap">
+      <div class="panel-lbl">S11 — Return Loss (0 to −40 dB)</div>
+      <canvas id="cv1" width="560" height="260"></canvas>
+    </div>
+    <div class="panel-wrap">
+      <div class="panel-lbl">S21 — Insertion Loss (0 to −60 dB)</div>
+      <canvas id="cv2" width="560" height="260"></canvas>
+    </div>
+  </div>
+
+  <p class="hint">Click either panel to place marker · Shift-click for Marker 2</p>
+
+  <div class="mkr-row">
+    <div class="mkr">
+      <div class="mkr-lbl">MKR 1</div>
+      <div id="m1f" style="color:#22c55e">—</div>
+      <div id="m1s11" style="color:#f59e0b">S11 —</div>
+      <div id="m1s21" style="color:#06b6d4">S21 —</div>
+    </div>
+    <div class="mkr">
+      <div class="mkr-lbl">MKR 2</div>
+      <div id="m2f" style="color:#22c55e">—</div>
+      <div id="m2s11" style="color:#f59e0b">S11 —</div>
+      <div id="m2s21" style="color:#06b6d4">S21 —</div>
+    </div>
+    <div class="mkr">
+      <div class="mkr-lbl">Δ MKR2 − MKR1</div>
+      <div id="mdf" style="color:#a78bfa">—</div>
+      <div id="mds11" style="color:#a78bfa">ΔS11 —</div>
+      <div id="mds21" style="color:#a78bfa">ΔS21 —</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="desc" id="desc">Loading…</div>
+</div>
+
+<script>
+// Two canvases
+const cv1 = document.getElementById('cv1');
+const cv2 = document.getElementById('cv2');
+const cx1 = cv1.getContext('2d');
+const cx2 = cv2.getContext('2d');
+const W = 560, H = 260;
+
+// Plot area (same for both)
+const PL=52, PR=12, PT=14, PB=36;
+const PW = W-PL-PR, PH = H-PT-PB;
+
+const F_MIN=1e6, F_MAX=1e9;
+const S11_MAX=0, S11_MIN=-40;
+const S21_MAX=0, S21_MIN=-60;
+
+function freqToX(f) {
+  return PL + (Math.log10(f)-Math.log10(F_MIN))/(Math.log10(F_MAX)-Math.log10(F_MIN))*PW;
+}
+function xToFreq(px) {
+  const t=(px-PL)/PW;
+  return F_MIN*Math.pow(F_MAX/F_MIN, t);
+}
+function s11ToY(db) { return PT+(S11_MAX-db)/(S11_MAX-S11_MIN)*PH; }
+function s21ToY(db) { return PT+(S21_MAX-db)/(S21_MAX-S21_MIN)*PH; }
+
+const DUTS = [
+  {
+    name: 'Antenna (145 MHz)',
+    desc: 'The antenna shows a deep S11 notch at 145 MHz — this is the resonant frequency where power is accepted and radiated rather than reflected. At other frequencies, S11 is high, meaning most power is reflected back. S21 is not meaningful for an antenna (single-port device).',
+    s11: f => {
+      const fc=145e6, bw=8e6;
+      const norm=(f-fc)/(bw/2);
+      return Math.min(0, -25/(1+Math.pow(norm,6)));
+    },
+    s21: null
+  },
+  {
+    name: 'Bandpass Filter (145 MHz)',
+    desc: 'The bandpass filter shows low S11 in its passband (~145 MHz) as impedance is well matched there, and high S11 in the stopband where input power is reflected. S21 shows high transmission in the passband and deep rejection (−40 dB) in the stopband — the classic bandpass signature.',
+    s11: f => {
+      const fc=145e6, bw=10e6;
+      const norm=(f-fc)/(bw/2);
+      const reject = -Math.min(40, 3+35*Math.pow(Math.abs(norm),4)/(1+Math.pow(Math.abs(norm),4)));
+      return Math.min(0, reject+25);  // low S11 in passband
+    },
+    s21: f => {
+      const fc=145e6, bw=10e6;
+      const norm=(f-fc)/(bw/2);
+      return Math.max(-40, -2/(1+Math.pow(norm,8)) - 38*(1-1/(1+Math.pow(norm,8))));
+    }
+  },
+  {
+    name: '6 dB Attenuator',
+    desc: 'A well-designed attenuator presents a near-perfect 50 Ω match at all frequencies, giving flat S11 around −30 dB (very low reflection). S21 is flat at exactly −6 dB across the entire band — it passes all frequencies equally but reduces signal power by a constant factor.',
+    s11: f => -30 + (Math.random()-0.5)*0.5,  // approx flat
+    s21: f => -6
+  },
+  {
+    name: 'Coax Cable 10 m',
+    desc: 'A coaxial cable shows S11 around −20 dB across the band — some reflection due to connector imperfections and velocity factor, but generally well matched. S21 rises in loss with frequency due to skin-effect conductor losses, going from near 0 dB at low frequencies to around −15 dB at 1 GHz.',
+    s11: f => -20 + Math.sin(f/150e6)*2,
+    s21: f => -(1.5*Math.sqrt(f/1e9))
+  },
+  {
+    name: 'Open Circuit',
+    desc: 'An open circuit reflects all power — S11 is 0 dB at all frequencies, meaning |Γ| = 1. There is no path for power to pass through, so S21 is not applicable. The open is a useful calibration standard: it defines the 0 dB, 0° reference plane for S11 measurements.',
+    s11: f => 0,
+    s21: null
+  },
+  {
+    name: 'Short Circuit',
+    desc: 'Like an open circuit, a short circuit reflects all power — S11 is 0 dB, but with 180° phase inversion (not shown in magnitude view). No power passes through, so S21 is not applicable. The short is the second key calibration standard alongside the open and load.',
+    s11: f => 0,
+    s21: null
+  }
+];
+
+let dutIdx = 0;
+const N = 400;
+let trace1 = [], trace2 = [];  // {f, db, x, y}
+
+// Attenuator S11 needs to be deterministic — precompute
+let attS11Cache = null;
+function buildTrace() {
+  trace1 = []; trace2 = [];
+  const dut = DUTS[dutIdx];
+  // Seed cache for attenuator
+  if (dutIdx === 2 && !attS11Cache) {
+    attS11Cache = [];
+    for (let i=0;i<=N;i++) {
+      const f = F_MIN*Math.pow(F_MAX/F_MIN, i/N);
+      attS11Cache.push(-29.5 + (Math.sin(f/220e6)*0.8));
+    }
+  }
+  for (let i=0;i<=N;i++) {
+    const f = F_MIN*Math.pow(F_MAX/F_MIN, i/N);
+    let db1;
+    if (dutIdx===2 && attS11Cache) {
+      db1 = attS11Cache[i];
+    } else {
+      db1 = Math.max(S11_MIN, dut.s11(f));
+    }
+    trace1.push({f, db:db1, x:freqToX(f), y:s11ToY(db1)});
+    if (dut.s21) {
+      const db2 = Math.max(S21_MIN, dut.s21(f));
+      trace2.push({f, db:db2, x:freqToX(f), y:s21ToY(db2)});
+    }
+  }
+}
+
+let mk1=null, mk2=null;
+let cursorX = null;
+
+// --- Draw helpers ---
+function drawPanelBg(c) {
+  c.fillStyle='#050b14'; c.fillRect(0,0,W,H);
+  c.fillStyle='#0a0f1c'; c.fillRect(PL,PT,PW,PH);
+}
+
+function drawGrid(c, dbMax, dbMin, step) {
+  c.save();
+  c.strokeStyle='#1e293b'; c.lineWidth=1;
+  c.font="8px 'IBM Plex Mono',monospace"; c.fillStyle='#475569'; c.textAlign='right';
+  for (let db=dbMax; db>=dbMin; db-=step) {
+    const y = PT + (dbMax-db)/(dbMax-dbMin)*PH;
+    c.beginPath(); c.moveTo(PL,y); c.lineTo(PL+PW,y); c.stroke();
+    c.fillText(db+' dB', PL-4, y+3);
+  }
+  const freqs=[1e6,5e6,10e6,50e6,100e6,500e6,1000e6];
+  c.textAlign='center';
+  for (const f of freqs) {
+    const x=freqToX(f);
+    c.beginPath(); c.moveTo(x,PT); c.lineTo(x,PT+PH); c.stroke();
+    let lbl = f>=1e9?(f/1e9)+'GHz':f>=1e6?(f/1e6)+'MHz':'';
+    c.fillStyle='#475569'; c.font="7px 'IBM Plex Mono',monospace";
+    c.fillText(lbl, x, PT+PH+12);
+  }
+  c.restore();
+}
+
+function drawTrace(c, pts, col) {
+  if (!pts || pts.length < 2) return;
+  c.save();
+  c.strokeStyle=col; c.lineWidth=1.8; c.shadowColor=col; c.shadowBlur=3;
+  c.beginPath(); c.moveTo(pts[0].x, pts[0].y);
+  for (let i=1;i<pts.length;i++) c.lineTo(pts[i].x, pts[i].y);
+  c.stroke(); c.restore();
+}
+
+function drawNA(c) {
+  c.fillStyle='#334155';
+  c.font="bold 11px 'IBM Plex Mono',monospace"; c.textAlign='center';
+  c.fillText('S21 — N/A (single-port device)', PL+PW/2, PT+PH/2+4);
+}
+
+function drawMarker(c, mk, idx, col, dbMax, dbMin, yFn) {
+  if (!mk) return;
+  const x=mk.x, y=yFn(Math.max(dbMin, mk.db));
+  c.save();
+  c.strokeStyle=col+'88'; c.lineWidth=1; c.setLineDash([3,4]);
+  c.beginPath(); c.moveTo(x,PT); c.lineTo(x,PT+PH); c.stroke();
+  c.restore();
+  c.save();
+  c.fillStyle=col; c.shadowColor=col; c.shadowBlur=6;
+  c.beginPath();
+  c.moveTo(x,y-6); c.lineTo(x+5,y); c.lineTo(x,y+6); c.lineTo(x-5,y); c.closePath(); c.fill();
+  c.restore();
+  c.fillStyle=col; c.font="bold 8px 'IBM Plex Mono',monospace";
+  c.textAlign=x>PL+PW-50?'right':'left';
+  c.fillText('M'+idx, x+(x>PL+PW-50?-7:7), y-9);
+}
+
+function drawCursor(c) {
+  if (cursorX===null) return;
+  c.save();
+  c.strokeStyle='#ffffff22'; c.lineWidth=1; c.setLineDash([3,6]);
+  c.beginPath(); c.moveTo(cursorX,PT); c.lineTo(cursorX,PT+PH); c.stroke();
+  c.restore();
+}
+
+function nearestPoint(px, traces) {
+  const f = xToFreq(px);
+  const x = freqToX(f);
+  let db = 0;
+  if (traces && traces.length) {
+    // find closest
+    let best=null, bdist=Infinity;
+    for (const p of traces) {
+      const d=Math.abs(p.f-f);
+      if (d<bdist){bdist=d;best=p;}
+    }
+    if (best) db=best.db;
+  } else {
+    const dut=DUTS[dutIdx];
+    if (dut.s11) db=Math.max(S11_MIN, dut.s11(f));
+  }
+  return {f, db, x, y:0};
+}
+
+function fmtHz(f) {
+  return f>=1e9?(f/1e9).toFixed(3)+' GHz':(f/1e6).toFixed(2)+' MHz';
+}
+
+function updateMarkers() {
+  const dut=DUTS[dutIdx];
+  if (mk1) {
+    const f=mk1.f;
+    const s11=(dut.s11?Math.max(S11_MIN,dut.s11(f)):null);
+    const s21=(dut.s21?Math.max(S21_MIN,dut.s21(f)):null);
+    document.getElementById('m1f').textContent=fmtHz(f);
+    document.getElementById('m1s11').textContent='S11 '+(s11!==null?s11.toFixed(1)+' dB':'N/A');
+    document.getElementById('m1s21').textContent='S21 '+(s21!==null?s21.toFixed(1)+' dB':'N/A');
+  } else {
+    document.getElementById('m1f').textContent='—';
+    document.getElementById('m1s11').textContent='S11 —';
+    document.getElementById('m1s21').textContent='S21 —';
+  }
+  if (mk2) {
+    const f=mk2.f;
+    const s11=(dut.s11?Math.max(S11_MIN,dut.s11(f)):null);
+    const s21=(dut.s21?Math.max(S21_MIN,dut.s21(f)):null);
+    document.getElementById('m2f').textContent=fmtHz(f);
+    document.getElementById('m2s11').textContent='S11 '+(s11!==null?s11.toFixed(1)+' dB':'N/A');
+    document.getElementById('m2s21').textContent='S21 '+(s21!==null?s21.toFixed(1)+' dB':'N/A');
+  } else {
+    document.getElementById('m2f').textContent='—';
+    document.getElementById('m2s11').textContent='S11 —';
+    document.getElementById('m2s21').textContent='S21 —';
+  }
+  if (mk1&&mk2) {
+    const dut=DUTS[dutIdx];
+    const df=mk2.f-mk1.f;
+    const ds11= dut.s11 ? (Math.max(S11_MIN,dut.s11(mk2.f))-Math.max(S11_MIN,dut.s11(mk1.f))) : null;
+    const ds21= dut.s21 ? (Math.max(S21_MIN,dut.s21(mk2.f))-Math.max(S21_MIN,dut.s21(mk1.f))) : null;
+    document.getElementById('mdf').textContent=(df>=0?'+':'')+fmtHz(Math.abs(df));
+    document.getElementById('mds11').textContent='ΔS11 '+(ds11!==null?(ds11>=0?'+':'')+ds11.toFixed(1)+' dB':'N/A');
+    document.getElementById('mds21').textContent='ΔS21 '+(ds21!==null?(ds21>=0?'+':'')+ds21.toFixed(1)+' dB':'N/A');
+  } else {
+    document.getElementById('mdf').textContent='—';
+    document.getElementById('mds11').textContent='ΔS11 —';
+    document.getElementById('mds21').textContent='ΔS21 —';
+  }
+}
+
+function render() {
+  // Panel 1: S11
+  drawPanelBg(cx1);
+  drawGrid(cx1, S11_MAX, S11_MIN, 10);
+  drawTrace(cx1, trace1, '#f59e0b');
+  drawMarker(cx1, mk1, 1, '#22c55e', S11_MAX, S11_MIN, s11ToY);
+  drawMarker(cx1, mk2, 2, '#06b6d4', S11_MAX, S11_MIN, s11ToY);
+  drawCursor(cx1);
+  // Panel label
+  cx1.fillStyle='#f59e0b'; cx1.font="bold 9px 'IBM Plex Mono',monospace"; cx1.textAlign='left';
+  cx1.fillText('S11', PL+4, PT+12);
+
+  // Panel 2: S21
+  drawPanelBg(cx2);
+  drawGrid(cx2, S21_MAX, S21_MIN, 10);
+  if (DUTS[dutIdx].s21) {
+    drawTrace(cx2, trace2, '#06b6d4');
+    drawMarker(cx2, mk1, 1, '#22c55e', S21_MAX, S21_MIN, s21ToY);
+    drawMarker(cx2, mk2, 2, '#06b6d4', S21_MAX, S21_MIN, s21ToY);
+  } else {
+    drawNA(cx2);
+  }
+  drawCursor(cx2);
+  cx2.fillStyle='#06b6d4'; cx2.font="bold 9px 'IBM Plex Mono',monospace"; cx2.textAlign='left';
+  cx2.fillText('S21', PL+4, PT+12);
+
+  requestAnimationFrame(render);
+}
+
+function handleClick(e, shift) {
+  const rect = cv1.getBoundingClientRect();
+  const scaleX = W/rect.width;
+  let px;
+  if (e.target===cv1) px=(e.clientX-cv1.getBoundingClientRect().left)*scaleX;
+  else                 px=(e.clientX-cv2.getBoundingClientRect().left)*(W/cv2.getBoundingClientRect().width);
+  if (px<PL||px>PL+PW) return;
+  const f=xToFreq(px), x=freqToX(f);
+  const mk={f, x};
+  if (shift||e.shiftKey) mk2=mk; else mk1=mk;
+  cursorX=x;
+  updateMarkers();
+}
+
+function handleMove(e) {
+  const rect=(e.target===cv1?cv1:cv2).getBoundingClientRect();
+  const scaleX=W/rect.width;
+  const px=(e.clientX-rect.left)*scaleX;
+  if (px>=PL&&px<=PL+PW) cursorX=freqToX(xToFreq(px));
+  else cursorX=null;
+}
+
+cv1.addEventListener('click', handleClick);
+cv2.addEventListener('click', handleClick);
+cv1.addEventListener('mousemove', handleMove);
+cv2.addEventListener('mousemove', handleMove);
+cv1.addEventListener('mouseleave', ()=>cursorX=null);
+cv2.addEventListener('mouseleave', ()=>cursorX=null);
+
+function selectDut(i) {
+  dutIdx=i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));
+  mk1=null; mk2=null; cursorX=null;
+  buildTrace();
+  updateMarkers();
+  document.getElementById('desc').textContent=DUTS[i].desc;
+}
+
+buildTrace();
+document.getElementById('desc').textContent=DUTS[0].desc;
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

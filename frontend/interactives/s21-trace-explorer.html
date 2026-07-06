@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S21 Trace Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e2e8f0;font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;padding:16px}
+h1{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#e2e8f0;margin-bottom:3px}
+.sub{color:#94a3b8;font-size:0.78rem;margin-bottom:14px}
+.card{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:14px;margin-bottom:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tab{background:#1a2234;border:1px solid #1e293b;color:#64748b;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:5px 11px;border-radius:4px;cursor:pointer;transition:.15s}
+.tab.on{background:#f59e0b18;border-color:#f59e0b;color:#f59e0b}
+canvas{display:block;width:100%;border-radius:4px;cursor:crosshair}
+.mkr-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;justify-content:center}
+.mkr{background:#0a0e1a;border:1px solid #1e293b;border-radius:6px;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;min-width:140px;text-align:center}
+.mkr-lbl{color:#64748b;margin-bottom:2px;font-size:0.65rem}
+.hint{color:#64748b;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<h1>S21 Trace Explorer</h1>
+<p class="sub">Simulated spectrum analyser — insertion loss vs frequency</p>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab on" onclick="selectDut(0)">6 dB Att.</button>
+    <button class="tab"    onclick="selectDut(1)">20 dB Att.</button>
+    <button class="tab"    onclick="selectDut(2)">145 MHz BPF</button>
+    <button class="tab"    onclick="selectDut(3)">435 MHz BPF</button>
+    <button class="tab"    onclick="selectDut(4)">Coax 1 m</button>
+    <button class="tab"    onclick="selectDut(5)">Coax 10 m</button>
+    <button class="tab"    onclick="selectDut(6)">Wire</button>
+  </div>
+
+  <canvas id="cv" width="620" height="340"></canvas>
+  <p class="hint">Click to place Marker 1 · Shift-click for Marker 2 · Markers show Δ</p>
+
+  <div class="mkr-row">
+    <div class="mkr">
+      <div class="mkr-lbl">MKR 1</div>
+      <div id="m1f" style="color:#22c55e">— MHz</div>
+      <div id="m1v" style="color:#22c55e">— dB</div>
+    </div>
+    <div class="mkr">
+      <div class="mkr-lbl">MKR 2</div>
+      <div id="m2f" style="color:#06b6d4">— MHz</div>
+      <div id="m2v" style="color:#06b6d4">— dB</div>
+    </div>
+    <div class="mkr">
+      <div class="mkr-lbl">Δ (MKR2 − MKR1)</div>
+      <div id="mdf" style="color:#a78bfa">— MHz</div>
+      <div id="mdv" style="color:#a78bfa">— dB</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const W = 620, H = 340;
+
+// Plot area
+const PL = 58, PR = 16, PT = 16, PB = 42;
+const PW = W - PL - PR;   // plot width
+const PH = H - PT - PB;   // plot height
+
+// Freq axis: 1 MHz – 1000 MHz (log)
+const F_MIN = 1e6, F_MAX = 1e9;
+// dB axis: 0 to -60 (10 dB/div → 6 divs)
+const DB_MAX = 0, DB_MIN = -60;
+
+function freqToX(f) {
+  return PL + (Math.log10(f) - Math.log10(F_MIN)) / (Math.log10(F_MAX) - Math.log10(F_MIN)) * PW;
+}
+function xToFreq(px) {
+  const t = (px - PL) / PW;
+  return F_MIN * Math.pow(F_MAX/F_MIN, t);
+}
+function dbToY(db) {
+  return PT + (DB_MAX - db) / (DB_MAX - DB_MIN) * PH;
+}
+
+// DUT definitions — returns S21 dB at freq (Hz)
+const DUTS = [
+  {
+    name: '6 dB Attenuator',
+    fn: f => -6
+  },
+  {
+    name: '20 dB Attenuator',
+    fn: f => -20
+  },
+  {
+    name: '145 MHz Bandpass Filter',
+    fn: f => {
+      const fc = 145e6, bw = 10e6;
+      const norm = (f - fc) / (bw/2);
+      // Butterworth-ish 4th order shape
+      const pass = -3 / (1 + Math.pow(norm, 8));
+      const floor = -40;
+      return Math.max(floor, pass - 3*(1-1/(1+Math.pow(norm,8))));
+    }
+  },
+  {
+    name: '435 MHz Bandpass Filter',
+    fn: f => {
+      const fc = 435e6, bw = 15e6;
+      const norm = (f - fc) / (bw/2);
+      const pass = -3 / (1 + Math.pow(norm, 8));
+      return Math.max(-40, pass - 3*(1-1/(1+Math.pow(norm,8))));
+    }
+  },
+  {
+    name: 'Coax Cable 1 m',
+    fn: f => {
+      // ~0.5 dB/GHz per meter at low freq, rising with sqrt(f)
+      const lossPer100m_at1GHz = 15;  // typical RG58 ~15dB/100m at 1GHz
+      return -(lossPer100m_at1GHz/100) * Math.sqrt(f/1e9);
+    }
+  },
+  {
+    name: 'Coax Cable 10 m',
+    fn: f => {
+      const lossPer100m_at1GHz = 15;
+      return -(lossPer100m_at1GHz/10) * Math.sqrt(f/1e9);
+    }
+  },
+  {
+    name: 'Wire (unshielded)',
+    fn: f => {
+      // Irregular increasing loss with frequency
+      const base = -0.5 * Math.pow(f/1e9, 0.7);
+      const noise = -Math.abs(Math.sin(f/30e6)*Math.sin(f/17e6)) * 3;
+      return Math.max(-55, base + noise);
+    }
+  }
+];
+
+let dutIdx = 0;
+let sweepProgress = 1; // 0→1 animation progress
+let sweepActive = false;
+let sweepStart = 0;
+const SWEEP_MS = 500;
+
+// Build trace points
+let tracePoints = [];
+const N = 400;
+
+function buildTrace() {
+  tracePoints = [];
+  for (let i=0; i<=N; i++) {
+    const t = i/N;
+    const f = F_MIN * Math.pow(F_MAX/F_MIN, t);
+    const db = DUTS[dutIdx].fn(f);
+    tracePoints.push({f, db, x: freqToX(f), y: dbToY(Math.max(DB_MIN, db))});
+  }
+}
+
+// Markers
+let mk1 = null, mk2 = null;  // {f, db, x, y} or null
+
+// --- Draw ---
+function drawBg() {
+  ctx.fillStyle = '#050b14';
+  ctx.fillRect(0, 0, W, H);
+  // Inner plot bg
+  ctx.fillStyle = '#0a0f1c';
+  ctx.fillRect(PL, PT, PW, PH);
+}
+
+function drawGrid() {
+  ctx.save();
+
+  // Horizontal dB grid lines
+  ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
+  ctx.font = "9px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#475569'; ctx.textAlign = 'right';
+  for (let db = DB_MAX; db >= DB_MIN; db -= 10) {
+    const y = dbToY(db);
+    ctx.beginPath(); ctx.moveTo(PL, y); ctx.lineTo(PL+PW, y); ctx.stroke();
+    ctx.fillText(db + ' dB', PL - 4, y + 3);
+  }
+
+  // Vertical freq grid (log decade + mid)
+  const freqs = [1e6,2e6,5e6,10e6,20e6,50e6,100e6,200e6,500e6,1000e6];
+  ctx.textAlign = 'center';
+  for (const f of freqs) {
+    const x = freqToX(f);
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, PT); ctx.lineTo(x, PT+PH); ctx.stroke();
+    let label = f >= 1e9 ? (f/1e9)+'GHz' : f >= 1e6 ? (f/1e6)+'MHz' : '';
+    ctx.fillStyle = '#475569';
+    ctx.font = "8px 'IBM Plex Mono',monospace";
+    ctx.fillText(label, x, PT+PH+14);
+  }
+
+  // Axis labels
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = "10px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'center';
+  ctx.fillText('Frequency', PL + PW/2, H - 4);
+
+  ctx.save();
+  ctx.translate(12, PT + PH/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('S21 (dB)', 0, 0);
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function drawTrace() {
+  if (tracePoints.length < 2) return;
+  const cutIdx = Math.floor(sweepProgress * tracePoints.length);
+  if (cutIdx < 2) return;
+
+  ctx.save();
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 1.8;
+  ctx.shadowColor = '#f59e0b';
+  ctx.shadowBlur = sweepActive ? 6 : 3;
+  ctx.beginPath();
+  ctx.moveTo(tracePoints[0].x, tracePoints[0].y);
+  for (let i=1; i<cutIdx; i++) {
+    ctx.lineTo(tracePoints[i].x, tracePoints[i].y);
+  }
+  ctx.stroke();
+
+  // Sweep cursor line
+  if (sweepActive && cutIdx < tracePoints.length) {
+    const cur = tracePoints[cutIdx];
+    ctx.strokeStyle = '#ffffff44'; ctx.lineWidth = 1; ctx.shadowBlur = 0;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(cur.x, PT); ctx.lineTo(cur.x, PT+PH); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawMarker(mk, idx, col) {
+  if (!mk) return;
+  const x = mk.x, y = mk.y;
+  // Vertical line
+  ctx.save();
+  ctx.strokeStyle = col+'88'; ctx.lineWidth = 1; ctx.setLineDash([3,4]);
+  ctx.beginPath(); ctx.moveTo(x, PT); ctx.lineTo(x, PT+PH); ctx.stroke();
+  ctx.restore();
+  // Diamond
+  ctx.save();
+  ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 6;
+  ctx.beginPath();
+  ctx.moveTo(x, y-7); ctx.lineTo(x+5, y); ctx.lineTo(x, y+7); ctx.lineTo(x-5, y); ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  // Label
+  ctx.fillStyle = col;
+  ctx.font = "bold 9px 'IBM Plex Mono',monospace";
+  ctx.textAlign = x > PL+PW-60 ? 'right' : 'left';
+  ctx.fillText('M'+idx, x + (x > PL+PW-60 ? -7 : 7), y - 10);
+}
+
+function fmtHz(f) {
+  return f >= 1e9 ? (f/1e9).toFixed(3)+' GHz' : (f/1e6).toFixed(2)+' MHz';
+}
+
+function updateMarkerReadout() {
+  if (mk1) {
+    document.getElementById('m1f').textContent = fmtHz(mk1.f);
+    document.getElementById('m1v').textContent = mk1.db.toFixed(2)+' dB';
+  } else {
+    document.getElementById('m1f').textContent = '— MHz';
+    document.getElementById('m1v').textContent = '— dB';
+  }
+  if (mk2) {
+    document.getElementById('m2f').textContent = fmtHz(mk2.f);
+    document.getElementById('m2v').textContent = mk2.db.toFixed(2)+' dB';
+  } else {
+    document.getElementById('m2f').textContent = '— MHz';
+    document.getElementById('m2v').textContent = '— dB';
+  }
+  if (mk1 && mk2) {
+    const df = mk2.f - mk1.f;
+    const ddB = mk2.db - mk1.db;
+    document.getElementById('mdf').textContent = (df >= 0 ? '+':'')+fmtHz(Math.abs(df));
+    document.getElementById('mdv').textContent = (ddB >= 0 ? '+':'')+ddB.toFixed(2)+' dB';
+  } else {
+    document.getElementById('mdf').textContent = '— MHz';
+    document.getElementById('mdv').textContent = '— dB';
+  }
+}
+
+function drawDutLabel() {
+  ctx.fillStyle = '#f59e0b';
+  ctx.font = "bold 10px 'IBM Plex Mono',monospace";
+  ctx.textAlign = 'left';
+  ctx.fillText('DUT: '+DUTS[dutIdx].name, PL+6, PT+14);
+}
+
+function nearestTrace(px) {
+  // Find nearest trace point to pixel x
+  const f = xToFreq(px);
+  const db = DUTS[dutIdx].fn(f);
+  const x = freqToX(f);
+  const y = dbToY(Math.max(DB_MIN, db));
+  return {f, db, x, y};
+}
+
+// Click handler
+cv.addEventListener('click', e => {
+  const rect = cv.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const px = (e.clientX - rect.left) * scaleX;
+  if (px < PL || px > PL+PW) return;
+  const pt = nearestTrace(px);
+  if (e.shiftKey) mk2 = pt;
+  else mk1 = pt;
+  updateMarkerReadout();
+});
+
+let lastTime = 0;
+function tick(ts) {
+  if (sweepActive) {
+    sweepProgress = Math.min(1, (ts - sweepStart) / SWEEP_MS);
+    if (sweepProgress >= 1) sweepActive = false;
+  }
+  drawBg(); drawGrid(); drawTrace(); drawDutLabel();
+  drawMarker(mk1, 1, '#22c55e');
+  drawMarker(mk2, 2, '#06b6d4');
+  requestAnimationFrame(tick);
+}
+
+function selectDut(i) {
+  dutIdx = i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on', j===i));
+  mk1 = null; mk2 = null;
+  buildTrace();
+  updateMarkerReadout();
+  // Trigger sweep animation
+  sweepProgress = 0;
+  sweepActive = true;
+  sweepStart = performance.now();
+}
+
+buildTrace();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
