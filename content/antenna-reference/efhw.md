@@ -62,7 +62,7 @@ A short counterpoise wire (typically 0.05λ, around 2–3 metres) connects to th
 | **Pattern** | Figure-8 broadside (fundamental) | Becomes multi-lobed on harmonics — see Stage 2 |
 | **Polarisation** | Depends on orientation | Horizontal when wire is horizontal |
 | **Bandwidth (per band)** | Moderate (~2–3% of centre frequency) | Slightly narrower than centre-fed dipole |
-| **Bands** | Multi-band (harmonic operation) | 40/20/15/10 m from a single 40 m wire |
+| **Bands** | Multi-band (harmonic operation) | 40/20/15/10 m from a single wire cut for the 40 m band (~20 m long) |
 | **Height sensitivity** | Moderate | Pattern and impedance shift with height above ground |
 
 ### Sizing Formula
@@ -119,9 +119,9 @@ This wire is also resonant at:
 
 The EFHW has moderate bandwidth on each band — typically narrower than a centre-fed dipole because the high-impedance feed point amplifies small reactance changes. Expect an SWR < 2:1 window of roughly 100–200 kHz on 40 m, widening to 400–600 kHz on 10 m (bandwidth scales with frequency).
 
-The SWR curve is asymmetric: it rises more steeply above resonance than below. This means if you need to choose, cut the wire slightly long — it's easier to trim wire shorter than to add it back.
+The SWR curve is asymmetric: it rises more steeply above resonance than below. This means if you need to choose, cut the wire slightly long — it's easier to trim wire shorter than to add it back. Many modern transceivers include a built-in ATU (antenna tuning unit) that can compensate for moderate SWR — typically up to 3:1. If your radio lacks one, a small external ATU between the transceiver and coax will extend the usable bandwidth on each band and cover the non-harmonic WARC bands.
 
-The unun itself has a frequency-dependent loss profile. A well-wound 49:1 on a Fair-Rite #43 or #61 mix toroid will show lowest loss on 20 m and 15 m, with higher losses at the band edges (40 m low end, 10 m high end). Cheap ununs on unsuitable cores are the single biggest source of EFHW performance complaints.
+The unun itself has a frequency-dependent loss profile. A well-wound 49:1 on a Fair-Rite #43 or #61 mix toroid will show lowest loss on 20 m and 15 m, with higher losses at the band edges (40 m low end, 10 m high end). Cheap ununs on unsuitable cores are the single biggest source of EFHW performance complaints. Under-rated ununs are the second — a core sized for 100 W SSB will overheat rapidly on digital modes (FT8, JS8Call) where the duty cycle is near 100%. Digital operation at 50 W can stress a unun harder than SSB at 100 W. If you run digital modes, size the core for at least double your expected power.
 
 <!-- XREF: curriculum L06 "Impedance" — for a full explanation of impedance, reactance, and SWR -->
 
@@ -158,7 +158,7 @@ At the fundamental frequency, the EFHW behaves identically to a half-wave dipole
 
 On the fundamental, the EFHW delivers the same 2.15 dBi as any half-wave dipole. On harmonics, the peak lobe gain increases because energy is concentrated into narrower beams — but only in the lobe directions. Between lobes, gain drops sharply.
 
-| Band (40 m wire) | Harmonic | Peak Lobe Gain (dBi) | Coverage Pattern |
+| Band (40 m band EFHW) | Harmonic | Peak Lobe Gain (dBi) | Coverage Pattern |
 |-------------------|----------|---------------------|------------------|
 | 40 m (7 MHz) | 1st | ~2.15 | Broad, predictable |
 | 20 m (14 MHz) | 2nd | ~3.5–4.0 | Four directions, moderate nulls |
