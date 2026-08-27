@@ -34,7 +34,7 @@
 
 ### Database Structure
 
-The database is organized into 8 core tables:
+The database is organized into 9 core tables:
 1. **users** - User accounts and profiles
 2. **modules** - Learning curriculum (26 modules across 4 phases)
 3. **user_progress** - Module completion tracking
@@ -43,6 +43,7 @@ The database is organized into 8 core tables:
 6. **quiz_attempts** - User quiz submissions and scores
 7. **user_badges** - Achievement tracking
 8. **saved_calculations** - User-saved calculator results
+9. **must_watch_videos** - Curated video resources
 
 ---
 
@@ -470,12 +471,66 @@ CREATE INDEX idx_calcs_favorite ON saved_calculations(user_id, is_favorite) WHER
 
 ---
 
+### 9. must_watch_videos
+
+**Purpose:** Store curated must-watch video resources linked to curriculum
+
+```sql
+CREATE TABLE must_watch_videos (
+    -- Primary identification
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Video metadata
+    title VARCHAR(255) NOT NULL,
+    url VARCHAR(512) NOT NULL,
+    platform VARCHAR(50) DEFAULT 'youtube',
+    -- 'youtube', 'vimeo', etc. for future flexibility
+
+    description TEXT,
+    thumbnail_url VARCHAR(512),
+
+    -- Content data
+    transcript TEXT, -- Full transcript (plain text or markdown)
+
+    -- Curriculum linking
+    curriculum_refs JSONB DEFAULT '[]'::jsonb,
+    -- Array of {lesson: "path/to/lesson", note: "description"}
+
+    -- Tagging and organization
+    tags JSONB DEFAULT '[]'::jsonb,
+    -- Array of keyword tags e.g. ["em-radiation", "antennas", "animation"]
+
+    timestamps JSONB DEFAULT '[]'::jsonb,
+    -- Array of {time: "2:15", topic: "Field detachment", lesson_ref: "lesson-02"}
+
+    sort_order INTEGER DEFAULT 0,
+    -- For manual ordering on the page (lower = higher priority)
+
+    -- Metadata
+    added_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Indexes
+CREATE INDEX idx_must_watch_videos_sort_order ON must_watch_videos(sort_order);
+CREATE INDEX idx_must_watch_videos_tags ON must_watch_videos USING GIN (tags);
+
+-- Trigger for updated_at column (using existing pattern)
+CREATE TRIGGER update_must_watch_videos_updated_at
+  BEFORE UPDATE ON must_watch_videos
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+```
+
+---
+
 ## Relationships & Constraints
 
 ### Entity Relationship Diagram (Text Format)
 
 ```
-users (1) ─────< (M) user_progress >(M) ───── (1) modules
+users (1) ─────< (M) user_progress >(M) ───── (1) modules ─< (M) must_watch_videos
   │                                                   │
   │                                                   │
   └─< (M) quiz_attempts >(M) ───── (1) quizzes ──────┘
@@ -506,6 +561,11 @@ users (1) ─────< (M) user_progress >(M) ───── (1) modules
 4. **users → saved_calculations**
    - One user can save many calculations
    - Calculations are independent of modules
+
+5. **modules → must_watch_videos**
+   - One module can have many associated videos
+   - Videos are linked to curriculum via curriculum_refs
+   - Videos are independent and can reference multiple lessons
 
 ### Foreign Key Constraints Summary
 

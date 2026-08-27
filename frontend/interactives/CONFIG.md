@@ -1,7 +1,7 @@
 # RF-Hub Interactives — Configuration Protocol
 
 **Location:** `D:\live_code\RF-Hub\frontend\interactives\`  
-**Last Updated:** 7 March 2026  
+**Last Updated:** 6 July 2026
 **Rule:** Every interactive in this folder is a single, standalone HTML file. No versioned copies ever. Lesson context is controlled via URL query parameters passed through the iframe `src`.
 
 ---
@@ -15,6 +15,10 @@
 | `em-radiation.html` | "How Antennas Radiate" — 4-act SVG narrative: current → fields → detachment → reception | L01 (deep-dive), L02 (primary) |
 | `tx-rx-complete.html` | TX→RX complete link visualisation | L02 |
 | `field-detachment.html` | Field detachment canvas animation — 4 acts: field expands, current reverses, pinch-off, full cycle. Stage highlight toggle (amber/red/purple). Speed slider. URL-configurable acts, start act, highlight, and UI mode. | L02, L03+ |
+| `s-parameter-signal-flow.html` | 2-port signal flow animation — forward/reverse wave toggle, S-parameter labelling (S11, S21, S12, S22), incident/reflected/transmitted arrows | Sideband: sideband-s-parameter-matrix |
+| `vswr-bridge-principle.html` | Wheatstone bridge schematic with DUT impedance slider — shows bridge balance, null-point detection, and VSWR derivation | Sideband: sideband-vswr-bridge-measurement |
+| `s21-trace-explorer.html` | Simulated SA display with DUT selector — characteristic S21 traces for common RF devices (filter, amplifier, attenuator, cable) | Sideband: sideband-s21-transmission-measurement |
+| `dut-signature-gallery.html` | Dual S11/S21 panel with tabbed DUT selector — 2×2 device card gallery showing S11 and S21 trace signatures for common RF device types | Sideband: sideband-dut-characterisation-workflow |
 
 ---
 
@@ -175,6 +179,27 @@ Lesson `.md` files reference interactives in `<!-- VISUAL: -->` briefs using the
 
 **Relative path from lesson HTML files:**  
 `frontend/pages/antenna-curriculum/unit-N/lesson-NN.html` → `../../../interactives/filename.html`
+
+---
+
+## S8 Interactives — No Query Parameters
+
+The four S8 interactives do not implement query parameter support. They are used as standalone full-page embeds in their respective sideband pages.
+
+**Relative path from sideband HTML files:**
+`frontend/pages/sidebands/sideband-xxx.html` → `../../interactives/filename.html`
+
+### `s-parameter-signal-flow.html`
+No query parameter support. Used as full interactive in sideband-s-parameter-matrix.
+
+### `vswr-bridge-principle.html`
+No query parameter support. Used as full interactive in sideband-vswr-bridge-measurement.
+
+### `s21-trace-explorer.html`
+No query parameter support. Used as full interactive in sideband-s21-transmission-measurement.
+
+### `dut-signature-gallery.html`
+No query parameter support. Used as full interactive in sideband-dut-characterisation-workflow.
 
 ---
 
