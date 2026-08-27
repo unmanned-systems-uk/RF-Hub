@@ -125,6 +125,75 @@ Use this for spelling out callsigns, names, and locations:
 
 ---
 
+## Where to QSY — The 2m FM Channel Grid
+
+When someone responds to your CQ on 145.500 and you say "please QSY to 145.450" — that works because 145.450 is a real channel. But if you said "let's go to 145.465" you'd be between channels, and the other station's radio might not tune there cleanly.
+
+The 2m FM simplex range uses a **12.5 kHz channel grid** defined by the RSGB/IARU Region 1 band plan:
+
+**Range:** 145.200 – 145.5935 MHz
+**Spacing:** 12.5 kHz
+**Channels:** V16 – V47
+
+**Formula:** Vn = 145.000 + (n × 0.0125) MHz
+
+So V40 = 145.000 + (40 × 0.0125) = 145.500 MHz — the calling frequency.
+
+### Channels to Keep Clear
+
+These frequencies have designated uses — don't QSY to them for a general chat:
+
+| Frequency | Channel | Use |
+|-----------|---------|-----|
+| 145.200 | V16 | Space comms / ISS uplink |
+| 145.2125–145.3375 | V17–V27 (odd) | Internet voice gateways (EchoLink etc.) |
+| 145.225 | V18 | EmComm / community events |
+| 145.250 | V20 | Slow Morse transmissions |
+| 145.500 | V40 | **FM calling frequency** — never hold a QSO here |
+| 145.525 | V42 | GB2RS news broadcast |
+| 145.550 | V44 | Rally / exhibition talk-in |
+
+### Free Channels — Where to Go
+
+Everything else is fair game. The most commonly used QSY destinations:
+
+**Below calling (popular — most operators move down):**
+145.425, 145.4375, 145.450, 145.4625, 145.475
+
+**Above calling:**
+145.5125, 145.5375, 145.5625
+
+**Wide open (usually empty):**
+145.275, 145.300, 145.325, and the run from 145.350 – 145.4875
+
+### The Even/Odd Channel Trick
+
+The even V-channels match the old 25 kHz "S-channel" grid — S20 = 145.500, S18 = 145.450, S16 = 145.400. Older rigs and experienced operators default to these, so they're busier.
+
+If the band is crowded, try the **odd 12.5 kHz channels**: 145.4625 (V37), 145.4875 (V39), 145.5375 (V43). They're often empty because many operators still think in 25 kHz steps.
+
+### Danger Zones — Never Transmit Here
+
+| Range | Why |
+|-------|-----|
+| Above 145.5935 MHz | Repeater outputs start at RV48 (145.600) — you'd be transmitting on top of repeater output signals |
+| 145.800 – 146.000 MHz | Satellite-exclusive — never use for simplex. You could interfere with ISS or amateur satellite downlinks |
+
+### The Procedure
+
+1. Someone responds to your CQ on 145.500
+2. Pick a channel from the free list (e.g., 145.450 = V36)
+3. Tune to it and listen for 10 seconds
+4. Ask: "This is YOUR CALLSIGN — is this frequency in use?"
+5. If clear, go back to 145.500 and say: "THEIR CALLSIGN, please QSY to 145.450"
+6. Both stations move — start your QSO
+
+> **Practical tip:** 145.450 (V36/S18) is about as conventional a QSY choice as exists. It's 4 channels below calling and almost always the first frequency people try. If it's busy, step down to 145.4375 (V35) or 145.425 (V34).
+
+> **70cm note:** The 70cm (433 MHz) FM simplex range uses the same 12.5 kHz grid principle but with different channel designations. The calling frequency is 433.500 MHz. QSY to any clear 12.5 kHz-spaced channel in the 433.400–433.575 MHz simplex range.
+
+---
+
 ## Script 2: VHF/UHF FM Repeater
 
 **When to use:** Making a contact through a local repeater. Repeaters extend your range by receiving on one frequency and retransmitting on another.
