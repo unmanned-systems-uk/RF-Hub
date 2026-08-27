@@ -1,0 +1,193 @@
+/* RF-Hub Search — standalone stylesheet, loaded on all pages */
+
+/* ── Nav toggle button ───────────────────────────────────────── */
+.rf-search-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(249, 250, 251, 0.5);   /* matches --text-dim */
+  padding: 4px 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.rf-search-toggle:hover {
+  color: #a78bfa;   /* --accent-em / purple */
+}
+
+/* ── Full-screen overlay ─────────────────────────────────────── */
+.rf-search-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(6px);
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.rf-search-overlay--open {
+  display: flex;
+}
+
+/* ── Modal card ──────────────────────────────────────────────── */
+.rf-search-modal {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Search bar row ──────────────────────────────────────────── */
+.rf-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rf-search-bar-icon {
+  color: rgba(249, 250, 251, 0.35);
+  flex-shrink: 0;
+}
+
+.rf-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  color: #f9fafb;
+  caret-color: #a78bfa;
+}
+
+.rf-search-input::placeholder {
+  color: rgba(249, 250, 251, 0.3);
+}
+
+/* Remove default search input clear button */
+.rf-search-input::-webkit-search-decoration,
+.rf-search-input::-webkit-search-cancel-button { display: none; }
+
+.rf-search-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(249, 250, 251, 0.35);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.rf-search-close:hover { color: #f9fafb; }
+
+/* ── Results list ────────────────────────────────────────────── */
+.rf-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.rf-search-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.rf-search-result:hover,
+.rf-search-result--active {
+  background: rgba(167, 139, 250, 0.08);
+  border-left-color: #a78bfa;
+}
+
+.rf-search-result-title {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #f9fafb;
+  line-height: 1.3;
+}
+
+.rf-search-result-desc {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(249, 250, 251, 0.45);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rf-search-no-results {
+  padding: 1rem;
+  text-align: center;
+  color: rgba(249, 250, 251, 0.4);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.88rem;
+}
+
+/* ── Match highlight ─────────────────────────────────────────── */
+.rf-search-mark {
+  background: rgba(167, 139, 250, 0.25);
+  color: #a78bfa;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
+}
+
+/* ── Hint / status ───────────────────────────────────────────── */
+.rf-search-hint {
+  padding: 0.75rem 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(249, 250, 251, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rf-search-hint::after {
+  content: 'Press / to search from anywhere';
+  margin-left: auto;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .rf-search-overlay {
+    padding-top: 0;
+    align-items: flex-start;
+  }
+
+  .rf-search-modal {
+    border-radius: 0 0 12px 12px;
+    border-top: none;
+    max-width: 100%;
+  }
+
+  .rf-search-results {
+    max-height: 60vh;
+  }
+}
