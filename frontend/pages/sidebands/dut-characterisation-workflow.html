@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUT Characterisation — A Complete Measurement Walkthrough — RF-Hub Sideband</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+  --border:        rgba(255,255,255,0.08);
+  --border-subtle: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+}
+img, canvas, svg { max-width: 100%; display: block; }
+a { color: var(--accent-em); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  background: rgba(167,139,250,0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88em;
+  color: var(--purple);
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  z-index: 1000;
+  transition: width 0.1s linear;
+}
+
+/* ============================================================
+   SITE NAV
+   ============================================================ */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+}
+.site-nav .container--wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+.site-nav-brand {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 1px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.site-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+.site-nav-links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+}
+.site-nav-links a:hover,
+.site-nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ============================================================
+   HERO — Sideband variant (purple gradient)
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #130f1e 55%, #0a1018 100%);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 56px 24px 40px;
+  text-align: center;
+}
+.hero-series {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 620px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.hero-badge--level {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--purple);
+}
+.hero-badge--rsgb {
+  background: rgba(245,158,11,0.10);
+  border-color: rgba(245,158,11,0.25);
+  color: var(--amber);
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+.intro {
+  margin-top: 48px;
+  margin-bottom: 8px;
+}
+.intro p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 18px;
+  font-size: 1.05rem;
+}
+.intro p strong { color: var(--text-primary); }
+
+/* ============================================================
+   INTERACTIVE FRAME
+   ============================================================ */
+.interactive-frame {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-top: 2px solid var(--purple);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin: 32px 0;
+  overflow: hidden;
+  position: relative;
+}
+.interactive-frame .frame-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(167,139,250,0.05);
+}
+.interactive-frame .frame-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.interactive-frame .frame-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+}
+.interactive-frame .frame-body { position: relative; }
+.interactive-frame iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  background: var(--bg-primary);
+}
+.frame-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-primary);
+  z-index: 1;
+  pointer-events: none;
+}
+.frame-fallback p {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.frame-fallback .fallback-icon { font-size: 24px; opacity: 0.4; }
+
+/* ============================================================
+   CONTENT SECTIONS
+   ============================================================ */
+.content-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle);
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.content-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+.content-section p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.content-section p:last-child { margin-bottom: 0; }
+.content-section p strong { color: var(--text-primary); }
+.content-section ul {
+  color: var(--text-secondary);
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+.content-section li { line-height: 1.7; margin-bottom: 6px; }
+.content-section li strong { color: var(--text-primary); }
+
+/* ============================================================
+   WORKFLOW STEPS
+   ============================================================ */
+.workflow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.workflow-step {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 0 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+.workflow-step:last-child { border-bottom: none; }
+
+/* Vertical connector line between steps */
+.workflow-step:not(:last-child) .step-number::after {
+  content: '';
+  position: absolute;
+  top: 68px;
+  left: 16px;
+  width: 2px;
+  height: calc(100% - 40px);
+  background: rgba(167,139,250,0.15);
+}
+
+.step-number {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+.step-num-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(167,139,250,0.12);
+  border: 1.5px solid rgba(167,139,250,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--purple);
+  flex-shrink: 0;
+}
+.step-num-circle.optional {
+  background: rgba(107,114,128,0.12);
+  border-color: rgba(107,114,128,0.3);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.step-content { min-width: 0; }
+.step-content h3 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.step-content p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+}
+.step-content p strong { color: var(--text-primary); }
+.step-content ul, .step-content ol {
+  color: var(--text-secondary);
+  padding-left: 20px;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+}
+.step-content li { line-height: 1.7; margin-bottom: 5px; }
+.step-content li strong { color: var(--text-primary); }
+
+/* Connection diagram in steps */
+.conn-diagram {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 12px 16px;
+  margin: 12px 0 16px;
+  color: var(--amber);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Sub-steps (numbered list within a step) */
+.sub-steps {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 14px;
+}
+.sub-steps li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.93rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.sub-steps li:last-child { border-bottom: none; }
+.sub-step-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.sub-steps li strong { color: var(--text-primary); }
+
+/* Record bullets */
+.record-list {
+  padding-left: 18px;
+  margin: 10px 0 14px;
+  font-size: 0.93rem;
+}
+.record-list li {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 5px;
+}
+.record-list li strong { color: var(--text-primary); }
+
+/* Cross-reference inline link within steps */
+.xref {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 10px;
+  margin-top: 12px;
+  font-style: italic;
+}
+.xref a { color: var(--purple); }
+
+/* ============================================================
+   FILENAME CONVENTION BLOCK
+   ============================================================ */
+.filename-block {
+  margin: 20px 0;
+}
+.filename-block pre {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px;
+  color: var(--cyan);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
+}
+.filename-block pre .comment { color: var(--text-muted); }
+
+/* Marker placement tips */
+.marker-tips {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+}
+.marker-tips li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.marker-tips li:last-child { border-bottom: none; }
+.marker-tips li::before {
+  content: '▸';
+  color: var(--amber);
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+.marker-tips li strong { color: var(--text-primary); }
+
+/* ============================================================
+   DUT SIGNATURE CARDS
+   ============================================================ */
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 24px 0;
+}
+.sig-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 18px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.sig-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.sig-card--amber::before { background: var(--amber); }
+.sig-card--blue::before  { background: #60a5fa; }
+.sig-card--purple::before{ background: var(--purple); }
+.sig-card--cyan::before  { background: var(--cyan); }
+
+.sig-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.sig-card h3 {
+  font-family: var(--font-body);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.sig-card p {
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+.sig-card p strong { color: var(--text-primary); }
+
+.sig-metrics {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.sig-metric {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   SCREENSHOT FIGURES — pending T09/T10
+   ============================================================ */
+.screenshot-figure {
+  margin: 28px 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.screenshot-figure .screenshot-pending {
+  background: var(--bg-secondary);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 140px;
+  text-align: center;
+}
+.screenshot-figure .pending-icon { font-size: 26px; opacity: 0.3; }
+.screenshot-figure .pending-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.2);
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+.screenshot-figure .pending-desc {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  max-width: 420px;
+  line-height: 1.5;
+}
+.screenshot-figure figcaption {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  line-height: 1.5;
+  background: rgba(255,255,255,0.02);
+}
+
+/* ============================================================
+   QUICK REFERENCE TABLE
+   ============================================================ */
+.quick-ref {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-top: 48px;
+}
+.quick-ref h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.quick-ref > p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.quick-ref-wrap { overflow-x: auto; }
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 520px;
+}
+.ref-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.02);
+  white-space: nowrap;
+}
+.ref-table td {
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table td:first-child {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--purple);
+  white-space: nowrap;
+  width: 52px;
+}
+.ref-table td:nth-child(2) {
+  color: var(--text-primary);
+  font-weight: 500;
+  width: 28%;
+}
+.ref-table .optional-row td { color: var(--text-muted); }
+.ref-table .optional-row td:first-child { color: rgba(167,139,250,0.5); }
+
+/* ============================================================
+   CROSS-REFS FOOTER CALLOUT
+   ============================================================ */
+.cross-ref-bar {
+  margin-top: 40px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.cross-ref-bar strong { color: var(--text-secondary); }
+.cross-ref-bar a { color: var(--purple); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center;
+  padding: 32px 24px 48px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 24px;
+}
+footer a { color: var(--text-secondary); }
+footer a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero { padding: 36px 16px 28px; }
+  main { padding: 0 16px 60px; }
+  .quick-ref { padding: 20px; }
+  .site-nav-links { display: none; }
+  .interactive-frame .frame-header { padding: 10px 14px; }
+  .workflow-step { grid-template-columns: 40px 1fr; gap: 0 14px; }
+  .step-num-circle { width: 30px; height: 30px; font-size: 0.78rem; }
+  .workflow-step:not(:last-child) .step-number::after { left: 14px; top: 56px; }
+  .signature-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 360px) {
+  .hero h1 { font-size: 1.6rem; }
+  main { padding: 0 12px 48px; }
+  .conn-diagram { font-size: 0.78rem; }
+}
+@media (min-width: 1200px) { main { max-width: 900px; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #progress-bar { transition: none; }
+}
+</style>
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- ============================================================
+     SITE NAV
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="./" class="active">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-series">Sideband — Topic Snippets for RF-Hub</div>
+  <h1>DUT Characterisation</h1>
+  <p class="hero-subtitle">A Complete Measurement Walkthrough — combining S11 and S21 into a systematic five-step procedure using the RSA5065N with a VSWR bridge and tracking generator.</p>
+  <div class="hero-badges">
+    <span class="hero-badge hero-badge--level">[F] Foundation</span>
+    <span class="hero-badge hero-badge--level">[I] Intermediate</span>
+    <span class="hero-badge hero-badge--level">[FL] Full Licence</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2E3</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2E4</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2E5</span>
+    <span class="hero-badge hero-badge--rsgb">RSGB 2E6</span>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- INTRO -->
+<div class="intro">
+  <p>Characterising a Device Under Test (DUT) means measuring enough S-parameters to know how it behaves at RF frequencies — what it reflects, what it passes, and how those properties vary across a frequency range. This walkthrough combines <strong>S11</strong> (reflection) and <strong>S21</strong> (transmission) measurements into a systematic five-step procedure using the RSA5065N with a VSWR bridge and tracking generator.</p>
+</div>
+
+<!-- ============================================================
+     INTERACTIVE — DUT SIGNATURE GALLERY
+     ============================================================ -->
+<div class="interactive-frame" id="frame-gallery">
+  <div class="frame-header">
+    <span class="frame-label">Interactive</span>
+    <span class="frame-title">DUT Signature Gallery — explore S11 and S21 trace shapes for common RF device types</span>
+  </div>
+  <div class="frame-body">
+    <div class="frame-fallback" id="fallback-gallery" aria-hidden="true">
+      <span class="fallback-icon">🗂️</span>
+      <p>Interactive loading…</p>
+    </div>
+    <iframe
+      src="../../interactives/dut-signature-gallery.html"
+      height="560"
+      title="DUT Signature Gallery: click antenna, bandpass filter, attenuator, or coax cable to see characteristic S11 and S21 trace shapes with quiz mode"
+      loading="lazy"
+      id="iframe-gallery">
+    </iframe>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION 1 — FIVE-STEP WORKFLOW
+     ============================================================ -->
+<section class="content-section" id="section-workflow">
+  <div class="section-label">Section 1</div>
+  <h2>The Five-Step Characterisation Workflow</h2>
+
+  <div class="workflow">
+
+    <!-- STEP 1 -->
+    <div class="workflow-step" id="step-1">
+      <div class="step-number">
+        <div class="step-num-circle">1</div>
+      </div>
+      <div class="step-content">
+        <h3>Define the Frequency Range</h3>
+        <p>Set the analyser sweep to cover the DUT's intended operating band plus sufficient margin on each side to show the full roll-off behaviour:</p>
+        <ul class="record-list">
+          <li><strong>Antennas:</strong> centre on the design frequency, span 20–50% of centre frequency</li>
+          <li><strong>Filters:</strong> span at least one decade below and above the passband</li>
+          <li><strong>Cables and attenuators:</strong> sweep 1 MHz to the cable's rated frequency (or 3 GHz)</li>
+        </ul>
+        <p>A too-narrow span misses off-resonance behaviour. A too-wide span compresses the passband detail. Set a resolution bandwidth (RBW) appropriate for the sweep speed you need.</p>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="workflow-step" id="step-2">
+      <div class="step-number">
+        <div class="step-num-circle">2</div>
+      </div>
+      <div class="step-content">
+        <h3>Calibrate S11 (VSWR Bridge + OSL)</h3>
+        <p>Connect the VSWR bridge (<code>TG OUT</code> → bridge input; bridge detect → <code>RF IN</code>). Apply the <strong>Open/Short/Load (OSL)</strong> calibration standards at the test port — the connector where the DUT will attach:</p>
+        <ol class="sub-steps">
+          <li><span class="sub-step-num">1</span><span><strong>Open</strong> — leave the test port unconnected. Store the open reference.</span></li>
+          <li><span class="sub-step-num">2</span><span><strong>Short</strong> — connect the short-circuit standard. Store the short reference.</span></li>
+          <li><span class="sub-step-num">3</span><span><strong>Load</strong> — connect the precision 50 Ω terminator. Store the load reference.</span></li>
+        </ol>
+        <p>The analyser uses these three references to compute error correction. All subsequent S11 measurements are corrected back to the test port reference plane.</p>
+        <p class="xref">See also: <a href="vswr-bridge-measurement.html">VSWR Bridge Measurement</a> — bridge connection details and calibration rationale.</p>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="workflow-step" id="step-3">
+      <div class="step-number">
+        <div class="step-num-circle">3</div>
+      </div>
+      <div class="step-content">
+        <h3>Measure S11</h3>
+        <p>Connect the DUT to the calibrated test port. The analyser displays the corrected S11 trace — reflection coefficient vs frequency in dB.</p>
+        <p><strong>Record:</strong></p>
+        <ul class="record-list">
+          <li>The frequency span and marker positions</li>
+          <li>The <strong>minimum S11 value</strong> and the frequency at which it occurs (resonant frequency for antennas)</li>
+          <li>The <strong>−10 dB bandwidth</strong> (the frequency range where S11 &lt; −10 dB — equivalent to VSWR &lt; 2:1)</li>
+          <li>Any unexpected features: multiple resonances, rising floor, periodic ripple</li>
+        </ul>
+        <p><strong>Label your trace:</strong> include DUT identifier, date, cable type, and calibration reference plane in the trace title or notes file.</p>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="workflow-step" id="step-4">
+      <div class="step-number">
+        <div class="step-num-circle">4</div>
+      </div>
+      <div class="step-content">
+        <h3>Calibrate S21 (Through Normalisation)</h3>
+        <p>Disconnect the VSWR bridge. Reconnect for a transmission measurement:</p>
+        <div class="conn-diagram" aria-label="Through normalisation connection">TG OUT → [cable A] → [cable B] → RF IN</div>
+        <p>With both cables connected end-to-end (no DUT in the path), trigger <strong>Normalise</strong>. The analyser stores this as the 0 dB reference — all subsequent S21 traces show loss or gain relative to this baseline, with cable and connector effects removed.</p>
+        <p class="xref">See also: <a href="s21-transmission-measurement.html">S21 — Measuring What Gets Through</a> — normalisation procedure and trace interpretation.</p>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="workflow-step" id="step-5">
+      <div class="step-number">
+        <div class="step-num-circle">5</div>
+      </div>
+      <div class="step-content">
+        <h3>Measure S21</h3>
+        <p>Insert the DUT between cable A and cable B:</p>
+        <div class="conn-diagram" aria-label="S21 measurement connection">TG OUT → [cable A] → DUT input → DUT output → [cable B] → RF IN</div>
+        <p>The analyser displays the S21 trace — transmission through the DUT relative to the normalised reference.</p>
+        <p><strong>Record:</strong></p>
+        <ul class="record-list">
+          <li><strong>Passband centre frequency</strong> and −3 dB bandwidth (for filters)</li>
+          <li><strong>In-band insertion loss</strong> (minimum S21 in passband)</li>
+          <li><strong>Out-of-band rejection</strong> (S21 in stopband, for filters)</li>
+          <li><strong>Frequency-dependent slope</strong> (for cables)</li>
+          <li>Any unexpected gain (check for oscillation if you see positive S21 with a passive device)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 6 — OPTIONAL -->
+    <div class="workflow-step" id="step-6">
+      <div class="step-number">
+        <div class="step-num-circle optional">6*</div>
+      </div>
+      <div class="step-content">
+        <h3>Reciprocity Check (S22 / S12) <span style="font-size:0.8rem; color:var(--text-muted); font-weight:400;">— optional for passive devices</span></h3>
+        <p>For <strong>passive devices</strong>, you can verify reciprocity by reversing the DUT and repeating the measurements:</p>
+        <ul class="record-list">
+          <li><strong>S22</strong> is measured with the DUT reversed in the VSWR bridge (what was the output connector is now at the test port)</li>
+          <li><strong>S12</strong> is measured with the DUT reversed in the transmission path</li>
+        </ul>
+        <p>For a passive reciprocal device, S22 should match S11 and S12 should match S21. Significant differences indicate a non-reciprocal element (a ferrite isolator, for example) or a measurement error.</p>
+        <p class="xref">See also: <a href="s-parameter-matrix.html">S-Parameters — The Four Numbers</a> — definition of S22 and S12.</p>
+      </div>
+    </div>
+
+  </div><!-- /workflow -->
+</section>
+
+<!-- ============================================================
+     SECTION 2 — RECORDING AND LABELLING
+     ============================================================ -->
+<section class="content-section" id="section-recording">
+  <div class="section-label">Section 2</div>
+  <h2>Recording and Labelling Results</h2>
+
+  <p>Good bench practice captures enough information to reproduce the measurement:</p>
+
+  <div class="filename-block">
+    <pre><span class="comment">[DUT ID]_[parameter]_[date]_[span].[marker]
+e.g. LPDA-145MHz_S11_2026-07-06_130-160MHz.M1_-23.4dB@145.1MHz</span></pre>
+  </div>
+
+  <p>Place markers at key points before saving a screenshot:</p>
+  <ul class="marker-tips">
+    <li><strong>S11:</strong> marker at minimum (resonance frequency and depth)</li>
+    <li><strong>S21 filters:</strong> markers at −3 dB points and centre frequency</li>
+    <li><strong>S21 cables:</strong> markers at 100 MHz and 1 GHz</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — DUT SIGNATURE GALLERY (PROSE)
+     ============================================================ -->
+<section class="content-section" id="section-signatures">
+  <div class="section-label">Section 3</div>
+  <h2>DUT Signature Gallery</h2>
+
+  <p>Different RF devices produce characteristic and recognisable S-parameter signatures:</p>
+
+  <div class="signature-grid">
+
+    <div class="sig-card sig-card--amber">
+      <div class="sig-card-label">Single-port device</div>
+      <h3>Antenna</h3>
+      <p>S11 shows a <strong>deep resonance dip</strong> at the design frequency; S21 is not applicable (single-port device). The resonance depth (&lt; −15 dB is good) and bandwidth (−10 dB bandwidth indicates usable range) are the key metrics.</p>
+      <div class="sig-metrics">
+        <span class="sig-metric">S11: resonance dip</span>
+        <span class="sig-metric">S21: N/A</span>
+        <span class="sig-metric">Target: &lt; −15 dB</span>
+      </div>
+    </div>
+
+    <div class="sig-card sig-card--blue">
+      <div class="sig-card-label">Two-port, passive</div>
+      <h3>Bandpass Filter</h3>
+      <p>S11 and S21 are <strong>complementary</strong>: low S11 (good match) in the passband where S21 is high (low loss); high S11 (signal rejected) in the stopband where S21 is low (high attenuation). Read insertion loss, bandwidth, and skirt steepness directly.</p>
+      <div class="sig-metrics">
+        <span class="sig-metric">S11: low in passband</span>
+        <span class="sig-metric">S21: passband shape</span>
+      </div>
+    </div>
+
+    <div class="sig-card sig-card--purple">
+      <div class="sig-card-label">Two-port, passive</div>
+      <h3>Attenuator</h3>
+      <p>Flat, low S11 across the full frequency range (a well-matched attenuator presents 50 Ω at both ports at all frequencies); flat S21 at the rated attenuation value. <strong>Flatness is the key quality indicator.</strong></p>
+      <div class="sig-metrics">
+        <span class="sig-metric">S11: flat &amp; low</span>
+        <span class="sig-metric">S21: flat at −N dB</span>
+      </div>
+    </div>
+
+    <div class="sig-card sig-card--cyan">
+      <div class="sig-card-label">Two-port, passive</div>
+      <h3>Coax Cable</h3>
+      <p>Low S11 (well-matched), with small ripples from imperfect connectors; S21 declining with frequency as a smooth slope determined by cable type and length. <strong>Water ingress or a damaged connector</strong> appears as an anomalous ripple.</p>
+      <div class="sig-metrics">
+        <span class="sig-metric">S11: low + ripple</span>
+        <span class="sig-metric">S21: sloped loss</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCREENSHOT FIGURES — Pending T09/T10 -->
+  <figure class="screenshot-figure" id="fig-filter-char">
+    <div class="screenshot-pending">
+      <span class="pending-icon">📷</span>
+      <span class="pending-label">Screenshot pending — T09 + T10</span>
+      <p class="pending-desc">RSA5065N: full characterisation of a 433 MHz bandpass filter — S11 and S21 overlaid, passband and stopband visible</p>
+    </div>
+    <figcaption>Fig. 1 — RSA5065N: 433 MHz bandpass filter. S11 (reflection) and S21 (transmission) overlaid on a single sweep — passband, insertion loss, stopband rejection, and skirt steepness all visible. To be added after T09/T10 data capture.</figcaption>
+  </figure>
+
+  <figure class="screenshot-figure" id="fig-antenna-s11">
+    <div class="screenshot-pending">
+      <span class="pending-icon">📷</span>
+      <span class="pending-label">Screenshot pending — T09</span>
+      <p class="pending-desc">RSA5065N: antenna S11 measurement — 145 MHz dipole, resonance dip visible with markers at minimum and −10 dB points</p>
+    </div>
+    <figcaption>Fig. 2 — RSA5065N: S11 of a 145 MHz dipole antenna. Resonance dip, depth, and −10 dB bandwidth (VSWR &lt; 2:1 range) shown with markers. To be added after T09 data capture.</figcaption>
+  </figure>
+
+  <figure class="screenshot-figure" id="fig-cable-s21">
+    <div class="screenshot-pending">
+      <span class="pending-icon">📷</span>
+      <span class="pending-label">Screenshot pending — T10</span>
+      <p class="pending-desc">RSA5065N: cable S21 — 5m RG58 from 1 MHz to 1 GHz, sloped insertion loss characteristic of cable type</p>
+    </div>
+    <figcaption>Fig. 3 — RSA5065N: S21 of 5m RG58 coax from 1 MHz to 1 GHz. Rising insertion loss with frequency — skin effect and dielectric loss slope. Markers at 100 MHz and 1 GHz. To be added after T10 data capture.</figcaption>
+  </figure>
+
+</section>
+
+<!-- ============================================================
+     QUICK REFERENCE TABLE
+     ============================================================ -->
+<div class="quick-ref" id="section-quick-ref">
+  <h2>The Quick Reference</h2>
+  <p>* Step 6 optional for passive devices; required for active devices.</p>
+  <div class="quick-ref-wrap">
+    <table class="ref-table">
+      <tr>
+        <th>Step</th>
+        <th>Measurement</th>
+        <th>Setup</th>
+        <th>Key records</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Set frequency range</td>
+        <td>Analyser sweep settings</td>
+        <td>Span, RBW, reference level</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Calibrate S11</td>
+        <td>VSWR bridge + OSL standards at test port</td>
+        <td>Calibration date and port</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Measure S11</td>
+        <td>DUT at test port</td>
+        <td>Resonance freq, min S11, −10 dB BW</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Calibrate S21</td>
+        <td>TG → cables → RF IN (no DUT), normalise</td>
+        <td>Normalise reference</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Measure S21</td>
+        <td>DUT in transmission path</td>
+        <td>Insertion loss, BW, slope</td>
+      </tr>
+      <tr class="optional-row">
+        <td>6*</td>
+        <td>Reciprocity check</td>
+        <td>Reverse DUT, re-measure S11 and S21</td>
+        <td>S22 vs S11, S12 vs S21</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================
+     CROSS-REFS
+     ============================================================ -->
+<div class="cross-ref-bar">
+  <strong>Cross-references:</strong>
+  Sideband: <a href="s-parameter-matrix.html">S-Parameter Matrix</a> &nbsp;·&nbsp;
+  Sideband: <a href="vswr-bridge-measurement.html">VSWR Bridge Measurement</a> &nbsp;·&nbsp;
+  Sideband: <a href="s21-transmission-measurement.html">S21 — Measuring What Gets Through</a> &nbsp;·&nbsp;
+  RSGB refs 2E3, 2E4, 2E5, 2E6
+</div>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <p>Sideband — Topic Snippets for RF-Hub &nbsp;·&nbsp; <a href="../../index.html">RF-Hub home</a> &nbsp;·&nbsp; <a href="../learning-path.html">Learning Path</a></p>
+  <p style="margin-top:8px; color: rgba(255,255,255,0.2);">Tags: [F] [I] [FL] &nbsp;·&nbsp; RSGB 2E3–2E6 &nbsp;·&nbsp; Sprint: RFH-S8</p>
+</footer>
+
+<!-- ============================================================
+     SCRIPT — PROGRESS BAR + IFRAME FALLBACK
+     ============================================================ -->
+<script>
+(function() {
+  var bar = document.getElementById('progress-bar');
+  function updateProgress() {
+    var scrolled = document.documentElement.scrollTop || document.body.scrollTop;
+    var total = (document.documentElement.scrollHeight || document.body.scrollHeight) - window.innerHeight;
+    var pct = total > 0 ? Math.round((scrolled / total) * 100) : 0;
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', pct);
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  var iframe = document.getElementById('iframe-gallery');
+  var fallback = document.getElementById('fallback-gallery');
+  if (iframe && fallback) {
+    iframe.addEventListener('load', function() {
+      fallback.style.display = 'none';
+    });
+  }
+})();
+</script>
+
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>

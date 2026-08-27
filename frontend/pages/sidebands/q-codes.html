@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-Codes — The Shorthand Language of Amateur Radio | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === ROOT VARIABLES === */
+    :root {
+      --bg-primary:    #0a0e1a;
+      --bg-secondary:  #111827;
+      --bg-tertiary:   #1f2937;
+      --text-primary:  #f9fafb;
+      --text-secondary:#9ca3af;
+      --text-muted:    #6b7280;
+      --amber:  #f59e0b;
+      --cyan:   #06b6d4;
+      --purple: #a78bfa;
+      --green:  #4ade80;
+      --border-subtle: rgba(255,255,255,0.08);
+      --border-accent: rgba(167,139,250,0.3);
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+      --radius:    8px;
+      --radius-lg: 12px;
+    }
+
+    /* === BASE === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+      color: var(--amber);
+    }
+
+    /* === PROGRESS BAR === */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      z-index: 1000;
+      transition: width 0.1s linear;
+    }
+
+    /* === HERO === */
+    .hero {
+      background: linear-gradient(160deg, #0a0e1a 0%, #130f1e 50%, #0a1018 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 4rem 1.5rem 3rem;
+    }
+    .hero__inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .breadcrumb a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { color: var(--purple); }
+    .breadcrumb__sep { opacity: 0.4; }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    .hero__subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .tag-chip {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+    .tag-chip--level { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+    .tag-chip--rsgb  { background: rgba(6,182,212,0.1);   color: var(--cyan);   border: 1px solid rgba(6,182,212,0.25); }
+
+    .hero__meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+    }
+    .hero__meta a { color: var(--text-muted); text-decoration: none; }
+    .hero__meta a:hover { color: var(--purple); }
+
+    /* === LAYOUT === */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* === CHAPTER === */
+    .chapter {
+      margin-bottom: 3rem;
+    }
+    .chapter h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .chapter h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+    }
+    .chapter p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+    .chapter p:last-child { margin-bottom: 0; }
+    .chapter p strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .chapter-intro {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      line-height: 1.75;
+      margin-bottom: 1.25rem;
+    }
+
+    /* === Q-CODE TABLES === */
+    .qcode-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+    }
+    .qcode-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .qcode-table thead {
+      background: var(--bg-tertiary);
+    }
+    .qcode-table th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      padding: 0.65rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .qcode-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+    .qcode-table tbody tr:last-child td { border-bottom: none; }
+    .qcode-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .qcode-table .code-col {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--purple);
+      white-space: nowrap;
+      width: 5.5rem;
+    }
+    .qcode-table .stmt-col { color: var(--text-primary); }
+    .qcode-table .ques-col { color: var(--text-secondary); font-style: italic; }
+
+    /* === ABBREVIATIONS TABLE === */
+    .abbr-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1.25rem;
+    }
+    .abbr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .abbr-table thead { background: var(--bg-tertiary); }
+    .abbr-table th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      padding: 0.6rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .abbr-table td {
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+    .abbr-table tbody tr:last-child td { border-bottom: none; }
+    .abbr-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .abbr-table .code-col {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--amber);
+      white-space: nowrap;
+      width: 5rem;
+    }
+    .abbr-table .meaning-col {
+      color: var(--text-primary);
+      font-weight: 500;
+      width: 12rem;
+    }
+    .abbr-table .context-col {
+      color: var(--text-secondary);
+      font-size: 0.84rem;
+    }
+    .abbr-note {
+      color: var(--amber);
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+
+    /* === RST TABLE === */
+    .rst-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1.25rem;
+    }
+    .rst-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .rst-table thead { background: var(--bg-tertiary); }
+    .rst-table th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      padding: 0.6rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .rst-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .rst-table tbody tr:last-child td { border-bottom: none; }
+    .rst-table .letter-col {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 500;
+      width: 3.5rem;
+    }
+    .letter-r { color: var(--purple); }
+    .letter-s { color: var(--amber); }
+    .letter-t { color: var(--cyan); }
+
+    /* === QUICK REF TABLE === */
+    .quickref-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid rgba(167,139,250,0.25);
+    }
+    .quickref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .quickref-table thead { background: rgba(167,139,250,0.08); }
+    .quickref-table th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--purple);
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(167,139,250,0.2);
+    }
+    .quickref-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .quickref-table tbody tr:last-child td { border-bottom: none; }
+    .quickref-table tbody tr:hover { background: rgba(167,139,250,0.04); }
+    .quickref-table .code-col {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--amber);
+      white-space: nowrap;
+      width: 5.5rem;
+    }
+    .quickref-table .means-col {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .quickref-table .when-col {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* === CALLOUTS === */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      border-left: 3px solid;
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    .callout strong {
+      display: block;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.45rem;
+    }
+    .callout p { margin-bottom: 0; }
+    .callout p + p { margin-top: 0.5rem; }
+    .callout--amber {
+      background: rgba(245,158,11,0.07);
+      border-color: var(--amber);
+      color: #ddb876;
+    }
+    .callout--amber strong { color: var(--amber); }
+    .callout--cyan {
+      background: rgba(6,182,212,0.07);
+      border-color: var(--cyan);
+      color: #7dd3e8;
+    }
+    .callout--cyan strong { color: var(--cyan); }
+    .callout--purple {
+      background: rgba(167,139,250,0.07);
+      border-color: var(--purple);
+      color: #c4b5f8;
+    }
+    .callout--purple strong { color: var(--purple); }
+
+    /* === LICENCE NOTE === */
+    .licence-note {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    .licence-note p {
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .licence-note p strong { color: var(--text-primary); }
+    .licence-note ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+    }
+    .licence-note li {
+      padding: 0.35rem 0 0.35rem 1.75rem;
+      position: relative;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .licence-note li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--purple);
+      font-family: var(--font-mono);
+    }
+    .licence-note li code {
+      color: var(--amber);
+      background: rgba(245,158,11,0.1);
+      border-color: rgba(245,158,11,0.2);
+      font-size: 0.85em;
+    }
+
+    /* === DIVIDER === */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border-subtle);
+      margin: 2.5rem 0;
+    }
+
+    /* === FOOTER === */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1.5rem;
+    }
+    .footer__inner {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer__meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .footer__meta span { display: block; margin-bottom: 0.2rem; }
+    .footer__links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .footer__links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .footer__links a:hover {
+      color: var(--purple);
+      border-color: rgba(167,139,250,0.4);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .hero { padding: 2.5rem 1rem 2rem; }
+      main  { padding: 2rem 1rem 3rem; }
+      .qcode-table td:nth-child(3),
+      .qcode-table th:nth-child(3) { display: none; }
+      .quickref-table .when-col { display: none; }
+      .abbr-table .context-col { font-size: 0.78rem; }
+    }
+    @media (max-width: 360px) {
+      .hero h1 { font-size: 1.55rem; }
+      .hero__meta { gap: 0.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      #progress-bar { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <header class="hero">
+    <div class="hero__inner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">RF-Hub</a>
+        <span class="breadcrumb__sep">›</span>
+        <span>Sideband</span>
+        <span class="breadcrumb__sep">›</span>
+        <span>Q-Codes</span>
+      </nav>
+
+      <h1>Q-Codes — The Shorthand Language of Amateur Radio</h1>
+      <p class="hero__subtitle">Reference guide to Q-codes, prosigns, and the RST reporting system</p>
+
+      <div class="tag-row" aria-label="Licence levels">
+        <span class="tag-chip tag-chip--level" title="Foundation level">F</span>
+        <span class="tag-chip tag-chip--level" title="Intermediate level">I</span>
+        <span class="tag-chip tag-chip--level" title="Full licence">FL</span>
+        <span class="tag-chip tag-chip--rsgb" title="RSGB syllabus reference">RSGB 8A1</span>
+        <span class="tag-chip tag-chip--rsgb">RSGB 8B1</span>
+      </div>
+
+      <div class="hero__meta">
+        <span>Series: Sideband — Topic Snippets for RF-Hub</span>
+        <span>Cross-refs:
+          <a href="operating-procedures.html">Operating Procedures</a> ·
+          <a href="digital-modes.html">Digital Modes</a>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ MAIN ═══════════════════ -->
+  <main>
+
+    <!-- INTRO -->
+    <section class="chapter">
+      <p class="chapter-intro">Q-codes are three-letter abbreviations beginning with Q, originally developed for commercial radiotelegraphy in the early 1900s. They let operators exchange standard messages quickly — regardless of language. Amateur radio adopted a subset of these codes, and they remain in daily use on HF, VHF, and UHF.</p>
+      <p>Each Q-code has two meanings: as a <strong>statement</strong> and as a <strong>question</strong>. Adding a question mark (or in CW, sending the prosign <code>?</code>) turns the statement into its corresponding question.</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- THE ESSENTIAL Q-CODES -->
+    <section class="chapter">
+      <h2>The Essential Q-Codes</h2>
+      <p>These are the codes you'll hear — and use — most often on the bands. Every Foundation licence holder should recognise them.</p>
+
+      <!-- Station Identity & Location -->
+      <h3>Station Identity &amp; Location</h3>
+      <div class="qcode-table-wrap">
+        <table class="qcode-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th>As a Statement</th>
+              <th>As a Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QRA</td>
+              <td class="stmt-col">The name of my station is…</td>
+              <td class="ques-col">What is the name of your station?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRZ</td>
+              <td class="stmt-col">You are being called by…</td>
+              <td class="ques-col">Who is calling me?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QTH</td>
+              <td class="stmt-col">My location is…</td>
+              <td class="ques-col">What is your location?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRB</td>
+              <td class="stmt-col">The distance between us is…</td>
+              <td class="ques-col">How far are you from my station?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QTR</td>
+              <td class="stmt-col">The exact time is…</td>
+              <td class="ques-col">What is the exact time?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Signal Reports & Readability -->
+      <h3>Signal Reports &amp; Readability</h3>
+      <div class="qcode-table-wrap">
+        <table class="qcode-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th>As a Statement</th>
+              <th>As a Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QRK</td>
+              <td class="stmt-col">Your signal readability is… (1–5)</td>
+              <td class="ques-col">What is the readability of my signals?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSB</td>
+              <td class="stmt-col">Your signals are fading</td>
+              <td class="ques-col">Are my signals fading?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRM</td>
+              <td class="stmt-col">I am being interfered with (man-made)</td>
+              <td class="ques-col">Are you being interfered with?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRN</td>
+              <td class="stmt-col">I am troubled by static (natural noise)</td>
+              <td class="ques-col">Are you troubled by static?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--amber">
+        <strong>QRM vs QRN</strong>
+        <p>QRM is interference from other stations or electrical equipment — things humans made. QRN is natural noise: thunderstorms, atmospheric static, space weather. The distinction matters when troubleshooting reception problems.</p>
+      </div>
+
+      <!-- Operating Controls -->
+      <h3>Operating Controls</h3>
+      <div class="qcode-table-wrap">
+        <table class="qcode-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th>As a Statement</th>
+              <th>As a Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QRL</td>
+              <td class="stmt-col">This frequency is in use</td>
+              <td class="ques-col">Is this frequency in use?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRV</td>
+              <td class="stmt-col">I am ready</td>
+              <td class="ques-col">Are you ready?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRX</td>
+              <td class="stmt-col">Stand by / I will call you again at…</td>
+              <td class="ques-col">Shall I stand by?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRT</td>
+              <td class="stmt-col">I am shutting down / stop sending</td>
+              <td class="ques-col">Shall I stop sending?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSY</td>
+              <td class="stmt-col">Change to frequency…</td>
+              <td class="ques-col">Shall I change frequency?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--cyan">
+        <strong>QRL — The Polite First Step</strong>
+        <p>Before calling CQ on any frequency, always send "QRL?" first. If someone responds "QRL" (yes, busy), move on. Calling over an existing QSO is poor operating practice.</p>
+      </div>
+
+      <!-- Power & Speed -->
+      <h3>Power &amp; Speed</h3>
+      <div class="qcode-table-wrap">
+        <table class="qcode-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th>As a Statement</th>
+              <th>As a Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QRO</td>
+              <td class="stmt-col">Increase power (running high power)</td>
+              <td class="ques-col">Shall I increase power?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRP</td>
+              <td class="stmt-col">Decrease power (running low power)</td>
+              <td class="ques-col">Shall I decrease power?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRS</td>
+              <td class="stmt-col">Send more slowly</td>
+              <td class="ques-col">Shall I send more slowly?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRG</td>
+              <td class="stmt-col">Your exact frequency is…</td>
+              <td class="ques-col">Will you tell me my exact frequency?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--purple">
+        <strong>QRP Culture</strong>
+        <p>QRP has taken on a life of its own in amateur radio. QRP operators deliberately run very low power — typically 5 W or less on CW, 10 W on SSB — to see how far they can communicate with minimal power. There are dedicated QRP contests, clubs (like the G-QRP Club in the UK), and purpose-built QRP transceivers. Working DX on 5 watts and a wire antenna is one of the most satisfying achievements in the hobby.</p>
+      </div>
+
+      <!-- Confirmation & Contact -->
+      <h3>Confirmation &amp; Contact</h3>
+      <div class="qcode-table-wrap">
+        <table class="qcode-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th>As a Statement</th>
+              <th>As a Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QSL</td>
+              <td class="stmt-col">I confirm / I acknowledge receipt</td>
+              <td class="ques-col">Can you acknowledge receipt?</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSO</td>
+              <td class="stmt-col">I can communicate with… directly</td>
+              <td class="ques-col">Can you communicate with… directly?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--cyan">
+        <strong>QSL Cards</strong>
+        <p>The tradition of sending QSL cards — physical postcards confirming a contact — dates back to the 1920s. Today, electronic QSL systems like <strong>Logbook of The World (LoTW)</strong>, <strong>eQSL</strong>, and <strong>QRZ.com</strong> have largely replaced paper cards, though many operators still collect and display them. A QSL card confirms both stations made the contact — essential for award claims like DXCC and SOTA.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ABBREVIATIONS & PROSIGNS -->
+    <section class="chapter">
+      <h2>Common Abbreviations &amp; Prosigns</h2>
+      <p>Q-codes don't exist in isolation. Amateur radio uses a rich set of abbreviations and prosigns alongside them. Here are the ones you'll encounter most:</p>
+
+      <div class="abbr-table-wrap">
+        <table class="abbr-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th class="meaning-col">Meaning</th>
+              <th class="context-col">Context</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">73</td>
+              <td class="meaning-col">Best wishes / regards</td>
+              <td class="context-col">Universal sign-off. <span class="abbr-note">NOT "73s" — 73 already means best wisheS (plural).</span></td>
+            </tr>
+            <tr>
+              <td class="code-col">88</td>
+              <td class="meaning-col">Love and kisses</td>
+              <td class="context-col">Traditional sign-off, less commonly used today</td>
+            </tr>
+            <tr>
+              <td class="code-col">CQ</td>
+              <td class="meaning-col">Calling any station</td>
+              <td class="context-col">"Seek you" — general call inviting any station to respond</td>
+            </tr>
+            <tr>
+              <td class="code-col">CQ DX</td>
+              <td class="meaning-col">Calling distant stations</td>
+              <td class="context-col">Seeking long-distance contacts specifically</td>
+            </tr>
+            <tr>
+              <td class="code-col">DE</td>
+              <td class="meaning-col">From (this is…)</td>
+              <td class="context-col">Identifies the sending station: "DE G7ABC"</td>
+            </tr>
+            <tr>
+              <td class="code-col">DX</td>
+              <td class="meaning-col">Long distance</td>
+              <td class="context-col">Any contact outside your own country (or sometimes DXCC entity)</td>
+            </tr>
+            <tr>
+              <td class="code-col">OM</td>
+              <td class="meaning-col">Old Man</td>
+              <td class="context-col">Friendly term for a male operator (not age-related)</td>
+            </tr>
+            <tr>
+              <td class="code-col">YL</td>
+              <td class="meaning-col">Young Lady</td>
+              <td class="context-col">Female operator (not age-related)</td>
+            </tr>
+            <tr>
+              <td class="code-col">XYL</td>
+              <td class="meaning-col">Ex-Young Lady</td>
+              <td class="context-col">Wife (traditional, somewhat dated)</td>
+            </tr>
+            <tr>
+              <td class="code-col">HI</td>
+              <td class="meaning-col">Laughter</td>
+              <td class="context-col">The CW equivalent of "ha ha"</td>
+            </tr>
+            <tr>
+              <td class="code-col">R</td>
+              <td class="meaning-col">Roger / received</td>
+              <td class="context-col">Confirms message received</td>
+            </tr>
+            <tr>
+              <td class="code-col">K</td>
+              <td class="meaning-col">Go ahead / over</td>
+              <td class="context-col">Inviting the other station to transmit</td>
+            </tr>
+            <tr>
+              <td class="code-col">SK</td>
+              <td class="meaning-col">End of contact</td>
+              <td class="context-col">Final sign-off, conversation complete</td>
+            </tr>
+            <tr>
+              <td class="code-col">AR</td>
+              <td class="meaning-col">End of message</td>
+              <td class="context-col">Message complete, but contact may continue</td>
+            </tr>
+            <tr>
+              <td class="code-col">BK</td>
+              <td class="meaning-col">Break</td>
+              <td class="context-col">Quick interrupt, used in semi-duplex exchanges</td>
+            </tr>
+            <tr>
+              <td class="code-col">WX</td>
+              <td class="meaning-col">Weather</td>
+              <td class="context-col">"WX here is sunny, 22°C"</td>
+            </tr>
+            <tr>
+              <td class="code-col">RIG</td>
+              <td class="meaning-col">Equipment</td>
+              <td class="context-col">Your radio setup — "RIG is IC-7610"</td>
+            </tr>
+            <tr>
+              <td class="code-col">ANT</td>
+              <td class="meaning-col">Antenna</td>
+              <td class="context-col">"ANT is a dipole at 10m"</td>
+            </tr>
+            <tr>
+              <td class="code-col">PSE</td>
+              <td class="meaning-col">Please</td>
+              <td class="context-col">Abbreviation used in CW</td>
+            </tr>
+            <tr>
+              <td class="code-col">TU</td>
+              <td class="meaning-col">Thank you</td>
+              <td class="context-col">Common CW courtesy</td>
+            </tr>
+            <tr>
+              <td class="code-col">FB</td>
+              <td class="meaning-col">Fine business</td>
+              <td class="context-col">Means "great" or "excellent"</td>
+            </tr>
+            <tr>
+              <td class="code-col">SOTA</td>
+              <td class="meaning-col">Summits On The Air</td>
+              <td class="context-col">Activating a summit for contacts</td>
+            </tr>
+            <tr>
+              <td class="code-col">POTA</td>
+              <td class="meaning-col">Parks On The Air</td>
+              <td class="context-col">Activating a park for contacts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- RST -->
+    <section class="chapter">
+      <h2>RST — The Signal Report System</h2>
+      <p>When exchanging signal reports during a QSO, amateurs use the <strong>RST system</strong>:</p>
+
+      <div class="rst-table-wrap">
+        <table class="rst-table">
+          <thead>
+            <tr>
+              <th class="letter-col">Letter</th>
+              <th>Meaning</th>
+              <th>Scale</th>
+              <th>Used On</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="letter-col letter-r">R</td>
+              <td>Readability</td>
+              <td>1–5 (1 = unreadable, 5 = perfectly readable)</td>
+              <td>All modes</td>
+            </tr>
+            <tr>
+              <td class="letter-col letter-s">S</td>
+              <td>Signal Strength</td>
+              <td>1–9 (1 = barely perceptible, 9 = very strong)</td>
+              <td>All modes</td>
+            </tr>
+            <tr>
+              <td class="letter-col letter-t">T</td>
+              <td>Tone</td>
+              <td>1–9 (1 = rough, 9 = pure tone)</td>
+              <td>CW only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>A report of <strong>59</strong> on SSB means "perfectly readable, very strong signal." On CW, <strong>599</strong> adds "pure tone." In practice, many operators default to giving 59/599 unless the signal is genuinely poor — a habit worth resisting, as honest reports are more useful.</p>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- UK LICENCE CONSIDERATIONS -->
+    <section class="chapter">
+      <h2>UK Licence Considerations</h2>
+
+      <div class="licence-note">
+        <p>All Q-codes listed here are permitted at <strong>Foundation</strong> level and above. There are no Q-codes restricted by licence class — they're operating conventions, not regulatory requirements.</p>
+        <p>However, Foundation licence holders should be aware:</p>
+        <ul>
+          <li><code>QRO</code> is limited by your licence power level (10 W for Foundation)</li>
+          <li><code>QSY</code> — you can only move to frequencies your licence class permits</li>
+          <li><code>QSL</code> via LoTW requires a valid callsign and may need your licence document for verification</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- QUICK REFERENCE TOP 10 -->
+    <section class="chapter">
+      <h2>Quick Reference — The Top 10</h2>
+      <p>If you remember nothing else, know these ten:</p>
+
+      <div class="quickref-wrap">
+        <table class="quickref-table">
+          <thead>
+            <tr>
+              <th class="code-col">Code</th>
+              <th class="means-col">What It Means</th>
+              <th class="when-col">When You'll Use It</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-col">QRZ?</td>
+              <td class="means-col">Who is calling me?</td>
+              <td class="when-col">When you hear your callsign but missed who called</td>
+            </tr>
+            <tr>
+              <td class="code-col">QTH</td>
+              <td class="means-col">My location is…</td>
+              <td class="when-col">Every contact includes a location exchange</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSL</td>
+              <td class="means-col">Confirmed / acknowledged</td>
+              <td class="when-col">Confirming receipt of information</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSO</td>
+              <td class="means-col">A radio contact</td>
+              <td class="when-col">"Had a nice QSO on 40m today"</td>
+            </tr>
+            <tr>
+              <td class="code-col">QSY</td>
+              <td class="means-col">Change frequency</td>
+              <td class="when-col">Moving to avoid interference or find a clear channel</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRL?</td>
+              <td class="means-col">Is this frequency in use?</td>
+              <td class="when-col">Always ask before calling CQ</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRP</td>
+              <td class="means-col">Low power</td>
+              <td class="when-col">Running 5 W or less</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRT</td>
+              <td class="means-col">Shutting down</td>
+              <td class="when-col">"Going QRT for the night, 73"</td>
+            </tr>
+            <tr>
+              <td class="code-col">QRV</td>
+              <td class="means-col">Ready</td>
+              <td class="when-col">"QRV on 145.500" — ready and listening</td>
+            </tr>
+            <tr>
+              <td class="code-col">73</td>
+              <td class="means-col">Best wishes</td>
+              <td class="when-col">End of every contact</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer>
+    <div class="footer__inner">
+      <div class="footer__meta">
+        <span>Sideband — Topic Snippets for RF-Hub</span>
+        <span>Tags: [F] [I] [FL] · RSGB 8A1, 8B1</span>
+      </div>
+      <nav class="footer__links" aria-label="Related pages">
+        <a href="digital-modes.html">Digital Modes</a>
+        <a href="operating-procedures.html">Operating Procedures</a>
+        <a href="../../index.html">← RF-Hub Home</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll-driven progress bar
+    (function () {
+      const bar = document.getElementById('progress-bar');
+      function update() {
+        const scrolled = window.scrollY;
+        const total    = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
+
+</body>
+</html>

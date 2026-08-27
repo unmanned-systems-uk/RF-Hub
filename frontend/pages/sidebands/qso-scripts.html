@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QSO Scripts — What to Say and When to Say It | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary:#0a0e1a; --bg-secondary:#111827; --bg-tertiary:#1f2937;
+      --text-primary:#f9fafb; --text-secondary:#9ca3af; --text-muted:#6b7280;
+      --amber:#f59e0b; --cyan:#06b6d4; --purple:#a78bfa; --green:#4ade80;
+      --border-subtle:rgba(255,255,255,0.08);
+      --font-display:'DM Serif Display',Georgia,serif;
+      --font-body:'IBM Plex Sans',system-ui,sans-serif;
+      --font-mono:'IBM Plex Mono','Courier New',monospace;
+      --radius:8px; --radius-lg:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-body);font-size:1rem;line-height:1.7}
+    strong{color:var(--text-primary);font-weight:600}
+    em{font-style:italic}
+
+    /* Progress bar */
+    #progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan));z-index:1000;transition:width .1s linear}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#0a0e1a 0%,#130f1e 50%,#0a1018 100%);border-bottom:1px solid var(--border-subtle);padding:4rem 1.5rem 3rem}
+    .hero__inner{max-width:820px;margin:0 auto}
+    .breadcrumb{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .breadcrumb a{color:var(--text-muted);text-decoration:none}
+    .breadcrumb a:hover{color:var(--purple)}
+    .breadcrumb__sep{opacity:.4}
+    .hero h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;line-height:1.2;margin-bottom:.5rem}
+    .hero__subtitle{font-size:1.05rem;color:var(--text-secondary);margin-bottom:1.5rem;font-weight:300}
+    .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+    .tag-chip{font-family:var(--font-mono);font-size:.7rem;font-weight:500;padding:.2rem .55rem;border-radius:4px;letter-spacing:.03em}
+    .tag-chip--level{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+    .tag-chip--rsgb{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.25)}
+    .hero__meta{font-size:.8rem;color:var(--text-muted);font-family:var(--font-mono);display:flex;flex-wrap:wrap;gap:1rem 2rem}
+    .hero__meta a{color:var(--text-muted);text-decoration:none}
+    .hero__meta a:hover{color:var(--purple)}
+
+    /* Layout */
+    main{max-width:820px;margin:0 auto;padding:3rem 1.5rem 4rem}
+    .chapter{margin-bottom:2.5rem}
+    .chapter h2{font-family:var(--font-display);font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:400;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border-subtle)}
+    .chapter p{color:var(--text-secondary);margin-bottom:1rem}
+    .chapter-intro{font-size:1.05rem;color:var(--text-primary);line-height:1.75;margin-bottom:1.5rem}
+    .section-divider{border:none;border-top:1px solid var(--border-subtle);margin:2.5rem 0}
+
+    /* Callsign auto-fill widget */
+    .cs-widget{background:var(--bg-secondary);border:1px solid rgba(245,158,11,.3);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:2.5rem}
+    .cs-widget__head{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:.4rem}
+    .cs-widget__desc{font-size:.875rem;color:var(--text-muted);margin-bottom:.9rem}
+    .cs-inputs{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end}
+    .cs-field{display:flex;flex-direction:column;gap:.3rem}
+    .cs-field label{font-family:var(--font-mono);font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    .cs-field input{font-family:var(--font-mono);font-size:1rem;font-weight:500;color:var(--amber);background:var(--bg-primary);border:2px solid rgba(245,158,11,.4);border-radius:6px;padding:.42rem .75rem;width:13ch;text-transform:uppercase;outline:none;letter-spacing:.08em;caret-color:var(--amber)}
+    .cs-field input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+    .cs-field input::placeholder{color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400;font-size:.85rem}
+    .cs-clear{font-family:var(--font-mono);font-size:.73rem;color:var(--text-muted);background:transparent;border:1px solid var(--border-subtle);border-radius:4px;padding:.42rem .85rem;cursor:pointer;align-self:flex-end}
+    .cs-clear:hover{color:var(--text-primary);border-color:rgba(255,255,255,.2)}
+    .cs-widget__note{font-size:.72rem;color:var(--text-muted);margin-top:.6rem;font-family:var(--font-mono)}
+
+    /* Callsign placeholder spans */
+    .cs-placeholder{font-family:var(--font-mono);font-weight:700;color:var(--amber);letter-spacing:.05em;font-size:1.02em}
+
+    /* Golden rules */
+    .golden-rules{list-style:none;padding:0;margin-bottom:1.5rem}
+    .golden-rules li{padding:.55rem 0 .55rem 2.25rem;position:relative;color:var(--text-secondary);border-bottom:1px solid var(--border-subtle);font-size:.95rem}
+    .golden-rules li:last-child{border-bottom:none}
+    .golden-rules .rule-num{position:absolute;left:0;font-family:var(--font-mono);font-weight:700;color:var(--amber);font-size:.9rem;top:.65rem}
+
+    /* NATO grid */
+    .nato-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border-subtle);border-radius:var(--radius);overflow:hidden;margin-bottom:.75rem;font-size:.86rem}
+    .nato-grid--5col{grid-template-columns:repeat(5,1fr)}
+    .nato-cell{padding:.38rem .65rem;border-right:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);display:flex;align-items:baseline;gap:.35rem;background:var(--bg-secondary)}
+    .nato-cell:nth-child(4n){border-right:none}
+    .nato-grid--5col .nato-cell:nth-child(4n){border-right:1px solid var(--border-subtle)}
+    .nato-grid--5col .nato-cell:nth-child(5n){border-right:none}
+    .nato-cell:hover{background:var(--bg-tertiary)}
+    .nato-letter{font-family:var(--font-mono);font-weight:700;font-size:.95rem;color:var(--amber);min-width:2ch}
+    .nato-word{color:var(--text-primary);font-size:.82rem}
+    .nato-empty{background:var(--bg-primary)}
+
+    /* Script sections */
+    .script-section{margin-bottom:2.5rem;padding-top:1rem}
+    .script-header{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border-subtle)}
+    .script-num{width:36px;height:36px;border-radius:50%;background:rgba(167,139,250,.15);border:2px solid rgba(167,139,250,.4);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:.9rem;color:var(--purple);flex-shrink:0;margin-top:.1rem}
+    .script-title h3{font-family:var(--font-display);font-size:1.25rem;font-weight:400;color:var(--text-primary);margin-bottom:.25rem}
+    .script-when{font-family:var(--font-mono);font-size:.72rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.05em}
+    .script-how{color:var(--text-secondary);margin-bottom:1rem;font-size:.9rem;line-height:1.65}
+    .script-step{margin-bottom:1.25rem}
+    .step-head{font-size:.8rem;font-weight:600;color:var(--text-secondary);margin:.75rem 0 .4rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em}
+
+    /* Dialogue boxes */
+    .script-say{border-left:3px solid var(--amber);background:rgba(245,158,11,.05);padding:.75rem 1rem;margin:.5rem 0;border-radius:0 var(--radius) var(--radius) 0;font-size:.9rem;color:var(--text-secondary);line-height:1.65}
+    .say-label{display:block;font-family:var(--font-mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.09em;color:var(--amber);margin-bottom:.3rem;font-weight:600}
+    .script-theysay{border-left:3px solid var(--cyan);background:rgba(6,182,212,.05);padding:.75rem 1rem;margin:.5rem 0;border-radius:0 var(--radius) var(--radius) 0;font-size:.9rem;color:var(--text-secondary);line-height:1.65}
+    .they-label{display:block;font-family:var(--font-mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.09em;color:var(--cyan);margin-bottom:.3rem;font-weight:600}
+    .script-note{border-left:2px solid var(--border-subtle);padding:.45rem .85rem;margin:.4rem 0;font-size:.86rem;color:var(--text-muted);font-style:italic;line-height:1.6}
+    .script-alt{font-style:italic;color:var(--text-muted);font-size:.86rem;margin:.25rem 0 .5rem 1rem}
+
+    /* CW block */
+    .cw-block{font-family:var(--font-mono);font-size:.84rem;color:var(--cyan);background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:var(--radius);padding:.7rem 1rem;white-space:pre-wrap;line-height:1.9;margin:.6rem 0}
+    .cw-note{font-size:.82rem;color:var(--text-muted);font-style:italic;margin:.25rem 0}
+
+    /* Callouts */
+    .callout{border-radius:var(--radius);padding:.9rem 1.1rem;margin:.85rem 0;border-left:3px solid;font-size:.875rem;line-height:1.65}
+    .callout strong{display:block;font-size:.72rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+    .callout p{color:inherit;margin-bottom:0}
+    .callout p+p{margin-top:.4rem}
+    .callout--amber{background:rgba(245,158,11,.07);border-color:var(--amber);color:#ddb876}
+    .callout--amber strong{color:var(--amber)}
+    .callout--cyan{background:rgba(6,182,212,.07);border-color:var(--cyan);color:#7dd3e8}
+    .callout--cyan strong{color:var(--cyan)}
+    .callout--purple{background:rgba(167,139,250,.07);border-color:var(--purple);color:#c4b5f8}
+    .callout--purple strong{color:var(--purple)}
+
+    /* Standard tables */
+    .tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:1rem}
+    .std-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+    .std-tbl thead{background:var(--bg-tertiary)}
+    .std-tbl th{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.55rem .9rem;text-align:left;border-bottom:1px solid var(--border-subtle)}
+    .std-tbl td{padding:.5rem .9rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);vertical-align:top}
+    .std-tbl tbody tr:last-child td{border-bottom:none}
+    .std-tbl tbody tr:hover{background:rgba(255,255,255,.02)}
+    .std-tbl .abbr-col{font-family:var(--font-mono);font-weight:500;color:var(--cyan);white-space:nowrap}
+    .std-tbl .rs-num{font-family:var(--font-mono);font-weight:700;color:var(--amber);font-size:1rem;text-align:center}
+
+    /* RS signal report pair */
+    .rs-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+
+    /* Common mistakes table colour coding */
+    .mistake-col{color:var(--text-primary);font-weight:500}
+    .why-col{color:var(--text-muted);font-size:.85rem}
+    .fix-col{color:var(--green);font-size:.85rem}
+
+    /* Footer */
+    footer{background:var(--bg-secondary);border-top:1px solid var(--border-subtle);padding:2rem 1.5rem}
+    .footer__inner{max-width:820px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center;justify-content:space-between}
+    .footer__meta{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted)}
+    .footer__meta span{display:block;margin-bottom:.2rem}
+    .footer__links{display:flex;gap:.75rem;flex-wrap:wrap}
+    .footer__links a{font-size:.82rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-mono);padding:.35rem .75rem;border:1px solid var(--border-subtle);border-radius:4px;transition:color .15s,border-color .15s}
+    .footer__links a:hover{color:var(--purple);border-color:rgba(167,139,250,.4)}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .hero{padding:2.5rem 1rem 2rem}
+      main{padding:2rem 1rem 3rem}
+      .cs-inputs{flex-direction:column;align-items:stretch}
+      .cs-field input{width:100%}
+      .nato-grid{grid-template-columns:repeat(2,1fr)}
+      .nato-cell:nth-child(4n){border-right:1px solid var(--border-subtle)}
+      .nato-cell:nth-child(2n){border-right:none}
+      .nato-grid--5col{grid-template-columns:repeat(2,1fr)}
+      .nato-grid--5col .nato-cell:nth-child(5n){border-right:inherit}
+      .nato-grid--5col .nato-cell:nth-child(2n){border-right:none}
+      .rs-pair{grid-template-columns:1fr}
+    }
+    @media(max-width:360px){.hero h1{font-size:1.5rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#progress-bar{transition:none}}
+  </style>
+</head>
+<body>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero__inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">RF-Hub</a>
+      <span class="breadcrumb__sep">›</span>
+      <span>Sideband</span>
+      <span class="breadcrumb__sep">›</span>
+      <span>QSO Scripts</span>
+    </nav>
+    <h1>QSO Scripts — What to Say and When to Say It</h1>
+    <p class="hero__subtitle">Step-by-step scripts for FM simplex, repeaters, HF SSB, CW, digital voice, and nets</p>
+    <div class="tag-row">
+      <span class="tag-chip tag-chip--level" title="Foundation">F</span>
+      <span class="tag-chip tag-chip--level" title="Intermediate">I</span>
+      <span class="tag-chip tag-chip--level" title="Full licence">FL</span>
+      <span class="tag-chip tag-chip--rsgb">RSGB 8A1</span>
+      <span class="tag-chip tag-chip--rsgb">8B1</span>
+      <span class="tag-chip tag-chip--rsgb">8C1</span>
+    </div>
+    <div class="hero__meta">
+      <span>Series: Sideband — Topic Snippets for RF-Hub</span>
+      <span>Cross-refs:
+        <a href="q-codes.html">Q-Codes</a> ·
+        <a href="uk-spectrum-band-plan.html">Band Plan</a> ·
+        <a href="operating-procedures.html">Operating Procedures</a>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+  <!-- INTRO -->
+  <p class="chapter-intro">Making your first contact on the radio can be nerve-wracking. You know the theory, you've passed the exam, but what do you actually <em>say</em>? These scripts give you a step-by-step guide for the most common types of contact. Follow them until the procedure feels natural — then make them your own.</p>
+
+  <!-- CALLSIGN AUTO-FILL WIDGET -->
+  <div class="cs-widget" role="region" aria-label="Callsign auto-fill">
+    <p class="cs-widget__head">Personalise These Scripts</p>
+    <p class="cs-widget__desc">Enter your callsign and the scripts below will update automatically. Saved in your browser — no account needed.</p>
+    <div class="cs-inputs">
+      <div class="cs-field">
+        <label for="cs-yours-input">Your callsign</label>
+        <input type="text" id="cs-yours-input" placeholder="e.g. M7ABC" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Your callsign">
+      </div>
+      <div class="cs-field">
+        <label for="cs-theirs-input">Their callsign (for practice)</label>
+        <input type="text" id="cs-theirs-input" placeholder="e.g. G4XYZ" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Their callsign">
+      </div>
+      <button id="cs-clear-btn" class="cs-clear" aria-label="Clear both callsigns">Clear</button>
+    </div>
+    <p class="cs-widget__note">Callsigns shown in amber throughout the scripts below</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- GOLDEN RULES -->
+  <section class="chapter">
+    <h2>Before You Start — The Golden Rules</h2>
+    <ol class="golden-rules">
+      <li><span class="rule-num">1</span><strong>Listen first.</strong> Before transmitting on any frequency, listen for at least 30 seconds. On a calling frequency, ask "Is this frequency in use?" before calling CQ.</li>
+      <li><span class="rule-num">2</span><strong>Keep it legal.</strong> Always give your callsign at the start and end of a contact, and at least every 15 minutes during a long QSO.</li>
+      <li><span class="rule-num">3</span><strong>Be brief on calling frequencies.</strong> Make contact, exchange callsigns, then move to a clear frequency. Don't have your whole conversation on the calling frequency.</li>
+      <li><span class="rule-num">4</span><strong>Speak clearly and steadily.</strong> No need to shout or rush. Use the NATO phonetic alphabet for your callsign: "Mike Seven Alpha Bravo Charlie" not "M-7-A-B-C."</li>
+      <li><span class="rule-num">5</span><strong>Don't panic.</strong> Everyone was new once. If you make a mistake, correct yourself and carry on. The amateur radio community is welcoming to new operators.</li>
+    </ol>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- NATO PHONETIC ALPHABET -->
+  <section class="chapter">
+    <h2>NATO Phonetic Alphabet — Quick Reference</h2>
+    <p>Use this for spelling out callsigns, names, and locations:</p>
+
+    <div class="nato-grid" aria-label="NATO phonetic alphabet for letters">
+      <div class="nato-cell"><span class="nato-letter">A</span><span class="nato-word">Alpha</span></div>
+      <div class="nato-cell"><span class="nato-letter">B</span><span class="nato-word">Bravo</span></div>
+      <div class="nato-cell"><span class="nato-letter">C</span><span class="nato-word">Charlie</span></div>
+      <div class="nato-cell"><span class="nato-letter">D</span><span class="nato-word">Delta</span></div>
+      <div class="nato-cell"><span class="nato-letter">E</span><span class="nato-word">Echo</span></div>
+      <div class="nato-cell"><span class="nato-letter">F</span><span class="nato-word">Foxtrot</span></div>
+      <div class="nato-cell"><span class="nato-letter">G</span><span class="nato-word">Golf</span></div>
+      <div class="nato-cell"><span class="nato-letter">H</span><span class="nato-word">Hotel</span></div>
+      <div class="nato-cell"><span class="nato-letter">I</span><span class="nato-word">India</span></div>
+      <div class="nato-cell"><span class="nato-letter">J</span><span class="nato-word">Juliet</span></div>
+      <div class="nato-cell"><span class="nato-letter">K</span><span class="nato-word">Kilo</span></div>
+      <div class="nato-cell"><span class="nato-letter">L</span><span class="nato-word">Lima</span></div>
+      <div class="nato-cell"><span class="nato-letter">M</span><span class="nato-word">Mike</span></div>
+      <div class="nato-cell"><span class="nato-letter">N</span><span class="nato-word">November</span></div>
+      <div class="nato-cell"><span class="nato-letter">O</span><span class="nato-word">Oscar</span></div>
+      <div class="nato-cell"><span class="nato-letter">P</span><span class="nato-word">Papa</span></div>
+      <div class="nato-cell"><span class="nato-letter">Q</span><span class="nato-word">Quebec</span></div>
+      <div class="nato-cell"><span class="nato-letter">R</span><span class="nato-word">Romeo</span></div>
+      <div class="nato-cell"><span class="nato-letter">S</span><span class="nato-word">Sierra</span></div>
+      <div class="nato-cell"><span class="nato-letter">T</span><span class="nato-word">Tango</span></div>
+      <div class="nato-cell"><span class="nato-letter">U</span><span class="nato-word">Uniform</span></div>
+      <div class="nato-cell"><span class="nato-letter">V</span><span class="nato-word">Victor</span></div>
+      <div class="nato-cell"><span class="nato-letter">W</span><span class="nato-word">Whiskey</span></div>
+      <div class="nato-cell"><span class="nato-letter">X</span><span class="nato-word">X-ray</span></div>
+      <div class="nato-cell"><span class="nato-letter">Y</span><span class="nato-word">Yankee</span></div>
+      <div class="nato-cell"><span class="nato-letter">Z</span><span class="nato-word">Zulu</span></div>
+      <div class="nato-cell nato-empty"></div>
+      <div class="nato-cell nato-empty"></div>
+    </div>
+
+    <div class="nato-grid nato-grid--5col" aria-label="NATO phonetic alphabet for digits">
+      <div class="nato-cell"><span class="nato-letter">0</span><span class="nato-word">Zero</span></div>
+      <div class="nato-cell"><span class="nato-letter">1</span><span class="nato-word">One</span></div>
+      <div class="nato-cell"><span class="nato-letter">2</span><span class="nato-word">Two</span></div>
+      <div class="nato-cell"><span class="nato-letter">3</span><span class="nato-word">Three</span></div>
+      <div class="nato-cell"><span class="nato-letter">4</span><span class="nato-word">Four</span></div>
+      <div class="nato-cell"><span class="nato-letter">5</span><span class="nato-word">Five</span></div>
+      <div class="nato-cell"><span class="nato-letter">6</span><span class="nato-word">Six</span></div>
+      <div class="nato-cell"><span class="nato-letter">7</span><span class="nato-word">Seven</span></div>
+      <div class="nato-cell"><span class="nato-letter">8</span><span class="nato-word">Eight</span></div>
+      <div class="nato-cell"><span class="nato-letter">9</span><span class="nato-word">Niner</span></div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 1: VHF/UHF FM SIMPLEX -->
+  <section class="script-section" id="script-1">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">1</div>
+      <div class="script-title">
+        <h3>VHF/UHF FM Simplex</h3>
+        <p class="script-when">145.500 MHz (2m) or 433.500 MHz (70cm) FM calling frequencies</p>
+      </div>
+    </div>
+    <p class="script-how"><strong>How it works:</strong> You call on the calling frequency, make contact, then both stations move to a clear channel to have your conversation. Never hold a long QSO on the calling frequency.</p>
+
+    <div class="script-step">
+      <p class="step-head">Step 1 — Call CQ on the calling frequency</p>
+      <div class="script-note">Tune to <strong>145.500 MHz</strong> (2m) or <strong>433.500 MHz</strong> (70cm). Listen for 30 seconds to check it's clear.</div>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "CQ CQ CQ, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Calling CQ and standing by."
+      </div>
+      <p class="script-alt"><em>Repeat two or three times with a short pause between each call. If no one responds, wait a minute and try again.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 2 — Someone responds</p>
+      <div class="script-note">A station comes back to your call.</div>
+      <div class="script-theysay">
+        <span class="they-label">They say:</span>
+        "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, this is <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>. Good evening, receiving you well."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 3 — Acknowledge and find a clear frequency</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Good evening, thanks for coming back to me. Please stand by while I find a clear frequency."
+      </div>
+      <p class="script-alt"><em>Tune up or down from the calling frequency to find an unused simplex channel. Listen for a few seconds to confirm it's clear.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 4 — Check the new frequency is clear</p>
+      <div class="script-say">
+        <span class="say-label">On the new frequency, say:</span>
+        "This is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> — is this frequency in use?"
+      </div>
+      <p class="script-alt"><em>Wait 10 seconds. If no one responds, it's clear. If someone says "Yes" or "QRL", try another channel.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 5 — Call the other station to the new frequency</p>
+      <div class="script-say">
+        <span class="say-label">Go back to 145.500 MHz and say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Please QSY to <em>[new frequency]</em>."
+      </div>
+      <p class="script-alt"><em>Both stations change to the new frequency.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 6 — Start the conversation</p>
+      <div class="script-say">
+        <span class="say-label">On the new frequency, say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Are you receiving? Over."
+      </div>
+      <div class="script-say">
+        <span class="say-label">When they confirm, say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. My name is <em>[your name]</em> and my QTH is <em>[your location]</em>. Your signal report is <em>[RS report, e.g., 5 and 9]</em>. How do you copy? <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Over."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 7 — Close the contact</p>
+      <div class="script-say">
+        <span class="say-label">When you're ready to finish, say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Thanks for the contact today. I hope to speak with you again soon. 73 and best wishes. <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Out."
+      </div>
+    </div>
+
+    <div class="callout callout--amber">
+      <strong>"Over" vs "Out"</strong>
+      <p>"Over" means "I've finished speaking, go ahead" — you expect a reply. "Out" means "I've finished, conversation is ending" — no reply expected. Never say "over and out" — it contradicts itself.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 2: VHF/UHF FM REPEATER -->
+  <section class="script-section" id="script-2">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">2</div>
+      <div class="script-title">
+        <h3>VHF/UHF FM Repeater</h3>
+        <p class="script-when">Contacts through a local repeater — extends your range by retransmitting on another frequency</p>
+      </div>
+    </div>
+    <p class="script-how"><strong>How it works:</strong> You don't need to call CQ on a repeater — just put your callsign out and see if anyone responds. Repeater contacts tend to be more casual than simplex.</p>
+
+    <div class="script-step">
+      <p class="step-head">Step 1 — Call on the repeater</p>
+      <div class="script-note">Tune to the repeater output frequency. Set the correct CTCSS tone if required.</div>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> listening through <em>[repeater callsign, e.g., GB3XX]</em>."
+      </div>
+      <p class="script-alt"><em>Or simply: "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> listening."</em></p>
+      <p class="script-alt"><em>Wait for a response. If nobody comes back, wait a few minutes and try again.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 2 — Someone responds</p>
+      <div class="script-theysay">
+        <span class="they-label">They say:</span>
+        "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, this is <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>. Good afternoon."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 3 — Have the conversation</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Good afternoon. My name is <em>[your name]</em>, QTH is <em>[your location]</em>. You're coming in <em>[signal report]</em> through the repeater. Over."
+      </div>
+      <p class="script-alt"><em>Continue the conversation naturally. Leave a gap between overs so other stations can break in if needed.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Step 4 — Close the contact</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Thanks for the chat. 73 from <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Out."
+      </div>
+    </div>
+
+    <div class="callout callout--cyan">
+      <strong>Repeater Etiquette</strong>
+      <p>Keep transmissions short — others may be waiting to use the repeater. Leave a 2-second gap between overs. If you hear a station calling "break" or "breaker", pause and let them in. Some repeaters have a timeout (typically 2–3 minutes) — if you talk too long, the repeater will drop your signal.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 3: HF SSB -->
+  <section class="script-section" id="script-3">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">3</div>
+      <div class="script-title">
+        <h3>HF SSB (Phone)</h3>
+        <p class="script-when">HF bands — 80m, 40m, 20m, etc. — single sideband voice. Below 10 MHz use LSB; above 10 MHz use USB.</p>
+      </div>
+    </div>
+    <p class="script-how"><strong>How it works:</strong> HF contacts are typically with more distant stations and follow a more structured format. Clear phonetics are essential — signals can fade.</p>
+
+    <div class="script-step">
+      <p class="step-head">Calling CQ</p>
+      <div class="script-note">Find a clear frequency. Listen for 30 seconds. Ask "Is this frequency in use?"</div>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "CQ CQ CQ, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>.<br>
+        <em>[Phonetics — e.g., Mike Seven Alpha Bravo Charlie]</em>.<br>
+        Calling CQ and standing by."
+      </div>
+      <p class="script-alt"><em>Repeat two or three times. On HF, stations may be far away and signals can fade, so clear phonetics are essential.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">When a station responds</p>
+      <div class="script-theysay">
+        <span class="they-label">They say:</span>
+        "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, this is <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Your first over</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Good afternoon and thanks for calling.<br>
+        My name is <em>[your name]</em>, name is <em>[name]</em>.<br>
+        My QTH is <em>[your town/city, country]</em>.<br>
+        Your signal report is <em>[RS, e.g., five nine]</em>.<br>
+        The rig here is <em>[your radio, e.g., IC-7610]</em> running <em>[power, e.g., 25 watts]</em> into a <em>[antenna, e.g., dipole at 10 metres]</em>.<br>
+        How do you copy? <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Over."
+      </div>
+      <div class="callout callout--purple">
+        <strong>What's in a Typical HF Exchange</strong>
+        <p>Name, location (QTH), signal report, rig and antenna, and power. This is the standard format — you'll hear it repeated across the bands. After the first exchange, the conversation can go anywhere: weather, equipment, conditions, other hobbies.</p>
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Closing</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Thanks for the QSO, <em>[their name]</em>.<br>
+        I hope to catch you on the bands again. 73 and best wishes from <em>[your location]</em>.<br>
+        <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. Out."
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 4: RESPONDING TO CQ -->
+  <section class="script-section" id="script-4">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">4</div>
+      <div class="script-title">
+        <h3>Responding to a CQ Call</h3>
+        <p class="script-when">When you hear another station calling CQ and want to respond</p>
+      </div>
+    </div>
+    <p class="script-how">Often easier than calling CQ yourself — someone else has found a clear frequency and made the first move.</p>
+
+    <div class="script-step">
+      <p class="step-head">You hear a CQ call</p>
+      <div class="script-theysay">
+        <span class="they-label">You hear:</span>
+        "CQ CQ CQ, this is <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>..."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Respond</p>
+      <div class="script-say">
+        <span class="say-label">Wait until they finish calling, then say:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <em>[phonetics]</em>. Over."
+      </div>
+      <p class="script-alt"><em>That's it — short and clear. Don't give your callsign more than twice. If they don't hear you, wait for their next CQ call and try again.</em></p>
+      <p class="script-alt"><em>If conditions are poor, you can add your location:</em></p>
+      <div class="script-say">
+        <span class="say-label">Alternative:</span>
+        "<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <em>[phonetics]</em>, in <em>[your location]</em>. Over."
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 5: CW -->
+  <section class="script-section" id="script-5">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">5</div>
+      <div class="script-title">
+        <h3>CW (Morse Code)</h3>
+        <p class="script-when">CW contacts follow a highly standardised format using Q-codes and abbreviations</p>
+      </div>
+    </div>
+    <p class="script-how"><strong>Speed tip:</strong> If you're learning, call on the QRS (slow CW) centres of activity, or add "QRS" to your CQ call. Most operators will happily slow down for you.</p>
+
+    <div class="script-step">
+      <p class="step-head">Calling CQ</p>
+      <pre class="cw-block">CQ CQ CQ DE <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> K</pre>
+      <p class="cw-note"><em>DE = "from". K = "go ahead."</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">When a station responds</p>
+      <pre class="cw-block"><span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> DE <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> K</pre>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Standard CW exchange</p>
+      <pre class="cw-block"><span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> DE <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>
+GM/GA/GE
+UR RST 579 579
+NAME IS [your name] [your name]
+QTH IS [your location]
+HW CPY? <span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> DE <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> KN</pre>
+      <p class="cw-note"><em>KN = "go ahead, only the named station."</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Closing</p>
+      <pre class="cw-block"><span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> DE <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>
+TU FER QSO [their name]
+HPE CUAGN 73 73
+<span class="cs-placeholder cs-theirs">THEIR CALLSIGN</span> DE <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span> SK</pre>
+      <p class="cw-note"><em>TU = thank you. FER = for. HPE CUAGN = hope to see you again. SK = end of contact.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Common CW Abbreviations</p>
+      <div class="tbl-wrap">
+        <table class="std-tbl">
+          <thead><tr><th>Abbreviation</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="abbr-col">GM / GA / GE</td><td>Good morning / afternoon / evening</td></tr>
+            <tr><td class="abbr-col">UR</td><td>Your / You're</td></tr>
+            <tr><td class="abbr-col">RST</td><td>Signal report (Readability, Strength, Tone)</td></tr>
+            <tr><td class="abbr-col">NAME</td><td>Name</td></tr>
+            <tr><td class="abbr-col">QTH</td><td>Location</td></tr>
+            <tr><td class="abbr-col">RIG</td><td>Equipment</td></tr>
+            <tr><td class="abbr-col">ANT</td><td>Antenna</td></tr>
+            <tr><td class="abbr-col">WX</td><td>Weather</td></tr>
+            <tr><td class="abbr-col">TU</td><td>Thank you</td></tr>
+            <tr><td class="abbr-col">FER</td><td>For</td></tr>
+            <tr><td class="abbr-col">HPE</td><td>Hope</td></tr>
+            <tr><td class="abbr-col">CUAGN</td><td>See you again</td></tr>
+            <tr><td class="abbr-col">FB</td><td>Fine business (great!)</td></tr>
+            <tr><td class="abbr-col">HW CPY?</td><td>How do you copy?</td></tr>
+            <tr><td class="abbr-col">PSE</td><td>Please</td></tr>
+            <tr><td class="abbr-col">AGN</td><td>Again</td></tr>
+            <tr><td class="abbr-col">BK</td><td>Break</td></tr>
+            <tr><td class="abbr-col">R</td><td>Roger / received</td></tr>
+            <tr><td class="abbr-col">73</td><td>Best wishes</td></tr>
+            <tr><td class="abbr-col">88</td><td>Love and kisses</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 6: DIGITAL VOICE -->
+  <section class="script-section" id="script-6">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">6</div>
+      <div class="script-title">
+        <h3>Digital Voice (D-STAR / DMR / Fusion)</h3>
+        <p class="script-when">Internet-linked repeaters or hotspots — can connect you worldwide via reflectors and talkgroups</p>
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">D-STAR — Step 1: Select a reflector or gateway</p>
+      <div class="script-note">Program your radio with the correct module (e.g., REF001C, XLX456A). Your callsign must be registered with the D-STAR gateway system.</div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">D-STAR — Step 2: Call</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "Calling on <em>[reflector name]</em>. This is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>, <em>[phonetics]</em>. Is anyone around? Over."
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">D-STAR — Step 3: Standard exchange</p>
+      <div class="script-note">Same as FM simplex — name, location, signal report, rig. Mention you're using D-STAR and which hotspot/repeater you're going through.</div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">DMR</p>
+      <div class="script-note">DMR uses <strong>talkgroups</strong> rather than reflectors. Select the appropriate talkgroup (e.g., TG235 for UK, TG91 for worldwide). Key up briefly to activate the talkgroup on the repeater/hotspot, wait 2 seconds, then call.</div>
+    </div>
+
+    <div class="callout callout--purple">
+      <strong>Key Differences from Analogue</strong>
+      <p><strong>Wait for the "kerchunk" to clear</strong> — digital systems have a brief setup delay. Wait 2 seconds after keying up before speaking.</p>
+      <p><strong>No need to QSY</strong> — talkgroups and reflectors are separate channels; you won't block other users unless you're on a busy talkgroup.</p>
+      <p><strong>Registration required</strong> — D-STAR, DMR, and Fusion all require your callsign to be registered before you can transmit.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SCRIPT 7: NETS -->
+  <section class="script-section" id="script-7">
+    <div class="script-header">
+      <div class="script-num" aria-hidden="true">7</div>
+      <div class="script-title">
+        <h3>Nets and Scheduled Groups</h3>
+        <p class="script-when">Organised nets — a scheduled on-air meeting where a net controller manages the conversation</p>
+      </div>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">Checking in to a net</p>
+      <div class="script-theysay">
+        <span class="they-label">Net controller says:</span>
+        "This is <em>[net controller callsign]</em>, net control for the <em>[net name]</em>. Any stations wishing to check in?"
+      </div>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>."
+      </div>
+      <p class="script-alt"><em>Just your callsign — keep it brief. The net controller will acknowledge you and add you to the list. Wait to be called before transmitting again.</em></p>
+    </div>
+
+    <div class="script-step">
+      <p class="step-head">When called by net control</p>
+      <div class="script-say">
+        <span class="say-label">Say:</span>
+        "<em>[Net controller callsign]</em>, this is <span class="cs-placeholder cs-yours">YOUR CALLSIGN</span>. <em>[Your traffic/comment]</em>. Back to net control."
+      </div>
+    </div>
+
+    <div class="callout callout--cyan">
+      <strong>Net Etiquette</strong>
+      <p>Follow the net controller's instructions. Don't transmit unless called. If you need to leave early, ask to be excused. Nets are a great way to practise — you know someone will be there at the scheduled time.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SIGNAL REPORT GUIDE -->
+  <section class="chapter">
+    <h2>Signal Report Guide</h2>
+    <p>On FM, tone is always 9 (clean), so we only give R (Readability) and S (Strength):</p>
+
+    <div class="rs-pair">
+      <div>
+        <div class="tbl-wrap">
+          <table class="std-tbl">
+            <thead><tr><th>Readability (R)</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td class="rs-num">1</td><td>Unreadable</td></tr>
+              <tr><td class="rs-num">2</td><td>Barely readable, occasional words</td></tr>
+              <tr><td class="rs-num">3</td><td>Readable with considerable difficulty</td></tr>
+              <tr><td class="rs-num">4</td><td>Readable with practically no difficulty</td></tr>
+              <tr><td class="rs-num">5</td><td>Perfectly readable</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="tbl-wrap">
+          <table class="std-tbl">
+            <thead><tr><th>Strength (S)</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td class="rs-num">1</td><td>Barely perceptible</td></tr>
+              <tr><td class="rs-num">3</td><td>Weak</td></tr>
+              <tr><td class="rs-num">5</td><td>Fairly good</td></tr>
+              <tr><td class="rs-num">7</td><td>Moderately strong</td></tr>
+              <tr><td class="rs-num">9</td><td>Very strong</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p><em>Common reports: "5 and 9" (perfect), "5 and 7" (good), "3 and 5" (readable but not strong).</em></p>
+
+    <div class="callout callout--amber">
+      <strong>Be Honest</strong>
+      <p>Giving everyone "5 and 9" regardless of actual signal quality is a common habit — but honest reports are more useful. If you can barely hear them, say so. They might adjust their antenna or power.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- COMMON MISTAKES -->
+  <section class="chapter">
+    <h2>Common Mistakes to Avoid</h2>
+    <div class="tbl-wrap">
+      <table class="std-tbl">
+        <thead><tr><th>Mistake</th><th>Why it's wrong</th><th>What to do instead</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mistake-col">"Over and out"</td>
+            <td class="why-col">Contradicts itself — "over" means "your turn", "out" means "finished"</td>
+            <td class="fix-col">Use "over" during the QSO, "out" at the end</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">Calling CQ only twice</td>
+            <td class="why-col">Too short — stations may miss it</td>
+            <td class="fix-col">Call CQ three times, give your callsign three times</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">Talking on the calling frequency</td>
+            <td class="why-col">Blocks others from making contact</td>
+            <td class="fix-col">Move to a clear channel after initial contact</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">Not giving your callsign</td>
+            <td class="why-col">Legal requirement under licence conditions</td>
+            <td class="fix-col">Give callsign at start, end, and every 15 minutes</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">Speaking too fast</td>
+            <td class="why-col">Especially on HF with fading signals</td>
+            <td class="fix-col">Speak clearly at a moderate pace</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">"Breaker breaker"</td>
+            <td class="why-col">CB radio language, not amateur radio</td>
+            <td class="fix-col">Use "break" if you need to interrupt</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">"73s"</td>
+            <td class="why-col">73 already means "best wisheS" (plural)</td>
+            <td class="fix-col">Just say "73"</td>
+          </tr>
+          <tr>
+            <td class="mistake-col">Not listening first</td>
+            <td class="why-col">You might transmit over an existing QSO</td>
+            <td class="fix-col">Always listen before transmitting</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer__inner">
+    <div class="footer__meta">
+      <span>Sideband — Topic Snippets for RF-Hub</span>
+      <span>Tags: [F] [I] [FL] · RSGB 8A1, 8B1, 8C1</span>
+    </div>
+    <nav class="footer__links" aria-label="Related pages">
+      <a href="q-codes.html">Q-Codes</a>
+      <a href="uk-spectrum-band-plan.html">Band Plan</a>
+      <a href="operating-procedures.html">Operating Procedures</a>
+      <a href="../../index.html">← RF-Hub Home</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  // Scroll-driven progress bar
+  (function(){
+    var bar=document.getElementById('progress-bar');
+    function upd(){var s=window.scrollY,t=document.documentElement.scrollHeight-window.innerHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}
+    window.addEventListener('scroll',upd,{passive:true});upd();
+  })();
+
+  // Callsign auto-fill
+  (function(){
+    var KEYS={yours:'rfhub_your_cs',theirs:'rfhub_their_cs'};
+    var inpY=document.getElementById('cs-yours-input');
+    var inpT=document.getElementById('cs-theirs-input');
+    var btnC=document.getElementById('cs-clear-btn');
+
+    function sanitise(v){return v.toUpperCase().replace(/[^A-Z0-9/]/g,'');}
+
+    function update(){
+      var yc=localStorage.getItem(KEYS.yours)||'';
+      var tc=localStorage.getItem(KEYS.theirs)||'';
+      document.querySelectorAll('.cs-yours').forEach(function(el){el.textContent=yc||'YOUR CALLSIGN';});
+      document.querySelectorAll('.cs-theirs').forEach(function(el){el.textContent=tc||'THEIR CALLSIGN';});
+    }
+
+    inpY.addEventListener('input',function(){
+      var v=sanitise(this.value);this.value=v;
+      localStorage.setItem(KEYS.yours,v);update();
+    });
+    inpT.addEventListener('input',function(){
+      var v=sanitise(this.value);this.value=v;
+      localStorage.setItem(KEYS.theirs,v);update();
+    });
+    btnC.addEventListener('click',function(){
+      localStorage.removeItem(KEYS.yours);localStorage.removeItem(KEYS.theirs);
+      inpY.value='';inpT.value='';update();
+    });
+
+    // Initialise from localStorage
+    var yc=localStorage.getItem(KEYS.yours)||'';
+    var tc=localStorage.getItem(KEYS.theirs)||'';
+    if(yc)inpY.value=yc;
+    if(tc)inpT.value=tc;
+    update();
+  })();
+</script>
+</body>
+</html>

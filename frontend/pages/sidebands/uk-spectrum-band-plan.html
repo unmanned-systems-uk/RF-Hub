@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Spectrum Allocation &amp; Amateur Band Plan | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary:#0a0e1a; --bg-secondary:#111827; --bg-tertiary:#1f2937;
+      --text-primary:#f9fafb; --text-secondary:#9ca3af; --text-muted:#6b7280;
+      --amber:#f59e0b; --cyan:#06b6d4; --purple:#a78bfa; --green:#4ade80;
+      --red:#f87171; --blue:#60a5fa;
+      --border-subtle:rgba(255,255,255,0.08);
+      --font-display:'DM Serif Display',Georgia,serif;
+      --font-body:'IBM Plex Sans',system-ui,sans-serif;
+      --font-mono:'IBM Plex Mono','Courier New',monospace;
+      --radius:8px; --radius-lg:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-body);font-size:1rem;line-height:1.7}
+    code{font-family:var(--font-mono);font-size:.875em;background:rgba(255,255,255,.07);border:1px solid var(--border-subtle);border-radius:3px;padding:.1em .35em;color:var(--amber)}
+    strong{color:var(--text-primary);font-weight:600}
+
+    /* Progress bar */
+    #progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan));z-index:1000;transition:width .1s linear}
+
+    /* Hero */
+    .hero{background:linear-gradient(160deg,#0a0e1a 0%,#130f1e 50%,#0a1018 100%);border-bottom:1px solid var(--border-subtle);padding:4rem 1.5rem 3rem}
+    .hero__inner{max-width:900px;margin:0 auto}
+    .breadcrumb{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .breadcrumb a{color:var(--text-muted);text-decoration:none}
+    .breadcrumb a:hover{color:var(--purple)}
+    .breadcrumb__sep{opacity:.4}
+    .hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4vw,2.6rem);font-weight:400;line-height:1.2;margin-bottom:.5rem}
+    .hero__subtitle{font-size:1.05rem;color:var(--text-secondary);margin-bottom:1.5rem;font-weight:300}
+    .tag-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+    .tag-chip{font-family:var(--font-mono);font-size:.7rem;font-weight:500;padding:.2rem .55rem;border-radius:4px;letter-spacing:.03em}
+    .tag-chip--level{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+    .tag-chip--rsgb{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.25)}
+    .hero__meta{font-size:.8rem;color:var(--text-muted);font-family:var(--font-mono);display:flex;flex-wrap:wrap;gap:1rem 2rem}
+    .hero__meta a{color:var(--text-muted);text-decoration:none}
+    .hero__meta a:hover{color:var(--purple)}
+
+    /* Layout */
+    main{max-width:900px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+    /* Chapters */
+    .chapter{margin-bottom:3rem}
+    .chapter h2{font-family:var(--font-display);font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:400;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border-subtle)}
+    .chapter p{color:var(--text-secondary);margin-bottom:1rem}
+    .chapter p:last-child{margin-bottom:0}
+    .chapter-intro{font-size:1.05rem;color:var(--text-primary);line-height:1.75;margin-bottom:1.25rem}
+    .section-divider{border:none;border-top:1px solid var(--border-subtle);margin:2.5rem 0}
+
+    /* Part headings */
+    .part-heading{font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);font-weight:400;margin-bottom:.5rem;padding-left:1rem;border-left:4px solid var(--purple)}
+    .part-sub{color:var(--text-secondary);margin-bottom:1.5rem;font-size:.95rem}
+
+    /* Table of Contents */
+    .toc{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:2.5rem}
+    .toc__head{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.75rem}
+    .toc__parts{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border-subtle)}
+    .toc__part-link{font-size:.82rem;color:var(--text-secondary);text-decoration:none;font-family:var(--font-mono);padding:.3rem .7rem;border:1px solid var(--border-subtle);border-radius:4px;transition:color .15s,border-color .15s}
+    .toc__part-link:hover{color:var(--purple);border-color:rgba(167,139,250,.4)}
+    .toc__sub{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.6rem}
+    .toc__bands{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:.4rem}
+    .toc__link{font-family:var(--font-mono);font-size:.78rem;font-weight:500;background:var(--bg-tertiary);border:1px solid var(--border-subtle);border-radius:6px;padding:.45rem .5rem;text-decoration:none;color:var(--text-secondary);text-align:center;display:block;transition:border-color .15s,color .15s;line-height:1.3}
+    .toc__link span{display:block;font-size:.62rem;color:var(--text-muted);margin-top:1px}
+    .toc__link:hover{color:var(--amber);border-color:rgba(245,158,11,.4)}
+
+    /* Intro power table */
+    .intro-tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:1.25rem}
+    .intro-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+    .intro-tbl thead{background:var(--bg-tertiary)}
+    .intro-tbl th{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border-subtle)}
+    .intro-tbl td{padding:.65rem 1rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)}
+    .intro-tbl tbody tr:last-child td{border-bottom:none}
+    .intro-tbl .mono-col{font-family:var(--font-mono);font-size:.85rem}
+
+    /* Spectrum allocation tables */
+    .spec-tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:1.5rem}
+    .spec-tbl{width:100%;border-collapse:collapse;font-size:.86rem}
+    .spec-tbl thead{background:var(--bg-tertiary)}
+    .spec-tbl th{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.55rem .9rem;text-align:left;border-bottom:1px solid var(--border-subtle)}
+    .spec-tbl td{padding:.5rem .9rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);vertical-align:top}
+    .spec-tbl tbody tr:last-child td{border-bottom:none}
+    .spec-tbl tbody tr:hover{background:rgba(255,255,255,.02)}
+    .spec-tbl .freq-col{font-family:var(--font-mono);font-size:.8rem;white-space:nowrap;color:var(--text-primary)}
+    .spec-tbl .amateur-col{color:var(--amber);font-weight:500}
+    .spec-tbl tr.row-amateur{background:rgba(245,158,11,.04)}
+    .spec-tbl tr.row-amateur:hover{background:rgba(245,158,11,.07)}
+
+    /* Band sections */
+    .band-section{margin-bottom:2rem;padding:1.25rem 1.5rem;background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);scroll-margin-top:3.5rem}
+    .band-name-row{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem}
+    .band-name{font-family:var(--font-display);font-size:1.35rem;font-weight:400;color:var(--text-primary);margin:0}
+    .band-range{font-family:var(--font-mono);font-size:.8rem;color:var(--cyan);background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:.1rem .45rem}
+    .band-nick{font-style:italic;color:var(--text-muted);font-size:.9rem}
+    .band-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
+    .bd-chip{font-family:var(--font-mono);font-size:.63rem;font-weight:500;padding:.17rem .48rem;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
+    .bd-chip--primary{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.28)}
+    .bd-chip--secondary{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.28)}
+    .bd-chip--warc{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.28)}
+    .bd-chip--lsb{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.28)}
+    .bd-chip--usb{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.28)}
+    .bd-chip--restricted{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.28)}
+    .bd-chip--fullonly{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.3)}
+    .band-char{font-size:.875rem;color:var(--text-muted);font-style:italic;margin-bottom:.85rem;line-height:1.5}
+    .subsection-label{font-family:var(--font-mono);font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin:1rem 0 .4rem}
+
+    /* Band tables (shared base) */
+    .tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:.75rem}
+    .band-table{width:100%;border-collapse:collapse;font-size:.86rem}
+    .band-table thead{background:var(--bg-tertiary)}
+    .band-table th{font-family:var(--font-mono);font-size:.67rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.52rem .85rem;text-align:left;border-bottom:1px solid var(--border-subtle)}
+    .band-table td{padding:.48rem .85rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);vertical-align:top;font-size:.86rem}
+    .band-table tbody tr:last-child td{border-bottom:none}
+    .band-table tbody tr:hover{background:rgba(255,255,255,.02)}
+    .freq-col{font-family:var(--font-mono);font-size:.82rem;color:var(--cyan);white-space:nowrap}
+    .coa-freq{font-family:var(--font-mono);font-size:.88rem;color:var(--amber);font-weight:500;white-space:nowrap}
+
+    /* Mode colour coding */
+    .td-cw{color:var(--cyan);font-weight:500}
+    .td-digital{color:var(--purple);font-weight:500}
+    .td-ssb{color:var(--amber);font-weight:500}
+    .td-all{color:var(--green);font-weight:500}
+    .td-beacon{color:var(--red);font-weight:500}
+    .td-sat{color:var(--blue);font-weight:500}
+    .td-fm{color:#34d399;font-weight:500}
+    .td-am{color:#fbbf24;font-weight:500}
+    .td-data{color:#c084fc;font-weight:500}
+
+    /* Power licence class colours */
+    .pwr-f{color:var(--amber);font-weight:600}
+    .pwr-i{color:var(--cyan);font-weight:600}
+    .pwr-fl{color:var(--purple);font-weight:600}
+    .pwr-na{color:var(--text-muted);font-style:italic;font-size:.82em}
+
+    /* Callouts */
+    .callout{border-radius:var(--radius);padding:.9rem 1.1rem;margin:.85rem 0;border-left:3px solid;font-size:.875rem;line-height:1.65}
+    .callout strong{display:block;font-size:.72rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+    .callout p{color:inherit;margin-bottom:0;font-size:inherit}
+    .callout p+p{margin-top:.4rem}
+    .callout--amber{background:rgba(245,158,11,.07);border-color:var(--amber);color:#ddb876}
+    .callout--amber strong{color:var(--amber)}
+    .callout--cyan{background:rgba(6,182,212,.07);border-color:var(--cyan);color:#7dd3e8}
+    .callout--cyan strong{color:var(--cyan)}
+    .callout--purple{background:rgba(167,139,250,.07);border-color:var(--purple);color:#c4b5f8}
+    .callout--purple strong{color:var(--purple)}
+    .callout--red{background:rgba(248,113,113,.07);border-color:var(--red);color:#fca5a5}
+    .callout--red strong{color:var(--red)}
+
+    /* Quick reference */
+    .qr-section{margin-bottom:2.5rem}
+    .qr-heading{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.65rem;padding-bottom:.4rem;border-bottom:1px solid var(--border-subtle)}
+    .qr-tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border-subtle);margin-bottom:.75rem}
+    .qr-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+    .qr-tbl thead{background:var(--bg-tertiary)}
+    .qr-tbl th{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.55rem .9rem;text-align:left;border-bottom:1px solid var(--border-subtle)}
+    .qr-tbl td{padding:.5rem .9rem;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary);vertical-align:top}
+    .qr-tbl tbody tr:last-child td{border-bottom:none}
+    .qr-tbl tbody tr:hover{background:rgba(255,255,255,.02)}
+    .pm-band{font-family:var(--font-mono);font-weight:500;color:var(--text-primary);white-space:nowrap}
+    .pm-f{color:var(--amber)}
+    .pm-i{color:var(--cyan)}
+    .pm-fl{color:var(--purple)}
+    .pm-na{color:var(--text-muted);font-style:italic;font-size:.85em}
+    .pm-notes{font-size:.78rem;color:var(--text-muted)}
+
+    /* SSB sideband split display */
+    .sideband-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.75rem}
+    .sideband-cell{background:var(--bg-secondary);border-radius:var(--radius);padding:1.1rem;text-align:center;border:2px solid}
+    .sb-lsb{border-color:rgba(6,182,212,.35)}
+    .sb-usb{border-color:rgba(167,139,250,.35)}
+    .sb-label{font-family:var(--font-display);font-size:1.5rem;margin-bottom:.35rem}
+    .sb-lsb .sb-label{color:var(--cyan)}
+    .sb-usb .sb-label{color:var(--purple)}
+    .sb-bands{font-family:var(--font-mono);font-size:.73rem;color:var(--text-muted);line-height:1.9}
+
+    /* FT8 table */
+    .ft8-tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid rgba(167,139,250,.25)}
+    .ft8-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+    .ft8-tbl thead{background:rgba(167,139,250,.08)}
+    .ft8-tbl th{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);padding:.6rem 1rem;text-align:left;border-bottom:1px solid rgba(167,139,250,.2)}
+    .ft8-tbl td{padding:.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text-secondary)}
+    .ft8-tbl tbody tr:last-child td{border-bottom:none}
+    .ft8-tbl tbody tr:hover{background:rgba(167,139,250,.04)}
+    .ft8-tbl .ft8-band{font-family:var(--font-mono);color:var(--amber);font-weight:500}
+    .ft8-tbl .ft8-freq{font-family:var(--font-mono);color:var(--text-primary);font-weight:500}
+
+    /* Sources */
+    .sources-list{list-style:none;padding:0}
+    .sources-list li{padding:.35rem 0 .35rem 1.5rem;position:relative;color:var(--text-secondary);font-size:.9rem;border-bottom:1px solid var(--border-subtle)}
+    .sources-list li:last-child{border-bottom:none}
+    .sources-list li::before{content:'→';position:absolute;left:0;color:var(--purple);font-family:var(--font-mono)}
+    .sources-list a{color:var(--cyan);text-decoration:none}
+    .sources-list a:hover{text-decoration:underline}
+
+    /* Footer */
+    footer{background:var(--bg-secondary);border-top:1px solid var(--border-subtle);padding:2rem 1.5rem}
+    .footer__inner{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center;justify-content:space-between}
+    .footer__meta{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted)}
+    .footer__meta span{display:block;margin-bottom:.2rem}
+    .footer__links{display:flex;gap:.75rem;flex-wrap:wrap}
+    .footer__links a{font-size:.82rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-mono);padding:.35rem .75rem;border:1px solid var(--border-subtle);border-radius:4px;transition:color .15s,border-color .15s}
+    .footer__links a:hover{color:var(--purple);border-color:rgba(167,139,250,.4)}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .hero{padding:2.5rem 1rem 2rem}
+      main{padding:2rem 1rem 3rem}
+      .band-section{padding:1rem}
+      .sideband-grid{grid-template-columns:1fr}
+      .spec-tbl td:nth-child(2),.spec-tbl th:nth-child(2){display:none}
+      .toc__bands{grid-template-columns:repeat(auto-fill,minmax(62px,1fr))}
+    }
+    @media(max-width:360px){.hero h1{font-size:1.5rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#progress-bar{transition:none}}
+  </style>
+</head>
+<body>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero__inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">RF-Hub</a>
+      <span class="breadcrumb__sep">›</span>
+      <span>Sideband</span>
+      <span class="breadcrumb__sep">›</span>
+      <span>UK Spectrum &amp; Band Plan</span>
+    </nav>
+    <h1>UK Spectrum Allocation &amp; Amateur Band Plan</h1>
+    <p class="hero__subtitle">From 160 Metres to 23 Centimetres — who uses what, and where amateur radio fits in</p>
+    <div class="tag-row">
+      <span class="tag-chip tag-chip--level" title="Foundation">F</span>
+      <span class="tag-chip tag-chip--level" title="Intermediate">I</span>
+      <span class="tag-chip tag-chip--level" title="Full licence">FL</span>
+      <span class="tag-chip tag-chip--rsgb">RSGB 1A1</span>
+      <span class="tag-chip tag-chip--rsgb">1B1</span>
+      <span class="tag-chip tag-chip--rsgb">1C1</span>
+      <span class="tag-chip tag-chip--rsgb">8A1</span>
+    </div>
+    <div class="hero__meta">
+      <span>Series: Sideband — Topic Snippets for RF-Hub</span>
+      <span>Cross-refs:
+        <a href="operating-procedures.html">Operating Procedures</a> ·
+        <a href="digital-modes.html">Digital Modes</a> ·
+        <a href="q-codes.html">Q-Codes</a>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+  <!-- INTRO -->
+  <section class="chapter">
+    <p class="chapter-intro">The radio spectrum from HF through UHF is shared between dozens of services — broadcast, maritime, aviation, military, emergency, and amateur. Understanding who uses what, and where amateur radio fits in, is essential knowledge for your licence exam and for operating without causing interference.</p>
+    <p>This page covers two things: <strong>Spectrum Allocation</strong> — the big picture of who uses what from 1.8 MHz to 1.3 GHz, and <strong>Amateur Band Plans</strong> — the detailed RSGB band plans for every amateur band, including modes, power limits, and centres of activity.</p>
+  </section>
+
+  <!-- IMPORTANT NOTES -->
+  <section class="chapter" id="important-notes">
+    <h2>Important Notes Before You Start</h2>
+
+    <p><strong>Post-February 2024 Licence Changes:</strong> Ofcom significantly updated UK amateur radio licence conditions on 21 February 2024. The power limits shown here reflect the <strong>current</strong> post-2024 figures:</p>
+
+    <div class="intro-tbl-wrap">
+      <table class="intro-tbl">
+        <thead>
+          <tr><th>Licence Class</th><th>Power Limit</th><th>Callsign Prefix</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pwr-f">Foundation</td>
+            <td><strong>25 W PEP</strong></td>
+            <td class="mono-col">M7</td>
+          </tr>
+          <tr>
+            <td class="pwr-i">Intermediate</td>
+            <td><strong>100 W PEP</strong></td>
+            <td class="mono-col">2E0, M8, M9</td>
+          </tr>
+          <tr>
+            <td class="pwr-fl">Full</td>
+            <td><strong>1,000 W PEP</strong> (primary bands)</td>
+            <td class="mono-col">M0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--amber">
+      <strong>Old vs New Power Limits</strong>
+      <p>If you see older references quoting 10 W Foundation, 50 W Intermediate, or 400 W Full — those were the pre-2024 limits. The exam syllabus was updated from 1 September 2024 to reflect the new figures.</p>
+    </div>
+
+    <div class="callout callout--purple">
+      <strong>Band Plan vs Licence Conditions</strong>
+      <p>The RSGB band plan is a <em>voluntary coordination tool</em> — a gentleman's agreement on how to share each band. Your Ofcom licence (OFW611) sets the <em>legal</em> limits. In practice, everyone follows the band plan because it makes the bands work for everyone.</p>
+    </div>
+
+    <div class="callout callout--cyan">
+      <strong>LSB and USB Convention</strong>
+      <p>Below 10 MHz, SSB stations use <strong>Lower Sideband (LSB)</strong>. Above 10 MHz, SSB stations use <strong>Upper Sideband (USB)</strong>. This is a universal convention, not a regulation — but breaking it means nobody can hear you properly.</p>
+    </div>
+  </section>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc" aria-label="Page navigation">
+    <p class="toc__head">Contents</p>
+    <div class="toc__parts">
+      <a href="#spectrum" class="toc__part-link">Part 1 — Spectrum Allocation</a>
+      <a href="#band-plans" class="toc__part-link">Part 2 — Band Plans</a>
+      <a href="#quick-ref" class="toc__part-link">Part 3 — Quick Reference</a>
+    </div>
+    <p class="toc__sub">Jump to band:</p>
+    <div class="toc__bands">
+      <a href="#band-160m" class="toc__link">160m<span>1.81 MHz</span></a>
+      <a href="#band-80m"  class="toc__link">80m<span>3.5 MHz</span></a>
+      <a href="#band-60m"  class="toc__link">60m<span>5 MHz</span></a>
+      <a href="#band-40m"  class="toc__link">40m<span>7 MHz</span></a>
+      <a href="#band-30m"  class="toc__link">30m<span>10.1 MHz</span></a>
+      <a href="#band-20m"  class="toc__link">20m<span>14 MHz</span></a>
+      <a href="#band-17m"  class="toc__link">17m<span>18 MHz</span></a>
+      <a href="#band-15m"  class="toc__link">15m<span>21 MHz</span></a>
+      <a href="#band-12m"  class="toc__link">12m<span>24.9 MHz</span></a>
+      <a href="#band-10m"  class="toc__link">10m<span>28 MHz</span></a>
+      <a href="#band-6m"   class="toc__link">6m<span>50 MHz</span></a>
+      <a href="#band-4m"   class="toc__link">4m<span>70 MHz</span></a>
+      <a href="#band-2m"   class="toc__link">2m<span>144 MHz</span></a>
+      <a href="#band-70cm" class="toc__link">70cm<span>430 MHz</span></a>
+      <a href="#band-23cm" class="toc__link">23cm<span>1.24 GHz</span></a>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- PART 1: SPECTRUM ALLOCATION -->
+  <section id="spectrum">
+    <h2 class="part-heading">Part 1: UK Spectrum Allocation</h2>
+    <p class="part-sub">The wider picture of spectrum users around the amateur bands. Understanding who your neighbours are explains why certain bands have restrictions — and why staying within your band edges is critical.</p>
+
+    <!-- HF -->
+    <section class="chapter">
+      <h2>HF Spectrum (1.8–30 MHz)</h2>
+      <p>The HF spectrum is heavily shared. Amateur allocations sit between maritime, aviation, broadcast, military, and fixed-service users.</p>
+
+      <div class="spec-tbl-wrap">
+        <table class="spec-tbl">
+          <thead>
+            <tr><th class="freq-col">Frequency Range</th><th>Primary Users</th><th>Amateur Band?</th></tr>
+          </thead>
+          <tbody>
+            <tr class="row-amateur"><td class="freq-col">1.810–2.000 MHz</td><td>Fixed, Mobile, Amateur</td><td class="amateur-col"><strong>160m</strong> — primary 1.810–1.850; secondary above 1.850</td></tr>
+            <tr><td class="freq-col">2.000–2.502 MHz</td><td>Fixed, Mobile, Maritime</td><td>—</td></tr>
+            <tr><td class="freq-col">2.502–2.850 MHz</td><td>Fixed, Mobile, Maritime, Aeronautical</td><td>—</td></tr>
+            <tr><td class="freq-col">2.850–3.500 MHz</td><td>Aeronautical Mobile (HF air traffic)</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">3.500–3.800 MHz</td><td>Amateur (primary), Fixed, Mobile</td><td class="amateur-col"><strong>80m</strong></td></tr>
+            <tr><td class="freq-col">3.800–4.000 MHz</td><td>Fixed, Mobile, Aeronautical</td><td>—</td></tr>
+            <tr><td class="freq-col">4.000–5.060 MHz</td><td>Fixed, Maritime Mobile</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">5.060–5.450 MHz</td><td>Fixed, Mobile</td><td class="amateur-col"><strong>60m</strong> (UK channelised segments, secondary)</td></tr>
+            <tr><td class="freq-col">5.450–7.000 MHz</td><td>Fixed, Mobile, Broadcasting</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">7.000–7.200 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>40m</strong></td></tr>
+            <tr><td class="freq-col">7.200–10.100 MHz</td><td>Fixed, Broadcasting, Maritime, Aeronautical</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">10.100–10.150 MHz</td><td>Fixed (primary), Amateur (secondary)</td><td class="amateur-col"><strong>30m</strong> — CW/digital only</td></tr>
+            <tr><td class="freq-col">10.150–14.000 MHz</td><td>Fixed, Mobile, Broadcasting, Aeronautical</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">14.000–14.350 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>20m</strong></td></tr>
+            <tr><td class="freq-col">14.350–18.068 MHz</td><td>Fixed, Mobile, Broadcasting</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">18.068–18.168 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>17m</strong> (WARC — no contests)</td></tr>
+            <tr><td class="freq-col">18.168–21.000 MHz</td><td>Fixed, Mobile, Broadcasting</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">21.000–21.450 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>15m</strong></td></tr>
+            <tr><td class="freq-col">21.450–24.890 MHz</td><td>Fixed, Mobile, Broadcasting, Aeronautical</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">24.890–24.990 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>12m</strong> (WARC — no contests)</td></tr>
+            <tr><td class="freq-col">24.990–28.000 MHz</td><td>Fixed, Mobile, Land Mobile</td><td>— (CB radio at 27 MHz is just below)</td></tr>
+            <tr class="row-amateur"><td class="freq-col">28.000–29.700 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>10m</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--purple">
+        <strong>What's Around You Matters</strong>
+        <p>Knowing that aeronautical HF sits just below 80m, or that international broadcasters share parts of the HF spectrum, explains why you sometimes hear non-amateur signals — and why staying within your band edges is critical.</p>
+      </div>
+    </section>
+
+    <!-- VHF -->
+    <section class="chapter">
+      <h2>VHF Spectrum (30–300 MHz)</h2>
+      <div class="spec-tbl-wrap">
+        <table class="spec-tbl">
+          <thead>
+            <tr><th class="freq-col">Frequency Range</th><th>Primary Users</th><th>Amateur Band?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="freq-col">30–50 MHz</td><td>Military, TETRA, Fixed Links</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">50–52 MHz</td><td>Amateur</td><td class="amateur-col"><strong>6m</strong> — primary 50–51; secondary 51–52</td></tr>
+            <tr><td class="freq-col">52–68 MHz</td><td>Fixed, Mobile (old Band I TV cleared)</td><td>—</td></tr>
+            <tr><td class="freq-col">68–70 MHz</td><td>Fixed, Mobile, Military</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">70.0–70.5 MHz</td><td>Amateur (secondary)</td><td class="amateur-col"><strong>4m</strong> — UK/Ireland only; not widely available in Europe</td></tr>
+            <tr><td class="freq-col">70.5–87.5 MHz</td><td>Fixed, Mobile, Military</td><td>—</td></tr>
+            <tr><td class="freq-col">87.5–108 MHz</td><td>FM Broadcasting (Band II)</td><td>—</td></tr>
+            <tr><td class="freq-col">108–118 MHz</td><td>Aeronautical Radionavigation (VOR, ILS)</td><td>—</td></tr>
+            <tr><td class="freq-col">118–137 MHz</td><td>Aeronautical Mobile (air traffic control, AM voice)</td><td>—</td></tr>
+            <tr><td class="freq-col">137–144 MHz</td><td>Meteorological Satellites, Space Operations</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">144–146 MHz</td><td>Amateur (primary)</td><td class="amateur-col"><strong>2m</strong></td></tr>
+            <tr><td class="freq-col">146–156 MHz</td><td>Fixed, Mobile, Emergency Services</td><td>—</td></tr>
+            <tr><td class="freq-col">156–174 MHz</td><td>Maritime Mobile (VHF marine; Ch 16 = 156.800 MHz distress)</td><td>—</td></tr>
+            <tr><td class="freq-col">174–230 MHz</td><td>DAB Digital Radio Broadcasting (Band III)</td><td>—</td></tr>
+            <tr><td class="freq-col">230–300 MHz</td><td>Military, Fixed, Mobile</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- UHF -->
+    <section class="chapter">
+      <h2>UHF Spectrum (300 MHz–1.3 GHz)</h2>
+      <div class="spec-tbl-wrap">
+        <table class="spec-tbl">
+          <thead>
+            <tr><th class="freq-col">Frequency Range</th><th>Primary Users</th><th>Amateur Band?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="freq-col">300–380 MHz</td><td>Military, Fixed, Mobile</td><td>—</td></tr>
+            <tr><td class="freq-col">380–400 MHz</td><td>TETRA Emergency Services (police, fire, ambulance)</td><td>—</td></tr>
+            <tr><td class="freq-col">400–430 MHz</td><td>Fixed, Mobile, PMR, Paging</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">430–440 MHz</td><td>Radiolocation (primary), Amateur (secondary)</td><td class="amateur-col"><strong>70cm</strong> — London restriction on 431–432 MHz</td></tr>
+            <tr><td class="freq-col">440–470 MHz</td><td>PMR446 (446.0–446.2 MHz unlicensed), Professional PMR</td><td>—</td></tr>
+            <tr><td class="freq-col">470–694 MHz</td><td>UHF Television (Freeview DVB-T)</td><td>—</td></tr>
+            <tr><td class="freq-col">694–960 MHz</td><td>4G/5G Mobile Broadband, ISM (868 MHz)</td><td>—</td></tr>
+            <tr><td class="freq-col">960–1215 MHz</td><td>Aeronautical Radionavigation (DME, ADS-B at 1090 MHz)</td><td>—</td></tr>
+            <tr><td class="freq-col">1215–1300 MHz</td><td>Radiolocation (primary; L-band radar)</td><td>—</td></tr>
+            <tr class="row-amateur"><td class="freq-col">1240–1325 MHz</td><td>Radiolocation (primary), Amateur (secondary)</td><td class="amateur-col"><strong>23cm</strong> — Intermediate/Full only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- PART 2: BAND PLANS -->
+  <section id="band-plans">
+    <h2 class="part-heading">Part 2: Amateur Band Plans — Band by Band</h2>
+    <p class="part-sub">Each band section shows the full RSGB band plan with mode segments, power limits, restrictions, and centres of activity. <strong>Centres of Activity (CoA)</strong> are specific frequencies where operators gather for a particular mode — tune there first to find activity.</p>
+
+    <!-- 160m -->
+    <section class="band-section" id="band-160m">
+      <div class="band-name-row">
+        <h3 class="band-name">160 Metres</h3>
+        <code class="band-range">1.810–2.000 MHz</code>
+        <span class="band-nick">Top Band</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary 1.810–1.850</span>
+        <span class="bd-chip bd-chip--secondary">Secondary above 1.850</span>
+        <span class="bd-chip bd-chip--lsb">LSB</span>
+      </div>
+      <p class="band-char">Challenging propagation, mainly night-time; regional and short-skip DX</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>1.810–1.850 MHz (Primary)</th><th>1.850–2.000 MHz (Secondary)</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td><td>32 W max</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td><td>32 W max</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>400 W</td><td>32 W max</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">1.810–1.838 MHz</td><td class="td-cw">CW</td><td>1.810–1.830: non-interference to stations outside UK</td></tr>
+            <tr><td class="freq-col">1.838–1.843 MHz</td><td class="td-digital">Digital / Narrowband</td><td>PSK, RTTY, data modes (500 Hz max bandwidth)</td></tr>
+            <tr><td class="freq-col">1.843–2.000 MHz</td><td class="td-ssb">All modes (SSB dominant)</td><td>LSB; 2.7 kHz max bandwidth</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">1.836 MHz</td><td>WSPR</td></tr>
+            <tr><td class="coa-freq">1.840 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">1.843 MHz</td><td>SSB calling (lowest LSB dial setting)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--amber">
+        <strong>Why 32 W Above 1.850?</strong>
+        <p>The upper segment is a secondary allocation — amateurs must not cause interference to primary users. All licence classes are capped at 32 W regardless.</p>
+      </div>
+    </section>
+
+    <!-- 80m -->
+    <section class="band-section" id="band-80m">
+      <div class="band-name-row">
+        <h3 class="band-name">80 Metres</h3>
+        <code class="band-range">3.500–3.800 MHz</code>
+        <span class="band-nick">Eighty</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary (Region 1)</span>
+        <span class="bd-chip bd-chip--lsb">LSB</span>
+      </div>
+      <p class="band-char">Busy band; local nets day and night, DX at night; high QRM</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">3.500–3.510 MHz</td><td class="td-cw">CW</td><td>DX window — intercontinental only</td></tr>
+            <tr><td class="freq-col">3.510–3.560 MHz</td><td class="td-cw">CW</td><td>3.555: QRS (slow CW); 3.560: QRP CW</td></tr>
+            <tr><td class="freq-col">3.560–3.570 MHz</td><td class="td-cw">CW</td><td>Contest-free</td></tr>
+            <tr><td class="freq-col">3.570–3.600 MHz</td><td class="td-digital">Digital / Narrowband</td><td>RTTY, PSK, FT8, FT4</td></tr>
+            <tr><td class="freq-col">3.600–3.650 MHz</td><td class="td-all">All modes / SSB</td><td>3.630: digital voice</td></tr>
+            <tr><td class="freq-col">3.650–3.700 MHz</td><td class="td-ssb">SSB</td><td>Contest-free</td></tr>
+            <tr><td class="freq-col">3.700–3.800 MHz</td><td class="td-ssb">SSB</td><td>3.775–3.800: DX window</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">3.555 MHz</td><td>QRS (slow CW for learners)</td></tr>
+            <tr><td class="coa-freq">3.560 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">3.573 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">3.603 MHz</td><td>SSB (lowest LSB dial)</td></tr>
+            <tr><td class="coa-freq">3.630 MHz</td><td>Digital voice</td></tr>
+            <tr><td class="coa-freq">3.760 MHz</td><td>Region 1 emergency</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 60m -->
+    <section class="band-section" id="band-60m">
+      <div class="band-name-row">
+        <h3 class="band-name">60 Metres</h3>
+        <code class="band-range">5 MHz (UK Channelised)</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--secondary">Secondary — UK specific</span>
+        <span class="bd-chip bd-chip--fullonly">Full licence ONLY</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+        <span class="bd-chip bd-chip--restricted">No contests</span>
+      </div>
+      <p class="band-char">Unique propagation combining ground wave and sky wave; excellent for UK-wide coverage</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td class="pwr-na">NOT PERMITTED</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td class="pwr-na">NOT PERMITTED</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>100 W (200 W EIRP max)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--red">
+        <strong>Full Licence ONLY + Additional Restrictions</strong>
+        <p>No mobile operation. No contests. The UK has its own channelised allocation — it did NOT adopt the WRC-15 worldwide 60m band.</p>
+      </div>
+      <h4 class="subsection-label">UK Channels (Selected Key Segments)</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Segment (kHz)</th><th>Width</th><th>Usage</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">5258.5–5264.0</td><td>5.5 kHz</td><td>CW; QRP ~5262 kHz</td></tr>
+            <tr><td class="freq-col">5276.0–5284.0</td><td>8 kHz</td><td>SSB (5278.5 kHz USB); emergency comms</td></tr>
+            <tr><td class="freq-col">5298.0–5307.0</td><td>9 kHz</td><td>All modes; USB 5298.5, 5301, 5304 kHz</td></tr>
+            <tr><td class="freq-col">5313.0–5323.0</td><td>10 kHz</td><td>All modes; AM 5317 kHz</td></tr>
+            <tr><td class="freq-col">5354.0–5358.0</td><td>4 kHz</td><td>USB 5354 kHz</td></tr>
+            <tr><td class="freq-col">5362.0–5374.5</td><td>12.5 kHz</td><td>USB 5363, 5371.5 kHz; digital 5366 kHz</td></tr>
+            <tr><td class="freq-col">5395.0–5401.5</td><td>6.5 kHz</td><td>USB 5395, 5398.5 kHz</td></tr>
+            <tr><td class="freq-col">5403.5–5406.5</td><td>3 kHz</td><td>USB 5403.5 kHz</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 40m -->
+    <section class="band-section" id="band-40m">
+      <div class="band-name-row">
+        <h3 class="band-name">40 Metres</h3>
+        <code class="band-range">7.000–7.200 MHz</code>
+        <span class="band-nick">Forty</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary (Region 1)</span>
+        <span class="bd-chip bd-chip--lsb">LSB</span>
+      </div>
+      <p class="band-char">The workhorse band; excellent day and night; DX at night, regional daytime</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">7.000–7.040 MHz</td><td class="td-cw">CW</td><td>7.030: QRP CW</td></tr>
+            <tr><td class="freq-col">7.040–7.050 MHz</td><td class="td-digital">Digital / Narrowband</td><td>RTTY, PSK, FT4, FT8</td></tr>
+            <tr><td class="freq-col">7.050–7.060 MHz</td><td class="td-all">All modes / Digital</td><td>Unattended data stations permitted</td></tr>
+            <tr><td class="freq-col">7.060–7.100 MHz</td><td class="td-all">All modes / SSB</td><td>7.090: SSB QRP</td></tr>
+            <tr><td class="freq-col">7.100–7.130 MHz</td><td class="td-ssb">SSB</td><td>Contest-free; 7.110: Region 1 emergency</td></tr>
+            <tr><td class="freq-col">7.130–7.200 MHz</td><td class="td-ssb">SSB</td><td>Contest preferred segment</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">7.030 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">7.053 MHz</td><td>Lowest LSB dial for voice</td></tr>
+            <tr><td class="coa-freq">7.070 MHz</td><td>Digital voice</td></tr>
+            <tr><td class="coa-freq">7.074 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">7.090 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">7.110 MHz</td><td>Region 1 emergency</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 30m -->
+    <section class="band-section" id="band-30m">
+      <div class="band-name-row">
+        <h3 class="band-name">30 Metres</h3>
+        <code class="band-range">10.100–10.150 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--secondary">Secondary (amateur secondary to fixed)</span>
+        <span class="bd-chip bd-chip--warc">WARC — no contests</span>
+        <span class="bd-chip bd-chip--restricted">No SSB</span>
+      </div>
+      <p class="band-char">Quiet, narrow band; excellent propagation; CW and digital only</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>150 W max</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--red">
+        <strong>Key Restrictions</strong>
+        <p>CW and narrow-bandwidth digital modes ONLY. No SSB (except life-safety emergencies). No contests. No bulletins. This is a WARC band. The 150 W Full limit reflects the secondary allocation.</p>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">10.100–10.130 MHz</td><td class="td-cw">CW</td><td>10.106: DX; 10.116: QRP</td></tr>
+            <tr><td class="freq-col">10.130–10.150 MHz</td><td class="td-digital">Digital / Narrowband</td><td>FT8, WSPR, PSK</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">10.106 MHz</td><td>CW DX</td></tr>
+            <tr><td class="coa-freq">10.116 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">10.136 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">10.140 MHz</td><td>WSPR</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 20m -->
+    <section class="band-section" id="band-20m">
+      <div class="band-name-row">
+        <h3 class="band-name">20 Metres</h3>
+        <code class="band-range">14.000–14.350 MHz</code>
+        <span class="band-nick">Twenty</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">The DX band; worldwide propagation daytime; the busiest HF band</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">14.000–14.060 MHz</td><td class="td-cw">CW</td><td>14.055: QRS; 14.060: QRP</td></tr>
+            <tr><td class="freq-col">14.060–14.070 MHz</td><td class="td-cw">CW</td><td>Contest-free</td></tr>
+            <tr><td class="freq-col">14.070–14.099 MHz</td><td class="td-digital">Digital / Narrowband</td><td>FT8, FT4, PSK, RTTY</td></tr>
+            <tr><td class="freq-col">14.099–14.101 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>International Beacon Project — listen only, never transmit</td></tr>
+            <tr><td class="freq-col">14.101–14.125 MHz</td><td class="td-all">All modes / Digital</td><td>Unattended data stations permitted</td></tr>
+            <tr><td class="freq-col">14.125–14.300 MHz</td><td class="td-ssb">SSB</td><td>14.230: SSTV; 14.285: SSB QRP</td></tr>
+            <tr><td class="freq-col">14.300–14.350 MHz</td><td class="td-ssb">SSB</td><td>Contest-free; 14.300: maritime mobile net</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">14.055 MHz</td><td>QRS (slow CW)</td></tr>
+            <tr><td class="coa-freq">14.060 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">14.074 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">14.076 MHz</td><td>FT4</td></tr>
+            <tr><td class="coa-freq">14.130 MHz</td><td>Digital voice</td></tr>
+            <tr><td class="coa-freq">14.230 MHz</td><td>SSTV</td></tr>
+            <tr><td class="coa-freq">14.285 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">14.300 MHz</td><td>Maritime mobile net</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 17m -->
+    <section class="band-section" id="band-17m">
+      <div class="band-name-row">
+        <h3 class="band-name">17 Metres</h3>
+        <code class="band-range">18.068–18.168 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--warc">WARC — no contests</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">Good DX band when open; narrow (100 kHz); quieter than 20m</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">18.068–18.095 MHz</td><td class="td-cw">CW</td><td>18.086: QRP</td></tr>
+            <tr><td class="freq-col">18.095–18.109 MHz</td><td class="td-digital">Digital / Narrowband</td><td>Data modes</td></tr>
+            <tr><td class="freq-col">18.109–18.111 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>IBP — do not transmit</td></tr>
+            <tr><td class="freq-col">18.111–18.168 MHz</td><td class="td-all">All modes / SSB</td><td>18.130: SSB QRP; 18.150: digital voice</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">18.086 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">18.100 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">18.130 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">18.150 MHz</td><td>Digital voice</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 15m -->
+    <section class="band-section" id="band-15m">
+      <div class="band-name-row">
+        <h3 class="band-name">15 Metres</h3>
+        <code class="band-range">21.000–21.450 MHz</code>
+        <span class="band-nick">Fifteen</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">Excellent DX during high solar activity; quiet during solar minimum</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">21.000–21.070 MHz</td><td class="td-cw">CW</td><td>21.055: QRS; 21.060: QRP</td></tr>
+            <tr><td class="freq-col">21.070–21.110 MHz</td><td class="td-digital">Digital / Narrowband</td><td>FT8, FT4, PSK, RTTY</td></tr>
+            <tr><td class="freq-col">21.110–21.120 MHz</td><td class="td-data">Digital (Packet)</td><td>AX.25 packet radio</td></tr>
+            <tr><td class="freq-col">21.120–21.149 MHz</td><td class="td-cw">CW</td><td>Upper CW segment</td></tr>
+            <tr><td class="freq-col">21.149–21.151 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>IBP — do not transmit</td></tr>
+            <tr><td class="freq-col">21.151–21.450 MHz</td><td class="td-all">All modes / SSB</td><td>21.180: digital voice; 21.285: SSB QRP; 21.340: SSTV</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">21.055 MHz</td><td>QRS (slow CW)</td></tr>
+            <tr><td class="coa-freq">21.060 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">21.074 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">21.076 MHz</td><td>FT4</td></tr>
+            <tr><td class="coa-freq">21.180 MHz</td><td>Digital voice</td></tr>
+            <tr><td class="coa-freq">21.285 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">21.340 MHz</td><td>SSTV</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12m -->
+    <section class="band-section" id="band-12m">
+      <div class="band-name-row">
+        <h3 class="band-name">12 Metres</h3>
+        <code class="band-range">24.890–24.990 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--warc">WARC — no contests</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">Narrow (100 kHz); best during high solar activity; very quiet otherwise</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">24.890–24.915 MHz</td><td class="td-cw">CW</td><td>24.906: QRP</td></tr>
+            <tr><td class="freq-col">24.915–24.929 MHz</td><td class="td-digital">Digital / Narrowband</td><td>Data modes</td></tr>
+            <tr><td class="freq-col">24.929–24.931 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>IBP — do not transmit</td></tr>
+            <tr><td class="freq-col">24.931–24.990 MHz</td><td class="td-all">All modes / SSB</td><td>24.950: SSB QRP; 24.960: digital voice</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">24.906 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">24.915 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">24.950 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">24.960 MHz</td><td>Digital voice</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 10m -->
+    <section class="band-section" id="band-10m">
+      <div class="band-name-row">
+        <h3 class="band-name">10 Metres</h3>
+        <code class="band-range">28.000–29.700 MHz</code>
+        <span class="band-nick">Ten</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">Wide band (1.7 MHz); worldwide DX during high solar activity; local FM repeaters at top end</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">28.000–28.070 MHz</td><td class="td-cw">CW</td><td>28.055: QRS; 28.060: QRP</td></tr>
+            <tr><td class="freq-col">28.070–28.190 MHz</td><td class="td-digital">Digital / Narrowband</td><td>FT8, WSPR, PSK, RTTY</td></tr>
+            <tr><td class="freq-col">28.190–28.225 MHz</td><td class="td-beacon">BEACONS</td><td>IBP regional and coordinated beacons</td></tr>
+            <tr><td class="freq-col">28.225–28.300 MHz</td><td class="td-beacon">Beacons (personal)</td><td>Uncoordinated personal beacons</td></tr>
+            <tr><td class="freq-col">28.300–29.000 MHz</td><td class="td-all">All modes / SSB</td><td>28.330: digital voice; 28.360: SSB QRP; 28.400: SSB calling</td></tr>
+            <tr><td class="freq-col">29.000–29.100 MHz</td><td class="td-am">AM</td><td>AM telephony (6 kHz max bandwidth)</td></tr>
+            <tr><td class="freq-col">29.100–29.200 MHz</td><td class="td-fm">FM simplex</td><td>10 kHz channel spacing</td></tr>
+            <tr><td class="freq-col">29.200–29.300 MHz</td><td class="td-all">All modes</td><td>Wideband digital experiments</td></tr>
+            <tr><td class="freq-col">29.300–29.510 MHz</td><td class="td-sat">Satellite downlinks</td><td>Amateur satellite use</td></tr>
+            <tr><td class="freq-col">29.510–29.700 MHz</td><td class="td-fm">FM repeaters</td><td>29.600: FM calling; repeater outputs −600 kHz shift</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">28.055 MHz</td><td>QRS (slow CW)</td></tr>
+            <tr><td class="coa-freq">28.060 MHz</td><td>QRP CW</td></tr>
+            <tr><td class="coa-freq">28.074 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">28.180 MHz</td><td>WSPR</td></tr>
+            <tr><td class="coa-freq">28.330 MHz</td><td>Digital voice</td></tr>
+            <tr><td class="coa-freq">28.360 MHz</td><td>SSB QRP</td></tr>
+            <tr><td class="coa-freq">28.400 MHz</td><td>SSB calling</td></tr>
+            <tr><td class="coa-freq">29.600 MHz</td><td>FM calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6m -->
+    <section class="band-section" id="band-6m">
+      <div class="band-name-row">
+        <h3 class="band-name">6 Metres</h3>
+        <code class="band-range">50.000–52.000 MHz</code>
+        <span class="band-nick">The Magic Band</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary 50–51 MHz</span>
+        <span class="bd-chip bd-chip--secondary">Secondary 51–52 MHz</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+      </div>
+      <p class="band-char">Sporadic-E propagation gives surprise DX openings; tropospheric ducting; meteor scatter</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>50–51 MHz (Primary)</th><th>51–52 MHz (Secondary)</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>~400 W</td><td>100 W max</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">50.000–50.100 MHz</td><td class="td-cw">CW / Beacons</td><td>50.090: CW calling</td></tr>
+            <tr><td class="freq-col">50.100–50.130 MHz</td><td class="td-ssb">SSB (DX window)</td><td><strong>Intercontinental only</strong> — do not use for local QSOs</td></tr>
+            <tr><td class="freq-col">50.110 MHz</td><td class="td-ssb">SSB DX calling</td><td>Establish contact then QSY</td></tr>
+            <tr><td class="freq-col">50.130–50.300 MHz</td><td class="td-ssb">Narrowband / SSB</td><td>50.200: UK/EU SSB calling</td></tr>
+            <tr><td class="freq-col">50.300–50.500 MHz</td><td class="td-all">All modes / Digital</td><td>FT8, PSK, EME, meteor scatter</td></tr>
+            <tr><td class="freq-col">50.500–51.000 MHz</td><td class="td-all">All modes</td><td>Voice, SSTV, APRS</td></tr>
+            <tr><td class="freq-col">51.210–51.390 MHz</td><td class="td-fm">FM repeater inputs</td><td>10 kHz spacing</td></tr>
+            <tr><td class="freq-col">51.410–51.590 MHz</td><td class="td-fm">FM simplex</td><td>51.510: FM calling</td></tr>
+            <tr><td class="freq-col">51.610–51.790 MHz</td><td class="td-fm">FM repeater outputs</td><td>500 kHz below inputs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">50.090 MHz</td><td>CW calling</td></tr>
+            <tr><td class="coa-freq">50.110 MHz</td><td>SSB DX calling (international)</td></tr>
+            <tr><td class="coa-freq">50.200 MHz</td><td>SSB calling (UK/Europe)</td></tr>
+            <tr><td class="coa-freq">50.313 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">51.510 MHz</td><td>FM calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4m -->
+    <section class="band-section" id="band-4m">
+      <div class="band-name-row">
+        <h3 class="band-name">4 Metres</h3>
+        <code class="band-range">70.000–70.500 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--secondary">Secondary — UK/Ireland only</span>
+        <span class="bd-chip bd-chip--usb">USB</span>
+        <span class="bd-chip bd-chip--restricted">Full cap 160 W</span>
+      </div>
+      <p class="band-char">Similar propagation to 6m but rarer openings; growing interest; not widely available in Europe</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>160 W max (band-specific restriction)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">70.000–70.090 MHz</td><td class="td-beacon">Propagation beacons only</td><td>No QSOs</td></tr>
+            <tr><td class="freq-col">70.090–70.100 MHz</td><td class="td-beacon">Personal beacons</td><td>Low-power uncoordinated</td></tr>
+            <tr><td class="freq-col">70.100–70.250 MHz</td><td class="td-all">CW / SSB / Digital</td><td>70.200: SSB activity centre</td></tr>
+            <tr><td class="freq-col">70.250–70.294 MHz</td><td class="td-all">All modes</td><td>70.260: AM calling</td></tr>
+            <tr><td class="freq-col">70.294–70.500 MHz</td><td class="td-fm">FM / Digital Voice</td><td>12.5 kHz channels; 70.450: FM calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">70.185 MHz</td><td>Cross-band</td></tr>
+            <tr><td class="coa-freq">70.200 MHz</td><td>SSB primary activity</td></tr>
+            <tr><td class="coa-freq">70.260 MHz</td><td>AM calling</td></tr>
+            <tr><td class="coa-freq">70.450 MHz</td><td>FM calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2m -->
+    <section class="band-section" id="band-2m">
+      <div class="band-name-row">
+        <h3 class="band-name">2 Metres</h3>
+        <code class="band-range">144.000–146.000 MHz</code>
+        <span class="band-nick">Two</span>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--primary">Primary</span>
+        <span class="bd-chip bd-chip--usb">USB (for SSB)</span>
+      </div>
+      <p class="band-char">The busiest VHF band; local FM, repeaters, DX via tropo/meteor scatter/EME; satellites; APRS</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">144.000–144.025 MHz</td><td class="td-sat">Satellite</td><td>Satellite downlinks</td></tr>
+            <tr><td class="freq-col">144.025–144.100 MHz</td><td class="td-cw">CW</td><td>EME lower portion</td></tr>
+            <tr><td class="freq-col">144.100–144.150 MHz</td><td class="td-cw">CW / MGM</td><td>EME, JT65</td></tr>
+            <tr><td class="freq-col">144.150–144.400 MHz</td><td class="td-ssb">SSB / CW / MGM</td><td>144.300: SSB/CW calling (DX); 144.370: meteor scatter</td></tr>
+            <tr><td class="freq-col">144.400–144.500 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>No QSOs, no FM</td></tr>
+            <tr><td class="freq-col">144.500–144.794 MHz</td><td class="td-all">All modes</td><td>144.500: SSTV calling; 144.600: digital data</td></tr>
+            <tr><td class="freq-col">144.794–144.990 MHz</td><td class="td-data">Digital (unattended)</td><td>144.800: APRS; DV gateways, packet</td></tr>
+            <tr><td class="freq-col">144.990–145.194 MHz</td><td class="td-fm">FM repeater inputs</td><td>12.5 kHz spacing</td></tr>
+            <tr><td class="freq-col">145.200–145.594 MHz</td><td class="td-fm">FM simplex</td><td><strong>145.500: FM calling (mobile)</strong></td></tr>
+            <tr><td class="freq-col">145.594–145.794 MHz</td><td class="td-fm">FM repeater outputs</td><td>600 kHz above inputs</td></tr>
+            <tr><td class="freq-col">145.806–146.000 MHz</td><td class="td-sat">Satellite service</td><td>145.800: ISS downlink; 145.825: APRS-sat</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">144.050 MHz</td><td>CW calling</td></tr>
+            <tr><td class="coa-freq">144.174 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">144.300 MHz</td><td>SSB/CW DX calling</td></tr>
+            <tr><td class="coa-freq">144.370 MHz</td><td>Meteor scatter</td></tr>
+            <tr><td class="coa-freq">144.500 MHz</td><td>SSTV calling</td></tr>
+            <tr><td class="coa-freq">144.800 MHz</td><td>APRS (national)</td></tr>
+            <tr><td class="coa-freq">145.500 MHz</td><td>FM calling (mobile)</td></tr>
+            <tr><td class="coa-freq">145.800 MHz</td><td>ISS voice downlink</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 70cm -->
+    <section class="band-section" id="band-70cm">
+      <div class="band-name-row">
+        <h3 class="band-name">70 Centimetres</h3>
+        <code class="band-range">430.000–440.000 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--secondary">Secondary (shared with radiolocation)</span>
+        <span class="bd-chip bd-chip--usb">USB (for SSB)</span>
+        <span class="bd-chip bd-chip--restricted">London restriction</span>
+      </div>
+      <p class="band-char">Local FM repeaters; digital voice; satellite; ATV; EME</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>430–432 MHz</th><th>432–440 MHz</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td>25 W</td><td>25 W</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>40 W ERP</td><td>100 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>40 W ERP</td><td>1,000 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--red">
+        <strong>London Restriction</strong>
+        <p>431–432 MHz is unavailable within a 100 km radius of Charing Cross, London.</p>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">430.000–432.000 MHz</td><td class="td-all">All modes</td><td>Internet voice gateways; repeater outputs (7.6 MHz shift)</td></tr>
+            <tr><td class="freq-col">432.000–432.100 MHz</td><td class="td-cw">CW / MGM</td><td>EME; JT65</td></tr>
+            <tr><td class="freq-col">432.100–432.400 MHz</td><td class="td-ssb">SSB / CW / MGM</td><td>432.200: SSB/CW calling</td></tr>
+            <tr><td class="freq-col">432.400–432.500 MHz</td><td class="td-beacon">BEACONS ONLY</td><td>Propagation and personal beacons</td></tr>
+            <tr><td class="freq-col">432.500–432.994 MHz</td><td class="td-all">All modes</td><td>RTTY, SSTV, AM, fax</td></tr>
+            <tr><td class="freq-col">432.994–433.381 MHz</td><td class="td-fm">FM/DV repeater outputs</td><td>1.6 MHz shift from inputs</td></tr>
+            <tr><td class="freq-col">433.394–433.600 MHz</td><td class="td-fm">FM/DV simplex</td><td><strong>433.500: FM calling</strong></td></tr>
+            <tr><td class="freq-col">433.600–434.600 MHz</td><td class="td-all">All modes</td><td>433.700: emergency priority channel</td></tr>
+            <tr><td class="freq-col">434.594–434.981 MHz</td><td class="td-fm">FM/DV repeater inputs</td><td>1.6 MHz below outputs</td></tr>
+            <tr><td class="freq-col">435.000–438.000 MHz</td><td class="td-sat">Satellite service</td><td>Amateur satellite</td></tr>
+            <tr><td class="freq-col">438.000–440.000 MHz</td><td class="td-all">All modes</td><td>DV calling 438.6125 MHz</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">432.174 MHz</td><td>FT8</td></tr>
+            <tr><td class="coa-freq">432.200 MHz</td><td>SSB/CW calling</td></tr>
+            <tr><td class="coa-freq">433.500 MHz</td><td>FM calling (UK)</td></tr>
+            <tr><td class="coa-freq">433.700 MHz</td><td>Emergency priority</td></tr>
+            <tr><td class="coa-freq">438.6125 MHz</td><td>Digital voice calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 23cm -->
+    <section class="band-section" id="band-23cm">
+      <div class="band-name-row">
+        <h3 class="band-name">23 Centimetres</h3>
+        <code class="band-range">1240–1325 MHz</code>
+      </div>
+      <div class="band-chips">
+        <span class="bd-chip bd-chip--secondary">Secondary (shared with L-band radar)</span>
+        <span class="bd-chip bd-chip--fullonly">Intermediate/Full ONLY</span>
+        <span class="bd-chip bd-chip--usb">USB (for SSB)</span>
+      </div>
+      <p class="band-char">Microwave entry band; ATV; narrowband DX; EME; Foundation not permitted</p>
+      <h4 class="subsection-label">Power Limits</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Class</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td class="pwr-f">Foundation</td><td class="pwr-na">NOT PERMITTED</td></tr>
+            <tr><td class="pwr-i">Intermediate</td><td>50 W</td></tr>
+            <tr><td class="pwr-fl">Full</td><td>400 W</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--red">
+        <strong>Caution — Shared with Radar</strong>
+        <p>This band shares spectrum with L-band civil and military radar (1215–1400 MHz). Amateurs must not cause interference and must accept interference from primary users.</p>
+      </div>
+      <h4 class="subsection-label">Mode Segments</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Modes</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="freq-col">1240.000–1243.000 MHz</td><td class="td-all">All modes / ATV inputs</td><td>Narrowband; beacons; ATV repeater inputs</td></tr>
+            <tr><td class="freq-col">1243.250–1260.000 MHz</td><td class="td-all">ATV / Data</td><td>—</td></tr>
+            <tr><td class="freq-col">1260.000–1270.000 MHz</td><td class="td-sat">Satellite uplinks</td><td>Caution — primary radar 1250–1290 MHz</td></tr>
+            <tr><td class="freq-col">1270.000–1296.000 MHz</td><td class="td-all">All modes / ATV</td><td>Wideband digital</td></tr>
+            <tr><td class="freq-col">1296.000–1296.150 MHz</td><td class="td-cw">CW / Narrowband</td><td>1296.065: EME; 1296.100: SSB/CW calling</td></tr>
+            <tr><td class="freq-col">1296.150–1296.800 MHz</td><td class="td-all">All modes narrowband</td><td>1296.500: FM calling</td></tr>
+            <tr><td class="freq-col">1296.800–1297.000 MHz</td><td class="td-data">Digital (unattended)</td><td>Beacons, APRS</td></tr>
+            <tr><td class="freq-col">1297.000–1297.500 MHz</td><td class="td-fm">FM repeater outputs</td><td>25 kHz spacing</td></tr>
+            <tr><td class="freq-col">1298.000–1298.500 MHz</td><td class="td-fm">FM repeater inputs</td><td>—</td></tr>
+            <tr><td class="freq-col">1298.500–1300.000 MHz</td><td class="td-all">All modes</td><td>—</td></tr>
+            <tr><td class="freq-col">1300.000–1325.000 MHz</td><td class="td-all">ATV repeater outputs</td><td>UK-unique extension</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subsection-label">Centres of Activity</h4>
+      <div class="tbl-wrap">
+        <table class="band-table">
+          <thead><tr><th>Frequency</th><th>Mode</th></tr></thead>
+          <tbody>
+            <tr><td class="coa-freq">1296.065 MHz</td><td>EME</td></tr>
+            <tr><td class="coa-freq">1296.100 MHz</td><td>SSB/CW calling</td></tr>
+            <tr><td class="coa-freq">1296.500 MHz</td><td>FM calling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- PART 3: QUICK REFERENCE -->
+  <section id="quick-ref">
+    <h2 class="part-heading">Part 3: Quick Reference Tables</h2>
+
+    <!-- Power at a glance -->
+    <div class="qr-section">
+      <h3 class="qr-heading">Power Limits at a Glance (Post-February 2024)</h3>
+      <div class="qr-tbl-wrap">
+        <table class="qr-tbl">
+          <thead>
+            <tr><th>Band</th><th class="pm-f">Foundation</th><th class="pm-i">Intermediate</th><th class="pm-fl">Full</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="pm-band">160m (primary)</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">400 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">160m (secondary)</td><td class="pm-f">32 W</td><td class="pm-i">32 W</td><td class="pm-fl">32 W</td><td class="pm-notes">All classes capped</td></tr>
+            <tr><td class="pm-band">80m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">60m</td><td class="pm-na">—</td><td class="pm-na">—</td><td class="pm-fl">100 W</td><td class="pm-notes">Full only</td></tr>
+            <tr><td class="pm-band">40m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">30m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">150 W</td><td class="pm-notes">Secondary; CW/digital only</td></tr>
+            <tr><td class="pm-band">20m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">17m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes">WARC — no contests</td></tr>
+            <tr><td class="pm-band">15m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">12m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes">WARC — no contests</td></tr>
+            <tr><td class="pm-band">10m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">6m (primary)</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">~400 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">6m (secondary)</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">100 W</td><td class="pm-notes">All limited</td></tr>
+            <tr><td class="pm-band">4m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">160 W</td><td class="pm-notes">Band-specific Full limit</td></tr>
+            <tr><td class="pm-band">2m</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">70cm (430–432)</td><td class="pm-f">25 W</td><td class="pm-i">40 W ERP</td><td class="pm-fl">40 W ERP</td><td class="pm-notes">London restriction applies</td></tr>
+            <tr><td class="pm-band">70cm (432–440)</td><td class="pm-f">25 W</td><td class="pm-i">100 W</td><td class="pm-fl">1,000 W</td><td class="pm-notes"></td></tr>
+            <tr><td class="pm-band">23cm</td><td class="pm-na">—</td><td class="pm-i">50 W</td><td class="pm-fl">400 W</td><td class="pm-notes">Intermediate/Full only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SSB Sideband Convention -->
+    <div class="qr-section">
+      <h3 class="qr-heading">SSB Sideband Convention</h3>
+      <div class="sideband-grid">
+        <div class="sideband-cell sb-lsb">
+          <div class="sb-label">LSB</div>
+          <div style="font-size:.78rem;color:var(--cyan);font-family:var(--font-mono);margin-bottom:.5rem">Lower Sideband — below 10 MHz</div>
+          <div class="sb-bands">160m · 80m · 40m</div>
+        </div>
+        <div class="sideband-cell sb-usb">
+          <div class="sb-label">USB</div>
+          <div style="font-size:.78rem;color:var(--purple);font-family:var(--font-mono);margin-bottom:.5rem">Upper Sideband — above 10 MHz</div>
+          <div class="sb-bands">20m · 17m · 15m · 12m · 10m<br>6m · 4m · 2m · 70cm · 23cm</div>
+        </div>
+      </div>
+      <div class="callout callout--purple">
+        <strong>Why?</strong>
+        <p>This is a historical convention from early SSB equipment design. There's no technical reason — it's simply what everyone does. If you transmit on the wrong sideband, your audio will be unintelligible to other stations.</p>
+      </div>
+    </div>
+
+    <!-- Band Restrictions Summary -->
+    <div class="qr-section">
+      <h3 class="qr-heading">Band Restrictions Summary</h3>
+      <div class="qr-tbl-wrap">
+        <table class="qr-tbl">
+          <thead>
+            <tr><th>Band</th><th>Key Restriction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="pm-band">60m</td><td>Full licence only; channelised; no mobile; no contests; 100 W / 200 W EIRP max</td></tr>
+            <tr><td class="pm-band">30m</td><td>CW and narrow digital only — no SSB; no contests; secondary allocation</td></tr>
+            <tr><td class="pm-band">17m, 12m</td><td>WARC bands — no contest activity (IARU agreement)</td></tr>
+            <tr><td class="pm-band">160m &gt;1.850</td><td>Secondary allocation — 32 W max, all licence classes</td></tr>
+            <tr><td class="pm-band">4m</td><td>Full licence capped at 160 W (not 400/1,000 W); secondary allocation</td></tr>
+            <tr><td class="pm-band">70cm 430–432</td><td>40 W ERP max (Int/Full); unavailable within 100 km of Charing Cross, London</td></tr>
+            <tr><td class="pm-band">23cm</td><td>Foundation excluded; secondary; shared with L-band radar</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FT8 Frequencies -->
+    <div class="qr-section">
+      <h3 class="qr-heading">FT8 Frequencies — Every Band</h3>
+      <div class="ft8-tbl-wrap">
+        <table class="ft8-tbl">
+          <thead>
+            <tr><th>Band</th><th>FT8 Centre</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="ft8-band">160m</td><td class="ft8-freq">1.840 MHz</td></tr>
+            <tr><td class="ft8-band">80m</td><td class="ft8-freq">3.573 MHz</td></tr>
+            <tr><td class="ft8-band">60m</td><td class="ft8-freq">5.357 MHz</td></tr>
+            <tr><td class="ft8-band">40m</td><td class="ft8-freq">7.074 MHz</td></tr>
+            <tr><td class="ft8-band">30m</td><td class="ft8-freq">10.136 MHz</td></tr>
+            <tr><td class="ft8-band">20m</td><td class="ft8-freq">14.074 MHz</td></tr>
+            <tr><td class="ft8-band">17m</td><td class="ft8-freq">18.100 MHz</td></tr>
+            <tr><td class="ft8-band">15m</td><td class="ft8-freq">21.074 MHz</td></tr>
+            <tr><td class="ft8-band">12m</td><td class="ft8-freq">24.915 MHz</td></tr>
+            <tr><td class="ft8-band">10m</td><td class="ft8-freq">28.074 MHz</td></tr>
+            <tr><td class="ft8-band">6m</td><td class="ft8-freq">50.313 MHz</td></tr>
+            <tr><td class="ft8-band">2m</td><td class="ft8-freq">144.174 MHz</td></tr>
+            <tr><td class="ft8-band">70cm</td><td class="ft8-freq">432.174 MHz</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SOURCES -->
+  <section class="chapter">
+    <h2>Sources and Further Reading</h2>
+    <div class="callout callout--amber">
+      <strong>Always Check the Current RSGB Band Plan</strong>
+      <p>Band plans are updated each year and frequencies can change. The RSGB website has the definitive current version.</p>
+    </div>
+    <ul class="sources-list">
+      <li><strong>RSGB Band Plans</strong> — updated annually each January/February: <a href="https://rsgb.org/main/operating/band-plans/" target="_blank" rel="noopener">rsgb.org/main/operating/band-plans/</a></li>
+      <li><strong>Ofcom Amateur Radio Licence (OFW611)</strong> — the legal document defining your permitted frequencies and power</li>
+      <li><strong>UK Frequency Allocation Table (UKFAT)</strong> — Ofcom's master list of all UK spectrum users</li>
+      <li><strong>IARU Region 1 Band Plans</strong> — the international framework the RSGB band plan is based on</li>
+    </ul>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer__inner">
+    <div class="footer__meta">
+      <span>Sideband — Topic Snippets for RF-Hub</span>
+      <span>Tags: [F] [I] [FL] · RSGB 1A1, 1B1, 1C1, 8A1</span>
+    </div>
+    <nav class="footer__links" aria-label="Related pages">
+      <a href="q-codes.html">Q-Codes</a>
+      <a href="digital-modes.html">Digital Modes</a>
+      <a href="operating-procedures.html">Operating Procedures</a>
+      <a href="../../index.html">← RF-Hub Home</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var bar=document.getElementById('progress-bar');
+    function update(){
+      var scrolled=window.scrollY;
+      var total=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.width=(total>0?(scrolled/total)*100:0)+'%';
+    }
+    window.addEventListener('scroll',update,{passive:true});
+    update();
+  })();
+</script>
+</body>
+</html>

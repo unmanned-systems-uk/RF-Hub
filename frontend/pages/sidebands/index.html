@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebands — Topic Snippets | RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<style>
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --purple: #a78bfa;
+  --cyan:   #06b6d4;
+  --green:  #4ade80;
+  --border:        rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Sideband cards grid ── */
+.sideband-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sideband-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.sideband-card:hover {
+  border-color: var(--purple);
+  transform: translateY(-2px);
+}
+
+.sideband-card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.sideband-card-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.sideband-card-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.tag--level {
+  color: var(--cyan);
+  border-color: rgba(6,182,212,0.3);
+}
+
+.card-arrow {
+  font-size: 0.85rem;
+  color: var(--purple);
+  font-family: var(--font-mono);
+}
+
+/* ── Intro blurb ── */
+.sidebands-intro {
+  max-width: 700px;
+  margin-bottom: 0.5rem;
+}
+
+.sidebands-intro p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Upcoming card ── */
+.sideband-card--upcoming {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+.sideband-card--upcoming:hover {
+  transform: none;
+  border-color: var(--border);
+}
+
+.upcoming-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  align-self: flex-start;
+}
+
+@media (max-width: 600px) {
+  .sideband-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="./" class="active">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="../blog/understanding-s11.html">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Topic Snippets</div>
+    <h1>Sidebands</h1>
+    <p class="hero-subtitle">Focused deep-dives into RF concepts — each sideband covers one topic in full, from fundamentals to practical application.</p>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+  <div class="sidebands-intro">
+    <p>Sidebands are standalone reference pages — shorter than a full curriculum unit, deeper than a glossary entry. Use them as a quick refresher or as a companion to the <a href="../learning-path.html" style="color:var(--purple);">Learning Path</a>.</p>
+  </div>
+
+  <div class="sideband-grid">
+
+    <!-- 1: Resistance, Reactance & Impedance -->
+    <a href="resistance-reactance-impedance.html" class="sideband-card">
+      <div class="sideband-card-title">Resistance, Reactance &amp; Impedance</div>
+      <div class="sideband-card-desc">Three flavours of opposition to current flow — and why the difference matters when you're trying to match an antenna or interpret a Smith Chart.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 2: S-Parameter Matrix -->
+    <a href="s-parameter-matrix.html" class="sideband-card">
+      <div class="sideband-card-title">S-Parameters — The Four Numbers That Describe Any RF Device</div>
+      <div class="sideband-card-desc">How S11, S21, S12, and S22 map signal flow through a two-port network — and how to read them on a VNA display.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 3: VSWR Bridge -->
+    <a href="vswr-bridge-measurement.html" class="sideband-card">
+      <div class="sideband-card-title">The VSWR Bridge — How Your Analyser Measures Reflections</div>
+      <div class="sideband-card-desc">The bridge circuit that separates incident from reflected power — enabling your VNA or analyser to measure S11 without directional couplers.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 4: S21 Transmission -->
+    <a href="s21-transmission-measurement.html" class="sideband-card">
+      <div class="sideband-card-title">S21 — Measuring What Gets Through</div>
+      <div class="sideband-card-desc">Forward transmission measurement explained — from insertion loss to filter characterisation, and how to set up a two-port S21 sweep.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 5: DUT Characterisation -->
+    <a href="dut-characterisation-workflow.html" class="sideband-card">
+      <div class="sideband-card-title">DUT Characterisation — A Complete Measurement Walkthrough</div>
+      <div class="sideband-card-desc">Step-by-step device-under-test measurement workflow — calibration, connection, capture, and how to interpret what you see.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 6: Digital Modes -->
+    <a href="digital-modes.html" class="sideband-card">
+      <div class="sideband-card-title">Digital Modes — Every Way Your Radio Can Talk Without Your Voice</div>
+      <div class="sideband-card-desc">30+ amateur radio digital modes explained — from RTTY and PSK31 to FT8, APRS, and Winlink. Bandwidth, speed, and use-case at a glance.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+        <span class="tag tag--level">[FL]</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- 7: Q-Codes (upcoming) -->
+    <div class="sideband-card sideband-card--upcoming">
+      <span class="upcoming-badge">Coming soon</span>
+      <div class="sideband-card-title">Q-Codes — The Universal Language of Amateur Radio</div>
+      <div class="sideband-card-desc">Every Q-code in use today — meaning, context, and when to use it on HF, VHF, and digital modes.</div>
+      <div class="sideband-card-tags">
+        <span class="tag tag--level">[F]</span>
+        <span class="tag tag--level">[I]</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub &mdash; Amateur Radio Reference Platform</p>
+  </div>
+</footer>
+
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>
