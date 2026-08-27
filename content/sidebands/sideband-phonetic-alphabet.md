@@ -94,6 +94,50 @@ Every amateur radio operator uses it. Learn it. It's one of the first things you
 
 ---
 
+## Callsign Suffixes
+
+When you operate away from your main station address, you add a suffix to your callsign to indicate your situation. These are **legal requirements** under UK licence conditions — not optional.
+
+| Suffix | Meaning | Example | When to Use |
+|--------|---------|---------|-------------|
+| **/M** | Mobile | M7ABC/M | Operating from a car, on foot, or on a vessel in inland waters |
+| **/P** | Portable | M7ABC/P | Temporary location with no fixed postal address (a field, hilltop, park) |
+| **/A** | Alternative address | M7ABC/A | Operating from a different postal address to your licence address (friend's house, hotel, holiday home) |
+| **/MM** | Maritime Mobile | M0PPP/MM | Operating from a vessel at sea |
+| **/AM** | Aeronautical Mobile | M0PPP/AM | Operating from an aircraft (max 500 mW EIRP, primary bands only) |
+
+> **How to say it:** "Mike Seven Alpha Bravo Charlie stroke Mobile" — the "/" is spoken as "stroke" in the UK, or "slash" or "portable" informally. On CW, the "/" is sent as **−··−·** (dah-dit-dit-dah-dit).
+
+### When Do You Need a Suffix?
+
+| Situation | Suffix Needed? |
+|-----------|---------------|
+| At home (your licence address) | No suffix |
+| In the car, parked or driving | /M |
+| Walking with a handheld | /M |
+| SOTA summit activation | /P |
+| POTA park activation | /P |
+| Operating from a friend's house | /A |
+| Holiday cottage with a postcode | /A |
+| On a canal boat on inland waters | /M |
+| On a yacht at sea | /MM |
+| Your garden or shed (same postal address) | No suffix |
+
+> **2024 update:** Ofcom now allows flexible suffixes in addition to the standard ones. You can append descriptive suffixes like "/Garden" or "/Hilltop" — but the standard suffixes (/M, /P, /A, /MM, /AM) still carry their legal meanings and should be used correctly.
+
+### Regional Secondary Locators
+
+When operating in a different UK nation from your callsign prefix, add the appropriate regional indicator:
+
+| Your Prefix | Operating In | You Become |
+|-------------|-------------|------------|
+| M7ABC (England) | Scotland | MM7ABC/P (or GM7ABC/P — check current Ofcom guidance) |
+| M7ABC (England) | Wales | MW7ABC/P |
+| M7ABC (England) | Northern Ireland | MI7ABC/P |
+| GM0XYZ (Scotland) | England | M0XYZ/A |
+
+---
+
 ## Practice Tips
 
 1. **Start with your own callsign.** Say it out loud using phonetics until it's automatic.
