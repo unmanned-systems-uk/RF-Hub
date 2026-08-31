@@ -383,7 +383,7 @@ void main(){
       ovctx.beginPath();ovctx.moveTo(qx,qy-R-5);ovctx.lineTo(qx,qy+R+5);ovctx.stroke();
       ovctx.shadowBlur=0;
       ovctx.fillStyle='#f59e0b';ovctx.font='bold 11px "IBM Plex Mono",monospace';
-      ovctx.fillText('M0CVO',qx+R+6,qy-3);
+      ovctx.fillText('Feed (158m)',qx+R+6,qy-3);
       ovctx.restore();
     }
 
@@ -399,8 +399,39 @@ void main(){
       ovctx.beginPath();ovctx.moveTo(px2+r2,py2-r2);ovctx.lineTo(px2-r2,py2+r2);ovctx.stroke();
       ovctx.shadowBlur=0;
       ovctx.fillStyle='#06b6d4';ovctx.font='10px "IBM Plex Mono",monospace';
-      ovctx.fillText('Pole',px2+r2+4,py2+3);
+      ovctx.fillText('Pole (167m)',px2+r2+4,py2+3);
       ovctx.restore();
+    }
+
+    // Wire: dashed amber line Feed→Pole
+    if(qp&&pp&&qp[0]>0&&qp[0]<ovcan.width&&pp[0]>0&&pp[0]<ovcan.width){
+      ovctx.save();
+      ovctx.strokeStyle='#f59e0b';ovctx.lineWidth=1.5;
+      ovctx.setLineDash([6,4]);ovctx.shadowColor='#f59e0b';ovctx.shadowBlur=6;
+      ovctx.beginPath();ovctx.moveTo(qp[0],qp[1]);ovctx.lineTo(pp[0],pp[1]);ovctx.stroke();
+      ovctx.restore();
+    }
+
+    // Clearing boundary: 33×33m square around QTH (≈5.5 cells)
+    {
+      const hw=16.5,qwx=CONFIG.qth_col*CELL,qwz=CONFIG.qth_row*CELL;
+      const qwh=[H.dtm,H.dsm,H.chm][curLayer][CONFIG.qth_row*N+CONFIG.qth_col]*vexag;
+      const clr=[
+        project(mvp,qwx-hw,qwh,qwz-hw),
+        project(mvp,qwx+hw,qwh,qwz-hw),
+        project(mvp,qwx+hw,qwh,qwz+hw),
+        project(mvp,qwx-hw,qwh,qwz+hw),
+      ];
+      if(clr.every(c=>c)){
+        ovctx.save();
+        ovctx.strokeStyle='rgba(167,139,250,0.55)';ovctx.lineWidth=1.2;
+        ovctx.setLineDash([4,3]);
+        ovctx.beginPath();
+        ovctx.moveTo(clr[0][0],clr[0][1]);
+        for(let i=1;i<4;i++)ovctx.lineTo(clr[i][0],clr[i][1]);
+        ovctx.closePath();ovctx.stroke();
+        ovctx.restore();
+      }
     }
 
     // North arrow — project world-north direction
