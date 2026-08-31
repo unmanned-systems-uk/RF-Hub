@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>360° Horizon — IO85LO at 64m AGL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e2e8f0;font-family:'IBM Plex Sans',sans-serif;font-weight:300;display:flex;flex-direction:column;min-height:100vh}
+header{padding:9px 18px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:14px;flex-shrink:0}
+header h1{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#a78bfa}
+header .meta{font-size:.72rem;color:#64748b;font-family:'IBM Plex Mono',monospace}
+.wrap{position:relative;width:100%;flex:1}
+#pano{display:block;width:100%;cursor:grab;border-radius:0;touch-action:none;user-select:none}
+#pano:active{cursor:grabbing}
+.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity 1s}
+.hint span{background:rgba(10,14,26,.75);border:1px solid #1e293b;padding:8px 16px;border-radius:20px;font-size:.8rem;color:#94a3b8;letter-spacing:.04em}
+.info{padding:8px 16px;display:flex;gap:20px;font-size:.72rem;color:#64748b;font-family:'IBM Plex Mono',monospace;border-top:1px solid #1e293b;flex-shrink:0}
+.info strong{color:#f59e0b}
+</style>
+</head>
+<body>
+<header>
+  <h1>360° Horizon</h1>
+  <span class="meta">IO85LO &nbsp;·&nbsp; M0CVO/A &nbsp;·&nbsp; 64 m AGL &nbsp;·&nbsp; 28 Aug 2026 &nbsp;·&nbsp; DJI Mini 4 Pro</span>
+</header>
+<div class="wrap">
+  <canvas id="pano"></canvas>
+  <div class="hint" id="hint"><span>Drag to explore the horizon</span></div>
+</div>
+<div class="info">
+  <span>Bearing: <strong id="brg-val">000°</strong></span>
+  <span>Direction: <strong id="dir-val">N</strong></span>
+  <span id="zoom-info">FOV: <strong id="fov-val">90°</strong> &nbsp; scroll to zoom</span>
+</div>
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const CONFIG = {
+  panorama_url: '../assets/images/blog/station-surveys/survey-01/panorama-360.jpg',
+  initial_bearing: 0,    // North
+  fov_degrees: 90,
+  altitude_m: 64,
+  qth_grid: 'IO85LO',
+  annotations: [
+    { bearing: 0,     label: 'Pentland Hills' },
+    { bearing: 27.8,  label: 'Wire axis ↑' },
+    { bearing: 225,   label: 'Open fell' },
+    { bearing: 315,   label: 'Hill country' },
+  ]
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('pano');
+const ctx    = canvas.getContext('2d');
+const hint   = document.getElementById('hint');
+const brgEl  = document.getElementById('brg-val');
+const dirEl  = document.getElementById('dir-val');
+const fovEl  = document.getElementById('fov-val');
+
+let panoImg   = null;
+let panoW     = 0;
+let panoH     = 0;
+let viewH     = 400;   // canvas height in CSS pixels
+let fovDeg    = CONFIG.fov_degrees;
+
+// centreBearing: bearing shown at canvas centre (0–360°)
+let centreBearing = (CONFIG.initial_bearing + 360) % 360;
+
+// Drag / momentum
+let dragging   = false;
+let lastX      = 0;
+let lastT      = 0;
+let velocity   = 0;   // px/ms (not used for bearing, just momentum coasting)
+let hintShown  = true;
+
+// ── Load panorama ─────────────────────────────────────────────────────────────
+function loadPano() {
+  const img = new Image();
+  img.onload = () => {
+    panoImg = img;
+    panoW   = img.naturalWidth;
+    panoH   = img.naturalHeight;
+    resize();
+    draw();
+    // Hint fades after 3s
+    setTimeout(() => { hint.style.opacity = '0'; setTimeout(()=> hint.style.display='none', 1000); }, 3000);
+  };
+  img.onerror = () => {
+    ctx.fillStyle = '#ef4444';
+    ctx.font = '14px monospace';
+    ctx.fillText('Failed to load panorama image', 20, 40);
+  };
+  img.src = CONFIG.panorama_url;
+}
+
+// ── Resize canvas ─────────────────────────────────────────────────────────────
+function resize() {
+  const wrap = canvas.parentElement;
+  const W    = wrap.clientWidth;
+  viewH      = Math.round(Math.min(Math.max(W * 0.42, 220), 480));
+  canvas.width  = W;
+  canvas.height = viewH;
+  if (panoImg) draw();
+}
+window.addEventListener('resize', resize);
+
+// ── Draw frame ────────────────────────────────────────────────────────────────
+function draw() {
+  if (!panoImg) return;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // How many panorama pixels fit in the viewport for the current FOV?
+  const visiblePx = (fovDeg / 360) * panoW;           // e.g. 90/360 * 8000 = 2000
+  const scaleY    = H / panoH;                         // vertical scale to fill canvas
+  const drawW     = visiblePx * scaleY * (H / panoH);  // hmm...
+  // Simpler: scale the panorama so its height = canvas height
+  const scale     = H / panoH;                         // e.g. 400/700 ≈ 0.571
+  const dw        = panoW * scale;                      // scaled pano width (e.g. 4571px)
+  const dh        = H;
+
+  // Panorama pixel position of centreBearing
+  const centreX   = (centreBearing / 360) * panoW;     // px in pano coords
+
+  // In canvas coords: centreX should be at W/2
+  // So the panorama image is drawn with its left edge at:
+  //   left = W/2 - centreX * scale
+  // But we also scale by the FOV zoom:
+  //   displayed pano pixel width at current FOV = visiblePx
+  //   canvas width should equal visiblePx pixels of pano
+  //   so scale_x = W / visiblePx
+  const sx = W / visiblePx;                             // horizontal scale (zoom)
+  const sy = H / panoH;                                 // vertical scale to fill
+  // Use same scale for both to avoid distortion — but panoramas are cylindrical,
+  // so horizontal stretching is expected. We'll scale x independently.
+  const dw2 = panoW * sx;                               // full pano width at this zoom
+  const left = W/2 - centreX * sx;
+
+  // Draw 3 copies for seamless wrap
+  ctx.drawImage(panoImg, left - dw2, 0, dw2, H);
+  ctx.drawImage(panoImg, left,       0, dw2, H);
+  ctx.drawImage(panoImg, left + dw2, 0, dw2, H);
+
+  drawCompass(W, H);
+  drawAnnotations(W, H);
+}
+
+// ── Compass bar ───────────────────────────────────────────────────────────────
+const CARDINALS = {0:'N',22.5:'NNE',45:'NE',67.5:'ENE',90:'E',112.5:'ESE',135:'SE',
+  157.5:'SSE',180:'S',202.5:'SSW',225:'SW',247.5:'WSW',270:'W',292.5:'WNW',
+  315:'NW',337.5:'NNW'};
+
+function nearestCardinal(deg) {
+  const d = ((deg % 360) + 360) % 360;
+  const keys = Object.keys(CARDINALS).map(Number);
+  let best = keys[0], bestDist = 999;
+  for (const k of keys) {
+    const diff = Math.min(Math.abs(d-k), 360-Math.abs(d-k));
+    if (diff < bestDist) { bestDist = diff; best = k; }
+  }
+  return CARDINALS[best];
+}
+
+function drawCompass(W, H) {
+  const barH  = 34;
+  const barY  = H - barH;
+  const ppd   = W / fovDeg;    // canvas pixels per degree
+
+  // Background
+  ctx.fillStyle = 'rgba(10,14,26,0.88)';
+  ctx.fillRect(0, barY, W, barH);
+
+  // Ticks and labels
+  const halfFov = fovDeg / 2 + 5;
+  for (let off = -halfFov; off <= halfFov; off += 0.5) {
+    const bearing = ((centreBearing + off) + 360) % 360;
+    const rounded = Math.round(bearing * 2) / 2;
+    const x = W/2 + off * ppd;
+    if (x < -20 || x > W + 20) continue;
+
+    const is10 = Math.abs(rounded % 10) < 0.3;
+    const is30 = Math.abs(rounded % 30) < 0.3;
+    const isN  = Math.abs(rounded % 360) < 0.3;
+
+    if (!is10) continue;
+    const tickH = isN ? 18 : is30 ? 13 : 8;
+    ctx.fillStyle = isN ? '#f59e0b' : is30 ? '#94a3b8' : '#334155';
+    ctx.fillRect(x - 0.5, barY + 4, 1, tickH);
+
+    if (is30) {
+      ctx.fillStyle = isN ? '#f59e0b' : '#64748b';
+      ctx.font = '10px "IBM Plex Mono",monospace';
+      ctx.textAlign = 'center';
+      const lbl = nearestCardinal(rounded);
+      ctx.fillText(lbl, x, barY + barH - 4);
+    }
+  }
+
+  // Centre bearing indicator (amber line)
+  ctx.fillStyle = '#f59e0b';
+  ctx.fillRect(W/2 - 1, barY, 2, barH - 16);
+  // Triangle pointer
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 5, barY + 2);
+  ctx.lineTo(W/2 + 5, barY + 2);
+  ctx.lineTo(W/2,     barY + 10);
+  ctx.closePath();
+  ctx.fillStyle = '#f59e0b';
+  ctx.fill();
+
+  // Bearing readout top-right
+  const brg = Math.round(((centreBearing % 360) + 360) % 360);
+  const brgStr = brg.toString().padStart(3, '0') + '°';
+  const card   = nearestCardinal(brg);
+  ctx.fillStyle = '#f59e0b';
+  ctx.font = 'bold 12px "IBM Plex Mono",monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText(`${card} ${brgStr}`, W - 10, barY - 6);
+
+  // Update DOM
+  brgEl.textContent = brgStr;
+  dirEl.textContent = card;
+  fovEl.textContent = fovDeg + '°';
+}
+
+// ── Annotations ───────────────────────────────────────────────────────────────
+function drawAnnotations(W, H) {
+  const ppd   = W / fovDeg;
+  const barH  = 34;
+
+  ctx.font = '11px "IBM Plex Mono",monospace';
+  ctx.textAlign = 'center';
+
+  for (const ann of CONFIG.annotations) {
+    const diff = ((ann.bearing - centreBearing) + 540) % 360 - 180; // -180..180
+    if (Math.abs(diff) > fovDeg * 0.55) continue;
+    const x = W/2 + diff * ppd;
+
+    // Fade at edges
+    const edge = fovDeg * 0.4;
+    const alpha = Math.max(0, 1 - Math.max(0, Math.abs(diff) - edge) / (fovDeg * 0.15));
+    if (alpha < 0.05) continue;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    // Vertical tick
+    ctx.strokeStyle = 'rgba(167,139,250,0.7)';
+    ctx.lineWidth   = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, H - barH - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label pill
+    const label = ann.label;
+    const tw    = ctx.measureText(label).width + 12;
+    const ty    = 22;
+    ctx.fillStyle = 'rgba(10,14,26,0.75)';
+    ctx.beginPath();
+    ctx.roundRect(x - tw/2, ty - 12, tw, 18, 3);
+    ctx.fill();
+    ctx.fillStyle = '#a78bfa';
+    ctx.fillText(label, x, ty + 1);
+
+    ctx.restore();
+  }
+}
+
+// ── Drag to pan ───────────────────────────────────────────────────────────────
+function panBy(dx) {
+  const ppd = canvas.width / fovDeg;          // canvas px per degree at current zoom
+  centreBearing = ((centreBearing - dx / ppd) + 3600) % 360;
+  draw();
+}
+
+canvas.addEventListener('mousedown', e => {
+  dragging = true; lastX = e.clientX; lastT = Date.now(); velocity = 0;
+  if (hintShown) { hint.style.opacity='0'; hintShown=false; }
+  e.preventDefault();
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const now = Date.now();
+  const dx  = e.clientX - lastX;
+  velocity  = dx / Math.max(1, now - lastT);
+  lastX     = e.clientX;
+  lastT     = now;
+  panBy(dx);
+});
+window.addEventListener('mouseup', () => { dragging = false; });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+// Touch
+let tLastX = 0, tLastT = 0;
+let tPinch0 = null;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    tLastX = e.touches[0].clientX; tLastT = Date.now(); velocity = 0;
+    if (hintShown) { hint.style.opacity='0'; hintShown=false; }
+  } else if (e.touches.length === 2) {
+    tPinch0 = { d: Math.hypot(e.touches[1].clientX-e.touches[0].clientX,
+                              e.touches[1].clientY-e.touches[0].clientY),
+                fov: fovDeg };
+  }
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    const now = Date.now(), dx = e.touches[0].clientX - tLastX;
+    velocity = dx / Math.max(1, now - tLastT);
+    tLastX = e.touches[0].clientX; tLastT = now;
+    panBy(dx);
+  } else if (e.touches.length === 2 && tPinch0) {
+    const d = Math.hypot(e.touches[1].clientX-e.touches[0].clientX,
+                         e.touches[1].clientY-e.touches[0].clientY);
+    fovDeg = Math.max(30, Math.min(150, tPinch0.fov * (tPinch0.d / d)));
+    draw();
+  }
+}, { passive: false });
+canvas.addEventListener('touchend', () => { tPinch0 = null; });
+
+// Scroll to zoom
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  fovDeg = Math.max(30, Math.min(150, fovDeg * Math.exp(e.deltaY * 0.001)));
+  draw();
+}, { passive: false });
+
+// ── Momentum animation ────────────────────────────────────────────────────────
+function animate() {
+  if (!dragging && Math.abs(velocity) > 0.02) {
+    panBy(velocity * 16);          // ~16ms per frame at 60fps
+    velocity *= 0.92;
+  }
+  requestAnimationFrame(animate);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+resize();
+loadPano();
+animate();
+</script>
+</body>
+</html>
