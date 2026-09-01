@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Station Monitor — RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--bg-card:#111827;--bg-in:#1a2234;--border:#1e293b;
+  --purple:#a78bfa;--amber:#f59e0b;--cyan:#06b6d4;--green:#22c55e;
+  --red:#ef4444;--blue:#3b82f6;--pink:#f472b6;
+  --txt:#e2e8f0;--txt2:#94a3b8;--dim:#64748b;
+}
+body{background:var(--bg);color:var(--txt);font-family:'IBM Plex Sans',sans-serif;font-weight:300;
+  display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+a{color:var(--purple)}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+
+/* ── header ─────────────────────────────────────────────────────────────── */
+header{padding:9px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+  gap:14px;flex-shrink:0;flex-wrap:wrap}
+header h1{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--purple);white-space:nowrap}
+header .meta{font-size:.72rem;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+header .hlinks{margin-left:auto;display:flex;gap:12px;font-size:.76rem}
+header .hlinks a{color:var(--txt2);text-decoration:none}
+header .hlinks a:hover{color:var(--txt)}
+
+/* ── status strip ───────────────────────────────────────────────────────── */
+#status-strip{background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:6px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;font-size:.74rem}
+#status-strip.stale{border-bottom-color:#7f1d1d;background:#160a0a}
+.ss-item{display:flex;gap:5px;align-items:center}
+.ss-label{color:var(--dim)}
+.ss-val{font-family:'IBM Plex Mono',monospace;color:var(--txt)}
+#ss-warn{display:none;color:var(--amber);font-weight:400;margin-left:auto}
+#ss-spinner{display:none;width:10px;height:10px;border:2px solid var(--dim);
+  border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── filter bar ─────────────────────────────────────────────────────────── */
+#filter-bar{background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:6px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.75rem}
+.fb-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.fb-label{color:var(--dim);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;
+  white-space:nowrap;margin-right:2px}
+.fbtn{background:var(--bg-in);border:1px solid var(--border);color:var(--txt2);
+  font-family:'IBM Plex Mono',monospace;font-size:.70rem;padding:3px 8px;border-radius:3px;
+  transition:all .15s;white-space:nowrap}
+.fbtn.on{background:#1e1040;border-color:var(--purple);color:var(--purple)}
+.fbtn:hover:not(.on){border-color:#475569;color:var(--txt)}
+.frange{display:flex;align-items:center;gap:4px}
+.frange input[type=number]{background:var(--bg-in);border:1px solid var(--border);color:var(--txt);
+  font-family:'IBM Plex Mono',monospace;font-size:.70rem;padding:2px 5px;border-radius:3px;
+  width:62px;text-align:right}
+.frange input:focus{border-color:var(--purple);outline:none}
+.frange span{color:var(--dim)}
+#filter-bar .sep{border-left:1px solid var(--border);height:18px;margin:0 4px}
+
+/* ── tabs ───────────────────────────────────────────────────────────────── */
+#tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:var(--txt2);font-family:'IBM Plex Sans',sans-serif;
+  font-size:.80rem;font-weight:400;padding:9px 18px;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:all .15s}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple)}
+.tab:hover:not(.active){color:var(--txt)}
+.tab-badge{display:inline-block;background:var(--bg-in);border-radius:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:.60rem;padding:1px 5px;margin-left:4px;color:var(--dim)}
+
+/* ── panels ─────────────────────────────────────────────────────────────── */
+#panels{flex:1;position:relative;min-height:0}
+.panel{display:none;height:100%;flex-direction:column}
+.panel.active{display:flex}
+
+/* map panel */
+#map-wrap{flex:1;position:relative;min-height:400px}
+#leaflet-map{position:absolute;inset:0}
+
+/* rose panel */
+#rose-wrap{flex:1;display:flex;flex-wrap:wrap;gap:0;min-height:0;overflow:auto}
+#rose-canvas-wrap{flex:1;min-width:240px;display:flex;align-items:center;justify-content:center;padding:10px}
+#rose-canvas{display:block;max-width:100%;aspect-ratio:1;cursor:crosshair;touch-action:none}
+#rose-sidebar{width:210px;flex-shrink:0;background:var(--bg-card);border-left:1px solid var(--border);
+  overflow-y:auto;padding:0}
+.rs-section{padding:11px 13px;border-bottom:1px solid var(--border)}
+.rs-title{font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.rs-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.70rem}
+.rs-k{color:var(--dim)}.rs-v{font-family:'IBM Plex Mono',monospace;color:var(--txt)}
+.rs-v.ok{color:var(--green)}.rs-v.hi{color:var(--red)}.rs-v.med{color:var(--purple)}
+#rose-legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.rleg{display:flex;align-items:center;gap:4px;font-size:.65rem;color:var(--txt2)}
+.rleg-sym{display:inline-block;width:10px;height:10px;flex-shrink:0}
+
+/* scatter panel */
+#scatter-wrap{flex:1;display:flex;flex-direction:column;padding:10px;min-height:0}
+#scatter-canvas{display:block;width:100%;flex:1;min-height:200px}
+#scatter-info{font-size:.71rem;color:var(--dim);padding:4px 0;font-family:'IBM Plex Mono',monospace}
+
+/* heatmap panel */
+#heatmap-wrap{flex:1;display:flex;flex-direction:column;padding:14px;min-height:0;overflow:auto}
+#heatmap-canvas{display:block}
+#heatmap-info{font-size:.71rem;color:var(--dim);margin-top:6px}
+
+/* table panel */
+#table-wrap{flex:1;overflow:auto;padding:10px}
+#decode-table{width:100%;border-collapse:collapse;font-size:.72rem}
+#decode-table th{background:var(--bg-card);color:var(--dim);text-transform:uppercase;
+  letter-spacing:.06em;font-size:.63rem;padding:5px 8px;border-bottom:1px solid var(--border);
+  text-align:left;cursor:pointer;white-space:nowrap;user-select:none;position:sticky;top:0;z-index:1}
+#decode-table th:hover{color:var(--txt)}
+#decode-table th.sort-asc::after{content:' ▲'}
+#decode-table th.sort-desc::after{content:' ▼'}
+#decode-table td{padding:4px 8px;border-bottom:1px solid #0f172a;white-space:nowrap}
+#decode-table tr:hover td{background:#0f1628}
+.td-mono{font-family:'IBM Plex Mono',monospace}
+.td-type2{color:var(--dim);font-style:italic}
+.td-suspect{color:var(--amber)}
+#table-controls{display:flex;align-items:center;gap:10px;padding:6px 10px;
+  background:var(--bg-card);border-top:1px solid var(--border);font-size:.74rem;flex-wrap:wrap}
+#table-search{background:var(--bg-in);border:1px solid var(--border);color:var(--txt);
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;padding:4px 8px;border-radius:3px;width:160px}
+#table-search:focus{border-color:var(--purple);outline:none}
+.tpager{display:flex;gap:4px;align-items:center}
+.tpbtn{background:var(--bg-in);border:1px solid var(--border);color:var(--txt2);
+  font-size:.68rem;padding:3px 7px;border-radius:3px}
+.tpbtn:hover{border-color:var(--purple);color:var(--purple)}
+.tpbtn:disabled{opacity:.4;cursor:default}
+#tbl-page-info{color:var(--dim);font-size:.70rem;font-family:'IBM Plex Mono',monospace}
+#btn-export{background:var(--bg-in);border:1px solid var(--green);color:var(--green);
+  font-size:.70rem;padding:3px 9px;border-radius:3px;margin-left:auto}
+#btn-export:hover{background:#0f2a1a}
+
+/* ── attribution footer ─────────────────────────────────────────────────── */
+footer{background:var(--bg-card);border-top:1px solid var(--border);
+  padding:8px 16px;font-size:.64rem;color:var(--dim);line-height:1.6}
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+@media(max-width:600px){
+  #rose-sidebar{width:100%;border-left:none;border-top:1px solid var(--border)}
+  #rose-wrap{flex-direction:column}
+  header .hlinks{display:none}
+}
+
+/* ── leaflet overrides ──────────────────────────────────────────────────── */
+.leaflet-container{background:#0f172a;font-family:'IBM Plex Sans',sans-serif}
+.leaflet-tile{filter:brightness(.7) saturate(.5)}
+.gc-path{stroke:#a78bfa;stroke-width:1.5;stroke-opacity:.7;fill:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Station Monitor</h1>
+  <span class="meta">M0CVO/A &nbsp;·&nbsp; IO85LO &nbsp;·&nbsp; Live WSPR reception</span>
+  <nav class="hlinks">
+    <a href="/interactives/horizon-rose.html">Horizon rose</a>
+    <a href="/interactives/terrain-3d.html">Terrain 3D</a>
+    <a href="/interactives/panorama-viewer.html">Panorama</a>
+    <a href="/interactives/wspr-decode-map.html">Survey map</a>
+  </nav>
+</header>
+
+<div id="status-strip">
+  <div id="ss-spinner"></div>
+  <div class="ss-item"><span class="ss-label">Decodes</span><span class="ss-val" id="ss-decodes">…</span></div>
+  <div class="ss-item"><span class="ss-label">No-pos</span><span class="ss-val" id="ss-type2">…</span></div>
+  <div class="ss-item"><span class="ss-label">Last decode</span><span class="ss-val" id="ss-last">…</span></div>
+  <div class="ss-item"><span class="ss-label">Updated</span><span class="ss-val" id="ss-age">…</span></div>
+  <span id="ss-warn"></span>
+</div>
+
+<div id="filter-bar">
+  <div class="fb-group">
+    <span class="fb-label">Window</span>
+    <button class="fbtn" data-tw="last1h">1 h</button>
+    <button class="fbtn" data-tw="last6h">6 h</button>
+    <button class="fbtn" data-tw="last24h">24 h</button>
+    <button class="fbtn" data-tw="last7d">7 d</button>
+    <button class="fbtn on" data-tw="all">All</button>
+  </div>
+  <div class="sep"></div>
+  <div class="fb-group" id="band-btns">
+    <span class="fb-label">Band</span>
+  </div>
+  <div class="sep"></div>
+  <div class="fb-group">
+    <span class="fb-label">Dist km</span>
+    <div class="frange">
+      <input type="number" id="dist-min" value="0" min="0" max="25000" step="100" aria-label="Min distance km">
+      <span>–</span>
+      <input type="number" id="dist-max" value="25000" min="0" max="25000" step="100" aria-label="Max distance km">
+    </div>
+  </div>
+  <div class="sep"></div>
+  <div class="fb-group">
+    <span class="fb-label">SNR dB</span>
+    <div class="frange">
+      <input type="number" id="snr-min" value="-30" min="-30" max="20" step="1" aria-label="Min SNR dB">
+      <span>–</span>
+      <input type="number" id="snr-max" value="20" min="-30" max="20" step="1" aria-label="Max SNR dB">
+    </div>
+  </div>
+</div>
+
+<nav id="tabs">
+  <button class="tab active" data-panel="map">Map <span class="tab-badge" id="badge-map">0</span></button>
+  <button class="tab" data-panel="rose">Horizon Rose <span class="tab-badge" id="badge-rose">0</span></button>
+  <button class="tab" data-panel="scatter">Arrival Angle</button>
+  <button class="tab" data-panel="heatmap">Band × Hour</button>
+  <button class="tab" data-panel="table">Table <span class="tab-badge" id="badge-table">0</span></button>
+</nav>
+
+<div id="panels">
+
+  <!-- MAP PANEL -->
+  <div class="panel active" id="panel-map">
+    <div id="map-wrap">
+      <div id="leaflet-map"></div>
+    </div>
+  </div>
+
+  <!-- ROSE PANEL -->
+  <div class="panel" id="panel-rose">
+    <div id="rose-wrap">
+      <div id="rose-canvas-wrap">
+        <canvas id="rose-canvas" width="700" height="700" aria-label="Polar horizon rose with WSPR decode overlay"></canvas>
+      </div>
+      <div id="rose-sidebar">
+        <div class="rs-section">
+          <div class="rs-title">Filtered decodes</div>
+          <div class="rs-row"><span class="rs-k">Shown</span><span class="rs-v" id="rs-shown">0</span></div>
+          <div class="rs-row"><span class="rs-k">Clear sightline</span><span class="rs-v ok" id="rs-clear">0</span></div>
+          <div class="rs-row"><span class="rs-k">Below horizon</span><span class="rs-v hi" id="rs-below">0</span></div>
+          <div class="rs-row"><span class="rs-k">Max distance</span><span class="rs-v" id="rs-maxd">—</span></div>
+          <div class="rs-row"><span class="rs-k">No-position (type-2)</span><span class="rs-v med" id="rs-type2">0</span></div>
+        </div>
+        <div class="rs-section">
+          <div class="rs-title">Hover</div>
+          <div id="rose-hover-info"><span style="color:var(--dim);font-size:.68rem">Move mouse over rose</span></div>
+        </div>
+        <div class="rs-section">
+          <div class="rs-title">Legend</div>
+          <div id="rose-legend"></div>
+          <div style="margin-top:8px;font-size:.64rem;color:var(--dim);line-height:1.6">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+              <div style="width:16px;height:8px;background:rgba(239,68,68,.35)"></div> Terrain blocked (high elevation angle)
+            </div>
+            <div style="display:flex;align-items:center;gap:5px">
+              <div style="width:16px;height:2px;background:var(--red);opacity:.6"></div> Horizon profile
+            </div>
+          </div>
+        </div>
+        <div class="rs-section" style="font-size:.64rem;color:var(--dim);line-height:1.7">
+          Ring spacing: 2000 km. Radius ∝ √distance for visual spread.
+          Terrain data: LiDAR 50 cm (antenna at 9 m).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCATTER PANEL -->
+  <div class="panel" id="panel-scatter">
+    <div id="scatter-wrap">
+      <div id="scatter-info">Arrival angle vs terrain horizon — points above the line have clear sightline</div>
+      <canvas id="scatter-canvas" aria-label="Arrival angle scatter plot"></canvas>
+    </div>
+  </div>
+
+  <!-- HEATMAP PANEL -->
+  <div class="panel" id="panel-heatmap">
+    <div id="heatmap-wrap">
+      <div id="heatmap-info">Decodes per band per UTC hour — scroll to see full width on small screens</div>
+      <canvas id="heatmap-canvas" aria-label="Band by hour heatmap"></canvas>
+    </div>
+  </div>
+
+  <!-- TABLE PANEL -->
+  <div class="panel" id="panel-table" style="flex-direction:column">
+    <div id="table-wrap">
+      <table id="decode-table">
+        <thead><tr id="tbl-head"></tr></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+    <div id="table-controls">
+      <input id="table-search" type="search" placeholder="Search callsign / grid…" aria-label="Search decodes">
+      <div class="tpager">
+        <button class="tpbtn" id="tbl-prev" aria-label="Previous page">◀</button>
+        <span id="tbl-page-info">—</span>
+        <button class="tpbtn" id="tbl-next" aria-label="Next page">▶</button>
+      </div>
+      <button id="btn-export">↓ CSV</button>
+    </div>
+  </div>
+
+</div><!-- /panels -->
+
+<footer>
+  Contains public sector information licensed under the Open Government Licence v3.0.
+  Scottish Public Sector LiDAR Phase 3, Scottish Government.
+  Copernicus GLO-30 DSM © ESA / Sinergise, produced from WorldDEM © Airbus Defence and Space.
+  Map tiles © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+'use strict';
+// ─── EMBEDDED HORIZON DATA ───────────────────────────────────────────────────
+// horizon_merged_9m.csv — 720 samples at 0.5° (antenna height 9 m)
+const HZ_EL=[31.575,31.749,31.749,31.271,31.271,30.39,30.209,30.209,29.693,29.693,28.629,28.636,28.719,29.711,30.716,30.716,29.989,30.342,30.352,30.352,30.41,30.41,30.401,30.401,29.294,28.324,28.98,28.98,29.115,29.786,29.786,29.579,27.783,27.473,27.834,27.427,27.825,26.144,22.242,22.415,22.964,24.022,24.022,22.762,22.762,24.412,24.969,24.969,24.266,23.81,23.81,23.111,23.173,24.035,24.573,24.769,24.544,23.551,23.406,23.375,22.178,21.502,21.677,21.788,21.734,22.105,21.635,21.55,21.349,21.202,20.863,21.217,20.824,20.743,20.58,20.884,21.147,20.784,20.619,21.522,21.834,22.377,22.596,21.783,21.75,21.634,21.106,21.12,21.522,21.401,21.628,21.623,21.314,20.528,19.666,19.472,19.825,19.561,20.081,19.767,19.916,20.492,20.635,20.407,20.863,21.045,21.177,21.15,21.284,21.049,21.027,21.178,21.407,21.519,21.572,20.789,20.506,20.898,21.104,21.006,21.316,21.278,20.909,20.646,20.118,20.121,20.539,20.978,20.003,19.967,19.806,19.854,20.01,19.891,20.088,19.929,19.284,19.284,18.384,18.215,17.631,17.346,17.246,17.164,17.105,16.407,16.695,16.805,16.696,16.491,16.742,16.836,16.708,16.732,16.056,15.981,15.527,14.882,13.676,13.956,13.916,13.434,13.434,13.679,13.679,14.035,13.222,13.283,12.181,11.612,11.265,10.845,10.734,13.478,13.478,13.939,18.417,18.417,19.579,19.579,20.361,20.361,20.532,20.532,20.765,20.736,20.784,20.954,21.039,21.039,20.941,20.895,20.823,19.044,19.714,20.879,21.183,21.183,21.414,21.414,21.248,21.53,21.53,21.626,21.626,21.544,21.007,20.495,20.495,20.594,20.996,20.996,20.112,19.867,19.067,19.067,18.164,18.454,17.476,17.481,18.419,18.54,18.515,18.064,18.064,17.965,17.682,17.682,17.134,16.905,16.643,15.84,15.851,15.851,15.35,14.784,16.185,15.722,16.739,16.513,17.613,17.836,17.356,16.964,16.641,16.641,16.291,16.235,16.211,15.644,15.84,15.766,15.517,15.317,14.997,14.404,13.901,13.937,13.456,13.704,12.899,12.857,12.541,12.26,12.19,11.852,11.247,11.049,10.88,10.914,10.02,8.836,7.359,7.093,6.956,6.744,6.739,6.057,5.918,5.533,5.181,5.208,5.233,5.308,5.347,5.441,5.474,5.583,5.668,5.738,5.762,5.778,5.76,5.728,5.713,5.649,5.61,5.502,5.466,5.434,5.382,5.274,5.21,5.105,4.922,4.789,4.561,4.402,4.157,3.93,3.735,3.736,3.768,4.134,4.292,4.542,4.674,4.852,4.951,5.096,5.099,5.29,5.354,5.417,5.498,5.498,5.545,5.566,5.612,5.615,5.625,5.616,5.616,5.606,5.611,5.605,5.605,5.59,5.616,5.616,5.596,5.528,5.528,5.485,5.441,5.392,5.392,5.366,5.336,5.328,5.343,5.3,5.244,5.194,5.149,5.17,5.225,5.24,5.285,5.413,5.426,5.416,5.453,5.56,5.615,5.628,5.639,5.611,5.577,5.536,5.412,5.396,5.396,5.935,6.514,6.514,6.514,6.98,6.98,6.98,6.98,7.43,7.43,7.43,7.776,7.776,7.776,7.799,8.202,8.202,8.202,8.324,8.324,8.479,8.699,8.699,8.699,8.83,9.001,9.001,9.086,9.161,9.161,9.29,9.395,9.395,9.412,9.49,9.504,9.479,9.541,9.55,9.645,9.626,9.574,9.574,9.574,9.586,9.586,9.526,9.483,9.499,9.499,9.535,9.574,9.574,9.745,9.745,9.73,9.73,9.752,9.752,9.752,9.944,9.944,9.944,9.955,9.955,9.965,9.965,9.965,9.864,9.819,9.798,9.702,9.716,9.563,9.483,9.483,9.017,9.017,8.511,8.511,8.199,8.199,8.199,7.861,7.74,7.436,7.436,7.185,6.993,6.616,6.616,6.329,6.156,5.832,5.832,5.453,5.311,4.905,4.819,4.512,4.45,4.097,3.815,3.657,3.561,3.455,3.442,3.387,3.299,3.238,3.142,3.104,3.016,2.881,2.862,2.901,2.894,2.94,2.941,2.873,2.826,2.749,2.657,2.563,2.442,2.409,2.419,2.433,2.411,2.435,2.47,2.483,2.501,2.484,2.436,2.344,2.381,2.448,2.547,2.639,2.734,2.799,2.856,2.868,2.882,2.878,2.834,2.782,2.714,2.713,2.695,2.626,2.486,2.288,2.207,2.096,2.002,1.856,1.74,1.712,1.691,1.652,1.645,1.658,1.624,1.667,1.75,1.801,1.839,1.895,1.957,2.045,2.138,2.242,2.426,2.541,2.635,2.786,2.843,3.233,3.241,3.662,3.909,4.033,4.314,4.432,4.686,4.838,5.005,5.107,5.198,5.224,5.256,5.283,5.38,5.473,5.52,5.748,5.843,5.947,6.015,6.162,6.188,6.375,6.374,6.447,6.447,6.481,6.481,6.372,6.363,6.345,6.345,6.344,6.29,6.272,6.463,6.501,6.661,6.687,6.865,6.863,7.025,7.088,7.198,7.387,7.291,7.618,7.58,7.581,7.688,7.775,7.858,8.076,8.258,8.37,8.711,8.756,8.96,9.252,9.347,9.546,9.731,9.745,9.886,9.97,12.993,13.55,13.599,13.955,14.332,15.057,16.379,16.922,17.142,17.034,16.936,16.897,17.89,18.181,19.077,19.077,19.313,19.313,18.851,24.02,24.02,24.39,24.636,24.636,24.717,24.717,23.777,23.956,23.956,23.505,23.95,23.686,18.662,20.306,21.494,22.197,23.739,23.739,24.128,23.881,24.72,25.562,25.518,26.138,26.276,26.515,26.428,26.433,26.423,26.613,26.613,26.714,27.444,27.608,27.608,27.497,27.94,27.94,27.676,28.209,28.442,29.403,29.312,29.517,29.893,29.893,30.932,30.932,30.902,30.902,31.027,31.109,31.278,31.629,31.629,32.13,32.13,32.254,32.254,31.711,32.243,32.243,32.277,32.316,32.985,32.743,32.743,32.798,32.812,32.948,32.948,32.902,32.902,32.811,32.643,33.024,33.024,33.153,33.153,31.826,31.826];
+const HZ_SRC=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const STATION_GRID = 'IO85LO';
+const DATA_BASE    = '/assets/data/live/';
+const POLL_MS      = 60000;
+const PAGE_SIZE    = 100;
+const MAX_DIST_PLOT= 20000; // km, for rose radius mapping
+const SUS_DIST     = { '160m':5000,'80m':7000,'40m':10000,'30m':12000,'20m':16000,
+                       '17m':17000,'15m':17000,'12m':18000,'10m':18000 };
+
+const BAND_META = {
+  '160m':{ color:'#dc2626', shape:'circle',  label:'160 m' },
+  '80m': { color:'#f59e0b', shape:'square',  label:'80 m'  },
+  '40m': { color:'#22c55e', shape:'diamond', label:'40 m'  },
+  '30m': { color:'#06b6d4', shape:'tri',     label:'30 m'  },
+  '20m': { color:'#3b82f6', shape:'circle',  label:'20 m'  },
+  '17m': { color:'#a78bfa', shape:'square',  label:'17 m'  },
+  '15m': { color:'#f472b6', shape:'diamond', label:'15 m'  },
+  '12m': { color:'#fb923c', shape:'tri',     label:'12 m'  },
+  '10m': { color:'#a3e635', shape:'circle',  label:'10 m'  },
+};
+const ALL_BANDS = Object.keys(BAND_META);
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function gridToLatLon(grid) {
+  const g = grid.toUpperCase().trim();
+  if (g.length < 4) return [0,0];
+  let lon = (g.charCodeAt(0)-65)*20 + parseInt(g[2])*2 - 180;
+  let lat = (g.charCodeAt(1)-65)*10 + parseInt(g[3]) - 90;
+  if (g.length >= 6) { lon += (g.charCodeAt(4)-65)/12+1/24; lat += (g.charCodeAt(5)-65)/24+1/48; }
+  else               { lon += 1.0; lat += 0.5; }
+  return [lat,lon];
+}
+
+function horizonAt(az) {
+  az = ((az%360)+360)%360;
+  const i  = az/0.5;
+  const i0 = Math.floor(i)%720;
+  const i1 = (i0+1)%720;
+  const f  = i-Math.floor(i);
+  return HZ_EL[i0]*(1-f)+HZ_EL[i1]*f;
+}
+
+const R_E=6371.0088, H_F2=300;
+function arrivalAngle(distKm) {
+  const n = Math.max(1,Math.ceil(distKm/4000));
+  const g = (distKm/(2*n))/R_E;
+  return Math.atan2(Math.cos(g)-R_E/(R_E+H_F2),Math.sin(g))*180/Math.PI;
+}
+
+function gcPoints(lat1,lon1,lat2,lon2,n=60) {
+  const pts=[];
+  const f1=lat1*Math.PI/180,l1=lon1*Math.PI/180;
+  const f2=lat2*Math.PI/180,l2=lon2*Math.PI/180;
+  const d=Math.acos(Math.min(1,Math.sin(f1)*Math.sin(f2)+Math.cos(f1)*Math.cos(f2)*Math.cos(l2-l1)));
+  if (d<1e-8) return [[lat1,lon1]];
+  for (let i=0;i<=n;i++) {
+    const t=i/n;
+    const A=Math.sin((1-t)*d)/Math.sin(d), B=Math.sin(t*d)/Math.sin(d);
+    const x=A*Math.cos(f1)*Math.cos(l1)+B*Math.cos(f2)*Math.cos(l2);
+    const y=A*Math.cos(f1)*Math.sin(l1)+B*Math.cos(f2)*Math.sin(l2);
+    const z=A*Math.sin(f1)+B*Math.sin(f2);
+    pts.push([Math.atan2(z,Math.sqrt(x*x+y*y))*180/Math.PI, Math.atan2(y,x)*180/Math.PI]);
+  }
+  return pts;
+}
+
+function drawShape(ctx, shape, x, y, r) {
+  ctx.beginPath();
+  if (shape==='circle') { ctx.arc(x,y,r,0,2*Math.PI); }
+  else if (shape==='square') { ctx.rect(x-r,y-r,r*2,r*2); }
+  else if (shape==='diamond') { ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath(); }
+  else if (shape==='tri') { ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r*1.2,y+r);ctx.lineTo(x-r*1.2,y+r);ctx.closePath(); }
+  else { ctx.arc(x,y,r,0,2*Math.PI); }
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const STATE = {
+  timeWindow:'all',
+  bands: new Set(ALL_BANDS),
+  distMin:0, distMax:25000,
+  snrMin:-30, snrMax:20,
+  rows:[],     // geo rows (has lat/lon)
+  allRows:[],  // all rows including type-2
+  filtered:[],
+  type2Count:0,
+  version:0,
+  stationLatLon: gridToLatLon(STATION_GRID),
+  lastManifest:null,
+  tableRows:[],   // table-filtered (search + filter)
+  tableSortCol:'_ts', tableSortDir:-1,
+  tablePage:0,
+  tableSearch:'',
+
+  applyFilter() {
+    const now=Date.now();
+    const wMs={last1h:3600e3,last6h:6*3600e3,last24h:86400e3,last7d:7*86400e3};
+    const cutoff=this.timeWindow==='all'?0:now-wMs[this.timeWindow];
+    this.filtered=this.rows.filter(r=>
+      (this.timeWindow==='all'||r._ts>=cutoff) &&
+      this.bands.has(r.band) &&
+      r.dist_km>=this.distMin && r.dist_km<=this.distMax &&
+      r.snr_db>=this.snrMin && r.snr_db<=this.snrMax
+    );
+    updateBadges();
+    redrawRose();
+    redrawScatter();
+    redrawHeatmap();
+    applyTableFilter();
+  }
+};
+
+// ─── PARSE CSV ───────────────────────────────────────────────────────────────
+function parseSpotsCSV(text) {
+  if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+  const lines=text.trim().split('\n');
+  const hdr=lines[0].split(',').map(h=>h.trim());
+  const geoRows=[],allRows=[];
+  let type2=0;
+  for (let i=1;i<lines.length;i++) {
+    if (!lines[i].trim()) continue;
+    const cols=lines[i].split(',');
+    const row={};
+    hdr.forEach((h,j)=>{ row[h]=cols[j]!==undefined?cols[j].trim():''; });
+    row._ts=new Date(row.timestamp).getTime();
+    row.msg_type=parseInt(row.msg_type)||1;
+    row.snr_db=parseFloat(row.snr_db)||0;
+    row.snr_norm_db=parseFloat(row.snr_norm_db)||0;
+    row.tx_pwr_dbm=parseFloat(row.tx_pwr_dbm)||0;
+    allRows.push(row);
+    if (row.msg_type===2||!row.lat) { type2++; continue; }
+    row.lat=parseFloat(row.lat);
+    row.lon=parseFloat(row.lon);
+    row.dist_km=parseFloat(row.dist_km)||0;
+    row.bearing_deg=parseFloat(row.bearing_deg)||0;
+    row._arrival=arrivalAngle(row.dist_km);
+    row._horizon=horizonAt(row.bearing_deg);
+    row._clear=row._arrival>row._horizon;
+    row._suspect=row.dist_km>(SUS_DIST[row.band]||18000);
+    geoRows.push(row);
+  }
+  return {geoRows,allRows,type2};
+}
+
+// ─── STATUS STRIP ────────────────────────────────────────────────────────────
+function setSpinner(on) {
+  document.getElementById('ss-spinner').style.display=on?'block':'none';
+}
+
+function updateStatusStrip(m) {
+  const genUtc=new Date(m.generated_utc);
+  const ageMs=Date.now()-genUtc.getTime();
+  const ageMins=Math.round(ageMs/60000);
+  document.getElementById('ss-decodes').textContent=(m.decode_count||0).toLocaleString();
+  document.getElementById('ss-type2').textContent=STATE.type2Count.toLocaleString()+' no-pos';
+  document.getElementById('ss-last').textContent=m.last_decode||'—';
+  document.getElementById('ss-age').textContent=ageMins<2?'just now':ageMins+' min ago';
+  const strip=document.getElementById('status-strip');
+  const stale=!m.derived||ageMs>3600000;
+  strip.classList.toggle('stale',stale);
+  const warn=document.getElementById('ss-warn');
+  if (!m.derived) { warn.textContent='⚠ Geocoding failed this cycle — spots may be stale'; warn.style.display=''; }
+  else if (ageMs>3600000) { warn.textContent='⚠ No sync in '+Math.round(ageMins/60)+' h'; warn.style.display=''; }
+  else warn.style.display='none';
+}
+
+function setStatusError(msg) {
+  document.getElementById('ss-warn').textContent='⚠ '+msg;
+  document.getElementById('ss-warn').style.display='';
+  document.getElementById('status-strip').classList.add('stale');
+}
+
+// ─── DATA FETCH ───────────────────────────────────────────────────────────────
+async function pollManifest() {
+  setSpinner(true);
+  try {
+    const resp=await fetch(DATA_BASE+'manifest.json?_='+Date.now(),{cache:'no-cache'});
+    if (!resp.ok) throw new Error('HTTP '+resp.status);
+    let text=await resp.text();
+    if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+    const m=JSON.parse(text);
+    STATE.lastManifest=m;
+    updateStatusStrip(m);
+    if (STATE.version===0||m.decode_count!==STATE._lastCount||m.generated_utc!==STATE._lastGen) {
+      STATE._lastCount=m.decode_count; STATE._lastGen=m.generated_utc;
+      await fetchSpots();
+    }
+  } catch(e) { setStatusError(e.message); }
+  finally { setSpinner(false); }
+}
+
+async function fetchSpots() {
+  try {
+    const resp=await fetch(DATA_BASE+'wspr_spots.csv?_='+Date.now(),{cache:'no-cache'});
+    if (!resp.ok) throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    const {geoRows,allRows,type2}=parseSpotsCSV(text);
+    STATE.rows=geoRows; STATE.allRows=allRows; STATE.type2Count=type2; STATE.version++;
+    document.getElementById('ss-type2').textContent=type2.toLocaleString()+' no-pos';
+    STATE.applyFilter();
+    buildMapMarkers();
+  } catch(e) { setStatusError('Spots fetch: '+e.message); }
+}
+
+// ─── MAP ─────────────────────────────────────────────────────────────────────
+let map, clusterGroup, gcLayer=null;
+
+function initMap() {
+  map=L.map('leaflet-map',{zoomControl:true}).setView(STATE.stationLatLon,3);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom:18
+  }).addTo(map);
+  // Station marker
+  L.circleMarker(STATE.stationLatLon,{radius:7,color:'#a78bfa',fillColor:'#a78bfa',fillOpacity:1,weight:2})
+   .addTo(map).bindTooltip('IO85LO — receive site',{permanent:false});
+  clusterGroup=L.markerClusterGroup({maxClusterRadius:40,showCoverageOnHover:false});
+  map.addLayer(clusterGroup);
+}
+
+function buildMapMarkers() {
+  if (!clusterGroup) return;
+  clusterGroup.clearLayers();
+  // Aggregate by callsign+grid
+  const tx=new Map();
+  for (const r of STATE.filtered) {
+    const key=r.callsign+'|'+r.grid;
+    if (!tx.has(key)) tx.set(key,{callsign:r.callsign,grid:r.grid,lat:r.lat,lon:r.lon,
+      bands:{},count:0,maxSnr:-99,minDist:r.dist_km,suspect:false,type3:r.msg_type===3});
+    const t=tx.get(key);
+    t.count++;
+    t.bands[r.band]=(t.bands[r.band]||0)+1;
+    if (r.snr_db>t.maxSnr) t.maxSnr=r.snr_db;
+    if (r.dist_km<t.minDist) t.minDist=r.dist_km;
+    if (r._suspect) t.suspect=true;
+  }
+  for (const t of tx.values()) {
+    const dom=Object.entries(t.bands).sort((a,b)=>b[1]-a[1])[0][0];
+    const meta=BAND_META[dom]||{color:'#94a3b8'};
+    const r=Math.max(4,Math.min(12,3+Math.log2(t.count+1)));
+    const marker=L.circleMarker([t.lat,t.lon],{
+      radius:r,color:meta.color,fillColor:meta.color,fillOpacity:0.7,weight:1.5,
+      className:t.suspect?'suspect-marker':''
+    });
+    const bands=Object.entries(t.bands).sort((a,b)=>b[1]-a[1])
+      .map(([b,c])=>`<span style="color:${(BAND_META[b]||{}).color||'#fff'}">${b}×${c}</span>`).join(' ');
+    const typeNote=t.type3?'<br><small style="color:#f59e0b">⚠ type-3: hashed call, position uncertain</small>':'';
+    const susNote=t.suspect?'<br><small style="color:#f59e0b">⚠ distance may be implausible</small>':'';
+    marker.bindPopup(`<b style="color:#e2e8f0">${t.callsign}</b> ${t.grid}<br>
+      ${t.count} decode${t.count>1?'s':''} · max SNR ${t.maxSnr} dB<br>
+      ${bands}${typeNote}${susNote}`);
+    marker.on('mouseover',()=>showGCPath(t.lat,t.lon));
+    marker.on('mouseout',()=>clearGCPath());
+    clusterGroup.addLayer(marker);
+  }
+}
+
+let gcLine=null;
+function showGCPath(lat2,lon2) {
+  clearGCPath();
+  const [lat1,lon1]=STATE.stationLatLon;
+  const pts=gcPoints(lat1,lon1,lat2,lon2);
+  gcLine=L.polyline(pts,{color:'#a78bfa',weight:1.5,opacity:0.7,dashArray:'6 4'}).addTo(map);
+}
+function clearGCPath() { if (gcLine){map.removeLayer(gcLine);gcLine=null;} }
+
+// ─── ROSE ─────────────────────────────────────────────────────────────────────
+const roseCanvas=document.getElementById('rose-canvas');
+const roseCtx=roseCanvas.getContext('2d');
+
+function roseR() { return Math.min(roseCanvas.width,roseCanvas.height)*0.44; }
+function roseCX() { return roseCanvas.width/2; }
+function roseCY() { return roseCanvas.height/2; }
+function distToR(d) { return Math.sqrt(Math.min(d,MAX_DIST_PLOT)/MAX_DIST_PLOT)*roseR(); }
+
+function redrawRose() {
+  const W=roseCanvas.width, H=roseCanvas.height;
+  const cx=roseCX(), cy=roseCY(), R=roseR();
+  roseCtx.clearRect(0,0,W,H);
+
+  // Terrain shading — shade sectors proportional to horizon elevation
+  for (let i=0;i<720;i++) {
+    const el=HZ_EL[i];
+    if (el<2) continue;
+    const alpha=Math.min(0.55,el/50);
+    roseCtx.fillStyle=`rgba(239,68,68,${alpha.toFixed(3)})`;
+    const az=i*0.5;
+    const a0=(az-90-0.25)*Math.PI/180;
+    const a1=(az-90+0.25)*Math.PI/180;
+    roseCtx.beginPath();
+    roseCtx.moveTo(cx,cy);
+    roseCtx.arc(cx,cy,R,a0,a1);
+    roseCtx.closePath();
+    roseCtx.fill();
+  }
+
+  // Distance rings
+  const ringDists=[2000,4000,6000,8000,10000,14000,18000];
+  roseCtx.setLineDash([3,4]);
+  roseCtx.lineWidth=0.8;
+  roseCtx.strokeStyle='rgba(148,163,184,0.18)';
+  for (const d of ringDists) {
+    const r=distToR(d);
+    if (r>R) break;
+    roseCtx.beginPath();
+    roseCtx.arc(cx,cy,r,0,2*Math.PI);
+    roseCtx.stroke();
+    roseCtx.fillStyle='rgba(100,116,139,0.7)';
+    roseCtx.font='9px IBM Plex Mono,monospace';
+    roseCtx.fillText((d>=1000?d/1000+'k':d)+' km',cx+2,cy-r-2);
+  }
+  roseCtx.setLineDash([]);
+
+  // Compass lines
+  const cards=['N','NE','E','SE','S','SW','W','NW'];
+  roseCtx.strokeStyle='rgba(148,163,184,0.12)';
+  roseCtx.lineWidth=0.8;
+  for (let i=0;i<8;i++) {
+    const a=(i*45-90)*Math.PI/180;
+    roseCtx.beginPath();
+    roseCtx.moveTo(cx,cy);
+    roseCtx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
+    roseCtx.stroke();
+    roseCtx.fillStyle='rgba(148,163,184,0.6)';
+    roseCtx.font='bold 10px IBM Plex Sans,sans-serif';
+    roseCtx.textAlign='center';
+    roseCtx.textBaseline='middle';
+    roseCtx.fillText(cards[i],cx+(R+16)*Math.cos(a),cy+(R+16)*Math.sin(a));
+  }
+  roseCtx.textAlign='left'; roseCtx.textBaseline='alphabetic';
+
+  // Outer ring
+  roseCtx.strokeStyle='rgba(148,163,184,0.25)';
+  roseCtx.lineWidth=1;
+  roseCtx.beginPath();
+  roseCtx.arc(cx,cy,R,0,2*Math.PI);
+  roseCtx.stroke();
+
+  // Horizon profile line (red)
+  roseCtx.strokeStyle='rgba(239,68,68,0.55)';
+  roseCtx.lineWidth=1.2;
+  roseCtx.setLineDash([2,3]);
+  roseCtx.beginPath();
+  for (let i=0;i<720;i++) {
+    const az=i*0.5;
+    // Map elevation (0-45°) to a ring radius: higher el → narrower zone
+    // We draw the "effective clear range" = where signals just clear terrain
+    // Just draw as an annotation ring — el/45 * R from center
+    const er=HZ_EL[i]/45*R*0.25+R*0.05; // inner annotation only
+    const a=(az-90)*Math.PI/180;
+    // Draw actual horizon profile at the outer edge
+    const fr=R*(1-Math.min(1,HZ_EL[i]/45*0.5));
+    if (i===0) roseCtx.moveTo(cx+fr*Math.cos(a),cy+fr*Math.sin(a));
+    else roseCtx.lineTo(cx+fr*Math.cos(a),cy+fr*Math.sin(a));
+  }
+  roseCtx.closePath();
+  roseCtx.stroke();
+  roseCtx.setLineDash([]);
+
+  // Decode points
+  const filt=STATE.filtered;
+  let clear=0,below=0,maxDist=0;
+  for (const r of filt) {
+    if (r.dist_km>maxDist) maxDist=r.dist_km;
+    if (r._clear) clear++; else below++;
+    const meta=BAND_META[r.band]||{color:'#94a3b8',shape:'circle'};
+    const pr=distToR(r.dist_km);
+    const a=(r.bearing_deg-90)*Math.PI/180;
+    const px=cx+pr*Math.cos(a), py=cy+pr*Math.sin(a);
+    const dotR=r._suspect?3.5:2.2;
+    roseCtx.globalAlpha=r.msg_type===3?0.5:0.8;
+    roseCtx.fillStyle=meta.color;
+    roseCtx.strokeStyle=r._suspect?'#f59e0b':meta.color;
+    roseCtx.lineWidth=r._suspect?1.2:0;
+    drawShape(roseCtx,meta.shape,px,py,dotR);
+    roseCtx.fill();
+    if (r._suspect) roseCtx.stroke();
+  }
+  roseCtx.globalAlpha=1;
+
+  // Update sidebar stats
+  document.getElementById('rs-shown').textContent=filt.length.toLocaleString();
+  document.getElementById('rs-clear').textContent=clear.toLocaleString();
+  document.getElementById('rs-below').textContent=below.toLocaleString();
+  document.getElementById('rs-maxd').textContent=maxDist>0?Math.round(maxDist).toLocaleString()+' km':'—';
+  document.getElementById('rs-type2').textContent=STATE.type2Count.toLocaleString();
+}
+
+// Rose hover
+roseCanvas.addEventListener('mousemove', e=>{
+  const rect=roseCanvas.getBoundingClientRect();
+  const scaleX=roseCanvas.width/rect.width, scaleY=roseCanvas.height/rect.height;
+  const mx=(e.clientX-rect.left)*scaleX, my=(e.clientY-rect.top)*scaleY;
+  const dx=mx-roseCX(), dy=my-roseCY();
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  const R=roseR();
+  if (dist>R+20) { document.getElementById('rose-hover-info').innerHTML='<span style="color:var(--dim);font-size:.68rem">Move mouse over rose</span>'; return; }
+  const az=((Math.atan2(dy,dx)*180/Math.PI+90)+360)%360;
+  const distKm=Math.pow(dist/R,2)*MAX_DIST_PLOT;
+  const hz=horizonAt(az).toFixed(1);
+  const src=HZ_SRC[Math.round(az/0.5)%720]?'LiDAR':'Copernicus';
+  document.getElementById('rose-hover-info').innerHTML=
+    `<div class="rs-row"><span class="rs-k">Bearing</span><span class="rs-v">${az.toFixed(1)}°</span></div>`+
+    `<div class="rs-row"><span class="rs-k">Distance</span><span class="rs-v">${Math.round(distKm).toLocaleString()} km</span></div>`+
+    `<div class="rs-row"><span class="rs-k">Horizon</span><span class="rs-v">${hz}°</span></div>`+
+    `<div class="rs-row"><span class="rs-k">Source</span><span class="rs-v">${src}</span></div>`;
+});
+
+// ─── SCATTER ─────────────────────────────────────────────────────────────────
+const scatterCanvas=document.getElementById('scatter-canvas');
+const scatterCtx=scatterCanvas.getContext('2d');
+
+function redrawScatter() {
+  const el=document.getElementById('scatter-wrap');
+  const W=el.clientWidth||600, H=Math.max(220,el.clientHeight-40||300);
+  scatterCanvas.width=W; scatterCanvas.height=H;
+  scatterCtx.clearRect(0,0,W,H);
+
+  const PAD={l:44,r:14,t:14,b:30};
+  const pW=W-PAD.l-PAD.r, pH=H-PAD.t-PAD.b;
+  const maxDeg=45, minDeg=-5;
+
+  function px(az) { return PAD.l+az/360*pW; }
+  function py(ang) { return PAD.t+(1-(ang-minDeg)/(maxDeg-minDeg))*pH; }
+
+  // Axes
+  scatterCtx.strokeStyle='rgba(148,163,184,0.2)';
+  scatterCtx.lineWidth=1;
+  scatterCtx.strokeRect(PAD.l,PAD.t,pW,pH);
+
+  // Grid lines
+  scatterCtx.setLineDash([3,4]);
+  scatterCtx.strokeStyle='rgba(148,163,184,0.1)';
+  for (let d=0;d<=45;d+=5) {
+    const y=py(d);
+    scatterCtx.beginPath();scatterCtx.moveTo(PAD.l,y);scatterCtx.lineTo(PAD.l+pW,y);scatterCtx.stroke();
+    scatterCtx.fillStyle='rgba(100,116,139,0.8)';scatterCtx.font='9px IBM Plex Mono,monospace';
+    scatterCtx.textAlign='right';scatterCtx.fillText(d+'°',PAD.l-3,y+3);
+  }
+  for (let a=0;a<=360;a+=45) {
+    const x=px(a);
+    scatterCtx.beginPath();scatterCtx.moveTo(x,PAD.t);scatterCtx.lineTo(x,PAD.t+pH);scatterCtx.stroke();
+    scatterCtx.fillStyle='rgba(100,116,139,0.8)';scatterCtx.font='9px IBM Plex Mono,monospace';
+    scatterCtx.textAlign='center';scatterCtx.fillText(a+'°',x,H-PAD.b+11);
+  }
+  scatterCtx.setLineDash([]);
+
+  // Horizon profile line
+  scatterCtx.strokeStyle='rgba(239,68,68,0.7)';
+  scatterCtx.lineWidth=1.5;
+  scatterCtx.beginPath();
+  for (let i=0;i<720;i++) {
+    const az=i*0.5;
+    const x=px(az), y=py(HZ_EL[i]);
+    i===0?scatterCtx.moveTo(x,y):scatterCtx.lineTo(x,y);
+  }
+  scatterCtx.stroke();
+
+  // Decode points
+  scatterCtx.globalAlpha=0.7;
+  for (const r of STATE.filtered) {
+    const meta=BAND_META[r.band]||{color:'#94a3b8',shape:'circle'};
+    const x=px(r.bearing_deg), y=py(r._arrival);
+    if (x<PAD.l||x>PAD.l+pW||y<PAD.t||y>PAD.t+pH) continue;
+    scatterCtx.fillStyle=meta.color;
+    drawShape(scatterCtx,meta.shape,x,y,2.5);
+    scatterCtx.fill();
+  }
+  scatterCtx.globalAlpha=1;
+
+  // Labels
+  scatterCtx.fillStyle='rgba(100,116,139,0.7)';
+  scatterCtx.font='10px IBM Plex Sans,sans-serif';
+  scatterCtx.textAlign='center';
+  scatterCtx.fillText('Bearing (°)',PAD.l+pW/2,H-1);
+  scatterCtx.save();
+  scatterCtx.translate(10,PAD.t+pH/2);
+  scatterCtx.rotate(-Math.PI/2);
+  scatterCtx.fillText('Arrival angle (°)',0,0);
+  scatterCtx.restore();
+}
+
+// ─── HEATMAP ──────────────────────────────────────────────────────────────────
+const heatCanvas=document.getElementById('heatmap-canvas');
+const heatCtx=heatCanvas.getContext('2d');
+
+function redrawHeatmap() {
+  const bands=ALL_BANDS.filter(b=>STATE.bands.has(b)&&STATE.rows.some(r=>r.band===b));
+  if (!bands.length) return;
+  const nB=bands.length, nH=24;
+  const CW=32, CH=22, PAD_L=52, PAD_T=14, PAD_B=24, PAD_R=10;
+  const W=PAD_L+nH*CW+PAD_R, H=PAD_T+nB*CH+PAD_B;
+  heatCanvas.width=W; heatCanvas.height=H;
+  heatCtx.clearRect(0,0,W,H);
+
+  // Count matrix
+  const counts={};
+  let maxC=1;
+  for (const r of STATE.filtered) {
+    if (isNaN(r._ts)) continue;
+    const h=new Date(r._ts).getUTCHours();
+    const key=r.band+'|'+h;
+    counts[key]=(counts[key]||0)+1;
+    if (counts[key]>maxC) maxC=counts[key];
+  }
+
+  // Draw cells
+  for (let bi=0;bi<bands.length;bi++) {
+    const b=bands[bi];
+    const meta=BAND_META[b]||{color:'#94a3b8'};
+    heatCtx.fillStyle=meta.color;
+    heatCtx.font='bold 10px IBM Plex Sans,sans-serif';
+    heatCtx.textAlign='right';
+    heatCtx.fillText(b,PAD_L-4,PAD_T+bi*CH+CH/2+4);
+    for (let h=0;h<24;h++) {
+      const c=counts[b+'|'+h]||0;
+      const alpha=c===0?0:0.1+0.8*(c/maxC);
+      heatCtx.fillStyle=c===0?'rgba(26,34,52,0.4)':`rgba(${hexToRgb(meta.color)},${alpha.toFixed(2)})`;
+      const x=PAD_L+h*CW, y=PAD_T+bi*CH;
+      heatCtx.fillRect(x+1,y+1,CW-2,CH-2);
+      if (c>0) {
+        heatCtx.fillStyle=alpha>0.5?'rgba(255,255,255,0.9)':'rgba(226,232,240,0.7)';
+        heatCtx.font='8px IBM Plex Mono,monospace';
+        heatCtx.textAlign='center';
+        heatCtx.fillText(c,x+CW/2,y+CH/2+3);
+      }
+    }
+  }
+
+  // Hour labels
+  heatCtx.fillStyle='rgba(100,116,139,0.8)';
+  heatCtx.font='9px IBM Plex Mono,monospace';
+  heatCtx.textAlign='center';
+  for (let h=0;h<24;h+=2) {
+    heatCtx.fillText(String(h).padStart(2,'0'),PAD_L+h*CW+CW/2,H-PAD_B+13);
+  }
+  heatCtx.textAlign='center';
+  heatCtx.fillText('UTC hour',PAD_L+nH*CW/2,H-2);
+}
+
+function hexToRgb(hex) {
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+// ─── TABLE ───────────────────────────────────────────────────────────────────
+const COLS=[
+  {key:'timestamp',label:'Time (UTC)',fmt:r=>r.timestamp.replace('T',' ').replace(/\+.*/,'').slice(0,16),cls:'td-mono'},
+  {key:'band',label:'Band',fmt:r=>{const m=BAND_META[r.band];return `<span style="color:${m?m.color:'#fff'}">${r.band||'?'}</span>`},html:true},
+  {key:'callsign',label:'Callsign',fmt:r=>{let s=r.callsign;if(r.msg_type===3)s+=' <small style="color:#f59e0b">③</small>';return s},html:true,cls:'td-mono'},
+  {key:'grid',label:'Grid',fmt:r=>r.grid||'—',cls:'td-mono'},
+  {key:'dist_km',label:'Dist km',fmt:r=>r.dist_km?Math.round(r.dist_km).toLocaleString():'—',cls:'td-mono'},
+  {key:'bearing_deg',label:'Bear°',fmt:r=>r.bearing_deg?r.bearing_deg.toFixed(0)+'°':'—',cls:'td-mono'},
+  {key:'snr_db',label:'SNR dB',fmt:r=>r.snr_db.toFixed(0),cls:'td-mono'},
+  {key:'snr_norm_db',label:'SNR/W',fmt:r=>r.snr_norm_db?r.snr_norm_db.toFixed(1):'—',cls:'td-mono'},
+  {key:'tx_pwr_dbm',label:'Pwr dBm',fmt:r=>r.tx_pwr_dbm.toFixed(0),cls:'td-mono'},
+  {key:'msg_type',label:'Type',fmt:r=>r.msg_type,cls:'td-mono'},
+];
+
+function buildTableHead() {
+  const tr=document.getElementById('tbl-head');
+  tr.innerHTML='';
+  COLS.forEach(col=>{
+    const th=document.createElement('th');
+    th.textContent=col.label;
+    th.dataset.key=col.key;
+    th.setAttribute('scope','col');
+    th.addEventListener('click',()=>{
+      if (STATE.tableSortCol===col.key) STATE.tableSortDir*=-1;
+      else { STATE.tableSortCol=col.key; STATE.tableSortDir=-1; }
+      renderTable();
+    });
+    tr.appendChild(th);
+  });
+}
+
+function applyTableFilter() {
+  const q=STATE.tableSearch.toLowerCase();
+  STATE.tableRows=STATE.filtered.filter(r=>
+    !q||r.callsign.toLowerCase().includes(q)||r.grid.toLowerCase().includes(q)
+  );
+  STATE.tablePage=0;
+  renderTable();
+}
+
+function renderTable() {
+  const col=STATE.tableSortCol, dir=STATE.tableSortDir;
+  const sorted=[...STATE.tableRows].sort((a,b)=>{
+    const av=a[col]??'', bv=b[col]??'';
+    return typeof av==='number'?(av-bv)*dir:String(av).localeCompare(String(bv))*dir;
+  });
+  const total=sorted.length;
+  const start=STATE.tablePage*PAGE_SIZE;
+  const page=sorted.slice(start,start+PAGE_SIZE);
+  const tbody=document.getElementById('tbl-body');
+  tbody.innerHTML='';
+  for (const r of page) {
+    const tr=document.createElement('tr');
+    if (r.msg_type===2) tr.classList.add('td-type2');
+    if (r._suspect) tr.classList.add('td-suspect');
+    COLS.forEach(col=>{
+      const td=document.createElement('td');
+      if (col.cls) td.className=col.cls;
+      if (col.html) td.innerHTML=col.fmt(r); else td.textContent=col.fmt(r);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+  document.getElementById('tbl-page-info').textContent=
+    total===0?'No results':`${start+1}–${Math.min(start+PAGE_SIZE,total)} of ${total.toLocaleString()}`;
+  document.getElementById('tbl-prev').disabled=STATE.tablePage===0;
+  document.getElementById('tbl-next').disabled=start+PAGE_SIZE>=total;
+  // Update sort indicators
+  document.querySelectorAll('#tbl-head th').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if (th.dataset.key===STATE.tableSortCol) th.classList.add(STATE.tableSortDir>0?'sort-asc':'sort-desc');
+  });
+}
+
+// ─── BADGES + LEGEND ─────────────────────────────────────────────────────────
+function updateBadges() {
+  document.getElementById('badge-map').textContent=
+    new Set(STATE.filtered.map(r=>r.callsign+'|'+r.grid)).size;
+  document.getElementById('badge-rose').textContent=STATE.filtered.length.toLocaleString();
+  document.getElementById('badge-table').textContent=STATE.filtered.length.toLocaleString();
+}
+
+function buildLegend() {
+  const leg=document.getElementById('rose-legend');
+  leg.innerHTML='';
+  for (const [band,meta] of Object.entries(BAND_META)) {
+    const div=document.createElement('div');
+    div.className='rleg';
+    const sym=document.createElement('canvas');
+    sym.width=12; sym.height=12;
+    const sctx=sym.getContext('2d');
+    sctx.fillStyle=meta.color;
+    drawShape(sctx,meta.shape,6,6,4);
+    sctx.fill();
+    div.appendChild(sym);
+    div.appendChild(document.createTextNode(meta.label));
+    leg.appendChild(div);
+  }
+}
+
+// ─── FILTER CONTROLS SETUP ───────────────────────────────────────────────────
+function setupFilters() {
+  // Time window buttons
+  document.querySelectorAll('[data-tw]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('[data-tw]').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      STATE.timeWindow=btn.dataset.tw;
+      STATE.applyFilter();
+    });
+  });
+
+  // Band buttons
+  const bandContainer=document.getElementById('band-btns');
+  for (const [band,meta] of Object.entries(BAND_META)) {
+    const btn=document.createElement('button');
+    btn.className='fbtn on';
+    btn.textContent=band;
+    btn.style.borderColor=meta.color;
+    btn.style.color=meta.color;
+    btn.dataset.band=band;
+    btn.addEventListener('click',()=>{
+      if (STATE.bands.has(band)) {
+        if (STATE.bands.size===1) return; // keep at least one
+        STATE.bands.delete(band);
+        btn.classList.remove('on');
+        btn.style.borderColor='';btn.style.color='';
+      } else {
+        STATE.bands.add(band);
+        btn.classList.add('on');
+        btn.style.borderColor=meta.color;btn.style.color=meta.color;
+      }
+      STATE.applyFilter();
+    });
+    bandContainer.appendChild(btn);
+  }
+
+  // Dist range
+  document.getElementById('dist-min').addEventListener('change',e=>{
+    STATE.distMin=parseFloat(e.target.value)||0; STATE.applyFilter();
+  });
+  document.getElementById('dist-max').addEventListener('change',e=>{
+    STATE.distMax=parseFloat(e.target.value)||25000; STATE.applyFilter();
+  });
+
+  // SNR range
+  document.getElementById('snr-min').addEventListener('change',e=>{
+    STATE.snrMin=parseFloat(e.target.value)||-30; STATE.applyFilter();
+  });
+  document.getElementById('snr-max').addEventListener('change',e=>{
+    STATE.snrMax=parseFloat(e.target.value)||20; STATE.applyFilter();
+  });
+
+  // Table search
+  document.getElementById('table-search').addEventListener('input',e=>{
+    STATE.tableSearch=e.target.value; STATE.tablePage=0; applyTableFilter();
+  });
+
+  // Table paging
+  document.getElementById('tbl-prev').addEventListener('click',()=>{
+    if (STATE.tablePage>0){STATE.tablePage--;renderTable();}
+  });
+  document.getElementById('tbl-next').addEventListener('click',()=>{
+    STATE.tablePage++;renderTable();
+  });
+
+  // CSV export
+  document.getElementById('btn-export').addEventListener('click',()=>{
+    const headers=COLS.filter(c=>!c.html).map(c=>c.label).join(',');
+    const hdrs=['timestamp','band','callsign','grid','dist_km','bearing_deg','snr_db','snr_norm_db','tx_pwr_dbm','msg_type'];
+    const rows=[hdrs.join(','),...STATE.tableRows.map(r=>hdrs.map(h=>r[h]??'').join(','))].join('\n');
+    const blob=new Blob([rows],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='wspr_filtered.csv'; a.click();
+  });
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function setupTabs() {
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel=document.getElementById('panel-'+tab.dataset.panel);
+      if (panel) panel.classList.add('active');
+      // Trigger resize-sensitive redraws
+      if (tab.dataset.panel==='rose') redrawRose();
+      if (tab.dataset.panel==='scatter') redrawScatter();
+      if (tab.dataset.panel==='heatmap') redrawHeatmap();
+      if (tab.dataset.panel==='map') { setTimeout(()=>map&&map.invalidateSize(),50); }
+    });
+  });
+}
+
+// ─── RESIZE ────────────────────────────────────────────────────────────────────
+let _resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(_resizeTimer);
+  _resizeTimer=setTimeout(()=>{
+    const active=document.querySelector('.tab.active');
+    if (!active) return;
+    const panel=active.dataset.panel;
+    if (panel==='rose') redrawRose();
+    if (panel==='scatter') redrawScatter();
+    if (panel==='heatmap') redrawHeatmap();
+    if (panel==='map') map&&map.invalidateSize();
+  },120);
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function redrawAll() {
+  const active=document.querySelector('.tab.active');
+  const panel=active?active.dataset.panel:'map';
+  if (panel==='rose') redrawRose();
+  if (panel==='scatter') redrawScatter();
+  if (panel==='heatmap') redrawHeatmap();
+  // Always rebuild map markers when data changes
+  buildMapMarkers();
+}
+
+(function init(){
+  setupTabs();
+  setupFilters();
+  buildTableHead();
+  buildLegend();
+  initMap();
+  pollManifest();
+  setInterval(pollManifest,POLL_MS);
+})();
+</script>
+</body>
+</html>
