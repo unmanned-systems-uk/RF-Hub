@@ -9,7 +9,7 @@ const { generateToken, authenticateToken } = require('../middleware/auth');
  */
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, password, username, first_name, last_name } = req.body;
+    const { email, password, username, first_name, last_name, callsign } = req.body;
 
     // Validation
     if (!email || !password || !username) {
@@ -32,6 +32,18 @@ router.post('/register', async (req, res, next) => {
       });
     }
 
+    // Normalize and validate callsign if provided
+    let normalizedCallsign = null;
+    if (callsign && callsign.trim()) {
+      normalizedCallsign = callsign.trim().toUpperCase();
+      if (normalizedCallsign.length > 15) {
+        return res.status(400).json({ error: 'Callsign must be 15 characters or fewer' });
+      }
+      if (await User.callsignExists(normalizedCallsign)) {
+        return res.status(409).json({ error: 'Callsign already taken' });
+      }
+    }
+
     // Check if email exists
     if (await User.emailExists(email)) {
       return res.status(409).json({ error: 'Email already registered' });
@@ -48,7 +60,8 @@ router.post('/register', async (req, res, next) => {
       password,
       username,
       first_name: first_name || null,
-      last_name: last_name || null
+      last_name: last_name || null,
+      callsign: normalizedCallsign
     });
 
     // Generate token
@@ -62,7 +75,8 @@ router.post('/register', async (req, res, next) => {
         email: user.email,
         username: user.username,
         first_name: user.first_name,
-        last_name: user.last_name
+        last_name: user.last_name,
+        callsign: user.callsign
       }
     });
 
@@ -113,6 +127,7 @@ router.post('/login', async (req, res, next) => {
         username: user.username,
         first_name: user.first_name,
         last_name: user.last_name,
+        callsign: user.callsign,
         avatar_url: user.avatar_url,
         theme: user.theme
       }
@@ -154,6 +169,21 @@ router.put('/profile', authenticateToken, async (req, res, next) => {
     delete updates.email;
     delete updates.password_hash;
     delete updates.user_id;
+
+    // Normalize and validate callsign if provided
+    if (updates.callsign !== undefined) {
+      if (updates.callsign && updates.callsign.trim()) {
+        updates.callsign = updates.callsign.trim().toUpperCase();
+        if (updates.callsign.length > 15) {
+          return res.status(400).json({ error: 'Callsign must be 15 characters or fewer' });
+        }
+        if (await User.callsignExists(updates.callsign, req.user.user_id)) {
+          return res.status(409).json({ error: 'Callsign already taken' });
+        }
+      } else {
+        updates.callsign = null;
+      }
+    }
 
     const updatedUser = await User.updateProfile(req.user.user_id, updates);
 

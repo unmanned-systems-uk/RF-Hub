@@ -5,17 +5,17 @@ class User {
   /**
    * Create a new user
    */
-  static async create({ email, password, username, first_name, last_name }) {
+  static async create({ email, password, username, first_name, last_name, callsign }) {
     // Hash password
     const password_hash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, username, first_name, last_name)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING user_id, email, username, first_name, last_name,
+      `INSERT INTO users (email, password_hash, username, first_name, last_name, callsign)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING user_id, email, username, first_name, last_name, callsign,
                  created_at, total_modules_completed, total_quizzes_passed,
                  total_badges_earned, current_streak_days`,
-      [email, password_hash, username, first_name, last_name]
+      [email, password_hash, username, first_name, last_name, callsign || null]
     );
 
     return result.rows[0];
@@ -59,7 +59,7 @@ class User {
    */
   static async findById(user_id) {
     const result = await pool.query(
-      `SELECT user_id, email, username, first_name, last_name,
+      `SELECT user_id, email, username, first_name, last_name, callsign,
               bio, avatar_url, timezone, theme, email_notifications,
               total_modules_completed, total_quizzes_passed,
               total_badges_earned, current_streak_days,
@@ -82,7 +82,7 @@ class User {
    * Update user profile
    */
   static async updateProfile(user_id, updates) {
-    const { first_name, last_name, bio, avatar_url, timezone, theme, email_notifications } = updates;
+    const { first_name, last_name, bio, avatar_url, timezone, theme, email_notifications, callsign } = updates;
 
     // Build dynamic update query
     const fields = [];
@@ -117,6 +117,10 @@ class User {
       fields.push(`email_notifications = $${paramCount++}`);
       values.push(email_notifications);
     }
+    if (callsign !== undefined) {
+      fields.push(`callsign = $${paramCount++}`);
+      values.push(callsign === '' ? null : callsign);
+    }
 
     if (fields.length === 0) {
       throw new Error('No fields to update');
@@ -129,7 +133,7 @@ class User {
       UPDATE users
       SET ${fields.join(', ')}
       WHERE user_id = $${paramCount}
-      RETURNING user_id, email, username, first_name, last_name,
+      RETURNING user_id, email, username, first_name, last_name, callsign,
                 bio, avatar_url, timezone, theme, email_notifications
     `;
 
@@ -165,6 +169,17 @@ class User {
     const result = await pool.query(
       'SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)',
       [username]
+    );
+    return result.rows[0].exists;
+  }
+
+  /**
+   * Check if callsign exists (optionally excluding a user_id for update checks)
+   */
+  static async callsignExists(callsign, exclude_user_id = null) {
+    const result = await pool.query(
+      `SELECT EXISTS(SELECT 1 FROM users WHERE callsign = $1 ${exclude_user_id ? 'AND user_id != $2' : ''})`,
+      exclude_user_id ? [callsign, exclude_user_id] : [callsign]
     );
     return result.rows[0].exists;
   }
