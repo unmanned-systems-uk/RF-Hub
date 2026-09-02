@@ -4,126 +4,122 @@
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — RF-Hub</title>
+<title>RF-Hub — Interactive RF Engineering &amp; Amateur Radio</title>
+<meta name="description" content="RF-Hub: interactive RF engineering education for aspiring and licensed amateur radio operators. Spectrum reference, antenna theory, structured curriculum, tools, and a live station monitor.">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/rf-hub-v2.css">
 <style>
-/* === PAGE-SPECIFIC — DO NOT DUPLICATE SHARED CSS === */
-.stats-grid {
+.section-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin: 24px 0;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
-.stat-box {
+
+.section-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 20px 16px;
-  text-align: center;
+  border-radius: 12px;
+  padding: 1.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.2s, transform 0.2s;
 }
-.stat-value {
+
+.section-card:hover {
+  border-color: var(--accent-em);
+  transform: translateY(-2px);
+}
+
+.section-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.section-card-title {
   font-family: var(--font-display);
-  font-size: 2.4rem;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent-em));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.1;
-}
-.stat-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-dim);
-  margin-top: 6px;
-}
-.progress-bar {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  height: 28px;
-  overflow: hidden;
-  margin: 12px 0;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
-  border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--bg-deep);
-  font-weight: 500;
-  transition: width 0.5s ease;
-  min-width: 36px;
-}
-.activity-item {
-  border-left: 3px solid var(--accent-h);
-  padding: 8px 12px;
-  margin: 8px 0;
-}
-.activity-date {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--accent-em);
-}
-.btn-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 16px;
-}
-.module-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-}
-.module-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.module-phase {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--accent-em);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.module-time {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-dim);
-}
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.goal-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin: 12px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-}
-.goal-content h4 {
+  font-size: 1.15rem;
   color: var(--text-primary);
-  margin: 0 0 6px 0;
 }
-.goal-content p {
+
+.section-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.section-card-arrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-em);
+}
+
+.how-to-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.how-to-step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+.how-to-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-em);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.how-to-step h4 {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.how-to-step p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+
+.about-block {
+  max-width: 720px;
+  margin: 2rem 0;
+}
+
+.about-block p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0 0 0.9rem 0;
+  font-size: 0.97rem;
+}
+
+.about-block p:last-child {
+  margin-bottom: 0;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 2.5rem 0 0 0;
+}
+
+@media (max-width: 600px) {
+  .section-grid { grid-template-columns: 1fr; }
+  .how-to-grid  { grid-template-columns: 1fr; }
 }
 </style>
 <link rel="stylesheet" href="/assets/css/search.css">
@@ -149,296 +145,106 @@
 <!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">Learning Platform</div>
-    <h1>RF Learning Hub</h1>
-    <p class="hero-subtitle">Your complete interactive RF engineering learning platform</p>
-    <a href="interactives/station-monitor.html" style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1.25rem;padding:0.5rem 1.1rem;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.4);border-radius:20px;color:#a78bfa;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(167,139,250,0.22)';this.style.borderColor='rgba(167,139,250,0.7)'" onmouseout="this.style.background='rgba(167,139,250,0.12)';this.style.borderColor='rgba(167,139,250,0.4)'">&#9679; Live Station Monitor</a>
+    <div class="hero-badge">Amateur Radio Education</div>
+    <h1>RF-Hub</h1>
+    <p class="hero-subtitle">Your interactive guide to RF engineering and amateur radio</p>
+    <a href="interactives/station-monitor.html"
+       style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1.25rem;
+              padding:0.5rem 1.1rem;background:rgba(167,139,250,0.12);
+              border:1px solid rgba(167,139,250,0.4);border-radius:20px;
+              color:#a78bfa;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;
+              text-decoration:none;transition:background 0.2s,border-color 0.2s;"
+       onmouseover="this.style.background='rgba(167,139,250,0.22)';this.style.borderColor='rgba(167,139,250,0.7)'"
+       onmouseout="this.style.background='rgba(167,139,250,0.12)';this.style.borderColor='rgba(167,139,250,0.4)'">&#9679; Live Station Monitor</a>
   </div>
 </section>
 
 <!-- ═══ CONTENT ═══ -->
-<div class="container">
+<div class="container" style="padding-bottom: 4rem;">
 
-  <!-- Progress Dashboard -->
-  <div class="card card--accent" style="margin-bottom: 24px;">
-    <h3>Learning Progress Dashboard</h3>
-    <div class="stats-grid">
-      <div class="stat-box">
-        <div class="stat-value" id="modulesComplete">0</div>
-        <div class="stat-label">Modules Completed</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value" id="hoursLogged">0</div>
-        <div class="stat-label">Hours Logged</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value" id="measurementCount">0</div>
-        <div class="stat-label">Measurements</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value" id="projectCount">0</div>
-        <div class="stat-label">Active Projects</div>
-      </div>
+  <!-- About -->
+  <div class="about-block">
+    <p>RF-Hub is an interactive RF engineering education platform for aspiring and licensed amateur radio operators. Whether you're sitting your Foundation licence or digging into antenna impedance matching, you'll find structured reference material, hands-on interactive tools, and field experiment write-ups here.</p>
+    <p>The site covers the full chain from electromagnetic theory through to practical station operation — frequency allocations, antenna design, propagation, and measurement technique. Everything is free, no account required to read.</p>
+  </div>
+
+  <!-- How to use -->
+  <h2 class="section-heading">How to use RF-Hub</h2>
+  <div class="how-to-grid">
+    <div class="how-to-step">
+      <div class="how-to-num">Step 01</div>
+      <h4>Browse by topic</h4>
+      <p>Use the navigation above to jump to Spectrum, Antennas, Sidebands tools, or the Blog for in-depth articles.</p>
     </div>
-
-    <h3>Overall Progress</h3>
-    <div class="progress-bar">
-      <div class="progress-fill" id="overallProgress" style="width: 0%">0%</div>
+    <div class="how-to-step">
+      <div class="how-to-num">Step 02</div>
+      <h4>Follow the curriculum</h4>
+      <p>The Learn path takes you from EM radiation basics through to antenna measurement in 26 structured modules.</p>
     </div>
-    <p>Complete all 26 modules to master RF engineering fundamentals!</p>
-
-    <h3>Quick Actions</h3>
-    <div class="btn-row">
-      <button class="btn btn--primary" onclick="exportAllData()">Export All Data</button>
-      <button class="btn btn--ghost" onclick="importData()">Import Data</button>
-      <button class="btn btn--ghost" onclick="window.location.href='pages/notebook.html'">New Lab Entry</button>
-    </div>
-
-    <h3 style="margin-top: 24px;">Recent Activity</h3>
-    <div id="recentActivity" style="margin-top: 12px;">
-      <p class="text-dim">No recent activity. Start your learning journey!</p>
+    <div class="how-to-step">
+      <div class="how-to-num">Step 03</div>
+      <h4>Use interactive tools</h4>
+      <p>Calculators, 3D visualisations, and live WSPR data give you a feel for how RF behaves in the real world.</p>
     </div>
   </div>
 
-  <!-- Equipment Status -->
-  <div class="card" style="margin-bottom: 24px;">
-    <h3>Equipment Status</h3>
-    <div class="summary-grid">
-      <div class="summary-card">
-        <h4 class="text-success">Rigol RSA5065N</h4>
-        <p>Spectrum Analyzer + VNA — Ready (9 kHz – 6.5 GHz)</p>
-      </div>
-      <div class="summary-card">
-        <h4 class="text-success">HackRF One</h4>
-        <p>Software Defined Radio — Ready (1 MHz – 6 GHz)</p>
-      </div>
-      <div class="summary-card">
-        <h4 class="text-success">RTL-SDR v5 (×2)</h4>
-        <p>Receive-Only SDR — Ready (500 kHz – 1.75 GHz)</p>
-      </div>
-    </div>
-  </div>
+  <!-- Section cards -->
+  <h2 class="section-heading">Explore</h2>
+  <div class="section-grid">
 
-  <!-- Learning Modules -->
-  <div class="card" id="modulesCard" style="margin-bottom: 24px;">
-    <h3>Learning Modules</h3>
-    <p id="modulesStatus" class="text-dim" style="margin-bottom: 16px;">Loading modules from API...</p>
-    <div id="modulesGrid" class="modules-grid"></div>
-  </div>
+    <a href="pages/frequency-bands.html" class="section-card">
+      <div class="section-card-icon">📡</div>
+      <div class="section-card-title">Spectrum</div>
+      <div class="section-card-desc">Explore radio frequency allocations, UK band plans, and propagation characteristics across the spectrum from LF to microwave.</div>
+      <div class="section-card-arrow">Explore →</div>
+    </a>
 
-  <!-- Current Goals -->
-  <div class="card" style="margin-bottom: 24px;">
-    <h3>Current Goals</h3>
-    <div class="goal-item">
-      <div class="goal-content">
-        <h4>Master VNA Measurements</h4>
-        <p>Learn S-parameters, impedance matching, and filter characterization</p>
-      </div>
-      <span class="badge badge--e">In Progress</span>
-    </div>
-    <div class="goal-item">
-      <div class="goal-content">
-        <h4>Build QFH Antenna</h4>
-        <p>Design and construct a Quadrifilar Helix antenna for weather satellites</p>
-      </div>
-      <span class="badge">Planning</span>
-    </div>
-    <div class="goal-item">
-      <div class="goal-content">
-        <h4>Decode ADS-B Signals</h4>
-        <p>Track aircraft using 1090 MHz Mode-S transponder signals</p>
-      </div>
-      <span class="badge">Planning</span>
-    </div>
+    <a href="pages/antennas.html" class="section-card">
+      <div class="section-card-icon">📶</div>
+      <div class="section-card-title">Antennas</div>
+      <div class="section-card-desc">Learn antenna theory with interactive 3D visualisations, pattern plots, and build guides from dipoles to end-fed half-waves.</div>
+      <div class="section-card-arrow">Explore →</div>
+    </a>
+
+    <a href="pages/learning-path.html" class="section-card">
+      <div class="section-card-icon">🎓</div>
+      <div class="section-card-title">Learn</div>
+      <div class="section-card-desc">Structured 26-module curriculum taking you from electromagnetic radiation fundamentals through to full antenna system design.</div>
+      <div class="section-card-arrow">Start learning →</div>
+    </a>
+
+    <a href="pages/sidebands/" class="section-card">
+      <div class="section-card-icon">🔧</div>
+      <div class="section-card-title">Sidebands</div>
+      <div class="section-card-desc">RF tools, calculators, and reference guides — VSWR, coax loss, decibel conversions, and more at your fingertips.</div>
+      <div class="section-card-arrow">Open tools →</div>
+    </a>
+
+    <a href="pages/blog/" class="section-card">
+      <div class="section-card-icon">📝</div>
+      <div class="section-card-title">Blog</div>
+      <div class="section-card-desc">Long-form articles, station experiments, and measurement results — including the Six-Degree Skyline WSPR survey series.</div>
+      <div class="section-card-arrow">Read articles →</div>
+    </a>
+
+    <a href="interactives/station-monitor.html" class="section-card">
+      <div class="section-card-icon">📊</div>
+      <div class="section-card-title">Station Monitor</div>
+      <div class="section-card-desc">Real-time station status, live WSPR decode feed, propagation conditions, and horizon analysis from IO85LO.</div>
+      <div class="section-card-arrow">View live data →</div>
+    </a>
+
   </div>
 
 </div>
 
-<input type="file" id="importFile" style="display: none;" accept=".json">
-
 <!-- ═══ FOOTER ═══ -->
 <footer class="site-footer">
   <div class="container">
-    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
-    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+    <p>RF-Hub &mdash; Amateur Radio Reference Platform</p>
   </div>
 </footer>
 
-<script src="assets/js/api.js"></script>
-<script src="assets/js/auth-ui.js"></script>
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/main.js"></script>
-<script>
-  const API_URL = (typeof API_BASE_URL !== 'undefined')
-    ? API_BASE_URL.replace('/api', '')
-    : '';
-
-  document.addEventListener('DOMContentLoaded', function() {
-    updateDashboard();
-    loadRecentActivity();
-    loadModulesFromAPI();
-  });
-
-  function loadModulesFromAPI() {
-    const grid = document.getElementById('modulesGrid');
-    const status = document.getElementById('modulesStatus');
-
-    fetch(API_URL + '/api/modules')
-      .then(function(res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then(function(data) {
-        const modules = data.modules || data;
-        if (!Array.isArray(modules) || modules.length === 0) {
-          status.textContent = 'No modules available yet.';
-          return;
-        }
-
-        status.textContent = modules.length + ' module(s) available';
-        totalModulesFromAPI = modules.length;
-
-        const difficultyClass = { beginner: 'text-success', intermediate: 'text-e', advanced: 'text-power' };
-
-        grid.innerHTML = modules.map(function(m) {
-          const cls = difficultyClass[m.difficulty] || 'text-dim';
-          return '<div class="module-card">' +
-            '<div class="module-meta">' +
-              '<span class="module-phase">Phase ' + m.phase + ' · ' + m.module_number + '</span>' +
-              '<span class="' + cls + '" style="font-family:var(--font-mono);font-size:11px;text-transform:capitalize;">' + m.difficulty + '</span>' +
-            '</div>' +
-            '<h4 style="margin:0 0 8px 0;">' + m.title + '</h4>' +
-            '<p style="font-size:0.85rem;margin:0 0 10px 0;">' + m.description.substring(0, 100) + (m.description.length > 100 ? '…' : '') + '</p>' +
-            '<span class="module-time">⏱ ' + m.estimated_time_minutes + ' min</span>' +
-          '</div>';
-        }).join('');
-      })
-      .catch(function(err) {
-        status.textContent = 'Could not load modules — API unreachable.';
-        grid.innerHTML = '<p class="text-dim">Modules will appear here when the backend is available.</p>';
-        console.warn('[RF Hub] API fetch failed:', err.message);
-      });
-  }
-
-  var totalModulesFromAPI = 26;
-
-  function updateDashboard() {
-    const completedModules = getCompletedModules();
-    document.getElementById('modulesComplete').textContent = completedModules.length;
-
-    const totalModules = 26;
-    const progress = Math.round((completedModules.length / totalModules) * 100);
-    const progressBar = document.getElementById('overallProgress');
-    progressBar.style.width = progress + '%';
-    progressBar.textContent = progress + '%';
-
-    const measurements = JSON.parse(localStorage.getItem('measurements') || '[]');
-    document.getElementById('measurementCount').textContent = measurements.length;
-
-    const hoursLogged = completedModules.length * 2;
-    document.getElementById('hoursLogged').textContent = hoursLogged;
-
-    const projects = JSON.parse(localStorage.getItem('projects') || '[]');
-    const activeProjects = projects.filter(function(p) { return p.status !== 'completed'; }).length;
-    document.getElementById('projectCount').textContent = activeProjects;
-  }
-
-  function getCompletedModules() {
-    const completed = [];
-    for (let i = 1; i <= 26; i++) {
-      if (localStorage.getItem('module_' + i) === 'true') {
-        completed.push(i);
-      }
-    }
-    return completed;
-  }
-
-  function loadRecentActivity() {
-    const activity = JSON.parse(localStorage.getItem('recentActivity') || '[]');
-    const activityDiv = document.getElementById('recentActivity');
-
-    if (activity.length > 0) {
-      activityDiv.innerHTML = activity.slice(0, 5).map(function(item) {
-        return '<div class="activity-item">' +
-          '<div class="activity-date">' + item.date + '</div>' +
-          '<p style="margin:4px 0 0 0;">' + item.description + '</p>' +
-        '</div>';
-      }).join('');
-    }
-  }
-
-  function exportAllData() {
-    const data = {
-      modules: {},
-      measurements: JSON.parse(localStorage.getItem('measurements') || '[]'),
-      notebook: JSON.parse(localStorage.getItem('labNotebook') || '[]'),
-      projects: JSON.parse(localStorage.getItem('projects') || '[]'),
-      gallery: JSON.parse(localStorage.getItem('gallery') || '[]'),
-      rfMap: JSON.parse(localStorage.getItem('rfMapData') || '[]'),
-      exportDate: new Date().toISOString()
-    };
-
-    for (let i = 1; i <= 26; i++) {
-      data.modules['module_' + i] = localStorage.getItem('module_' + i) === 'true';
-    }
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'rf-hub-backup-' + new Date().toISOString().split('T')[0] + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    addActivity('Exported all data');
-  }
-
-  function importData() {
-    document.getElementById('importFile').click();
-  }
-
-  document.getElementById('importFile').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        try {
-          const data = JSON.parse(event.target.result);
-
-          if (data.modules) {
-            Object.entries(data.modules).forEach(function(entry) {
-              localStorage.setItem(entry[0], entry[1]);
-            });
-          }
-
-          if (data.measurements) localStorage.setItem('measurements', JSON.stringify(data.measurements));
-          if (data.notebook) localStorage.setItem('labNotebook', JSON.stringify(data.notebook));
-          if (data.projects) localStorage.setItem('projects', JSON.stringify(data.projects));
-          if (data.gallery) localStorage.setItem('gallery', JSON.stringify(data.gallery));
-          if (data.rfMap) localStorage.setItem('rfMapData', JSON.stringify(data.rfMap));
-
-          addActivity('Imported data successfully');
-          updateDashboard();
-          alert('Data imported successfully!');
-        } catch (err) {
-          alert('Error importing data: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-  });
-
-  function addActivity(description) {
-    const activity = JSON.parse(localStorage.getItem('recentActivity') || '[]');
-    activity.unshift({
-      date: new Date().toLocaleDateString(),
-      description: description
-    });
-    localStorage.setItem('recentActivity', JSON.stringify(activity.slice(0, 10)));
-    loadRecentActivity();
-  }
-</script>
-<script src="/assets/js/dev-pages.js"></script>
-<script src="/assets/js/dev-nav.js"></script>
 <script src="/assets/js/search.js" defer></script>
 </body>
 </html>
