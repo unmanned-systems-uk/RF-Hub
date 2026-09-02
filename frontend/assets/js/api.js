@@ -3,7 +3,7 @@
  * Handles all backend API communication
  */
 
-const API_BASE_URL = 'http://10.0.1.98:3000/api';
+const API_BASE_URL = '/api';
 
 class APIService {
     constructor() {

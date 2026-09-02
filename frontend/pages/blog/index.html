@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Articles &amp; Experiments | RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<style>
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --purple: #a78bfa;
+  --cyan:   #06b6d4;
+  --green:  #4ade80;
+  --border:        rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.blog-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.blog-card:hover {
+  border-color: var(--purple);
+  transform: translateY(-2px);
+}
+
+.blog-card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.blog-card-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.blog-card-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.tag--category {
+  color: var(--cyan);
+  border-color: rgba(6,182,212,0.3);
+}
+
+.card-arrow {
+  font-size: 0.85rem;
+  color: var(--purple);
+  font-family: var(--font-mono);
+}
+
+.blog-intro {
+  max-width: 700px;
+  margin-bottom: 0.5rem;
+}
+
+.blog-intro p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Dashboard</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="../sidebands/">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="./" class="active">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Articles &amp; Experiments</div>
+    <h1>Blog</h1>
+    <p class="hero-subtitle">Long-form write-ups, station experiments, and measurement results from the bench and the field.</p>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+  <div class="blog-intro">
+    <p>Each post is a standalone article — equipment reviews, survey data, RF theory applied to real problems. No pagination, no paywall.</p>
+  </div>
+
+  <div class="blog-grid">
+
+    <!-- Station Survey #1 -->
+    <a href="station-survey-01-six-degree-skyline.html" class="blog-card">
+      <div class="blog-card-title">Station Survey #1: The Six-Degree Skyline</div>
+      <div class="blog-card-desc">37.4 hours of WSPR reception from IO85LO with terrain horizon analysis. LiDAR data doubled the horizon model overnight — and explained why 20 m was broken.</div>
+      <div class="blog-card-tags">
+        <span class="tag tag--category">Station Surveys</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+    <!-- Understanding S11 -->
+    <a href="understanding-s11.html" class="blog-card">
+      <div class="blog-card-title">Understanding S11 Measurements</div>
+      <div class="blog-card-desc">What S11 parameters really tell you about your antenna system — return loss, SWR, Smith Chart, and how cables distort the picture.</div>
+      <div class="blog-card-tags">
+        <span class="tag tag--category">RF Theory</span>
+      </div>
+      <div class="card-arrow">Read →</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub &mdash; Amateur Radio Reference Platform</p>
+  </div>
+</footer>
+
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>
