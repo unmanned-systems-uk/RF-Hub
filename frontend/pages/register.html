@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css">
+<style>
+.auth-wrap {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2.25rem 2.5rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem 0;
+}
+
+.auth-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  margin: 0 0 1.75rem 0;
+}
+
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.03em;
+}
+
+.form-group input {
+  width: 100%;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-em);
+}
+
+.form-group input.invalid {
+  border-color: #ef4444;
+}
+
+.field-hint {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  margin-top: 0.3rem;
+}
+
+.field-error {
+  font-size: 0.76rem;
+  color: #ef4444;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+.form-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  margin-bottom: 1.1rem;
+  display: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, var(--accent-em), var(--accent-h));
+  border: none;
+  border-radius: 8px;
+  color: var(--bg-deep);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btn-submit:hover { opacity: 0.88; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.84rem;
+  color: var(--text-dim);
+}
+
+.auth-footer a {
+  color: var(--accent-em);
+  text-decoration: none;
+}
+
+.auth-footer a:hover { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="frequency-bands.html">Spectrum</a></li>
+      <li><a href="antennas.html">Antennas</a></li>
+      <li><a href="learning-path.html">Learn</a></li>
+      <li><a href="sidebands/">Sidebands</a></li>
+      <li><a href="gsm-cellular.html">GSM</a></li>
+      <li><a href="blog/">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-title">Create account</h1>
+    <p class="auth-subtitle">Join RF-Hub to track your learning progress.</p>
+
+    <div class="form-error" id="formError"></div>
+
+    <form id="registerForm" novalidate>
+
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+        <div class="field-error" id="emailError">Please enter a valid email address.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required minlength="3" autocomplete="username">
+        <div class="field-error" id="usernameError">Username must be at least 3 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password">
+        <div class="field-error" id="passwordError">Password must be at least 8 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
+        <div class="field-error" id="confirmError">Passwords do not match.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="callsign">Callsign <span style="color:var(--text-dim);font-size:0.75em;">(optional)</span></label>
+        <input type="text" id="callsign" name="callsign" autocomplete="off" style="text-transform:uppercase;">
+        <div class="field-hint">Your amateur radio callsign, e.g. M0ABC. You can add this later.</div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Create account</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="login.html">Log in</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub &mdash; Amateur Radio Reference Platform</p>
+  </div>
+</footer>
+
+<script src="../assets/js/api.js"></script>
+<script>
+(function () {
+  const form       = document.getElementById('registerForm');
+  const submitBtn  = document.getElementById('submitBtn');
+  const formError  = document.getElementById('formError');
+
+  function showFieldError(id, show) {
+    const el = document.getElementById(id);
+    const input = el.previousElementSibling.tagName === 'INPUT'
+      ? el.previousElementSibling
+      : form.querySelector('#' + id.replace('Error', ''));
+    el.style.display = show ? 'block' : 'none';
+    input.classList.toggle('invalid', show);
+  }
+
+  function clearErrors() {
+    ['emailError','usernameError','passwordError','confirmError'].forEach(id => showFieldError(id, false));
+    formError.style.display = 'none';
+    formError.textContent   = '';
+  }
+
+  function validate() {
+    let ok = true;
+    const email    = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm  = document.getElementById('confirmPassword').value;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showFieldError('emailError', true); ok = false;
+    }
+    if (username.length < 3) {
+      showFieldError('usernameError', true); ok = false;
+    }
+    if (password.length < 8) {
+      showFieldError('passwordError', true); ok = false;
+    }
+    if (confirm !== password) {
+      showFieldError('confirmError', true); ok = false;
+    }
+    return ok;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    clearErrors();
+    if (!validate()) return;
+
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Creating account…';
+
+    const payload = {
+      email:    document.getElementById('email').value.trim(),
+      username: document.getElementById('username').value.trim(),
+      password: document.getElementById('password').value,
+    };
+    const callsign = document.getElementById('callsign').value.trim().toUpperCase();
+    if (callsign) payload.callsign = callsign;
+
+    try {
+      await api.register(payload);
+      window.location.href = '/pages/portal.html';
+    } catch (err) {
+      formError.textContent = err.message || 'Registration failed. Please try again.';
+      formError.style.display = 'block';
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Create account';
+    }
+  });
+
+  // Live uppercase for callsign
+  document.getElementById('callsign').addEventListener('input', function () {
+    const pos = this.selectionStart;
+    this.value = this.value.toUpperCase();
+    this.setSelectionRange(pos, pos);
+  });
+})();
+</script>
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>
