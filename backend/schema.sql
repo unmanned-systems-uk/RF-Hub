@@ -24,7 +24,8 @@ CREATE TABLE users (
     last_name VARCHAR(100),
     bio TEXT,
     avatar_url VARCHAR(500),
-    
+    callsign VARCHAR(15),
+
     -- User settings
     timezone VARCHAR(50) DEFAULT 'UTC',
     theme VARCHAR(20) DEFAULT 'dark',
@@ -63,6 +64,7 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_created_at ON users(created_at);
 CREATE INDEX idx_users_last_login ON users(last_login);
+CREATE UNIQUE INDEX idx_users_callsign_unique ON users (callsign) WHERE callsign IS NOT NULL;
 
 -- ========================================
 -- 2. MODULES TABLE
