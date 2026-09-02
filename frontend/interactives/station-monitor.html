@@ -307,7 +307,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   Contains public sector information licensed under the Open Government Licence v3.0.
   Scottish Public Sector LiDAR Phase 3, Scottish Government.
   Copernicus GLO-30 DSM © ESA / Sinergise, produced from WorldDEM © Airbus Defence and Space.
-  Map tiles © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+  Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, tiles © <a href="https://carto.com/attributions">CARTO</a>. Satellite: Tiles © Esri.
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -527,10 +527,16 @@ let map, clusterGroup, gcLayer=null;
 
 function initMap() {
   map=L.map('leaflet-map',{zoomControl:true}).setView(STATE.stationLatLon,3);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  const layerStreet=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd', maxZoom:19
+  });
+  const layerSatellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom:18
-  }).addTo(map);
+  });
+  layerStreet.addTo(map);
+  L.control.layers({'Street (English)':layerStreet,'Satellite':layerSatellite},{},{position:'topright'}).addTo(map);
   // Station marker
   L.circleMarker(STATE.stationLatLon,{radius:7,color:'#a78bfa',fillColor:'#a78bfa',fillOpacity:1,weight:2})
    .addTo(map).bindTooltip('IO85LO — receive site',{permanent:false});
