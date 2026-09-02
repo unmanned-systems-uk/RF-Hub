@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="37 hours of WSPR reception from IO85LO revealed a station shaped by trees, not terrain. LiDAR data doubled the horizon model overnight.">
+<meta property="og:title" content="The Six-Degree Skyline — Station Surveys #1">
+<meta property="og:description" content="37 hours of WSPR reception from IO85LO revealed a station shaped by trees, not terrain. LiDAR data doubled the horizon model overnight.">
+<meta property="og:image" content="/assets/images/blog/station-surveys/survey-01/drone-aerial-site.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://rf-hub.info/pages/blog/station-survey-01-six-degree-skyline.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Six-Degree Skyline — Station Surveys #1">
+<meta name="twitter:description" content="37 hours of WSPR reception from IO85LO revealed a station shaped by trees, not terrain.">
+<meta name="twitter:image" content="/assets/images/blog/station-surveys/survey-01/drone-aerial-site.jpg">
+<link rel="canonical" href="https://rf-hub.info/pages/blog/station-survey-01-six-degree-skyline.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Six-Degree Skyline — Station Surveys #1 | RF-Hub</title>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Six-Degree Skyline",
+  "description": "37 hours of WSPR reception from IO85LO revealed a station shaped by trees, not terrain.",
+  "image": "/assets/images/blog/station-surveys/survey-01/drone-aerial-site.jpg",
+  "author": { "@type": "Person", "name": "Anthony" },
+  "datePublished": "2026-08-31"
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="../sidebands/">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="./" class="active">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Station Surveys #1</div>
+    <h1>The Six-Degree Skyline</h1>
+    <p class="hero-subtitle">How Local Terrain Shapes HF Reception at IO85LO</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📡 <span>G/SWL/EH43 · IO85LO · Scottish Borders</span></span>
+  <span class="article-meta-item">📅 <span>2026-08-31</span></span>
+  <span class="article-meta-item">⏱ <span>20 min read</span></span>
+  <span class="article-meta-item">📊 <span>37.4 hours · 3,874 decodes</span></span>
+</div>
+
+<div class="callout callout--info">
+  <span class="callout-icon">📋</span>
+  <div class="callout-text">
+    <strong>Series note:</strong> Station Surveys is a repeatable format — same data pipeline, same method, different antenna or site each time. The idea is to build a body of comparable measurements rather than one-off impressions. This is the first. The source data, scripts and horizon files are all open and linked at the end.
+  </div>
+</div>
+
+<!-- ─── CHAPTER 01 ───────────────────────────────────────────── -->
+<div class="chapter" id="intro">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Your antenna sits in a bowl you can't see</h2>
+
+  <p>Every HF antenna is subject to a horizon — the angle below which the surrounding terrain blocks incoming signals. Most operators know the far field: the hill to the north, the ridge to the east. What is much harder to know is the near field. The trees in the garden, the wall at the end of the field, the house itself. At 30 metres of posting, the best freely available terrain model — Copernicus GLO-30 — cannot resolve anything inside 200 metres of your antenna. For most rural stations, that exclusion zone is where the obstruction lives.</p>
+
+  <p>This survey started as a straightforward measurement exercise: characterise the receive performance of a long wire at a Scottish Borders QTH using 37.4 hours of WSPR decode data. It ended with a visit from a 50 cm LiDAR dataset that rewrote half the conclusions.</p>
+
+  <p>What follows is the story in two acts.</p>
+</div>
+
+<!-- ─── CHAPTER 02: THE STATION ──────────────────────────────── -->
+<div class="chapter" id="the-station">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Station</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <tbody>
+        <tr><td><strong>Callsign / status</strong></td><td>G/SWL/EH43 — SWL, amateur licence in progress, <strong>receive only</strong></td></tr>
+        <tr><td><strong>Locator</strong></td><td>IO85LO · 55.6244 N, 3.0162 W</td></tr>
+        <tr><td><strong>Location</strong></td><td>Scottish Borders, near West Linton</td></tr>
+        <tr><td><strong>Ground</strong></td><td>~162 m AMSL, on a shoulder with the Pentland Hills rising to the north</td></tr>
+        <tr><td><strong>Receiver</strong></td><td>Icom IC-7610 → WSJT-X (WSPR, receive only)</td></tr>
+        <tr><td><strong>Antenna</strong></td><td>M0CVO LW-40 — 40.56 m end-fed long wire, 9:1 unun</td></tr>
+        <tr><td><strong>Antenna axis</strong></td><td>027.8° / 207.8° (NNE–SSW), confirmed by GPS to 1.2°</td></tr>
+        <tr><td><strong>Antenna height</strong></td><td>~9 m AGL (7–11 m; chimney height not yet taped — the one free parameter)</td></tr>
+        <tr><td><strong>Survey window</strong></td><td>2026-08-28 23:40 → 2026-08-30 13:06 UTC — <strong>37.4 hours</strong></td></tr>
+        <tr><td><strong>Total decodes</strong></td><td>3,874 (3,817 geocoded; 57 type-2 messages carry no position)</td></tr>
+        <tr><td><strong>WSPRnet upload</strong></td><td><strong>Off</strong> — all data from local <code>ALL_WSPR.TXT</code> only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The site is roughly a hectare of mature woodland. The antenna sits in a 33 × 33 m clearing inside it, with the tree line about 17 m away broadside.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-01/drone-aerial-site.jpg"
+         alt="Aerial drone view of the antenna site at IO85LO showing the clearing and surrounding tree line"
+         loading="lazy" width="1600">
+    <figcaption>Aerial view of the QTH — the 33×33 m clearing is visible with the LW-40 wire running NNE from the chimney to the garden wall.</figcaption>
+  </figure>
+</div>
+
+<!-- ─── CHAPTER 03: ACT 1 ─────────────────────────────────────── -->
+<div class="chapter" id="act-1-copernicus">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Act 1 — The Six-Degree Skyline</h2>
+
+  <h3>The Copernicus model</h3>
+
+  <p>Before running the survey I did what anyone would do: downloaded the best available elevation data and computed a 360° horizon profile. Copernicus GLO-30 is free, global, 30 m posting, published by ESA on AWS open data with no account required. The script drops a 50 km radius of tiles around the observer's coordinates and ray-casts outward in 0.5° steps.</p>
+
+  <p>The result looked reasonable. Median horizon: <strong>6.2°</strong>. The profile ranged from 1.6° to the west (open fell country) to 15.5° at north-north-east (the Pentland Hills rising behind). Nothing alarming. Plenty of sky available for the DX angles that matter on HF.</p>
+
+  <figure class="interactive-figure">
+    <iframe src="../../interactives/panorama-viewer.html"
+            style="width:100%; height:500px; border:none; border-radius:8px;"
+            loading="lazy"
+            title="360° drone panorama from 64m above IO85LO"></iframe>
+    <figcaption>360° panorama from 64m AGL — drag to pan, scroll to zoom. Pentland Hills to the north, open fell to the south-west, mature woodland closing in from all other directions.</figcaption>
+  </figure>
+
+  <p>I ran the survey and then did the right thing: checked the model against the data.</p>
+
+  <h3>Validation — and why it passed</h3>
+
+  <p>The horizon profile assigns a minimum arrival angle to every compass bearing. For each decoded WSPR signal I have a transmitter location, and from that I can compute the bearing from IO85LO and the takeoff angle required for a single F2 hop over that path. If the model is correct, signals should only arrive from directions and elevations where the sky is open.</p>
+
+  <p>Result: <strong>99.0% of the 3,817 geocoded decodes arrived above their own modelled skyline.</strong> The fraction arriving within 2° of the skyline rose monotonically with frequency — from 0% on 160 m to 7% on 20 m — which is exactly what you expect as higher-frequency paths require lower takeoff angles.</p>
+
+  <p>The model had passed. Or so it appeared.</p>
+</div>
+
+<!-- ─── CHAPTER 04: WHAT WE HEARD ────────────────────────────── -->
+<div class="chapter" id="band-by-band">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>What We Heard — Band by Band</h2>
+
+  <p>Here is what the survey actually captured, sorted by decode rate:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Band</th>
+          <th>RX slots</th>
+          <th>Decodes</th>
+          <th>Decodes / slot</th>
+          <th>RX time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>40 m</strong></td><td>205</td><td>1,541</td><td class="excellent"><strong>7.52</strong></td><td>410 min</td></tr>
+        <tr><td><strong>80 m</strong></td><td>220</td><td>1,299</td><td class="good"><strong>5.90</strong></td><td>440 min</td></tr>
+        <tr><td>30 m</td><td>193</td><td>722</td><td>3.74</td><td>386 min</td></tr>
+        <tr><td>20 m</td><td>197</td><td>173</td><td class="poor">0.88</td><td>394 min</td></tr>
+        <tr><td>160 m</td><td>213</td><td>139</td><td class="poor">0.65</td><td>426 min</td></tr>
+        <tr><td>17 m</td><td>27</td><td>0</td><td class="bad">0.00</td><td>54 min</td></tr>
+        <tr><td>10 m</td><td>44</td><td>0</td><td class="bad">0.00</td><td>88 min</td></tr>
+        <tr><td>15 m</td><td>2</td><td>0</td><td class="bad">0.00</td><td>4 min</td></tr>
+        <tr><td>12 m</td><td>1</td><td>0</td><td class="bad">0.00</td><td>2 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>Each slot is a 2-minute WSPR receive window. The band-hop schedule is recorded in <code>WSPR_history.txt</code> and makes decode counts directly comparable across bands.</em></p>
+
+  <p>40 m is dominant. 80 m is strong. 20 m is present but faint. 17 m heard nothing at all.</p>
+
+  <p>The obvious interpretation is that propagation favoured the low bands on those nights. August often does. But before accepting that, I ran the peer comparison.</p>
+
+  <!-- [INTERACTIVE: wspr-decode-map.html] -->
+  <div class="figure">
+    <iframe src="../../interactives/wspr-decode-map.html"
+            style="width:100%; height:600px; border:none; border-radius:8px;"
+            title="WSPR Decode Map — IO85LO survey, all 3,874 decode locations coloured by band"
+            loading="lazy">
+    </iframe>
+    <div class="figure-caption">WSPR decode map — all 3,874 spots from the IO85LO survey, coloured by band. Hover for decode details.</div>
+  </div>
+
+  <h3>The peer comparison</h3>
+
+  <p>Four other WSPR receivers operate in IO85 within about 20 km of this QTH: <strong>GM4DTH, GM4DIJ, GM4JRT, GM0DHD</strong>. Their data is freely available via wspr.live's ClickHouse endpoint — same hours, same bands, no account needed. I pulled unique transmitter callsigns heard per band over the identical window:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Station</th>
+          <th>160 m</th>
+          <th>80 m</th>
+          <th>40 m</th>
+          <th>30 m</th>
+          <th>20 m</th>
+          <th>17 m</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>This station (EH43)</strong></td><td>19</td><td>122</td><td class="excellent"><strong>192</strong></td><td>112</td><td class="poor"><strong>40</strong></td><td class="bad"><strong>0</strong></td></tr>
+        <tr><td>GM4DTH</td><td>22</td><td>57</td><td>189</td><td>122</td><td>194</td><td>36</td></tr>
+        <tr><td>GM4DIJ</td><td>—</td><td>—</td><td>93</td><td>63</td><td>129</td><td>34</td></tr>
+        <tr><td>GM4JRT</td><td>4</td><td>4</td><td>87</td><td>90</td><td>145</td><td>24</td></tr>
+        <tr><td>GM0DHD</td><td>—</td><td>—</td><td>68</td><td>261</td><td>517</td><td>46</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>Unique TX callsigns heard per band during the survey window. Normalise each station to its own 40 m result to remove differences in dwell time, receiver sensitivity and band activity.</em></p>
+
+  <p>Normalising to 40 m (to cancel dwell time, receiver sensitivity, and band activity), every peer station hears <strong>more</strong> unique callsigns on 20 m than on 40 m. Their 20 m / 40 m ratios run from 1.03 (GM4DTH — roughly equal) to 7.60 (GM0DHD — 20 m dominant). This station's ratio is <strong>0.21</strong> — a shortfall of roughly <strong>7×</strong> on near-identical dwell time.</p>
+
+  <p>This station is <strong>best of the five on 40 m</strong>, and roughly double the only comparator on 80 m. It is not a weak station. It is a lopsided one. The low bands work; the high bands don't. And on the same nights, 20 m was clearly open — the peers were active.</p>
+
+  <div class="callout callout--e">
+    <span class="callout-icon">⚡</span>
+    <div class="callout-text">
+      <strong>That needs an explanation better than "propagation".</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 05: ACT 2 — LIDAR ────────────────────────────── -->
+<div class="chapter" id="act-2-lidar">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Act 2 — Then We Got the LiDAR</h2>
+
+  <h3>The problem with 30-metre terrain data</h3>
+
+  <p>Here is what Copernicus GLO-30 cannot do: it cannot resolve anything inside about 200 m of the observer. The 30 m posting forces the ray-cast to start at that distance — any closer and the angle geometry becomes unstable. The script discards the near field and trusts that 200 m is close enough to ground level.</p>
+
+  <p>At most rural sites that assumption is fine. The garden, the driveway, the field next door — none of those usually grow high enough to matter. But this QTH is a wooded hectare. The antenna sits in a clearing, and the tree line is roughly 17 m away. Everything that blocks the sky at low elevation angles is packed into the 200 m exclusion zone the model cannot see.</p>
+
+  <p>The model validated against 3,817 decodes at 99.0%. It was right about what got through. It had no way to test what didn't.</p>
+
+  <h3>Scottish LiDAR Phase 3</h3>
+
+  <p>Scotland publishes LiDAR free via AWS open data — bucket <code>srsp-open-data</code>, region <code>eu-west-2</code>, Open Government Licence v3. Both a DSM (surface, includes canopy) and a DTM (bare earth) at <strong>50 cm posting</strong> — 60× the resolution of Copernicus, no account, no key.</p>
+
+  <p>This QTH falls in National Grid square NT33NE, covered by Phase 3. The tiles are ~390 MB each, but a cropped 1.2 km window is 9–14 MB. Cropped with <code>rasterio</code>, merged with the Copernicus far field at 600 m, re-run through the same ray-cast.</p>
+
+  <p>The results were not subtle.</p>
+
+  <h3>What LiDAR revealed — the full horizon</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Sector</th>
+          <th>Copernicus (terrain only)</th>
+          <th><strong>True — at 9 m</strong></th>
+          <th><strong>True — at 18 m</strong></th>
+          <th>Limited by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>N</td><td>10.7°</td><td class="bad"><strong>30.0°</strong></td><td class="poor">18.2°</td><td>Trees</td></tr>
+        <tr><td>NE</td><td>10.7°</td><td class="bad"><strong>21.4°</strong></td><td class="poor">16.2°</td><td>Trees</td></tr>
+        <tr><td>E</td><td>3.1°</td><td class="poor"><strong>17.9°</strong></td><td>7.6°</td><td>Trees</td></tr>
+        <tr><td>SE</td><td>5.5°</td><td>10.3°</td><td>5.6°</td><td>Trees</td></tr>
+        <tr><td>S</td><td>6.4°</td><td>6.4°</td><td>6.4°</td><td>Far terrain</td></tr>
+        <tr><td>SW</td><td>7.3°</td><td>7.3°</td><td>7.3°</td><td>Far terrain</td></tr>
+        <tr><td><strong>W</strong></td><td><strong>3.5°</strong></td><td class="excellent"><strong>3.5°</strong></td><td class="excellent">3.5°</td><td><strong>Far terrain — best sector</strong></td></tr>
+        <tr><td>NW</td><td>8.3°</td><td class="poor"><strong>16.8°</strong></td><td>10.0°</td><td>Trees</td></tr>
+        <tr><td><strong>Median</strong></td><td><strong>6.2°</strong></td><td class="bad"><strong>12.2°</strong></td><td class="poor"><strong>7.4°</strong></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em><code>horizon_merged_9m.csv</code> — LiDAR inside 600 m spliced with Copernicus beyond, taking the higher value at each 0.5° step.</em></p>
+
+  <p>Due north: 30.0° actual versus 10.7° modelled. The Copernicus model was right in exactly the sectors where nothing grows — south through south-west — and wrong by 10–19° everywhere else.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text">
+      <strong>The compass splits cleanly.</strong> North through east is tree-limited and responds to antenna height. South-west through west is terrain-limited and does not. The obstruction Copernicus missed was not a distant hill; it was the garden.
+    </div>
+  </div>
+
+  <!-- [INTERACTIVE: horizon-rose.html] -->
+  <div class="figure">
+    <iframe src="../../interactives/horizon-rose.html"
+            style="width:100%; height:600px; border:none; border-radius:8px;"
+            title="Horizon Rose — Copernicus vs LiDAR merged, before/after toggle with height controls"
+            loading="lazy">
+    </iframe>
+    <div class="figure-caption">Horizon rose — before/after toggle: Copernicus model vs LiDAR-merged profile. Use the height control to compare 9 m (as built) and 18 m (design target).</div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 06: TREE CAGE ─────────────────────────────────── -->
+<div class="chapter" id="tree-cage">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Tree Cage — Canopy Analysis</h2>
+
+  <p>The canopy height model (CHM = DSM − DTM) maps every tree on the plot at 50 cm resolution. The picture is a 33 × 33 m clearing surrounded on three sides by mature woodland.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Sector (20–120 m from antenna)</th>
+          <th>Mean height</th>
+          <th>p90 height</th>
+          <th>Maximum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>N</td><td>12.3 m</td><td class="bad"><strong>20.4 m</strong></td><td>23.3 m</td></tr>
+        <tr><td>NE</td><td>11.5 m</td><td class="bad"><strong>19.9 m</strong></td><td>25.6 m</td></tr>
+        <tr><td>E</td><td>10.0 m</td><td class="bad"><strong>19.0 m</strong></td><td>28.7 m</td></tr>
+        <tr><td>SE</td><td>9.3 m</td><td class="poor">18.2 m</td><td>21.5 m</td></tr>
+        <tr><td>S</td><td>8.1 m</td><td class="poor">17.4 m</td><td>21.1 m</td></tr>
+        <tr><td>SW</td><td>7.5 m</td><td class="poor">17.8 m</td><td>22.3 m</td></tr>
+        <tr><td><strong>W</strong></td><td class="excellent"><strong>2.5 m</strong></td><td class="excellent"><strong>8.3 m</strong></td><td>20.8 m</td></tr>
+        <tr><td>NW</td><td>4.0 m</td><td>14.8 m</td><td>22.1 m</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>p90 = the height exceeded by only 10% of the canopy surface in that sector. Trees at 20 m p90 block low-elevation signals from north and north-east as effectively as a solid wall.</em></p>
+
+  <p>The wire clears to the west — 3.5° regardless of antenna height, because that direction is open fell country rather than woodland. The wire is caged on north, north-east, and east. The south and south-west are somewhere between: tree-limited at close range but yielding to distant terrain as the antenna rises.</p>
+
+  <div class="callout callout--info">
+    <span class="callout-icon">ℹ️</span>
+    <div class="callout-text">
+      <strong>Phase 3 LiDAR predates a recent clearance</strong> of 1,109 m² on the site. The CHM is adjusted inside 17 m of the wire by using the DTM (bare earth) rather than DSM, keeping the house structure but removing known-cleared canopy.
+    </div>
+  </div>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-01/drone-overhead-canopy.jpg"
+         alt="Overhead drone view showing the tree canopy surrounding the antenna clearing"
+         loading="lazy" width="1600">
+    <figcaption>Looking straight down — the canopy height model comes alive. Trees 15–20 m tall form a near-continuous wall to the north and east.</figcaption>
+  </figure>
+
+  <!-- [INTERACTIVE: 3d-terrain.html] -->
+  <div class="figure">
+    <iframe src="../../interactives/terrain-3d.html"
+            style="width:100%; height:620px; border:none; border-radius:8px;"
+            title="3D Terrain Viewer — toggle DSM / DTM / CHM layers, clearing and tree wall"
+            loading="lazy">
+    </iframe>
+    <div class="figure-caption">3D terrain viewer — toggle DSM (surface with canopy), DTM (bare earth), and CHM (canopy height model). The 33 × 33 m clearing and surrounding tree wall are visible in all views.</div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 07: DISTANCE ARGUMENT ────────────────────────── -->
+<div class="chapter" id="distance-argument">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Why 20 m is Broken — The Distance Argument</h2>
+
+  <p>Here is the insight that makes the whole picture click.</p>
+
+  <p><strong>Arrival angle is set by path length, not by band.</strong> A single F2 hop follows a curved path through the ionosphere. The geometry fixes the takeoff angle at the transmitter and the arrival angle at the receiver based on ground distance alone:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Ground distance</th><th>Arrival angle</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>800 km</td><td class="excellent"><strong>34.4°</strong></td></tr>
+        <tr><td>1,500 km</td><td class="good"><strong>18.0°</strong></td></tr>
+        <tr><td>2,000 km</td><td class="poor"><strong>11.8°</strong></td></tr>
+        <tr><td>3,000 km</td><td class="bad"><strong>4.3°</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The tree line toward continental Europe (around 120° bearing) is <strong>17.7° at the current 9 m antenna height</strong>. That is the cutoff. Signals from inside about 1,500 km arrive steeply enough to clear it. Signals from beyond 1,500 km do not.</p>
+
+  <p>This looks like a band effect because of how the bands use the ionosphere. 80 m works at 800 km — single-hop, 34°, sails over the trees. 20 m skips to 2,000 km and beyond — 12° or lower, hits the tree wall. But the root cause is path length. The trees do not care what frequency the signal is.</p>
+
+  <p>Confirmed on 2026-08-30: clear 80 m SSB from Denmark and northern Germany (780–1,120 km, arriving 25–35°) on the same evening that 20 m was empty. The WSPR data agrees — for the 075–135° arc, 80 m gave 469 decodes at a median arrival of 32.4°; 20 m gave 43 at 14.4°.</p>
+
+  <div class="callout callout--e">
+    <span class="callout-icon">⚡</span>
+    <div class="callout-text">
+      <strong>The station is lopsided, not weak.</strong> It cannot hear Europe on 20 m because Europe is 1,500 km away and the trees are 18° tall. That is a geometry problem, not a station problem.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 08: HEIGHT LADDER ─────────────────────────────── -->
+<div class="chapter" id="height-ladder">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Height Ladder — What Raising the Antenna Would Do</h2>
+
+  <p>Height is the single most effective lever available. Raising the antenna clears the trees <em>and</em> lowers the ground-reflection lobe at the same time. The merged horizon at each candidate height:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Antenna AGL</th>
+          <th>80 m</th>
+          <th>40 m</th>
+          <th>30 m</th>
+          <th>20 m</th>
+          <th>17 m</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>9 m — as built</strong></td><td class="good">82%</td><td class="poor">68%</td><td class="poor">57%</td><td class="bad"><strong>48%</strong></td><td class="bad">46%</td></tr>
+        <tr><td>12 m</td><td>89%</td><td>75%</td><td>65%</td><td class="poor">53%</td><td class="poor">51%</td></tr>
+        <tr><td>15 m</td><td>94%</td><td>84%</td><td>73%</td><td class="poor">60%</td><td class="poor">57%</td></tr>
+        <tr><td><strong>18 m — design target</strong></td><td class="excellent">97%</td><td class="good">89%</td><td class="good">81%</td><td class="good"><strong>68%</strong></td><td>64%</td></tr>
+        <tr><td>21 m</td><td class="excellent">99%</td><td class="excellent">93%</td><td class="good">87%</td><td class="good">75%</td><td>71%</td></tr>
+        <tr><td>24 m</td><td class="excellent">100%</td><td class="excellent">96%</td><td class="excellent">92%</td><td class="good">81%</td><td>77%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>Fraction of each band's DX window — the range of takeoff angles that carry useful paths — that survives the terrain. Derived from <code>horizon_merged_{h}m.csv</code> at each height.</em></p>
+
+  <p>At 9 m, 80 m keeps 82% of its window and 20 m keeps 48%. That ratio — worse on 20 m than on 80 m — is exactly the lopsidedness the peer benchmark revealed, and the terrain-only Copernicus model said neither band was affected at all.</p>
+
+  <p>At 18 m, 20 m recovers to 68%. The improvement stalls above 18 m because beyond that height the far-field Pentland Hills replace the trees as the binding constraint — and the Pentland Hills cannot be chopped down. Below 18 m you are fighting a problem you can fix; above it, one you cannot.</p>
+
+  <p>The direction matters too. Height only helps where trees are the limit:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Target</th>
+          <th>At 9 m</th>
+          <th>At 18 m</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Japan (029°)</td><td class="bad">23.4°</td><td class="poor">17.9°</td></tr>
+        <tr><td>Scandinavia (060°)</td><td class="bad">21.3°</td><td class="poor">14.6°</td></tr>
+        <tr><td><strong>Central Europe (120°)</strong></td><td class="bad"><strong>17.7°</strong></td><td class="good"><strong>7.2°</strong></td></tr>
+        <tr><td>Mediterranean (138°)</td><td>6.6°</td><td>5.0°</td></tr>
+        <tr><td>Eastern USA (283°)</td><td>5.3°</td><td>5.3°</td></tr>
+        <tr><td>Caribbean (258°)</td><td class="excellent">2.9°</td><td class="excellent">2.9°</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Raising from 9 m to 18 m opens Europe, Scandinavia and Japan. The Americas and the Mediterranean are terrain-limited at every height tested — the Pentland Hills and the south-west horizon are in the way, and height does not move them.</p>
+
+  <!-- [INTERACTIVE: horizon-rose.html with height toggle] -->
+  <div class="figure">
+    <iframe src="../../interactives/horizon-rose.html"
+            style="width:100%; height:600px; border:none; border-radius:8px;"
+            title="Horizon Rose — 9 m vs 18 m merged horizon comparison"
+            loading="lazy">
+    </iframe>
+    <div class="figure-caption">Height comparison — use the height toggle to switch between the 9 m (as built) and 18 m (design target) merged profiles. N, NE, E, and NW improve with height; S, SW, and W are unchanged (terrain-limited).</div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 09: WHAT'S NEXT ──────────────────────────────── -->
+<div class="chapter" id="whats-next">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>What's Next</h2>
+
+  <p>In order:</p>
+
+  <ol>
+    <li><strong>Erect the CWA-1000 trapped dipole</strong> on a N–S axis (0–30°, broadside 105°/285°), as high as possible — 18 m is the target, which means a halyard over a tall tree rather than a mast. This gives an A/B comparison between two antennas simultaneously (IC-7610 dual receivers), which is the one measurement this survey could not make.</li>
+    <li><strong>Fit a counterpoise and common-mode choke to the LW-40</strong> and measure before and after. A noise-floor change cleanly separates from everything else.</li>
+    <li><strong>VNA sweep the LW-40 at 14.097 and 18.106 MHz.</strong> The wire is 1.91 λ on 20 m on a 9:1 unun and likely poorly matched. This is the second suspect — terrain blockage and mismatch loss predict the same signature (worse as frequency rises), and the RSA5065N settles it cleanly.</li>
+    <li><strong>Re-run with WSPRnet upload enabled</strong> and verify against the server. The first run had <code>UploadSpots=false</code> — all data here is from <code>ALL_WSPR.TXT</code> only, and nothing from this station has ever appeared on WSPRnet.</li>
+    <li><strong>Tape the chimney height.</strong> It is the one free parameter left in the antenna model.</li>
+  </ol>
+</div>
+
+<!-- ─── CHAPTER 10: DOWNLOAD THE DATA ────────────────────────── -->
+<div class="chapter" id="download">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 10</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Download the Data</h2>
+
+  <p>Everything used in this analysis is free and open. LiDAR under Open Government Licence v3; WSPR data created by the survey with no upstream restrictions.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>What</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/wspr_spots.csv" download><code>wspr_spots.csv</code></a></td>
+          <td>3,874 decoded WSPR spots — geocoded, bearing, distance, SNR</td>
+        </tr>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/wspr_band_slots.csv" download><code>wspr_band_slots.csv</code></a></td>
+          <td>Band-by-band slot and decode summary</td>
+        </tr>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/horizon_merged_9m.csv" download><code>horizon_merged_9m.csv</code></a></td>
+          <td>Definitive horizon at 9 m AGL — LiDAR + Copernicus merged</td>
+        </tr>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/horizon_merged_18m.csv" download><code>horizon_merged_18m.csv</code></a></td>
+          <td>Horizon at 18 m AGL — design target</td>
+        </tr>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/wspr_parse.py" download><code>wspr_parse.py</code></a></td>
+          <td><code>ALL_WSPR.TXT</code> → geocoded CSV</td>
+        </tr>
+        <tr>
+          <td><a href="../../assets/data/station-surveys/survey-01/horizon.py" download><code>horizon.py</code></a></td>
+          <td>DEM tiles + lat/lon → 360° horizon profile</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="summary-grid" style="margin-top: 48px; margin-bottom: 16px;">
+  <div class="summary-card">
+    <h4 class="text-em">Station Surveys #1</h4>
+    <p>G/SWL/EH43 · IO85LO · Survey: 2026-08-28/30 · Published 2026-08-31</p>
+  </div>
+  <div class="summary-card">
+    <h4 class="text-info">Next in series</h4>
+    <p>Same QTH — CWA-1000 trapped dipole on N–S axis.</p>
+  </div>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── ATTRIBUTION ────────────────────────────────────────── -->
+<div class="container">
+  <div class="attribution" style="margin: 32px 0; padding: 16px 0; border-top: 1px solid var(--border-subtle); font-size: 13px; color: var(--text-dim);">
+    <p>Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. Scottish Public Sector LiDAR Phase 3, Scottish Government.</p>
+    <p style="margin-top: 8px;">Copernicus GLO-30 DSM © ESA / Sinergise, produced from WorldDEM™ © Airbus Defence and Space.</p>
+  </div>
+</div>
+
+<!-- ─── FOOTER ──────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub — The world's best interactive RF engineering learning platform</p>
+    <p style="margin-top: 8px;">73 and good DX! 📡</p>
+  </div>
+</footer>
+
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>

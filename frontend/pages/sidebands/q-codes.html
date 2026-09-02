@@ -61,6 +61,14 @@
       transition: width 0.1s linear;
     }
 
+    /* === SITE NAV === */
+    .site-nav{background:rgba(10,14,26,0.95);border-bottom:1px solid var(--border-subtle);backdrop-filter:blur(8px);position:sticky;top:0;z-index:900}
+    .site-nav .container--wide{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:32px;height:52px}
+    .site-nav-brand{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--amber);letter-spacing:1px;text-decoration:none;flex-shrink:0}
+    .site-nav-links{list-style:none;display:flex;gap:4px;margin:0;padding:0}
+    .site-nav-links a{font-size:13px;color:var(--text-secondary);text-decoration:none;padding:6px 10px;border-radius:6px;transition:color .15s,background .15s}
+    .site-nav-links a:hover,.site-nav-links a.active{color:var(--text-primary);background:rgba(255,255,255,0.06)}
+
     /* === HERO === */
     .hero {
       background: linear-gradient(160deg, #0a0e1a 0%, #130f1e 50%, #0a1018 100%);
@@ -504,8 +512,24 @@
       #progress-bar { transition: none; }
     }
   </style>
+  <link rel="stylesheet" href="/assets/css/search.css">
 </head>
 <body>
+
+<nav class="site-nav">
+  <div class="container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="./" class="active">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="../blog/">Blog</a></li>
+    </ul>
+  </div>
+</nav>
 
   <div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
 
@@ -1058,5 +1082,6 @@
     })();
   </script>
 
+<script src="/assets/js/search.js" defer></script>
 </body>
 </html>

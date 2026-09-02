@@ -169,6 +169,18 @@ window.SEARCH_INDEX = [
     sections: ["FM Repeaters", "DMR", "D-STAR", "Fusion/C4FM", "Hotspots"]
   },
   {
+    title: "NATO Phonetic Alphabet — Say It So It's Heard",
+    url: "/pages/sidebands/phonetic-alphabet.html",
+    description: "A–Z phonetic alphabet with pronunciations, numbers, callsign suffixes and practice tips",
+    keywords: ["NATO", "phonetic", "alphabet", "Alpha", "Bravo", "Charlie", "Delta", "Echo",
+               "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike",
+               "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango",
+               "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu",
+               "callsign", "suffix", "/M", "/P", "/A", "/MM", "mobile", "portable",
+               "pronunciation", "say again", "radio alphabet", "spelling"],
+    sections: ["A–Z Reference", "Numbers", "Callsign Suffixes", "Practice Tips"]
+  },
+  {
     title: "Understanding S11 Measurements",
     url: "/pages/blog/understanding-s11.html",
     description: "Practical guide to S11, return loss, SWR and Smith Chart on the Rigol RSA5065N",
