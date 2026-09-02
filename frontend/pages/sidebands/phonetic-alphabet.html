@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NATO Phonetic Alphabet — Say It So It's Heard | RF-Hub</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+
+  <style>
+    /* ── PAGE-SPECIFIC STYLES ── */
+
+    /* Progress bar */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(160deg, #0a0e1a 0%, #0e0c1c 50%, #0a0e18 100%);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      padding: 4rem 0 3rem;
+    }
+    .hero__inner { max-width: 820px; }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--text-dim); }
+    .breadcrumb a:hover { color: var(--accent-em); }
+
+    /* Hero tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    /* Layout */
+    .content-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .chapter { padding-top: 3rem; }
+    .chapter + .chapter { border-top: 1px solid var(--border); }
+
+    /* Blockquotes */
+    blockquote {
+      border-left: 3px solid var(--accent-em);
+      padding: 0.75rem 1rem 0.75rem 1.25rem;
+      background: rgba(167,139,250,0.05);
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      color: var(--text-secondary);
+    }
+    blockquote strong { color: var(--text-primary); }
+    blockquote code { font-family: var(--font-mono); font-size: 0.85em; }
+
+    /* Ordered/unordered lists */
+    ol.list, ul.list {
+      padding-left: 1.5rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+    ol.list li, ul.list li {
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+    ol.list li strong, ul.list li strong { color: var(--text-primary); }
+
+    /* ── A-Z PHONETIC GRID ── */
+    .alpha-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    .alpha-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: border-color 0.15s;
+    }
+    .alpha-card:hover { border-color: rgba(167,139,250,0.35); }
+    .alpha-card__letter {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-em);
+      width: 20px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .alpha-card__word {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .alpha-card__pron {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+    .alpha-card__inner { min-width: 0; }
+
+    /* ── NUMBER CARDS ── */
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    .num-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .num-card__digit {
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-h);
+      width: 22px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .num-card__word {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .num-card__pron {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+    }
+
+    /* ── CALLOUT COLOUR VARIANTS ── */
+    .callout--h  { border-left-color: var(--accent-h); }
+    .callout--e  { border-left-color: var(--accent-e); }
+    .callout--warning { border-left-color: var(--accent-power); background: rgba(239,68,68,0.03); }
+
+    /* ── QUICK REFERENCE CARD ── */
+    .qref-card {
+      background: var(--bg-card);
+      border: 2px solid rgba(167,139,250,0.25);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .qref-card__title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-em);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .qref-card__title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(167,139,250,0.2);
+    }
+    .qref-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 2rem;
+    }
+    @media (max-width: 480px) { .qref-columns { grid-template-columns: 1fr; } }
+    .qref-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+    .qref-row:last-child { border-bottom: none; }
+    .qref-row__key { color: var(--accent-em); font-weight: 600; }
+    .qref-row__val { color: var(--text-secondary); }
+
+    .qref-nums {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 2rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .qref-num-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+    .qref-num-row:last-child { border-bottom: none; }
+    .qref-num-row__digit { color: var(--accent-h); font-weight: 600; }
+    .qref-num-row__val { color: var(--text-secondary); }
+
+    /* Print hint */
+    .print-hint {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-align: right;
+      margin-top: 0.75rem;
+    }
+
+    /* ── SUFFIX TABLE HIGHLIGHTS ── */
+    td .suffix-code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      color: var(--accent-e);
+      font-weight: 600;
+    }
+    .row-note { font-style: italic; color: var(--text-dim); font-size: 0.85em; }
+
+    /* ── PRACTICE WIDGET ── */
+    #practice-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .pw-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pw-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-em);
+    }
+    .pw-score {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .pw-score span { color: var(--accent-h); }
+
+    .pw-callsign {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+    .pw-prompt {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .pw-answer {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+      min-height: 2rem;
+    }
+    .pw-char {
+      padding: 4px 10px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-dim);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .pw-char:hover { border-color: rgba(167,139,250,0.4); color: var(--text-primary); }
+    .pw-char.selected { background: rgba(167,139,250,0.15); border-color: var(--accent-em); color: var(--text-primary); }
+    .pw-char.correct { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: #4ade80; }
+    .pw-char.wrong { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: #f87171; }
+
+    .pw-reveal {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      min-height: 1.5rem;
+    }
+    .pw-reveal.visible { color: var(--accent-h); }
+
+    .pw-controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .pw-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.2s;
+    }
+    .pw-btn--primary {
+      background: rgba(167,139,250,0.12);
+      border-color: rgba(167,139,250,0.3);
+      color: var(--accent-em);
+    }
+    .pw-btn--primary:hover { background: rgba(167,139,250,0.22); }
+    .pw-btn--ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-dim);
+    }
+    .pw-btn--ghost:hover { color: var(--text-secondary); border-color: rgba(255,255,255,0.15); }
+
+    .pw-feedback {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      min-height: 1.2rem;
+    }
+    .pw-feedback.correct { color: #4ade80; }
+    .pw-feedback.wrong { color: #f87171; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- ── NAVIGATION ── -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="./index.html" class="active">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="../blog/">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero__inner">
+      <div class="breadcrumb">
+        <a href="../../index.html">RF-Hub</a>
+        <span>›</span>
+        <a href="./index.html">Sidebands</a>
+        <span>›</span>
+        <span>NATO Phonetic Alphabet</span>
+      </div>
+      <div class="hero-badge">Sideband — Operating Practices</div>
+      <h1>NATO Phonetic Alphabet</h1>
+      <p class="hero-subtitle">Say It So It's Heard. The standard alphabet that turns letters into words that can't be misheard — over static, fading, and interference.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">RSGB 8A1</span>
+        <span class="hero-tag">RSGB 8B1</span>
+        <span class="hero-tag">Foundation</span>
+        <span class="hero-tag">Intermediate</span>
+        <span class="hero-tag">Full</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAIN CONTENT ── -->
+<main>
+<div class="container">
+<div class="content-wrap">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 1: INTRODUCTION                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="intro">
+  <div class="chapter-header">
+    <span class="chapter-num">01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Why Phonetics?</h2>
+
+  <p>The NATO phonetic alphabet replaces letters with words that can't be misheard — even over a noisy radio link. When you say "Mike Seven Alpha Bravo Charlie" instead of "M-7-A-B-C", the other station knows exactly what you said, regardless of static, fading, or interference.</p>
+
+  <p>Every amateur radio operator uses it. Learn it. It's one of the first things you'll need on air.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 2: THE ALPHABET                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="alphabet">
+  <div class="chapter-header">
+    <span class="chapter-num">02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Alphabet</h2>
+
+  <div class="alpha-grid" aria-label="NATO phonetic alphabet A to Z">
+    <div class="alpha-card"><span class="alpha-card__letter">A</span><div class="alpha-card__inner"><div class="alpha-card__word">Alpha</div><div class="alpha-card__pron">AL-fah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">B</span><div class="alpha-card__inner"><div class="alpha-card__word">Bravo</div><div class="alpha-card__pron">BRAH-voh</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">C</span><div class="alpha-card__inner"><div class="alpha-card__word">Charlie</div><div class="alpha-card__pron">CHAR-lee</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">D</span><div class="alpha-card__inner"><div class="alpha-card__word">Delta</div><div class="alpha-card__pron">DELL-tah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">E</span><div class="alpha-card__inner"><div class="alpha-card__word">Echo</div><div class="alpha-card__pron">ECK-oh</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">F</span><div class="alpha-card__inner"><div class="alpha-card__word">Foxtrot</div><div class="alpha-card__pron">FOKS-trot</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">G</span><div class="alpha-card__inner"><div class="alpha-card__word">Golf</div><div class="alpha-card__pron">GOLF</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">H</span><div class="alpha-card__inner"><div class="alpha-card__word">Hotel</div><div class="alpha-card__pron">hoh-TELL</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">I</span><div class="alpha-card__inner"><div class="alpha-card__word">India</div><div class="alpha-card__pron">IN-dee-ah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">J</span><div class="alpha-card__inner"><div class="alpha-card__word">Juliet</div><div class="alpha-card__pron">JEW-lee-ett</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">K</span><div class="alpha-card__inner"><div class="alpha-card__word">Kilo</div><div class="alpha-card__pron">KEY-loh</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">L</span><div class="alpha-card__inner"><div class="alpha-card__word">Lima</div><div class="alpha-card__pron">LEE-mah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">M</span><div class="alpha-card__inner"><div class="alpha-card__word">Mike</div><div class="alpha-card__pron">MIKE</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">N</span><div class="alpha-card__inner"><div class="alpha-card__word">November</div><div class="alpha-card__pron">no-VEM-ber</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">O</span><div class="alpha-card__inner"><div class="alpha-card__word">Oscar</div><div class="alpha-card__pron">OSS-cah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">P</span><div class="alpha-card__inner"><div class="alpha-card__word">Papa</div><div class="alpha-card__pron">pah-PAH</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">Q</span><div class="alpha-card__inner"><div class="alpha-card__word">Quebec</div><div class="alpha-card__pron">keh-BECK</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">R</span><div class="alpha-card__inner"><div class="alpha-card__word">Romeo</div><div class="alpha-card__pron">ROH-mee-oh</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">S</span><div class="alpha-card__inner"><div class="alpha-card__word">Sierra</div><div class="alpha-card__pron">see-AIR-rah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">T</span><div class="alpha-card__inner"><div class="alpha-card__word">Tango</div><div class="alpha-card__pron">TANG-go</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">U</span><div class="alpha-card__inner"><div class="alpha-card__word">Uniform</div><div class="alpha-card__pron">YOU-nee-form</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">V</span><div class="alpha-card__inner"><div class="alpha-card__word">Victor</div><div class="alpha-card__pron">VIK-tah</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">W</span><div class="alpha-card__inner"><div class="alpha-card__word">Whiskey</div><div class="alpha-card__pron">WISS-key</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">X</span><div class="alpha-card__inner"><div class="alpha-card__word">X-ray</div><div class="alpha-card__pron">ECKS-ray</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">Y</span><div class="alpha-card__inner"><div class="alpha-card__word">Yankee</div><div class="alpha-card__pron">YANG-key</div></div></div>
+    <div class="alpha-card"><span class="alpha-card__letter">Z</span><div class="alpha-card__inner"><div class="alpha-card__word">Zulu</div><div class="alpha-card__pron">ZOO-loo</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 3: NUMBERS                                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="numbers">
+  <div class="chapter-header">
+    <span class="chapter-num">03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Numbers</h2>
+
+  <div class="num-grid" aria-label="NATO phonetic number pronunciations">
+    <div class="num-card"><span class="num-card__digit">0</span><div><div class="num-card__word">Zero</div><div class="num-card__pron">ZEE-ro</div></div></div>
+    <div class="num-card"><span class="num-card__digit">1</span><div><div class="num-card__word">One</div><div class="num-card__pron">WUN</div></div></div>
+    <div class="num-card"><span class="num-card__digit">2</span><div><div class="num-card__word">Two</div><div class="num-card__pron">TOO</div></div></div>
+    <div class="num-card"><span class="num-card__digit">3</span><div><div class="num-card__word">Three</div><div class="num-card__pron">TREE</div></div></div>
+    <div class="num-card"><span class="num-card__digit">4</span><div><div class="num-card__word">Four</div><div class="num-card__pron">FOW-er</div></div></div>
+    <div class="num-card"><span class="num-card__digit">5</span><div><div class="num-card__word">Five</div><div class="num-card__pron">FIFE</div></div></div>
+    <div class="num-card"><span class="num-card__digit">6</span><div><div class="num-card__word">Six</div><div class="num-card__pron">SIX</div></div></div>
+    <div class="num-card"><span class="num-card__digit">7</span><div><div class="num-card__word">Seven</div><div class="num-card__pron">SEV-en</div></div></div>
+    <div class="num-card"><span class="num-card__digit">8</span><div><div class="num-card__word">Eight</div><div class="num-card__pron">AIT</div></div></div>
+    <div class="num-card"><span class="num-card__digit">9</span><div><div class="num-card__word">Niner</div><div class="num-card__pron">NINE-er</div></div></div>
+  </div>
+
+  <div class="callout callout--h">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Why "Niner" not "Nine"?</strong> "Nine" can sound like "Nein" (German for "no") or be confused with "Five" on a noisy link. "Niner" is unambiguous. Similarly, "Tree" and "Fife" are used instead of "Three" and "Five" for the same reason — each number must be distinct through static.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 4: WHEN TO USE IT                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="when-to-use">
+  <div class="chapter-header">
+    <span class="chapter-num">04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>When to Use It</h2>
+
+  <h3>Always Use Phonetics For:</h3>
+  <ul class="list">
+    <li><strong>Your callsign</strong> — every time you give it: "Mike Seven Alpha Bravo Charlie"</li>
+    <li><strong>The other station's callsign</strong> — on first contact or if you're unsure they heard you</li>
+    <li><strong>Grid squares and locators</strong> — "India Oscar Nine One Alpha Sierra"</li>
+    <li><strong>Unusual words</strong> — names, place names, anything that might be misheard</li>
+  </ul>
+
+  <h3>You Don't Need Phonetics For:</h3>
+  <ul class="list">
+    <li><strong>Common Q-codes</strong> — "QTH" is universally understood without spelling out</li>
+    <li><strong>Signal reports</strong> — "Five nine" not "Fife Niner" (though both work)</li>
+    <li><strong>Numbers in context</strong> — frequencies are spoken normally: "One four four point three zero zero"</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 5: CALLSIGN EXAMPLES                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="callsign-examples">
+  <div class="chapter-header">
+    <span class="chapter-num">05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Callsign Examples</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Callsign</th><th>Spoken As</th></tr></thead>
+      <tbody>
+        <tr><td><code>M7ABC</code></td><td>Mike Seven Alpha Bravo Charlie</td></tr>
+        <tr><td><code>2E0XYZ</code></td><td>Two Echo Zero X-ray Yankee Zulu</td></tr>
+        <tr><td><code>G4JKL</code></td><td>Golf Four Juliet Kilo Lima</td></tr>
+        <tr><td><code>M0DEF</code></td><td>Mike Zero Delta Echo Foxtrot</td></tr>
+        <tr><td><code>GW8PQR</code></td><td>Golf Whiskey Eight Papa Quebec Romeo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">📍</div>
+    <div class="callout-text">
+      <strong>Prefix meanings:</strong> M7 = Foundation England, 2E0 = Intermediate England, M0 = Full England, G = legacy Full, GW = Wales, GM = Scotland, GI = Northern Ireland, GD = Isle of Man, GJ = Jersey, GU = Guernsey.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 6: CALLSIGN SUFFIXES                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="callsign-suffixes">
+  <div class="chapter-header">
+    <span class="chapter-num">06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Callsign Suffixes</h2>
+
+  <p>When you operate away from your main station address, you add a suffix to your callsign to indicate your situation. These are <strong>legal requirements</strong> under UK licence conditions — not optional.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Suffix</th><th>Meaning</th><th>Example</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="suffix-code">/M</span></td>
+          <td>Mobile</td>
+          <td><code>M7ABC/M</code></td>
+          <td>Operating from a car, on foot, or on a vessel in inland waters</td>
+        </tr>
+        <tr>
+          <td><span class="suffix-code">/P</span></td>
+          <td>Portable</td>
+          <td><code>M7ABC/P</code></td>
+          <td>Temporary location with no fixed postal address (a field, hilltop, park)</td>
+        </tr>
+        <tr>
+          <td><span class="suffix-code">/A</span></td>
+          <td>Alternative address</td>
+          <td><code>M7ABC/A</code></td>
+          <td>Operating from a different postal address to your licence address (friend's house, hotel, holiday home)</td>
+        </tr>
+        <tr>
+          <td><span class="suffix-code">/MM</span></td>
+          <td>Maritime Mobile</td>
+          <td><code>M0PPP/MM</code></td>
+          <td>Operating from a vessel at sea</td>
+        </tr>
+        <tr>
+          <td><span class="suffix-code">/AM</span></td>
+          <td>Aeronautical Mobile</td>
+          <td><code>M0PPP/AM</code></td>
+          <td>Operating from an aircraft (max 500 mW EIRP, primary bands only)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout--h">
+    <div class="callout-icon">🗣️</div>
+    <div class="callout-text">
+      <strong>How to say it:</strong> "Mike Seven Alpha Bravo Charlie stroke Mobile" — the "/" is spoken as <strong>"stroke"</strong> in the UK, or "slash" or "portable" informally. On CW, the "/" is sent as <code>−··−·</code> (dah-dit-dit-dah-dit).
+    </div>
+  </div>
+
+  <h3>When Do You Need a Suffix?</h3>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Situation</th><th>Suffix Needed?</th></tr></thead>
+      <tbody>
+        <tr><td>At home (your licence address)</td><td style="color:var(--accent-current);">No suffix</td></tr>
+        <tr><td>In the car, parked or driving</td><td><span class="suffix-code">/M</span></td></tr>
+        <tr><td>Walking with a handheld</td><td><span class="suffix-code">/M</span></td></tr>
+        <tr><td>SOTA summit activation</td><td><span class="suffix-code">/P</span></td></tr>
+        <tr><td>POTA park activation</td><td><span class="suffix-code">/P</span></td></tr>
+        <tr><td>Operating from a friend's house</td><td><span class="suffix-code">/A</span></td></tr>
+        <tr><td>Holiday cottage with a postcode</td><td><span class="suffix-code">/A</span></td></tr>
+        <tr><td>On a canal boat on inland waters</td><td><span class="suffix-code">/M</span></td></tr>
+        <tr><td>On a yacht at sea</td><td><span class="suffix-code">/MM</span></td></tr>
+        <tr><td>Your garden or shed (same postal address)</td><td style="color:var(--accent-current);">No suffix</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">📋</div>
+    <div class="callout-text">
+      <strong>2024 update:</strong> Ofcom now allows flexible suffixes in addition to the standard ones. You can append descriptive suffixes like "/Garden" or "/Hilltop" — but the standard suffixes (/M, /P, /A, /MM, /AM) still carry their legal meanings and should be used correctly.
+    </div>
+  </div>
+
+  <h3>Regional Secondary Locators</h3>
+  <p>When operating in a different UK nation from your callsign prefix, add the appropriate regional indicator:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Your Prefix</th><th>Operating In</th><th>You Become</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>M7ABC</code> (England)</td>
+          <td>Scotland</td>
+          <td><code>MM7ABC/P</code> <span class="row-note">(or GM7ABC/P — check current Ofcom guidance)</span></td>
+        </tr>
+        <tr>
+          <td><code>M7ABC</code> (England)</td>
+          <td>Wales</td>
+          <td><code>MW7ABC/P</code></td>
+        </tr>
+        <tr>
+          <td><code>M7ABC</code> (England)</td>
+          <td>Northern Ireland</td>
+          <td><code>MI7ABC/P</code></td>
+        </tr>
+        <tr>
+          <td><code>GM0XYZ</code> (Scotland)</td>
+          <td>England</td>
+          <td><code>M0XYZ/A</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 7: PRACTICE TIPS                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="practice-tips">
+  <div class="chapter-header">
+    <span class="chapter-num">07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Practice Tips</h2>
+
+  <ol class="list">
+    <li><strong>Start with your own callsign.</strong> Say it out loud using phonetics until it's automatic.</li>
+    <li><strong>Read car number plates.</strong> Great daily practice — spell each one phonetically in your head.</li>
+    <li><strong>Listen to HF.</strong> Tune to 14.300 MHz (20m SSB) or 7.100 MHz (40m SSB) and listen to how experienced operators use phonetics naturally.</li>
+    <li><strong>Speed comes with use.</strong> Don't worry about being slow at first — accuracy matters more than speed.</li>
+  </ol>
+
+  <!-- OPTIONAL INTERACTIVE: phonetic practice widget -->
+  <div id="practice-widget" aria-label="Phonetic alphabet practice quiz">
+    <div class="pw-header">
+      <span class="pw-title">Practice — Spell the callsign</span>
+      <div class="pw-score">Score: <span id="pw-correct">0</span> / <span id="pw-total">0</span></div>
+    </div>
+    <div class="pw-callsign" id="pw-callsign" aria-live="polite">M7ABC</div>
+    <div class="pw-prompt">Select the correct phonetic words in order:</div>
+    <div class="pw-answer" id="pw-options" role="group" aria-label="Phonetic word options"></div>
+    <div class="pw-reveal" id="pw-reveal"></div>
+    <div class="pw-controls">
+      <button class="pw-btn pw-btn--primary" id="pw-check" aria-label="Check your answer">Check</button>
+      <button class="pw-btn pw-btn--ghost" id="pw-reveal-btn" aria-label="Show correct answer">Show Answer</button>
+      <button class="pw-btn pw-btn--ghost" id="pw-next" aria-label="Next callsign">Next →</button>
+    </div>
+    <div class="pw-feedback" id="pw-feedback" aria-live="polite"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 8: COMMON MISTAKES                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="common-mistakes">
+  <div class="chapter-header">
+    <span class="chapter-num">08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Common Mistakes</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Mistake</th><th>Problem</th><th>Correct</th></tr></thead>
+      <tbody>
+        <tr><td>"A for Apple"</td><td>Non-standard — not everyone knows your version</td><td>Use "Alpha"</td></tr>
+        <tr><td>"N for Nancy"</td><td>Old RAF phonetic — confusing for international contacts</td><td>Use "November"</td></tr>
+        <tr><td>"O for Orange"</td><td>Ambiguous</td><td>Use "Oscar"</td></tr>
+        <tr><td>Skipping phonetics on a weak signal</td><td>Station can't copy your callsign</td><td>Always use phonetics when conditions are poor</td></tr>
+        <tr><td>Speaking too fast</td><td>Defeats the purpose</td><td>Speak clearly and at a moderate pace</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout--warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Stick to NATO.</strong> You'll occasionally hear operators use non-standard words ("London", "America", "Nancy"). This works fine domestically but causes confusion in international contacts. The NATO alphabet is understood worldwide — there's no good reason to use anything else.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CHAPTER 9: QUICK REFERENCE CARD                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="chapter" id="quick-ref">
+  <div class="chapter-header">
+    <span class="chapter-num">09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Quick Reference Card</h2>
+
+  <p>A compact reference for the full alphabet and numbers. Bookmark this page or use your browser's print function to keep a copy at your operating position.</p>
+
+  <div class="qref-card">
+    <div class="qref-card__title">NATO Phonetic Alphabet &amp; Numbers</div>
+    <div class="qref-columns">
+      <!-- Left column: A-M -->
+      <div>
+        <div class="qref-row"><span class="qref-row__key">A</span><span class="qref-row__val">Alpha</span></div>
+        <div class="qref-row"><span class="qref-row__key">B</span><span class="qref-row__val">Bravo</span></div>
+        <div class="qref-row"><span class="qref-row__key">C</span><span class="qref-row__val">Charlie</span></div>
+        <div class="qref-row"><span class="qref-row__key">D</span><span class="qref-row__val">Delta</span></div>
+        <div class="qref-row"><span class="qref-row__key">E</span><span class="qref-row__val">Echo</span></div>
+        <div class="qref-row"><span class="qref-row__key">F</span><span class="qref-row__val">Foxtrot</span></div>
+        <div class="qref-row"><span class="qref-row__key">G</span><span class="qref-row__val">Golf</span></div>
+        <div class="qref-row"><span class="qref-row__key">H</span><span class="qref-row__val">Hotel</span></div>
+        <div class="qref-row"><span class="qref-row__key">I</span><span class="qref-row__val">India</span></div>
+        <div class="qref-row"><span class="qref-row__key">J</span><span class="qref-row__val">Juliet</span></div>
+        <div class="qref-row"><span class="qref-row__key">K</span><span class="qref-row__val">Kilo</span></div>
+        <div class="qref-row"><span class="qref-row__key">L</span><span class="qref-row__val">Lima</span></div>
+        <div class="qref-row"><span class="qref-row__key">M</span><span class="qref-row__val">Mike</span></div>
+      </div>
+      <!-- Right column: N-Z -->
+      <div>
+        <div class="qref-row"><span class="qref-row__key">N</span><span class="qref-row__val">November</span></div>
+        <div class="qref-row"><span class="qref-row__key">O</span><span class="qref-row__val">Oscar</span></div>
+        <div class="qref-row"><span class="qref-row__key">P</span><span class="qref-row__val">Papa</span></div>
+        <div class="qref-row"><span class="qref-row__key">Q</span><span class="qref-row__val">Quebec</span></div>
+        <div class="qref-row"><span class="qref-row__key">R</span><span class="qref-row__val">Romeo</span></div>
+        <div class="qref-row"><span class="qref-row__key">S</span><span class="qref-row__val">Sierra</span></div>
+        <div class="qref-row"><span class="qref-row__key">T</span><span class="qref-row__val">Tango</span></div>
+        <div class="qref-row"><span class="qref-row__key">U</span><span class="qref-row__val">Uniform</span></div>
+        <div class="qref-row"><span class="qref-row__key">V</span><span class="qref-row__val">Victor</span></div>
+        <div class="qref-row"><span class="qref-row__key">W</span><span class="qref-row__val">Whiskey</span></div>
+        <div class="qref-row"><span class="qref-row__key">X</span><span class="qref-row__val">X-ray</span></div>
+        <div class="qref-row"><span class="qref-row__key">Y</span><span class="qref-row__val">Yankee</span></div>
+        <div class="qref-row"><span class="qref-row__key">Z</span><span class="qref-row__val">Zulu</span></div>
+      </div>
+    </div>
+
+    <!-- Numbers row -->
+    <div class="qref-nums">
+      <div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">0</span><span class="qref-num-row__val">Zero (ZEE-ro)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">1</span><span class="qref-num-row__val">One (WUN)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">2</span><span class="qref-num-row__val">Two (TOO)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">3</span><span class="qref-num-row__val">Three (TREE)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">4</span><span class="qref-num-row__val">Four (FOW-er)</span></div>
+      </div>
+      <div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">5</span><span class="qref-num-row__val">Five (FIFE)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">6</span><span class="qref-num-row__val">Six (SIX)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">7</span><span class="qref-num-row__val">Seven (SEV-en)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">8</span><span class="qref-num-row__val">Eight (AIT)</span></div>
+        <div class="qref-num-row"><span class="qref-num-row__digit">9</span><span class="qref-num-row__val">Niner (NINE-er)</span></div>
+      </div>
+    </div>
+
+    <div class="print-hint">Ctrl+P / ⌘+P to print · bookmark for quick reference</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">📡</div>
+    <div class="callout-text">
+      <strong>Cross-references:</strong> See <a href="./qso-scripts.html">QSO Scripts</a> for complete contact examples using phonetics, <a href="./q-codes.html">Q-Codes</a> for the shorthand codes you'll use alongside phonetics, and <a href="./digital-modes.html">Digital Modes</a> for FT8 and other modes where phonetics aren't used.
+    </div>
+  </div>
+</div>
+
+</div><!-- .content-wrap -->
+</div><!-- .container -->
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub · Sidebands · NATO Phonetic Alphabet</p>
+    <p style="margin-top:0.5rem;"><a href="./index.html">← Back to Sidebands</a> · <a href="./qso-scripts.html">QSO Scripts</a> · <a href="../../index.html">Home</a></p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── PROGRESS BAR ── */
+  const progressBar = document.getElementById('progress-bar');
+  document.addEventListener('scroll', function() {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = Math.min(100, pct) + '%';
+  }, { passive: true });
+
+  /* ── PHONETIC PRACTICE WIDGET ── */
+  const PHONETIC = {
+    A:'Alpha', B:'Bravo', C:'Charlie', D:'Delta', E:'Echo',
+    F:'Foxtrot', G:'Golf', H:'Hotel', I:'India', J:'Juliet',
+    K:'Kilo', L:'Lima', M:'Mike', N:'November', O:'Oscar',
+    P:'Papa', Q:'Quebec', R:'Romeo', S:'Sierra', T:'Tango',
+    U:'Uniform', V:'Victor', W:'Whiskey', X:'X-ray',
+    Y:'Yankee', Z:'Zulu',
+    '0':'Zero', '1':'One', '2':'Two', '3':'Three', '4':'Four',
+    '5':'Five', '6':'Six', '7':'Seven', '8':'Eight', '9':'Niner'
+  };
+
+  // Pool of callsigns for practice
+  const CALLSIGNS = [
+    'M7ABC', '2E0XYZ', 'G4JKL', 'M0DEF', 'GW8PQR',
+    'GM3RST', 'GI4UVW', 'M6GHI', '2E1MNO', 'G3PQR',
+    'M0STU', 'GW0VWX', 'GM4YZA', '2E0BCD', 'M7EFG',
+    'G0HIJ', 'M0KLM', 'GW5NOP', '2E1QRS', 'G7TUV'
+  ];
+
+  let correct = 0, total = 0;
+  let currentCallsign = '';
+  let correctAnswer = [];
+  let selectedAnswers = [];
+  let answerLocked = false;
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function newQuestion() {
+    answerLocked = false;
+    selectedAnswers = [];
+    currentCallsign = CALLSIGNS[Math.floor(Math.random() * CALLSIGNS.length)];
+    document.getElementById('pw-callsign').textContent = currentCallsign;
+
+    // Build correct answer
+    correctAnswer = currentCallsign.split('').map(ch => PHONETIC[ch.toUpperCase()] || ch);
+
+    // Build option pool: correct + distractors
+    const distractors = shuffle(Object.values(PHONETIC))
+      .filter(w => !correctAnswer.includes(w))
+      .slice(0, Math.max(4, 12 - correctAnswer.length));
+    const allOptions = shuffle([...correctAnswer, ...distractors]);
+
+    const optionsEl = document.getElementById('pw-options');
+    optionsEl.innerHTML = '';
+    allOptions.forEach(word => {
+      const btn = document.createElement('button');
+      btn.className = 'pw-char';
+      btn.textContent = word;
+      btn.setAttribute('aria-label', 'Select ' + word);
+      btn.addEventListener('click', function() {
+        if (answerLocked) return;
+        this.classList.toggle('selected');
+        const idx = selectedAnswers.indexOf(word);
+        if (idx === -1) selectedAnswers.push(word);
+        else selectedAnswers.splice(idx, 1);
+      });
+      optionsEl.appendChild(btn);
+    });
+
+    document.getElementById('pw-reveal').textContent = '';
+    document.getElementById('pw-reveal').classList.remove('visible');
+    document.getElementById('pw-feedback').textContent = '';
+    document.getElementById('pw-feedback').className = 'pw-feedback';
+  }
+
+  function checkAnswer() {
+    if (answerLocked) return;
+    answerLocked = true;
+    total++;
+    document.getElementById('pw-total').textContent = total;
+
+    // Order-sensitive check: selected words in the order they appear in correct answer
+    const sel = selectedAnswers.slice().sort((a, b) =>
+      correctAnswer.indexOf(a) - correctAnswer.indexOf(b)
+    );
+
+    const isCorrect = sel.length === correctAnswer.length &&
+      sel.every((w, i) => w === correctAnswer[i]);
+
+    // Colour the selected options
+    document.querySelectorAll('.pw-char').forEach(btn => {
+      if (btn.classList.contains('selected')) {
+        if (correctAnswer.includes(btn.textContent)) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('wrong');
+        }
+      } else if (correctAnswer.includes(btn.textContent)) {
+        btn.classList.add('correct');
+      }
+    });
+
+    if (isCorrect) {
+      correct++;
+      document.getElementById('pw-correct').textContent = correct;
+      document.getElementById('pw-feedback').textContent = '✓ Correct!';
+      document.getElementById('pw-feedback').className = 'pw-feedback correct';
+    } else {
+      document.getElementById('pw-feedback').textContent = '✗ Not quite — correct answer shown above';
+      document.getElementById('pw-feedback').className = 'pw-feedback wrong';
+    }
+
+    document.getElementById('pw-total').textContent = total;
+  }
+
+  function revealAnswer() {
+    answerLocked = true;
+    const revealEl = document.getElementById('pw-reveal');
+    revealEl.textContent = correctAnswer.join(' — ');
+    revealEl.classList.add('visible');
+
+    // Highlight correct options
+    document.querySelectorAll('.pw-char').forEach(btn => {
+      if (correctAnswer.includes(btn.textContent)) btn.classList.add('correct');
+    });
+  }
+
+  document.getElementById('pw-check').addEventListener('click', checkAnswer);
+  document.getElementById('pw-reveal-btn').addEventListener('click', revealAnswer);
+  document.getElementById('pw-next').addEventListener('click', newQuestion);
+
+  // Start
+  newQuestion();
+
+})();
+</script>
+
+<script src="/assets/js/nav-auth.js" defer></script>
+</body>
+</html>
