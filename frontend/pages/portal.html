@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal — RF-Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css">
+<style>
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  text-align: center;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-em));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+.progress-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  height: 28px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--bg-deep);
+  font-weight: 500;
+  transition: width 0.5s ease;
+  min-width: 36px;
+}
+.activity-item {
+  border-left: 3px solid var(--accent-h);
+  padding: 8px 12px;
+  margin: 8px 0;
+}
+.activity-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-em);
+}
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.module-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.module-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.module-phase {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-em);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.module-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.goal-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.goal-content h4 {
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+.goal-content p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Welcome bar */
+.portal-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.1rem 1.4rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.portal-welcome-text h2 {
+  margin: 0 0 0.2rem 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+.portal-welcome-text p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.9rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-logout:hover {
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+</style>
+<link rel="stylesheet" href="/assets/css/search.css">
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="frequency-bands.html">Spectrum</a></li>
+      <li><a href="antennas.html">Antennas</a></li>
+      <li><a href="learning-path.html">Learn</a></li>
+      <li><a href="sidebands/">Sidebands</a></li>
+      <li><a href="gsm-cellular.html">GSM</a></li>
+      <li><a href="blog/">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Your Portal</div>
+    <h1>Dashboard</h1>
+    <p class="hero-subtitle">Track your progress through the RF-Hub curriculum.</p>
+  </div>
+</section>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+  <!-- Welcome bar -->
+  <div class="portal-welcome">
+    <div class="portal-welcome-text">
+      <h2 id="welcomeHeading">Welcome back</h2>
+      <p id="welcomeMeta"></p>
+    </div>
+    <button class="btn-logout" id="logoutBtn">Log out</button>
+  </div>
+
+  <!-- Progress Dashboard -->
+  <div class="card card--accent" style="margin-bottom: 24px;">
+    <h3>Learning Progress</h3>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value" id="modulesComplete">0</div>
+        <div class="stat-label">Modules Completed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="hoursLogged">0</div>
+        <div class="stat-label">Hours Logged</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="measurementCount">0</div>
+        <div class="stat-label">Measurements</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="projectCount">0</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+    </div>
+
+    <h3>Overall Progress</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" id="overallProgress" style="width: 0%">0%</div>
+    </div>
+    <p>Complete all 26 modules to master RF engineering fundamentals!</p>
+
+    <h3>Quick Actions</h3>
+    <div class="btn-row">
+      <button class="btn btn--primary" onclick="exportAllData()">Export All Data</button>
+      <button class="btn btn--ghost" onclick="importData()">Import Data</button>
+    </div>
+
+    <h3 style="margin-top: 24px;">Recent Activity</h3>
+    <div id="recentActivity" style="margin-top: 12px;">
+      <p class="text-dim">No recent activity. Start your learning journey!</p>
+    </div>
+  </div>
+
+  <!-- Equipment Status -->
+  <div class="card" style="margin-bottom: 24px;">
+    <h3>Equipment Status</h3>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h4 class="text-success">Rigol RSA5065N</h4>
+        <p>Spectrum Analyzer + VNA — Ready (9 kHz – 6.5 GHz)</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-success">HackRF One</h4>
+        <p>Software Defined Radio — Ready (1 MHz – 6 GHz)</p>
+      </div>
+      <div class="summary-card">
+        <h4 class="text-success">RTL-SDR v5 (×2)</h4>
+        <p>Receive-Only SDR — Ready (500 kHz – 1.75 GHz)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Learning Modules -->
+  <div class="card" id="modulesCard" style="margin-bottom: 24px;">
+    <h3>Learning Modules</h3>
+    <p id="modulesStatus" class="text-dim" style="margin-bottom: 16px;">Loading modules…</p>
+    <div id="modulesGrid" class="modules-grid"></div>
+  </div>
+
+  <!-- Current Goals -->
+  <div class="card" style="margin-bottom: 24px;">
+    <h3>Current Goals</h3>
+    <div class="goal-item">
+      <div class="goal-content">
+        <h4>Master VNA Measurements</h4>
+        <p>Learn S-parameters, impedance matching, and filter characterization</p>
+      </div>
+      <span class="badge badge--e">In Progress</span>
+    </div>
+    <div class="goal-item">
+      <div class="goal-content">
+        <h4>Build QFH Antenna</h4>
+        <p>Design and construct a Quadrifilar Helix antenna for weather satellites</p>
+      </div>
+      <span class="badge">Planning</span>
+    </div>
+    <div class="goal-item">
+      <div class="goal-content">
+        <h4>Decode ADS-B Signals</h4>
+        <p>Track aircraft using 1090 MHz Mode-S transponder signals</p>
+      </div>
+      <span class="badge">Planning</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="container">
+    <p>RF-Hub &mdash; Amateur Radio Reference Platform</p>
+  </div>
+</footer>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/storage.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+(function () {
+  // ── Auth guard ────────────────────────────────────────────────────────────
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    window.location.href = '/pages/login.html';
+    throw new Error('Redirecting to login');
+  }
+
+  // ── Load profile ──────────────────────────────────────────────────────────
+  async function loadProfile() {
+    try {
+      const data = await api.getProfile();
+      const user = data.user || data;
+      const name = user.username || user.email || 'Operator';
+      const callsign = user.callsign ? ` · ${user.callsign}` : '';
+      document.getElementById('welcomeHeading').textContent = `Welcome back, ${name}`;
+      document.getElementById('welcomeMeta').textContent =
+        `RF-Hub Portal${callsign}`;
+      // Also keep currentUser fresh
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    } catch (err) {
+      // 401/403 — token invalid, force re-login
+      if (err.message && /401|403|unauthori[sz]ed/i.test(err.message)) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        window.location.href = '/pages/login.html';
+      }
+      // Other errors: show cached user if available
+      const cached = api.getCurrentUser();
+      if (cached) {
+        const name = cached.username || cached.email || 'Operator';
+        const callsign = cached.callsign ? ` · ${cached.callsign}` : '';
+        document.getElementById('welcomeHeading').textContent = `Welcome back, ${name}`;
+        document.getElementById('welcomeMeta').textContent = `RF-Hub Portal${callsign}`;
+      }
+    }
+  }
+
+  // ── Logout ────────────────────────────────────────────────────────────────
+  document.getElementById('logoutBtn').addEventListener('click', function () {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    window.location.href = '/';
+  });
+
+  // ── Dashboard stats ───────────────────────────────────────────────────────
+  function updateDashboard() {
+    const completed = Storage.getCompletedModules();
+    document.getElementById('modulesComplete').textContent = completed.length;
+
+    const progress = Math.round((completed.length / 26) * 100);
+    const bar = document.getElementById('overallProgress');
+    bar.style.width = progress + '%';
+    bar.textContent = progress + '%';
+
+    document.getElementById('measurementCount').textContent =
+      Storage.getMeasurements().length;
+    document.getElementById('hoursLogged').textContent = completed.length * 2;
+
+    const active = Storage.getProjects().filter(p => p.status !== 'completed').length;
+    document.getElementById('projectCount').textContent = active;
+  }
+
+  // ── Recent activity ───────────────────────────────────────────────────────
+  function loadRecentActivity() {
+    const activity = Storage.getRecentActivity();
+    const el = document.getElementById('recentActivity');
+    if (activity.length > 0) {
+      el.innerHTML = activity.slice(0, 5).map(function (item) {
+        return '<div class="activity-item">' +
+          '<div class="activity-date">' + (item.date || '') + '</div>' +
+          '<p style="margin:4px 0 0 0;">' + item.description + '</p>' +
+          '</div>';
+      }).join('');
+    }
+  }
+
+  // ── Learning modules (from API) ───────────────────────────────────────────
+  function loadModules() {
+    const grid   = document.getElementById('modulesGrid');
+    const status = document.getElementById('modulesStatus');
+    const diffCls = { beginner: 'text-success', intermediate: 'text-e', advanced: 'text-power' };
+
+    api.getModules()
+      .then(function (data) {
+        const modules = data.modules || data;
+        if (!Array.isArray(modules) || modules.length === 0) {
+          status.textContent = 'No modules available yet.';
+          return;
+        }
+        status.textContent = modules.length + ' module(s) available';
+        grid.innerHTML = modules.map(function (m) {
+          const cls = diffCls[m.difficulty] || 'text-dim';
+          return '<div class="module-card">' +
+            '<div class="module-meta">' +
+              '<span class="module-phase">Phase ' + m.phase + ' · ' + m.module_number + '</span>' +
+              '<span class="' + cls + '" style="font-family:var(--font-mono);font-size:11px;text-transform:capitalize;">' + m.difficulty + '</span>' +
+            '</div>' +
+            '<h4 style="margin:0 0 8px 0;">' + m.title + '</h4>' +
+            '<p style="font-size:0.85rem;margin:0 0 10px 0;">' +
+              m.description.substring(0, 100) + (m.description.length > 100 ? '…' : '') +
+            '</p>' +
+            '<span class="module-time">⏱ ' + m.estimated_time_minutes + ' min</span>' +
+          '</div>';
+        }).join('');
+      })
+      .catch(function (err) {
+        status.textContent = 'Could not load modules — API unreachable.';
+        grid.innerHTML = '<p class="text-dim">Modules will appear here when the backend is available.</p>';
+        console.warn('[RF-Hub] Module fetch failed:', err.message);
+      });
+  }
+
+  // ── Export / Import ───────────────────────────────────────────────────────
+  function exportAllData() {
+    const data = Storage.exportAllData();
+    exportToJSON(data, 'rf-hub-backup-' + new Date().toISOString().split('T')[0] + '.json');
+    Storage.addActivity('Exported all data');
+  }
+
+  function importData() {
+    importFile('.json', function (data) {
+      if (Storage.importData(data)) {
+        Storage.addActivity('Imported data successfully');
+        updateDashboard();
+        loadRecentActivity();
+        alert('Data imported successfully!');
+      } else {
+        alert('Import failed — invalid data format.');
+      }
+    });
+  }
+
+  // Expose to onclick attributes
+  window.exportAllData = exportAllData;
+  window.importData    = importData;
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    loadProfile();
+    updateDashboard();
+    loadRecentActivity();
+    loadModules();
+  });
+})();
+</script>
+<script src="/assets/js/search.js" defer></script>
+</body>
+</html>
