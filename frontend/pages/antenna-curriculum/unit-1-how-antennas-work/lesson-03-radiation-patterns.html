@@ -652,6 +652,54 @@ input[type="range"]::-moz-range-thumb {
   }
   html { scroll-behavior: auto; }
 }
+
+/* ── Lesson navigation (canonical) ────────────────── */
+.lesson-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.3); transform: translateY(-1px); }
+.nav-btn--next { margin-left: auto; background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.25); color: var(--accent-em); }
+.nav-btn--next:hover { background: rgba(167,139,250,0.15); }
+.btn-mark-complete {
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #a78bfa, #06b6d4);
+  border: none;
+  border-radius: 8px;
+  color: #0a0e1a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-mark-complete:hover { opacity: 0.88; }
+.btn-mark-complete:disabled { opacity: 0.5; cursor: not-allowed; }
+.complete-confirm { color: #4ade80; font-size: 0.9rem; margin: 0; }
+.lesson-nav-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); margin-left: auto; }
+@media (max-width: 600px) {
+  .lesson-nav { flex-direction: column; align-items: stretch; }
+  .nav-btn { text-align: center; justify-content: center; }
+  .nav-btn--next { margin-left: 0; }
+  .lesson-nav-label { margin-left: 0; }
+}
 </style>
 </head>
 <body>
@@ -1575,18 +1623,15 @@ input[type="range"]::-moz-range-thumb {
       <div class="next-card-content">
         <h3>What's Next: Antenna Types</h3>
         <p>Lesson 4 is the Antenna Types Tour. You now know what a radiation pattern is and how to read one. In Lesson 4 you will meet the main antenna families — vertical, Yagi, loop, patch, dish — and see how each produces a different pattern shape through different physical design choices. For each antenna type, the question will be: what does the current distribution look like, and what pattern shape does that produce?</p>
-        <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2: How Antennas Radiate</a>
-        <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types-tour.html">Lesson 4: Antenna Types →</a>
       </div>
     </div>
 
-    <!-- Lesson navigation -->
-    <nav class="lesson-nav" aria-label="Lesson navigation" style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
-      <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2</a>
-      <button class="btn-mark-complete" id="markCompleteBtn" onclick="markLessonComplete()"
-        style="padding:0.6rem 1.4rem;background:linear-gradient(135deg,#a78bfa,#06b6d4);border:none;border-radius:8px;color:#0a0e1a;font-size:0.9rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;">Mark Lesson Complete</button>
-      <p class="complete-confirm" id="completeConfirm" style="display:none;color:#4ade80;font-size:0.95rem;margin-top:0.5rem;width:100%;">&#10003; Lesson complete!</p>
-      <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types-tour.html">Lesson 4 →</a>
+    <!-- LESSON NAVIGATION -->
+    <nav class="lesson-nav" aria-label="Lesson navigation">
+      <a class="nav-btn" href="lesson-02-how-antennas-radiate.html">← Lesson 2: How Antennas Radiate</a>
+      <button class="btn-mark-complete" id="markCompleteBtn" onclick="markLessonComplete()">Mark Lesson Complete</button>
+      <p class="complete-confirm" id="completeConfirm" style="display:none;">&#10003; Lesson complete!</p>
+      <a class="nav-btn nav-btn--next" href="lesson-04-antenna-types-tour.html">Lesson 4: Antenna Types →</a>
     </nav>
   </div>
 
