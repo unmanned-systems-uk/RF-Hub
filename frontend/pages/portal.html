@@ -406,17 +406,19 @@
         status.textContent = modules.length + ' module(s) available';
         grid.innerHTML = modules.map(function (m) {
           const cls = diffCls[m.difficulty] || 'text-dim';
-          return '<div class="module-card">' +
-            '<div class="module-meta">' +
-              '<span class="module-phase">Phase ' + m.phase + ' · ' + m.module_number + '</span>' +
-              '<span class="' + cls + '" style="font-family:var(--font-mono);font-size:11px;text-transform:capitalize;">' + m.difficulty + '</span>' +
+          return '<a href="learning-path.html" style="text-decoration:none;color:inherit;">' +
+            '<div class="module-card">' +
+              '<div class="module-meta">' +
+                '<span class="module-phase">Phase ' + m.phase + ' · ' + m.module_number + '</span>' +
+                '<span class="' + cls + '" style="font-family:var(--font-mono);font-size:11px;text-transform:capitalize;">' + m.difficulty + '</span>' +
+              '</div>' +
+              '<h4 style="margin:0 0 8px 0;">' + m.title + '</h4>' +
+              '<p style="font-size:0.85rem;margin:0 0 10px 0;">' +
+                m.description.substring(0, 100) + (m.description.length > 100 ? '…' : '') +
+              '</p>' +
+              '<span class="module-time">⏱ ' + m.estimated_time_minutes + ' min</span>' +
             '</div>' +
-            '<h4 style="margin:0 0 8px 0;">' + m.title + '</h4>' +
-            '<p style="font-size:0.85rem;margin:0 0 10px 0;">' +
-              m.description.substring(0, 100) + (m.description.length > 100 ? '…' : '') +
-            '</p>' +
-            '<span class="module-time">⏱ ' + m.estimated_time_minutes + ' min</span>' +
-          '</div>';
+          '</a>';
         }).join('');
       })
       .catch(function (err) {
