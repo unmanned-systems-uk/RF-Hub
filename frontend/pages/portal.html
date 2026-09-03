@@ -234,7 +234,10 @@
       <div class="progress-fill" id="overallProgress" style="width: 0%">0%</div>
     </div>
     <p>Complete all 26 modules to master RF engineering fundamentals!</p>
-    <a href="learning-path.html" class="btn btn--primary" style="display:inline-block;margin-top:12px;">Start Learning</a>
+    <div id="nextLessonWrap" style="margin-top:12px;">
+      <a href="antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html"
+         id="nextLessonBtn" class="btn btn--primary" style="display:inline-block;">Start Learning</a>
+    </div>
 
     <h3>Quick Actions</h3>
     <div class="btn-row">
@@ -452,12 +455,45 @@
   window.exportAllData = exportAllData;
   window.importData    = importData;
 
+  // ── Next lesson button ────────────────────────────────────────────────────
+  var LESSON_URLS = {
+    'lesson-01': 'antenna-curriculum/unit-1-how-antennas-work/lesson-01-em-radiation.html',
+    'lesson-02': 'antenna-curriculum/unit-1-how-antennas-work/lesson-02-how-antennas-radiate.html',
+    'lesson-03': 'antenna-curriculum/unit-1-how-antennas-work/lesson-03-radiation-patterns.html',
+    'lesson-04': 'antenna-curriculum/unit-1-how-antennas-work/lesson-04-antenna-types-tour.html',
+    'lesson-05': 'antenna-curriculum/unit-1-how-antennas-work/lesson-05-polarisation.html'
+  };
+
+  function loadNextLesson() {
+    var token = localStorage.getItem('authToken');
+    var btn   = document.getElementById('nextLessonBtn');
+    if (!token || !btn) return;
+
+    fetch('/api/lessons/progress', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.next_lesson && LESSON_URLS[d.next_lesson]) {
+          var num = d.next_lesson.replace('lesson-0', '').replace('lesson-', '');
+          btn.href        = LESSON_URLS[d.next_lesson];
+          btn.textContent = 'Continue to Lesson ' + num;
+        } else if (d.next_lesson === null) {
+          btn.textContent  = 'All Lessons Complete';
+          btn.removeAttribute('href');
+          btn.style.opacity = '0.6';
+          btn.style.cursor  = 'default';
+        }
+        // any other response: keep default "Start Learning" link
+      }).catch(function () {}); // fallback: keep "Start Learning"
+  }
+
   // ── Init ──────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     loadProfile();
     updateDashboard();
     loadRecentActivity();
     loadModules();
+    loadNextLesson();
   });
 })();
 </script>

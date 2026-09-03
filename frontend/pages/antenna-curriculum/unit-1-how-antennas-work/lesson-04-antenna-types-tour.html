@@ -2447,6 +2447,40 @@ document.querySelectorAll('.btn-reveal').forEach(function(btn) {
 
 <script src="/assets/js/dev-pages.js"></script>
 <script src="/assets/js/dev-nav.js"></script>
+<script src="/assets/js/api.js"></script>
 <script src="/assets/js/nav-auth.js" defer></script>
+<script>
+var LESSON_ID = 'lesson-04';
+
+async function markLessonComplete() {
+  var token = localStorage.getItem('authToken');
+  if (!token) { window.location.href = '/pages/login.html'; return; }
+  try {
+    var res = await fetch('/api/lessons/' + LESSON_ID + '/complete', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    if (res.ok) {
+      document.getElementById('markCompleteBtn').style.display = 'none';
+      document.getElementById('completeConfirm').style.display = 'block';
+    }
+  } catch (e) { console.error('Failed to mark complete:', e); }
+}
+
+(function () {
+  var token = localStorage.getItem('authToken');
+  if (!token) return;
+  fetch('/api/lessons/' + LESSON_ID + '/status', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.completed) {
+        document.getElementById('markCompleteBtn').textContent = 'Lesson Completed';
+        document.getElementById('markCompleteBtn').disabled = true;
+        document.getElementById('markCompleteBtn').style.opacity = '0.5';
+      }
+    }).catch(function () {});
+})();
+</script>
 </body>
 </html>

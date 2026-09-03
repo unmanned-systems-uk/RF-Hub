@@ -1570,7 +1570,13 @@ input[type="range"]::-moz-range-thumb {
     </div>
 
     <!-- What's Next -->
-    <div class="next-card">
+    <div class="lesson-complete-wrap" id="lessonComplete" style="margin:2rem 0;text-align:center;">
+  <button class="btn-mark-complete" id="markCompleteBtn" onclick="markLessonComplete()"
+    style="padding:0.75rem 2.5rem;background:linear-gradient(135deg,#a78bfa,#06b6d4);border:none;border-radius:8px;color:#0a0e1a;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;">Mark Lesson Complete</button>
+  <p class="complete-confirm" id="completeConfirm" style="display:none;color:#4ade80;font-size:0.95rem;margin-top:0.75rem;">&#10003; Lesson complete!</p>
+</div>
+
+<div class="next-card">
       <div class="next-card-icon">→</div>
       <div class="next-card-content">
         <h3>What's Next: Antenna Types</h3>
@@ -2180,6 +2186,40 @@ document.querySelectorAll('.btn-reveal').forEach(function(btn) {
 
 <script src="/assets/js/dev-pages.js"></script>
 <script src="/assets/js/dev-nav.js"></script>
+<script src="/assets/js/api.js"></script>
 <script src="/assets/js/nav-auth.js" defer></script>
+<script>
+var LESSON_ID = 'lesson-03';
+
+async function markLessonComplete() {
+  var token = localStorage.getItem('authToken');
+  if (!token) { window.location.href = '/pages/login.html'; return; }
+  try {
+    var res = await fetch('/api/lessons/' + LESSON_ID + '/complete', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    if (res.ok) {
+      document.getElementById('markCompleteBtn').style.display = 'none';
+      document.getElementById('completeConfirm').style.display = 'block';
+    }
+  } catch (e) { console.error('Failed to mark complete:', e); }
+}
+
+(function () {
+  var token = localStorage.getItem('authToken');
+  if (!token) return;
+  fetch('/api/lessons/' + LESSON_ID + '/status', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.completed) {
+        document.getElementById('markCompleteBtn').textContent = 'Lesson Completed';
+        document.getElementById('markCompleteBtn').disabled = true;
+        document.getElementById('markCompleteBtn').style.opacity = '0.5';
+      }
+    }).catch(function () {});
+})();
+</script>
 </body>
 </html>
