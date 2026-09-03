@@ -163,6 +163,30 @@ CREATE INDEX idx_progress_user_status ON user_progress(user_id, status);
 CREATE INDEX idx_progress_module_completed ON user_progress(module_id, completed_at DESC);
 
 -- ========================================
+-- 3B. LESSON PROGRESS TABLE
+-- ========================================
+
+CREATE TABLE lesson_progress (
+    -- Primary identification
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Foreign keys
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+
+    -- Lesson tracking
+    lesson_id VARCHAR(30) NOT NULL,
+
+    -- Metadata
+    completed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Constraints
+    UNIQUE(user_id, lesson_id)
+);
+
+-- Indexes for lesson_progress table
+CREATE INDEX idx_lesson_progress_user ON lesson_progress(user_id);
+
+-- ========================================
 -- 4. QUIZZES TABLE
 -- ========================================
 
@@ -434,6 +458,7 @@ CREATE TRIGGER update_saved_calculations_updated_at BEFORE UPDATE ON saved_calcu
 COMMENT ON TABLE users IS 'User accounts with authentication and profile information';
 COMMENT ON TABLE modules IS 'Learning curriculum - 26 modules across 4 phases';
 COMMENT ON TABLE user_progress IS 'Tracks user completion of modules';
+COMMENT ON TABLE lesson_progress IS 'Tracks per-lesson completion (separate from module-level tracking)';
 COMMENT ON TABLE quizzes IS 'Quiz metadata and configuration';
 COMMENT ON TABLE quiz_questions IS 'Individual quiz questions with answers';
 COMMENT ON TABLE quiz_attempts IS 'User quiz submissions and scores';
