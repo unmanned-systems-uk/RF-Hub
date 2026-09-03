@@ -15,8 +15,12 @@ const quizRoutes = require('./routes/quizzes');
 const badgeRoutes = require('./routes/badges');
 const calculationRoutes = require('./routes/calculations');
 const videoRoutes = require('./routes/videos');
+const lessonRoutes = require('./routes/lessons');
 
 const app = express();
+
+// Trust NGINX reverse proxy (required for rate-limiting behind proxy)
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
@@ -121,6 +125,7 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/calculations', calculationRoutes);
 app.use('/api/videos', videoRoutes);
+app.use('/api/lessons', lessonRoutes);
 
 // 404 handler
 app.use((req, res) => {
