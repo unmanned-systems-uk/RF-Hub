@@ -519,7 +519,7 @@ function drawNVIS(txX, txY, rxX, rxY) {
   ctx.textAlign   = 'center';
   ctx.fillText('F-layer (ionosphere) ~250 km  ↕  not to scale', midX, PAD.t + 14);
 
-  // NVIS arc: two bezier arms meeting at the ionosphere strip
+  // NVIS path: vertical up from TX, horizontal at F-layer, vertical down to RX
   const ctrlY = PAD.t + 26;
   ctx.strokeStyle = 'rgba(34,197,94,0.60)';
   ctx.lineWidth   = 1.8;
@@ -527,12 +527,9 @@ function drawNVIS(txX, txY, rxX, rxY) {
 
   ctx.beginPath();
   ctx.moveTo(txX, txY);
-  ctx.bezierCurveTo(txX, ctrlY, midX - 20, ctrlY, midX, ctrlY);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(midX, ctrlY);
-  ctx.bezierCurveTo(midX + 20, ctrlY, rxX, ctrlY, rxX, rxY);
+  ctx.lineTo(txX, ctrlY);   // straight up from TX
+  ctx.lineTo(rxX, ctrlY);   // horizontal across at F-layer
+  ctx.lineTo(rxX, rxY);     // straight down to RX
   ctx.stroke();
   ctx.setLineDash([]);
 
