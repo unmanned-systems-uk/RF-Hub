@@ -100,11 +100,11 @@ def make_sampler(dem, transform):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--from-lat",  type=float, default=55.9222,
-                    help="TX latitude  (default: Blackford Hill, Edinburgh)")
-    ap.add_argument("--from-lon",  type=float, default=-3.1863,
-                    help="TX longitude (default: Blackford Hill, Edinburgh)")
-    ap.add_argument("--from-name", default="Blackford Hill, Edinburgh")
+    ap.add_argument("--from-lat",  type=float, default=55.9375,
+                    help="TX latitude  (default: GM0PXV, IO85IW)")
+    ap.add_argument("--from-lon",  type=float, default=-3.2917,
+                    help="TX longitude (default: GM0PXV, IO85IW)")
+    ap.add_argument("--from-name", default="GM0PXV, IO85IW")
     ap.add_argument("--to-lat",    type=float, default=55.6244,
                     help="RX latitude  (default: IO85LO)")
     ap.add_argument("--to-lon",    type=float, default=-3.0162,
