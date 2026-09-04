@@ -262,7 +262,7 @@ function buildScales() {
   let eMax = Math.max(...eff, txH, rxH);
   const span = eMax - eMin;
   eMin -= span * 0.04;
-  eMax += span * 0.14;   // extra headroom for NVIS label
+  eMax += span * (S.isHF ? 0.5 : 0.14);   // HF: extra headroom so NVIS arc clears terrain
   _yMin = eMin; _yMax = eMax;
   _xS = d => PAD.l + (d / D) * (_W - PAD.l - PAD.r);
   _yS = e => PAD.t + (_H - PAD.t - PAD.b) * (1 - (e - _yMin) / (_yMax - _yMin));
