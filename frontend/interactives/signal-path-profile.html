@@ -262,20 +262,10 @@ function buildScales() {
   let eMax = Math.max(...eff, txH, rxH);
   const span = eMax - eMin;
   eMin -= span * 0.04;
-  eMax += span * 0.14;
+  eMax += span * (S.isHF ? 0.8 : 0.14);
   _yMin = eMin; _yMax = eMax;
   _xS = d => PAD.l + (d / D) * (_W - PAD.l - PAD.r);
-  const plotH = _H - PAD.t - PAD.b;
-  if (S.isHF) {
-    // top 15% = ionosphere zone; terrain maps to bottom 85% with an 8px squiggle gap
-    _breakY = PAD.t + plotH * 0.15;
-    const terrTop = _breakY + 8;
-    const terrBot = _H - PAD.b;
-    _yS = e => terrTop + (terrBot - terrTop) * (1 - (e - _yMin) / (_yMax - _yMin));
-  } else {
-    _breakY = 0;
-    _yS = e => PAD.t + plotH * (1 - (e - _yMin) / (_yMax - _yMin));
-  }
+  _yS = e => PAD.t + (_H - PAD.t - PAD.b) * (1 - (e - _yMin) / (_yMax - _yMin));
 }
 
 function xToD(px) {
@@ -508,84 +498,30 @@ function draw() {
   }
 }
 
-// ── NVIS SPLIT-AXIS OVERLAY ───────────────────────────────────────────────────
+// ── NVIS ARC ──────────────────────────────────────────────────────────────────
 function drawNVIS(txX, txY, rxX, rxY) {
   const midX  = (txX + rxX) / 2;
-  const iTop  = PAD.t;                           // top of ionosphere zone
-  const iBot  = _breakY;                         // bottom of ionosphere zone (= break line)
-  const iMid  = iTop + (iBot - iTop) * 0.5;     // reflection dot y inside iono zone
-  const gap   = 8;                               // px gap either side of break for path segments
+  const peakY = PAD.t + 10;   // near top of canvas — well above terrain with span*0.8 headroom
 
-  // ── Ionosphere strip (top 15% of plot) ──────────────────────────────────
-  ctx.fillStyle = 'rgba(34,197,94,0.07)';
-  ctx.fillRect(PAD.l, iTop, _W - PAD.l - PAD.r, iBot - iTop);
-  ctx.fillStyle = 'rgba(34,197,94,0.70)';
-  ctx.font      = '9px IBM Plex Mono,monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('F-layer (ionosphere) ~250 km  ↕  not to scale', midX, iTop + (iBot - iTop) * 0.5 + 3);
-
-  // ── Axis break squiggle on y-axis ───────────────────────────────────────
-  const sqX = PAD.l - 3;
-  ctx.strokeStyle = 'rgba(148,163,184,0.85)';
-  ctx.lineWidth   = 1.5;
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.moveTo(sqX - 5, iBot - 4);
-  ctx.lineTo(sqX + 3, iBot);
-  ctx.lineTo(sqX - 5, iBot + 4);
-  ctx.stroke();
-  // faint dashed separator across full plot width
-  ctx.strokeStyle = 'rgba(148,163,184,0.18)';
-  ctx.lineWidth   = 1;
-  ctx.setLineDash([3, 7]);
-  ctx.beginPath();
-  ctx.moveTo(PAD.l, iBot);
-  ctx.lineTo(_W - PAD.r, iBot);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = 'rgba(100,116,139,0.70)';
-  ctx.font      = '8px IBM Plex Mono,monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText('// axis break', PAD.l + 4, iBot + 10);
-
-  // ── NVIS signal path (4 segments crossing the break) ────────────────────
-  ctx.strokeStyle = 'rgba(34,197,94,0.65)';
+  // Single smooth arc TX → peak → RX
+  ctx.strokeStyle = 'rgba(34,197,94,0.60)';
   ctx.lineWidth   = 1.8;
   ctx.setLineDash([6, 4]);
-
-  // TX terrain side: antenna → just below break
   ctx.beginPath();
   ctx.moveTo(txX, txY);
-  ctx.lineTo(txX, iBot - gap);
+  ctx.quadraticCurveTo(midX, peakY, rxX, rxY);
   ctx.stroke();
-
-  // TX iono side: just above break → arc to reflection
-  ctx.beginPath();
-  ctx.moveTo(txX, iBot - gap - 2);
-  ctx.quadraticCurveTo(txX, iMid, midX, iMid);
-  ctx.stroke();
-
-  // RX iono side: reflection → arc down to just above break
-  ctx.beginPath();
-  ctx.moveTo(midX, iMid);
-  ctx.quadraticCurveTo(rxX, iMid, rxX, iBot - gap - 2);
-  ctx.stroke();
-
-  // RX terrain side: just below break → antenna
-  ctx.beginPath();
-  ctx.moveTo(rxX, iBot - gap);
-  ctx.lineTo(rxX, rxY);
-  ctx.stroke();
-
   ctx.setLineDash([]);
 
-  // ── Reflection dot + label ───────────────────────────────────────────────
+  // Reflection dot at arc peak
   ctx.fillStyle = 'rgba(34,197,94,0.80)';
-  ctx.beginPath(); ctx.arc(midX, iMid, 3.5, 0, 2 * Math.PI); ctx.fill();
+  ctx.beginPath(); ctx.arc(midX, peakY, 3.5, 0, 2 * Math.PI); ctx.fill();
+
+  // Label
   ctx.fillStyle = 'rgba(34,197,94,0.70)';
   ctx.font      = '9px IBM Plex Mono,monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('reflection', midX, iMid - 7);
+  ctx.fillText('NVIS — not to scale', midX, peakY - 8);
 }
 
 // ── HOVER ─────────────────────────────────────────────────────────────────────
