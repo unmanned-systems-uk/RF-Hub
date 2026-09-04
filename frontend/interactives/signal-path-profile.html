@@ -289,7 +289,8 @@ function draw() {
     ctx.fillStyle = 'rgba(100,116,139,0.7)';
     ctx.font = '10px IBM Plex Mono,monospace';
     ctx.textAlign = 'right';
-    ctx.fillText(e.toFixed(0) + ' m', PAD.l - 5, y + 3.5);
+    const isTop = S.isHF && (e + eStep > _yMax);
+    ctx.fillText(isTop ? '~250 km' : e.toFixed(0) + ' m', PAD.l - 5, y + 3.5);
   }
   const dkStep = niceStep(META.distance_km / 6);
   for (let dk = 0; dk <= META.distance_km; dk += dkStep) {
@@ -503,13 +504,14 @@ function drawNVIS(txX, txY, rxX, rxY) {
   const midX  = (txX + rxX) / 2;
   const peakY = PAD.t + 10;   // near top of canvas — well above terrain with span*0.8 headroom
 
-  // Single smooth arc TX → peak → RX
+  // Two quadratics meeting at peak — curve passes through (midX, peakY) exactly
   ctx.strokeStyle = 'rgba(34,197,94,0.60)';
   ctx.lineWidth   = 1.8;
   ctx.setLineDash([6, 4]);
   ctx.beginPath();
   ctx.moveTo(txX, txY);
-  ctx.quadraticCurveTo(midX, peakY, rxX, rxY);
+  ctx.quadraticCurveTo(txX, peakY, midX, peakY);  // TX steep up to peak
+  ctx.quadraticCurveTo(rxX, peakY, rxX, rxY);      // peak steep down to RX
   ctx.stroke();
   ctx.setLineDash([]);
 
