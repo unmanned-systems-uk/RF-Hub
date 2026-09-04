@@ -556,16 +556,16 @@ canvas.addEventListener('mousemove', e => {
   const idx = Math.round(dm / META.step_m);
   const pt  = PROFILE[Math.max(0, Math.min(idx, PROFILE.length - 1))];
   if (!pt || pt[1] === null) { document.getElementById('hover-box').style.display = 'none'; return; }
-  const [d, e] = pt;
+  const [d, el] = pt;
   const los = losHeight(d), F1 = fresnelR(d), bg = bulge(d);
   const box = document.getElementById('hover-box');
   box.style.display = 'block';
   box.style.left = (mx + 12) + 'px';
   box.style.top  = Math.max(4, my - 40) + 'px';
   box.innerHTML =
-    `${(d/1000).toFixed(2)} km  ·  terrain: ${e.toFixed(0)} m  ·  ` +
+    `${(d/1000).toFixed(2)} km  ·  terrain: ${el.toFixed(0)} m  ·  ` +
     `bulge: +${bg.toFixed(0)} m  ·  LOS: ${los.toFixed(0)} m  ·  ` +
-    (S.isHF ? 'NVIS' : `F1 ±${F1.toFixed(0)} m  ·  clr: ${(los - e - bg >= 0 ? '+' : '')}${(los - e - bg).toFixed(0)} m`);
+    (S.isHF ? 'NVIS' : `F1 ±${F1.toFixed(0)} m  ·  clr: ${(los - el - bg >= 0 ? '+' : '')}${(los - el - bg).toFixed(0)} m`);
 });
 canvas.addEventListener('mouseleave', () => {
   document.getElementById('hover-box').style.display = 'none';
