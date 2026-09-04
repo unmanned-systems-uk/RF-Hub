@@ -519,17 +519,24 @@ function drawNVIS(txX, txY, rxX, rxY) {
   ctx.textAlign   = 'center';
   ctx.fillText('F-layer (ionosphere) ~250 km  ↕  not to scale', midX, PAD.t + 14);
 
-  // NVIS path: vertical up from TX, horizontal at F-layer, vertical down to RX
+  // NVIS path: smooth curves near antennas, horizontal at F-layer
   const ctrlY = PAD.t + 26;
   ctx.strokeStyle = 'rgba(34,197,94,0.60)';
   ctx.lineWidth   = 1.8;
   ctx.setLineDash([6, 4]);
 
+  // TX arm: smooth curve up from antenna, then horizontal to midpoint
   ctx.beginPath();
   ctx.moveTo(txX, txY);
-  ctx.lineTo(txX, ctrlY);   // straight up from TX
-  ctx.lineTo(rxX, ctrlY);   // horizontal across at F-layer
-  ctx.lineTo(rxX, rxY);     // straight down to RX
+  ctx.quadraticCurveTo(txX, ctrlY, txX + 40, ctrlY);
+  ctx.lineTo(midX, ctrlY);
+  ctx.stroke();
+
+  // RX arm: horizontal from midpoint, then smooth curve down to antenna
+  ctx.beginPath();
+  ctx.moveTo(midX, ctrlY);
+  ctx.lineTo(rxX - 40, ctrlY);
+  ctx.quadraticCurveTo(rxX, ctrlY, rxX, rxY);
   ctx.stroke();
   ctx.setLineDash([]);
 
