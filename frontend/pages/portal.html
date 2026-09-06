@@ -165,6 +165,32 @@
   border-color: #ef4444;
   color: #fca5a5;
 }
+/* ── Exam section ── */
+.exam-attempt-item {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.exam-attempt-item:last-child { border-bottom: none; }
+.level-pill {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  padding: 0.2rem 0.55rem; border-radius: 4px;
+  background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25);
+  color: #a78bfa; text-transform: capitalize; white-space: nowrap;
+}
+.exam-score { font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; }
+.exam-pass-pill {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  padding: 0.15rem 0.5rem; border-radius: 4px; white-space: nowrap;
+}
+.exam-pass-pill.pass { background: rgba(74,222,128,0.12); border: 1px solid #4ade80; color: #4ade80; }
+.exam-pass-pill.fail { background: rgba(248,113,113,0.12); border: 1px solid #f87171; color: #f87171; }
+.exam-date { color: var(--text-dim); font-family: var(--font-mono); font-size: 0.75rem; }
+.exam-review-link { margin-left: auto; font-size: 0.8rem; color: #a78bfa; white-space: nowrap; }
+.exam-cta {
+  text-align: center; padding: 1.5rem 0;
+}
+.exam-cta p { color: var(--text-dim); margin: 0 0 1rem; }
 </style>
 <link rel="stylesheet" href="/assets/css/search.css">
 </head>
@@ -276,6 +302,15 @@
     <h3>Learning Modules</h3>
     <p id="modulesStatus" class="text-dim" style="margin-bottom: 16px;">Loading modules…</p>
     <div id="modulesGrid" class="modules-grid"></div>
+  </div>
+
+  <!-- Exam Practice -->
+  <div class="card" id="examCard" style="margin-bottom: 24px; display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
+      <h3 style="margin:0;">Exam Practice</h3>
+      <a href="exam-practice/" class="btn btn--ghost" style="font-size:0.85rem;">Continue Practising →</a>
+    </div>
+    <div id="examContent"><p class="text-dim">Loading…</p></div>
   </div>
 
   <!-- Current Goals -->
@@ -514,6 +549,106 @@
       }).catch(function () {}); // fallback: keep "Start Learning"
   }
 
+  // ── Exam section ──────────────────────────────────────────────────────────
+  function loadExamSection() {
+    var card    = document.getElementById('examCard');
+    var content = document.getElementById('examContent');
+
+    // Fetch all 3 levels in parallel
+    Promise.allSettled([
+      api.getExamHistory('foundation'),
+      api.getExamHistory('intermediate'),
+      api.getExamHistory('full')
+    ]).then(function (results) {
+      var allAttempts = [];
+      results.forEach(function (res) {
+        if (res.status === 'fulfilled') {
+          var hist = (res.value && (res.value.attempts || res.value)) || [];
+          if (Array.isArray(hist)) {
+            allAttempts = allAttempts.concat(hist);
+          }
+        }
+      });
+
+      card.style.display = '';
+
+      if (allAttempts.length === 0) {
+        content.innerHTML =
+          '<div class="exam-cta">' +
+            '<p>Ready to test your knowledge?</p>' +
+            '<a href="exam-practice/" class="btn btn--primary">Start Your First Mock Exam →</a>' +
+          '</div>';
+        return;
+      }
+
+      // Sort by date descending
+      allAttempts.sort(function (a, b) {
+        return new Date(b.completed_at || b.date || 0) - new Date(a.completed_at || a.date || 0);
+      });
+
+      var totalAttempts = allAttempts.length;
+      var bestPct = Math.max.apply(null, allAttempts.map(function (a) { return a.percentage || 0; }));
+
+      // Find weakest section across all attempts (use last attempt's section breakdown)
+      var weakSection = '—';
+      var weakPct = null;
+      var lastWithSections = allAttempts.find(function (a) { return a.sections && a.sections.length; });
+      if (lastWithSections) {
+        var worst = lastWithSections.sections.reduce(function (w, s) {
+          return (s.percentage != null && (w === null || s.percentage < w.percentage)) ? s : w;
+        }, null);
+        if (worst) {
+          weakSection = worst.section_name || worst.section_code || '—';
+          weakPct = worst.percentage;
+        }
+      }
+
+      // Stats row
+      var statsHtml =
+        '<div class="stats-grid" style="margin-bottom:1.25rem;">' +
+          '<div class="stat-box"><div class="stat-value">' + totalAttempts + '</div><div class="stat-label">Total Attempts</div></div>' +
+          '<div class="stat-box"><div class="stat-value">' + bestPct.toFixed(1) + '%</div><div class="stat-label">Best Score</div></div>' +
+          '<div class="stat-box"><div class="stat-value" style="font-size:1rem;line-height:1.3;">' +
+            escHtml(weakSection) + (weakPct !== null ? ' <small style="font-size:0.7em;color:var(--text-dim);">' + weakPct + '%</small>' : '') +
+          '</div><div class="stat-label">Weakest Section</div></div>' +
+        '</div>';
+
+      // Recent 3 attempts
+      var recentHtml = '<p style="font-family:var(--font-mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin:0 0 0.5rem;">Recent Attempts</p>';
+      var recent = allAttempts.slice(0, 3);
+      recent.forEach(function (a) {
+        var levelLabel = { foundation: 'Foundation', intermediate: 'Intermediate', full: 'Full (D2F)' }[a.level] || (a.level || '—');
+        var pct    = a.percentage != null ? a.percentage.toFixed(1) + '%' : '—';
+        var passed = a.passed != null ? a.passed : (a.percentage >= 65);
+        var dateStr = '';
+        if (a.completed_at || a.date) {
+          var d = new Date(a.completed_at || a.date);
+          dateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        var reviewLink = (a.id || a.attempt_id)
+          ? '<a href="exam-practice/exam.html" class="exam-review-link">Review →</a>'
+          : '';
+        recentHtml +=
+          '<div class="exam-attempt-item">' +
+            '<span class="level-pill">' + escHtml(levelLabel) + '</span>' +
+            '<span class="exam-score">' + escHtml(pct) + '</span>' +
+            '<span class="exam-pass-pill ' + (passed ? 'pass' : 'fail') + '">' + (passed ? 'PASS' : 'FAIL') + '</span>' +
+            (dateStr ? '<span class="exam-date">' + escHtml(dateStr) + '</span>' : '') +
+            reviewLink +
+          '</div>';
+      });
+
+      content.innerHTML = statsHtml + recentHtml;
+    }).catch(function () {
+      // Silently hide exam section if API fails
+    });
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
   // ── Init ──────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     loadProfile();
@@ -521,6 +656,7 @@
     loadRecentActivity();
     loadModules();
     loadNextLesson();
+    loadExamSection();
   });
 })();
 </script>
