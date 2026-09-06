@@ -489,6 +489,7 @@ CREATE TABLE exam_questions (
 -- Indexes for exam_questions
 CREATE INDEX idx_exam_questions_level ON exam_questions(level);
 CREATE INDEX idx_exam_questions_section ON exam_questions(level, section_code);
+CREATE UNIQUE INDEX idx_exam_questions_syllabus_ref ON exam_questions(syllabus_ref);
 
 -- ========================================
 -- 10. EXAM ATTEMPTS TABLE
