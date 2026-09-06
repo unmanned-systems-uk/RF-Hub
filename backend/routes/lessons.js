@@ -57,7 +57,7 @@ router.get('/progress', authenticateToken, async (req, res, next) => {
     const completed = result.rows.map(r => r.lesson_id);
 
     // Find lowest-numbered incomplete lesson from lesson-01 through lesson-05
-    const LESSONS = ['lesson-01', 'lesson-02', 'lesson-03', 'lesson-04', 'lesson-05'];
+    const LESSONS = Array.from({length: 20}, (_, i) => 'lesson-' + String(i + 1).padStart(2, '0'));
     const completedSet = new Set(completed);
     const next_lesson = LESSONS.find(l => !completedSet.has(l)) || null;
 

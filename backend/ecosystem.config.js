@@ -14,7 +14,7 @@ module.exports = {
       DB_PASSWORD: 'rfhub_secure_2024',
       JWT_SECRET: 'rf-learning-hub-production-secret-key-2025',
       JWT_EXPIRES_IN: '7d',
-      FRONTEND_URL: 'http://10.0.1.98'
+      FRONTEND_URL: 'https://rf-hub.info'
     }
   }]
 };
