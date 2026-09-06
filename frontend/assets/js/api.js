@@ -277,6 +277,83 @@ class APIService {
         });
     }
 
+    // ==================== EXAM ENDPOINTS ====================
+
+    /**
+     * Get available exam levels (foundation, intermediate, full)
+     */
+    async getExamLevels() {
+        return await this.request('/exams/levels', { auth: false });
+    }
+
+    /**
+     * Get sections for a given exam level
+     */
+    async getExamSections(level) {
+        return await this.request(`/exams/sections/${level}`, { auth: false });
+    }
+
+    /**
+     * Get exam questions
+     * Auth optional — required for weak_areas mode
+     */
+    async getExamQuestions(level, mode, section = null) {
+        let url = `/exams/questions?level=${level}&mode=${mode}`;
+        if (section) url += `&section=${encodeURIComponent(section)}`;
+        return await this.request(url);
+    }
+
+    /**
+     * Submit exam and save result (authenticated)
+     * answers: object { question_id: 'A', ... } — NOT an array
+     */
+    async submitExam(data) {
+        return await this.request('/exams/submit', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    /**
+     * Stateless exam check — scores without saving (no auth required)
+     * answers: object { question_id: 'A', ... } — NOT an array
+     */
+    async checkExam(data) {
+        return await this.request('/exams/check', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            auth: false
+        });
+    }
+
+    /**
+     * Get exam attempt history for a level (authenticated)
+     */
+    async getExamHistory(level) {
+        return await this.request(`/exams/history?level=${level}`);
+    }
+
+    /**
+     * Get exam stats for a level (authenticated)
+     */
+    async getExamStats(level) {
+        return await this.request(`/exams/stats/${level}`);
+    }
+
+    /**
+     * Get weak area questions for a level (authenticated)
+     */
+    async getExamWeakAreas(level) {
+        return await this.request(`/exams/weak-areas/${level}`);
+    }
+
+    /**
+     * Get details for a specific exam attempt (authenticated)
+     */
+    async getExamAttempt(attemptId) {
+        return await this.request(`/exams/attempts/${attemptId}`);
+    }
+
     // ==================== HELPER METHODS ====================
 
     /**
