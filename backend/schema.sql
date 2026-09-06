@@ -452,6 +452,123 @@ CREATE TRIGGER update_saved_calculations_updated_at BEFORE UPDATE ON saved_calcu
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ========================================
+-- 9. EXAM QUESTIONS TABLE
+-- ========================================
+
+CREATE TABLE exam_questions (
+    -- Primary identification
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Exam level and section
+    level VARCHAR(20) NOT NULL CHECK (level IN ('foundation', 'intermediate', 'full')),
+    section_code VARCHAR(10) NOT NULL,
+    section_name VARCHAR(100) NOT NULL,
+    syllabus_ref VARCHAR(50) NOT NULL,
+
+    -- Question content
+    question_text TEXT NOT NULL,
+    options JSONB NOT NULL,
+    correct_answer CHAR(1) NOT NULL CHECK (correct_answer IN ('A', 'B', 'C', 'D')),
+    explanation TEXT,
+
+    -- Metadata
+    tags JSONB DEFAULT '[]'::jsonb,
+    source_paper VARCHAR(100),
+    d2f_part SMALLINT CHECK (d2f_part IS NULL OR d2f_part IN (1, 2)),
+    has_diagram BOOLEAN DEFAULT false,
+
+    -- Analytics
+    times_seen INTEGER DEFAULT 0,
+    times_correct INTEGER DEFAULT 0,
+
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for exam_questions
+CREATE INDEX idx_exam_questions_level ON exam_questions(level);
+CREATE INDEX idx_exam_questions_section ON exam_questions(level, section_code);
+
+-- ========================================
+-- 10. EXAM ATTEMPTS TABLE
+-- ========================================
+
+CREATE TABLE exam_attempts (
+    -- Primary identification
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Foreign key
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+
+    -- Exam configuration
+    level VARCHAR(20) NOT NULL CHECK (level IN ('foundation', 'intermediate', 'full')),
+    mode VARCHAR(20) NOT NULL CHECK (mode IN ('mock', 'topic', 'weak_areas')),
+    section_filter VARCHAR(10),
+
+    -- Scoring
+    total_questions INTEGER NOT NULL,
+    correct_answers INTEGER NOT NULL,
+    score_percent NUMERIC(5,2) NOT NULL,
+    passed BOOLEAN NOT NULL,
+
+    -- Timing
+    time_taken_seconds INTEGER NOT NULL,
+    time_limit_seconds INTEGER,
+
+    -- D2F Part scores (for full level exams)
+    d2f_part1_correct INTEGER,
+    d2f_part1_total INTEGER,
+    d2f_part1_passed BOOLEAN,
+    d2f_part2_correct INTEGER,
+    d2f_part2_total INTEGER,
+    d2f_part2_passed BOOLEAN,
+
+    -- Detailed results
+    section_scores JSONB,
+    answers JSONB NOT NULL,
+
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for exam_attempts
+CREATE INDEX idx_exam_attempts_user ON exam_attempts(user_id, level);
+
+-- ========================================
+-- 11. EXAM QUESTION HISTORY TABLE
+-- ========================================
+
+CREATE TABLE exam_question_history (
+    -- Primary identification
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Foreign keys
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    question_id UUID NOT NULL REFERENCES exam_questions(id) ON DELETE CASCADE,
+    attempt_id UUID NOT NULL REFERENCES exam_attempts(id) ON DELETE CASCADE,
+
+    -- Response data
+    selected_answer CHAR(1) NOT NULL CHECK (selected_answer IN ('A', 'B', 'C', 'D')),
+    is_correct BOOLEAN NOT NULL,
+
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for exam_question_history
+CREATE INDEX idx_exam_history_user ON exam_question_history(user_id, question_id);
+CREATE INDEX idx_exam_history_attempt ON exam_question_history(attempt_id);
+
+-- ========================================
+-- TRIGGERS FOR UPDATED_AT
+-- ========================================
+
+-- Apply trigger to exam_questions (already created above, but documented here)
+CREATE TRIGGER update_exam_questions_updated_at BEFORE UPDATE ON exam_questions
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ========================================
 -- COMMENTS FOR DOCUMENTATION
 -- ========================================
 
@@ -464,6 +581,9 @@ COMMENT ON TABLE quiz_questions IS 'Individual quiz questions with answers';
 COMMENT ON TABLE quiz_attempts IS 'User quiz submissions and scores';
 COMMENT ON TABLE user_badges IS 'Achievement tracking system';
 COMMENT ON TABLE saved_calculations IS 'User-saved calculator results';
+COMMENT ON TABLE exam_questions IS 'Question bank for mock licence exam practice across Foundation, Intermediate, and Full levels';
+COMMENT ON TABLE exam_attempts IS 'User exam session records with scores and detailed performance metrics';
+COMMENT ON TABLE exam_question_history IS 'Per-question user response tracking for weak-area analysis';
 
 -- ========================================
 -- DONE
