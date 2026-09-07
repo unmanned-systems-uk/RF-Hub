@@ -273,6 +273,7 @@
       <li><a href="../sidebands/">Sidebands</a></li>
       <li><a href="../gsm-cellular.html">GSM</a></li>
       <li><a href="../blog/">Blog</a></li>
+      <li><a href="../study/">Study</a></li>
       <li><a href="./" class="active">Exams</a></li>
     </ul>
   </div>
@@ -502,16 +503,31 @@
           wrap.innerHTML = '<p style="color:var(--text-dim);font-size:0.88rem;">No sections available for this level yet.</p>';
           return;
         }
+        var SECTION_SLUGS = {
+          '1':'licensing','2':'electronics','3':'transmitters',
+          '4':'feeders-antennas','5':'propagation','6':'emc',
+          '7':'operating','8':'safety','9':'measurements'
+        };
         var rows = sections.map(function (s) {
+          var code = s.code || s.id || '';
+          var secNum = parseInt(code.charAt(0), 10);
+          var slug = SECTION_SLUGS[secNum] || null;
+          var studyHref = slug
+            ? '/pages/study/' + level + '/section-' + secNum + '-' + slug + '.html'
+            : null;
+          var studyCell = studyHref
+            ? '<a class="btn-topic" href="' + escAttr(studyHref) + '" style="background:rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.25);color:#06b6d4;text-decoration:none;">Study</a>'
+            : '<span style="color:var(--text-dim);font-size:0.8rem;">—</span>';
           return '<tr>' +
-            '<td>' + escHtml(s.name || s.code || s.id) + '</td>' +
+            '<td>' + escHtml(s.name || code) + '</td>' +
             '<td style="text-align:center;font-family:var(--font-mono);">' + (s.question_count || '—') + '</td>' +
-            '<td><button class="btn-topic" onclick="startExam(\'topic\',\'' + escAttr(s.code || s.id) + '\')">Practice</button></td>' +
+            '<td>' + studyCell + '</td>' +
+            '<td><button class="btn-topic" onclick="startExam(\'topic\',\'' + escAttr(code) + '\')">Practice</button></td>' +
             '</tr>';
         }).join('');
         wrap.innerHTML =
           '<table class="sections-table">' +
-          '<thead><tr><th>Section</th><th style="text-align:center;">Questions</th><th></th></tr></thead>' +
+          '<thead><tr><th>Section</th><th style="text-align:center;">Questions</th><th></th><th></th></tr></thead>' +
           '<tbody>' + rows + '</tbody>' +
           '</table>';
       })

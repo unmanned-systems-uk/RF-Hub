@@ -428,23 +428,21 @@
   </style>
 </head>
 <body>
-  <nav class="site-nav">
-    <div class="nav-container">
-      <a href="/index.html" class="nav-logo">RF<span>Hub</span></a>
-      <button class="nav-toggle" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links">
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/pages/frequency-bands.html">Freq Bands</a></li>
-        <li><a href="/pages/antenna-curriculum/index.html">Learn</a></li>
-        <li><a href="/pages/exam-practice/index.html" class="active">Exams</a></li>
-        <li><a href="/pages/calculators.html">Calculators</a></li>
-        <li><a href="/pages/portal.html">Portal</a></li>
-      </ul>
-      <div class="nav-auth" id="navAuth"></div>
-    </div>
-  </nav>
+<nav class="site-nav">
+  <div class="container container--wide">
+    <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+    <ul class="site-nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../frequency-bands.html">Spectrum</a></li>
+      <li><a href="../antennas.html">Antennas</a></li>
+      <li><a href="../learning-path.html">Learn</a></li>
+      <li><a href="../sidebands/">Sidebands</a></li>
+      <li><a href="../gsm-cellular.html">GSM</a></li>
+      <li><a href="../blog/">Blog</a></li>
+      <li><a href="./" class="active">Exams</a></li>
+    </ul>
+  </div>
+</nav>
 
   <main class="exam-page">
 
@@ -607,7 +605,8 @@
 
       <div class="results-actions">
         <button class="btn btn--ghost" onclick="retakeExam()">↺ Retake Exam</button>
-        <button class="btn btn--ghost" id="btnDrillWeak" onclick="drillWeakest()">Drill Weakest Section</button>
+        <button class="btn btn--ghost" id="btnDrillWeak" onclick="drillWeakest()">Practice Weakest Section</button>
+        <button class="btn btn--ghost" id="btnStudyWeak" onclick="studyWeakest()">Study Weakest Section</button>
         <a href="/pages/exam-practice/index.html" class="btn btn--primary">Back to Exams</a>
       </div>
     </div>
@@ -1034,9 +1033,10 @@
       // Non-auth note
       document.getElementById('saveNote').style.display = isAuth ? 'none' : '';
 
-      var correct  = data.correct   || data.score  || 0;
-      var total    = data.total     || questions.length;
-      var pct      = data.percentage != null ? data.percentage : Math.round((correct / total) * 100 * 10) / 10;
+      // Normalise field names — backend sends correct_answers/total_questions/score_percent
+      var correct  = data.correct_answers != null ? data.correct_answers : (data.correct || data.score || 0);
+      var total    = data.total_questions != null ? data.total_questions : (data.total || questions.length);
+      var pct      = data.score_percent != null ? data.score_percent : (data.percentage != null ? data.percentage : Math.round((correct / total) * 100 * 10) / 10);
       var passed   = data.passed    != null ? data.passed : (pct >= (PASS_THRESHOLDS[level] || 65));
       var threshold = PASS_THRESHOLDS[level] || 65;
 
@@ -1060,49 +1060,92 @@
 
     function renderD2F(data) {
       var d2fEl = document.getElementById('d2fParts');
-      if (level !== 'full' || !data.parts) { d2fEl.style.display = 'none'; return; }
+      // Backend sends d2f_part1/d2f_part2 at top level
+      if (level !== 'full' || !data.d2f_part1) { d2fEl.style.display = 'none'; return; }
       d2fEl.style.display = 'grid';
-      var parts = ['part1', 'part2'];
-      var labels = ['Part 1', 'Part 2'];
-      parts.forEach(function (pk, i) {
-        var p = data.parts[pk] || {};
-        var pPct = p.percentage != null ? p.percentage : 0;
-        var pPassed = p.passed != null ? p.passed : (pPct >= 65);
+      var parts = [data.d2f_part1, data.d2f_part2];
+      var labels = ['Part 1: Licensing & Operating', 'Part 2: Technical'];
+      var passMks = [14, 36];
+      parts.forEach(function (p, i) {
+        if (!p) return;
+        var pPct = p.total ? Math.round((p.correct / p.total) * 1000) / 10 : 0;
         var el = document.getElementById('d2fPart' + (i + 1));
         el.innerHTML =
           '<p class="d2f-part-label">' + labels[i] + '</p>' +
-          '<p class="d2f-part-score" style="color:' + (pPassed ? '#4ade80' : '#f87171') + '">' +
-            (p.correct || 0) + ' / ' + (p.total || 0) + ' — ' + pPct.toFixed(1) + '%</p>' +
-          '<div class="d2f-bar"><div class="d2f-fill ' + (pPassed ? 'pass' : 'fail') + '" style="width:' + Math.min(100, pPct) + '%"></div></div>';
+          '<p class="d2f-part-score" style="color:' + (p.passed ? '#4ade80' : '#f87171') + '">' +
+            p.correct + ' / ' + p.total + ' — ' + pPct.toFixed(1) + '% (need ' + passMks[i] + ')</p>' +
+          '<div class="d2f-bar"><div class="d2f-fill ' + (p.passed ? 'pass' : 'fail') + '" style="width:' + Math.min(100, pPct) + '%"></div></div>';
       });
     }
 
     function renderBreakdown(data) {
       var tbody = document.getElementById('breakdownBody');
       tbody.innerHTML = '';
-      var sections = data.sections || data.section_breakdown || [];
-      if (!sections.length) {
-        // Build from local data
-        var sectionMap = {};
-        questions.forEach(function (q, i) {
-          var sec = q.section || q.section_code || 'Unknown';
-          if (!sectionMap[sec]) sectionMap[sec] = { correct: 0, total: 0, name: q.section_name || sec };
-          sectionMap[sec].total++;
-          var qid = q.id || q.question_id;
-          if (data.results && data.results[qid] && data.results[qid].correct) sectionMap[sec].correct++;
-        });
-        sections = Object.keys(sectionMap).map(function (k) {
-          var s = sectionMap[k];
-          return { section_code: k, section_name: s.name, correct: s.correct, total: s.total,
-                   percentage: s.total ? Math.round((s.correct/s.total)*100) : 0 };
+
+      // Section name lookup — maps section number to name
+      var SECTION_NAMES = {
+        intermediate: {
+          '1':'Licensing & Operating','2':'Electronics & Electrical','3':'Transmitters & Receivers',
+          '4':'Feeders & Antennas','5':'Propagation','6':'EMC',
+          '7':'Operating Practices','8':'Safety','9':'Measurements & Construction'
+        },
+        full: {
+          '1':'Licensing Conditions','7':'Operating Practices','2':'Electronics & Electrical',
+          '3':'Transmitters & Receivers','4':'Feeders & Antennas','5':'Propagation',
+          '6':'EMC','8':'Safety','9':'Measurements & Construction'
+        }
+      };
+      var nameMap = SECTION_NAMES[level] || {};
+
+      // Backend sends section_scores as object: {"1": {correct,total}, "2": {correct,total}, ...}
+      var sScores = data.section_scores || {};
+      var sections = [];
+
+      if (typeof sScores === 'object' && !Array.isArray(sScores)) {
+        // Convert object to sorted array
+        var keys = Object.keys(sScores).sort(function(a,b) { return parseInt(a) - parseInt(b); });
+        keys.forEach(function (k) {
+          var s = sScores[k];
+          sections.push({
+            section_code: k,
+            section_name: nameMap[k] || ('Section ' + k),
+            correct: s.correct || 0,
+            total: s.total || 0
+          });
         });
       }
+
+      // Fallback: build from local question data + results array
+      if (!sections.length) {
+        var resultMap = {};
+        if (Array.isArray(data.results)) {
+          data.results.forEach(function (r) { resultMap[r.question_id] = r; });
+        }
+        var sectionMap = {};
+        questions.forEach(function (q) {
+          var sk = (q.section_code || 'X').charAt(0);
+          if (!sectionMap[sk]) sectionMap[sk] = { correct: 0, total: 0 };
+          sectionMap[sk].total++;
+          var qid = q.id || q.question_id;
+          var res = resultMap[qid];
+          if (res && res.is_correct) sectionMap[sk].correct++;
+        });
+        Object.keys(sectionMap).sort().forEach(function (k) {
+          sections.push({
+            section_code: k,
+            section_name: nameMap[k] || ('Section ' + k),
+            correct: sectionMap[k].correct,
+            total: sectionMap[k].total
+          });
+        });
+      }
+
       sections.forEach(function (sec) {
-        var pct = sec.percentage != null ? sec.percentage : (sec.total ? Math.round((sec.correct/sec.total)*100) : 0);
+        var pct = sec.total ? Math.round((sec.correct / sec.total) * 100) : 0;
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td>' + escHtml(sec.section_name || sec.section_code || '') + '</td>' +
-          '<td>' + (sec.correct || 0) + ' / ' + (sec.total || 0) + '</td>' +
+          '<td>' + escHtml(sec.section_name) + '</td>' +
+          '<td>' + sec.correct + ' / ' + sec.total + '</td>' +
           '<td class="breakdown-pct">' + pct + '%</td>' +
           '<td class="breakdown-bar-cell"><div class="breakdown-bar-track">' +
             '<div class="breakdown-bar-fill" style="width:' + Math.min(100, pct) + '%"></div>' +
@@ -1114,21 +1157,28 @@
     function renderQReview(data) {
       var container = document.getElementById('qreviewItems');
       container.innerHTML = '';
-      var results = data.results || {};  // { question_id: { correct: bool, correct_answer: 'B', explanation: '...' } }
+
+      // Backend sends results as array — convert to object keyed by question_id
+      var resultMap = {};
+      if (Array.isArray(data.results)) {
+        data.results.forEach(function (r) { resultMap[r.question_id] = r; });
+      } else if (data.results) {
+        resultMap = data.results;
+      }
 
       // Track weakest section for "Drill Weakest" button
       var sectionScores = {};
 
       questions.forEach(function (q, i) {
         var qid     = q.id || q.question_id;
-        var res     = results[qid] || {};
+        var res     = resultMap[qid] || {};
         var myAns   = answers[qid] || null;
         var correct = res.correct_answer || q.correct_answer;
-        var isRight = res.correct != null ? res.correct : (myAns && myAns === correct);
+        var isRight = res.is_correct != null ? res.is_correct : (res.correct != null ? res.correct : (myAns && myAns === correct));
         var status  = !myAns ? 'skipped' : (isRight ? 'correct' : 'wrong');
 
-        // Track section
-        var sec = q.section || q.section_code || 'Unknown';
+        // Track section — group by parent section number (first char of section_code)
+        var sec = (q.section_code || q.section || 'X').charAt(0);
         if (!sectionScores[sec]) sectionScores[sec] = { correct: 0, total: 0 };
         sectionScores[sec].total++;
         if (isRight) sectionScores[sec].correct++;
@@ -1195,6 +1245,20 @@
       if (!sec) return;
       window.location.href = '/pages/exam-practice/exam.html?level=' + encodeURIComponent(level) +
         '&mode=topic&section=' + encodeURIComponent(sec);
+    };
+
+    window.studyWeakest = function () {
+      var sec = window._weakestSection;
+      if (!sec) return;
+      var SECTION_SLUGS = {
+        1:'licensing', 2:'electronics', 3:'transmitters',
+        4:'feeders-antennas', 5:'propagation', 6:'emc',
+        7:'operating', 8:'safety', 9:'measurements'
+      };
+      var secNum = parseInt(sec.charAt(0), 10);
+      var slug = SECTION_SLUGS[secNum];
+      if (!slug) return;
+      window.location.href = '/pages/study/' + level + '/section-' + secNum + '-' + slug + '.html';
     };
 
     // ════════════════════════════════════════════════════════════════════════

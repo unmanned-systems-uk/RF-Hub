@@ -32,7 +32,17 @@ const EXAM_CONFIG = {
     pass_type: 'two_part',
     part1: { questions: 18, pass_mark: 14, pass_percent: 77.7 },
     part2: { questions: 57, pass_mark: 36, pass_percent: 63.2 },
-    sections: {}
+    sections: {
+      '1': { name: 'Licensing Conditions', questions: 8, d2f_part: 1, subsections: ['1A','1B','1C','1D','1E','1G','1H'] },
+      '7': { name: 'Operating Practices', questions: 10, d2f_part: 1, subsections: ['7A','7E','7G'] },
+      '2': { name: 'Electronics & Electrical', questions: 12, d2f_part: 2, subsections: ['2C','2D','2E','2F','2G','2H','2I','2J'] },
+      '3': { name: 'Transmitters & Receivers', questions: 12, d2f_part: 2, subsections: ['3A','3C','3E','3G','3H','3I','3K','3M'] },
+      '4': { name: 'Feeders & Antennas', questions: 10, d2f_part: 2, subsections: ['4A','4B','4C','4D','4E','4F'] },
+      '5': { name: 'Propagation', questions: 6, d2f_part: 2, subsections: ['5A','5B','5C'] },
+      '6': { name: 'EMC', questions: 9, d2f_part: 2, subsections: ['6A','6B','6C','6D','6E'] },
+      '8': { name: 'Safety', questions: 5, d2f_part: 2, subsections: ['8A','8B','8D'] },
+      '9': { name: 'Measurements & Construction', questions: 3, d2f_part: 2, subsections: ['9A','9B','9C','9E'] }
+    }
   }
 };
 
@@ -47,7 +57,7 @@ class Exam {
    */
   static async getLevels() {
     const counts = await pool.query(
-      `SELECT level, COUNT(*) AS question_count FROM exam_questions GROUP BY level`
+      `SELECT level, COUNT(*) AS question_count FROM exam_questions WHERE has_diagram = false GROUP BY level`
     );
     const countMap = {};
     counts.rows.forEach(r => { countMap[r.level] = parseInt(r.question_count); });
@@ -81,7 +91,7 @@ class Exam {
 
     const dbRows = await pool.query(
       `SELECT section_code, section_name, COUNT(*) AS question_count
-       FROM exam_questions WHERE level = $1
+       FROM exam_questions WHERE level = $1 AND has_diagram = false
        GROUP BY section_code, section_name ORDER BY section_code`,
       [level]
     );
@@ -126,7 +136,7 @@ class Exam {
           const sec = cfg.sections[sectionKey];
           const result = await pool.query(
             `SELECT ${safeFields} FROM exam_questions
-             WHERE level = $1 AND section_code LIKE $2
+             WHERE level = $1 AND section_code LIKE $2 AND has_diagram = false
              ORDER BY RANDOM() LIMIT $3`,
             [level, sectionKey + '%', sec.questions]
           );
@@ -136,7 +146,7 @@ class Exam {
         // No section structure yet — random from full pool
         const result = await pool.query(
           `SELECT ${safeFields} FROM exam_questions
-           WHERE level = $1 ORDER BY RANDOM() LIMIT $2`,
+           WHERE level = $1 AND has_diagram = false ORDER BY RANDOM() LIMIT $2`,
           [level, cfg.total_questions]
         );
         questions = result.rows;
@@ -146,7 +156,7 @@ class Exam {
       const filter = section ? section + '%' : '%';
       const result = await pool.query(
         `SELECT ${safeFields} FROM exam_questions
-         WHERE level = $1 AND section_code LIKE $2 ORDER BY RANDOM()`,
+         WHERE level = $1 AND section_code LIKE $2 AND has_diagram = false ORDER BY RANDOM()`,
         [level, filter]
       );
       questions = result.rows;
@@ -159,7 +169,7 @@ class Exam {
                 COUNT(CASE WHEN h.is_correct = false THEN 1 END) AS wrong_count
          FROM exam_questions q
          JOIN exam_question_history h ON h.question_id = q.id
-         WHERE h.user_id = $1 AND q.level = $2 AND h.is_correct = false
+         WHERE h.user_id = $1 AND q.level = $2 AND h.is_correct = false AND q.has_diagram = false
            AND q.id NOT IN (
              SELECT question_id FROM exam_question_history
              WHERE user_id = $1 AND is_correct = true
@@ -314,7 +324,7 @@ class Exam {
     if (questionIds.length === 0) return { total_questions: 0, correct_answers: 0, results: [] };
 
     const qResult = await pool.query(
-      `SELECT id, correct_answer, explanation, section_code
+      `SELECT id, correct_answer, explanation, section_code, d2f_part
        FROM exam_questions WHERE id = ANY($1::uuid[])`,
       [questionIds]
     );
@@ -322,6 +332,7 @@ class Exam {
     qResult.rows.forEach(q => { qMap[q.id] = q; });
 
     let correct = 0;
+    let d2fP1Correct = 0, d2fP1Total = 0, d2fP2Correct = 0, d2fP2Total = 0;
     const sectionScores = {};
     const results = [];
 
@@ -331,6 +342,11 @@ class Exam {
       const selected = (answers[qId] || '').toUpperCase();
       const isCorrect = selected === q.correct_answer.trim();
       if (isCorrect) correct++;
+
+      if (q.d2f_part) {
+        if (q.d2f_part === 1) { d2fP1Total++; if (isCorrect) d2fP1Correct++; }
+        if (q.d2f_part === 2) { d2fP2Total++; if (isCorrect) d2fP2Correct++; }
+      }
 
       const sk = q.section_code.charAt(0);
       if (!sectionScores[sk]) sectionScores[sk] = { correct: 0, total: 0 };
@@ -347,13 +363,23 @@ class Exam {
     }
 
     const total = results.length;
-    return {
+    const response = {
       total_questions: total,
       correct_answers: correct,
       score_percent: total > 0 ? Math.round((correct / total) * 10000) / 100 : 0,
       section_scores: sectionScores,
       results
     };
+
+    // Add D2F two-part scoring if applicable
+    if (d2fP1Total > 0 || d2fP2Total > 0) {
+      const cfg = EXAM_CONFIG.full;
+      response.d2f_part1 = { correct: d2fP1Correct, total: d2fP1Total, passed: d2fP1Correct >= cfg.part1.pass_mark };
+      response.d2f_part2 = { correct: d2fP2Correct, total: d2fP2Total, passed: d2fP2Correct >= cfg.part2.pass_mark };
+      response.passed = response.d2f_part1.passed && response.d2f_part2.passed;
+    }
+
+    return response;
   }
 
   /**

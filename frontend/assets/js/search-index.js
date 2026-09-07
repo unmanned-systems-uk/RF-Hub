@@ -189,5 +189,52 @@ window.SEARCH_INDEX = [
                "dB", "impedance", "resonance", "bandwidth", "calibration",
                "port", "coax", "connector", "marker", "sweep"],
     sections: ["What is S11?", "Return Loss", "SWR", "Smith Chart", "Practical Measurement"]
+  },
+  {
+    title: "Study Material — Licence Exam Revision",
+    url: "/pages/study/index.html",
+    description: "RSGB syllabus-aligned study notes for Foundation, Intermediate, and Full amateur radio licence levels",
+    keywords: ["study", "licence", "exam", "revision", "learning", "RSGB", "syllabus",
+               "Foundation", "Intermediate", "Full", "D2F", "amateur radio", "ham radio",
+               "pass", "mock", "practice"],
+    sections: ["Foundation", "Intermediate", "Full"]
+  },
+  {
+    title: "Intermediate Licence Study — All Sections",
+    url: "/pages/study/intermediate/index.html",
+    description: "9-section study guide for the RSGB Intermediate licence exam — 46 questions, 75 minutes, 65% pass",
+    keywords: ["intermediate", "licence", "study", "sections", "RSGB", "syllabus",
+               "46 questions", "75 minutes", "65 percent", "pass mark",
+               "electronics", "transmitters", "propagation", "EMC", "safety"],
+    sections: ["Section 1", "Section 2", "Section 3", "Section 4-9"]
+  },
+  {
+    title: "Section 1: Licensing & Operating — Intermediate",
+    url: "/pages/study/intermediate/section-1-licensing.html",
+    description: "Study notes for Section 1 of the Intermediate licence: licensing conditions, callsigns, band plans, Ofcom regulations",
+    keywords: ["licensing", "operating", "callsign", "band plan", "regulations", "Ofcom",
+               "NoV", "licence conditions", "power limits", "frequency allocation",
+               "1A", "1B", "1C", "1D", "1E", "1G", "1H", "intermediate section 1"],
+    sections: ["Licensing Conditions", "Callsigns", "Band Plans", "Operating Procedures"]
+  },
+  {
+    title: "Section 2: Electronics & Electrical — Intermediate",
+    url: "/pages/study/intermediate/section-2-electronics.html",
+    description: "Study notes for Section 2 of the Intermediate licence: resistors, capacitors, Ohm's law, impedance, semiconductors, decibels",
+    keywords: ["electronics", "resistors", "capacitors", "Ohm's law", "impedance",
+               "semiconductors", "decibels", "dB", "inductors", "transformers",
+               "transistors", "diodes", "filters", "resonance", "reactance",
+               "2C", "2D", "2E", "2F", "2G", "2H", "2I", "2J", "intermediate section 2"],
+    sections: ["DC Circuits", "AC Circuits", "Semiconductors", "Decibels"]
+  },
+  {
+    title: "Section 3: Transmitters & Receivers — Intermediate",
+    url: "/pages/study/intermediate/section-3-transmitters.html",
+    description: "Study notes for Section 3 of the Intermediate licence: superheterodyne, SSB, FM, filters, oscillators",
+    keywords: ["transmitters", "receivers", "superheterodyne", "SSB", "FM", "AM",
+               "filters", "oscillators", "mixer", "IF", "AGC", "squelch",
+               "modulation", "demodulation", "bandwidth", "selectivity", "sensitivity",
+               "3A", "3C", "3E", "3G", "3H", "3I", "3K", "3M", "intermediate section 3"],
+    sections: ["Transmitters", "Receivers", "Modulation", "Filters"]
   }
 ];
