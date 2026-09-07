@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Material — RF Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css">
+  <style>
+    /* ── Level card grid ──────────────────────────────────────────────────── */
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 2.5rem 0;
+    }
+    .level-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.18s, transform 0.18s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .level-card--active:hover {
+      border-color: rgba(167,139,250,0.45);
+      transform: translateY(-2px);
+    }
+    .level-card--disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+    }
+    .level-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .level-card-name {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .status-badge--available {
+      background: rgba(167,139,250,0.12);
+      border: 1px solid rgba(167,139,250,0.3);
+      color: #a78bfa;
+    }
+    .status-badge--soon {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .level-card-meta {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .level-card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .level-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: auto;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #a78bfa;
+      font-weight: 600;
+    }
+    .level-card--disabled .level-card-cta {
+      color: var(--text-dim);
+    }
+
+    /* ── Info section ─────────────────────────────────────────────────────── */
+    .study-info {
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+    .study-info p {
+      color: var(--text-dim);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* ── Section list ─────────────────────────────────────────────────────── */
+    .section-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .section-chip {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.2rem 0.6rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../antennas.html">Antennas</a></li>
+        <li><a href="../learning-path.html">Learn</a></li>
+        <li><a href="../sidebands/">Sidebands</a></li>
+        <li><a href="../gsm-cellular.html">GSM</a></li>
+        <li><a href="../blog/">Blog</a></li>
+        <li><a href="./" class="active">Study</a></li>
+        <li><a href="../exam-practice/">Exams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">RSGB Licence Study</div>
+      <h1>Study Material</h1>
+      <p class="hero-subtitle">Syllabus-aligned study notes for all three UK amateur radio licence levels — Foundation, Intermediate, and Full (Direct-to-Full).</p>
+    </div>
+  </section>
+
+  <div class="container" style="padding-bottom: 4rem;">
+
+    <div class="study-info">
+      <p>Each level covers the full RSGB syllabus, broken down by section. Study the theory, then test yourself with a mock exam — all in one place.</p>
+      <div class="section-chips">
+        <span class="section-chip">Licensing &amp; Operating</span>
+        <span class="section-chip">Electronics &amp; Electrical</span>
+        <span class="section-chip">Transmitters &amp; Receivers</span>
+        <span class="section-chip">Feeders &amp; Antennas</span>
+        <span class="section-chip">Propagation</span>
+        <span class="section-chip">EMC</span>
+        <span class="section-chip">Operating Practices</span>
+        <span class="section-chip">Safety</span>
+        <span class="section-chip">Measurements</span>
+      </div>
+    </div>
+
+    <div class="level-grid">
+
+      <!-- Foundation — coming soon -->
+      <div class="level-card level-card--disabled">
+        <div class="level-card-header">
+          <h2 class="level-card-name">Foundation</h2>
+          <span class="status-badge status-badge--soon">Coming soon</span>
+        </div>
+        <div class="level-card-meta">
+          26 questions &nbsp;·&nbsp; 45 minutes &nbsp;·&nbsp; 65% to pass
+        </div>
+        <p class="level-card-desc">Entry-level licence covering basic operating, safety, and fundamental RF concepts.</p>
+        <span class="level-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Intermediate — available -->
+      <a href="intermediate/" class="level-card level-card--active">
+        <div class="level-card-header">
+          <h2 class="level-card-name">Intermediate</h2>
+          <span class="status-badge status-badge--available">In progress</span>
+        </div>
+        <div class="level-card-meta">
+          46 questions &nbsp;·&nbsp; 75 minutes &nbsp;·&nbsp; 65% to pass
+        </div>
+        <p class="level-card-desc">9-section syllabus covering electronics, transmitters, feeders, propagation, EMC, and more.</p>
+        <span class="level-card-cta">Start studying →</span>
+      </a>
+
+      <!-- Full (D2F) — coming soon -->
+      <div class="level-card level-card--disabled">
+        <div class="level-card-header">
+          <h2 class="level-card-name">Full (Direct-to-Full)</h2>
+          <span class="status-badge status-badge--soon">Coming soon</span>
+        </div>
+        <div class="level-card-meta">
+          75 questions &nbsp;·&nbsp; 150 minutes &nbsp;·&nbsp; two-part exam
+        </div>
+        <p class="level-card-desc">Advanced licence with an expanded technical syllabus and two separately-marked exam parts.</p>
+        <span class="level-card-cta">Coming soon →</span>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-tagline">Amateur radio education for the modern era</p>
+      <p class="footer-copy">© 2025 RF Learning Hub</p>
+    </div>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/nav-auth.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>

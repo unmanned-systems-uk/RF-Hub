@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intermediate Licence Study — RF Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css">
+  <style>
+    /* ── Section card grid ────────────────────────────────────────────────── */
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.1rem;
+      margin: 2rem 0;
+    }
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .section-card--available:hover {
+      border-color: rgba(167,139,250,0.4);
+      transform: translateY(-2px);
+    }
+    .section-card--soon {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
+    }
+    .section-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #a78bfa;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 0 0.2rem;
+    }
+    .section-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      margin: 0;
+    }
+    .section-status {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .section-status--available {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80;
+    }
+    .section-status--soon {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .section-weight {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .section-codes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+    .code-chip {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+    }
+    .section-card-cta {
+      margin-top: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #a78bfa;
+      font-weight: 600;
+    }
+    .section-card--soon .section-card-cta {
+      color: var(--text-dim);
+    }
+
+    /* ── Exam info bar ────────────────────────────────────────────────────── */
+    .exam-info-bar {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+    .exam-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .exam-info-value {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .exam-info-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Bottom CTA ───────────────────────────────────────────────────────── */
+    .bottom-cta {
+      text-align: center;
+      padding: 2.5rem 0 0;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    .bottom-cta p {
+      color: var(--text-dim);
+      margin: 0 0 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Intermediate Licence</div>
+      <h1>Intermediate Study</h1>
+      <p class="hero-subtitle">All 9 RSGB syllabus sections for the Intermediate amateur radio licence exam.</p>
+    </div>
+  </section>
+
+  <div class="container" style="padding-bottom: 4rem;">
+
+    <div class="exam-info-bar">
+      <div class="exam-info-item">
+        <span class="exam-info-value">46</span>
+        <span class="exam-info-label">Questions</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">75 min</span>
+        <span class="exam-info-label">Time limit</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">65%</span>
+        <span class="exam-info-label">Pass mark</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">9</span>
+        <span class="exam-info-label">Sections</span>
+      </div>
+    </div>
+
+    <div class="section-grid">
+
+      <!-- Section 1 — Available -->
+      <a href="section-1-licensing.html" class="section-card section-card--available">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 1</p>
+            <h2 class="section-name">Licensing &amp; Operating</h2>
+          </div>
+          <span class="section-status section-status--available">Available</span>
+        </div>
+        <div class="section-weight">6 questions &nbsp;·&nbsp; 13% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">1A</span><span class="code-chip">1B</span><span class="code-chip">1C</span>
+          <span class="code-chip">1D</span><span class="code-chip">1E</span><span class="code-chip">1G</span>
+          <span class="code-chip">1H</span>
+        </div>
+        <span class="section-card-cta">Study section →</span>
+      </a>
+
+      <!-- Section 2 — Available -->
+      <a href="section-2-electronics.html" class="section-card section-card--available">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 2</p>
+            <h2 class="section-name">Electronics &amp; Electrical</h2>
+          </div>
+          <span class="section-status section-status--available">Available</span>
+        </div>
+        <div class="section-weight">14 questions &nbsp;·&nbsp; 30% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">2C</span><span class="code-chip">2D</span><span class="code-chip">2E</span>
+          <span class="code-chip">2F</span><span class="code-chip">2G</span><span class="code-chip">2H</span>
+          <span class="code-chip">2I</span><span class="code-chip">2J</span>
+        </div>
+        <span class="section-card-cta">Study section →</span>
+      </a>
+
+      <!-- Section 3 — Available -->
+      <a href="section-3-transmitters.html" class="section-card section-card--available">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 3</p>
+            <h2 class="section-name">Transmitters &amp; Receivers</h2>
+          </div>
+          <span class="section-status section-status--available">Available</span>
+        </div>
+        <div class="section-weight">7 questions &nbsp;·&nbsp; 15% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">3A</span><span class="code-chip">3C</span><span class="code-chip">3E</span>
+          <span class="code-chip">3G</span><span class="code-chip">3H</span><span class="code-chip">3I</span>
+          <span class="code-chip">3K</span><span class="code-chip">3M</span>
+        </div>
+        <span class="section-card-cta">Study section →</span>
+      </a>
+
+      <!-- Section 4 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 4</p>
+            <h2 class="section-name">Feeders &amp; Antennas</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">4 questions &nbsp;·&nbsp; 9% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">4A</span><span class="code-chip">4B</span><span class="code-chip">4C</span>
+          <span class="code-chip">4D</span><span class="code-chip">4E</span><span class="code-chip">4F</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Section 5 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 5</p>
+            <h2 class="section-name">Propagation</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">3 questions &nbsp;·&nbsp; 7% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">5A</span><span class="code-chip">5B</span><span class="code-chip">5C</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Section 6 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 6</p>
+            <h2 class="section-name">EMC</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">4 questions &nbsp;·&nbsp; 9% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">6A</span><span class="code-chip">6B</span><span class="code-chip">6C</span>
+          <span class="code-chip">6D</span><span class="code-chip">6E</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Section 7 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 7</p>
+            <h2 class="section-name">Operating Practices</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">2 questions &nbsp;·&nbsp; 4% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">7A</span><span class="code-chip">7B</span><span class="code-chip">7E</span>
+          <span class="code-chip">7G</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Section 8 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 8</p>
+            <h2 class="section-name">Safety</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">3 questions &nbsp;·&nbsp; 7% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">8A</span><span class="code-chip">8B</span><span class="code-chip">8D</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+      <!-- Section 9 — Coming soon -->
+      <div class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 9</p>
+            <h2 class="section-name">Measurements &amp; Construction</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">3 questions &nbsp;·&nbsp; 7% of exam</div>
+        <div class="section-codes">
+          <span class="code-chip">9A</span><span class="code-chip">9B</span><span class="code-chip">9C</span>
+          <span class="code-chip">9E</span>
+        </div>
+        <span class="section-card-cta">Coming soon →</span>
+      </div>
+
+    </div>
+
+    <div class="bottom-cta">
+      <p>Ready to test your knowledge on the full paper?</p>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=mock" class="btn btn--primary">
+        Practice Full Intermediate Exam →
+      </a>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-tagline">Amateur radio education for the modern era</p>
+      <p class="footer-copy">© 2025 RF Learning Hub</p>
+    </div>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/nav-auth.js" defer></script>
+  <script src="/assets/js/search.js" defer></script>
+</body>
+</html>
