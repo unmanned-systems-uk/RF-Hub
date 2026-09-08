@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 2: Electronics &amp; Electrical — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    /* Progress bar */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    /* Hero overrides */
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    /* Table of contents */
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    /* Self-check questions */
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    /* Section nav footer */
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    /* Formula reference */
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    /* Key facts */
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    /* Chapter inner layout */
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 2</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">14 / 46 questions &nbsp;·&nbsp; 30%</span>
+      </div>
+      <h1>Electronics &amp; Electrical</h1>
+      <p class="hero-subtitle">The largest section. Covers components, calculations, AC theory, semiconductors, power supplies, and decibels. Expect maths.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#mains-safety">2A Safety</a></li>
+        <li><a href="#ch-2c">2C Components</a></li>
+        <li><a href="#ch-2d">2D Ohm's Law</a></li>
+        <li><a href="#ch-2e">2E AC Theory</a></li>
+        <li><a href="#ch-2f">2F Resonance</a></li>
+        <li><a href="#ch-2g">2G Semiconductors</a></li>
+        <li><a href="#ch-2h">2H Digital</a></li>
+        <li><a href="#ch-2i">2I Power Supplies</a></li>
+        <li><a href="#ch-2j">2J Decibels</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#mains-safety"><span class="toc-code">2A</span>AC Mains Safety</a></li>
+        <li><a href="#ch-2c"><span class="toc-code">2C</span>Resistors, Capacitors &amp; Inductors</a></li>
+        <li><a href="#ch-2d"><span class="toc-code">2D</span>Ohm's Law &amp; Power</a></li>
+        <li><a href="#ch-2e"><span class="toc-code">2E</span>Alternating Current</a></li>
+        <li><a href="#ch-2f"><span class="toc-code">2F</span>Impedance, Resonance &amp; Q Factor</a></li>
+        <li><a href="#ch-2g"><span class="toc-code">2G</span>Semiconductors</a></li>
+        <li><a href="#ch-2h"><span class="toc-code">2H</span>Digital Electronics</a></li>
+        <li><a href="#ch-2i"><span class="toc-code">2I</span>Power Supplies</a></li>
+        <li><a href="#ch-2j"><span class="toc-code">2J</span>Decibels &amp; Signal Levels</a></li>
+        <li><a href="#formula-ref"><span class="toc-code">≡</span>Formula Reference</a></li>
+        <li><a href="#key-facts"><span class="toc-code">★</span>Key Facts Summary</a></li>
+      </ol>
+    </div>
+
+    <!-- ═════════════════════════════ 2A: MAINS SAFETY ═════════ -->
+    <section class="chapter" id="mains-safety">
+      <div class="chapter-header">
+        <span class="chapter-num">2A1</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>AC Mains Safety</h2>
+      <p>Before the electronics — one safety rule that is always in the back of your mind.</p>
+      <p><strong>Mains AC voltage in the UK is 230 V RMS.</strong> The peak voltage is actually 325 V.</p>
+      <ul>
+        <li>Never work on live mains equipment.</li>
+        <li>Fit a fuse in the <strong>live (brown)</strong> wire — not the neutral.</li>
+        <li>An RCD (residual current device) protects you if current leaks to earth.</li>
+        <li>Double-insulated equipment has no earth connection by design — do not add one.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2A1:</strong> You need to know that 230 V AC mains has a peak voltage significantly higher than 230 V. (Peak = 230 × √2 ≈ 325 V.)</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═════════════════ 2C: RESISTORS, CAPS, INDUCTORS ═══════ -->
+    <section class="chapter" id="ch-2c">
+      <div class="chapter-header">
+        <span class="chapter-num">2C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Resistors, Capacitors, and Inductors</h2>
+
+      <h3>Resistors</h3>
+      <p>A resistor opposes the flow of electric current. Resistance is measured in <strong>ohms (Ω)</strong>.</p>
+
+      <h4>Resistor colour code (4-band)</h4>
+      <p>Most resistors have four colour bands. Read from the end with the bands closer together.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Colour</th><th>Digit</th><th>Multiplier</th></tr></thead>
+          <tbody>
+            <tr><td>Black</td><td>0</td><td>×1</td></tr>
+            <tr><td>Brown</td><td>1</td><td>×10</td></tr>
+            <tr><td>Red</td><td>2</td><td>×100</td></tr>
+            <tr><td>Orange</td><td>3</td><td>×1 k</td></tr>
+            <tr><td>Yellow</td><td>4</td><td>×10 k</td></tr>
+            <tr><td>Green</td><td>5</td><td>×100 k</td></tr>
+            <tr><td>Blue</td><td>6</td><td>×1 M</td></tr>
+            <tr><td>Violet</td><td>7</td><td>×10 M</td></tr>
+            <tr><td>Grey</td><td>8</td><td>—</td></tr>
+            <tr><td>White</td><td>9</td><td>—</td></tr>
+            <tr><td>Gold</td><td>—</td><td>×0.1 &nbsp;(5% tolerance)</td></tr>
+            <tr><td>Silver</td><td>—</td><td>×0.01 (10% tolerance)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Mnemonic:</strong> BB ROY of Great Britain has a Very Good Wife <span class="text-dim">(Black Brown Red Orange Yellow Green Blue Violet Grey White)</span></p>
+      <p><strong>Example:</strong> Red Red Orange Gold → Digits: 2, 2. Multiplier: Orange = ×1 k. Tolerance: Gold = ±5% → Value = <strong>22 kΩ ±5%</strong></p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C1:</strong> The 4-band colour code. You must be able to read a resistor value from its bands, and identify the tolerance band.</div>
+      </div>
+
+      <h4>Preferred values — the E12 series</h4>
+      <p>Resistors are not made in every value. The <strong>E12 series</strong> has 12 values per decade: 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82 — then 100, 120, 150… These are the values you will find in catalogues and exam questions.</p>
+
+      <h4>Resistors in series</h4>
+      <p>When resistors are connected end-to-end, the <strong>resistances add</strong>.</p>
+      <pre>R_total = R1 + R2 + R3 + ...</pre>
+      <p><strong>Example:</strong> 100 Ω + 150 Ω + 220 Ω = <strong>470 Ω</strong></p>
+
+      <h4>Resistors in parallel</h4>
+      <p>When resistors share the same two nodes, the combined resistance is <strong>less than the smallest individual resistor</strong>.</p>
+      <pre>For two resistors:   R_total = (R1 × R2) / (R1 + R2)
+For any number:      1/R_total = 1/R1 + 1/R2 + 1/R3 + ...</pre>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Common mistake:</strong> Students often add resistances in parallel instead of using the reciprocal formula. The parallel combination is ALWAYS less than the smallest resistor.</div>
+      </div>
+      <p><strong>Example 1:</strong> 100 Ω in parallel with 150 Ω</p>
+      <pre>R = (100 × 150) / (100 + 150) = 15 000 / 250 = 60 Ω</pre>
+      <p><strong>Example 2:</strong> Three resistors — 1.8 kΩ, 2.7 kΩ, 3.3 kΩ in parallel</p>
+      <pre>1/R = 1/1800 + 1/2700 + 1/3300 = 0.000556 + 0.000370 + 0.000303 = 0.001229
+R = 1 / 0.001229 = 813 Ω</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C1:</strong> Parallel resistance is always less than the smallest resistor. Know both the 2-resistor shortcut and the general reciprocal formula.</div>
+      </div>
+
+      <h3>Potential Dividers</h3>
+      <p>A <strong>potential divider</strong> (voltage divider) uses two or more resistors in series to tap off a fraction of the supply voltage. The output voltage is:</p>
+      <pre>V_out = Vs × R2 / (R1 + R2)</pre>
+      <p>This only works accurately if the load draws very little current — significant load current changes the effective R2 value.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C2:</strong> The potential divider formula. Questions often give you R1, R2, and Vs, and ask for V_out — or vice versa.</div>
+      </div>
+      <p><strong>Example:</strong> In a potential divider, R1 = 1 kΩ and R2 = 4 kΩ across 10 V.<br>
+      V_out = 10 × 4 000 / (1 000 + 4 000) = 10 × 4/5 = <strong>8 V</strong></p>
+
+      <h4>Voltage in a series circuit</h4>
+      <p>In a series circuit, the <strong>sum of voltage drops equals the supply voltage</strong>. Current is the same everywhere.</p>
+      <p><strong>Example:</strong> R1 = 200 Ω, R2 = 600 Ω in series. Voltage across R1 = 4 V.</p>
+      <pre>I = V_R1 / R1 = 4 / 200 = 20 mA
+V_R2 = I × R2 = 20 mA × 600 = 12 V
+Supply = 4 + 12 = 16 V</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C3:</strong> In a series circuit, current is the same everywhere. Use this to find voltages across individual components.</div>
+      </div>
+
+      <h4>Internal resistance and terminal voltage</h4>
+      <p>Real batteries and power supplies have an <strong>internal resistance</strong>. Under load, the terminal voltage drops because current flows through this resistance.</p>
+      <pre>V_terminal = V_open_circuit - (I × R_internal)</pre>
+      <p><strong>Example:</strong> Terminal voltage is 13.2 V at 1 A, and 12.4 V at 5 A.</p>
+      <pre>ΔV = 13.2 - 12.4 = 0.8 V    ΔI = 5 - 1 = 4 A
+R_internal = 0.8 / 4 = 0.2 Ω
+V_oc = 13.2 + (1 × 0.2) = 13.4 V</pre>
+
+      <h3>Capacitors</h3>
+      <p>A <strong>capacitor</strong> stores charge. It consists of <strong>two metal plates separated by an insulating material</strong> (the dielectric). Capacitance is measured in <strong>farads (F)</strong>. Practical units: μF (10⁻⁶ F), nF (10⁻⁹ F), pF (10⁻¹² F).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Type</th><th>Typical values</th><th>Key property</th></tr></thead>
+          <tbody>
+            <tr><td>Electrolytic</td><td>1 μF – 10 000 μF</td><td>Polarised — must fit correct way</td></tr>
+            <tr><td>Ceramic</td><td>1 pF – 100 nF</td><td>Small, cheap, non-polarised</td></tr>
+            <tr><td>Film (polyester, polypropylene)</td><td>1 nF – 10 μF</td><td>Good stability</td></tr>
+            <tr><td>Variable/trimmer</td><td>5 pF – 500 pF</td><td>Adjustable</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>2D3:</strong> Polarised capacitors (electrolytics) must be fitted the correct way round. Fitting them backwards can cause them to fail — sometimes explosively. The positive lead is longer; the negative side has a stripe.</div>
+      </div>
+
+      <h4>Capacitors in series and parallel</h4>
+      <p>Capacitors combine the <strong>opposite way</strong> to resistors:</p>
+      <ul>
+        <li><strong>Parallel:</strong> C_total = C1 + C2 + C3 (capacitances add)</li>
+        <li><strong>Series:</strong> 1/C_total = 1/C1 + 1/C2 + ... (reciprocal formula)</li>
+      </ul>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Common mistake:</strong> Many students mix up series/parallel rules for C vs R. For capacitors, <strong>parallel = add</strong>. For resistors, <strong>series = add</strong>.</div>
+      </div>
+
+      <h3>Inductors</h3>
+      <p>An <strong>inductor</strong> is a coil of wire with multiple turns. It stores energy in a magnetic field. Inductance is measured in <strong>henries (H)</strong> — practical values are mH or μH.</p>
+      <p><strong>Inductance increases if you:</strong> add more turns; use a ferrite or iron core; increase cross-sectional area; <strong>reduce the spacing between turns</strong> (turns closer together = higher inductance).</p>
+      <p><strong>Inductance decreases if you:</strong> remove turns; pull turns apart; remove the core.</p>
+      <p>Inductors in series: <code>L_total = L1 + L2 + ...</code> &nbsp;·&nbsp; Inductors in parallel: <code>1/L_total = 1/L1 + 1/L2 + ...</code></p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D4:</strong> An inductor is a coil of wire with several turns. Inductance depends on number of turns, core material, and turn spacing. <strong>2D6:</strong> Reducing turn spacing increases inductance.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2C</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. Two resistors of 470 Ω and 680 Ω are connected in parallel. Which is closest to their combined resistance?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2c-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2c-1" hidden>
+            <p>R = (470 × 680) / (470 + 680) = 319 600 / 1 150 ≈ <strong>278 Ω</strong></p>
+            <p>Always less than the smallest resistor (470 Ω) — eliminate any answer above 470 Ω.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A 4-band resistor has bands Yellow, Violet, Red, Gold. What is its value?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2c-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2c-2" hidden>
+            <p>Yellow = 4, Violet = 7, Red = ×100, Gold = ±5%</p>
+            <p>Value = <strong>4 700 Ω (4.7 kΩ) ±5%</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. In a potential divider, R1 = 1 kΩ and R2 = 4 kΩ, connected across 10 V. What is the output voltage measured across R2?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2c-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2c-3" hidden>
+            <p>V_out = 10 × 4 000 / (1 000 + 4 000) = 10 × 4/5 = <strong>8 V</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A polarised capacitor is installed backwards in a circuit. What is likely to happen?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2c-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2c-4" hidden>
+            <p>It can fail — potentially bulging, leaking, or rupturing. <strong>Always fit polarised capacitors with correct polarity</strong> — positive terminal to the more positive supply rail.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. How can the inductance of an air-core coil be increased without adding turns?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2c-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2c-5" hidden>
+            <p>Insert a ferrite or iron core. This concentrates the magnetic field and increases inductance significantly — by a factor related to the core's permeability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═════════════════════════ 2D: OHM'S LAW & POWER ═══════ -->
+    <section class="chapter" id="ch-2d">
+      <div class="chapter-header">
+        <span class="chapter-num">2D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Ohm's Law and Power</h2>
+
+      <h3>Ohm's Law</h3>
+      <p><strong>Ohm's law:</strong> Voltage equals current multiplied by resistance. Three versions — rearrange as needed:</p>
+      <pre>V = I × R    (voltage)
+I = V / R    (current)
+R = V / I    (resistance)</pre>
+      <p><strong>Units:</strong> V = volts · I = amperes (often mA or μA) · R = ohms (Ω)</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D1:</strong> Ohm's law is the single most used equation in electronics. Learn all three rearrangements. Unit conversions: 1 mA = 0.001 A, 1 kΩ = 1 000 Ω.</div>
+      </div>
+      <p><strong>Example:</strong> A 1.5 kΩ resistor has 6 V across it. What current flows?</p>
+      <pre>I = V / R = 6 / 1 500 = 0.004 A = 4 mA</pre>
+      <p><strong>Example:</strong> A current of 50 mA flows through a 100 Ω resistor. What voltage is across it?</p>
+      <pre>V = I × R = 0.05 × 100 = 5 V</pre>
+
+      <h4>Unit conversion reminder</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Write</th><th>Means</th><th>Multiply by</th></tr></thead>
+          <tbody>
+            <tr><td>1 mA</td><td>0.001 A</td><td>10⁻³</td></tr>
+            <tr><td>1 μA</td><td>0.000 001 A</td><td>10⁻⁶</td></tr>
+            <tr><td>1 kΩ</td><td>1 000 Ω</td><td>10³</td></tr>
+            <tr><td>1 MΩ</td><td>1 000 000 Ω</td><td>10⁶</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Unit errors are the most common calculation mistake.</strong> Always convert to base units (A and Ω) before calculating. Or be careful that mA × kΩ = V (the thousands cancel).</div>
+      </div>
+
+      <h3>Power</h3>
+      <p><strong>Power</strong> is the rate of energy use, measured in <strong>watts (W)</strong>. Three power formulas — derived from P = V × I and Ohm's law:</p>
+      <pre>P = V × I      (power from voltage and current)
+P = I² × R    (power from current and resistance)
+P = V² / R    (power from voltage and resistance)</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D2:</strong> Know all three power formulas. Identify which two quantities you are given (V and R, V and I, or I and R) and pick the matching formula.</div>
+      </div>
+      <p><strong>Example:</strong> What power is dissipated in a 50 Ω resistor with 10 V across it?</p>
+      <pre>P = V² / R = 100 / 50 = 2 W</pre>
+      <p><strong>Example:</strong> A 100 mA current flows through a 470 Ω resistor. What power is dissipated?</p>
+      <pre>P = I² × R = (0.1)² × 470 = 0.01 × 470 = 4.7 W</pre>
+      <p><strong>Practical note — power ratings:</strong> Resistors are rated for how much power they can handle. Common ratings: ¼ W, ½ W, 1 W, 2 W. Exceeding the rating causes the resistor to burn out. If a resistor will dissipate 1.5 W, choose at least a 2 W rated component.</p>
+
+      <h3>Component Properties (2D syllabus items)</h3>
+
+      <h4>Capacitor construction (2D1)</h4>
+      <p>A capacitor is made of <strong>two metal plates separated by an insulating material</strong> (the dielectric). The dielectric can be ceramic, polyester, polypropylene, electrolytic paste, or air.</p>
+
+      <h4>Crystals — series vs parallel resonance (2D5)</h4>
+      <p>Quartz crystals are used to control oscillator frequency with high accuracy. A crystal exhibits two slightly different resonant frequencies:</p>
+      <ul>
+        <li><strong>Series resonance:</strong> lower frequency, acts as low impedance at resonance</li>
+        <li><strong>Parallel resonance:</strong> slightly higher frequency, acts as high impedance</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D5:</strong> Crystal oscillators — always check whether the circuit specifies series or parallel resonance before ordering a replacement crystal. Using the wrong type shifts the operating frequency.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2D</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. A 4.7 kΩ resistor has 9.4 V across it. What current flows?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2d-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2d-1" hidden>
+            <p>I = V / R = 9.4 / 4 700 = 0.002 A = <strong>2 mA</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A transmitter draws 6 A from a 13.8 V supply. What power is it consuming?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2d-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2d-2" hidden>
+            <p>P = V × I = 13.8 × 6 = <strong>82.8 W</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Which of the following correctly describes a capacitor's structure?<br>a) A coil of wire on a ferrite core &nbsp; b) Two metal plates separated by insulating material &nbsp; c) A semiconductor junction &nbsp; d) A wound resistance element</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2d-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2d-3" hidden>
+            <p><strong>b) Two metal plates separated by insulating material.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A resistor is rated at ¼ W. The circuit will cause it to dissipate 0.3 W. Is this safe, and what should you do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2d-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2d-4" hidden>
+            <p><strong>No.</strong> 0.3 W exceeds the ¼ W (0.25 W) rating. Replace it with a ½ W or higher rated resistor of the same resistance value.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. You need to replace a crystal in an oscillator. What must you check beyond the frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2d-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2d-5" hidden>
+            <p>Check whether the oscillator requires a <strong>series resonant</strong> or <strong>parallel resonant</strong> crystal. The wrong type may cause the oscillator to run at a slightly wrong frequency or not start.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════ 2E: ALTERNATING CURRENT ══════ -->
+    <section class="chapter" id="ch-2e">
+      <div class="chapter-header">
+        <span class="chapter-num">2E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Alternating Current</h2>
+
+      <h3>AC versus DC</h3>
+      <p><strong>Direct current (DC):</strong> flows in one direction only. A battery produces DC.</p>
+      <p><strong>Alternating current (AC):</strong> reverses direction periodically. Mains electricity is AC. A sine wave is the purest form of AC.</p>
+
+      <h3>AC Waveforms (2E2)</h3>
+      <p>A sine wave is described by:</p>
+      <ul>
+        <li><strong>Frequency (f):</strong> how many complete cycles per second — unit: <strong>hertz (Hz)</strong>, also kHz, MHz, GHz.</li>
+        <li><strong>Period (T):</strong> the time for one complete cycle — unit: <strong>seconds (s)</strong>.</li>
+      </ul>
+      <pre>f = 1 / T      T = 1 / f</pre>
+      <p><strong>Example:</strong> Mains frequency = 50 Hz → Period = 1 / 50 = <strong>0.02 s (20 ms)</strong></p>
+      <ul>
+        <li><strong>Peak voltage (V_pk):</strong> the maximum voltage reached in one direction.</li>
+        <li><strong>Peak-to-peak voltage (V_pp):</strong> total swing from positive to negative peak. V_pp = 2 × V_pk</li>
+        <li><strong>RMS voltage (V_rms):</strong> the DC equivalent in terms of heating effect.</li>
+      </ul>
+      <pre>V_rms = V_pk / √2  ≈  V_pk × 0.707
+V_pk  = V_rms × √2 ≈  V_rms × 1.414</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2E3:</strong> RMS stands for Root Mean Square. The RMS value of an AC signal is the DC voltage that would produce the same heating effect in a resistor. UK mains: V_rms = 230 V, V_pk = 230 × 1.414 ≈ <strong>325 V</strong>.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>2E3:</strong> Which signal causes more heating in a 50 Ω load — 10 V DC or 10 V AC (peak)? Answer: <strong>10 V DC.</strong> The AC peak is 10 V, but its RMS is only 10 / 1.414 ≈ 7.07 V. DC wins.</div>
+      </div>
+
+      <h3>Capacitors and AC (2E1)</h3>
+      <p>A capacitor <strong>blocks DC but allows AC to pass.</strong> With DC, the capacitor charges to the supply voltage and no more current flows. With AC, the voltage is always changing, so the capacitor is always charging or discharging — current appears to flow through it.</p>
+      <p>This makes capacitors useful for: <strong>Coupling</strong> (pass AC signal between stages, block DC bias) · <strong>Decoupling</strong> (bypass AC to ground) · <strong>Filtering</strong> (pass high frequencies, block low).</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2E1:</strong> A capacitor will allow AC to flow but block DC. This is a fundamental property with many practical uses.</div>
+      </div>
+
+      <h3>Reactance (2E4 and 2E5)</h3>
+      <p><strong>Reactance</strong> is the opposition to AC offered by a capacitor or inductor. Measured in <strong>ohms (Ω)</strong>.</p>
+      <h4>Capacitive reactance (Xc)</h4>
+      <pre>Xc = 1 / (2π × f × C)</pre>
+      <ul>
+        <li>Xc decreases as frequency increases → capacitors pass high frequencies easily</li>
+        <li>Xc increases as frequency decreases → capacitors block low frequencies and DC</li>
+      </ul>
+      <h4>Inductive reactance (XL)</h4>
+      <pre>XL = 2π × f × L</pre>
+      <ul>
+        <li>XL increases as frequency increases → inductors oppose high frequencies</li>
+        <li>XL decreases as frequency decreases → inductors pass low frequencies easily</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2E4:</strong> Reactance is measured in ohms — it is the ratio of voltage to current in a reactive component, frequency-dependent. <strong>2E5/2E6:</strong> Reactance (X) and resistance (R) combine to give impedance (Z) = √(R² + X²).</div>
+      </div>
+
+      <h3>Wavelength, Frequency, and Bands (2E7 and 2E8)</h3>
+      <p><strong>Wavelength</strong> is the physical length of one complete cycle of a radio wave in free space.</p>
+      <pre>λ (metres) = 300 / f (MHz)</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2E7:</strong> Memorise λ = 300 / f(MHz). This gives the wavelength in metres when frequency is in megahertz.</div>
+      </div>
+      <p><strong>Examples:</strong> 7.1 MHz → 42.3 m (40 m band) · 14 MHz → 21.4 m (20 m band) · 145.5 MHz → 2.06 m (2 m band) · 432 MHz → 69 cm (70 cm band)</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Band name</th><th>Frequency range</th><th>Wavelength</th></tr></thead>
+          <tbody>
+            <tr><td>160 m</td><td>1.810 – 2.000 MHz</td><td>~160 m</td></tr>
+            <tr><td>80 m</td><td>3.500 – 3.800 MHz</td><td>~85 m</td></tr>
+            <tr><td>40 m</td><td>7.000 – 7.200 MHz</td><td>~42 m</td></tr>
+            <tr><td>20 m</td><td>14.000 – 14.350 MHz</td><td>~21 m</td></tr>
+            <tr><td>15 m</td><td>21.000 – 21.450 MHz</td><td>~14 m</td></tr>
+            <tr><td>10 m</td><td>28.000 – 29.700 MHz</td><td>~10 m</td></tr>
+            <tr><td>2 m</td><td>144 – 146 MHz</td><td>~2 m</td></tr>
+            <tr><td>70 cm</td><td>430 – 440 MHz</td><td>~70 cm</td></tr>
+            <tr><td>23 cm</td><td>1 240 – 1 325 MHz</td><td>~23 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2E8:</strong> Know which band a given frequency falls in. Use λ = 300/f(MHz) if unsure.</div>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text"><a href="../../sidebands/resistance-reactance-impedance.html" style="color:#06b6d4;">Resistance, Reactance &amp; Impedance</a> — Detailed treatment of capacitive and inductive reactance, phasors, and phase angles.</div>
+      </div>
+      <div style="margin:1rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+        <iframe src="../../../interactives/reactance-vs-frequency.html" width="100%" height="320" style="display:block;border:none;" loading="lazy" title="Reactance vs Frequency interactive"></iframe>
+        <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);margin:0;padding:0.4rem 0.75rem;background:var(--bg-card);">Interactive: See how XC and XL change with frequency.</p>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2E</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. An AC signal has a peak voltage of 14.1 V. What is its RMS voltage?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2e-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2e-1" hidden>
+            <p>V_rms = 14.1 / √2 = 14.1 / 1.414 ≈ <strong>10 V RMS</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A signal at 50.150 MHz is in which amateur band?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2e-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2e-2" hidden>
+            <p>λ = 300 / 50.150 ≈ 6 m → <strong>6 m band</strong> (50 – 52 MHz)</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Why does a capacitor block DC but pass AC?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2e-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2e-3" hidden>
+            <p>With DC, the capacitor charges to the supply voltage and then no further current flows. With AC, the voltage continuously reverses so the capacitor continuously charges/discharges — current effectively passes through it.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A 10 V DC signal and a 10 V peak AC signal are applied separately to identical 50 Ω resistors. Which produces more heat?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2e-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2e-4" hidden>
+            <p>The <strong>10 V DC</strong> produces more heat. The 10 V peak AC has an RMS of only 7.07 V. Power from DC = 10² / 50 = 2 W. Power from AC = 7.07² / 50 ≈ 1 W.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the approximate length of a half-wave dipole for 14.2 MHz?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2e-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2e-5" hidden>
+            <p>λ = 300 / 14.2 = 21.1 m. Half-wave = 10.6 m. In practice a physical dipole is about 95% of calculated, so about <strong>10 m</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════════ 2F: IMPEDANCE, RESONANCE, Q FACTOR ═══ -->
+    <section class="chapter" id="ch-2f">
+      <div class="chapter-header">
+        <span class="chapter-num">2F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Impedance, Resonance, and Q Factor</h2>
+
+      <h3>Impedance (2E6)</h3>
+      <p><strong>Impedance (Z)</strong> is the total opposition to AC in a circuit. It combines resistance (R) and reactance (X).</p>
+      <pre>Z = √(R² + X²)     (ohms)</pre>
+      <ul>
+        <li>If only resistance: Z = R</li>
+        <li>If only reactance: Z = X</li>
+        <li>If both: Z is always greater than either R or X alone</li>
+      </ul>
+      <p>Impedance is used when describing the input or output of RF circuits, antennas, and feeders. A typical coaxial feeder has an impedance of 50 Ω.</p>
+
+      <h3>Tuned Circuits (2H1 and 2H3)</h3>
+      <p>A <strong>tuned circuit</strong> consists of an <strong>inductor (L) and a capacitor (C)</strong> connected together. Energy bounces between the magnetic field of the inductor and the electric field of the capacitor. At the <strong>resonant frequency</strong>, the inductive reactance equals the capacitive reactance (XL = XC).</p>
+      <pre>f₀ = 1 / (2π × √(L × C))</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H3:</strong> Energy can transfer between a capacitor and an inductor at the <strong>resonant frequency</strong>. At resonance, XL = XC.</div>
+      </div>
+
+      <h4>Effect of changing L or C on resonant frequency</h4>
+      <ul>
+        <li><strong>Quadruple C → f₀ halves</strong> (because f₀ ∝ 1/√C)</li>
+        <li><strong>Reduce L → f₀ increases</strong></li>
+      </ul>
+      <p><strong>Example:</strong> If C is quadrupled, what happens to f₀?</p>
+      <pre>New f₀ = 1 / (2π√(L × 4C)) = 1 / (2π × 2 × √LC) = f₀ / 2
+Resonant frequency halves.</pre>
+
+      <h4>Series tuned circuit</h4>
+      <p>At resonance: <strong>impedance is minimum</strong> (theoretically zero; in practice just the winding resistance). Current is maximum. Used as a bandpass filter.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H1:</strong> At resonance, a series tuned circuit has <strong>minimum impedance</strong>.</div>
+      </div>
+
+      <h4>Parallel tuned circuit</h4>
+      <p>At resonance: <strong>impedance is maximum</strong> (theoretically infinite). Current in the external circuit is minimum. Used as a band-stop filter or to select a frequency in an oscillator.</p>
+
+      <h4>High voltage and current at resonance</h4>
+      <p>At resonance, voltage and circulating current inside a tuned circuit can be much higher than the supply voltage.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>2G1 exam note:</strong> Components in a tuned circuit may need high voltage and current ratings because high voltages and circulating currents can exist at resonance — Q times higher than the supply.</div>
+      </div>
+
+      <h3>Q Factor</h3>
+      <p><strong>Q (Quality factor)</strong> describes how selective a tuned circuit is.</p>
+      <pre>Q = f₀ / BW</pre>
+      <p>Where BW is the bandwidth (range of frequencies within 3 dB of peak).</p>
+      <ul>
+        <li><strong>High Q:</strong> narrow bandwidth, sharp tuning, more selective</li>
+        <li><strong>Low Q:</strong> wide bandwidth, less selective</li>
+      </ul>
+      <p>Q depends on the losses in the circuit — mostly the resistance of the inductor winding. A good-quality air-core or silver-plated coil gives high Q.</p>
+
+      <h3>Standing Waves on Feeders (2F1)</h3>
+      <p>When there is a mismatch at the antenna, some energy is reflected back. The forward and reflected waves combine to create <strong>standing waves</strong> — a pattern fixed in space.</p>
+      <p><strong>Key fact: on a transmission line, the pattern repeats every half wavelength.</strong></p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2F1:</strong> Standing wave patterns on feeders repeat every half wavelength. Voltage nodes are separated by λ/2.</div>
+      </div>
+      <p><strong>Example:</strong> A twin feeder carries a 20 m signal. Half wavelength = 10 m. If voltage is zero at one point, it is also zero <strong>10 m further along the feeder</strong>.</p>
+
+      <h3>Digital Signals and Sampling (2F1)</h3>
+      <p>Analogue signals can be converted to digital data: <strong>sample</strong> at regular intervals → <strong>quantise</strong> each sample → <strong>encode</strong> as binary numbers.</p>
+      <h4>Nyquist theorem</h4>
+      <p>To accurately represent an analogue signal, the <strong>sampling rate must be at least twice the highest frequency</strong> in the signal.</p>
+      <pre>f_sample ≥ 2 × f_max    (the Nyquist rate)</pre>
+      <p><strong>Example:</strong> An audio signal up to 4 kHz. Minimum sample rate = 2 × 4 kHz = <strong>8 kHz.</strong></p>
+      <p>Sampling below the Nyquist rate causes <strong>aliasing</strong> — false frequencies appear in the output.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2F1:</strong> A higher-resolution digital representation requires more binary bits. SDR (Software Defined Radio) uses ADC to digitise the signal early, then processes it all in software.</div>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text"><a href="../../sidebands/resistance-reactance-impedance.html#section-impedance" style="color:#06b6d4;">Resistance, Reactance &amp; Impedance — Impedance</a> — Complex impedance, the impedance triangle, and matching networks explained.</div>
+      </div>
+      <div style="margin:1rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+        <iframe src="../../../interactives/impedance-triangle.html" width="100%" height="320" style="display:block;border:none;" loading="lazy" title="Impedance Triangle interactive"></iframe>
+        <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-dim);margin:0;padding:0.4rem 0.75rem;background:var(--bg-card);">Interactive: Explore R, X, Z relationships on the impedance triangle.</p>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2F</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. A tuned circuit has L = 10 μH and C = 100 pF. If C is changed to 400 pF, what happens to the resonant frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2f-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2f-1" hidden>
+            <p>C is quadrupled. Therefore f₀ halves. The new resonant frequency is <strong>half</strong> the original.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. An audio signal has components up to 3.5 kHz. What is the minimum sample rate needed to record it accurately?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2f-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2f-2" hidden>
+            <p>f_sample ≥ 2 × 3 500 = <strong>7 000 Hz (7 kHz)</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. At resonance, a series tuned circuit has _____ impedance.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2f-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2f-3" hidden>
+            <p><strong>Minimum</strong> impedance (ideally zero; in practice, just the winding resistance).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why might components in a tuned circuit need high voltage ratings?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2f-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2f-4" hidden>
+            <p>At resonance, voltages across L and C can be much higher than the supply voltage (Q times higher). Components must be rated for these elevated voltages.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. A twin feeder carries a 40 m signal. If the RF voltage is zero at one point, how far away is the next voltage zero?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2f-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2f-5" hidden>
+            <p>Half wavelength = 40 / 2 = <strong>20 m</strong>. The next voltage zero is 20 m further along the feeder.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════ 2G: SEMICONDUCTORS ════════════════════ -->
+    <section class="chapter" id="ch-2g">
+      <div class="chapter-header">
+        <span class="chapter-num">2G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Semiconductors — Diodes, Transistors, and Transformers</h2>
+
+      <h3>Transformers (2G1)</h3>
+      <p>A <strong>transformer</strong> uses electromagnetic induction to transfer energy between two circuits. It consists of two coils (primary and secondary) wound on a shared magnetic core.</p>
+      <ul>
+        <li><strong>Transformers only work with AC.</strong> DC does not create a changing magnetic field, so no energy is transferred to the secondary.</li>
+        <li>The <strong>iron or ferrite core concentrates the magnetic field</strong>, increasing coupling and improving efficiency.</li>
+        <li>The voltage ratio equals the turns ratio:</li>
+      </ul>
+      <pre>V_primary / V_secondary = N_primary / N_secondary</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2G1:</strong> A transformer can only be used with AC. The iron core concentrates the magnetic field. The turns ratio determines the voltage ratio.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Do not confuse the turns ratio direction: <strong>more turns on primary → step down</strong>. More turns on secondary → step up.</div>
+      </div>
+      <p><strong>Example:</strong> Primary = 3 turns, secondary = 1 turn. Primary voltage = 240 V AC.</p>
+      <pre>240 / V_sec = 3 / 1 → V_sec = 240 / 3 = 80 V AC</pre>
+      <p><strong>Impedance transformation:</strong> Transformers also transform impedance. The impedance ratio equals the square of the turns ratio.</p>
+      <pre>Z_primary / Z_secondary = (N_primary / N_secondary)²</pre>
+
+      <h3>Diodes (2I1)</h3>
+      <p>A <strong>diode</strong> allows current to flow in one direction only. It is a semiconductor P–N junction. The arrow in the symbol points in the direction of conventional current flow (anode → cathode).</p>
+      <p><strong>Key applications:</strong></p>
+      <ul>
+        <li><strong>Rectification:</strong> converting AC to DC (diode conducts on positive half-cycles only)</li>
+        <li><strong>Relay flyback protection:</strong> diode across a relay coil prevents voltage spikes when the coil switches off</li>
+        <li><strong>Signal detection:</strong> small signal diodes in detectors and mixers</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I1:</strong> A diode is used to change alternating current to direct current. The diode only conducts when its anode is more positive than its cathode. Silicon forward voltage drop ≈ 0.6–0.7 V.</div>
+      </div>
+      <p><strong>Relay flyback protection:</strong> When a relay coil is de-energised, it produces a large back-EMF voltage spike. A diode across the coil (cathode to positive supply) clamps this spike and protects the driving transistor.</p>
+
+      <h3>Bipolar Junction Transistors (BJT)</h3>
+      <p>A <strong>BJT</strong> has three terminals: <strong>Base (B)</strong> — control input · <strong>Collector (C)</strong> — current flows in · <strong>Emitter (E)</strong> — current flows out. There are two types: NPN (more common) and PNP.</p>
+      <p><strong>Current relationships in NPN:</strong></p>
+      <pre>IC = β × IB        (collector current = gain × base current)
+IE = IC + IB       (emitter current = collector + base)
+β  = IC / IB       (current gain)</pre>
+      <p>A typical transistor has β of 50–300.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I3:</strong> The current gain β of a transistor is defined as IC / IB.</div>
+      </div>
+      <p><strong>Example:</strong> A transistor has β = 100. Base current = 50 μA. What is the collector current?</p>
+      <pre>IC = β × IB = 100 × 0.00005 = 5 mA</pre>
+
+      <h4>Common emitter configuration (2I4)</h4>
+      <p>The most common amplifier configuration. Input at base, output from collector, emitter is common. Characteristics: moderate-to-high voltage gain, high current gain, 180° phase shift, used for audio and RF amplifier stages.</p>
+
+      <h4>Transistor biasing (2I4 and 2I5)</h4>
+      <p><strong>Biasing</strong> provides the correct DC voltages and currents to set the transistor's operating point. Without correct bias, the transistor either cuts off or saturates.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Class</th><th>Conducts for</th><th>Efficiency</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Class A</strong></td><td>Full cycle</td><td>Low</td><td>Linear/small-signal amplifiers</td></tr>
+            <tr><td><strong>Class B</strong></td><td>Half cycle</td><td>Medium</td><td>Audio power amplifiers (push-pull pairs)</td></tr>
+            <tr><td><strong>Class C</strong></td><td>Less than half cycle</td><td>High</td><td>RF power amplifiers (tuned output reconstructs waveform)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I4 / 2I5:</strong> Class A = full cycle, most linear. Class C = less than half cycle, most efficient, used for RF power. Class C is NOT suitable for linear amplification.</div>
+      </div>
+
+      <h3>Field Effect Transistors (FET) (2H4 and 2H5)</h3>
+      <p>A <strong>FET</strong> has three terminals: <strong>Gate (G)</strong> — control · <strong>Drain (D)</strong> — current in · <strong>Source (S)</strong> — current out.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H5:</strong> A FET is preferred over a bipolar transistor at the input of a receiver because it has a <strong>lower noise figure</strong> and <strong>higher input impedance</strong>.</div>
+      </div>
+      <p><strong>Varicap diode (variable capacitance diode):</strong> A special diode where capacitance is controlled by the reverse bias voltage. More reverse voltage → smaller capacitance. Less reverse voltage → larger capacitance. Used in electronically tuned circuits (VCOs, AFC).</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H4:</strong> The capacitance of a varicap diode is normally adjusted by varying the <strong>reverse bias voltage</strong>.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2G</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. A transformer has 200 turns on the primary and 50 turns on the secondary. The primary is fed 240 V AC. What is the secondary voltage?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2g-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2g-1" hidden>
+            <p>V_sec = V_pri × (N_sec / N_pri) = 240 × (50/200) = 240 × 0.25 = <strong>60 V AC</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A transistor has a current gain (β) of 150. If the base current is 20 μA, what is the collector current?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2g-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2g-2" hidden>
+            <p>IC = β × IB = 150 × 0.000020 = 0.003 A = <strong>3 mA</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Which class of amplifier biasing is best for a high-power RF transmitter stage?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2g-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2g-3" hidden>
+            <p><strong>Class C</strong> — conducts for less than half a cycle, is most efficient. The tuned output circuit reconstructs the full RF waveform.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why is a diode fitted across a relay coil when driven by a transistor?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2g-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2g-4" hidden>
+            <p>When the relay is switched off, the coil produces a large back-EMF voltage spike. The diode clamps this spike, protecting the transistor from damage.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. Why is a FET preferred over a bipolar transistor at the input stage of a receiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2g-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2g-5" hidden>
+            <p>A FET has a <strong>lower noise figure</strong> (less internal noise) and a <strong>higher input impedance</strong> (draws less current from the signal source). Both properties improve receiver sensitivity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════ 2H: DIGITAL ELECTRONICS ════════════════ -->
+    <section class="chapter" id="ch-2h">
+      <div class="chapter-header">
+        <span class="chapter-num">2H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Digital Electronics Basics</h2>
+
+      <h3>Binary Numbers (2H2)</h3>
+      <p>Digital circuits work with only two states: <strong>1</strong> (high voltage, typically 3.3 V or 5 V) and <strong>0</strong> (low voltage, 0 V).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Bit position</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+          <tbody>
+            <tr><td>Value</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Example:</strong> Binary 1010 1100 = 128 + 0 + 32 + 0 + 8 + 4 + 0 + 0 = <strong>172</strong></p>
+      <p><strong>Example:</strong> How many levels can 4 bits represent? 2⁴ = <strong>16 levels</strong> (0 to 15)</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H2:</strong> With n bits, you can represent 2ⁿ different values. More bits = higher resolution in analogue-to-digital conversion.</div>
+      </div>
+      <p><strong>Hexadecimal (hex):</strong> Base 16, using 0–9 then A–F. 4 bits = 1 hex digit. Just a compact way to write binary.</p>
+
+      <h3>Logic Gates (2H1 and 2H2)</h3>
+      <p>Logic gates are the basic building blocks of digital circuits. Each gate performs a Boolean operation on one or more inputs.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Gate</th><th>Operation</th><th>Output is 1 when…</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AND</strong></td><td>A AND B</td><td>All inputs are 1</td></tr>
+            <tr><td><strong>OR</strong></td><td>A OR B</td><td>At least one input is 1</td></tr>
+            <tr><td><strong>NOT</strong></td><td>NOT A (inverter)</td><td>Input is 0</td></tr>
+            <tr><td><strong>NAND</strong></td><td>NOT(A AND B)</td><td>Any input is 0</td></tr>
+            <tr><td><strong>NOR</strong></td><td>NOT(A OR B)</td><td>All inputs are 0</td></tr>
+            <tr><td><strong>XOR</strong></td><td>Exclusive OR</td><td>Exactly one input is 1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>AND gate truth table:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>A</th><th>B</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td>0</td><td>1</td><td>0</td></tr>
+            <tr><td>1</td><td>0</td><td>0</td></tr>
+            <tr><td>1</td><td>1</td><td><strong>1</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>OR gate truth table:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>A</th><th>B</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td>0</td><td>1</td><td><strong>1</strong></td></tr>
+            <tr><td>1</td><td>0</td><td><strong>1</strong></td></tr>
+            <tr><td>1</td><td>1</td><td><strong>1</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2H1 / 2H2:</strong> Know the output of AND, OR, and NOT gates for any combination of inputs. NAND and NOR are the same but with the output inverted.</div>
+      </div>
+      <p><strong>Logic families:</strong> <strong>CMOS</strong> — very low power, sensitive to static, used in most modern digital ICs. <strong>TTL</strong> — older standard, 5 V logic, more current-hungry than CMOS.</p>
+
+      <h3>Digital Signal Processing and SDR (2H5)</h3>
+      <p>Modern radio equipment converts analogue signals to digital early in the receive chain, then uses <strong>digital signal processing (DSP)</strong> for filtering, demodulation, and decoding.</p>
+      <p><strong>Software Defined Radio (SDR):</strong> Radio functions implemented in software. A wideband ADC digitises a chunk of spectrum; software selects the desired signal and mode.</p>
+      <p><strong>Advantages of DSP:</strong> Filters and demodulators changed by software update · Multiple signals processed simultaneously · Precise, repeatable performance · No drift due to component ageing or temperature.</p>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2H</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is the decimal value of binary 0001 1010?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2h-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2h-1" hidden>
+            <p>0 + 0 + 0 + 16 + 8 + 0 + 2 + 0 = <strong>26</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A 3-input AND gate has inputs A=1, B=1, C=0. What is the output?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2h-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2h-2" hidden>
+            <p>AND: output is 1 only when ALL inputs are 1. C=0, so output = <strong>0</strong>.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. How many distinct values can an 8-bit ADC represent?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2h-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2h-3" hidden>
+            <p>2⁸ = <strong>256</strong> values (0 to 255)</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. What logic gate produces an output of 1 only when its inputs are different?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2h-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2h-4" hidden>
+            <p><strong>XOR (Exclusive OR)</strong> gate.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the main advantage of an SDR receiver compared to a traditional hardware receiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2h-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2h-5" hidden>
+            <p>The SDR's processing (filtering, demodulation) is done in software, so it can be changed or updated. A hardware receiver requires physical component changes for each modification.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════ 2I: POWER SUPPLIES ═════════════════════ -->
+    <section class="chapter" id="ch-2i">
+      <div class="chapter-header">
+        <span class="chapter-num">2I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Power Supplies</h2>
+
+      <h3>Rectification (2I1)</h3>
+      <p><strong>Rectification</strong> converts alternating current (AC) to direct current (DC). A <strong>diode</strong> is the component used — it only conducts in one direction.</p>
+      <h4>Half-wave rectifier</h4>
+      <p>A single diode only passes the positive half-cycles. Output is a series of positive pulses with gaps. Simple but wasteful.</p>
+      <h4>Full-wave bridge rectifier</h4>
+      <p>Four diodes arranged in a bridge pass both half-cycles. Both positive and negative half-cycles are converted to positive pulses. Output has twice the ripple frequency of half-wave. More efficient.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I1:</strong> A diode changes AC to DC. A full-wave bridge uses <strong>four diodes</strong> and is more efficient than a half-wave rectifier.</div>
+      </div>
+
+      <h3>Smoothing (2I2 / 2J3)</h3>
+      <p>After rectification, the output is pulsating DC. A <strong>smoothing capacitor</strong> reduces this ripple.</p>
+      <ul>
+        <li>The capacitor charges to the peak voltage on each cycle</li>
+        <li>Between peaks, it discharges slowly through the load</li>
+        <li>Larger capacitor = less ripple = smoother DC</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J3:</strong> The component that provides smoothing in a mains power supply is a <strong>capacitor</strong>. It stores charge between peaks to maintain the DC output level.</div>
+      </div>
+      <p>The residual variation is called <strong>ripple voltage</strong>. A large electrolytic capacitor (1 000 μF or more) is typically used in mains PSUs.</p>
+
+      <h3>Voltage Regulation (2I5)</h3>
+      <p>A <strong>voltage regulator</strong> keeps the output at a fixed voltage regardless of load.</p>
+      <h4>Zener diode regulator</h4>
+      <p>A <strong>zener diode</strong> is designed to break down at a specific reverse voltage (the zener voltage), maintaining a constant voltage across itself as long as some minimum current flows.</p>
+      <h4>IC voltage regulators</h4>
+      <p>Integrated circuit regulators (e.g. 7805 for +5 V, 7812 for +12 V) contain a complete regulation circuit in a single package. More precise and efficient than a simple zener.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I5:</strong> IC voltage regulators (integrated circuits) perform most regulation functions and are common in commercial power supplies. The 78xx series outputs +xx volts (e.g. 7812 → +12 V).</div>
+      </div>
+
+      <h4>Linear vs switched-mode power supplies</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Type</th><th>How it works</th><th>Pros</th><th>Cons</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Linear PSU</strong></td><td>Transformer → rectify → regulate</td><td>Simple, low noise</td><td>Inefficient, heavy transformer</td></tr>
+            <tr><td><strong>SMPS</strong></td><td>Rectify → switch at high frequency → small transformer</td><td>80–90% efficient, light</td><td>Can produce RF interference</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J4:</strong> An SMPS operates internally at a frequency well above 50 Hz. This allows a <strong>much smaller and lighter transformer</strong> to be used compared to a linear supply.</div>
+      </div>
+
+      <h3>Batteries and Capacity (2J1 and 2J2)</h3>
+      <p>Battery capacity is measured in <strong>ampere-hours (Ah)</strong> or <strong>milliampere-hours (mAh)</strong>.</p>
+      <pre>Capacity (Ah) = Current (A) × Time (hours)</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J1:</strong> The Ah rating is an indication of the stored energy when fully charged. A 10 Ah battery can supply 10 A for 1 hour, or 1 A for 10 hours.</div>
+      </div>
+      <p><strong>Example:</strong> An SDR receiver needs 6 V at 350 mA for 25 hours.</p>
+      <pre>Capacity = 0.35 A × 25 h = 8.75 Ah → choose next size up: 10 Ah</pre>
+
+      <h3>Integrated Circuits (2I6)</h3>
+      <p>An <strong>integrated circuit (IC)</strong> contains many transistors, resistors, and sometimes capacitors all built into a single silicon chip. ICs allow complex circuits to be implemented in a tiny, reliable, inexpensive package. Common packages: DIP, TO-92, SOT-23 (surface mount).</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2I6:</strong> An integrated circuit (IC) contains an entire circuit — transistors, resistors, etc. — on a single chip of silicon.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2I</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. How many diodes does a full-wave bridge rectifier use?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2i-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2i-1" hidden>
+            <p><strong>Four</strong> diodes.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. An LED driver circuit requires 12 V at 500 mA for 8 hours from a battery. What is the minimum battery capacity needed?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2i-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2i-2" hidden>
+            <p>Capacity = 0.5 A × 8 h = <strong>4 Ah</strong> minimum. Choose a 4 Ah or larger battery.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. What is the role of the large capacitor after the bridge rectifier in a mains PSU?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2i-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2i-3" hidden>
+            <p><strong>Smoothing</strong> — it charges to the peak voltage and discharges slowly between peaks, reducing the ripple in the DC output.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why does a switched-mode power supply (SMPS) use a smaller transformer than a linear supply with the same output power?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2i-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2i-4" hidden>
+            <p>The SMPS operates at a high internal switching frequency (many kHz). Transformer size is inversely related to frequency — the higher the frequency, the smaller the core needed for the same power. A 50 Hz linear supply needs a large, heavy transformer.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. A 7812 voltage regulator IC is used in a power supply. What output voltage would you expect?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2i-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2i-5" hidden>
+            <p>The 78xx series IC regulators output a voltage equal to the 'xx' number. <strong>7812 → +12 V</strong> regulated output.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════ 2J: DECIBELS & SIGNAL LEVELS ══════════ -->
+    <section class="chapter" id="ch-2j">
+      <div class="chapter-header">
+        <span class="chapter-num">2J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Decibels and Signal Levels</h2>
+
+      <h3>What is a Decibel? (2J2)</h3>
+      <p>The <strong>decibel (dB)</strong> is a logarithmic unit for expressing a ratio of two power levels, or two voltage/current levels.</p>
+      <p><strong>Why logarithmic?</strong> Signal levels in radio systems span an enormous range (from picowatts to kilowatts). Logarithms turn multiplication into addition — cascade gains and losses by adding dB values.</p>
+
+      <h4>Power ratio in dB</h4>
+      <pre>dB = 10 × log₁₀ (P_out / P_in)</pre>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>dB</th><th>Power ratio</th></tr></thead>
+          <tbody>
+            <tr><td>0 dB</td><td>×1 (no change)</td></tr>
+            <tr><td>+3 dB</td><td>×2 (double power)</td></tr>
+            <tr><td>−3 dB</td><td>×0.5 (half power)</td></tr>
+            <tr><td>+10 dB</td><td>×10</td></tr>
+            <tr><td>−10 dB</td><td>×0.1 (one tenth)</td></tr>
+            <tr><td>+20 dB</td><td>×100</td></tr>
+            <tr><td>−20 dB</td><td>×0.01</td></tr>
+            <tr><td>+30 dB</td><td>×1 000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J2:</strong> +3 dB = double power, −3 dB = half power. +10 dB = 10× power. These are the values you must know without calculation.</div>
+      </div>
+      <p><strong>Example:</strong> An amplifier has a power gain of 100. What is this in dB?</p>
+      <pre>dB = 10 × log₁₀ (100) = 10 × 2 = 20 dB</pre>
+      <p><strong>Example:</strong> A filter has 30 dB of attenuation. By what factor is the power reduced?</p>
+      <pre>30 dB = 10 + 10 + 10 → ×10 × ×10 × ×10 = ×1 000
+Power is reduced by a factor of 1 000 (to 1/1000 of input)</pre>
+
+      <h4>Voltage ratio in dB</h4>
+      <pre>dB = 20 × log₁₀ (V_out / V_in)</pre>
+      <p>Note the factor of 20 (not 10) for voltage ratios.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>dB</th><th>Voltage ratio</th></tr></thead>
+          <tbody>
+            <tr><td>+6 dB</td><td>×2 (double voltage)</td></tr>
+            <tr><td>−6 dB</td><td>×0.5 (half voltage)</td></tr>
+            <tr><td>+20 dB</td><td>×10</td></tr>
+            <tr><td>−20 dB</td><td>×0.1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Common mistake:</strong> Use <strong>10×log</strong> for power, <strong>20×log</strong> for voltage. If you mix these up, your answer will be wrong by 3 dB.</div>
+      </div>
+
+      <h3>dBm and Absolute Signal Levels</h3>
+      <p><strong>dBm</strong> is decibels relative to <strong>1 milliwatt</strong>. It is an absolute power level, not a ratio.</p>
+      <pre>dBm = 10 × log₁₀ (Power in mW / 1 mW)</pre>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Power</th><th>dBm</th></tr></thead>
+          <tbody>
+            <tr><td>1 mW</td><td>0 dBm</td></tr>
+            <tr><td>2 mW</td><td>+3 dBm</td></tr>
+            <tr><td>10 mW</td><td>+10 dBm</td></tr>
+            <tr><td>100 mW</td><td>+20 dBm</td></tr>
+            <tr><td>1 W</td><td>+30 dBm</td></tr>
+            <tr><td>10 W</td><td>+40 dBm</td></tr>
+            <tr><td>100 W</td><td>+50 dBm</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J3:</strong> dBm is an absolute power level referenced to 1 mW. A signal of +30 dBm is 1 W. A signal of 0 dBm is 1 mW.</div>
+      </div>
+
+      <h3>Cascaded Gains and Losses (2J3)</h3>
+      <p>When signals pass through multiple stages, gains and losses in dB are <strong>added together</strong>.</p>
+      <p><strong>Example:</strong> A receive chain has: −3 dB cable loss, +20 dB amplifier gain, −3 dB splitter loss.</p>
+      <pre>Total: −3 + 20 − 3 = +14 dB net gain</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J3:</strong> Add dB values for cascaded stages. A gain of +20 dB followed by −3 dB gives a net gain of +17 dB.</div>
+      </div>
+
+      <h3>Signal-to-Noise Ratio (2J4)</h3>
+      <p><strong>Signal-to-noise ratio (SNR)</strong> describes how much stronger the signal is compared to the background noise, measured in dB. Higher SNR = better quality signal.</p>
+      <p>A receiver with a low <strong>noise figure (NF)</strong> adds less noise to the signal, giving a higher output SNR. This is why low-noise amplifiers (LNAs) are used as the first stage in receivers.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2J4:</strong> Noise figure describes how much noise a receiver adds to the signal. A <strong>lower noise figure</strong> means better receiver performance.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 2J</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. An amplifier has a power gain of 1 000. Express this in dB.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2j-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2j-1" hidden>
+            <p>dB = 10 × log₁₀ (1 000) = 10 × 3 = <strong>30 dB</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A 100 W transmitter output is reduced by 3 dB by a cable loss. What power reaches the antenna?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2j-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2j-2" hidden>
+            <p>−3 dB = half power. 100 / 2 = <strong>50 W</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. A receive chain has: LNA +20 dB gain · Filter −2 dB loss · Coax cable −5 dB loss. What is the total gain?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2j-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2j-3" hidden>
+            <p>+20 − 2 − 5 = <strong>+13 dB net gain</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A signal of +40 dBm passes through a 20 dB attenuator. What is the output signal level?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2j-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2j-4" hidden>
+            <p>+40 − 20 = <strong>+20 dBm</strong> (which is 100 mW)</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. Two receivers: one has a noise figure of 3 dB, the other 8 dB. Which is better for weak signals?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2j-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2j-5" hidden>
+            <p>The receiver with the <strong>3 dB noise figure</strong> — it adds less noise, giving a better signal-to-noise ratio for weak signals.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ FORMULA REFERENCE ══════════════ -->
+    <section class="chapter" id="formula-ref">
+      <div class="chapter-header">
+        <span class="chapter-num">≡ FORMULAS</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Formula Reference</h2>
+      <div class="table-wrapper">
+        <table class="formula-ref-table">
+          <thead><tr><th>Formula</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>R_total = R1 + R2 + …</td><td>Resistors in series</td></tr>
+            <tr><td>1/R_t = 1/R1 + 1/R2</td><td>Resistors in parallel (general)</td></tr>
+            <tr><td>R_t = R1×R2 / (R1+R2)</td><td>Two resistors in parallel</td></tr>
+            <tr><td>V_out = Vs × R2/(R1+R2)</td><td>Potential divider</td></tr>
+            <tr><td>V = I × R</td><td>Ohm's law</td></tr>
+            <tr><td>P = V × I = I² × R = V²/R</td><td>Power</td></tr>
+            <tr><td>V_rms = V_pk / √2 ≈ V_pk × 0.707</td><td>RMS voltage from peak</td></tr>
+            <tr><td>V_pk = V_rms × √2 ≈ V_rms × 1.414</td><td>Peak voltage from RMS</td></tr>
+            <tr><td>f = 1/T</td><td>Frequency from period</td></tr>
+            <tr><td>λ = 300 / f(MHz)</td><td>Wavelength in metres</td></tr>
+            <tr><td>Xc = 1/(2πfC)</td><td>Capacitive reactance</td></tr>
+            <tr><td>XL = 2πfL</td><td>Inductive reactance</td></tr>
+            <tr><td>Z = √(R² + X²)</td><td>Impedance</td></tr>
+            <tr><td>f₀ = 1/(2π√LC)</td><td>Resonant frequency</td></tr>
+            <tr><td>β = IC / IB</td><td>Transistor current gain</td></tr>
+            <tr><td>V1/V2 = N1/N2</td><td>Transformer voltage ratio</td></tr>
+            <tr><td>dB = 10 × log(P_out/P_in)</td><td>Power ratio in decibels</td></tr>
+            <tr><td>dB = 20 × log(V_out/V_in)</td><td>Voltage ratio in decibels</td></tr>
+            <tr><td>f_sample ≥ 2 × f_max</td><td>Nyquist sampling theorem</td></tr>
+            <tr><td>Capacity (Ah) = I(A) × t(h)</td><td>Battery capacity</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ KEY FACTS SUMMARY ═══════════════ -->
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">★ KEY FACTS</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Key Facts Summary</h2>
+      <p>This section covers ~30% of the Intermediate exam. Prioritise the calculation topics: Ohm's law, power, parallel resistance, dB, and the Nyquist theorem.</p>
+      <div class="key-facts">
+        <ul>
+          <li><strong>Resistors in parallel:</strong> result is always LESS than the smallest</li>
+          <li><strong>Capacitors in parallel:</strong> capacitances ADD (like resistors in series)</li>
+          <li><strong>Polarised capacitors:</strong> must fit correct way round (electrolytic)</li>
+          <li><strong>Inductance increases:</strong> more turns, closer turns, ferrite core</li>
+          <li><strong>Capacitor:</strong> blocks DC, passes AC</li>
+          <li><strong>Transformer:</strong> AC only; turns ratio = voltage ratio</li>
+          <li><strong>Resonance:</strong> series circuit = minimum impedance; parallel = maximum</li>
+          <li><strong>RMS:</strong> the DC equivalent heating value; V_rms = 0.707 × V_peak</li>
+          <li><strong>Decibels:</strong> +3 dB doubles power; +10 dB multiplies by 10</li>
+          <li><strong>Nyquist:</strong> sample rate ≥ twice the highest signal frequency</li>
+          <li><strong>FET advantages at RX input:</strong> lower noise, higher input impedance</li>
+          <li><strong>Varicap:</strong> capacitance controlled by reverse bias voltage</li>
+          <li><strong>Class C:</strong> most efficient RF amplifier class; uses tuned output</li>
+          <li><strong>SMPS:</strong> high internal frequency → smaller, lighter transformer</li>
+          <li><strong>Battery Ah:</strong> current × time; choose size above calculated need</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ══════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-1-licensing.html" class="section-nav__link">← Section 1: Licensing</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=2"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-3-transmitters.html" class="section-nav__link">Section 3: Transmitters →</a>
+    </nav>
+
+  </main>
+
+  <script>
+    // Progress bar
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    // Self-check reveal toggles
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+</body>
+</html>
