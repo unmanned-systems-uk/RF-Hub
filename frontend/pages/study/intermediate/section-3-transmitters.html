@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 3: Transmitters &amp; Receivers — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 3</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">7 / 46 questions &nbsp;·&nbsp; 15%</span>
+      </div>
+      <h1>Transmitters &amp; Receivers</h1>
+      <p class="hero-subtitle">How radios work inside — superheterodyne receivers, SSB/CW/FM transmitters, digital modes, transceivers, filters, DSP, and oscillators. Expect block diagram questions.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-3a">3A Superhet</a></li>
+        <li><a href="#ch-3b">3B Mixers</a></li>
+        <li><a href="#ch-3c">3C Characteristics</a></li>
+        <li><a href="#ch-3e">3E CW &amp; SSB</a></li>
+        <li><a href="#ch-3f">3F Modulation</a></li>
+        <li><a href="#ch-3g">3G FM</a></li>
+        <li><a href="#ch-3h">3H Digital Modes</a></li>
+        <li><a href="#ch-3i">3I Transceivers</a></li>
+        <li><a href="#ch-3k">3K Filters &amp; AGC</a></li>
+        <li><a href="#ch-3l">3L DSP</a></li>
+        <li><a href="#ch-3m">3M Oscillators</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-3a"><span class="toc-code">3A</span>The Superheterodyne Receiver</a></li>
+        <li><a href="#ch-3b"><span class="toc-code">3B</span>Mixers</a></li>
+        <li><a href="#ch-3c"><span class="toc-code">3C</span>Receiver Characteristics</a></li>
+        <li><a href="#ch-3e"><span class="toc-code">3E</span>CW and SSB Transmitters</a></li>
+        <li><a href="#ch-3f"><span class="toc-code">3F</span>Modulation</a></li>
+        <li><a href="#ch-3g"><span class="toc-code">3G</span>FM Transmitters and Receivers</a></li>
+        <li><a href="#ch-3h"><span class="toc-code">3H</span>Digital Modes</a></li>
+        <li><a href="#ch-3i"><span class="toc-code">3I</span>Transceivers</a></li>
+        <li><a href="#ch-3k"><span class="toc-code">3K</span>Filters and AGC</a></li>
+        <li><a href="#ch-3l"><span class="toc-code">3L</span>Digital Signal Processing</a></li>
+        <li><a href="#ch-3m"><span class="toc-code">3M</span>Oscillators</a></li>
+        <li><a href="#key-facts"><span class="toc-code">★</span>Key Facts Summary</a></li>
+        <li><a href="#formula-ref"><span class="toc-code">≡</span>Formula Reference</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 3A: SUPERHETERODYNE RECEIVER ══════════ -->
+    <section class="chapter" id="ch-3a">
+      <div class="chapter-header">
+        <span class="chapter-num">3A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Superheterodyne Receiver</h2>
+
+      <h3>Why Superhet? (3A2)</h3>
+      <p>A <strong>crystal diode receiver</strong> (simple detector) can receive signals but has very limited selectivity. At low frequencies this is acceptable. Above about 3 MHz, signals are too close together and the receiver cannot separate them.</p>
+      <p>The <strong>superheterodyne (superhet)</strong> design solves this by converting all incoming signals to a single fixed <strong>intermediate frequency (IF)</strong> before filtering and detection. Filtering at a fixed frequency is much easier to do well than filtering at hundreds of different RF frequencies.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I1:</strong> A crystal diode receiver does not have adequate selectivity at higher frequencies. A superhet architecture is needed above a few MHz.</div>
+      </div>
+
+      <h3>Superhet Block Diagram (3A3)</h3>
+      <p>The superhet receive chain in order:</p>
+      <pre>Antenna → [RF Amplifier] → [Mixer] → [IF Amplifier] → [Detector] → [AF Amplifier] → Speaker
+                               ↑
+                         [Local Oscillator]</pre>
+      <p><strong>Each stage explained:</strong></p>
+      <ol>
+        <li><strong>RF Amplifier:</strong> Boosts the weak incoming signal. Selects a range of frequencies including the wanted signal. Helps set the noise figure of the receiver.</li>
+        <li><strong>Mixer:</strong> Combines the RF signal with the local oscillator (LO) signal. Produces the IF by taking the difference (or sum) of the two frequencies.</li>
+        <li><strong>Local Oscillator (LO):</strong> Generates a stable signal. The LO frequency is set so that <code>LO − RF = IF</code> (or <code>RF − LO = IF</code> depending on design).</li>
+        <li><strong>IF Amplifier:</strong> Amplifies the signal at the fixed IF. The IF filter here sets the selectivity of the receiver. Because IF is fixed, this filter can be very precise.</li>
+        <li><strong>Detector:</strong> Extracts the audio (or data) from the IF signal. The type of detector depends on the mode (AM, SSB, FM, CW).</li>
+        <li><strong>AF Amplifier:</strong> Amplifies the audio signal to a useful level for headphones or speaker.</li>
+      </ol>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I3:</strong> The RF amplifier in a superhet <strong>selects a range of signals including the wanted signal.</strong> It does not do the final selectivity — that is the IF filter's job.</div>
+      </div>
+
+      <h3>Image Frequency and Rejection (3A2, 3I2)</h3>
+      <p>The mixer responds to two RF frequencies that both produce the same IF:</p>
+      <ul>
+        <li>The <strong>wanted signal:</strong> f<sub>RF</sub></li>
+        <li>The <strong>image frequency:</strong> f<sub>RF</sub> + 2 × IF (or f<sub>RF</sub> − 2 × IF)</li>
+      </ul>
+      <p><strong>Example:</strong> IF = 455 kHz, wanted signal at 7.100 MHz.</p>
+      <pre>LO = 7.100 + 0.455 = 7.555 MHz
+Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.</pre>
+      <p>To reject the image, the RF amplifier's filter must attenuate signals at the image frequency. Using a <strong>higher IF</strong> makes the image further away from the wanted signal, making it easier to filter out.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I2:</strong> Image rejection is improved by using a <strong>high IF</strong>. The image falls further from the wanted signal and is more easily removed by the RF filter.</div>
+      </div>
+      <p><strong>IF transformers</strong> in a superhet are often enclosed in aluminium screening cans. This prevents unwanted coupling between stages — without screening, the high-gain IF amplifier could pick up its own output and oscillate.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I2:</strong> IF transformers are screened in aluminium cans to <strong>prevent unwanted coupling between stages.</strong></div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3A</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. In a superhet receiver, what is the purpose of the local oscillator?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3a-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3a-1" hidden>
+            <p>The LO generates a signal that is mixed with the incoming RF. The difference between the RF and LO frequencies produces the intermediate frequency (IF).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A receiver has an IF of 10.7 MHz. A wanted signal arrives at 145.000 MHz. What is the image frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3a-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3a-2" hidden>
+            <p>LO = 145.000 + 10.700 = 155.700 MHz.<br>Image = 155.700 + 10.700 = <strong>166.400 MHz.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Why are IF transformers enclosed in metal screening cans?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3a-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3a-3" hidden>
+            <p>To prevent unwanted coupling between the high-gain IF stages, which could cause oscillation or reduced performance.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why does a superhet receiver have better selectivity than a crystal diode receiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3a-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3a-4" hidden>
+            <p>The superhet converts all received signals to a fixed IF. A high-quality fixed filter at the IF can provide precise, narrow selectivity. A diode receiver filters at the received frequency, which is much harder to do at HF.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. How is image rejection improved in a superhet?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3a-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3a-5" hidden>
+            <p>By using a <strong>higher IF.</strong> This places the image frequency further away from the wanted signal, making it easier to attenuate with the RF filter.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════════ 3B: MIXERS ═══════════════════ -->
+    <section class="chapter" id="ch-3b">
+      <div class="chapter-header">
+        <span class="chapter-num">3B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Mixers</h2>
+
+      <h3>How a Mixer Works (3B1)</h3>
+      <p>A <strong>mixer</strong> is a non-linear device that combines two input signals and produces output frequencies that include their sum and difference:</p>
+      <pre>Output frequencies = f_RF ± f_LO</pre>
+      <p>In a superhet, the difference (or sum) is selected by the IF filter. The unwanted product is rejected.</p>
+      <p><strong>Types of mixer:</strong></p>
+      <ul>
+        <li><strong>Diode ring (double balanced) mixer:</strong> uses four diodes in a bridge. Suppresses both input frequencies at the output. Good isolation between ports.</li>
+        <li><strong>Active mixer (e.g. Gilbert cell):</strong> uses transistors. Can provide conversion gain.</li>
+      </ul>
+      <p><strong>Mixing products:</strong> A real mixer also produces harmonics and intermodulation products (3rd order, etc.). Strong out-of-band signals can mix to produce interference — this is why receiver <strong>dynamic range</strong> matters.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3B1:</strong> A mixer combines the RF and LO signals to produce the IF. The IF is typically the difference frequency: IF = |f<sub>RF</sub> − f<sub>LO</sub>|.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 3C: RECEIVER CHARACTERISTICS ═════════ -->
+    <section class="chapter" id="ch-3c">
+      <div class="chapter-header">
+        <span class="chapter-num">3C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Receiver Characteristics</h2>
+
+      <h3>Sensitivity (3C1)</h3>
+      <p><strong>Sensitivity</strong> is a measure of how weak a signal the receiver can detect usefully.</p>
+      <p>It is affected by:</p>
+      <ul>
+        <li>The <strong>noise figure</strong> of the RF amplifier (lower = better).</li>
+        <li>The <strong>bandwidth</strong> of the IF filter (narrower = less noise = more sensitive).</li>
+      </ul>
+      <p>A sensitive receiver can detect signals only slightly above the noise floor.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I (D2F-M2-Q34):</strong> Sensitivity is the receiver's ability to receive weak signals that are only a little stronger than the natural RF noise.</div>
+      </div>
+      <p><strong>Noise figure (NF):</strong> describes how much noise the receiver itself adds. Measured in dB. A lower NF = less added noise = better sensitivity.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>3K1 (D2F-M1-Q36):</strong> Adding an RF preamplifier does not always improve performance. If the preamplifier's own noise is similar to or worse than the receiver's noise, it will degrade the overall noise figure. A 10 dB gain preamp with 0.1 μV internal noise added to a receiver with 0.1 μV noise makes things <strong>worse</strong>, not better.</div>
+      </div>
+
+      <h3>Selectivity (3C2)</h3>
+      <p><strong>Selectivity</strong> is the ability to receive one signal while rejecting others nearby. It depends on the IF filter bandwidth and Q factor.</p>
+      <ul>
+        <li><strong>High Q, narrow bandwidth → high selectivity</strong> (can pick out one signal in a crowded band).</li>
+        <li><strong>Low Q, wide bandwidth → low selectivity</strong> (nearby signals interfere).</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3H4 / 3I (D2F-M1-Q34):</strong> A highly selective receiver has a <strong>high Q-factor and narrow bandwidth.</strong> If the tuning sections have low Q, adjacent signals are more likely to interfere with the wanted signal.</div>
+      </div>
+
+      <h3>Oscillator Drift and Stability (3C3)</h3>
+      <p>An oscillator that drifts in frequency causes the received signal to wander off. In a transmitter, drift causes the output to move out of band.</p>
+      <p><strong>Example:</strong> An LC oscillator specified at 0.1% maximum drift, used on 10 MHz.</p>
+      <pre>Max drift = 10 000 kHz × 0.001 = 10 kHz</pre>
+      <p>The transmitter output could move 10 kHz away from the set frequency. On a band from 10.100 to 10.150 MHz, a transmission below 10.110 MHz (10.100 + 10 kHz margin) could drift out of band.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3C3:</strong> Oscillator drift of 0.1% at 10 MHz = 10 kHz maximum drift. A CW signal set near the band edge could drift out of band.</div>
+      </div>
+
+      <h3>Dynamic Range (3C1–3C2)</h3>
+      <p><strong>Dynamic range</strong> is the range of signal strengths the receiver can handle usefully — from the noise floor (weakest detectable signal) up to the level where the receiver distorts or overloads.</p>
+      <p>Poor dynamic range causes <strong>intermodulation distortion (IMD):</strong> strong signals mixing in the receiver's own circuits to produce spurious signals at other frequencies.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">A receiver with good dynamic range can be used on a busy band without strong nearby signals causing false signals or blocking.</div>
+      </div>
+
+      <h3>Unwanted Emissions from a Transmitter</h3>
+      <p>A transmitter radiating on multiple bands simultaneously has a problem — usually:</p>
+      <ul>
+        <li><strong>Harmonics</strong> present in the output (multiples of the fundamental).</li>
+        <li><strong>Mixer products</strong> not fully filtered at the transmitter output.</li>
+      </ul>
+      <p><strong>Remedy:</strong> Fit a <strong>low-pass filter</strong> at the transmitter output. This passes the fundamental frequency and attenuates harmonics above it.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3C (D2F-M2-Q36):</strong> A transmitter radiating on other amateur bands should have a <strong>low-pass filter</strong> fitted at the output to attenuate harmonics.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3C</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What does receiver sensitivity describe?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3c-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3c-1" hidden>
+            <p>The ability to receive weak signals that are only slightly stronger than the noise floor.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A highly selective receiver has which two characteristics?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3c-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3c-2" hidden>
+            <p><strong>High Q-factor</strong> and <strong>narrow bandwidth.</strong> These allow it to separate closely spaced signals.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. A transmitter is found to radiate on harmonics above its fundamental frequency. What is the simplest fix?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3c-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3c-3" hidden>
+            <p>Fit a <strong>low-pass filter</strong> at the transmitter antenna output. It passes the fundamental and attenuates harmonics.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. An LC oscillator has a quoted drift of 0.05% and is used at 28 MHz. What is the maximum frequency drift?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3c-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3c-4" hidden>
+            <p>28 000 × 0.0005 = <strong>14 kHz.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. Why can adding a preamplifier sometimes make reception worse?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3c-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3c-5" hidden>
+            <p>If the preamplifier's own internal noise is high, it adds more noise to the signal than gain. The overall noise figure of the preamp + receiver combination worsens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 3E: CW AND SSB TRANSMITTERS ═════════ -->
+    <section class="chapter" id="ch-3e">
+      <div class="chapter-header">
+        <span class="chapter-num">3E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>CW and SSB Transmitters</h2>
+
+      <h3>Amplitude Modulation (AM) Review (3F1)</h3>
+      <p><strong>AM (Amplitude Modulation):</strong> the carrier amplitude varies with the audio signal. The output contains:</p>
+      <ul>
+        <li>The carrier.</li>
+        <li>An upper sideband (USB).</li>
+        <li>A lower sideband (LSB).</li>
+      </ul>
+      <p>AM bandwidth ≈ 2 × highest audio frequency. A 3 kHz audio signal produces 6 kHz AM bandwidth.</p>
+
+      <h3>Single Sideband (SSB) (3E1, 3E2, 3F2)</h3>
+      <p><strong>SSB</strong> transmits only one sideband. The carrier and the other sideband are removed. This gives:</p>
+      <ul>
+        <li>Half the bandwidth of AM (only one sideband = 3 kHz for 3 kHz audio).</li>
+        <li>No power wasted in the carrier.</li>
+        <li>All power in the useful sideband.</li>
+      </ul>
+      <p><strong>Bandwidth comparison (largest to smallest):</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Mode</th><th>Typical bandwidth</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AM</td><td>~6 kHz</td></tr>
+            <tr><td>SSB</td><td>~3 kHz</td></tr>
+            <tr><td>FM (voice)</td><td>16 kHz (with 5 kHz deviation)</td></tr>
+            <tr><td>CW</td><td>~500 Hz – 1 kHz</td></tr>
+            <tr><td>FT8</td><td>~50 Hz</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3E1 / 3E2:</strong> In decreasing order of bandwidth: <strong>AM, SSB, CW.</strong> (FM is wider than AM but is less commonly compared in this context.)</div>
+      </div>
+      <p><strong>SSB transmitter block diagram:</strong></p>
+      <pre>Microphone → [AF Amplifier] → [Balanced Modulator] → [SSB Filter] → [Mixer] → [PA] → Antenna
+                                                                         ↑
+                                                               [VFO / PLL Oscillator]</pre>
+      <p><strong>Balanced modulator:</strong> produces a double-sideband suppressed-carrier (DSB-SC) signal. Both sidebands are present, but the carrier is suppressed (cancelled by the balanced circuit design).</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3E1:</strong> The output of a balanced modulator contains <strong>two sidebands but with the carrier suppressed.</strong> This is DSB-SC — double sideband suppressed carrier.</div>
+      </div>
+      <p><strong>SSB filter (3E2):</strong> removes one of the two sidebands from the balanced modulator output. A <strong>crystal filter</strong> is typically used — its very narrow, precise passband removes the unwanted sideband cleanly.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3E:</strong> In an SSB transmitter, the unwanted sideband is removed by a <strong>crystal filter.</strong></div>
+      </div>
+      <p>In a modern transceiver, the SSB filter is often shared between transmit and receive paths. In receive, it selects the IF passband. In transmit, it removes the unwanted sideband.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M (D2F-M1-Q39):</strong> In a modern transceiver, the <strong>SSB filter</strong> is typically shared between transmit and receive circuits.</div>
+      </div>
+
+      <h3>CW Transmitters (3K1)</h3>
+      <p>A <strong>CW (continuous wave)</strong> transmitter is simpler than an SSB transmitter:</p>
+      <ul>
+        <li>A keyed oscillator produces RF at the transmit frequency.</li>
+        <li>The key on/off shapes the envelope of the signal.</li>
+      </ul>
+      <p><strong>CW waveform:</strong> the transitions between key-on and key-off should be <strong>shaped</strong> (with a slight rise and fall time). This is "key shaping" or "keying envelope shaping."</p>
+      <ul>
+        <li>Hard keying (instant on/off) produces <strong>key clicks</strong> — interference on adjacent frequencies.</li>
+        <li>Shaped keying produces a clean, click-free signal.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3H (D2F-M1-Q33):</strong> The most desirable CW transmitted signal has shaped (soft) rise and fall times — not an abrupt square wave. This minimises key clicks.</div>
+      </div>
+      <p><strong>CW demodulation</strong> requires a <strong>Beat Frequency Oscillator (BFO).</strong></p>
+      <p>In SSB/AM receive, the detector reconstructs audio from the IF. For CW, there is only a carrier — no audio. The BFO injects a signal close to the IF, producing a difference frequency in the audio range:</p>
+      <pre>Audio tone = |IF - BFO frequency|</pre>
+      <p><strong>Example:</strong> CW on 10.000 MHz, IF = 600 kHz. To receive: LO = 10.000 + 0.600 = 10.600 MHz. The CW signal appears at exactly 600 kHz in the IF. BFO at 599.3 kHz produces: 600.0 − 599.3 = <strong>0.7 kHz = 700 Hz</strong> audio tone.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3K1:</strong> The demodulator for a CW receiver requires a <strong>beat frequency oscillator (BFO).</strong> A BFO frequency of 599.3 kHz with a 600 kHz IF gives a 700 Hz audio tone.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3E</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What does a balanced modulator produce?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3e-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3e-1" hidden>
+            <p><strong>Two sidebands with the carrier suppressed</strong> (DSB-SC — double sideband suppressed carrier).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. In an SSB transmitter, what component removes the unwanted sideband?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3e-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3e-2" hidden>
+            <p>A <strong>crystal filter.</strong> Its narrow, precise passband passes one sideband and rejects the other.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Why is a BFO needed for CW reception?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3e-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3e-3" hidden>
+            <p>A CW signal has no audio component — it is just a carrier switched on and off. The BFO injects a signal close to the IF, producing an audible tone equal to the frequency difference.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. List these modes in decreasing order of bandwidth: CW, SSB, AM.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3e-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3e-4" hidden>
+            <p><strong>AM, SSB, CW.</strong> AM is widest (~6 kHz), SSB narrower (~3 kHz), CW narrowest (~500 Hz).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What causes "key clicks" in CW transmission, and how are they prevented?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3e-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3e-5" hidden>
+            <p>Hard (instant) keying produces sharp edges on the waveform, which spread energy across adjacent frequencies as key clicks. <strong>Shaped keying</strong> with a controlled rise and fall time prevents this.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════════ 3F: MODULATION ═══════════════ -->
+    <section class="chapter" id="ch-3f">
+      <div class="chapter-header">
+        <span class="chapter-num">3F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Modulation</h2>
+
+      <h3>Types of Modulation (3F1, 3F2)</h3>
+      <p><strong>Modulation</strong> is the process of varying a carrier wave to carry information.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Type</th><th>What varies</th><th>Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AM (Amplitude Modulation)</td><td>Carrier amplitude</td><td>BC, AM voice</td></tr>
+            <tr><td>FM (Frequency Modulation)</td><td>Carrier frequency</td><td>VHF/UHF voice</td></tr>
+            <tr><td>PM (Phase Modulation)</td><td>Carrier phase</td><td>Data, some digital modes</td></tr>
+            <tr><td>SSB</td><td>Amplitude (one sideband only)</td><td>HF voice</td></tr>
+            <tr><td>CW</td><td>Amplitude (keyed on/off)</td><td>Morse code</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Modulation index (m):</strong></p>
+      <ul>
+        <li>For AM: m = peak modulating voltage / carrier voltage (100% modulation = m = 1).</li>
+        <li>For FM: m (or β) = peak deviation / modulating frequency.</li>
+      </ul>
+      <p>Overmodulation in AM causes <strong>splatter</strong> — distortion sidebands spread beyond the intended bandwidth and interfere with adjacent channels.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3F1:</strong> Know the common modulation types. FM uses frequency variation; AM uses amplitude variation; SSB is AM with carrier and one sideband removed.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 3G: FM TRANSMITTERS & RECEIVERS ══════ -->
+    <section class="chapter" id="ch-3g">
+      <div class="chapter-header">
+        <span class="chapter-num">3G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>FM Transmitters and Receivers</h2>
+
+      <h3>Frequency Modulation (3A2, 3G2, 3G3)</h3>
+      <p>In <strong>FM</strong>, the carrier frequency varies proportionally with the audio signal amplitude. The carrier amplitude stays constant.</p>
+      <ul>
+        <li><strong>Centre frequency:</strong> the unmodulated carrier frequency.</li>
+        <li><strong>Peak deviation (Δf):</strong> the maximum change from centre frequency. This occurs at the amplitude peaks of the modulating signal.</li>
+        <li><strong>Modulation index (β):</strong> β = Δf / f<sub>mod</sub> (deviation divided by modulating frequency).</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3A2:</strong> Peak deviation is the <strong>maximum change from the centre frequency</strong>, occurring at the amplitude peaks of the modulating audio signal.</div>
+      </div>
+
+      <h3>FM Bandwidth — Carson's Rule (3G4)</h3>
+      <p>The bandwidth of an FM signal is approximately:</p>
+      <pre>BW ≈ 2 × (Δf + f_max)</pre>
+      <p>Where Δf = peak deviation and f<sub>max</sub> = highest audio frequency.</p>
+      <p><strong>Example:</strong> Deviation = 5 kHz, highest audio = 3 kHz.</p>
+      <pre>BW ≈ 2 × (5 + 3) = 2 × 8 = 16 kHz</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G4 / 3E (D2F-NEW-024):</strong> Carson's rule: BW ≈ 2(deviation + max audio). With 5 kHz deviation and 3 kHz audio: BW ≈ 16 kHz.</div>
+      </div>
+
+      <h3>FM Sidebands and Modulation Index (3A3)</h3>
+      <p>Unlike AM (which has only two sidebands), FM produces <strong>multiple sidebands</strong>. The number and amplitude of sidebands depends on the <strong>modulation index</strong> (β).</p>
+      <ul>
+        <li>Higher β → more sidebands needed to represent the signal.</li>
+        <li>As the modulating frequency decreases (while keeping deviation constant), β increases, and more sidebands are required.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3A (D2F-M1-Q29) / 3A (D2F-M2-Q35):</strong> As the FM modulation index increases, the <strong>number of sidebands required increases.</strong> More sidebands = wider occupied bandwidth.</div>
+      </div>
+
+      <h3>FM Generation (3E3)</h3>
+      <p>FM can be generated by applying an audio signal to a <strong>variable capacitance diode (varicap)</strong> connected to a tuned oscillator circuit. The audio signal varies the reverse bias voltage on the varicap, which changes its capacitance, which varies the oscillator frequency.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3E3:</strong> FM is generated by applying an AF signal to a <strong>variable capacitance diode connected to an oscillator circuit.</strong> The varicap changes capacitance with voltage, pulling the oscillator frequency.</div>
+      </div>
+
+      <h3>Harmonics (3G2)</h3>
+      <p><strong>Harmonics</strong> are signals at exact multiples of the fundamental frequency.</p>
+      <ul>
+        <li>2nd harmonic = 2 × f</li>
+        <li>3rd harmonic = 3 × f</li>
+        <li>nth harmonic = n × f</li>
+      </ul>
+      <p>Harmonics are produced by non-linearity in amplifiers. They can cause interference on other bands. A low-pass filter at the transmitter output suppresses them.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G2:</strong> Harmonics are <strong>multiples of the fundamental frequency.</strong> A signal at 7 MHz produces harmonics at 14 MHz, 21 MHz, 28 MHz, etc.</div>
+      </div>
+
+      <h3>Transmitter Without an Antenna (3G3)</h3>
+      <p>Operating a transmitter without a connected antenna is undesirable. All the output power has nowhere to go — it is reflected back into the transmitter's power amplifier stage.</p>
+      <p>This can:</p>
+      <ul>
+        <li><strong>Damage the PA transistors or valves</strong> (overheating from reflected power).</li>
+        <li>Cause high SWR, which the PA may not tolerate.</li>
+      </ul>
+      <p>Always use a dummy load if testing without an antenna.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G3:</strong> Operating a transmitter without an antenna is undesirable because <strong>the transmitter could be damaged</strong> by the reflected power.</div>
+      </div>
+
+      <h3>RTTY Duty Cycle</h3>
+      <p><strong>RTTY (Radio Teletype)</strong> transmits a continuous carrier at one of two frequencies. Unlike SSB voice (where the average power is much less than peak), RTTY is at near-100% duty cycle — the transmitter is always at full power.</p>
+      <p>A transmitter designed for SSB voice at 100 W peak may only be designed for ~25–30 W continuous (the average power on voice). Running RTTY at 100 W peak subjects the PA to continuous full power — the transmitter <strong>runs considerably hotter</strong> and may fail.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>3G (D2F-M2-Q32):</strong> Running an SSB transmitter on RTTY at the same peak power level as voice will cause it to run <strong>considerably hotter.</strong> Reduce power when operating continuous-carrier modes (RTTY, FM, SSTV).</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3G</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is peak deviation in FM?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3g-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3g-1" hidden>
+            <p>The <strong>maximum change in frequency from the centre frequency</strong>, occurring at the amplitude peaks of the modulating signal.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. An FM station uses 2.5 kHz deviation and a maximum audio frequency of 3 kHz. What is the approximate bandwidth using Carson's rule?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3g-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3g-2" hidden>
+            <p>BW ≈ 2 × (2.5 + 3) = 2 × 5.5 = <strong>11 kHz.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. A 14 MHz transmitter produces a harmonic that falls in the 10 m band (28 MHz). Which harmonic is this?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3g-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3g-3" hidden>
+            <p>28 / 14 = 2. This is the <strong>2nd harmonic.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why should you not key a transmitter without an antenna connected?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3g-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3g-4" hidden>
+            <p>The RF output has nowhere to go and is reflected back into the PA. This can <strong>damage the transmitter.</strong></p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. An FM signal has modulation index β = 5. If the modulation index doubles to 10, what happens to the number of sidebands?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3g-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3g-5" hidden>
+            <p>The number of sidebands <strong>increases</strong> — a higher modulation index requires more sidebands to accurately represent the FM signal.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3H: DIGITAL MODES ════════════════ -->
+    <section class="chapter" id="ch-3h">
+      <div class="chapter-header">
+        <span class="chapter-num">3H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Digital Modes</h2>
+
+      <h3>Overview of Digital Modes (3H2, 3H3)</h3>
+      <p>Digital modes encode audio or data as binary information before transmission.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Mode</th><th>Bandwidth</th><th>Use</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>FT8</strong></td><td>~50 Hz</td><td>Weak signal DX</td><td>15-second transmit cycles</td></tr>
+            <tr><td><strong>FT4</strong></td><td>~90 Hz</td><td>Contest weak signal</td><td>7.5-second cycles</td></tr>
+            <tr><td><strong>JT65</strong></td><td>~180 Hz</td><td>EME, weak signal</td><td>Slow</td></tr>
+            <tr><td><strong>WSPR</strong></td><td>~6 Hz</td><td>Propagation beacons</td><td>Very weak signal</td></tr>
+            <tr><td><strong>PSK31</strong></td><td>~31 Hz</td><td>Chat, HF</td><td>Narrow, keyboard-speed</td></tr>
+            <tr><td><strong>RTTY</strong></td><td>~500 Hz</td><td>Traditional teletype</td><td>FSK, older standard</td></tr>
+            <tr><td><strong>SSTV</strong></td><td>~2 kHz</td><td>Slow scan TV</td><td>Images over voice bandwidth</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3H2 / 3H3:</strong> Digital modes use narrow bandwidths and error-correction to operate at signal levels well below what voice modes need. FT8 works with signals up to 20–25 dB below noise floor (after averaging over the 15-second window).</div>
+      </div>
+
+      <h3>Receiver for Digital Modes</h3>
+      <p>Digital modes require the receiver to pass audio (usually 100 Hz – 3 kHz) to a sound card or internal DSP. The software decodes the mode — not the hardware.</p>
+      <p>For most digital modes, the receiver is set up exactly as for SSB. The audio output is fed to a PC. Dedicated software (WSJT-X for FT8/WSPR, FLDIGI for many others) decodes the signal.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3H:</strong> The IF in a superhet receiver is a <strong>fixed frequency lower than the received signal.</strong> It is where the selectivity filter and detector operate.</div>
+      </div>
+
+      <h3>Receiver Block Diagram Stages</h3>
+      <p>A standard analogue superhet receiver has these stages in order:</p>
+      <ol>
+        <li>RF Amplifier</li>
+        <li>Mixer + LO</li>
+        <li>IF Amplifier + IF Filter</li>
+        <li><strong>Detector</strong> ← this is the stage that demodulates</li>
+        <li>AF Amplifier</li>
+      </ol>
+      <p>In a block diagram exam question, the detector comes <strong>after</strong> the IF amplifier and <strong>before</strong> the audio amplifier.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3H2 (D2F-M1-Q33):</strong> In a receiver block diagram, the detector block is inserted between the IF amplifier and the AF amplifier.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3H</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. Which digital mode uses the narrowest bandwidth?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3h-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3h-1" hidden>
+            <p><strong>WSPR</strong> (~6 Hz) is the narrowest. FT8 (~50 Hz) is also very narrow. PSK31 is ~31 Hz.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. Where in the superhet block diagram is the detector placed?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3h-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3h-2" hidden>
+            <p>After the IF amplifier, before the AF amplifier.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Why can FT8 decode signals well below the noise floor?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3h-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3h-3" hidden>
+            <p>FT8 uses a 15-second transmission window with error-correcting coding. The software integrates and averages the signal over the full window, extracting it from the noise.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. What is the main difference between RTTY and PSK31?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3h-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3h-4" hidden>
+            <p>RTTY uses <strong>FSK</strong> (frequency shift keying) — two separate frequencies. PSK31 uses <strong>phase shift keying</strong> (PSK) — the phase of the carrier changes. PSK31 is also much narrower (31 Hz vs ~500 Hz for RTTY).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. How does a software-defined radio (SDR) receive digital modes differently from a traditional superhet?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3h-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3h-5" hidden>
+            <p>An SDR digitises a wide chunk of spectrum early in the receive chain. All filtering, demodulation, and decoding is done in software. A superhet uses hardware stages for IF filtering and detection.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════════ 3I: TRANSCEIVERS ════════════ -->
+    <section class="chapter" id="ch-3i">
+      <div class="chapter-header">
+        <span class="chapter-num">3I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Transceivers</h2>
+
+      <h3>Transceiver Architecture (3I1, 3I2)</h3>
+      <p>A <strong>transceiver</strong> combines a transmitter and receiver in one unit. They share circuits where possible to reduce cost, size, and complexity.</p>
+      <p><strong>Circuits typically shared:</strong></p>
+      <ul>
+        <li>VFO or PLL (sets the operating frequency for both TX and RX).</li>
+        <li>SSB filter (used for both IF selectivity on RX and sideband selection on TX).</li>
+        <li>PA/driver stages (some sharing in final stages).</li>
+      </ul>
+      <p><strong>TX/RX switching:</strong> When transmitting, an antenna relay (or PIN diode switch) connects the PA to the antenna and disconnects the receiver input. This protects the sensitive receiver front end from the high transmit power.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I1:</strong> In a transceiver, TX/RX switching connects the antenna to either the PA (TX) or the RF amplifier (RX). The SSB filter is typically shared.</div>
+      </div>
+
+      <h3>VFO and PLL (3M2, 3M3)</h3>
+      <p><strong>VFO (Variable Frequency Oscillator):</strong></p>
+      <ul>
+        <li>A manually tunable oscillator.</li>
+        <li>Main advantage: <strong>frequency can be changed</strong> freely across the band.</li>
+        <li>Disadvantage: may drift, especially as it warms up.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3C1:</strong> The main advantage of a VFO is that its <strong>frequency can be changed.</strong> Fixed crystals only work on one frequency.</div>
+      </div>
+      <p><strong>PLL (Phase Locked Loop):</strong> A PLL synthesises frequencies from a reference oscillator (usually crystal-controlled). It generates stable, precise frequencies across a wide range.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3A:</strong> PLL stands for <strong>Phase Locked Loop.</strong> It is used in frequency synthesisers to generate stable, tunable frequencies.</div>
+      </div>
+      <p><strong>How a PLL works (simplified):</strong></p>
+      <ol>
+        <li>A <strong>voltage-controlled oscillator (VCO)</strong> generates the output frequency.</li>
+        <li>A <strong>divider</strong> divides the VCO frequency by N.</li>
+        <li>A <strong>phase detector</strong> compares the divided VCO to the reference crystal oscillator.</li>
+        <li>The error voltage steers the VCO until they are locked in phase.</li>
+        <li>Changing N changes the output frequency in precise steps.</li>
+      </ol>
+      <p>Most modern HF transceivers use a PLL synthesiser or DDS (direct digital synthesis) rather than a free-running VFO.</p>
+
+      <h3>Transverters (3M3)</h3>
+      <p>A <strong>transverter</strong> converts a transceiver's frequency range to a different band.</p>
+      <p><strong>Example:</strong> A transceiver covering 1.8–30 MHz is used with an LO transverter to operate on the 6 m band (50 MHz):</p>
+      <pre>TX: 28 MHz transceiver output + 22 MHz oscillator = 50 MHz output
+RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
+      <p><strong>Sideband reversal:</strong> If the LO is above the output frequency, tuning higher on the transceiver produces lower frequency on the output. The sidebands are also reversed (USB becomes LSB). Most modern radios compensate for this automatically.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M (D2F-M1-Q39):</strong> To use a 1.8–30 MHz transceiver on 144 MHz, use a <strong>transverter</strong> with an appropriate local oscillator.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3I</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is the main advantage of using a PLL synthesiser instead of a free-running VFO?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3i-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3i-1" hidden>
+            <p>A PLL synthesiser locks to a crystal reference, giving <strong>frequency stability</strong> comparable to the crystal. It can also generate many precise frequencies across a wide range.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. Which circuit is typically shared between the transmit and receive paths in a modern SSB transceiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3i-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3i-2" hidden>
+            <p>The <strong>SSB filter.</strong> On receive it sets IF selectivity; on transmit it removes the unwanted sideband.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. What does a transverter do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3i-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3i-3" hidden>
+            <p>Converts a transceiver's frequency range to a different (usually higher) band by mixing with a local oscillator.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why is TX/RX switching necessary in a transceiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3i-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3i-4" hidden>
+            <p>To connect the antenna to the PA during transmit and to the receiver RF input during receive. Without switching, the high transmit power would damage the sensitive receiver.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. PLL stands for what, and what does it do in a transceiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3i-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3i-5" hidden>
+            <p><strong>Phase Locked Loop.</strong> It synthesises stable, precise frequencies by locking a voltage-controlled oscillator to a crystal reference oscillator.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3K: FILTERS AND AGC ═════════════ -->
+    <section class="chapter" id="ch-3k">
+      <div class="chapter-header">
+        <span class="chapter-num">3K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Filters and AGC</h2>
+
+      <h3>Filter Types (3K1, 3G3)</h3>
+      <p>Filters select or reject signals based on frequency.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Filter type</th><th>What it passes</th><th>Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Low-pass</strong></td><td>Frequencies below cut-off</td><td>Harmonic suppression at TX output</td></tr>
+            <tr><td><strong>High-pass</strong></td><td>Frequencies above cut-off</td><td>Block mains hum, subsonic interference</td></tr>
+            <tr><td><strong>Band-pass</strong></td><td>Frequencies in a range</td><td>IF filter, RF preselector</td></tr>
+            <tr><td><strong>Band-stop (notch)</strong></td><td>All except a narrow range</td><td>Interference rejection</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G3 (D2F-M1-Q32 and 3C):</strong> Fit a <strong>low-pass filter</strong> at the transmitter output to suppress harmonics. The fundamental passes; harmonics above it are attenuated.</div>
+      </div>
+      <p><strong>Crystal filters:</strong> used as IF filters in superhets. Very narrow bandwidth, extremely steep skirts. A 2.4 kHz crystal filter is typical for SSB; a 500 Hz filter for CW.</p>
+      <p><strong>Ceramic filters:</strong> similar function, lower cost, slightly less ideal performance.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G3 (3G3-2025):</strong> A band-pass filter passes a range of frequencies and attenuates those outside. On a frequency/amplitude diagram, this looks like a hump with steep sides — flat in the pass-band, attenuated outside.</div>
+      </div>
+
+      <h3>AGC (Automatic Gain Control) (3H3, 3H4)</h3>
+      <p><strong>AGC</strong> automatically reduces the IF or RF gain when a strong signal is received. This keeps the audio output at a roughly constant level across a wide range of signal strengths.</p>
+      <p><strong>AGC attack time:</strong> how quickly the AGC responds to a sudden strong signal.</p>
+      <ul>
+        <li><strong>Fast attack:</strong> the gain reduces quickly when a sudden strong signal arrives. Benefit: prevents a loud burst on SSB from being painful. Useful on crowded bands.</li>
+        <li><strong>Slow attack / slow release:</strong> smoother, but a sudden strong signal can momentarily produce a very loud output before the AGC catches it.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3K1 (D2F-M1-Q37):</strong> One advantage of a <strong>fast attack</strong> AGC is that a sudden large RF signal on SSB will <strong>not result in an overly loud audio output.</strong> The gain reduces quickly before the audio can reach a painful level.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3K</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. A transmitter produces harmonics at 21 MHz and 28 MHz. The fundamental is at 7 MHz. What filter should be fitted to suppress the harmonics?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3k-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3k-1" hidden>
+            <p>A <strong>low-pass filter</strong> with a cut-off above 7 MHz but below 14 MHz. This passes the 7 MHz fundamental and attenuates the 21 MHz and 28 MHz harmonics.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. What is the IF filter's job in a superhet receiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3k-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3k-2" hidden>
+            <p>It sets the <strong>selectivity</strong> — the bandwidth of signals passed from the IF to the detector. It rejects adjacent-channel interference.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. What is the advantage of a fast-attack AGC in an SSB receiver?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3k-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3k-3" hidden>
+            <p>It reduces gain rapidly when a sudden strong signal arrives, preventing a painfully loud burst of audio before the AGC settles.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A CW receiver has an IF of 455 kHz and a BFO set to 454 kHz. What audio tone will be heard?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3k-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3k-4" hidden>
+            <p>|455 − 454| = <strong>1 kHz (1 000 Hz)</strong> tone.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the difference between a band-pass and a low-pass filter?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3k-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3k-5" hidden>
+            <p>A <strong>low-pass filter</strong> passes all frequencies below the cut-off and attenuates above. A <strong>band-pass filter</strong> passes a specific range of frequencies (between two cut-offs) and attenuates both above and below.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 3L: DIGITAL SIGNAL PROCESSING ════════ -->
+    <section class="chapter" id="ch-3l">
+      <div class="chapter-header">
+        <span class="chapter-num">3L</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Digital Signal Processing (DSP)</h2>
+
+      <h3>DSP in Modern Receivers (3L1)</h3>
+      <p><strong>DSP (Digital Signal Processing)</strong> replaces analogue IF and AF stages with software.</p>
+      <p>A DSP-based receiver:</p>
+      <ol>
+        <li>Digitises the IF signal with an ADC.</li>
+        <li>Processes the digital samples in software (filtering, demodulation, noise reduction).</li>
+        <li>Converts back to audio with a DAC.</li>
+      </ol>
+      <p><strong>Advantages of DSP:</strong></p>
+      <ul>
+        <li>Filters can be changed in software (bandwidth, shape).</li>
+        <li>Multiple simultaneous demodulation paths.</li>
+        <li>Noise reduction algorithms.</li>
+        <li>No component drift.</li>
+        <li>Precise, repeatable performance.</li>
+      </ul>
+      <p><strong>SDR (Software Defined Radio)</strong> takes DSP to an extreme — the ADC is placed very early in the receive chain (sometimes directly after the antenna), and all processing is in software.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M (3M3-2025):</strong> In an SDR receiver block diagram, the blank box after the analogue front end typically performs <strong>low-pass filtering</strong> — to remove aliased signals before or after digitising (anti-aliasing filter or decimation filter).</div>
+      </div>
+
+      <h3>Fourier Transform and Spectrum Display</h3>
+      <p>A <strong>spectrum display</strong> shows signal amplitude vs frequency in real time.</p>
+      <p>It is produced by performing a <strong>Fourier transform</strong> on the time-domain signal. The Fourier transform decomposes a complex waveform into its constituent frequencies.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M1 (D2F-M1-Q38):</strong> A spectrum display is produced by a <strong>Fourier transform process</strong> within the receiver. Time-domain samples are converted to a frequency-domain representation.</div>
+      </div>
+      <p>A <strong>waterfall display</strong> shows frequency vs time, with amplitude coded as colour. This makes it easy to spot signals appearing and disappearing, and to see their bandwidth.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════════ 3M: OSCILLATORS ══════════════ -->
+    <section class="chapter" id="ch-3m">
+      <div class="chapter-header">
+        <span class="chapter-num">3M</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Oscillators</h2>
+
+      <h3>Oscillator Types (3M1, 3M2, 3M3)</h3>
+      <p>An <strong>oscillator</strong> generates a continuous sine wave at a specific frequency.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Type</th><th>Stability</th><th>Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>LC oscillator</strong></td><td>Poor–moderate</td><td>Simple VFO, test equipment</td></tr>
+            <tr><td><strong>Crystal oscillator</strong></td><td>Excellent</td><td>Reference, fixed frequencies</td></tr>
+            <tr><td><strong>PLL synthesiser</strong></td><td>Excellent (locked to crystal)</td><td>Modern transceiver VFO</td></tr>
+            <tr><td><strong>DDS (Direct Digital Synthesis)</strong></td><td>Excellent</td><td>SDR, modern rigs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>LC oscillator:</strong> uses a tuned LC circuit to set frequency. Cheap and tunable, but frequency drifts with temperature.</p>
+      <p><strong>Crystal oscillator:</strong> the crystal's mechanical resonance is very stable. Drift is measured in parts per million (ppm). Can be temperature-compensated (TCXO) or oven-controlled (OCXO) for even better stability.</p>
+
+      <h3>Phase Noise (3M2)</h3>
+      <p><strong>Phase noise</strong> is a measure of frequency instability in an oscillator. It describes random short-term frequency fluctuations.</p>
+      <p>Measured in <strong>dBc/Hz</strong> — decibels below the carrier per hertz of bandwidth. A lower (more negative) dBc/Hz value = cleaner oscillator.</p>
+      <p>To fully specify phase noise, you must quote both:</p>
+      <ol>
+        <li>The <strong>dBc/Hz level.</strong></li>
+        <li>The <strong>frequency offset</strong> from the carrier (e.g. −130 dBc/Hz at 1 kHz offset).</li>
+      </ol>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M (D2F-M2-Q33):</strong> When quoting phase noise in dBc/Hz, you must also specify the <strong>frequency offset from the carrier.</strong> Without the offset, the figure is meaningless.</div>
+      </div>
+      <p>Poor phase noise causes:</p>
+      <ul>
+        <li>The oscillator to "spread" noise into adjacent channels.</li>
+        <li>The receiver's noise floor to rise for signals near strong carriers ("reciprocal mixing").</li>
+      </ul>
+
+      <h3>Reading Frequency Domain Graphs</h3>
+      <p>A <strong>frequency domain graph</strong> (spectrum plot) shows:</p>
+      <ul>
+        <li>X-axis: frequency.</li>
+        <li>Y-axis: amplitude (V or dBm).</li>
+      </ul>
+      <p>A pure sine wave appears as a single vertical line (spike) at its frequency. A sine wave with a harmonic appears as two spikes — the fundamental and one at 2× frequency.</p>
+      <p><strong>Time domain to frequency domain example:</strong> Waveform: 1.5 cycles in 1.5 μs → T = 1 μs → f = <strong>1 MHz.</strong> The frequency domain shows a single spike at 1 MHz.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M (D2F-M2-Q37):</strong> Be able to identify the correct frequency domain graph for a given time-domain waveform. Use f = 1/T to find the frequency.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 3M</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. Why is a crystal oscillator more stable than an LC oscillator?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3m-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3m-1" hidden>
+            <p>A crystal's mechanical resonance has a very high Q factor and is much less sensitive to temperature and component variation than an LC circuit.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A signal waveform shows 2 cycles in 4 μs. What frequency is this, and where would the spike appear on a frequency domain display?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3m-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3m-2" hidden>
+            <p>T = 4/2 = 2 μs. f = 1/T = 1/0.000002 = <strong>500 kHz.</strong> Spike at 500 kHz on the spectrum.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Phase noise is measured as −120 dBc/Hz. What other figure must be quoted to make this measurement useful?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3m-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3m-3" hidden>
+            <p>The <strong>frequency offset from the carrier</strong> at which this phase noise level applies (e.g. "at 1 kHz offset").</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A PLL locks at a particular frequency and will not synthesise other frequencies. What component would you adjust to change the output frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3m-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3m-4" hidden>
+            <p>Change the <strong>divide ratio (N)</strong> in the programmable divider. This changes the frequency the VCO locks to.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. An HF transceiver covering 1.8–30 MHz is to be used on 50 MHz. What is needed to make this work?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3m-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3m-5" hidden>
+            <p>A <strong>transverter</strong> with an appropriate local oscillator (e.g. 20 MHz LO so 30 MHz transceiver output mixes to 50 MHz output).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ KEY FACTS SUMMARY ═════════════════ -->
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Section 3 — Key Facts Summary</h2>
+      <p>Section 3 covers ~15% of the Intermediate exam. Block diagram questions and FM bandwidth calculations are the most frequently tested topics.</p>
+      <div class="key-facts">
+        <ul>
+          <li><strong>Superhet:</strong> converts all RF to a fixed IF for precise filtering and detection</li>
+          <li><strong>Image rejection:</strong> improved by using a <strong>higher IF</strong></li>
+          <li><strong>IF transformers:</strong> screened in aluminium cans to prevent inter-stage coupling</li>
+          <li><strong>Selectivity:</strong> set by the IF filter bandwidth and Q factor</li>
+          <li><strong>Sensitivity:</strong> limited by receiver noise figure</li>
+          <li><strong>Balanced modulator:</strong> outputs DSB-SC (two sidebands, no carrier)</li>
+          <li><strong>SSB filter:</strong> crystal filter removes unwanted sideband; shared in transceiver</li>
+          <li><strong>BFO:</strong> needed for CW reception; produces audio tone = |IF − BFO|</li>
+          <li><strong>AM &gt; SSB &gt; CW</strong> in decreasing bandwidth order</li>
+          <li><strong>FM bandwidth:</strong> Carson's rule: BW ≈ 2(deviation + max audio)</li>
+          <li><strong>FM generation:</strong> varicap diode on oscillator pulled by AF signal</li>
+          <li><strong>Harmonics:</strong> multiples of fundamental; suppress with low-pass filter at TX output</li>
+          <li><strong>RTTY duty cycle:</strong> continuous carrier — runs transmitter hot; reduce power from SSB levels</li>
+          <li><strong>AGC fast attack:</strong> prevents sudden loud audio burst on SSB</li>
+          <li><strong>PLL:</strong> Phase Locked Loop — stable frequency synthesis from crystal reference</li>
+          <li><strong>Transverter:</strong> extends transceiver to a different band using a mixer and LO</li>
+          <li><strong>Phase noise:</strong> dBc/Hz — must specify frequency offset too</li>
+          <li><strong>Fourier transform:</strong> converts time-domain signal to frequency-domain spectrum display</li>
+          <li><strong>DSP:</strong> replaces analogue IF/AF stages with software; enables SDR architecture</li>
+          <li><strong>Operating TX without antenna:</strong> damages the PA — use a dummy load instead</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ FORMULA REFERENCE ═════════════════ -->
+    <section class="chapter" id="formula-ref">
+      <div class="chapter-header">
+        <span class="chapter-num">≡</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Section 3 — Formula Reference</h2>
+      <div class="table-wrapper">
+        <table class="formula-ref-table">
+          <thead>
+            <tr><th>Formula</th><th>Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>IF = |f_RF − f_LO|</td><td>Intermediate frequency</td></tr>
+            <tr><td>f_image = f_RF + 2 × IF</td><td>Image frequency (high-side LO)</td></tr>
+            <tr><td>BW ≈ 2(Δf + f_max)</td><td>FM bandwidth (Carson's rule)</td></tr>
+            <tr><td>β = Δf / f_mod</td><td>FM modulation index</td></tr>
+            <tr><td>Audio = |IF − BFO|</td><td>CW receive tone</td></tr>
+            <tr><td>f = 1/T</td><td>Frequency from period</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ═══════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-2-electronics.html" class="section-nav__link">← Section 2: Electronics</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=3"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="#" class="section-nav__link section-nav__link--disabled">Section 4 →</a>
+    </nav>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+</body>
+</html>

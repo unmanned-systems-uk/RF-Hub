@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 1: Licensing &amp; Operating — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter blockquote {
+      margin: 1rem 0; padding: 0.75rem 1.25rem;
+      border-left: 3px solid var(--accent-em);
+      background: rgba(167,139,250,0.06);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text-primary); font-style: italic;
+    }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 1</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">6 / 46 questions &nbsp;·&nbsp; 13%</span>
+      </div>
+      <h1>Licensing &amp; Operating</h1>
+      <p class="hero-subtitle">The rules section. Covers licence conditions, callsign structure, international operating, remote control, and power limits. No maths — pure facts.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-1a">1A Conditions</a></li>
+        <li><a href="#ch-1b">1B Structure</a></li>
+        <li><a href="#ch-1c">1C Third Party</a></li>
+        <li><a href="#ch-1d">1D Interference</a></li>
+        <li><a href="#ch-1e">1E Remote</a></li>
+        <li><a href="#ch-1f">1F Special</a></li>
+        <li><a href="#ch-1g">1G International</a></li>
+        <li><a href="#ch-1h">1H Power &amp; EMF</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-1a"><span class="toc-code">1A</span>Licence Conditions</a></li>
+        <li><a href="#ch-1b"><span class="toc-code">1B</span>Licensing Structure</a></li>
+        <li><a href="#ch-1c"><span class="toc-code">1C</span>Supervision &amp; Third-Party Operation</a></li>
+        <li><a href="#ch-1d"><span class="toc-code">1D</span>Band Plans &amp; Interference</a></li>
+        <li><a href="#ch-1e"><span class="toc-code">1E</span>Operating &amp; Remote Control</a></li>
+        <li><a href="#ch-1f"><span class="toc-code">1F</span>Special Conditions</a></li>
+        <li><a href="#ch-1g"><span class="toc-code">1G</span>International Regulations</a></li>
+        <li><a href="#ch-1h"><span class="toc-code">1H</span>Power Limits &amp; EMF</a></li>
+        <li><a href="#key-facts"><span class="toc-code">★</span>Key Facts Table</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════════ 1A: LICENCE CONDITIONS ════════════ -->
+    <section class="chapter" id="ch-1a">
+      <div class="chapter-header">
+        <span class="chapter-num">1A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Licence Conditions</h2>
+
+      <h3>Purpose of Amateur Radio (1A2)</h3>
+      <p>The UK Amateur Radio Licence defines the <strong>primary purpose of amateur radio</strong> as:</p>
+      <blockquote>Self-training in radio communications.</blockquote>
+      <p>This matters legally. It means the licence is not a commercial telecommunications licence. You cannot use it to run a business radio service.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A2:</strong> The main purpose of amateur radio, as stated in the licence, is <strong>self-training in radio communications.</strong> This is not a commercial activity.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>1A (D2F-M2-Q12):</strong> A haulage company using amateur radio to communicate with their fleet is <strong>not permitted.</strong> Amateur radio is for personal self-training, not for business communications. This would breach the terms of the licence.</div>
+      </div>
+
+      <h3>Address Changes and Licence Administration</h3>
+      <p>Your licence is tied to your recorded address. If you move house, you <strong>must notify Ofcom.</strong></p>
+      <p>Failure to do so means your licence details are wrong, which can lead to enforcement action, including licence revocation.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A (D2F-M1-Q03):</strong> If you move house without notifying Ofcom, you <strong>risk having your licence revoked.</strong></div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A (D2F-M1-Q07):</strong> A Full licensee must allow inspection of their radio equipment by <strong>any person authorised by Ofcom.</strong> This includes Ofcom enforcement officers and anyone acting on Ofcom's behalf.</div>
+      </div>
+
+      <h3>EMF Compliance (1A2, 1G1)</h3>
+      <p>The licence requires that exposure to electromagnetic fields (EMF) from your station must comply with <strong>ICNIRP guidelines</strong> in areas accessible to the general public.</p>
+      <p><strong>ICNIRP</strong> = International Commission on Non-Ionizing Radiation Protection. This body determined the safe exposure limits that the licence references.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A (D2F-M1-Q12):</strong> EMF exposure must be within ICNIRP guidelines in <strong>areas accessible to the general public.</strong> Your own garden and shack are generally not covered, but a neighbour's garden or a public footpath adjacent to your antenna would be.</div>
+      </div>
+      <p><strong>EMF compliance assessment:</strong> When you set up a new station or make significant changes, you must check whether your setup meets the EMF limits. This is usually done using the RSGB/Ofcom online calculator.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G1 (1G1-2025-Int'd-979):</strong> You must repeat the EMF compliance assessment whenever the <strong>antenna is replaced with a different type.</strong> A different antenna changes the radiation pattern and EIRP — the previous assessment no longer applies.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G:</strong> The EMF compliance limit for <strong>Intermediate</strong> licence holders is <strong>10 W average EIRP.</strong> Below this, no assessment is required.</div>
+      </div>
+
+      <h3>Key Organisations</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Abbreviation</th><th>Full Name</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Ofcom</strong></td><td>Office of Communications</td><td>UK regulator — issues licences, enforces rules</td></tr>
+            <tr><td><strong>RSGB</strong></td><td>Radio Society of Great Britain</td><td>National amateur radio society</td></tr>
+            <tr><td><strong>IARU</strong></td><td>International Amateur Radio Union</td><td>Worldwide federation of national societies</td></tr>
+            <tr><td><strong>ITU</strong></td><td>International Telecommunication Union</td><td>UN agency — sets global frequency allocations</td></tr>
+            <tr><td><strong>ICNIRP</strong></td><td>Int'l Commission on Non-Ionizing Radiation Protection</td><td>Sets RF exposure safety limits</td></tr>
+            <tr><td><strong>CEPT</strong></td><td>Conference of European Posts and Telecommunications</td><td>European licensing coordination</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A (D2F-NEW-011):</strong> IARU stands for <strong>International Amateur Radio Union.</strong> It coordinates amateur radio internationally and represents national societies at the ITU.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1A</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is the stated purpose of amateur radio in the UK licence?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1a-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1a-1" hidden>
+            <p><strong>Self-training in radio communications.</strong> The licence is not for commercial use.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. Can you use amateur radio to pass messages for a business?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1a-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1a-2" hidden>
+            <p><strong>No.</strong> Business communications are not permitted under the amateur licence. This would breach licence conditions.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. You move to a new QTH and don't inform Ofcom. What risk do you face?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1a-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1a-3" hidden>
+            <p>Your licence may be <strong>revoked.</strong> Always update your Ofcom records when you move.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. Who determines the EMF safety limits that UK amateur licences reference?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1a-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-1a-4" hidden>
+            <p><strong>ICNIRP</strong> — the International Commission on Non-Ionizing Radiation Protection.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. When must you redo your EMF compliance assessment?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1a-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-1a-5" hidden>
+            <p>Whenever you replace your antenna with a different type, or make other significant changes to your station (power level, location, etc.).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1B: LICENSING STRUCTURE ══════════ -->
+    <section class="chapter" id="ch-1b">
+      <div class="chapter-header">
+        <span class="chapter-num">1B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Licensing Structure</h2>
+
+      <h3>UK Licence Classes</h3>
+      <p>The UK Amateur Radio Licence has three tiers:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Licence class</th><th>Power limit</th><th>Key features</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Foundation</strong></td><td>10 W PEP</td><td>Entry level. Some band restrictions.</td></tr>
+            <tr><td><strong>Intermediate</strong></td><td>50 W PEP</td><td>Most HF/VHF/UHF bands available.</td></tr>
+            <tr><td><strong>Full</strong></td><td>400 W (26 dBW) on most HF bands</td><td>Full access. Some bands permit more.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1B:</strong> The maximum power output permitted for an <strong>Intermediate licence</strong> holder is <strong>50 W PEP</strong> (peak envelope power).</div>
+      </div>
+      <p><strong>Moving between classes:</strong> Each class requires passing the corresponding exam (Foundation, Intermediate, Full). There is no time restriction between exams — you can take them as quickly as you wish.</p>
+
+      <h3>UK Callsign Structure</h3>
+      <p>UK amateur callsigns have this structure:</p>
+      <pre>[Prefix] [Number] [Suffix]
+
+Examples:
+  G4ABC      (Full — England)
+  2E1XYZ     (Intermediate — England)
+  M7DEF      (Foundation — England)
+  GM0GHI     (Full — Scotland)
+  2M1JKL     (Intermediate — Scotland)
+  MM7MNO     (Foundation — Scotland)</pre>
+      <p><strong>Regional prefix letters:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Region</th><th>Full prefix</th><th>Intermediate prefix</th><th>Foundation prefix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>England</td><td>G / M0–M6</td><td>2E0 / 2E1</td><td>M7</td></tr>
+            <tr><td>Scotland</td><td>GM / MM0–MM6</td><td>2M0 / 2M1</td><td>MM7</td></tr>
+            <tr><td>Wales</td><td>GW / MW0–MW6</td><td>2W0 / 2W1</td><td>MW7</td></tr>
+            <tr><td>Northern Ireland</td><td>GI / MI0–MI6</td><td>2I0 / 2I1</td><td>MI7</td></tr>
+            <tr><td>Isle of Man</td><td>MD / MD0–MD6</td><td>—</td><td>MD7</td></tr>
+            <tr><td>Jersey</td><td>MJ / MJ0–MJ6</td><td>—</td><td>MJ7</td></tr>
+            <tr><td>Guernsey</td><td>GU / MU0–MU6</td><td>—</td><td>GU7</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A:</strong> An <strong>English Intermediate</strong> licence holder uses the prefix <strong>2E1</strong> (or 2E0). Example: 2E1XYZ.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1A:</strong> A <strong>Welsh Intermediate</strong> licence holder uses the prefix <strong>2W1</strong> (or 2W0). Example: 2W1XYZ.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1B (D2F-M1-Q02):</strong> A callsign like <strong>MM7ABC/M</strong> indicates a <strong>Foundation licence holder walking (mobile) in Scotland.</strong> MM7 = Foundation Scotland; /M = mobile.</div>
+      </div>
+      <p><strong>Mobile and portable suffixes:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Suffix</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/M</code></td><td>Mobile (operating from a moving vehicle)</td></tr>
+            <tr><td><code>/P</code></td><td>Portable (temporary fixed location, not home address)</td></tr>
+            <tr><td><code>/MM</code></td><td>Maritime mobile (at sea)</td></tr>
+            <tr><td><code>/AM</code></td><td>Aeronautical mobile</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1B (D2F-NEW-004):</strong> The suffix <strong>/P</strong> after a UK callsign indicates the station is operating at a <strong>portable location</strong> — away from the licensed address.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1B (D2F-M2-Q07):</strong> <strong>GZ2FTR/P</strong> is NOT a valid UK callsign. GZ is not a recognised UK regional prefix. Always check that prefix, number, and suffix follow the standard structure.</div>
+      </div>
+
+      <h3>International Callsign Prefixes</h3>
+      <p>You must recognise callsigns from major countries:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Prefix</th><th>Country</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>VK</strong></td><td>Australia</td></tr>
+            <tr><td><strong>ZL</strong></td><td>New Zealand</td></tr>
+            <tr><td><strong>W</strong></td><td>United States</td></tr>
+            <tr><td><strong>JA</strong></td><td>Japan</td></tr>
+            <tr><td><strong>PA</strong></td><td>Netherlands</td></tr>
+            <tr><td><strong>DL</strong></td><td>Germany</td></tr>
+            <tr><td><strong>F</strong></td><td>France</td></tr>
+            <tr><td><strong>SP</strong></td><td>Poland</td></tr>
+            <tr><td><strong>OZ</strong></td><td>Denmark</td></tr>
+            <tr><td><strong>SM</strong></td><td>Sweden</td></tr>
+            <tr><td><strong>OH</strong></td><td>Finland</td></tr>
+            <tr><td><strong>LA</strong></td><td>Norway</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">Common exam prefixes: <strong>VK = Australia, ZL = New Zealand, W = USA, JA = Japan.</strong></div>
+      </div>
+
+      <h3>Operating Under Supervision</h3>
+      <p>An Intermediate or Full licensee can supervise an unlicensed or lower-class operator.</p>
+      <p><strong>Key rules:</strong></p>
+      <ul>
+        <li>The supervising licensee must be present in the room.</li>
+        <li>The operator must use their <strong>own callsign</strong> (or the supervising licensee's if operating under their authority).</li>
+        <li>The operator must comply with the terms of <strong>the supervising licensee's licence.</strong></li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1B1 (1B1-2025-Int'd-2121):</strong> When a Full licensee from another region is supervising and you wish to operate at Full power under their guidance, use their callsign in the format appropriate for the operating country.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>1C (D2F-M2-Q04):</strong> If M7ABC (Foundation) is visiting and you need to leave the room, <strong>M7ABC must use their own callsign</strong> and operate at <strong>no more than their licensed power</strong> (10 W) if they continue to operate. They cannot use your callsign or your power level in your absence.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1C (D2F-M2-Q06):</strong> The power limit when a person is supervised is set by the <strong>supervising licensee's licence terms.</strong> A Full licensee supervisor allows higher power; an Intermediate supervisor limits to their 50 W PEP.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1B</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is the maximum transmit power for an Intermediate licence holder?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1b-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1b-1" hidden>
+            <p><strong>50 W PEP</strong> (peak envelope power).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. A station uses the callsign 2W1XYZ. Where is it located and what class of licence does the operator hold?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1b-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1b-2" hidden>
+            <p><strong>Wales</strong>, <strong>Intermediate</strong> licence. 2W = Intermediate Wales, 1 = number digit.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. You see the callsign VK2ABC on a DX cluster. Where is that station?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1b-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1b-3" hidden>
+            <p><strong>Australia.</strong> VK is the ITU prefix for Australia.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. A Foundation (M7) operator visits your shack and you need to step out briefly. Can they continue operating?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1b-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-1b-4" hidden>
+            <p>Yes, but only using <strong>their own callsign</strong> (M7xxx) and at no more than <strong>10 W PEP</strong> (their Foundation power limit).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What does the suffix /P mean after a callsign?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1b-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-1b-5" hidden>
+            <p>The station is operating at a <strong>portable location</strong> — away from its registered address.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 1C: SUPERVISION & THIRD-PARTY ════════ -->
+    <section class="chapter" id="ch-1c">
+      <div class="chapter-header">
+        <span class="chapter-num">1C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Supervision and Third-Party Operation</h2>
+
+      <h3>Who May Operate Your Station (1C1, 1C2)</h3>
+      <p>Under your licence, <strong>you are responsible</strong> for everything transmitted from your station. Only certain people may operate your equipment:</p>
+      <p><strong>Without licence — if you are present and supervising:</strong></p>
+      <ul>
+        <li>Anyone you are training or supervising may operate, provided you remain in the room.</li>
+      </ul>
+      <p><strong>Unlicensed people — what they may and may not do:</strong></p>
+      <ul>
+        <li>They may transmit under your supervision and using your callsign.</li>
+        <li>They may <strong>NOT</strong> operate alone.</li>
+        <li>They may <strong>NOT</strong> exceed your licence power limits.</li>
+      </ul>
+      <p><strong>User Services (1C2):</strong> A "User Service" is defined in the licence as services such as the police, fire brigade, coastguard, mountain rescue, RNLI, etc.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1C2:</strong> A member of a User Service <strong>may use your Radio Equipment to send messages</strong> in the course of their employment — for example, during an emergency. This is one of the permitted third-party message uses.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">A User Service <strong>must specifically ask</strong> you to send or receive a message. You cannot decide to send messages on their behalf without being asked.</div>
+      </div>
+
+      <h3>Messages with Obscured Meaning (1D2)</h3>
+      <p>The licence permits transmitting messages with obscured meaning (coded messages) only:</p>
+      <ul>
+        <li>When a member of a User Service specifically requests it.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1D (D2F-M1-Q06):</strong> Sending messages with obscured meaning is only permitted when a <strong>member of a User Service specifically asks you to.</strong> General coded messages (e.g. to obscure content from others) are not permitted.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1C</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. Who can use your amateur radio equipment to send a message in the course of their employment?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1c-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1c-1" hidden>
+            <p>A member of a <strong>User Service</strong> (police, coastguard, fire service, mountain rescue, RNLI, etc.).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. You are supervising a trainee at your station and you step out to make a cup of tea. What must the trainee do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1c-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1c-2" hidden>
+            <p><strong>Stop transmitting</strong> immediately. They may only operate while you are present in the room.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Can you transmit a coded message to obscure its meaning to other listeners?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1c-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1c-3" hidden>
+            <p>Only if a <strong>member of a User Service specifically asks you to.</strong> You cannot do it for general privacy purposes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 1D: BAND PLANS & INTERFERENCE ════════ -->
+    <section class="chapter" id="ch-1d">
+      <div class="chapter-header">
+        <span class="chapter-num">1D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Band Plans and Interference</h2>
+
+      <h3>Licence Obligations (1D1)</h3>
+      <p>All amateur operators must ensure their station <strong>does not cause undue interference</strong> to other radio users. This is a fundamental licence condition.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1D1:</strong> An Intermediate (or any) licence holder must ensure their station does <strong>NOT cause undue interference to other radio equipment.</strong> Interference complaints can result in licence action.</div>
+      </div>
+      <p><strong>What "undue interference" means:</strong></p>
+      <ul>
+        <li>Some co-channel interference is unavoidable on shared bands.</li>
+        <li>"Undue" means interference that is avoidable with reasonable care.</li>
+        <li>Causes include: harmonics, overdriven amplifiers, poor filtering, illegal frequencies.</li>
+      </ul>
+
+      <h3>Broadcasting Prohibition (1D2)</h3>
+      <p>Amateur radio is a two-way communication service. Broadcasting — transmitting to anyone who happens to be listening — is prohibited.</p>
+      <p>The one exception: calling CQ is permitted. This is a general call to establish contact.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1D (D2F-M2-Q03):</strong> Apart from a CQ call, the amateur licence does <strong>not permit transmitting to anybody who happens to be listening.</strong> Broadcasting is not an amateur radio activity.</div>
+      </div>
+
+      <h3>Primary and Secondary Status (1H1)</h3>
+      <p>Amateur radio allocations can be:</p>
+      <ul>
+        <li><strong>Primary:</strong> amateurs are the main user. Other services must not cause harmful interference.</li>
+        <li><strong>Secondary:</strong> amateurs share with a primary user and must not cause interference to them. Amateurs must accept interference from the primary user.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H1 (1H1-2025-Int'd-1203):</strong> The 10.100–10.150 MHz band (30 m) is given <strong>secondary status</strong> to Intermediate licensees. The primary user is fixed services.</div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Band</th><th>Status for amateurs in UK</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Most HF bands</td><td>Primary</td></tr>
+            <tr><td>30 m (10.100–10.150 MHz)</td><td>Secondary</td></tr>
+            <tr><td>Some microwave allocations</td><td>Secondary or shared</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1D</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. Your neighbour complains that your transmission is affecting their TV. What is your obligation under the licence?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1d-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1d-1" hidden>
+            <p>You must investigate and resolve the interference. The licence requires you not to cause <strong>undue interference</strong> to other radio equipment.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. Is it permitted to transmit on a secondary band if you cause interference to the primary user?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1d-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1d-2" hidden>
+            <p><strong>No.</strong> On a secondary allocation, you must not cause harmful interference to primary users and must accept interference from them.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. You want to talk to all amateurs who might be listening on 80 m. What type of call is permitted?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1d-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1d-3" hidden>
+            <p>A <strong>CQ call</strong> — a general call to any station. This is permitted. Broadcasting without intent to make a two-way contact is not.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ══════════════ 1E: OPERATING PROCEDURES & REMOTE CONTROL ═ -->
+    <section class="chapter" id="ch-1e">
+      <div class="chapter-header">
+        <span class="chapter-num">1E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Operating Procedures and Remote Control</h2>
+
+      <h3>Remote Control (1E1)</h3>
+      <p>You may control your transmitter remotely (e.g. from another location over the internet).</p>
+      <p><strong>Rules for remote control:</strong></p>
+      <ul>
+        <li>The <strong>control link must operate above 30 MHz</strong> (cannot use HF for control).</li>
+        <li>The control link must <strong>not be encrypted.</strong></li>
+        <li>The <strong>licence number</strong> must be displayed adjacent to the remote transmitter.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1E1 (1E1-2025-Int'd-8105):</strong> A transceiver controlled remotely at a place other than the licensee's recorded address must have the <strong>licensee's licence number displayed adjacent to it.</strong></div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1E1 (D2F-M1-Q08):</strong> The link between a home transceiver and a main transmitter at another location must <strong>operate above 30 MHz</strong> and must <strong>not be encrypted.</strong></div>
+      </div>
+
+      <h3>Logging</h3>
+      <p>The Intermediate licence does not mandate a logbook, but keeping one is strongly recommended. A log provides a record of contacts, dates, times, frequencies, and callsigns.</p>
+      <p>It is useful for:</p>
+      <ul>
+        <li>Confirming contacts for awards.</li>
+        <li>Providing evidence in case of interference disputes.</li>
+        <li>Tracking your operating patterns.</li>
+      </ul>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1E</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. You set up a remote HF station at your holiday cottage. What must be displayed next to the transmitter?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1e-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1e-1" hidden>
+            <p>Your <strong>licence number</strong>, displayed adjacent to the remote transmitter.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. You want to control the remote transmitter using a link on 7 MHz. Is this permitted?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1e-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1e-2" hidden>
+            <p><strong>No.</strong> The control link must operate <strong>above 30 MHz.</strong> 7 MHz is not permitted for this.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. Can the remote control link use encrypted communications?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1e-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1e-3" hidden>
+            <p><strong>No.</strong> The licence requires the control link to be <strong>unencrypted.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1F: SPECIAL CONDITIONS ═══════════ -->
+    <section class="chapter" id="ch-1f">
+      <div class="chapter-header">
+        <span class="chapter-num">1F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Special Conditions</h2>
+
+      <h3>Notable Licence Special Conditions (1F1)</h3>
+      <p>The licence contains provisions for certain special operating situations:</p>
+      <p><strong>Third-party traffic:</strong> You may pass messages for non-amateur third parties in certain circumstances — primarily for User Services (see 1C). Casual passing of messages for friends or family on behalf of a third party is generally not permitted on amateur frequencies.</p>
+      <p><strong>Emergency communications:</strong> In a genuine emergency, you may use any frequency, any power, and any means necessary to obtain assistance. The licence permits this as an emergency override. Note this is for genuine emergencies, not practice exercises.</p>
+      <p><strong>Operation from vehicles:</strong> Using /M suffix. Mobile operation is permitted. All normal licence conditions apply — power limits, legal frequencies, etc.</p>
+      <p><strong>Club stations:</strong> A club callsign may be used by members under supervision of a Full or Intermediate licensee (depending on band and power). The supervising licensee remains responsible.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1F1:</strong> Special conditions in the licence cover emergency operations, third-party traffic via User Services, mobile operation, and club station use. The fundamental rules of power limits, interference prevention, and identification always apply.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 1G: INTERNATIONAL REGULATIONS ════════ -->
+    <section class="chapter" id="ch-1g">
+      <div class="chapter-header">
+        <span class="chapter-num">1G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>International Regulations</h2>
+
+      <h3>ITU and the Radio Regulations (1G1)</h3>
+      <p>The <strong>International Telecommunication Union (ITU)</strong> is a United Nations agency. It publishes the <strong>ITU Radio Regulations</strong> — the global treaty that governs all radio frequency use worldwide.</p>
+      <p>The ITU Radio Regulations:</p>
+      <ul>
+        <li>Allocate frequency bands to different services (amateur, broadcasting, maritime, etc.).</li>
+        <li>Define three ITU regions (see below).</li>
+        <li>Are updated at World Radiocommunication Conferences (WRC) held every 3–4 years.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G (D2F-M2-Q02):</strong> The ITU Regulations <strong>contain the frequencies allocated to amateur radio in different parts of the world.</strong></div>
+      </div>
+      <p><strong>ITU Regions:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Region</th><th>Coverage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Region 1</strong></td><td>Europe, Africa, Middle East, former USSR, Mongolia</td></tr>
+            <tr><td><strong>Region 2</strong></td><td>Americas</td></tr>
+            <tr><td><strong>Region 3</strong></td><td>Asia-Pacific</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The UK is in <strong>Region 1.</strong></p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G (D2F-M1-Q10):</strong> When operating in international waters, refer to the <strong>ITU Radio Regulations for the ITU region that the vessel is currently located in.</strong></div>
+      </div>
+
+      <h3>CEPT and T/R 61-01</h3>
+      <p><strong>CEPT</strong> = Conference of European Posts and Telecommunications.</p>
+      <p><strong>CEPT Recommendation T/R 61-01</strong> allows licensed amateurs from CEPT member countries to operate in other CEPT countries using their home callsign (plus the country prefix if required), without needing a separate local licence.</p>
+      <p><strong>Key rules:</strong></p>
+      <ul>
+        <li>You must carry a copy of your home licence.</li>
+        <li>You use your home callsign.</li>
+        <li>You must comply with the <strong>band plans and power limits of the country you are in</strong> (which may differ from the UK).</li>
+        <li>You operate at the level matching your home licence class in that country.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G (D2F-M1-Q09) and (D2F-M2-Q01):</strong> If an amateur (MM0ABC) <strong>permanently moves</strong> to a CEPT country (e.g. Spain), they <strong>cannot operate as MM0ABC under CEPT.</strong> CEPT applies to visits, not permanent residence. They must apply for a Spanish licence.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>1G (D2F-M1-Q15):</strong> When operating abroad, <strong>the band plan in that country may be different</strong> from the UK. Some frequencies permitted in the UK may not be available — check the local band plan before transmitting.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G (D2F-NEW-012):</strong> CEPT stands for <strong>Conference of European Posts and Telecommunications.</strong></div>
+      </div>
+
+      <h3>Master of a Vessel</h3>
+      <p>When operating on a vessel (ship, boat), the master of the vessel has authority over all radio operations. If the master asks you to stop transmitting, you <strong>must comply.</strong></p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G (D2F-M2-Q10):</strong> Your licence states you <strong>must comply</strong> with an instruction from the master of a vessel to stop transmitting.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1G</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What does CEPT T/R 61-01 allow you to do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1g-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1g-1" hidden>
+            <p>Operate as a licensed amateur in other CEPT member countries using your UK callsign, without needing a separate local licence — for <strong>visits</strong> (not permanent residence).</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. MM0ABC has permanently moved from Scotland to France (a CEPT country). Can they operate as MM0ABC under CEPT?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1g-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1g-2" hidden>
+            <p><strong>No.</strong> CEPT applies to temporary visits. Having permanently moved, MM0ABC must apply for a French amateur licence.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. You are on a cruise ship in the Pacific (ITU Region 3). Which regulations govern what frequencies you can use?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1g-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1g-3" hidden>
+            <p>The <strong>ITU Radio Regulations for Region 3</strong> — the region the vessel is currently in.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. You are operating from a yacht in the English Channel and the skipper asks you to stop transmitting. What does your licence say?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1g-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-1g-4" hidden>
+            <p>You <strong>must comply.</strong> The master of the vessel has authority over radio operations.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the difference between Band Plan and Licence conditions regarding frequency use?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1g-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-1g-5" hidden>
+            <p>The <strong>licence</strong> sets the legal limits (which bands, maximum power, permitted modes). The <strong>band plan</strong> is a voluntary agreement (set by IARU and national societies) on how to use the band — e.g. which frequencies are for CW only, SSB only, digital, etc. You are legally required to follow the licence; the band plan is recommended practice.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 1H: POWER LIMITS & EMF ═══════════════ -->
+    <section class="chapter" id="ch-1h">
+      <div class="chapter-header">
+        <span class="chapter-num">1H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Power Limits and EMF</h2>
+
+      <h3>UK Power Limits by Licence Class</h3>
+      <p><strong>Foundation:</strong> 10 W PEP on most bands.</p>
+      <p><strong>Intermediate:</strong> 50 W PEP on most bands.</p>
+      <p><strong>Full:</strong> 400 W (26 dBW) on most HF bands.</p>
+      <p>Some specific bands have different limits:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Band</th><th>Full licence max</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>160 m 1.810–2.000 MHz</td><td>26 dBW (400 W)</td><td>General</td></tr>
+            <tr><td>1.810–1.830 MHz</td><td>30 dBW</td><td>Narrow CW segment — higher limit applies</td></tr>
+            <tr><td>60 m (5 MHz)</td><td>15 W EIRP</td><td>Channelised, specific conditions</td></tr>
+            <tr><td>Most HF</td><td>26 dBW (400 W)</td><td>Standard Full limit</td></tr>
+            <tr><td>VHF/UHF</td><td>Varies</td><td>Check current band plan</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H (D2F-M1-Q11):</strong> The maximum permitted power supplied to the antenna in the 1.810–1.830 MHz band is <strong>30 dBW.</strong></div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H (D2F-NEW-013):</strong> The maximum power for a Full licence holder on the <strong>60 m (5 MHz) band</strong> is <strong>15 W EIRP.</strong></div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H (D2F-NEW-014):</strong> The maximum power a Full licence holder may use on <strong>most HF bands</strong> is <strong>26 dBW (400 W).</strong></div>
+      </div>
+      <p><strong>Converting dBW to watts:</strong></p>
+      <pre>Power (W) = 10^(dBW / 10)
+
+26 dBW = 10^2.6 = 400 W
+30 dBW = 10^3   = 1 000 W</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">26 dBW = 400 W. 30 dBW = 1 000 W. Know these conversions for exam questions.</div>
+      </div>
+
+      <h3>ISM Bands and Interference (1H1)</h3>
+      <p><strong>ISM</strong> = Industrial, Scientific and Medical. These are bands set aside for industrial equipment (microwave ovens, welding equipment, medical devices, etc.).</p>
+      <p>Amateurs <strong>must accept interference</strong> from ISM users on shared frequencies.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>ISM frequency</th><th>Overlapping amateur band</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2.4 GHz</td><td>13 cm (2.4 GHz amateur band)</td></tr>
+            <tr><td>5.8 GHz</td><td>5840 MHz — amateurs must accept ISM interference</td></tr>
+            <tr><td>433 MHz</td><td>70 cm (Europe) — some ISM overlap</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H:</strong> The <strong>2.4 GHz ISM band</strong> overlaps with the amateur <strong>13 cm band.</strong> Amateurs share this spectrum with Wi-Fi, Bluetooth, and microwave ovens.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H (1H1-2025-Int'd-1742):</strong> At <strong>5840 MHz</strong>, amateurs must <strong>accept interference from ISM users.</strong> ISM has primary status at this frequency.</div>
+      </div>
+
+      <h3>EMF Assessment in Practice</h3>
+      <p>Your EMF compliance check considers:</p>
+      <ul>
+        <li>Transmit power (and typical duty cycle for the mode).</li>
+        <li>Antenna gain and directivity.</li>
+        <li>Distance to areas accessible to the public.</li>
+        <li>Frequency (higher frequencies generally have stricter limits).</li>
+      </ul>
+      <p><strong>Key trigger for reassessment:</strong></p>
+      <ul>
+        <li>You change to a <strong>different antenna type</strong> → must reassess.</li>
+        <li>You significantly increase power → reassess.</li>
+        <li>You change operating location → reassess.</li>
+      </ul>
+      <p>The RSGB provides an online EMF calculator that works through the assessment for common antenna types and power levels.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>1G1:</strong> You cannot rely on a previous EMF assessment if you have changed your antenna. The pattern, gain, and EIRP will be different.</div>
+      </div>
+
+      <div class="self-checks">
+        <h3>Self-Check — 1H</h3>
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is 26 dBW in watts?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1h-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1h-1" hidden>
+            <p>26 dBW = 10^(26/10) = 10^2.6 ≈ <strong>400 W.</strong> This is the standard Full licence HF power limit.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q2. Which ISM band overlaps with the amateur 13 cm allocation?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1h-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1h-2" hidden>
+            <p>The <strong>2.4 GHz</strong> ISM band.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q3. An Intermediate operator has an EIRP of 8 W average. Do they need to complete a formal EMF compliance assessment?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1h-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1h-3" hidden>
+            <p><strong>No.</strong> The Intermediate compliance limit is 10 W average EIRP. At 8 W they are below the threshold and no formal assessment is required.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q4. You are operating on 5.840 GHz and your signal is causing problems with nearby ISM equipment. What must you do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1h-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-1h-4" hidden>
+            <p>You must <strong>accept the situation.</strong> At 5840 MHz, amateurs have secondary status and must accept interference from ISM primary users. You may need to cease operating on that frequency if the ISM user's equipment is causing you interference — not the other way round.</p>
+          </div>
+        </div>
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the maximum power for a Full licence holder on the 60 m band?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1h-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-1h-5" hidden>
+            <p><strong>15 W EIRP.</strong> The 60 m allocation has special conditions including a low power limit.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ KEY FACTS TABLE ═══════════════════ -->
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Section 1 — Key Facts Table</h2>
+      <p>Use this as a final checklist before the exam. The callsign prefixes and power limits are tested most frequently.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Fact</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Purpose of amateur radio</td><td><strong>Self-training in radio communications</strong></td></tr>
+            <tr><td>Foundation power limit</td><td>10 W PEP</td></tr>
+            <tr><td>Intermediate power limit</td><td><strong>50 W PEP</strong></td></tr>
+            <tr><td>Full power limit (most HF)</td><td><strong>26 dBW = 400 W</strong></td></tr>
+            <tr><td>60 m (5 MHz) Full power</td><td>15 W EIRP</td></tr>
+            <tr><td>1.810–1.830 MHz max</td><td>30 dBW</td></tr>
+            <tr><td>26 dBW in watts</td><td>400 W</td></tr>
+            <tr><td>30 dBW in watts</td><td>1 000 W</td></tr>
+            <tr><td>England Intermediate prefix</td><td>2E0 / 2E1</td></tr>
+            <tr><td>Scotland Intermediate prefix</td><td>2M0 / 2M1</td></tr>
+            <tr><td>Wales Intermediate prefix</td><td>2W0 / 2W1</td></tr>
+            <tr><td>England Foundation prefix</td><td>M7</td></tr>
+            <tr><td>Scotland Foundation prefix</td><td>MM7</td></tr>
+            <tr><td>/P suffix</td><td>Portable location</td></tr>
+            <tr><td>/M suffix</td><td>Mobile (moving vehicle)</td></tr>
+            <tr><td>VK</td><td>Australia</td></tr>
+            <tr><td>ZL</td><td>New Zealand</td></tr>
+            <tr><td>W</td><td>USA</td></tr>
+            <tr><td>JA</td><td>Japan</td></tr>
+            <tr><td>Remote control link</td><td>Must be above 30 MHz, unencrypted</td></tr>
+            <tr><td>Remote station display</td><td>Licence number adjacent to equipment</td></tr>
+            <tr><td>CEPT T/R 61-01</td><td>Visit other CEPT countries with home callsign</td></tr>
+            <tr><td>CEPT permanent move</td><td>Must apply for local licence</td></tr>
+            <tr><td>Address change</td><td>Must notify Ofcom — or risk revocation</td></tr>
+            <tr><td>EMF limit (Intermediate)</td><td>10 W average EIRP (below = no assessment needed)</td></tr>
+            <tr><td>EMF reassessment trigger</td><td>New antenna type</td></tr>
+            <tr><td>30 m (10.1 MHz) status</td><td>Secondary for amateurs</td></tr>
+            <tr><td>User Service</td><td>May use your equipment to send messages</td></tr>
+            <tr><td>Inspect equipment</td><td>Any person authorised by Ofcom</td></tr>
+            <tr><td>IARU</td><td>International Amateur Radio Union</td></tr>
+            <tr><td>ICNIRP</td><td>International Commission on Non-Ionizing Radiation Protection</td></tr>
+            <tr><td>ITU</td><td>International Telecommunication Union</td></tr>
+            <tr><td>2.4 GHz ISM overlap</td><td>13 cm amateur band</td></tr>
+            <tr><td>5840 MHz</td><td>Amateurs must accept ISM interference</td></tr>
+            <tr><td>Broadcasting prohibition</td><td>Only CQ calls permitted; no general broadcasting</td></tr>
+            <tr><td>Business use</td><td>Not permitted under amateur licence</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ═══════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="#" class="section-nav__link section-nav__link--disabled">← Previous Section</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=1"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-2-electronics.html" class="section-nav__link">Section 2: Electronics →</a>
+    </nav>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+</body>
+</html>
