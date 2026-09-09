@@ -693,6 +693,10 @@ function updateExplain(f, L, C, R, mode, XL, XC) {
                   : db > -20   ? `is attenuated (${b(dbStr)})`
                                : b('is heavily attenuated') + ' (' + dbStr + ')';
 
+  const parasiteNote = `<br><span style="font-size:0.78em;color:#64748b;font-style:italic">` +
+    `R\u202f=\u202f${fmtZ(R)} represents ${b('parasitic resistance')} \u2014 wire losses in the inductor, ` +
+    `connection resistance, and source/load impedance. It is not a deliberate component.</span>`;
+
   let html;
   if (mode === 'lp') {
     if (atRes) {
@@ -702,6 +706,7 @@ function updateExplain(f, L, C, R, mode, XL, XC) {
     } else {
       html = `At ${b(fmtF(f))}, the series inductor has ${XLtag} &mdash; ${XLw}, so it ${b('opposes and blocks')} the signal. The shunt capacitor has ${XCtag} &mdash; ${XCw}, ${b('shorting the remaining signal')} to ground. Result: the signal ${resultStr}.`;
     }
+    html += parasiteNote;
   } else if (mode === 'hp') {
     if (atRes) {
       html = `At ${b(fmtF(f))}, near resonance: the series capacitor ${XCtag} and shunt inductor ${XLtag} balance, creating a resonant ${b('peak')}. Result:\u202f${b(dbStr)}.`;
@@ -710,6 +715,7 @@ function updateExplain(f, L, C, R, mode, XL, XC) {
     } else {
       html = `At ${b(fmtF(f))}, the series capacitor has ${XCtag} &mdash; ${XCw}, so it ${b('blocks')} the signal. The shunt inductor has ${XLtag} &mdash; ${XLw}, ${b('shorting any leaked signal')} to ground. Result: the signal ${resultStr}.`;
     }
+    html += parasiteNote;
   } else if (mode === 'bp') {
     if (atRes) {
       html = `At ${b(fmtF(f))}, the circuit is at ${b('resonance')}: ${XLtag} and ${XCtag} are equal and opposite &mdash; they ${b('cancel completely')}. Only R remains, so the signal passes at full amplitude. Result:\u202f${b(dbStr)}.`;
@@ -775,30 +781,41 @@ function drawCircuit(mode, XL, XC) {
 
   let svg = '';
 
+  // Small 'parasitic' subscript for R in LP/HP
+  const pNote = (x, y) =>
+    `<text x="${x}" y="${y}" text-anchor="middle" fill="${Rc}" font-size="8"` +
+    ` font-family="${fn}" opacity="0.7">parasitic</text>`;
+
   if (mode === 'lp') {
-    // L series (x=22→64), C shunt from x=120 to GND
+    // L series (x=22→64), R parasitic (x=68→96), C shunt from x=120 to GND
     svg =
-      lbl(0, 11, 'Low-pass \u2014 L in series, C to ground', tf, 'start') +
+      lbl(0, 11, 'Low-pass \u2014 L series, C shunt (R\u202fparsitic losses)', tf, 'start') +
       wire(0, SY, 22, SY) +
       hCoil(22, SY) +
-      wire(64, SY, 120, SY) +
+      wire(64, SY, 68, SY) +
+      rect(68, SY-11, 28, 22) +
+      wire(96, SY, 120, SY) +
       wire(120, SY, 265, SY) +
       wire(120, SY, 120, 58) +
       pCap(120, 58) +
       wire(120, 67, 120, 80) +
       gnd(120, 80) +
-      lbl(43, SY-16, 'L', Lc, 'middle', lop) +
+      lbl(43, SY-17, 'L', Lc, 'middle', lop) +
+      lbl(82, SY-16, 'R', Rc, 'middle') +
+      pNote(82, SY+22) +
       lbl(136, 62, 'C', Cc, 'start', cop) +
       lbl(2, SY-4, 'IN', tf, 'start') +
       lbl(269, SY-4, 'OUT', tf, 'start');
 
   } else if (mode === 'hp') {
-    // C series (x=22→31 gap), L shunt from x=110 with horizontal coil below
+    // C series (x=22→31), R parasitic (x=35→63), L shunt from x=110
     svg =
-      lbl(0, 11, 'High-pass \u2014 C in series, L to ground', tf, 'start') +
+      lbl(0, 11, 'High-pass \u2014 C series, L shunt (R\u202fparasitic losses)', tf, 'start') +
       wire(0, SY, 22, SY) +
       sCap(22, SY) +
-      wire(31, SY, 110, SY) +
+      wire(31, SY, 35, SY) +
+      rect(35, SY-11, 28, 22) +
+      wire(63, SY, 110, SY) +
       wire(110, SY, 265, SY) +
       wire(110, SY, 110, SY+14) +
       wire(110, SY+14, 152, SY+14) +
@@ -806,6 +823,8 @@ function drawCircuit(mode, XL, XC) {
       wire(152, SY+14, 152, 78) +
       gnd(152, 78) +
       lbl(26, SY-14, 'C', Cc, 'middle', cop) +
+      lbl(49, SY-16, 'R', Rc, 'middle') +
+      pNote(49, SY+22) +
       lbl(131, SY+10, 'L', Lc, 'middle', lop) +
       lbl(2, SY-4, 'IN', tf, 'start') +
       lbl(269, SY-4, 'OUT', tf, 'start');
