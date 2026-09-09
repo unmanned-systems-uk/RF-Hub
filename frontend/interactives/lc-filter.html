@@ -65,20 +65,6 @@
     .mbtn.bp-on  { border-color: #a78bfa; color: #a78bfa; background: #140e22; }
     .mbtn.bs-on  { border-color: #06b6d4; color: #06b6d4; background: #04141a; }
 
-    /* Explanatory text panel — standalone below chart card */
-    #explain-panel {
-      font-size: 0.82rem;
-      line-height: 1.65;
-      color: #94a3b8;
-      background: #111827;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.9rem;
-      min-height: 3.4rem;
-    }
-    #explain-panel strong { font-weight: 600; color: #e2e8f0; }
-
     /* Side-by-side flex row: circuit left, chart right */
     .main-row {
       display: flex;
@@ -106,6 +92,29 @@
     #chart-wrap { flex: 1 1 0; min-width: 0; }
 
     canvas { display: block; border-radius: 4px; cursor: crosshair; width: 100%; }
+
+    /* Bottom row: explain text + oscilloscope side by side */
+    .bottom-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: stretch;
+      margin-top: 0.65rem;
+      border-top: 1px solid #0c1f10;
+      padding-top: 0.55rem;
+    }
+    @media (max-width: 900px) { .bottom-row { flex-direction: column; } }
+    #explain-panel {
+      flex: 1 1 0;
+      font-size: 0.82rem; line-height: 1.65; color: #94a3b8;
+      background: #111827; border: 1px solid #1e293b; border-radius: 8px;
+      padding: 0.75rem 1rem; min-height: 3.4rem;
+    }
+    #explain-panel strong { font-weight: 600; color: #e2e8f0; }
+    #scope-wrap { flex: 1.6 1 0; min-width: 0; }
+    #scope-label {
+      font: 8px/1 'IBM Plex Mono', monospace;
+      text-transform: uppercase; letter-spacing: .08em; color: #1e5c2e;
+    }
 
     /* Sliders */
     .ctrl-grid {
@@ -187,15 +196,15 @@
     </div>
   </div>
 
-  <!-- Oscilloscope — full width below -->
-  <div style="margin-top:0.7rem;border-top:1px solid #0c1f10;padding-top:0.55rem;">
-    <span style="font:8px/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#1e5c2e;">&#9632; Oscilloscope &mdash; Time Domain</span>
-    <canvas id="scopeCanvas" style="margin-top:0.3rem;background:#040e07;border-radius:3px;"></canvas>
+  <!-- Bottom row: explain text + oscilloscope side by side -->
+  <div class="bottom-row">
+    <div id="explain-panel">Initialising&hellip;</div>
+    <div id="scope-wrap">
+      <div id="scope-label">&#9632; Oscilloscope &mdash; Time Domain</div>
+      <canvas id="scopeCanvas" style="margin-top:0.3rem;background:#040e07;border-radius:3px;"></canvas>
+    </div>
   </div>
 </div>
-
-<!-- Explanatory text panel — between chart and sliders -->
-<div id="explain-panel">Initialising&hellip;</div>
 
 <!-- Sliders -->
 <div class="card">
