@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LC Filter — Tuned Circuit — RF-Hub</title>
+  <title>LC Filter &mdash; Tuned Circuit &mdash; RF-Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
   <style>
@@ -19,11 +19,7 @@
       margin: 0 auto;
     }
 
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.55rem;
-      margin-bottom: 0.2rem;
-    }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
 
     .subtitle {
       font-size: 0.78rem;
@@ -46,10 +42,10 @@
       display: flex;
       gap: 0.4rem;
       flex-wrap: wrap;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
       align-items: center;
     }
-    .mode-bar .spacer { flex: 1; }
+    .mode-bar .spacer { flex: 1; min-width: 0.5rem; }
 
     .mbtn {
       background: #1a2234;
@@ -63,18 +59,37 @@
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
     .mbtn:hover { color: #e2e8f0; border-color: #334155; }
-    .mbtn.on { background: #1e293b; color: #e2e8f0; border-color: #475569; }
-    .mbtn.series-on  { border-color: #a78bfa; color: #a78bfa; }
-    .mbtn.parallel-on { border-color: #06b6d4; color: #06b6d4; }
+    .mbtn.on     { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+    .mbtn.lp-on  { border-color: #22c55e; color: #22c55e; background: #0f2318; }
+    .mbtn.hp-on  { border-color: #f97316; color: #f97316; background: #1f1508; }
+    .mbtn.bp-on  { border-color: #a78bfa; color: #a78bfa; background: #140e22; }
+    .mbtn.bs-on  { border-color: #06b6d4; color: #06b6d4; background: #04141a; }
+
+    /* Explanatory text panel */
+    #explain-panel {
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: #94a3b8;
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 0.65rem;
+      min-height: 3.8rem;
+    }
+    #explain-panel strong { font-weight: 600; color: #e2e8f0; }
+
+    /* Circuit diagram card */
+    #circuit-card {
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 0.75rem 1rem 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    #circuit-card svg { display: block; width: 100%; height: auto; overflow: visible; }
 
     canvas { display: block; border-radius: 4px; cursor: crosshair; width: 100%; }
-
-    /* Circuit SVG overlay */
-    #circuit-wrap {
-      position: absolute;
-      top: 3.2rem; right: 1.25rem;
-      pointer-events: none;
-    }
 
     /* Sliders */
     .ctrl-grid {
@@ -92,16 +107,8 @@
       margin-bottom: 0.3rem;
       color: #64748b;
     }
-    .slider-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    input[type="range"] {
-      flex: 1;
-      accent-color: #a78bfa;
-      cursor: pointer;
-    }
+    .slider-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    input[type="range"] { flex: 1; accent-color: #a78bfa; cursor: pointer; }
     .sval {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.82rem;
@@ -132,11 +139,7 @@
       letter-spacing: 0.05em;
       margin-bottom: 0.25rem;
     }
-    .ro-val {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.85rem;
-      color: #e2e8f0;
-    }
+    .ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #e2e8f0; }
     .ro-val.good { color: #22c55e; }
     .ro-val.hi   { color: #a78bfa; }
   </style>
@@ -144,18 +147,29 @@
 <body>
 
 <h1>LC Filter &mdash; Tuned Circuit</h1>
-<p class="subtitle">Resonance &middot; Q factor &middot; Bandwidth &mdash; drag the chart to scrub frequency</p>
+<p class="subtitle">Low-pass &middot; High-pass &middot; Bandpass &middot; Band-stop &mdash; drag the chart to scrub frequency</p>
 
 <!-- Chart card -->
 <div class="card">
   <div class="mode-bar">
-    <button class="mbtn series-on" id="btn-series"   onclick="setMode('series')">Series (bandpass)</button>
-    <button class="mbtn"           id="btn-parallel" onclick="setMode('parallel')">Parallel (band-stop)</button>
+    <button class="mbtn"    id="btn-lp" onclick="setMode('lp')">Low-pass</button>
+    <button class="mbtn"    id="btn-hp" onclick="setMode('hp')">High-pass</button>
+    <button class="mbtn bp-on" id="btn-bp" onclick="setMode('bp')">Bandpass</button>
+    <button class="mbtn"    id="btn-bs" onclick="setMode('bs')">Band-stop</button>
     <div class="spacer"></div>
     <button class="mbtn on" id="btn-db"  onclick="setScale(true)">dB</button>
     <button class="mbtn"    id="btn-lin" onclick="setScale(false)">Linear</button>
   </div>
 
+  <!-- Explanatory text panel -->
+  <div id="explain-panel">Initialising&hellip;</div>
+
+  <!-- Circuit diagram (standalone, not overlaid) -->
+  <div id="circuit-card">
+    <svg id="circuit" viewBox="0 0 280 95" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <!-- Frequency response chart -->
   <canvas id="chartCanvas"></canvas>
 
   <!-- Oscilloscope -->
@@ -163,53 +177,39 @@
     <span style="font:8px/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#1e5c2e;">&#9632; Oscilloscope &mdash; Time Domain</span>
     <canvas id="scopeCanvas" style="margin-top:0.3rem;background:#040e07;border-radius:3px;"></canvas>
   </div>
-
-  <!-- Circuit diagram overlaid top-right -->
-  <div id="circuit-wrap">
-    <svg id="circuit" width="140" height="72" overflow="visible"></svg>
-  </div>
 </div>
 
 <!-- Sliders -->
 <div class="card">
   <div class="ctrl-grid">
-
     <div>
       <div class="ctrl-label" style="color:#a78bfa">Inductance (L)</div>
       <div class="slider-wrap">
-        <input type="range" id="sL" min="0" max="100" step="0.2"
-               oninput="onS('L',+this.value)">
+        <input type="range" id="sL" min="0" max="100" step="0.2" oninput="onS('L',+this.value)">
         <span class="sval" id="vL">&mdash;</span>
       </div>
     </div>
-
     <div>
       <div class="ctrl-label" style="color:#06b6d4">Capacitance (C)</div>
       <div class="slider-wrap">
-        <input type="range" id="sC" min="0" max="100" step="0.2"
-               oninput="onS('C',+this.value)">
+        <input type="range" id="sC" min="0" max="100" step="0.2" oninput="onS('C',+this.value)">
         <span class="sval" id="vC">&mdash;</span>
       </div>
     </div>
-
     <div>
       <div class="ctrl-label" style="color:#f59e0b">Resistance (R)</div>
       <div class="slider-wrap">
-        <input type="range" id="sR" min="0" max="100" step="0.2"
-               oninput="onS('R',+this.value)">
+        <input type="range" id="sR" min="0" max="100" step="0.2" oninput="onS('R',+this.value)">
         <span class="sval" id="vR">&mdash;</span>
       </div>
     </div>
-
     <div>
       <div class="ctrl-label" style="color:#94a3b8">Frequency cursor</div>
       <div class="slider-wrap">
-        <input type="range" id="sf" min="0" max="100" step="0.1"
-               oninput="onS('f',+this.value)">
+        <input type="range" id="sf" min="0" max="100" step="0.1" oninput="onS('f',+this.value)">
         <span class="sval" id="vf">&mdash;</span>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -217,7 +217,7 @@
 <div class="card">
   <div class="ro-grid">
     <div class="ro-item">
-      <div class="ro-label">Resonant freq f&#x2080;</div>
+      <div class="ro-label">Cutoff / f&#x2080;</div>
       <div class="ro-val hi" id="rv-f0">&mdash;</div>
     </div>
     <div class="ro-item">
@@ -237,7 +237,7 @@
       <div class="ro-val" id="rv-Q">&mdash;</div>
     </div>
     <div class="ro-item">
-      <div class="ro-label">&#x2212;3 dB bandwidth</div>
+      <div class="ro-label">&#x2212;3 dB point</div>
       <div class="ro-val" id="rv-BW">&mdash;</div>
     </div>
     <div class="ro-item">
@@ -245,7 +245,7 @@
       <div class="ro-val" id="rv-ph">&mdash;</div>
     </div>
     <div class="ro-item">
-      <div class="ro-label">Dominance</div>
+      <div class="ro-label">Status</div>
       <div class="ro-val" id="rv-dom">&mdash;</div>
     </div>
   </div>
@@ -253,11 +253,11 @@
 
 <script>
 // ── Constants ──────────────────────────────────────────────────────────────────
-const F_MIN = 1e5, F_MAX = 1e8;    // 100 kHz – 100 MHz
-const L_MIN = 1e-7, L_MAX = 1e-4;  // 0.1 µH – 100 µH
-const C_MIN = 1e-12, C_MAX = 1e-9; // 1 pF – 1000 pF
-const R_MIN = 1, R_MAX = 1e3;      // 1 Ω – 1 kΩ
-const DB_MIN = -65, DB_MAX = 5;
+const F_MIN = 1e5, F_MAX = 1e8;
+const L_MIN = 1e-7, L_MAX = 1e-4;
+const C_MIN = 1e-12, C_MAX = 1e-9;
+const R_MIN = 1, R_MAX = 1e3;
+const DB_MIN = -65, DB_MAX = 20;  // 20 dB headroom for LP/HP resonant peaks
 const PAD = { l: 52, r: 18, t: 18, b: 36 };
 
 // ── Log-slider helpers ─────────────────────────────────────────────────────────
@@ -274,30 +274,28 @@ function fmtC(v) {
   if (v >= 1e-9) return (v * 1e9).toPrecision(3) + ' nF';
   return (v * 1e12).toPrecision(3) + ' pF';
 }
-function fmtR(v) { return v >= 1000 ? (v / 1000).toPrecision(3) + ' k\u03a9' : v.toPrecision(3) + ' \u03a9'; }
+function fmtR(v) { return v >= 1000 ? (v/1000).toPrecision(3)+' k\u03a9' : v.toPrecision(3)+' \u03a9'; }
 function fmtF(v) {
-  if (v >= 1e6) return (v / 1e6).toPrecision(4) + ' MHz';
-  if (v >= 1e3) return (v / 1e3).toPrecision(4) + ' kHz';
-  return v.toPrecision(3) + ' Hz';
+  if (v >= 1e6) return (v/1e6).toPrecision(4)+' MHz';
+  if (v >= 1e3) return (v/1e3).toPrecision(4)+' kHz';
+  return v.toPrecision(3)+' Hz';
 }
 function fmtZ(v) {
-  if (!isFinite(v) || v > 1e9) return '\u221e \u03a9';
-  if (v >= 1e6) return (v / 1e6).toPrecision(3) + ' M\u03a9';
-  if (v >= 1e3) return (v / 1e3).toPrecision(3) + ' k\u03a9';
-  return v.toPrecision(3) + ' \u03a9';
+  if (!isFinite(v) || v > 1e9) return '\u221e\u202f\u03a9';
+  if (v >= 1e6) return (v/1e6).toPrecision(3)+' M\u03a9';
+  if (v >= 1e3) return (v/1e3).toPrecision(3)+' k\u03a9';
+  return v.toPrecision(3)+' \u03a9';
 }
 
 // ── State ──────────────────────────────────────────────────────────────────────
-// Defaults: L=10µH, C=100pF → f₀ ≈ 5.03 MHz; R=50Ω → Q ≈ 6.3
-const STATE = {
-  L: 10e-6, C: 100e-12, R: 50, f: 5e6,
-  mode: 'series', dB: true
-};
+// Defaults: L=10µH, C=100pF → f₀≈5.03 MHz; R=50Ω → Q≈6.3
+const STATE = { L: 10e-6, C: 100e-12, R: 50, f: 5e6, mode: 'bp', dB: true };
 
 // ── URL params ─────────────────────────────────────────────────────────────────
 (function () {
   const p = new URLSearchParams(location.search);
-  if (p.has('mode') && ['series', 'parallel'].includes(p.get('mode'))) STATE.mode = p.get('mode');
+  const mm = { series:'bp', parallel:'bs', lp:'lp', hp:'hp', bp:'bp', bs:'bs' };
+  if (p.has('mode') && mm[p.get('mode')]) STATE.mode = mm[p.get('mode')];
   if (p.has('L')) STATE.L = parseFloat(p.get('L')) * 1e-6;
   if (p.has('C')) STATE.C = parseFloat(p.get('C')) * 1e-12;
   if (p.has('R')) STATE.R = parseFloat(p.get('R'));
@@ -313,49 +311,71 @@ function reactances(f, L, C) {
   return { XL: 2 * Math.PI * f * L, XC: 1 / (2 * Math.PI * f * C) };
 }
 
-// Series bandpass: H = R / |Z_series|, 1 at resonance
-function seriesH(f, L, C, R) {
+// Low-pass (series RLC, output across C): H = XC / |Z_series|
+function lpH(f, L, C, R) {
   const { XL, XC } = reactances(f, L, C);
-  return R / Math.sqrt(R * R + (XL - XC) * (XL - XC));
+  return XC / Math.sqrt(R*R + (XL-XC)*(XL-XC));
 }
-
-// Parallel band-stop: ideal LC tank in series with R; H = 1 far from f₀, 0 at f₀
-function parallelH(f, L, C, R) {
+// High-pass (series RLC, output across L): H = XL / |Z_series|
+function hpH(f, L, C, R) {
+  const { XL, XC } = reactances(f, L, C);
+  return XL / Math.sqrt(R*R + (XL-XC)*(XL-XC));
+}
+// Bandpass (series RLC, output across R): H = R / |Z_series|
+function bpH(f, L, C, R) {
+  const { XL, XC } = reactances(f, L, C);
+  return R / Math.sqrt(R*R + (XL-XC)*(XL-XC));
+}
+// Band-stop (parallel LC tank in series with R): H → 1 far from f₀, 0 at f₀
+function bsH(f, L, C, R) {
   const { XL, XC } = reactances(f, L, C);
   const dX = XL - XC;
   if (Math.abs(dX) < 1e-15) return 0;
   const Zt = Math.abs(XL * XC / dX);
-  return R / Math.sqrt(R * R + Zt * Zt);
+  return R / Math.sqrt(R*R + Zt*Zt);
 }
 
 function getH(f, L, C, R, mode) {
-  return mode === 'series' ? seriesH(f, L, C, R) : parallelH(f, L, C, R);
+  switch (mode) {
+    case 'lp': return lpH(f, L, C, R);
+    case 'hp': return hpH(f, L, C, R);
+    case 'bs': return bsH(f, L, C, R);
+    default:   return bpH(f, L, C, R);
+  }
 }
 
-// |Z| for readout
-function seriesZ(f, L, C, R) {
-  const { XL, XC } = reactances(f, L, C);
-  return Math.sqrt(R * R + (XL - XC) * (XL - XC));
-}
-function parallelZ(f, L, C) {
+// Impedance magnitude for readout
+function getZ(f, L, C, R, mode) {
   const { XL, XC } = reactances(f, L, C);
   const dX = XL - XC;
-  return Math.abs(dX) < 1e-15 ? Infinity : Math.abs(XL * XC / dX);
+  if (mode === 'bs') {
+    return Math.abs(dX) < 1e-15 ? Infinity : Math.abs(XL * XC / dX);
+  }
+  return Math.sqrt(R*R + dX*dX);
 }
 
-// Phase of Z in degrees
-function seriesPhase(f, L, C, R) {
-  const { XL, XC } = reactances(f, L, C);
-  return Math.atan2(XL - XC, R) * 180 / Math.PI;
-}
-function parallelPhase(f, L, C, R) {
+// Output phase in degrees (output waveform relative to input)
+// LP: H = -jXC / (R + j(XL-XC))  → phase = -90° - arctan((XL-XC)/R)
+// HP: H =  jXL / (R + j(XL-XC))  → phase = +90° - arctan((XL-XC)/R)
+// BP: H =    R  / (R + j(XL-XC)) → phase =       - arctan((XL-XC)/R)
+// BS: H =    R  / (R + jZtank)   → phase = -arctan(Ztank/R) (sign depends on side)
+function getPhase(f, L, C, R, mode) {
   const { XL, XC } = reactances(f, L, C);
   const dX = XL - XC;
-  if (Math.abs(dX) < 1e-15) return 90;
-  return Math.atan2(XL * XC / dX, R) * 180 / Math.PI;
+  const base = -Math.atan2(dX, R);  // radians
+  switch (mode) {
+    case 'lp': return (base - Math.PI/2) * 180 / Math.PI;
+    case 'hp': return (base + Math.PI/2) * 180 / Math.PI;
+    case 'bs': {
+      if (Math.abs(dX) < 1e-15) return 0;
+      return Math.atan2(XL * XC, R * dX) * 180 / Math.PI;
+    }
+    default:   return base * 180 / Math.PI;
+  }
 }
+function getPhaseRad(f, L, C, R, mode) { return getPhase(f, L, C, R, mode) * Math.PI / 180; }
 
-// ── Canvas ─────────────────────────────────────────────────────────────────────
+// ── Canvas setup ───────────────────────────────────────────────────────────────
 const canvas = document.getElementById('chartCanvas');
 const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
@@ -393,17 +413,17 @@ function resizeScope() {
 
 // ── Scales ─────────────────────────────────────────────────────────────────────
 function fToX(f) {
-  return PAD.l + Math.log10(f / F_MIN) / Math.log10(F_MAX / F_MIN) * (W - PAD.l - PAD.r);
+  return PAD.l + Math.log10(f/F_MIN) / Math.log10(F_MAX/F_MIN) * (W - PAD.l - PAD.r);
 }
 function xToF(x) {
-  return F_MIN * Math.pow(F_MAX / F_MIN, (x - PAD.l) / (W - PAD.l - PAD.r));
+  return F_MIN * Math.pow(F_MAX/F_MIN, (x - PAD.l) / (W - PAD.l - PAD.r));
 }
 function hToY(h, useDB) {
   if (useDB) {
     const db = 20 * Math.log10(Math.max(h, 1e-12));
     return PAD.t + (DB_MAX - db) / (DB_MAX - DB_MIN) * (H - PAD.t - PAD.b);
   }
-  return PAD.t + (1 - Math.max(0, Math.min(1, h))) * (H - PAD.t - PAD.b);
+  return PAD.t + (1 - Math.max(0, h)) * (H - PAD.t - PAD.b);
 }
 
 // ── Draw ───────────────────────────────────────────────────────────────────────
@@ -417,11 +437,10 @@ function draw() {
   ctx.clearRect(0, 0, W, H);
 
   const { L, C, R, f, mode, dB: useDB } = STATE;
-  const f0   = calcF0(L, C);
-  const Q    = calcQ(L, C, R);
-  const BW   = calcBW(L, R);
+  const f0  = calcF0(L, C);
+  const Q   = calcQ(L, C, R);
+  const BW  = calcBW(L, R);
   const { XL: XLc, XC: XCc } = reactances(f, L, C);
-
   const plotW = W - PAD.l - PAD.r;
   const plotH = H - PAD.t - PAD.b;
 
@@ -429,9 +448,10 @@ function draw() {
   ctx.setLineDash([2, 4]);
   ctx.lineWidth = 0.8;
   if (useDB) {
-    for (const db of [0, -10, -20, -30, -40, -50, -60]) {
+    for (const db of [20, 10, 0, -10, -20, -30, -40, -50, -60]) {
       const y = PAD.t + (DB_MAX - db) / (DB_MAX - DB_MIN) * plotH;
-      ctx.strokeStyle = 'rgba(30,41,59,0.9)';
+      if (y < PAD.t - 1 || y > H - PAD.b + 1) continue;
+      ctx.strokeStyle = db === 0 ? 'rgba(100,116,139,0.35)' : 'rgba(30,41,59,0.9)';
       ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r, y); ctx.stroke();
       ctx.fillStyle = 'rgba(100,116,139,0.75)';
       ctx.font = '10px IBM Plex Mono,monospace';
@@ -439,20 +459,21 @@ function draw() {
       ctx.fillText(db + ' dB', PAD.l - 4, y + 3.5);
     }
   } else {
-    for (let v = 0; v <= 1.01; v += 0.25) {
+    for (let v = 0; v <= 2.01; v += 0.5) {
       const y = PAD.t + (1 - v) * plotH;
-      ctx.strokeStyle = 'rgba(30,41,59,0.9)';
+      if (y < PAD.t - 1 || y > H - PAD.b + 1) continue;
+      ctx.strokeStyle = v === 1 ? 'rgba(100,116,139,0.35)' : 'rgba(30,41,59,0.9)';
       ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r, y); ctx.stroke();
       ctx.fillStyle = 'rgba(100,116,139,0.75)';
       ctx.font = '10px IBM Plex Mono,monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(v.toFixed(2), PAD.l - 4, y + 3.5);
+      ctx.fillText(v.toFixed(1), PAD.l - 4, y + 3.5);
     }
   }
 
-  // ── X grid (log frequency) ───────────────────────────────────────────────────
-  const xTicks = [1e5, 2e5, 5e5, 1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8];
-  const xLabels = { 1e5: '100k', 1e6: '1M', 1e7: '10M', 1e8: '100M' };
+  // ── X grid ───────────────────────────────────────────────────────────────────
+  const xTicks  = [1e5,2e5,5e5,1e6,2e6,5e6,1e7,2e7,5e7,1e8];
+  const xLabels = { 1e5:'100k', 1e6:'1M', 1e7:'10M', 1e8:'100M' };
   for (const ft of xTicks) {
     const x = fToX(ft);
     ctx.strokeStyle = 'rgba(30,41,59,0.9)';
@@ -466,51 +487,75 @@ function draw() {
   }
   ctx.setLineDash([]);
 
-  // X axis label
   ctx.fillStyle = 'rgba(100,116,139,0.6)';
   ctx.font = '9px IBM Plex Mono,monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('Frequency', PAD.l + plotW / 2, H - 4);
+  ctx.fillText('Frequency', PAD.l + plotW/2, H - 4);
 
-  // ── -3 dB bandwidth shading ──────────────────────────────────────────────────
-  const fL = Math.max(F_MIN, f0 - BW / 2);
-  const fH = Math.min(F_MAX, f0 + BW / 2);
-  if (fL < fH) {
-    const xL = fToX(fL), xR = fToX(fH);
-    ctx.fillStyle = 'rgba(167,139,250,0.07)';
-    ctx.fillRect(xL, PAD.t, xR - xL, plotH);
-    // -3 dB line
-    const y3 = hToY(1 / Math.SQRT2, useDB);
-    ctx.strokeStyle = 'rgba(167,139,250,0.22)';
-    ctx.lineWidth = 0.8;
-    ctx.setLineDash([3, 5]);
-    ctx.beginPath(); ctx.moveTo(PAD.l, y3); ctx.lineTo(W - PAD.r, y3); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(167,139,250,0.55)';
-    ctx.font = '8px IBM Plex Mono,monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('\u22123 dB', PAD.l + 3, y3 - 3);
+  // ── Passband shading ──────────────────────────────────────────────────────────
+  const modeColours = { lp:'34,197,94', hp:'249,115,22', bp:'167,139,250', bs:'6,182,212' };
+  const mc = modeColours[mode];
+  if (mode === 'lp') {
+    const xf0 = Math.min(fToX(f0), W - PAD.r);
+    ctx.fillStyle = `rgba(${mc},0.07)`;
+    ctx.fillRect(PAD.l, PAD.t, xf0 - PAD.l, plotH);
+  } else if (mode === 'hp') {
+    const xf0 = Math.max(fToX(f0), PAD.l);
+    ctx.fillStyle = `rgba(${mc},0.07)`;
+    ctx.fillRect(xf0, PAD.t, W - PAD.r - xf0, plotH);
+  } else if (mode === 'bp') {
+    const fL = Math.max(F_MIN, f0 - BW/2);
+    const fH_ = Math.min(F_MAX, f0 + BW/2);
+    if (fL < fH_) {
+      ctx.fillStyle = `rgba(${mc},0.07)`;
+      ctx.fillRect(fToX(fL), PAD.t, fToX(fH_) - fToX(fL), plotH);
+    }
   }
 
-  // ── Resonant frequency marker ────────────────────────────────────────────────
+  // ── -3 dB / reference line ────────────────────────────────────────────────────
+  if (mode === 'bp' || mode === 'bs') {
+    const y3 = hToY(1/Math.SQRT2, useDB);
+    if (y3 >= PAD.t && y3 <= H - PAD.b) {
+      ctx.strokeStyle = `rgba(${mc},0.25)`;
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath(); ctx.moveTo(PAD.l, y3); ctx.lineTo(W - PAD.r, y3); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = `rgba(${mc},0.6)`;
+      ctx.font = '8px IBM Plex Mono,monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('\u22123 dB', PAD.l + 3, y3 - 3);
+    }
+  } else {
+    // 0 dB reference for LP/HP
+    const y0 = hToY(1, useDB);
+    if (y0 >= PAD.t && y0 <= H - PAD.b) {
+      ctx.strokeStyle = 'rgba(100,116,139,0.3)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath(); ctx.moveTo(PAD.l, y0); ctx.lineTo(W - PAD.r, y0); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // ── f₀ marker ─────────────────────────────────────────────────────────────────
   if (f0 >= F_MIN && f0 <= F_MAX) {
     const xf0 = fToX(f0);
-    ctx.strokeStyle = 'rgba(249,115,22,0.55)';
+    ctx.strokeStyle = `rgba(${mc},0.5)`;
     ctx.lineWidth = 1;
     ctx.setLineDash([5, 4]);
     ctx.beginPath(); ctx.moveTo(xf0, PAD.t); ctx.lineTo(xf0, H - PAD.b); ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(249,115,22,0.80)';
+    ctx.fillStyle = `rgba(${mc},0.85)`;
     ctx.font = '8.5px IBM Plex Mono,monospace';
     ctx.textAlign = 'center';
-    // label left or right of marker to avoid edge clipping
     const lx = Math.max(PAD.l + 22, Math.min(W - PAD.r - 22, xf0));
     ctx.fillText('f\u2080\u202f=\u202f' + fmtF(f0), lx, PAD.t + 11);
   }
 
-  // ── Response curve ───────────────────────────────────────────────────────────
-  const curveColour = mode === 'series' ? '#a78bfa' : '#06b6d4';
-  ctx.strokeStyle = curveColour;
+  // ── Response curve ────────────────────────────────────────────────────────────
+  const curveCol = { lp:'#22c55e', hp:'#f97316', bp:'#a78bfa', bs:'#06b6d4' }[mode];
+  ctx.strokeStyle = curveCol;
   ctx.lineWidth = 2;
   ctx.beginPath();
   let first = true;
@@ -525,10 +570,10 @@ function draw() {
   }
   ctx.stroke();
 
-  // ── Frequency cursor ─────────────────────────────────────────────────────────
-  const xCur  = fToX(f);
-  const hCur  = getH(f, L, C, R, mode);
-  const yCur  = hToY(hCur, useDB);
+  // ── Frequency cursor ──────────────────────────────────────────────────────────
+  const xCur = fToX(f);
+  const hCur = getH(f, L, C, R, mode);
+  const yCur = hToY(hCur, useDB);
 
   ctx.strokeStyle = 'rgba(245,158,11,0.75)';
   ctx.lineWidth   = 1.5;
@@ -538,103 +583,253 @@ function draw() {
 
   if (yCur >= PAD.t - 2 && yCur <= H - PAD.b + 2) {
     ctx.fillStyle = '#f59e0b';
-    ctx.beginPath(); ctx.arc(xCur, yCur, 4, 0, 2 * Math.PI); ctx.fill();
+    ctx.beginPath(); ctx.arc(xCur, yCur, 4, 0, 2*Math.PI); ctx.fill();
   }
 
-  // Cursor readout label
   const dbCur = 20 * Math.log10(Math.max(hCur, 1e-12));
   ctx.fillStyle = 'rgba(245,158,11,0.85)';
   ctx.font = '8.5px IBM Plex Mono,monospace';
-  const right = xCur > W / 2;
+  const right = xCur > W/2;
   ctx.textAlign = right ? 'right' : 'left';
-  const lx = right ? xCur - 6 : xCur + 6;
-  ctx.fillText(fmtF(f), lx, PAD.t + 26);
-  ctx.fillText(useDB ? dbCur.toFixed(1) + ' dB' : hCur.toFixed(3), lx, PAD.t + 38);
+  const lxc = right ? xCur - 6 : xCur + 6;
+  ctx.fillText(fmtF(f), lxc, PAD.t + 26);
+  ctx.fillText(useDB ? dbCur.toFixed(1)+' dB' : hCur.toFixed(3), lxc, PAD.t + 38);
 
-  // ── Readout panel + circuit SVG ──────────────────────────────────────────────
+  // ── Update panels ─────────────────────────────────────────────────────────────
   updateReadout(f0, Q, BW, f, L, C, R, mode, XLc, XCc);
-  drawCircuit(mode, f < f0 * 0.98 ? 'C' : f > f0 * 1.02 ? 'L' : null);
+  drawCircuit(mode, XLc, XCc);
+  updateExplain(f, L, C, R, mode, XLc, XCc);
   drawScope();
 }
 
 // ── Readout panel ──────────────────────────────────────────────────────────────
 function updateReadout(f0, Q, BW, f, L, C, R, mode, XL, XC) {
-  const Zval  = mode === 'series' ? seriesZ(f, L, C, R) : parallelZ(f, L, C);
-  const phase = mode === 'series' ? seriesPhase(f, L, C, R) : parallelPhase(f, L, C, R);
+  const Zval  = getZ(f, L, C, R, mode);
+  const phase = getPhase(f, L, C, R, mode);
 
   const phTxt = Math.abs(phase) < 1
     ? '0\u00b0 (resonance)'
-    : (phase > 0 ? '+' : '') + phase.toFixed(1) + '\u00b0 ' + (phase > 0 ? '(inductive)' : '(capacitive)');
+    : (phase > 0 ? '+' : '') + phase.toFixed(1) + '\u00b0 ' + (phase > 0 ? '(leading)' : '(lagging)');
 
-  const atRes  = Math.abs(XL - XC) < (XL + XC) * 0.02;
-  const domTxt = atRes   ? 'XL \u2248 XC \u2014 resonance!'
-               : XC > XL ? 'XC > XL \u2014 capacitive'
-                          : 'XL > XC \u2014 inductive';
+  const atRes = Math.abs(XL - XC) < (XL + XC) * 0.02;
+
+  let domTxt, domClass;
+  if (atRes) {
+    domTxt = 'Resonance \u2014 XL \u2248 XC'; domClass = 'ro-val good';
+  } else if (mode === 'lp') {
+    domTxt = XL > XC ? 'Inductive \u2014 attenuating' : 'Capacitive \u2014 passing';
+    domClass = 'ro-val';
+  } else if (mode === 'hp') {
+    domTxt = XC > XL ? 'Capacitive \u2014 attenuating' : 'Inductive \u2014 passing';
+    domClass = 'ro-val';
+  } else if (mode === 'bp') {
+    domTxt = XL > XC ? 'XL > XC \u2014 inductive' : 'XC > XL \u2014 capacitive';
+    domClass = 'ro-val';
+  } else {
+    domTxt = 'Band-stop \u2014 tank in series'; domClass = 'ro-val';
+  }
+
+  const bwTxt = (mode === 'lp' || mode === 'hp') ? '\u2248\u202f' + fmtF(f0) : fmtF(BW);
 
   document.getElementById('rv-f0').textContent = fmtF(f0);
   document.getElementById('rv-Z').textContent  = fmtZ(Zval);
   document.getElementById('rv-XL').textContent = fmtZ(XL);
   document.getElementById('rv-XC').textContent = fmtZ(XC);
   document.getElementById('rv-Q').textContent  = Q.toFixed(1);
-  document.getElementById('rv-BW').textContent = fmtF(BW);
+  document.getElementById('rv-BW').textContent = bwTxt;
   document.getElementById('rv-ph').textContent = phTxt;
   const domEl = document.getElementById('rv-dom');
   domEl.textContent = domTxt;
-  domEl.className   = 'ro-val' + (atRes ? ' good' : '');
+  domEl.className   = domClass;
 }
 
-// ── Circuit diagram ─────────────────────────────────────────────────────────────
-function drawCircuit(mode, dominant) {
-  const lc = dominant === 'L' ? 1 : 0.35;
-  const cc = dominant === 'C' ? 1 : 0.35;
-  const rc = 1;
-  const Lc = '#a78bfa', Cc = '#06b6d4', Rc = '#f59e0b', wc = '#334155';
+// ── Explanatory text panel ─────────────────────────────────────────────────────
+function updateExplain(f, L, C, R, mode, XL, XC) {
+  const H_val = getH(f, L, C, R, mode);
+  const db    = 20 * Math.log10(Math.max(H_val, 1e-12));
+  const atRes = Math.abs(XL - XC) < (XL + XC) * 0.02;
 
-  function lCoil(x, y) {
-    // 3 bumps, 8px each, SVG path
-    return `M${x},${y} q4,-7 8,0 q4,-7 8,0 q4,-7 8,0`;
+  // Colour-coded spans
+  const Ls = v => `<span style="color:#a78bfa;font-family:'IBM Plex Mono',monospace">${v}</span>`;
+  const Cs = v => `<span style="color:#06b6d4;font-family:'IBM Plex Mono',monospace">${v}</span>`;
+  const b  = v => `<strong>${v}</strong>`;
+
+  const XLtag = Ls('X<sub>L</sub>\u202f=\u202f' + fmtZ(XL));
+  const XCtag = Cs('X<sub>C</sub>\u202f=\u202f' + fmtZ(XC));
+
+  // High/low relative to R (3× threshold)
+  const XLhi = XL > R * 3, XLlo = XL < R / 3;
+  const XChi = XC > R * 3, XClo = XC < R / 3;
+  const XLw = XLhi ? b('HIGH') : XLlo ? b('LOW') : 'moderate';
+  const XCw = XChi ? b('HIGH') : XClo ? b('LOW') : 'moderate';
+
+  const dbStr = db.toFixed(1) + ' dB';
+  const resultStr = db > -0.5  ? b('passes with negligible loss')
+                  : db > -6    ? `passes (${b(dbStr)})`
+                  : db > -20   ? `is attenuated (${b(dbStr)})`
+                               : b('is heavily attenuated') + ' (' + dbStr + ')';
+
+  let html;
+  if (mode === 'lp') {
+    if (atRes) {
+      html = `At ${b(fmtF(f))}, the circuit is near resonance: ${XLtag} and ${XCtag} are nearly equal, creating a resonant ${b('peak')} &mdash; the output can exceed the input. Result:\u202f${b(dbStr)}.`;
+    } else if (XL <= XC) {
+      html = `At ${b(fmtF(f))}, the series inductor has ${XLtag} &mdash; ${XLw}, so it ${b('passes')} the signal easily. The shunt capacitor has ${XCtag} &mdash; ${XCw}, so ${b('very little signal is shunted')} to ground. Result: the signal ${resultStr}.`;
+    } else {
+      html = `At ${b(fmtF(f))}, the series inductor has ${XLtag} &mdash; ${XLw}, so it ${b('opposes and blocks')} the signal. The shunt capacitor has ${XCtag} &mdash; ${XCw}, ${b('shorting the remaining signal')} to ground. Result: the signal ${resultStr}.`;
+    }
+  } else if (mode === 'hp') {
+    if (atRes) {
+      html = `At ${b(fmtF(f))}, near resonance: the series capacitor ${XCtag} and shunt inductor ${XLtag} balance, creating a resonant ${b('peak')}. Result:\u202f${b(dbStr)}.`;
+    } else if (XC <= XL) {
+      html = `At ${b(fmtF(f))}, the series capacitor has ${XCtag} &mdash; ${XCw}, so it ${b('passes')} the signal easily. The shunt inductor has ${XLtag} &mdash; ${XLw}, so ${b('very little signal is shunted')} to ground. Result: the signal ${resultStr}.`;
+    } else {
+      html = `At ${b(fmtF(f))}, the series capacitor has ${XCtag} &mdash; ${XCw}, so it ${b('blocks')} the signal. The shunt inductor has ${XLtag} &mdash; ${XLw}, ${b('shorting any leaked signal')} to ground. Result: the signal ${resultStr}.`;
+    }
+  } else if (mode === 'bp') {
+    if (atRes) {
+      html = `At ${b(fmtF(f))}, the circuit is at ${b('resonance')}: ${XLtag} and ${XCtag} are equal and opposite &mdash; they ${b('cancel completely')}. Only R remains, so the signal passes at full amplitude. Result:\u202f${b(dbStr)}.`;
+    } else if (XL > XC) {
+      html = `At ${b(fmtF(f))}, the inductor dominates: ${XLtag} ${b('>')} ${XCtag}. Net reactance ${Ls(fmtZ(XL-XC))} adds to R in series, ${b('opposing current')} and reducing the output. Result:\u202f${b(dbStr)}.`;
+    } else {
+      html = `At ${b(fmtF(f))}, the capacitor dominates: ${XCtag} ${b('>')} ${XLtag}. Net reactance ${Cs(fmtZ(XC-XL))} adds to R in series, ${b('opposing current')} and reducing the output. Result:\u202f${b(dbStr)}.`;
+    }
+  } else { // bs
+    if (atRes) {
+      html = `At ${b(fmtF(f))}, the parallel LC tank hits ${b('resonance')}: ${XLtag} and ${XCtag} create ${b('near-infinite tank impedance')}, completely blocking the signal path. Result:\u202f${b('deep notch')} at ${dbStr}.`;
+    } else if (XL < XC) {
+      html = `At ${b(fmtF(f))}, below resonance: ${XLtag} is ${XLw} &mdash; the inductor ${b('nearly short-circuits')} the parallel tank, keeping its impedance low. The signal bypasses the tank through R. Result:\u202f${b(dbStr)}.`;
+    } else {
+      html = `At ${b(fmtF(f))}, above resonance: ${XCtag} is ${XCw} &mdash; the capacitor ${b('nearly short-circuits')} the parallel tank, keeping its impedance low. The signal bypasses the tank through R. Result:\u202f${b(dbStr)}.`;
+    }
   }
 
-  if (mode === 'series') {
-    document.getElementById('circuit').innerHTML = `
-      <text x="0" y="10" fill="rgba(100,116,139,0.6)" font-size="8" font-family="IBM Plex Mono">Series RLC</text>
-      <line x1="0"   y1="38" x2="16"  y2="38" stroke="${wc}" stroke-width="1.5"/>
-      <path d="${lCoil(16,38)}" stroke="${Lc}" stroke-width="2" fill="none" opacity="${lc}"/>
-      <line x1="40"  y1="38" x2="52"  y2="38" stroke="${wc}" stroke-width="1.5"/>
-      <line x1="52"  y1="30" x2="52"  y2="46" stroke="${Cc}" stroke-width="2" opacity="${cc}"/>
-      <line x1="57"  y1="30" x2="57"  y2="46" stroke="${Cc}" stroke-width="2" opacity="${cc}"/>
-      <line x1="57"  y1="38" x2="68"  y2="38" stroke="${wc}" stroke-width="1.5"/>
-      <rect x="68"   y="32"  width="20" height="12" stroke="${Rc}" stroke-width="1.5" fill="none" rx="1"/>
-      <line x1="88"  y1="38" x2="110" y2="38" stroke="${wc}" stroke-width="1.5"/>
-      <line x1="110" y1="32" x2="110" y2="44" stroke="${wc}" stroke-width="1.5"/>
-      <text x="28"  y="55" text-anchor="middle" fill="${Lc}" font-size="8" font-family="IBM Plex Mono" opacity="${lc}">L</text>
-      <text x="54"  y="55" text-anchor="middle" fill="${Cc}" font-size="8" font-family="IBM Plex Mono" opacity="${cc}">C</text>
-      <text x="78"  y="55" text-anchor="middle" fill="${Rc}" font-size="8" font-family="IBM Plex Mono" opacity="${rc}">R</text>
-    `;
-  } else {
-    document.getElementById('circuit').innerHTML = `
-      <text x="0" y="10" fill="rgba(100,116,139,0.6)" font-size="8" font-family="IBM Plex Mono">Parallel LC</text>
-      <line x1="0"  y1="36" x2="22"  y2="36" stroke="${wc}" stroke-width="1.5"/>
-      <line x1="22" y1="36" x2="22"  y2="22" stroke="${wc}" stroke-width="1.2"/>
-      <line x1="22" y1="36" x2="22"  y2="50" stroke="${wc}" stroke-width="1.2"/>
-      <path d="${lCoil(22,22)}" stroke="${Lc}" stroke-width="2" fill="none" opacity="${lc}"/>
-      <line x1="46"  y1="24" x2="46" y2="32" stroke="${Cc}" stroke-width="2" opacity="${cc}"/>
-      <line x1="51"  y1="24" x2="51" y2="32" stroke="${Cc}" stroke-width="2" opacity="${cc}"/>
-      <line x1="22"  y1="28" x2="46" y2="28" stroke="${wc}" stroke-width="1.2" opacity="${cc}"/>
-      <line x1="51"  y1="28" x2="66" y2="28" stroke="${wc}" stroke-width="1.2" opacity="${cc}"/>
-      <line x1="46"  y1="22" x2="66" y2="22" stroke="${wc}" stroke-width="1.2"/>
-      <line x1="66"  y1="22" x2="66" y2="50" stroke="${wc}" stroke-width="1.2"/>
-      <line x1="22"  y1="50" x2="66" y2="50" stroke="${wc}" stroke-width="1.2"/>
-      <line x1="44"  y1="50" x2="44" y2="60" stroke="${wc}" stroke-width="1.2"/>
-      <line x1="40"  y1="60" x2="48" y2="60" stroke="${wc}" stroke-width="1.5"/>
-      <line x1="66"  y1="36" x2="90" y2="36" stroke="${wc}" stroke-width="1.5"/>
-      <rect x="90"   y="30"  width="18" height="12" stroke="${Rc}" stroke-width="1.5" fill="none" rx="1"/>
-      <line x1="108" y1="36" x2="125" y2="36" stroke="${wc}" stroke-width="1.5"/>
-      <text x="34"   y="14" text-anchor="middle" fill="${Lc}" font-size="8" font-family="IBM Plex Mono" opacity="${lc}">L</text>
-      <text x="48"   y="14" text-anchor="middle" fill="${Cc}" font-size="8" font-family="IBM Plex Mono" opacity="${cc}">C</text>
-      <text x="99"   y="27" text-anchor="middle" fill="${Rc}" font-size="8" font-family="IBM Plex Mono">R</text>
-    `;
+  document.getElementById('explain-panel').innerHTML = html;
+}
+
+// ── Circuit diagram (SVG viewBox 0 0 280 95) ──────────────────────────────────
+function drawCircuit(mode, XL, XC) {
+  const dominant = XL > XC * 1.05 ? 'L' : XC > XL * 1.05 ? 'C' : null;
+  const lop = dominant === 'L' ? 1 : 0.38;  // L opacity
+  const cop = dominant === 'C' ? 1 : 0.38;  // C opacity
+  const Lc = '#a78bfa', Cc = '#06b6d4', Rc = '#f59e0b', wc = '#3d5068';
+  const fn = 'IBM Plex Mono', fs = 11;
+  const tf = 'rgba(100,116,139,0.65)';  // title fill
+
+  // Horizontal coil: 3 bumps × 14px = 42px wide, 11px tall
+  const hCoil = (x, y) =>
+    `<path d="M${x},${y} q7,-11 14,0 q7,-11 14,0 q7,-11 14,0"` +
+    ` stroke="${Lc}" stroke-width="2.5" fill="none" opacity="${lop}"/>`;
+
+  // Vertical capacitor plates (series in horizontal path) — two vertical lines
+  const sCap = (x, y, h=14) =>
+    `<line x1="${x}" y1="${y-h}" x2="${x}" y2="${y+h}" stroke="${Cc}" stroke-width="2.5" opacity="${cop}"/>` +
+    `<line x1="${x+9}" y1="${y-h}" x2="${x+9}" y2="${y+h}" stroke="${Cc}" stroke-width="2.5" opacity="${cop}"/>`;
+
+  // Horizontal capacitor plates (shunt to ground) — two horizontal lines
+  const pCap = (x, y, w=14) =>
+    `<line x1="${x-w}" y1="${y}" x2="${x+w}" y2="${y}" stroke="${Cc}" stroke-width="2.5" opacity="${cop}"/>` +
+    `<line x1="${x-w}" y1="${y+9}" x2="${x+w}" y2="${y+9}" stroke="${Cc}" stroke-width="2.5" opacity="${cop}"/>`;
+
+  // GND symbol
+  const gnd = (x, y) =>
+    `<line x1="${x-10}" y1="${y}"   x2="${x+10}" y2="${y}"   stroke="${wc}" stroke-width="1.5"/>` +
+    `<line x1="${x-6}"  y1="${y+5}" x2="${x+6}"  y2="${y+5}" stroke="${wc}" stroke-width="1.5"/>` +
+    `<line x1="${x-3}"  y1="${y+10}" x2="${x+3}" y2="${y+10}" stroke="${wc}" stroke-width="1.5"/>`;
+
+  const lbl = (x, y, txt, fill, anchor='middle', op=1) =>
+    `<text x="${x}" y="${y}" text-anchor="${anchor}" fill="${fill}" font-size="${fs}"` +
+    ` font-family="${fn}" opacity="${op}">${txt}</text>`;
+
+  const wire = (x1, y1, x2, y2, w=1.5) =>
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${wc}" stroke-width="${w}"/>`;
+
+  const rect = (x, y, w, h) =>
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" stroke="${Rc}" stroke-width="2" fill="none" rx="2"/>`;
+
+  const SY = 44;  // main signal line y
+
+  let svg = '';
+
+  if (mode === 'lp') {
+    // L series (x=22→64), C shunt from x=120 to GND
+    svg =
+      lbl(0, 11, 'Low-pass \u2014 L in series, C to ground', tf, 'start') +
+      wire(0, SY, 22, SY) +
+      hCoil(22, SY) +
+      wire(64, SY, 120, SY) +
+      wire(120, SY, 265, SY) +
+      wire(120, SY, 120, 58) +
+      pCap(120, 58) +
+      wire(120, 67, 120, 80) +
+      gnd(120, 80) +
+      lbl(43, SY-16, 'L', Lc, 'middle', lop) +
+      lbl(136, 62, 'C', Cc, 'start', cop) +
+      lbl(2, SY-4, 'IN', tf, 'start') +
+      lbl(269, SY-4, 'OUT', tf, 'start');
+
+  } else if (mode === 'hp') {
+    // C series (x=22→31 gap), L shunt from x=110 with horizontal coil below
+    svg =
+      lbl(0, 11, 'High-pass \u2014 C in series, L to ground', tf, 'start') +
+      wire(0, SY, 22, SY) +
+      sCap(22, SY) +
+      wire(31, SY, 110, SY) +
+      wire(110, SY, 265, SY) +
+      wire(110, SY, 110, SY+14) +
+      wire(110, SY+14, 152, SY+14) +
+      hCoil(110, SY+14) +
+      wire(152, SY+14, 152, 78) +
+      gnd(152, 78) +
+      lbl(26, SY-14, 'C', Cc, 'middle', cop) +
+      lbl(131, SY+10, 'L', Lc, 'middle', lop) +
+      lbl(2, SY-4, 'IN', tf, 'start') +
+      lbl(269, SY-4, 'OUT', tf, 'start');
+
+  } else if (mode === 'bp') {
+    // L (x=18→60) → C (x=72→81) → R (x=88→116), output after R
+    svg =
+      lbl(0, 11, 'Bandpass \u2014 series L, C, R (out across R)', tf, 'start') +
+      wire(0, SY, 18, SY) +
+      hCoil(18, SY) +
+      wire(60, SY, 72, SY) +
+      sCap(72, SY) +
+      wire(81, SY, 95, SY) +
+      rect(95, SY-11, 28, 22) +
+      wire(123, SY, 155, SY) +
+      lbl(39, SY-17, 'L', Lc, 'middle', lop) +
+      lbl(72, SY-17, 'C', Cc, 'middle', cop) +
+      lbl(109, SY-15, 'R', Rc, 'middle') +
+      lbl(0, SY-4, 'IN', tf, 'start') +
+      lbl(159, SY-4, 'OUT', tf, 'start');
+
+  } else { // bs — parallel LC tank in series with R
+    // Tank: node A at x=30, node B at x=105; upper arm L, lower arm C; then R; then OUT
+    const A = 30, B = 105, UY = 28, LY = 60;  // upper y, lower y
+    svg =
+      lbl(0, 11, 'Band-stop \u2014 parallel LC tank + R', tf, 'start') +
+      wire(0, SY, A, SY) +
+      wire(A, UY, A, LY) +             // left vertical
+      wire(B, UY, B, LY) +             // right vertical
+      wire(A, UY, A+2, UY) +
+      hCoil(A+2, UY) +                 // L upper arm (A+2 → A+44)
+      wire(A+44, UY, B, UY) +
+      wire(A, LY, 55, LY) +
+      sCap(55, LY, 11) +               // C lower arm
+      wire(64, LY, B, LY) +
+      wire(B+(B-A)/2-10, LY, B+(B-A)/2-10, 82) +  // GND from midpoint
+      gnd(55, 82) +
+      wire(B, SY, 115, SY) +
+      rect(115, SY-11, 28, 22) +       // R
+      wire(143, SY, 175, SY) +
+      lbl(A+23, UY-14, 'L', Lc, 'middle', lop) +
+      lbl(59, LY-14, 'C', Cc, 'middle', cop) +
+      lbl(129, SY-15, 'R', Rc, 'middle') +
+      lbl(0, SY-4, 'IN', tf, 'start') +
+      lbl(179, SY-4, 'OUT', tf, 'start');
   }
+
+  document.getElementById('circuit').innerHTML = svg;
 }
 
 // ── Oscilloscope ───────────────────────────────────────────────────────────────
@@ -642,210 +837,113 @@ function drawScope() {
   if (!SW) return;
   const { L, C, R, f, mode } = STATE;
   const H_val = getH(f, L, C, R, mode);
-  const { XL, XC } = reactances(f, L, C);
-
-  // Output phase relative to input
-  let phi;
-  if (mode === 'series') {
-    phi = -Math.atan2(XL - XC, R);
-  } else {
-    const dX = XL - XC;
-    phi = Math.abs(dX) < 1e-15 ? 0 : Math.atan2(XL * XC, R * dX);
-  }
+  const phi   = getPhaseRad(f, L, C, R, mode);
 
   const SP = { l: 52, r: 16, t: 16, b: 24 };
   const pW = SW - SP.l - SP.r;
   const pH = SH - SP.t - SP.b;
   const midY = SP.t + pH / 2;
-  const amp  = pH * 0.42; // peak amplitude in px
+  const amp  = pH * 0.42;
 
   sctx.clearRect(0, 0, SW, SH);
+  sctx.fillStyle = '#040e07'; sctx.fillRect(0, 0, SW, SH);
+  sctx.fillStyle = '#060f08'; sctx.fillRect(SP.l, SP.t, pW, pH);
 
-  // ── Background ────────────────────────────────────────────────────────────────
-  sctx.fillStyle = '#040e07';
-  sctx.fillRect(0, 0, SW, SH);
-  sctx.fillStyle = '#060f08';
-  sctx.fillRect(SP.l, SP.t, pW, pH);
+  const vg = sctx.createRadialGradient(SP.l+pW*0.5, midY, 0, SP.l+pW*0.5, midY, Math.max(pW,pH)*0.65);
+  vg.addColorStop(0, 'rgba(0,255,80,0.04)'); vg.addColorStop(1, 'rgba(0,0,0,0.30)');
+  sctx.fillStyle = vg; sctx.fillRect(SP.l, SP.t, pW, pH);
 
-  // Radial phosphor glow
-  const vg = sctx.createRadialGradient(
-    SP.l + pW * 0.5, midY, 0,
-    SP.l + pW * 0.5, midY, Math.max(pW, pH) * 0.65
-  );
-  vg.addColorStop(0, 'rgba(0,255,80,0.04)');
-  vg.addColorStop(1, 'rgba(0,0,0,0.30)');
-  sctx.fillStyle = vg;
-  sctx.fillRect(SP.l, SP.t, pW, pH);
-
-  // ── Graticule ─────────────────────────────────────────────────────────────────
   const HC = 10, VC = 8;
-  sctx.lineWidth = 0.6;
-  sctx.setLineDash([]);
-
-  // Major grid
+  sctx.lineWidth = 0.6; sctx.setLineDash([]);
   sctx.strokeStyle = 'rgba(0,180,60,0.17)';
-  for (let i = 0; i <= HC; i++) {
-    const x = SP.l + i * pW / HC;
-    sctx.beginPath(); sctx.moveTo(x, SP.t); sctx.lineTo(x, SP.t + pH); sctx.stroke();
-  }
-  for (let j = 0; j <= VC; j++) {
-    const y = SP.t + j * pH / VC;
-    sctx.beginPath(); sctx.moveTo(SP.l, y); sctx.lineTo(SP.l + pW, y); sctx.stroke();
-  }
+  for (let i = 0; i <= HC; i++) { const x = SP.l+i*pW/HC; sctx.beginPath(); sctx.moveTo(x,SP.t); sctx.lineTo(x,SP.t+pH); sctx.stroke(); }
+  for (let j = 0; j <= VC; j++) { const y = SP.t+j*pH/VC; sctx.beginPath(); sctx.moveTo(SP.l,y); sctx.lineTo(SP.l+pW,y); sctx.stroke(); }
 
-  // Minor tick marks on centre axes only (5 subdivisions per div)
-  sctx.strokeStyle = 'rgba(0,150,50,0.22)';
-  sctx.lineWidth = 0.5;
-  const TL = 4; // tick half-length px
-  for (let i = 0; i <= HC * 5; i++) {
-    if (i % 5 === 0) continue;
-    const x = SP.l + i * pW / (HC * 5);
-    sctx.beginPath(); sctx.moveTo(x, midY - TL); sctx.lineTo(x, midY + TL); sctx.stroke();
-  }
-  for (let j = 0; j <= VC * 5; j++) {
-    if (j % 5 === 0) continue;
-    const y = SP.t + j * pH / (VC * 5);
-    const cx = SP.l + pW / 2;
-    sctx.beginPath(); sctx.moveTo(cx - TL, y); sctx.lineTo(cx + TL, y); sctx.stroke();
-  }
+  sctx.strokeStyle = 'rgba(0,150,50,0.22)'; sctx.lineWidth = 0.5;
+  const TL = 4;
+  for (let i = 0; i <= HC*5; i++) { if (i%5===0) continue; const x=SP.l+i*pW/(HC*5); sctx.beginPath(); sctx.moveTo(x,midY-TL); sctx.lineTo(x,midY+TL); sctx.stroke(); }
+  for (let j = 0; j <= VC*5; j++) { if (j%5===0) continue; const y=SP.t+j*pH/(VC*5); const cx=SP.l+pW/2; sctx.beginPath(); sctx.moveTo(cx-TL,y); sctx.lineTo(cx+TL,y); sctx.stroke(); }
 
-  // Centre axes slightly brighter
-  sctx.strokeStyle = 'rgba(0,200,70,0.28)';
-  sctx.lineWidth = 0.8;
-  sctx.beginPath(); sctx.moveTo(SP.l, midY); sctx.lineTo(SP.l + pW, midY); sctx.stroke();
-  sctx.beginPath(); sctx.moveTo(SP.l + pW / 2, SP.t); sctx.lineTo(SP.l + pW / 2, SP.t + pH); sctx.stroke();
+  sctx.strokeStyle = 'rgba(0,200,70,0.28)'; sctx.lineWidth = 0.8;
+  sctx.beginPath(); sctx.moveTo(SP.l,midY); sctx.lineTo(SP.l+pW,midY); sctx.stroke();
+  sctx.beginPath(); sctx.moveTo(SP.l+pW/2,SP.t); sctx.lineTo(SP.l+pW/2,SP.t+pH); sctx.stroke();
 
-  // ── Scanline overlay ──────────────────────────────────────────────────────────
   sctx.fillStyle = 'rgba(0,0,0,0.055)';
-  for (let y = SP.t; y < SP.t + pH; y += 2) {
-    sctx.fillRect(SP.l, y, pW, 1);
-  }
+  for (let y = SP.t; y < SP.t+pH; y += 2) sctx.fillRect(SP.l, y, pW, 1);
 
-  // ── Trace helper ─────────────────────────────────────────────────────────────
   const CYCLES = 3;
   const steps = Math.ceil(pW);
-
   function drawTrace(bright, glow, phase_rad, amplitude_px) {
     function path() {
       sctx.beginPath();
       for (let px = 0; px <= steps; px++) {
-        const t = px / pW * CYCLES;
-        const yp = midY - amplitude_px * Math.sin(2 * Math.PI * t + phase_rad);
-        if (px === 0) sctx.moveTo(SP.l + px, yp);
-        else          sctx.lineTo(SP.l + px, yp);
+        const t  = px / pW * CYCLES;
+        const yp = midY - amplitude_px * Math.sin(2*Math.PI*t + phase_rad);
+        if (px === 0) sctx.moveTo(SP.l+px, yp); else sctx.lineTo(SP.l+px, yp);
       }
     }
-    // Wide phosphor glow
-    sctx.globalAlpha = 0.22;
-    sctx.shadowBlur = 14;
-    sctx.shadowColor = glow;
-    sctx.strokeStyle = glow;
-    sctx.lineWidth = 5;
-    path(); sctx.stroke();
-
-    // Mid glow
-    sctx.globalAlpha = 0.45;
-    sctx.shadowBlur = 7;
-    sctx.strokeStyle = glow;
-    sctx.lineWidth = 2.5;
-    path(); sctx.stroke();
-
-    // Bright core
-    sctx.globalAlpha = 1;
-    sctx.shadowBlur = 4;
-    sctx.shadowColor = bright;
-    sctx.strokeStyle = bright;
-    sctx.lineWidth = 1.3;
-    path(); sctx.stroke();
-
-    sctx.shadowBlur = 0;
-    sctx.globalAlpha = 1;
+    sctx.globalAlpha=0.22; sctx.shadowBlur=14; sctx.shadowColor=glow; sctx.strokeStyle=glow; sctx.lineWidth=5; path(); sctx.stroke();
+    sctx.globalAlpha=0.45; sctx.shadowBlur=7;  sctx.strokeStyle=glow; sctx.lineWidth=2.5; path(); sctx.stroke();
+    sctx.globalAlpha=1;    sctx.shadowBlur=4;  sctx.shadowColor=bright; sctx.strokeStyle=bright; sctx.lineWidth=1.3; path(); sctx.stroke();
+    sctx.shadowBlur=0; sctx.globalAlpha=1;
   }
 
-  // Input — green, full amp, zero phase
-  drawTrace('#4dff6e', '#00aa3a', 0, amp);
-  // Output — amber, attenuated, phase shifted
+  drawTrace('#4dff6e', '#00aa3a', 0,   amp);
   drawTrace('#f59e0b', '#b36a00', phi, amp * H_val);
 
-  // ── Amplitude markers ─────────────────────────────────────────────────────────
-  // Output peak dashed horizontal
   if (H_val > 0.02) {
     const peakY = midY - amp * H_val;
-    sctx.setLineDash([2, 4]);
-    sctx.strokeStyle = 'rgba(245,158,11,0.28)';
-    sctx.lineWidth = 0.8;
-    sctx.beginPath(); sctx.moveTo(SP.l, peakY); sctx.lineTo(SP.l + pW, peakY); sctx.stroke();
+    sctx.setLineDash([2,4]); sctx.strokeStyle='rgba(245,158,11,0.28)'; sctx.lineWidth=0.8;
+    sctx.beginPath(); sctx.moveTo(SP.l,peakY); sctx.lineTo(SP.l+pW,peakY); sctx.stroke();
     sctx.setLineDash([]);
   }
 
-  // ── Y-axis labels ─────────────────────────────────────────────────────────────
-  sctx.fillStyle = 'rgba(0,200,70,0.55)';
-  sctx.font = '9px IBM Plex Mono,monospace';
-  sctx.textAlign = 'right';
-  sctx.fillText('+1', SP.l - 4, SP.t + pH * (0.5 - 0.42) + 3.5);
-  sctx.fillText('0',  SP.l - 4, midY + 3.5);
-  sctx.fillText('\u22121', SP.l - 4, SP.t + pH * (0.5 + 0.42) + 3.5);
+  sctx.fillStyle='rgba(0,200,70,0.55)'; sctx.font='9px IBM Plex Mono,monospace'; sctx.textAlign='right';
+  sctx.fillText('+1', SP.l-4, SP.t+pH*(0.5-0.42)+3.5);
+  sctx.fillText('0',  SP.l-4, midY+3.5);
+  sctx.fillText('\u22121', SP.l-4, SP.t+pH*(0.5+0.42)+3.5);
 
-  // ── Channel legends ───────────────────────────────────────────────────────────
-  sctx.textAlign = 'left';
-  // CH1
-  sctx.shadowBlur = 8; sctx.shadowColor = '#4dff6e';
-  sctx.fillStyle = '#4dff6e';
-  sctx.font = 'bold 8px IBM Plex Mono,monospace';
-  sctx.fillText('CH1', SP.l + 5, SP.t + 11);
-  sctx.shadowBlur = 0;
-  sctx.fillStyle = 'rgba(77,255,110,0.65)';
-  sctx.font = '8px IBM Plex Mono,monospace';
-  sctx.fillText('INPUT  1.00 Vpp', SP.l + 25, SP.t + 11);
+  sctx.textAlign='left';
+  sctx.shadowBlur=8; sctx.shadowColor='#4dff6e'; sctx.fillStyle='#4dff6e'; sctx.font='bold 8px IBM Plex Mono,monospace';
+  sctx.fillText('CH1', SP.l+5, SP.t+11); sctx.shadowBlur=0;
+  sctx.fillStyle='rgba(77,255,110,0.65)'; sctx.font='8px IBM Plex Mono,monospace';
+  sctx.fillText('INPUT  1.00 Vpp', SP.l+25, SP.t+11);
 
-  // CH2
-  sctx.shadowBlur = 8; sctx.shadowColor = '#f59e0b';
-  sctx.fillStyle = '#f59e0b';
-  sctx.font = 'bold 8px IBM Plex Mono,monospace';
-  sctx.fillText('CH2', SP.l + 5, SP.t + 21);
-  sctx.shadowBlur = 0;
-  sctx.fillStyle = 'rgba(245,158,11,0.65)';
-  sctx.font = '8px IBM Plex Mono,monospace';
-  const outVpp = (H_val * 2).toFixed(3);
-  sctx.fillText('OUTPUT ' + outVpp + ' Vpp', SP.l + 25, SP.t + 21);
+  sctx.shadowBlur=8; sctx.shadowColor='#f59e0b'; sctx.fillStyle='#f59e0b'; sctx.font='bold 8px IBM Plex Mono,monospace';
+  sctx.fillText('CH2', SP.l+5, SP.t+21); sctx.shadowBlur=0;
+  sctx.fillStyle='rgba(245,158,11,0.65)'; sctx.font='8px IBM Plex Mono,monospace';
+  sctx.fillText('OUTPUT ' + (H_val*2).toFixed(3) + ' Vpp', SP.l+25, SP.t+21);
 
-  // ── Top-right readouts ────────────────────────────────────────────────────────
-  const dbVal = 20 * Math.log10(Math.max(H_val, 1e-12));
+  const dbVal = 20*Math.log10(Math.max(H_val,1e-12));
   const phDeg = phi * 180 / Math.PI;
-  sctx.textAlign = 'right';
-  sctx.fillStyle = 'rgba(245,158,11,0.80)';
-  sctx.font = '8.5px IBM Plex Mono,monospace';
-  sctx.fillText('ATT\u202f' + dbVal.toFixed(1) + '\u202fdB', SW - SP.r - 3, SP.t + 11);
-  sctx.fillStyle = 'rgba(245,158,11,0.60)';
-  sctx.fillText('\u03c6\u202f' + (phDeg >= 0 ? '+' : '') + phDeg.toFixed(1) + '\u00b0', SW - SP.r - 3, SP.t + 21);
+  sctx.textAlign='right'; sctx.fillStyle='rgba(245,158,11,0.80)'; sctx.font='8.5px IBM Plex Mono,monospace';
+  sctx.fillText('ATT\u202f'+dbVal.toFixed(1)+'\u202fdB', SW-SP.r-3, SP.t+11);
+  sctx.fillStyle='rgba(245,158,11,0.60)';
+  sctx.fillText('\u03c6\u202f'+(phDeg>=0?'+':'')+phDeg.toFixed(1)+'\u00b0', SW-SP.r-3, SP.t+21);
 
-  // ── Bottom axis label ─────────────────────────────────────────────────────────
-  sctx.textAlign = 'center';
-  sctx.fillStyle = 'rgba(0,180,60,0.45)';
-  sctx.font = '8px IBM Plex Mono,monospace';
-  sctx.fillText(fmtF(f) + '\u202f\u00b7\u202f' + CYCLES + ' cycles', SP.l + pW / 2, SH - 6);
+  sctx.textAlign='center'; sctx.fillStyle='rgba(0,180,60,0.45)'; sctx.font='8px IBM Plex Mono,monospace';
+  sctx.fillText(fmtF(f)+'\u202f\u00b7\u202f'+CYCLES+' cycles', SP.l+pW/2, SH-6);
 
-  // ── Plot area border ──────────────────────────────────────────────────────────
-  sctx.strokeStyle = 'rgba(0,150,50,0.30)';
-  sctx.lineWidth = 1;
-  sctx.strokeRect(SP.l + 0.5, SP.t + 0.5, pW - 1, pH - 1);
+  sctx.strokeStyle='rgba(0,150,50,0.30)'; sctx.lineWidth=1;
+  sctx.strokeRect(SP.l+0.5, SP.t+0.5, pW-1, pH-1);
 }
 
 // ── Slider handlers ────────────────────────────────────────────────────────────
 function onS(p, v) {
   switch (p) {
-    case 'L': STATE.L = ls(v, L_MIN, L_MAX); document.getElementById('vL').textContent = fmtL(STATE.L); break;
-    case 'C': STATE.C = ls(v, C_MIN, C_MAX); document.getElementById('vC').textContent = fmtC(STATE.C); break;
-    case 'R': STATE.R = ls(v, R_MIN, R_MAX); document.getElementById('vR').textContent = fmtR(STATE.R); break;
-    case 'f': STATE.f = ls(v, F_MIN, F_MAX); document.getElementById('vf').textContent = fmtF(STATE.f); break;
+    case 'L': STATE.L = ls(v,L_MIN,L_MAX); document.getElementById('vL').textContent = fmtL(STATE.L); break;
+    case 'C': STATE.C = ls(v,C_MIN,C_MAX); document.getElementById('vC').textContent = fmtC(STATE.C); break;
+    case 'R': STATE.R = ls(v,R_MIN,R_MAX); document.getElementById('vR').textContent = fmtR(STATE.R); break;
+    case 'f': STATE.f = ls(v,F_MIN,F_MAX); document.getElementById('vf').textContent = fmtF(STATE.f); break;
   }
   scheduleDraw();
 }
 
 function setMode(m) {
   STATE.mode = m;
-  document.getElementById('btn-series').className   = 'mbtn' + (m === 'series'   ? ' series-on'   : '');
-  document.getElementById('btn-parallel').className = 'mbtn' + (m === 'parallel' ? ' parallel-on' : '');
+  ['lp','hp','bp','bs'].forEach(id => {
+    document.getElementById('btn-'+id).className = 'mbtn' + (m === id ? ' '+id+'-on' : '');
+  });
   scheduleDraw();
 }
 
@@ -862,8 +960,7 @@ let _drag = false;
 function evtF(e) {
   const rect = canvas.getBoundingClientRect();
   const cx = e.touches ? e.touches[0].clientX : e.clientX;
-  const x = cx - rect.left;
-  return Math.max(F_MIN, Math.min(F_MAX, xToF(x)));
+  return Math.max(F_MIN, Math.min(F_MAX, xToF(cx - rect.left)));
 }
 
 function setF(f) {
@@ -873,34 +970,32 @@ function setF(f) {
   scheduleDraw();
 }
 
-canvas.addEventListener('mousedown', e => { if (e.button) return; _drag = true; setF(evtF(e)); });
-canvas.addEventListener('mousemove', e => { if (_drag) setF(evtF(e)); });
-canvas.addEventListener('mouseup',   () => { _drag = false; });
-canvas.addEventListener('mouseleave',() => { _drag = false; });
-canvas.addEventListener('touchstart', e => { e.preventDefault(); setF(evtF(e)); }, { passive: false });
-canvas.addEventListener('touchmove',  e => { e.preventDefault(); setF(evtF(e)); }, { passive: false });
+canvas.addEventListener('mousedown',  e => { if (e.button) return; _drag=true; setF(evtF(e)); });
+canvas.addEventListener('mousemove',  e => { if (_drag) setF(evtF(e)); });
+canvas.addEventListener('mouseup',    () => { _drag=false; });
+canvas.addEventListener('mouseleave', () => { _drag=false; });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); setF(evtF(e)); }, {passive:false});
+canvas.addEventListener('touchmove',  e => { e.preventDefault(); setF(evtF(e)); }, {passive:false});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-// Sync sliders to STATE (handles URL param overrides)
 ['L','C','R','f'].forEach(p => {
-  const ranges = { L: [L_MIN, L_MAX], C: [C_MIN, C_MAX], R: [R_MIN, R_MAX], f: [F_MIN, F_MAX] };
-  const fmts   = { L: fmtL, C: fmtC, R: fmtR, f: fmtF };
-  const ids    = { L: 'sL', C: 'sC', R: 'sR', f: 'sf' };
-  const vids   = { L: 'vL', C: 'vC', R: 'vR', f: 'vf' };
-  const val    = STATE[p];
-  const [mn, mx] = ranges[p];
-  document.getElementById(ids[p]).value = lsi(val, mn, mx).toString();
-  document.getElementById(vids[p]).textContent = fmts[p](val);
+  const ranges = {L:[L_MIN,L_MAX], C:[C_MIN,C_MAX], R:[R_MIN,R_MAX], f:[F_MIN,F_MAX]};
+  const fmts   = {L:fmtL, C:fmtC, R:fmtR, f:fmtF};
+  const ids    = {L:'sL', C:'sC', R:'sR', f:'sf'};
+  const vids   = {L:'vL', C:'vC', R:'vR', f:'vf'};
+  const [mn,mx] = ranges[p];
+  document.getElementById(ids[p]).value = lsi(STATE[p], mn, mx).toString();
+  document.getElementById(vids[p]).textContent = fmts[p](STATE[p]);
 });
 
-if (STATE.mode === 'parallel') setMode('parallel');
+setMode(STATE.mode);
 
 let _resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(_resizeTimer);
   _resizeTimer = setTimeout(() => {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(1,0,0,1,0,0);
+    sctx.setTransform(1,0,0,1,0,0);
     resize();
   }, 80);
 });
