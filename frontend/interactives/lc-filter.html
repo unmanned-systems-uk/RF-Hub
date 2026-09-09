@@ -158,6 +158,12 @@
 
   <canvas id="chartCanvas"></canvas>
 
+  <!-- Oscilloscope -->
+  <div style="margin-top:0.7rem;border-top:1px solid #0c1f10;padding-top:0.55rem;">
+    <span style="font:8px/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#1e5c2e;">&#9632; Oscilloscope &mdash; Time Domain</span>
+    <canvas id="scopeCanvas" style="margin-top:0.3rem;background:#040e07;border-radius:3px;"></canvas>
+  </div>
+
   <!-- Circuit diagram overlaid top-right -->
   <div id="circuit-wrap">
     <svg id="circuit" width="140" height="72" overflow="visible"></svg>
@@ -354,6 +360,10 @@ const canvas = document.getElementById('chartCanvas');
 const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
 
+const scopeCanvas = document.getElementById('scopeCanvas');
+const sctx = scopeCanvas.getContext('2d');
+let SW = 0, SH = 0;
+
 function resize() {
   const pr = window.devicePixelRatio || 1;
   const cssW = canvas.parentElement.clientWidth;
@@ -364,7 +374,21 @@ function resize() {
   canvas.style.height = cssH + 'px';
   ctx.setTransform(pr, 0, 0, pr, 0, 0);
   W = cssW; H = cssH;
+  resizeScope();
   draw();
+}
+
+function resizeScope() {
+  const pr = window.devicePixelRatio || 1;
+  const cssW = scopeCanvas.parentElement.clientWidth;
+  if (!cssW) { requestAnimationFrame(resizeScope); return; }
+  const cssH = Math.round(Math.max(150, cssW * 0.26));
+  scopeCanvas.width  = Math.round(cssW * pr);
+  scopeCanvas.height = Math.round(cssH * pr);
+  scopeCanvas.style.height = cssH + 'px';
+  sctx.setTransform(pr, 0, 0, pr, 0, 0);
+  SW = cssW; SH = cssH;
+  drawScope();
 }
 
 // ── Scales ─────────────────────────────────────────────────────────────────────
@@ -530,6 +554,7 @@ function draw() {
   // ── Readout panel + circuit SVG ──────────────────────────────────────────────
   updateReadout(f0, Q, BW, f, L, C, R, mode, XLc, XCc);
   drawCircuit(mode, f < f0 * 0.98 ? 'C' : f > f0 * 1.02 ? 'L' : null);
+  drawScope();
 }
 
 // ── Readout panel ──────────────────────────────────────────────────────────────
@@ -612,6 +637,200 @@ function drawCircuit(mode, dominant) {
   }
 }
 
+// ── Oscilloscope ───────────────────────────────────────────────────────────────
+function drawScope() {
+  if (!SW) return;
+  const { L, C, R, f, mode } = STATE;
+  const H_val = getH(f, L, C, R, mode);
+  const { XL, XC } = reactances(f, L, C);
+
+  // Output phase relative to input
+  let phi;
+  if (mode === 'series') {
+    phi = -Math.atan2(XL - XC, R);
+  } else {
+    const dX = XL - XC;
+    phi = Math.abs(dX) < 1e-15 ? 0 : Math.atan2(XL * XC, R * dX);
+  }
+
+  const SP = { l: 52, r: 16, t: 16, b: 24 };
+  const pW = SW - SP.l - SP.r;
+  const pH = SH - SP.t - SP.b;
+  const midY = SP.t + pH / 2;
+  const amp  = pH * 0.42; // peak amplitude in px
+
+  sctx.clearRect(0, 0, SW, SH);
+
+  // ── Background ────────────────────────────────────────────────────────────────
+  sctx.fillStyle = '#040e07';
+  sctx.fillRect(0, 0, SW, SH);
+  sctx.fillStyle = '#060f08';
+  sctx.fillRect(SP.l, SP.t, pW, pH);
+
+  // Radial phosphor glow
+  const vg = sctx.createRadialGradient(
+    SP.l + pW * 0.5, midY, 0,
+    SP.l + pW * 0.5, midY, Math.max(pW, pH) * 0.65
+  );
+  vg.addColorStop(0, 'rgba(0,255,80,0.04)');
+  vg.addColorStop(1, 'rgba(0,0,0,0.30)');
+  sctx.fillStyle = vg;
+  sctx.fillRect(SP.l, SP.t, pW, pH);
+
+  // ── Graticule ─────────────────────────────────────────────────────────────────
+  const HC = 10, VC = 8;
+  sctx.lineWidth = 0.6;
+  sctx.setLineDash([]);
+
+  // Major grid
+  sctx.strokeStyle = 'rgba(0,180,60,0.17)';
+  for (let i = 0; i <= HC; i++) {
+    const x = SP.l + i * pW / HC;
+    sctx.beginPath(); sctx.moveTo(x, SP.t); sctx.lineTo(x, SP.t + pH); sctx.stroke();
+  }
+  for (let j = 0; j <= VC; j++) {
+    const y = SP.t + j * pH / VC;
+    sctx.beginPath(); sctx.moveTo(SP.l, y); sctx.lineTo(SP.l + pW, y); sctx.stroke();
+  }
+
+  // Minor tick marks on centre axes only (5 subdivisions per div)
+  sctx.strokeStyle = 'rgba(0,150,50,0.22)';
+  sctx.lineWidth = 0.5;
+  const TL = 4; // tick half-length px
+  for (let i = 0; i <= HC * 5; i++) {
+    if (i % 5 === 0) continue;
+    const x = SP.l + i * pW / (HC * 5);
+    sctx.beginPath(); sctx.moveTo(x, midY - TL); sctx.lineTo(x, midY + TL); sctx.stroke();
+  }
+  for (let j = 0; j <= VC * 5; j++) {
+    if (j % 5 === 0) continue;
+    const y = SP.t + j * pH / (VC * 5);
+    const cx = SP.l + pW / 2;
+    sctx.beginPath(); sctx.moveTo(cx - TL, y); sctx.lineTo(cx + TL, y); sctx.stroke();
+  }
+
+  // Centre axes slightly brighter
+  sctx.strokeStyle = 'rgba(0,200,70,0.28)';
+  sctx.lineWidth = 0.8;
+  sctx.beginPath(); sctx.moveTo(SP.l, midY); sctx.lineTo(SP.l + pW, midY); sctx.stroke();
+  sctx.beginPath(); sctx.moveTo(SP.l + pW / 2, SP.t); sctx.lineTo(SP.l + pW / 2, SP.t + pH); sctx.stroke();
+
+  // ── Scanline overlay ──────────────────────────────────────────────────────────
+  sctx.fillStyle = 'rgba(0,0,0,0.055)';
+  for (let y = SP.t; y < SP.t + pH; y += 2) {
+    sctx.fillRect(SP.l, y, pW, 1);
+  }
+
+  // ── Trace helper ─────────────────────────────────────────────────────────────
+  const CYCLES = 3;
+  const steps = Math.ceil(pW);
+
+  function drawTrace(bright, glow, phase_rad, amplitude_px) {
+    function path() {
+      sctx.beginPath();
+      for (let px = 0; px <= steps; px++) {
+        const t = px / pW * CYCLES;
+        const yp = midY - amplitude_px * Math.sin(2 * Math.PI * t + phase_rad);
+        if (px === 0) sctx.moveTo(SP.l + px, yp);
+        else          sctx.lineTo(SP.l + px, yp);
+      }
+    }
+    // Wide phosphor glow
+    sctx.globalAlpha = 0.22;
+    sctx.shadowBlur = 14;
+    sctx.shadowColor = glow;
+    sctx.strokeStyle = glow;
+    sctx.lineWidth = 5;
+    path(); sctx.stroke();
+
+    // Mid glow
+    sctx.globalAlpha = 0.45;
+    sctx.shadowBlur = 7;
+    sctx.strokeStyle = glow;
+    sctx.lineWidth = 2.5;
+    path(); sctx.stroke();
+
+    // Bright core
+    sctx.globalAlpha = 1;
+    sctx.shadowBlur = 4;
+    sctx.shadowColor = bright;
+    sctx.strokeStyle = bright;
+    sctx.lineWidth = 1.3;
+    path(); sctx.stroke();
+
+    sctx.shadowBlur = 0;
+    sctx.globalAlpha = 1;
+  }
+
+  // Input — green, full amp, zero phase
+  drawTrace('#4dff6e', '#00aa3a', 0, amp);
+  // Output — amber, attenuated, phase shifted
+  drawTrace('#f59e0b', '#b36a00', phi, amp * H_val);
+
+  // ── Amplitude markers ─────────────────────────────────────────────────────────
+  // Output peak dashed horizontal
+  if (H_val > 0.02) {
+    const peakY = midY - amp * H_val;
+    sctx.setLineDash([2, 4]);
+    sctx.strokeStyle = 'rgba(245,158,11,0.28)';
+    sctx.lineWidth = 0.8;
+    sctx.beginPath(); sctx.moveTo(SP.l, peakY); sctx.lineTo(SP.l + pW, peakY); sctx.stroke();
+    sctx.setLineDash([]);
+  }
+
+  // ── Y-axis labels ─────────────────────────────────────────────────────────────
+  sctx.fillStyle = 'rgba(0,200,70,0.55)';
+  sctx.font = '9px IBM Plex Mono,monospace';
+  sctx.textAlign = 'right';
+  sctx.fillText('+1', SP.l - 4, SP.t + pH * (0.5 - 0.42) + 3.5);
+  sctx.fillText('0',  SP.l - 4, midY + 3.5);
+  sctx.fillText('\u22121', SP.l - 4, SP.t + pH * (0.5 + 0.42) + 3.5);
+
+  // ── Channel legends ───────────────────────────────────────────────────────────
+  sctx.textAlign = 'left';
+  // CH1
+  sctx.shadowBlur = 8; sctx.shadowColor = '#4dff6e';
+  sctx.fillStyle = '#4dff6e';
+  sctx.font = 'bold 8px IBM Plex Mono,monospace';
+  sctx.fillText('CH1', SP.l + 5, SP.t + 11);
+  sctx.shadowBlur = 0;
+  sctx.fillStyle = 'rgba(77,255,110,0.65)';
+  sctx.font = '8px IBM Plex Mono,monospace';
+  sctx.fillText('INPUT  1.00 Vpp', SP.l + 25, SP.t + 11);
+
+  // CH2
+  sctx.shadowBlur = 8; sctx.shadowColor = '#f59e0b';
+  sctx.fillStyle = '#f59e0b';
+  sctx.font = 'bold 8px IBM Plex Mono,monospace';
+  sctx.fillText('CH2', SP.l + 5, SP.t + 21);
+  sctx.shadowBlur = 0;
+  sctx.fillStyle = 'rgba(245,158,11,0.65)';
+  sctx.font = '8px IBM Plex Mono,monospace';
+  const outVpp = (H_val * 2).toFixed(3);
+  sctx.fillText('OUTPUT ' + outVpp + ' Vpp', SP.l + 25, SP.t + 21);
+
+  // ── Top-right readouts ────────────────────────────────────────────────────────
+  const dbVal = 20 * Math.log10(Math.max(H_val, 1e-12));
+  const phDeg = phi * 180 / Math.PI;
+  sctx.textAlign = 'right';
+  sctx.fillStyle = 'rgba(245,158,11,0.80)';
+  sctx.font = '8.5px IBM Plex Mono,monospace';
+  sctx.fillText('ATT\u202f' + dbVal.toFixed(1) + '\u202fdB', SW - SP.r - 3, SP.t + 11);
+  sctx.fillStyle = 'rgba(245,158,11,0.60)';
+  sctx.fillText('\u03c6\u202f' + (phDeg >= 0 ? '+' : '') + phDeg.toFixed(1) + '\u00b0', SW - SP.r - 3, SP.t + 21);
+
+  // ── Bottom axis label ─────────────────────────────────────────────────────────
+  sctx.textAlign = 'center';
+  sctx.fillStyle = 'rgba(0,180,60,0.45)';
+  sctx.font = '8px IBM Plex Mono,monospace';
+  sctx.fillText(fmtF(f) + '\u202f\u00b7\u202f' + CYCLES + ' cycles', SP.l + pW / 2, SH - 6);
+
+  // ── Plot area border ──────────────────────────────────────────────────────────
+  sctx.strokeStyle = 'rgba(0,150,50,0.30)';
+  sctx.lineWidth = 1;
+  sctx.strokeRect(SP.l + 0.5, SP.t + 0.5, pW - 1, pH - 1);
+}
+
 // ── Slider handlers ────────────────────────────────────────────────────────────
 function onS(p, v) {
   switch (p) {
@@ -679,7 +898,11 @@ if (STATE.mode === 'parallel') setMode('parallel');
 let _resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(_resizeTimer);
-  _resizeTimer = setTimeout(() => { ctx.setTransform(1, 0, 0, 1, 0, 0); resize(); }, 80);
+  _resizeTimer = setTimeout(() => {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    sctx.setTransform(1, 0, 0, 1, 0, 0);
+    resize();
+  }, 80);
 });
 requestAnimationFrame(resize);
 </script>
