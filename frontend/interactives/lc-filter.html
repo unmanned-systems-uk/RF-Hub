@@ -104,10 +104,9 @@
     }
     @media (max-width: 900px) { .bottom-row { flex-direction: column; } }
     #explain-panel {
-      flex: 1 1 0;
       font-size: 0.82rem; line-height: 1.65; color: #94a3b8;
       background: #111827; border: 1px solid #1e293b; border-radius: 8px;
-      padding: 0.75rem 1rem; min-height: 3.4rem;
+      padding: 0.75rem 1rem; margin-top: 0.65rem; min-height: 3.4rem;
     }
     #explain-panel strong { font-weight: 600; color: #e2e8f0; }
     #scope-wrap { flex: 1.6 1 0; min-width: 0; }
@@ -118,9 +117,11 @@
 
     /* Sliders */
     .ctrl-grid {
+      flex: 1 1 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.9rem 1.5rem;
+      align-content: center;
     }
     @media (max-width: 520px) { .ctrl-grid { grid-template-columns: 1fr; } }
 
@@ -196,53 +197,49 @@
     </div>
   </div>
 
-  <!-- Bottom row: explain text + oscilloscope side by side -->
+  <!-- Bottom row: sliders + oscilloscope side by side -->
   <div class="bottom-row">
-    <div id="explain-panel">Initialising&hellip;</div>
+    <div class="ctrl-grid">
+      <div>
+        <div class="ctrl-label" style="color:#a78bfa">Inductance (L)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sL" min="0" max="100" step="0.2" oninput="onS('L',+this.value)">
+          <span class="sval" id="vL">&mdash;</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label" style="color:#06b6d4">Capacitance (C)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sC" min="0" max="100" step="0.2" oninput="onS('C',+this.value)">
+          <span class="sval" id="vC">&mdash;</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label" style="color:#f59e0b">Resistance (R)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sR" min="0" max="100" step="0.2" oninput="onS('R',+this.value)">
+          <span class="sval" id="vR">&mdash;</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label" style="color:#94a3b8">Frequency cursor</div>
+        <div class="slider-wrap">
+          <input type="range" id="sf" min="0" max="100" step="0.1" oninput="onS('f',+this.value)">
+          <span class="sval" id="vf">&mdash;</span>
+        </div>
+      </div>
+    </div>
     <div id="scope-wrap">
       <div id="scope-label">&#9632; Oscilloscope &mdash; Time Domain</div>
       <canvas id="scopeCanvas" style="margin-top:0.3rem;background:#040e07;border-radius:3px;"></canvas>
     </div>
   </div>
-</div>
 
-<!-- Sliders -->
-<div class="card">
-  <div class="ctrl-grid">
-    <div>
-      <div class="ctrl-label" style="color:#a78bfa">Inductance (L)</div>
-      <div class="slider-wrap">
-        <input type="range" id="sL" min="0" max="100" step="0.2" oninput="onS('L',+this.value)">
-        <span class="sval" id="vL">&mdash;</span>
-      </div>
-    </div>
-    <div>
-      <div class="ctrl-label" style="color:#06b6d4">Capacitance (C)</div>
-      <div class="slider-wrap">
-        <input type="range" id="sC" min="0" max="100" step="0.2" oninput="onS('C',+this.value)">
-        <span class="sval" id="vC">&mdash;</span>
-      </div>
-    </div>
-    <div>
-      <div class="ctrl-label" style="color:#f59e0b">Resistance (R)</div>
-      <div class="slider-wrap">
-        <input type="range" id="sR" min="0" max="100" step="0.2" oninput="onS('R',+this.value)">
-        <span class="sval" id="vR">&mdash;</span>
-      </div>
-    </div>
-    <div>
-      <div class="ctrl-label" style="color:#94a3b8">Frequency cursor</div>
-      <div class="slider-wrap">
-        <input type="range" id="sf" min="0" max="100" step="0.1" oninput="onS('f',+this.value)">
-        <span class="sval" id="vf">&mdash;</span>
-      </div>
-    </div>
-  </div>
-</div>
+  <!-- Explain panel — full width -->
+  <div id="explain-panel">Initialising&hellip;</div>
 
-<!-- Readout panel -->
-<div class="card">
-  <div class="ro-grid">
+  <!-- Readout grid — full width -->
+  <div class="ro-grid" style="margin-top:0.65rem;">
     <div class="ro-item">
       <div class="ro-label">Cutoff / f&#x2080;</div>
       <div class="ro-val hi" id="rv-f0">&mdash;</div>
@@ -429,7 +426,7 @@ function resizeScope() {
   const pr = window.devicePixelRatio || 1;
   const cssW = scopeCanvas.parentElement.clientWidth;
   if (!cssW) { requestAnimationFrame(resizeScope); return; }
-  const cssH = Math.round(Math.max(150, cssW * 0.26));
+  const cssH = Math.round(Math.max(130, cssW * 0.22));
   scopeCanvas.width  = Math.round(cssW * pr);
   scopeCanvas.height = Math.round(cssH * pr);
   scopeCanvas.style.height = cssH + 'px';
