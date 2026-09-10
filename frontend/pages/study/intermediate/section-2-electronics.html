@@ -1225,6 +1225,8 @@ IE = IC + IB       (emitter current = collector + base)
       <p><strong>Rectification</strong> converts alternating current (AC) to direct current (DC). A <strong>diode</strong> is the component used — it only conducts in one direction.</p>
       <h4>Half-wave rectifier</h4>
       <p>A single diode only passes the positive half-cycles. Output is a series of positive pulses with gaps. Simple but wasteful.</p>
+      <h4>Full-wave rectifier with centre-tapped transformer</h4>
+      <p>Two diodes plus a <strong>centre-tapped transformer</strong> gives full-wave rectification without needing four diodes. Each diode conducts on one half-cycle, so both halves of the input reach the output as positive pulses. More efficient than half-wave (no wasted half-cycle), but requires a special transformer with a tap at the centre of the secondary winding. Modern PSUs usually use the bridge rectifier below instead, which needs no centre tap.</p>
       <h4>Full-wave bridge rectifier</h4>
       <p>Four diodes arranged in a bridge pass both half-cycles. Both positive and negative half-cycles are converted to positive pulses. Output has twice the ripple frequency of half-wave. More efficient.</p>
       <div class="callout callout--info">
@@ -1249,6 +1251,8 @@ IE = IC + IB       (emitter current = collector + base)
       <p>A <strong>voltage regulator</strong> keeps the output at a fixed voltage regardless of load.</p>
       <h4>Zener diode regulator</h4>
       <p>A <strong>zener diode</strong> is designed to break down at a specific reverse voltage (the zener voltage), maintaining a constant voltage across itself as long as some minimum current flows.</p>
+      <h4>Series-pass regulator with error amplifier</h4>
+      <p>A practical linear regulator adds a <strong>series-pass transistor</strong> that sits in-line with the load and handles the full load current. A second transistor and a Zener diode form an <strong>error amplifier</strong>: they compare the output voltage against the Zener reference and continuously adjust the series-pass transistor to keep the output constant even as load current changes. This is the circuit inside a typical linear voltage regulator IC (7805, 7812, etc.). Linear regulators produce clean output with little RF noise, but the series-pass transistor dissipates the excess voltage as heat &mdash; hence the need for heat sinks and the "inefficient and heavy" reputation of linear PSUs.</p>
       <h4>IC voltage regulators</h4>
       <p>Integrated circuit regulators (e.g. 7805 for +5 V, 7812 for +12 V) contain a complete regulation circuit in a single package. More precise and efficient than a simple zener.</p>
       <div class="callout callout--info">
@@ -1283,6 +1287,13 @@ IE = IC + IB       (emitter current = collector + base)
 
       <h3>Integrated Circuits (2I6)</h3>
       <p>An <strong>integrated circuit (IC)</strong> contains many transistors, resistors, and sometimes capacitors all built into a single silicon chip. ICs allow complex circuits to be implemented in a tiny, reliable, inexpensive package. Common packages: DIP, TO-92, SOT-23 (surface mount).</p>
+      <p><strong>ICs you may meet in amateur radio kit-building:</strong></p>
+      <ul>
+        <li><strong>LM386</strong> &mdash; a small audio power amplifier IC, used in many receiver audio stages and hobby projects.</li>
+        <li><strong>NE602 / NE612</strong> &mdash; an oscillator + mixer IC in one package, commonly used in direct-conversion receivers and simple superhet designs.</li>
+        <li><strong>78xx series</strong> &mdash; the linear voltage regulators covered above (7805 = 5 V, 7812 = 12 V, etc.).</li>
+        <li><strong>Atmega328p</strong> &mdash; the microcontroller inside the Arduino Uno; countless amateur projects use it for keyer decoders, band monitors, rig controllers.</li>
+      </ul>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2I6:</strong> An integrated circuit (IC) contains an entire circuit — transistors, resistors, etc. — on a single chip of silicon.</div>
