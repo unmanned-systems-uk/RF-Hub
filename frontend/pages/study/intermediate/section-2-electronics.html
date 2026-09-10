@@ -757,6 +757,30 @@ Z  = V / I           (general case &mdash; magnitude of impedance)</pre>
         <div class="callout-text"><strong>2H3:</strong> Energy can transfer between a capacitor and an inductor at the <strong>resonant frequency</strong>. At resonance, XL = XC.</div>
       </div>
 
+      <h4>How the tank oscillates &mdash; energy sloshing between L and C</h4>
+      <p>The magic of a tuned circuit is that <strong>energy alternates between two forms</strong>: the electric field in the capacitor and the magnetic field in the inductor. Left alone, one full swing of the cycle repeats every 1/f&#x2080; seconds &mdash; that's the resonant frequency.</p>
+      <ol>
+        <li><strong>Cap charged, inductor idle.</strong> All the circuit's energy sits in the capacitor's electric field. No current flows yet.</li>
+        <li><strong>Cap discharges through L.</strong> The capacitor pushes current through the inductor. Energy flows from the electric field into the inductor's growing magnetic field.</li>
+        <li><strong>Cap empty, all energy in L.</strong> Cap voltage is zero. Current is at maximum. All the energy now lives in the inductor's magnetic field.</li>
+        <li><strong>L's field collapses, recharging cap.</strong> An inductor resists change in current &mdash; as the current tries to fall, the collapsing magnetic field induces an EMF that keeps current flowing, dumping energy back into the capacitor <em>with opposite polarity</em>.</li>
+        <li><strong>And back again.</strong> Cap discharges the other way, L stores the field, then re-charges the cap back to its original polarity. That completes one full cycle at f&#x2080;.</li>
+      </ol>
+
+      <h4>Sustaining oscillation &mdash; pushing at the natural frequency</h4>
+      <p>Real tuned circuits have <strong>resistive losses</strong> &mdash; principally <strong>wire resistance in the inductor</strong> and <strong>dielectric loss in the capacitor</strong>. Each cycle a small amount of energy escapes as heat, so the oscillation <strong>damps out</strong> &mdash; the amplitude decays exponentially. Higher Q means slower decay.</p>
+      <p>To keep the tank swinging, an <strong>oscillator circuit</strong> feeds in small energy pulses at exactly f&#x2080;. Push a child on a swing at the natural frequency and each shove adds to the motion; push at any other rhythm and the shoves fight the swing. Same principle &mdash; the tank readily accepts energy at its resonant frequency and rejects it at any other.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">🔬</div>
+        <div class="callout-text"><strong>Watch it happen:</strong> the interactive below shows the energy swap in real time. Try the damping slider &mdash; watch the oscillation decay as resistive losses drain the tank.</div>
+      </div>
+      <div style="margin: 1rem 0;">
+        <iframe src="/interactives/lc-oscillation.html"
+          style="width:100%; height:800px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="LC Tank Oscillation Interactive"></iframe>
+      </div>
+
       <h4>Effect of changing L or C on resonant frequency</h4>
       <ul>
         <li><strong>Quadruple C → f₀ halves</strong> (because f₀ ∝ 1/√C — ∝ means "is proportional to")</li>
@@ -770,6 +794,17 @@ Resonant frequency halves.</pre>
         <div class="callout-icon">🔬</div>
         <div class="callout-text"><strong>Go deeper:</strong> Explore how LC filters work with our <a href="/interactives/lc-filter.html" target="_blank">interactive LC filter</a> — adjust L, C, and R to see the frequency response, oscilloscope trace, and real-time explanations of what each component is doing.</div>
       </div>
+      <p><strong>Where you meet each filter in a station:</strong></p>
+      <ul>
+        <li><strong>Low-pass (LPF)</strong> on the transmitter output &mdash; passes the band, rejects harmonics that would radiate on higher bands.</li>
+        <li><strong>High-pass (HPF)</strong> in a receiver's front end &mdash; blocks strong broadcast-band signals that would overload the RX.</li>
+        <li><strong>Band-pass (BPF)</strong> &mdash; selects a specific band and rejects everything else (IF filters, preselectors).</li>
+        <li><strong>Band-stop / notch</strong> &mdash; rejects one specific frequency (broadcast breakthrough, a birdie inside the passband).</li>
+      </ul>
+      <h4>Cut-off frequency and the -3 dB point</h4>
+      <p>Every filter's <strong>cut-off frequency</strong> is defined at the <strong>half-power point</strong>. Filter response curves usually plot voltage (easier to measure than power), and because P &prop; V&sup2;, a voltage drop to <strong>0.707 &times; V<sub>in</sub></strong> means the power has halved.</p>
+      <pre>V_out = 0.707 &times; V_in   &rarr;   power = &half; &times; input power   &rarr;   -3 dB</pre>
+      <p>So when you see a filter response curve labelled "-3 dB point" or "corner frequency", it's the same thing: the frequency at which the filter has attenuated the signal by half in power terms. The dB scale itself is covered in more depth in the RF measurements section.</p>
       <div style="margin: 1rem -12.5%;">
         <iframe src="/interactives/lc-filter.html?mode=lowpass"
           style="width:100%; height:950px; border:1px solid #1e293b; border-radius:8px; display:block;"
@@ -798,6 +833,15 @@ Resonant frequency halves.</pre>
 
       <h4>Parallel tuned circuit</h4>
       <p>At resonance: <strong>impedance is maximum</strong> (theoretically infinite). Current in the external circuit is minimum. Used as a band-stop filter or to select a frequency in an oscillator.</p>
+
+      <h4>Simple oscillator &mdash; parallel tank + amplifier feedback</h4>
+      <p>The classic recipe for a variable-frequency <strong>local oscillator (LO)</strong>: a parallel LC tank sets the frequency, and a small amount of the amplifier's output is fed back into the tank to replace the energy lost to resistance each cycle. The tank oscillates freely at f&#x2080; &mdash; the amplifier just tops up the energy.</p>
+      <p><strong>Fixed L, variable C:</strong> in vintage receivers, the inductor is a fixed coil and the capacitor is a mechanical <strong>open-air variable capacitor</strong> &mdash; interleaved metal vanes rotated by the tuning knob. Turning the knob changes C, which changes f&#x2080; = 1/(2&pi;&radic;LC) &mdash; that's how you tune across a band. In modern radios the mechanical cap is usually replaced by a <strong>varicap</strong> (voltage-controlled semiconductor cap) or a synthesised digital LO (PLL/DDS), but the underlying principle is the same parallel resonance.</p>
+      <p><strong>Varying L instead of C:</strong> the inductor can also be made variable &mdash; a <strong>roller coaster</strong> inductor uses a spindle that rolls a contact along the coil turns (used in HF antenna tuners), and a <strong>slug tuner</strong> screws a ferrite core in and out of the coil, changing its inductance. Whether you vary L or C, the result is the same: f&#x2080; shifts along f&#x2080; = 1/(2&pi;&radic;LC).</p>
+
+      <h4>Antenna traps &mdash; parallel resonance in the wire</h4>
+      <p>An <strong>antenna trap</strong> is a parallel LC circuit inserted into an antenna wire or element. At the trap's <strong>resonant frequency</strong>, it presents very high impedance &mdash; the antenna behaves as if the wire is <em>cut</em> at that point. Below resonance, the trap acts mostly as an inductor, extending the electrical length of the wire.</p>
+      <p><strong>How this enables multi-band operation:</strong> a <strong>trap dipole</strong> for 40 m and 80 m has a pair of traps resonant at ~7 MHz. On 40 m, the traps "open" the wire at the trap position &mdash; the antenna resonates as a shorter 40 m dipole. On 80 m, the traps pass current through and act as loading coils, letting the full wire length resonate on 80 m. One antenna, two bands, no switching.</p>
 
       <h4>High voltage and current at resonance</h4>
       <p>At resonance, voltage and circulating current inside a tuned circuit can be much higher than the supply voltage.</p>
