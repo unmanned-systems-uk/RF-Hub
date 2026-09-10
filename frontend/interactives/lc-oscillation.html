@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LC Tank Oscillation &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a;
+  color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 1.25rem;
+}
+.card {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+.ctrl-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.cbtn {
+  background: #1a2234;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  color: #94a3b8;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.cbtn:hover { color: #e2e8f0; border-color: #334155; }
+.cbtn.play  { border-color: #22c55e; color: #22c55e; background: #0a1f0f; }
+.cbtn.reset { border-color: #f59e0b; color: #f59e0b; background: #1a1208; }
+.f0-readout {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+.f0-readout span { color: #a78bfa; font-weight: 400; }
+
+.main-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  margin-bottom: 0.75rem;
+}
+@media (max-width: 700px) { .main-row { flex-direction: column; } }
+
+.sch-wrap {
+  flex: 0 0 270px;
+  background: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+@media (max-width: 700px) {
+  .sch-wrap { flex: none; width: 100%; }
+  #schCanvas { max-width: 100%; }
+}
+
+.wave-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 208px;
+  background: #040e1a;
+  border: 1px solid #1e293b;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+canvas { display: block; }
+
+.bottom-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  border-top: 1px solid #1e293b;
+  padding-top: 0.75rem;
+}
+@media (max-width: 700px) { .bottom-row { flex-direction: column; } }
+
+.energy-panel {
+  flex: 0 0 132px;
+  background: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 5px;
+  padding: 0.5rem 0.35rem 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+@media (max-width: 700px) {
+  .energy-panel { flex: none; flex-direction: row; justify-content: center; }
+}
+.energy-title {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #334155;
+}
+
+.ctrl-grid {
+  flex: 1 1 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+  align-content: center;
+}
+@media (max-width: 500px) { .ctrl-grid { grid-template-columns: 1fr; } }
+
+.ctrl-label {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.28rem;
+  color: #64748b;
+}
+.slider-wrap { display: flex; align-items: center; gap: 0.5rem; }
+input[type="range"] { flex: 1; accent-color: #a78bfa; cursor: pointer; }
+.sval {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  min-width: 9ch;
+  text-align: right;
+}
+
+.ro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+@media (max-width: 600px) { .ro-grid { grid-template-columns: repeat(2, 1fr); } }
+.ro-item {
+  background: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  padding: 0.48rem 0.6rem;
+}
+.ro-label {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; }
+.ro-val.cyan   { color: #06b6d4; }
+.ro-val.amber  { color: #f59e0b; }
+.ro-val.purple { color: #a78bfa; }
+.ro-val.green  { color: #22c55e; }
+</style>
+</head>
+<body>
+
+<h1>LC Tank Oscillation</h1>
+<p class="subtitle">Energy exchange between capacitor E-field and inductor B-field &mdash; damped harmonic oscillator, time domain</p>
+
+<div class="card">
+
+  <div class="ctrl-bar">
+    <button class="cbtn play" id="btn-play" onclick="togglePlay()">&#9646;&#9646; Pause</button>
+    <button class="cbtn reset" id="btn-reset" onclick="doReset()">&#8635; Reset</button>
+    <div class="f0-readout">f&#x2080;&nbsp;=&nbsp;<span id="rv-f0">&mdash;</span></div>
+  </div>
+
+  <div class="main-row">
+    <div class="sch-wrap">
+      <canvas id="schCanvas" width="260" height="220"></canvas>
+    </div>
+    <div class="wave-wrap">
+      <canvas id="waveCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="energy-panel">
+      <div class="energy-title">Energy</div>
+      <canvas id="energyCanvas" width="116" height="148"></canvas>
+    </div>
+    <div class="ctrl-grid">
+      <div>
+        <div class="ctrl-label" style="color:#a78bfa">Inductance (L)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sL" min="0" max="100" value="50" step="1" oninput="onSlider()">
+          <span class="sval" id="vL">&mdash;</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label" style="color:#06b6d4">Capacitance (C)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sC" min="0" max="100" value="50" step="1" oninput="onSlider()">
+          <span class="sval" id="vC">&mdash;</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label" style="color:#f59e0b">Damping (R)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sR" min="0" max="100" value="0" step="1" oninput="onSlider()">
+          <span class="sval" id="vR">&mdash;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ro-grid">
+    <div class="ro-item">
+      <div class="ro-label">Resonant f&#x2080;</div>
+      <div class="ro-val purple" id="ro-f0">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">V&#x2080; (normalised)</div>
+      <div class="ro-val cyan" id="ro-v">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">I (normalised)</div>
+      <div class="ro-val amber" id="ro-i">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">E total (normalised)</div>
+      <div class="ro-val green" id="ro-e">&mdash;</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Physics state ──────────────────────────────────────────────────────────────
+let q    = 1.0;   // normalised charge on capacitor (1 = fully charged)
+let qdot = 0.0;   // dq/dt = normalised current
+let simT = 0.0;   // accumulated simulation time
+let running = true;
+let lastWallS = null;
+
+const TIME_SCALE = 4;  // sim-seconds per wall-second
+
+// Sim parameters (updated by sliders)
+let L_sim = 1.0;
+let C_sim = 1.0;
+let R_sim = 0.0;
+let zetaVal = 0.0;
+// Real-world display values
+let L_uH = 10.0;
+let C_pF  = 56.0;
+
+// ── History buffer for waveform ────────────────────────────────────────────────
+const HIST_LEN  = 900;
+const histV = new Float32Array(HIST_LEN);
+const histI = new Float32Array(HIST_LEN);
+const histT = new Float32Array(HIST_LEN);
+let histHead  = 0;
+let histCount = 0;
+let lastHistT = -Infinity;
+const HIST_INTERVAL = 0.022; // sim-seconds between recorded points
+
+// ── Current-dot animation for wire ────────────────────────────────────────────
+let dotPhase = 0; // 0..1, advances with |i_norm| each frame
+
+// ── Canvases ───────────────────────────────────────────────────────────────────
+const schCanvas  = document.getElementById('schCanvas');
+const schCtx     = schCanvas.getContext('2d');
+const waveCanvas = document.getElementById('waveCanvas');
+const waveCtx    = waveCanvas.getContext('2d');
+const eCanvas    = document.getElementById('energyCanvas');
+const eCtx       = eCanvas.getContext('2d');
+
+// ── RK4 integrator ────────────────────────────────────────────────────────────
+function deriv(q_, qd_) {
+    return [qd_, -(R_sim / L_sim) * qd_ - q_ / (L_sim * C_sim)];
+}
+function rk4Step(q_, qd_, dt) {
+    const [dq1, dd1] = deriv(q_, qd_);
+    const [dq2, dd2] = deriv(q_ + 0.5*dt*dq1, qd_ + 0.5*dt*dd1);
+    const [dq3, dd3] = deriv(q_ + 0.5*dt*dq2, qd_ + 0.5*dt*dd2);
+    const [dq4, dd4] = deriv(q_ + dt*dq3,      qd_ + dt*dd3);
+    return [
+        q_  + dt*(dq1 + 2*dq2 + 2*dq3 + dq4)/6,
+        qd_ + dt*(dd1 + 2*dd2 + 2*dd3 + dd4)/6
+    ];
+}
+
+// ── Derived quantities ─────────────────────────────────────────────────────────
+function getINorm() { return qdot * Math.sqrt(L_sim * C_sim); }
+function getEcap()  { return q * q; }
+function getEL()    { return qdot * qdot * L_sim * C_sim; }
+
+// ── Slider → parameter mapping ────────────────────────────────────────────────
+function sliderToLsim(v) { return 0.5 + (v / 100) * 1.5; }   // [0.5, 2.0]
+function sliderToCsim(v) { return 0.5 + (v / 100) * 1.5; }   // [0.5, 2.0]
+function sliderToZeta(v) { return (v / 100) * 2.0; }          // [0, 2.0]
+function sliderToLuH(v)  { return Math.pow(10, (v / 100) * 2); }         // 1–100 µH
+function sliderToCpF(v)  { return Math.pow(10, 1 + (v / 100) * 1.5); }  // 10–316 pF
+
+function fmtL(uH) {
+    if (uH < 1)  return (uH * 1000).toFixed(0) + ' nH';
+    if (uH < 10) return uH.toFixed(2) + ' µH';
+    return uH.toFixed(1) + ' µH';
+}
+function fmtC(pF) {
+    if (pF < 1000) return pF.toFixed(0) + ' pF';
+    return (pF / 1000).toFixed(2) + ' nF';
+}
+function fmtFreq(f) {
+    if (f >= 1e9) return (f / 1e9).toFixed(3) + ' GHz';
+    if (f >= 1e6) return (f / 1e6).toFixed(2) + ' MHz';
+    if (f >= 1e3) return (f / 1e3).toFixed(1) + ' kHz';
+    return f.toFixed(0) + ' Hz';
+}
+
+function onSlider() {
+    const lv = +document.getElementById('sL').value;
+    const cv = +document.getElementById('sC').value;
+    const rv = +document.getElementById('sR').value;
+
+    L_sim   = sliderToLsim(lv);
+    C_sim   = sliderToCsim(cv);
+    zetaVal = sliderToZeta(rv);
+    R_sim   = 2 * zetaVal * Math.sqrt(L_sim / C_sim);
+
+    L_uH = sliderToLuH(lv);
+    C_pF = sliderToCpF(cv);
+
+    document.getElementById('vL').textContent = fmtL(L_uH);
+    document.getElementById('vC').textContent = fmtC(C_pF);
+
+    let zetaStr;
+    if (zetaVal < 0.01)      zetaStr = 'undamped';
+    else if (zetaVal < 0.95) zetaStr = 'ζ = ' + zetaVal.toFixed(2);
+    else if (zetaVal < 1.05) zetaStr = 'ζ ≈ 1 (crit)';
+    else                      zetaStr = 'ζ = ' + zetaVal.toFixed(1) + ' (over)';
+    document.getElementById('vR').textContent = zetaStr;
+
+    updateReadouts();
+}
+
+function updateReadouts() {
+    const L_H = L_uH * 1e-6;
+    const C_F = C_pF * 1e-12;
+    const f0  = 1 / (2 * Math.PI * Math.sqrt(L_H * C_F));
+
+    document.getElementById('rv-f0').textContent = fmtFreq(f0);
+    document.getElementById('ro-f0').textContent = fmtFreq(f0);
+    document.getElementById('ro-v').textContent  = q.toFixed(3);
+    document.getElementById('ro-i').textContent  = getINorm().toFixed(3);
+    const eT = getEcap() + getEL();
+    document.getElementById('ro-e').textContent  = eT.toFixed(3);
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function togglePlay() {
+    running = !running;
+    const btn = document.getElementById('btn-play');
+    if (running) {
+        btn.textContent = '⏸ Pause';
+        btn.classList.add('play');
+        lastWallS = null;
+    } else {
+        btn.textContent = '▶ Play';
+        btn.classList.remove('play');
+    }
+}
+
+function doReset() {
+    q = 1.0; qdot = 0.0; simT = 0.0;
+    histHead = 0; histCount = 0; lastHistT = -Infinity;
+    dotPhase = 0; lastWallS = null;
+}
+
+// ── Schematic drawing ─────────────────────────────────────────────────────────
+function drawSchematic() {
+    const c  = schCtx;
+    const W  = schCanvas.width;
+    const H  = schCanvas.height;
+
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = '#0d1321';
+    c.fillRect(0, 0, W, H);
+
+    const topY = 28;
+    const botY = H - 28;
+    const Lx   = 72;        // inductor branch x
+    const Cx   = W - 68;    // capacitor branch x
+    const midY = (topY + botY) / 2;
+
+    const i_n  = getINorm();
+    const iAbs = Math.abs(i_n);
+    const qAbs = Math.abs(q);
+
+    // --- B-field halos around inductor ---
+    if (iAbs > 0.02) {
+        for (let r = 20; r <= 54; r += 11) {
+            const alpha = iAbs * Math.max(0, 0.55 - r * 0.007);
+            c.beginPath();
+            c.ellipse(Lx, midY, r * 0.55, r, 0, 0, 2 * Math.PI);
+            c.strokeStyle = `rgba(6,182,212,${alpha.toFixed(2)})`;
+            c.lineWidth = 1.5;
+            c.stroke();
+        }
+    }
+
+    // --- Wires ---
+    c.strokeStyle = '#475569';
+    c.lineWidth = 2;
+    // top rail
+    c.beginPath(); c.moveTo(Lx, topY); c.lineTo(Cx, topY); c.stroke();
+    // bottom rail
+    c.beginPath(); c.moveTo(Lx, botY); c.lineTo(Cx, botY); c.stroke();
+
+    // --- Inductor (vertical coil, bumps to the left) ---
+    const nLoops  = 5;
+    const loopH   = (botY - topY) / nLoops;
+    const coilR   = loopH * 0.37;
+    const Lintens = Math.min(1, 0.35 + iAbs * 0.65);
+    c.strokeStyle = `rgba(167,139,250,${Lintens.toFixed(2)})`;
+    c.lineWidth   = 2.5;
+    c.beginPath();
+    for (let k = 0; k < nLoops; k++) {
+        const yMid = topY + loopH * (k + 0.5);
+        // Arc from bottom of loop to top, going through left side
+        c.arc(Lx, yMid, coilR, Math.PI / 2, -Math.PI / 2, true);
+    }
+    c.stroke();
+    // L label
+    c.fillStyle = '#a78bfa';
+    c.font = 'bold 13px "IBM Plex Mono", monospace';
+    c.textAlign = 'right';
+    c.fillText('L', Lx - coilR - 8, midY + 5);
+
+    // --- Capacitor (vertical, centred) ---
+    const plateW  = 30;
+    const gapH    = 9;
+    const Cintens = Math.min(1, 0.35 + qAbs * 0.65);
+
+    // wires cap → rails
+    c.strokeStyle = '#475569';
+    c.lineWidth = 2;
+    c.beginPath(); c.moveTo(Cx, topY); c.lineTo(Cx, midY - gapH); c.stroke();
+    c.beginPath(); c.moveTo(Cx, midY + gapH); c.lineTo(Cx, botY); c.stroke();
+
+    // top plate: amber when q>0 (positive), cyan when q<0
+    const topPlateCol = q >= 0
+        ? `rgba(245,158,11,${Cintens.toFixed(2)})`
+        : `rgba(6,182,212,${Cintens.toFixed(2)})`;
+    const botPlateCol = q >= 0
+        ? `rgba(6,182,212,${Cintens.toFixed(2)})`
+        : `rgba(245,158,11,${Cintens.toFixed(2)})`;
+
+    c.lineWidth = 3;
+    c.strokeStyle = topPlateCol;
+    c.beginPath(); c.moveTo(Cx - plateW, midY - gapH); c.lineTo(Cx + plateW, midY - gapH); c.stroke();
+    c.strokeStyle = botPlateCol;
+    c.beginPath(); c.moveTo(Cx - plateW, midY + gapH); c.lineTo(Cx + plateW, midY + gapH); c.stroke();
+
+    // polarity markers
+    if (qAbs > 0.04) {
+        const pA = Math.min(1, qAbs * 1.3).toFixed(2);
+        c.font = 'bold 14px "IBM Plex Mono", monospace';
+        c.textAlign = 'center';
+        const topSign = q >= 0 ? '+' : '−';
+        const botSign = q >= 0 ? '−' : '+';
+        c.fillStyle = q >= 0 ? `rgba(245,158,11,${pA})` : `rgba(6,182,212,${pA})`;
+        c.fillText(topSign, Cx + plateW + 16, midY - gapH + 5);
+        c.fillStyle = q >= 0 ? `rgba(6,182,212,${pA})` : `rgba(245,158,11,${pA})`;
+        c.fillText(botSign, Cx + plateW + 16, midY + gapH + 5);
+    }
+
+    // E-field lines in gap (5 lines, direction follows sign of q)
+    if (qAbs > 0.04) {
+        const eA   = Math.min(0.75, qAbs * 0.85).toFixed(2);
+        const eDir = q >= 0 ? 1 : -1;  // +1 = downward (field from + top to − bottom)
+        c.strokeStyle = `rgba(245,158,11,${eA})`;
+        c.fillStyle   = `rgba(245,158,11,${eA})`;
+        c.lineWidth   = 1;
+        const nLines  = 5;
+        for (let j = 0; j < nLines; j++) {
+            const ex = Cx - plateW + (2 * plateW / (nLines - 1)) * j;
+            const y0 = midY - gapH * eDir + 2 * eDir;
+            const y1 = midY + gapH * eDir - 2 * eDir;
+            c.beginPath(); c.moveTo(ex, y0); c.lineTo(ex, y1); c.stroke();
+            // arrowhead at y1
+            c.beginPath();
+            c.moveTo(ex,     y1);
+            c.lineTo(ex - 3, y1 - eDir * 5);
+            c.lineTo(ex + 3, y1 - eDir * 5);
+            c.closePath(); c.fill();
+        }
+    }
+
+    // C label
+    c.fillStyle = '#06b6d4';
+    c.font = 'bold 13px "IBM Plex Mono", monospace';
+    c.textAlign = 'left';
+    c.fillText('C', Cx + plateW + 26, midY + 5);
+
+    // --- Animated current dots on top wire ---
+    const wireLen = Cx - Lx;
+    if (iAbs > 0.02) {
+        // i_n < 0 → current flows left on top wire (cap discharging into L)
+        const dir  = (i_n < 0) ? -1 : 1;
+        const dotA = Math.min(1, iAbs * 1.4).toFixed(2);
+        c.fillStyle = `rgba(34,197,94,${dotA})`;
+        const nDots = 3;
+        for (let d = 0; d < nDots; d++) {
+            let phase = (dotPhase + d / nDots) % 1;
+            // map phase to wire x, going in dir
+            const wx = dir > 0
+                ? Lx + phase * wireLen
+                : Cx - phase * wireLen;
+            c.beginPath();
+            c.arc(wx, topY, 4, 0, 2 * Math.PI);
+            c.fill();
+        }
+        // direction arrow tip near midpoint of wire
+        const arrowX = (Lx + Cx) / 2 + dir * 18;
+        c.strokeStyle = `rgba(34,197,94,${dotA})`;
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(arrowX - dir * 10, topY);
+        c.lineTo(arrowX, topY);
+        c.stroke();
+        c.fillStyle = `rgba(34,197,94,${dotA})`;
+        c.beginPath();
+        c.moveTo(arrowX,          topY);
+        c.lineTo(arrowX - dir*7,  topY - 4);
+        c.lineTo(arrowX - dir*7,  topY + 4);
+        c.closePath(); c.fill();
+    }
+
+    // --- Node dots ---
+    c.fillStyle = '#334155';
+    [[Lx, topY], [Lx, botY], [Cx, topY], [Cx, botY]].forEach(([x, y]) => {
+        c.beginPath(); c.arc(x, y, 3, 0, 2 * Math.PI); c.fill();
+    });
+
+    // --- Labels ---
+    c.fillStyle = '#1e293b';
+    c.font = '9px "IBM Plex Mono", monospace';
+    c.textAlign = 'center';
+    c.fillText('LC TANK', W / 2, H - 8);
+}
+
+// ── Waveform drawing ──────────────────────────────────────────────────────────
+function drawWaveform() {
+    const c = waveCtx;
+    const W = waveCanvas.width;
+    const H = waveCanvas.height;
+
+    c.fillStyle = '#040e1a';
+    c.fillRect(0, 0, W, H);
+
+    const pad = { l: 36, r: 8, t: 16, b: 20 };
+    const pw  = W - pad.l - pad.r;
+    const ph  = H - pad.t - pad.b;
+    const midY = pad.t + ph / 2;
+    const WINDOW = 6.0; // sim-seconds of history shown
+    const tMin   = simT - WINDOW;
+
+    // Grid
+    c.strokeStyle = '#0c1a28';
+    c.lineWidth = 1;
+    [-1, -0.5, 0.5, 1].forEach(v => {
+        const gy = midY - v * ph * 0.46;
+        c.beginPath(); c.moveTo(pad.l, gy); c.lineTo(pad.l + pw, gy); c.stroke();
+    });
+    // Zero line
+    c.strokeStyle = '#1a2e44';
+    c.beginPath(); c.moveTo(pad.l, midY); c.lineTo(pad.l + pw, midY); c.stroke();
+    // Vertical time grid
+    for (let s = 1; s <= 6; s++) {
+        const gx = pad.l + pw * (1 - s / WINDOW);
+        c.strokeStyle = '#0c1a28';
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(gx, pad.t); c.lineTo(gx, pad.t + ph); c.stroke();
+    }
+
+    // Y-axis labels
+    c.fillStyle = '#334155';
+    c.font = '9px "IBM Plex Mono", monospace';
+    c.textAlign = 'right';
+    [1, 0.5, 0, -0.5, -1].forEach(v => {
+        const gy = midY - v * ph * 0.46;
+        c.fillText(v === 0 ? '0' : v.toFixed(1), pad.l - 3, gy + 3);
+    });
+
+    const toX = t  => pad.l + pw * Math.max(0, Math.min(1, (t - tMin) / WINDOW));
+    const toY = v  => midY - v * ph * 0.46;
+
+    if (histCount > 1) {
+        c.save();
+        c.beginPath();
+        c.rect(pad.l, pad.t, pw, ph);
+        c.clip();
+
+        // V trace (cyan)
+        c.beginPath();
+        let moved = false;
+        for (let i = 0; i < histCount; i++) {
+            const idx = (histHead - histCount + i + HIST_LEN) % HIST_LEN;
+            if (histT[idx] < tMin) continue;
+            const x = toX(histT[idx]);
+            const y = toY(histV[idx]);
+            moved ? c.lineTo(x, y) : (c.moveTo(x, y), moved = true);
+        }
+        c.lineTo(toX(simT), toY(q));
+        c.strokeStyle = '#06b6d4';
+        c.lineWidth   = 1.8;
+        c.stroke();
+
+        // I trace (amber)
+        c.beginPath();
+        moved = false;
+        for (let i = 0; i < histCount; i++) {
+            const idx = (histHead - histCount + i + HIST_LEN) % HIST_LEN;
+            if (histT[idx] < tMin) continue;
+            const x = toX(histT[idx]);
+            const y = toY(histI[idx]);
+            moved ? c.lineTo(x, y) : (c.moveTo(x, y), moved = true);
+        }
+        c.lineTo(toX(simT), toY(getINorm()));
+        c.strokeStyle = '#f59e0b';
+        c.lineWidth   = 1.8;
+        c.stroke();
+
+        c.restore();
+    }
+
+    // Legend
+    c.font = '10px "IBM Plex Mono", monospace';
+    c.textAlign = 'left';
+    c.fillStyle = '#06b6d4'; c.fillText('V(t)', pad.l + 4,  pad.t + 12);
+    c.fillStyle = '#f59e0b'; c.fillText('I(t)', pad.l + 44, pad.t + 12);
+    c.fillStyle = '#334155';
+    c.textAlign = 'right';
+    c.fillText('← time', pad.l + pw, pad.t + ph + 16);
+}
+
+// ── Energy bars drawing ───────────────────────────────────────────────────────
+function drawEnergy() {
+    const c  = eCtx;
+    const W  = eCanvas.width;
+    const H  = eCanvas.height;
+    c.fillStyle = '#0d1321';
+    c.fillRect(0, 0, W, H);
+
+    const e_cap = getEcap();
+    const e_L   = getEL();
+    const e_tot = Math.min(1.5, e_cap + e_L);
+
+    const labels = ['Eₙ', 'Eₗ', 'ΣE'];
+    const vals   = [e_cap, e_L, e_tot];
+    const cols   = ['#06b6d4', '#f59e0b', '#a78bfa'];
+    const n      = 3;
+    const barW   = 22;
+    const maxH   = H - 38;
+    const step   = W / (n + 1);
+
+    for (let j = 0; j < n; j++) {
+        const bx  = Math.round(step * (j + 1) - barW / 2);
+        const val = Math.max(0, vals[j]);
+        const fH  = Math.min(maxH, val * maxH);
+
+        // Track
+        c.fillStyle   = '#111827';
+        c.strokeStyle = '#1e293b';
+        c.lineWidth   = 1;
+        c.fillRect(bx, 14, barW, maxH);
+        c.strokeRect(bx, 14, barW, maxH);
+
+        // Fill
+        if (fH > 0.5) {
+            c.fillStyle   = cols[j];
+            c.globalAlpha = 0.82;
+            c.fillRect(bx, 14 + maxH - fH, barW, fH);
+            c.globalAlpha = 1;
+        }
+
+        // Value above bar
+        c.fillStyle  = '#475569';
+        c.font       = '7px "IBM Plex Mono", monospace';
+        c.textAlign  = 'center';
+        c.fillText(val.toFixed(2), bx + barW / 2, 11);
+
+        // Label below
+        c.fillStyle = cols[j];
+        c.font      = '8px "IBM Plex Mono", monospace';
+        c.fillText(labels[j], bx + barW / 2, H - 4);
+    }
+}
+
+// ── Canvas resize ─────────────────────────────────────────────────────────────
+function resizeWaveCanvas() {
+    const wrap = document.querySelector('.wave-wrap');
+    const rect = wrap.getBoundingClientRect();
+    const w    = Math.max(100, Math.floor(rect.width) - 8);
+    if (waveCanvas.width !== w) {
+        waveCanvas.width  = w;
+        waveCanvas.height = 200;
+    }
+}
+
+// ── Main animation loop ───────────────────────────────────────────────────────
+function loop(wallMs) {
+    resizeWaveCanvas();
+
+    const wallS = wallMs / 1000;
+
+    if (running) {
+        if (lastWallS !== null) {
+            const wallDt = Math.min(0.05, wallS - lastWallS);
+            const simDt  = wallDt * TIME_SCALE;
+
+            // Sub-step RK4 for stability
+            const subDt = 0.004;
+            let rem = simDt;
+            while (rem > 1e-9) {
+                const dt = Math.min(rem, subDt);
+                [q, qdot] = rk4Step(q, qdot, dt);
+                rem -= dt;
+            }
+            simT += simDt;
+
+            // Advance dot phase proportional to |current|
+            const iAbs = Math.abs(getINorm());
+            dotPhase = (dotPhase + iAbs * wallDt * 0.55) % 1;
+        }
+        lastWallS = wallS;
+    }
+
+    // Record history
+    if (simT - lastHistT >= HIST_INTERVAL || histCount === 0) {
+        histT[histHead] = simT;
+        histV[histHead] = q;
+        histI[histHead] = getINorm();
+        histHead  = (histHead + 1) % HIST_LEN;
+        if (histCount < HIST_LEN) histCount++;
+        lastHistT = simT;
+    }
+
+    drawSchematic();
+    drawWaveform();
+    drawEnergy();
+    updateReadouts();
+
+    requestAnimationFrame(loop);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+onSlider();
+doReset();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
