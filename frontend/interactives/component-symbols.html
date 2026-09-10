@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Symbols — RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e1a;color:#e2e8f0;font-family:'IBM Plex Sans',sans-serif;font-weight:300;padding:1.5rem;max-width:1400px;margin:0 auto}
+h1{font-family:'DM Serif Display',serif;font-size:1.55rem;margin-bottom:0.2rem}
+.subtitle{font-size:0.78rem;color:#64748b;font-family:'IBM Plex Mono',monospace;margin-bottom:1.1rem}
+
+/* Mode / filter bar */
+.top-bar{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.mbtn{background:#1a2234;border:1px solid #1e293b;color:#94a3b8;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;transition:background .15s,color .15s}
+.mbtn:hover{background:#1e293b;color:#e2e8f0}
+.mbtn.on{background:#1e293b;color:#e2e8f0;border-color:#a78bfa}
+.mbtn.quiz-on{background:#1e293b;color:#f59e0b;border-color:#f59e0b}
+.sep{width:1px;height:24px;background:#1e293b;margin:0 0.25rem}
+
+/* Symbol grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.65rem;margin-bottom:1rem}
+.sym-card{background:#111827;border:1px solid #1e293b;border-radius:6px;padding:0.6rem 0.5rem 0.5rem;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center}
+.sym-card:hover{background:#141e30;border-color:#334155}
+.sym-card.active{border-color:#a78bfa;background:#13182a}
+.sym-card.dim{opacity:0.22;pointer-events:none}
+.sym-canvas{display:block}
+.sym-name{font-size:0.67rem;color:#94a3b8;font-family:'IBM Plex Mono',monospace;text-align:center;margin-top:0.4rem;line-height:1.3}
+.cat-tag{font-size:0.58rem;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-top:0.2rem}
+
+/* Detail panel */
+#detail{background:#111827;border:1px solid #1e293b;border-radius:8px;padding:1.25rem;margin-bottom:1rem;display:none;grid-template-columns:180px 1fr;gap:1.5rem;align-items:start}
+#detail.show{display:grid}
+#detail-canvas{display:block;border-radius:4px}
+.detail-name{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:0.3rem}
+.detail-cat{font-size:0.68rem;color:#64748b;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:0.7rem}
+.detail-desc{font-size:0.85rem;line-height:1.7;color:#cbd5e1;margin-bottom:0.75rem}
+.exam-fact{background:#0d1321;border-left:3px solid #f59e0b;padding:0.55rem 0.85rem;font-size:0.78rem;color:#fbbf24;font-family:'IBM Plex Mono',monospace;line-height:1.5;border-radius:0 4px 4px 0}
+.exam-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:0.3rem}
+
+/* Quiz overlay */
+#quiz-panel{background:#111827;border:1px solid #f59e0b;border-radius:8px;padding:1.25rem;margin-bottom:1rem;display:none}
+#quiz-panel.show{display:block}
+.quiz-q{font-size:0.85rem;color:#94a3b8;margin-bottom:0.9rem;font-family:'IBM Plex Mono',monospace}
+#quiz-canvas{display:block;margin:0 auto 1rem;border-radius:4px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;max-width:480px;margin:0 auto}
+.qbtn{background:#1a2234;border:1px solid #1e293b;color:#e2e8f0;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:0.5rem 0.75rem;border-radius:4px;cursor:pointer;text-align:left;transition:background .12s}
+.qbtn:hover{background:#1e293b}
+.qbtn.correct{background:#14532d;border-color:#22c55e;color:#86efac}
+.qbtn.wrong{background:#450a0a;border-color:#ef4444;color:#fca5a5}
+.quiz-result{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.8rem;margin-top:0.85rem;min-height:1.4rem}
+.quiz-score{font-size:0.72rem;color:#64748b;font-family:'IBM Plex Mono',monospace;margin-top:0.5rem;text-align:center}
+@media(max-width:600px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  #detail{grid-template-columns:1fr}
+  .quiz-opts{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<h1>Electronic Component Symbols</h1>
+<p class="subtitle">Foundation &amp; Intermediate reference &mdash; click any symbol to expand &middot; quiz mode to test yourself</p>
+
+<div class="top-bar">
+  <button class="mbtn on" onclick="setFilter('all')" id="f-all">All</button>
+  <button class="mbtn" onclick="setFilter('passive')" id="f-passive">Passive</button>
+  <button class="mbtn" onclick="setFilter('semi')" id="f-semi">Semiconductors</button>
+  <button class="mbtn" onclick="setFilter('source')" id="f-source">Sources &amp; Output</button>
+  <button class="mbtn" onclick="setFilter('switch')" id="f-switch">Switches</button>
+  <button class="mbtn" onclick="setFilter('rf')" id="f-rf">RF / Signal</button>
+  <div class="sep"></div>
+  <button class="mbtn" onclick="toggleQuiz()" id="btn-quiz">&#127299; Quiz mode</button>
+</div>
+
+<!-- Detail panel -->
+<div id="detail">
+  <canvas id="detail-canvas" width="180" height="180"></canvas>
+  <div>
+    <div class="detail-name" id="d-name"></div>
+    <div class="detail-cat" id="d-cat"></div>
+    <div class="detail-desc" id="d-desc"></div>
+    <div class="exam-label">Exam point</div>
+    <div class="exam-fact" id="d-exam"></div>
+  </div>
+</div>
+
+<!-- Quiz panel -->
+<div id="quiz-panel">
+  <div class="quiz-q">Name this component:</div>
+  <canvas id="quiz-canvas" width="200" height="200"></canvas>
+  <div class="quiz-opts" id="quiz-opts"></div>
+  <div class="quiz-result" id="quiz-result"></div>
+  <div class="quiz-score" id="quiz-score"></div>
+</div>
+
+<!-- Symbol grid -->
+<div class="grid" id="grid"></div>
+
+<script>
+// ── Drawing helpers ────────────────────────────────────────────────────────────
+function drawOn(ctx, fn, size) {
+  ctx.clearRect(0, 0, size, size);
+  ctx.save();
+  ctx.translate(size / 2, size / 2);
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  fn(ctx, size);
+  ctx.restore();
+}
+
+const W = '#e2e8f0';   // wire / default
+const A = '#f59e0b';   // amber accent
+const C = '#06b6d4';   // cyan accent
+const P = '#a78bfa';   // purple accent
+const G = '#22c55e';   // green
+
+// ── Component draw functions (ctx centred at 0,0) ─────────────────────────────
+
+function drawResistor(ctx) {
+  // IEC rectangle style
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-18,0); ctx.stroke();
+  ctx.strokeRect(-18,-9,36,18);
+  ctx.beginPath(); ctx.moveTo(18,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawResistorUS(ctx) {
+  // ANSI zigzag
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-18,0); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-18,0);
+  const steps=[0,-10,10,-10,10,-10,10,-10,10,0];
+  let x=-18;
+  for(let i=0;i<steps.length;i++){x+=7;ctx.lineTo(x,steps[i]);}
+  ctx.lineTo(32,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(32,0); ctx.lineTo(40,0); ctx.stroke();
+}
+
+function drawVarResistor(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-18,0); ctx.stroke();
+  ctx.strokeRect(-18,-9,36,18);
+  ctx.beginPath(); ctx.moveTo(18,0); ctx.lineTo(28,0); ctx.stroke();
+  // arrow
+  ctx.strokeStyle = A;
+  ctx.beginPath(); ctx.moveTo(-12,18); ctx.lineTo(12,-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(12,-18); ctx.lineTo(4,-14); ctx.moveTo(12,-18); ctx.lineTo(8,-10); ctx.stroke();
+}
+
+function drawCapacitor(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-6,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-6,-16); ctx.lineTo(-6,16); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(6,-16); ctx.lineTo(6,16); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(6,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawElecCap(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-6,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-6,-16); ctx.lineTo(-6,16); ctx.stroke();
+  // curved plate
+  ctx.beginPath();
+  ctx.arc(14,0,8,-Math.PI*0.7,Math.PI*0.7);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(6,0); ctx.lineTo(28,0); ctx.stroke();
+  // + marker
+  ctx.strokeStyle = A;
+  ctx.beginPath(); ctx.moveTo(-14,-8); ctx.lineTo(-14,-2); ctx.moveTo(-17,-5); ctx.lineTo(-11,-5); ctx.stroke();
+}
+
+function drawVarCap(ctx) {
+  drawCapacitor(ctx);
+  ctx.strokeStyle = A;
+  ctx.beginPath(); ctx.moveTo(-12,18); ctx.lineTo(12,-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(12,-18); ctx.lineTo(4,-14); ctx.moveTo(12,-18); ctx.lineTo(8,-10); ctx.stroke();
+}
+
+function drawInductor(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-30,0); ctx.lineTo(-22,0); ctx.stroke();
+  // 4 bumps
+  for(let i=0;i<4;i++){
+    const x=-22+i*13;
+    ctx.beginPath(); ctx.arc(x+6.5,0,6.5,Math.PI,0); ctx.stroke();
+  }
+  ctx.beginPath(); ctx.moveTo(30,0); ctx.lineTo(38,0); ctx.stroke();
+}
+
+function drawTransformer(ctx) {
+  ctx.strokeStyle = W;
+  // Primary: left coils
+  ctx.beginPath(); ctx.moveTo(-38,-10); ctx.lineTo(-32,-10); ctx.stroke();
+  for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(-32+i*10+5,-10,5,Math.PI,0);ctx.stroke();}
+  ctx.beginPath(); ctx.moveTo(-2,-10); ctx.lineTo(2,-10); ctx.stroke();
+  // Secondary: right coils (mirrored)
+  ctx.beginPath(); ctx.moveTo(38,-10); ctx.lineTo(32,-10); ctx.stroke();
+  for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(32-i*10-5,-10,5,0,Math.PI);ctx.stroke();}
+  ctx.beginPath(); ctx.moveTo(2,-10); ctx.lineTo(-2,-10); ctx.stroke();
+  // Connections
+  ctx.beginPath(); ctx.moveTo(-38,-10); ctx.lineTo(-38,10); ctx.lineTo(-32,10); ctx.stroke();
+  for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(-32+i*10+5,10,5,Math.PI,0);ctx.stroke();}
+  ctx.beginPath(); ctx.moveTo(-2,10); ctx.lineTo(2,10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(38,10); ctx.lineTo(38,-10); ctx.stroke();
+  // Iron core
+  ctx.strokeStyle = A;
+  ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(-1,-20); ctx.lineTo(-1,20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2,-20); ctx.lineTo(2,20); ctx.stroke();
+  ctx.lineWidth=1.8;
+}
+
+function drawFuse(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-18,0); ctx.stroke();
+  ctx.strokeRect(-18,-8,36,16);
+  ctx.beginPath(); ctx.moveTo(-18,0); ctx.lineTo(18,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(18,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawCrystal(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-14,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-14,-14); ctx.lineTo(-14,14); ctx.stroke();
+  ctx.fillStyle='#1e293b'; ctx.fillRect(-12,-10,24,20);
+  ctx.strokeRect(-12,-10,24,20);
+  ctx.beginPath(); ctx.moveTo(12,-14); ctx.lineTo(12,14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(12,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawDiode(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-14,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-14,-14); ctx.lineTo(-14,14); ctx.lineTo(14,0); ctx.closePath(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,-14); ctx.lineTo(14,14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawLED(ctx) {
+  drawDiode(ctx);
+  // arrows for light
+  ctx.strokeStyle = A;
+  ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(2,-18); ctx.lineTo(14,-30); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,-30); ctx.lineTo(10,-26); ctx.moveTo(14,-30); ctx.lineTo(10,-22); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(8,-22); ctx.lineTo(20,-34); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(20,-34); ctx.lineTo(16,-30); ctx.moveTo(20,-34); ctx.lineTo(16,-26); ctx.stroke();
+  ctx.lineWidth = 1.8;
+  ctx.strokeStyle = W;
+}
+
+function drawZener(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-14,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-14,-14); ctx.lineTo(-14,14); ctx.lineTo(14,0); ctx.closePath(); ctx.stroke();
+  // Zener bar with bends
+  ctx.beginPath(); ctx.moveTo(14,-14); ctx.lineTo(14,14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,-14); ctx.lineTo(20,-20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,14); ctx.lineTo(8,20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawNPN(ctx) {
+  ctx.strokeStyle = W;
+  // Base
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-8,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-8,-22); ctx.lineTo(-8,22); ctx.stroke();
+  // Collector
+  ctx.beginPath(); ctx.moveTo(-8,-12); ctx.lineTo(12,-22); ctx.lineTo(12,-30); ctx.stroke();
+  // Emitter with arrow
+  ctx.beginPath(); ctx.moveTo(-8,12); ctx.lineTo(12,22); ctx.lineTo(12,30); ctx.stroke();
+  // Arrow out (NPN)
+  ctx.beginPath(); ctx.moveTo(2,18); ctx.lineTo(12,22); ctx.lineTo(8,14); ctx.closePath();
+  ctx.fillStyle=W; ctx.fill(); ctx.stroke();
+  // Labels
+  ctx.fillStyle='#64748b'; ctx.font='9px IBM Plex Mono,monospace';
+  ctx.fillText('C',-2,-28); ctx.fillText('E',-2,34); ctx.fillText('B',-26,12);
+}
+
+function drawPNP(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-8,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-8,-22); ctx.lineTo(-8,22); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-8,-12); ctx.lineTo(12,-22); ctx.lineTo(12,-30); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-8,12); ctx.lineTo(12,22); ctx.lineTo(12,30); ctx.stroke();
+  // Arrow in (PNP) — at collector end
+  ctx.beginPath(); ctx.moveTo(-2,-18); ctx.lineTo(-8,-12); ctx.lineTo(0,-10); ctx.closePath();
+  ctx.fillStyle=W; ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#64748b'; ctx.font='9px IBM Plex Mono,monospace';
+  ctx.fillText('C',-2,-28); ctx.fillText('E',-2,34); ctx.fillText('B',-26,12);
+}
+
+function drawNFET(ctx) {
+  ctx.strokeStyle = W;
+  // Gate
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-16,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-16,-20); ctx.lineTo(-16,20); ctx.stroke();
+  // Channel (dashed line)
+  ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(-10,-20); ctx.lineTo(-10,20); ctx.stroke();
+  ctx.setLineDash([]);
+  // Drain and Source
+  ctx.beginPath(); ctx.moveTo(-10,-14); ctx.lineTo(8,-14); ctx.lineTo(8,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-10,14); ctx.lineTo(8,14); ctx.lineTo(8,28); ctx.stroke();
+  // Arrow into channel (N-type)
+  ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(6,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2,-4); ctx.lineTo(6,0); ctx.lineTo(2,4); ctx.closePath();
+  ctx.fillStyle=W; ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#64748b'; ctx.font='9px IBM Plex Mono,monospace';
+  ctx.fillText('D',10,-24); ctx.fillText('S',10,26); ctx.fillText('G',-28,12);
+}
+
+function drawBattery(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-10,0); ctx.stroke();
+  // 3 cells
+  for(let i=0;i<3;i++){
+    const x=-10+i*12;
+    ctx.lineWidth=i%2===0?3:1;
+    ctx.beginPath(); ctx.moveTo(x,-14+i%2*6); ctx.lineTo(x,14-i%2*6); ctx.stroke();
+  }
+  ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(26,0); ctx.lineTo(28,0); ctx.stroke();
+  // + / - labels
+  ctx.fillStyle=A; ctx.font='bold 11px IBM Plex Mono,monospace';
+  ctx.fillText('+',18,-16);
+  ctx.fillStyle='#64748b';
+  ctx.fillText('\u2212',-26,-16);
+}
+
+function drawACSource(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-20,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(20,0); ctx.lineTo(28,0); ctx.stroke();
+  // sine symbol
+  ctx.beginPath();
+  ctx.moveTo(-12,0);
+  for(let t=0;t<=Math.PI*2;t+=0.1){ctx.lineTo(-12+t*(24/(Math.PI*2)),Math.sin(t)*8);}
+  ctx.stroke();
+}
+
+function drawDCSource(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-20,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(20,0); ctx.lineTo(28,0); ctx.stroke();
+  ctx.strokeStyle=A;
+  ctx.beginPath(); ctx.moveTo(-8,-8); ctx.lineTo(-8,8); ctx.stroke(); // long +
+  ctx.beginPath(); ctx.moveTo(-11,0); ctx.lineTo(-5,0); ctx.stroke();
+  ctx.strokeStyle='#64748b';
+  ctx.beginPath(); ctx.moveTo(5,0); ctx.lineTo(11,0); ctx.stroke(); // short -
+}
+
+function drawGround(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(0,-28); ctx.lineTo(0,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-20,0); ctx.lineTo(20,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-12,8); ctx.lineTo(12,8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-5,16); ctx.lineTo(5,16); ctx.stroke();
+}
+
+function drawAntenna(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(0,28); ctx.lineTo(0,-8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(-24,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(0,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(24,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-16,-20); ctx.lineTo(-8,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(16,-20); ctx.lineTo(8,-28); ctx.stroke();
+}
+
+function drawSpeaker(ctx) {
+  ctx.strokeStyle = W;
+  // voice coil / input leads
+  ctx.beginPath(); ctx.moveTo(-28,-10); ctx.lineTo(-14,-10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,10); ctx.lineTo(-14,10); ctx.stroke();
+  // box
+  ctx.strokeRect(-14,-10,10,20);
+  // cone
+  ctx.beginPath(); ctx.moveTo(-4,-10); ctx.lineTo(20,-24); ctx.lineTo(20,24); ctx.lineTo(-4,10); ctx.closePath(); ctx.stroke();
+}
+
+function drawMic(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,-6,14,0,Math.PI*2); ctx.stroke();
+  // body lines
+  ctx.beginPath(); ctx.moveTo(-14,-6); ctx.lineTo(-14,6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,-6); ctx.lineTo(14,6); ctx.stroke();
+  // stand
+  ctx.beginPath(); ctx.moveTo(-18,6); ctx.arc(0,6,18,Math.PI,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,24); ctx.lineTo(0,14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-10,24); ctx.lineTo(10,24); ctx.stroke();
+}
+
+function drawMeter(ctx, letter) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-20,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(20,0); ctx.lineTo(28,0); ctx.stroke();
+  ctx.fillStyle = C;
+  ctx.font = 'bold 14px IBM Plex Mono,monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(letter, 0, 1);
+}
+
+function drawLamp(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-18,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(18,0); ctx.lineTo(28,0); ctx.stroke();
+  // X inside
+  ctx.beginPath(); ctx.moveTo(-11,-11); ctx.lineTo(11,11); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(11,-11); ctx.lineTo(-11,11); ctx.stroke();
+}
+
+function drawSPST(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-12,0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-12,0,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(12,0,3,0,Math.PI*2); ctx.stroke();
+  // open switch lever
+  ctx.beginPath(); ctx.moveTo(-12,0); ctx.lineTo(10,-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(12,0); ctx.lineTo(28,0); ctx.stroke();
+}
+
+function drawSPDT(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.moveTo(-28,0); ctx.lineTo(-12,0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-12,0,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(14,-14,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(14,14,3,0,Math.PI*2); ctx.stroke();
+  // lever to upper contact
+  ctx.beginPath(); ctx.moveTo(-12,0); ctx.lineTo(12,-14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,-14); ctx.lineTo(28,-14); ctx.stroke();
+  ctx.strokeStyle='#334155';
+  ctx.beginPath(); ctx.moveTo(14,14); ctx.lineTo(28,14); ctx.stroke();
+}
+
+function drawRelay(ctx) {
+  ctx.strokeStyle = W;
+  // Coil box
+  ctx.strokeRect(-28,-22,30,18);
+  // Coil symbol inside
+  for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(-22+i*8+4,-13,4,Math.PI,0);ctx.stroke();}
+  // Coil leads
+  ctx.beginPath(); ctx.moveTo(-28,-13); ctx.lineTo(-34,-13); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(2,-13); ctx.lineTo(8,-13); ctx.stroke();
+  // Switch contacts
+  ctx.beginPath(); ctx.moveTo(-14,4); ctx.lineTo(-14,28); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-14,28,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(14,20,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-14,28); ctx.lineTo(12,20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14,20); ctx.lineTo(28,20); ctx.stroke();
+}
+
+function drawAmplifier(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath();
+  ctx.moveTo(-24,-22); ctx.lineTo(-24,22); ctx.lineTo(24,0); ctx.closePath();
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-34,0); ctx.lineTo(-24,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(24,0); ctx.lineTo(34,0); ctx.stroke();
+  ctx.fillStyle=P; ctx.font='bold 12px IBM Plex Mono,monospace';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('A',-6,0);
+}
+
+function drawMixer(ctx) {
+  ctx.strokeStyle = W;
+  ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2); ctx.stroke();
+  // X symbol
+  ctx.lineWidth=2.2;
+  ctx.beginPath(); ctx.moveTo(-11,-11); ctx.lineTo(11,11); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(11,-11); ctx.lineTo(-11,11); ctx.stroke();
+  ctx.lineWidth=1.8;
+  // ports
+  ctx.beginPath(); ctx.moveTo(-28,-14); ctx.lineTo(-18,-8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-28,14); ctx.lineTo(-18,8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(20,0); ctx.lineTo(30,0); ctx.stroke();
+}
+
+function drawFilter(ctx) {
+  ctx.strokeStyle = W;
+  ctx.strokeRect(-22,-16,44,32);
+  ctx.beginPath(); ctx.moveTo(-34,0); ctx.lineTo(-22,0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(22,0); ctx.lineTo(34,0); ctx.stroke();
+  ctx.fillStyle=C; ctx.font='bold 11px IBM Plex Mono,monospace';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('BPF',0,0);
+}
+
+function drawOscillator(ctx) {
+  ctx.strokeStyle = W;
+  ctx.strokeRect(-22,-20,44,40);
+  ctx.beginPath(); ctx.moveTo(22,0); ctx.lineTo(34,0); ctx.stroke();
+  // sine output symbol
+  ctx.strokeStyle=G;
+  ctx.beginPath();
+  for(let i=0;i<=30;i++){
+    const t=i/30*Math.PI*2-Math.PI;
+    const x=-14+i;
+    const y=Math.sin(t)*8;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=W;
+  ctx.fillStyle=P; ctx.font='bold 9px IBM Plex Mono,monospace';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('OSC',0,14);
+}
+
+// ── Component data ──────────────────────────────────────────────────────────────
+const COMPONENTS = [
+  // Passive
+  {id:'res',       cat:'passive', name:'Resistor (IEC)',       short:'Fixed resistor — rectangle style',
+   draw:drawResistor,
+   desc:'Opposes the flow of current. Resistance measured in ohms (Ω). The IEC (European) style uses a rectangle; the ANSI (US) style uses a zigzag.',
+   exam:'R = V / I (Ohm\'s Law). Resistors in series add directly: R_total = R1 + R2 + …'},
+
+  {id:'resus',     cat:'passive', name:'Resistor (ANSI/US)',   short:'Fixed resistor — zigzag style',
+   draw:drawResistorUS,
+   desc:'Identical function to the IEC resistor. The zigzag symbol is used in North American schematics. Both may appear in exam diagrams.',
+   exam:'In parallel: 1/R_total = 1/R1 + 1/R2. For just two: R_total = (R1×R2)/(R1+R2)'},
+
+  {id:'vres',      cat:'passive', name:'Variable Resistor',    short:'Adjustable resistance / potentiometer',
+   draw:drawVarResistor,
+   desc:'Resistance can be adjusted by turning a shaft or slider. Used in volume controls, tuning circuits, and bias adjustment.',
+   exam:'A potentiometer has 3 terminals — two ends and a wiper. The wiper output is a fraction of the supply voltage.'},
+
+  {id:'cap',       cat:'passive', name:'Capacitor (fixed)',    short:'Two parallel plates — stores charge',
+   draw:drawCapacitor,
+   desc:'Stores electrical energy in an electric field between two conductive plates. Blocks DC, passes AC. Reactance decreases with frequency.',
+   exam:'Xc = 1 / (2πfC). Capacitors in parallel add directly; in series use the reciprocal rule.'},
+
+  {id:'eleccap',   cat:'passive', name:'Electrolytic Capacitor', short:'Polarised — must be connected correctly',
+   draw:drawElecCap,
+   desc:'Polarised capacitor with much higher capacitance per size. The curved plate is the negative terminal. Reversing polarity can destroy it or cause it to vent dangerously.',
+   exam:'POLARISED — always check + and − markings. Used for power supply smoothing (large C values, e.g. hundreds of µF).'},
+
+  {id:'vcap',      cat:'passive', name:'Variable Capacitor',   short:'Tuning capacitor — adjustable plates',
+   draw:drawVarCap,
+   desc:'Capacitance is adjusted by changing the overlap area of the plates. Used in analogue VFOs and antenna matching units.',
+   exam:'Turning the capacitor changes Xc, shifting the resonant frequency of an LC circuit: f0 = 1/(2π√LC).'},
+
+  {id:'ind',       cat:'passive', name:'Inductor / Coil',      short:'Stores energy in a magnetic field',
+   draw:drawInductor,
+   desc:'A coil of wire that stores energy in a magnetic field. Opposes changes in current. Reactance increases with frequency.',
+   exam:'XL = 2πfL. Inductors in series add directly; in parallel use the reciprocal rule.'},
+
+  {id:'xfmr',      cat:'passive', name:'Transformer',          short:'Transfers energy via mutual inductance',
+   draw:drawTransformer,
+   desc:'Two (or more) coupled coils. Voltage is stepped up or down by the turns ratio n = Ns/Np. Iron core shown here (amber double-bar).',
+   exam:'V1/V2 = N1/N2. An impedance transformer scales impedance by n². Used for matching antenna to feedline.'},
+
+  {id:'fuse',      cat:'passive', name:'Fuse',                 short:'Sacrificial overcurrent protection',
+   draw:drawFuse,
+   desc:'A thin wire that melts when current exceeds its rating, breaking the circuit and protecting equipment.',
+   exam:'Always fuse the live (positive) supply. Replace with the correct rated fuse — fitting a higher rating defeats the protection.'},
+
+  {id:'xtal',      cat:'passive', name:'Crystal (Quartz)',     short:'Piezoelectric frequency reference',
+   draw:drawCrystal,
+   desc:'A quartz crystal vibrates at a precise mechanical resonance frequency. Used as a highly stable frequency reference in oscillators and filters.',
+   exam:'Crystal oscillators are far more stable than LC oscillators. Frequency tolerance measured in ppm (parts per million).'},
+
+  // Semiconductors
+  {id:'diode',     cat:'semi', name:'Diode',                   short:'Allows current in one direction only',
+   draw:drawDiode,
+   desc:'Permits current flow from anode (+) to cathode (−) only. Has a forward voltage drop of ~0.6–0.7 V for silicon. Used for rectification and protection.',
+   exam:'The triangle points in the direction of conventional current flow. Cathode is the bar (−) side.'},
+
+  {id:'led',       cat:'semi', name:'LED',                     short:'Light-emitting diode',
+   draw:drawLED,
+   desc:'A diode that emits light when forward biased. Forward voltage depends on colour: ~1.8 V red, ~2.0 V amber/green, ~3.2–3.5 V blue/white.',
+   exam:'Must always use a current-limiting resistor. Typical forward current 10–20 mA. R = (Vsupply − Vf) / If'},
+
+  {id:'zener',     cat:'semi', name:'Zener Diode',             short:'Voltage regulator — conducts in reverse',
+   draw:drawZener,
+   desc:'Designed to operate in reverse breakdown at a precise voltage (Vz). Used for voltage regulation and reference. The bent ends on the bar distinguish it from a standard diode.',
+   exam:'Connected reverse-biased with a series resistor. Output voltage is clamped to Vz as long as sufficient current flows.'},
+
+  {id:'npn',       cat:'semi', name:'Transistor (NPN)',        short:'Arrow out — current flows base→emitter',
+   draw:drawNPN,
+   desc:'Bipolar junction transistor. A small base current controls a larger collector-emitter current. NPN: arrow points away from base (out of emitter).',
+   exam:'Arrow Never Points iN for NPN. Current gain β (hFE) = Ic / Ib. Used for amplification and switching.'},
+
+  {id:'pnp',       cat:'semi', name:'Transistor (PNP)',        short:'Arrow in — current flows emitter→base',
+   draw:drawPNP,
+   desc:'Complementary to NPN. Arrow points into the base (into emitter). Conducts when base is pulled below emitter voltage.',
+   exam:'PNP — Pointing iN Please. Works like NPN but with opposite polarities. Often used with NPN in push-pull output stages.'},
+
+  {id:'nfet',      cat:'semi', name:'FET (N-channel MOSFET)',  short:'Voltage-controlled — gate draws no current',
+   draw:drawNFET,
+   desc:'Field-effect transistor. Gate voltage controls drain-source current. No gate current flows in steady state — very high input impedance. Used in LNAs and RF switching.',
+   exam:'FETs are voltage-controlled; BJTs are current-controlled. MOSFETs are sensitive to static — handle with care.'},
+
+  // Sources & Output
+  {id:'batt',      cat:'source', name:'Battery / Cell',        short:'DC voltage source — multiple cells',
+   draw:drawBattery,
+   desc:'Converts chemical energy to electrical energy. Long thin line = positive terminal; short thick line = negative. Multiple cell pairs shown here.',
+   exam:'Long line = +, short line = −. For cells in series, voltages add. Capacity in amp-hours (Ah).'},
+
+  {id:'acsrc',     cat:'source', name:'AC Source',             short:'Sinusoidal voltage source',
+   draw:drawACSource,
+   desc:'Represents a sinusoidal AC voltage source. The circle with sine wave symbol is used in circuit analysis and RF signal generators.',
+   exam:'Mains supply in UK: 230 V rms, 50 Hz. The peak voltage is 230 × √2 ≈ 325 V.'},
+
+  {id:'dcsrc',     cat:'source', name:'DC Source',             short:'Constant voltage source',
+   draw:drawDCSource,
+   desc:'Ideal DC voltage source. In circuit analysis, assumed to have zero internal resistance. Real sources have internal resistance that limits short-circuit current.',
+   exam:'Real batteries have internal resistance r. Terminal voltage = EMF − (I × r). Lower under load.'},
+
+  {id:'gnd',       cat:'source', name:'Earth / Ground',        short:'Zero-volt reference point',
+   draw:drawGround,
+   desc:'Circuit reference point, nominally 0 V. All voltages in a schematic are measured relative to this point. The three-bar symbol is chassis/signal ground.',
+   exam:'Protective earth (PE) uses a circle-with-lines symbol. Signal ground and protective earth are NOT always the same — confusing them can cause hum and safety issues.'},
+
+  {id:'ant',       cat:'source', name:'Antenna',               short:'Converts RF current to EM waves',
+   draw:drawAntenna,
+   desc:'Converts RF electrical energy to electromagnetic waves (and vice versa for receive). Many symbol styles exist; this is the most common schematic representation.',
+   exam:'Antenna impedance is typically 50 Ω (coaxial systems) or 75 Ω (broadcast/TV). Mismatched impedance causes reflections and VSWR > 1.'},
+
+  {id:'spkr',      cat:'source', name:'Loudspeaker',           short:'Converts electrical signal to sound',
+   draw:drawSpeaker,
+   desc:'An electrodynamic transducer. The voice coil sits in a magnetic field; current through it moves the cone, creating sound pressure waves.',
+   exam:'Typical impedance: 4 Ω, 8 Ω, or 16 Ω. Connecting the wrong impedance to an amplifier can damage the output stage.'},
+
+  {id:'mic',       cat:'source', name:'Microphone',            short:'Converts sound to electrical signal',
+   draw:drawMic,
+   desc:'Acoustic transducer. Converts sound pressure variations into an electrical signal. Types include dynamic (moving coil), condenser (capacitor), and electret.',
+   exam:'Electret microphones require a small bias voltage (phantom power or battery). Output level is very low — typically −60 dBV or less.'},
+
+  {id:'ammeter',   cat:'source', name:'Ammeter',               short:'Measures current — connected in series',
+   draw:(ctx)=>drawMeter(ctx,'A'),
+   desc:'Measures electrical current. Must be connected in series with the circuit under test. Has very low internal resistance to avoid disturbing the circuit.',
+   exam:'Always connect ammeters in SERIES. An ammeter connected in parallel short-circuits the supply and will be destroyed.'},
+
+  {id:'voltmeter', cat:'source', name:'Voltmeter',             short:'Measures voltage — connected in parallel',
+   draw:(ctx)=>drawMeter(ctx,'V'),
+   desc:'Measures potential difference. Connected in parallel (across) the component being measured. Has very high internal resistance.',
+   exam:'Always connect voltmeters in PARALLEL. A voltmeter in series blocks the circuit (high resistance).'},
+
+  {id:'lamp',      cat:'source', name:'Lamp / Bulb',           short:'Incandescent or indicator lamp',
+   draw:drawLamp,
+   desc:'A light source that glows when current passes through. The X-in-circle symbol is used in schematics for an incandescent or neon indicator lamp.',
+   exam:'Lamps have a much lower resistance when cold than when hot (filament). Check fusing — a cold lamp can draw several times its running current at switch-on.'},
+
+  // Switches
+  {id:'spst',      cat:'switch', name:'Switch (SPST)',         short:'Single pole, single throw',
+   draw:drawSPST,
+   desc:'Single Pole Single Throw — the most basic switch. Has one input and one output. Open = circuit broken; closed = circuit complete.',
+   exam:'SPST = on/off. The open circles represent the contacts. Always shown in the open (off) position by convention.'},
+
+  {id:'spdt',      cat:'switch', name:'Switch (SPDT)',         short:'Single pole, double throw — changeover',
+   draw:drawSPDT,
+   desc:'Single Pole Double Throw — one input, two possible outputs. Used to switch between two circuits (e.g. antenna to TX or RX).',
+   exam:'Used in T/R (transmit/receive) switching. The input connects to one of two outputs — never disconnected.'},
+
+  {id:'relay',     cat:'switch', name:'Relay',                 short:'Electrically-controlled switch',
+   draw:drawRelay,
+   desc:'A coil (electromagnet) controls one or more switch contacts. Allows a low-power circuit to switch a high-power circuit, with electrical isolation between them.',
+   exam:'Relay contacts shown in de-energised (coil off) state. Diode across the coil suppresses the back-EMF spike when the relay turns off.'},
+
+  // RF / Signal
+  {id:'amp',       cat:'rf', name:'Amplifier',                 short:'Triangle symbol — boosts signal level',
+   draw:drawAmplifier,
+   desc:'Increases the amplitude of a signal. In RF systems, amplifiers are characterised by gain (dB), noise figure (NF), and 1 dB compression point (P1dB).',
+   exam:'Gain in dB = 10 log10(Pout/Pin). Cascading two 10 dB amplifiers gives 20 dB gain (add dB in cascade).'},
+
+  {id:'mixer',     cat:'rf', name:'Mixer',                     short:'Multiplies two signals — frequency conversion',
+   draw:drawMixer,
+   desc:'Multiplies two input signals to produce sum and difference frequencies. Used in superheterodyne receivers to convert RF to a fixed IF frequency.',
+   exam:'Output frequencies = |f1 ± f2|. In a superhet receiver: IF = |fRF − fLO|. The image frequency is on the other side of the LO.'},
+
+  {id:'filter',    cat:'rf', name:'Filter (generic)',          short:'Passes some frequencies, rejects others',
+   draw:drawFilter,
+   desc:'A frequency-selective network. Types: low-pass (LPF), high-pass (HPF), band-pass (BPF), band-stop (BSF/notch). Used everywhere in RF design.',
+   exam:'BPF label shown. A low-pass filter on a transmitter output suppresses harmonics. Harmonic suppression is a legal requirement.'},
+
+  {id:'osc',       cat:'rf', name:'Oscillator',                short:'Generates a periodic waveform',
+   draw:drawOscillator,
+   desc:'Generates a continuous periodic signal. An LC oscillator uses inductor-capacitor resonance; a crystal oscillator uses quartz for precision. The VFO is a variable-frequency oscillator.',
+   exam:'Oscillator stability: crystal >> LC >> RC. A temperature-compensated crystal oscillator (TCXO) is used where high stability is needed.'},
+];
+
+// ── State ───────────────────────────────────────────────────────────────────────
+let activeFilter = 'all';
+let activeId     = null;
+let quizMode     = false;
+let quizQ        = null;   // current question component
+let quizScore    = {correct:0, total:0};
+
+// ── Render grid ─────────────────────────────────────────────────────────────────
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  COMPONENTS.forEach(comp => {
+    const show = activeFilter === 'all' || comp.cat === activeFilter;
+    const card = document.createElement('div');
+    card.className = 'sym-card' + (comp.id === activeId ? ' active' : '') + (!show ? ' dim' : '');
+    card.dataset.id = comp.id;
+    card.onclick = () => onCardClick(comp.id);
+
+    const cv = document.createElement('canvas');
+    cv.className = 'sym-canvas';
+    cv.width = 100; cv.height = 100;
+    const ctx = cv.getContext('2d');
+    drawOn(ctx, comp.draw, 100);
+
+    const nm = document.createElement('div');
+    nm.className = 'sym-name';
+    nm.textContent = comp.name;
+
+    const ct = document.createElement('div');
+    ct.className = 'cat-tag';
+    ct.textContent = comp.cat === 'passive' ? 'Passive'
+                   : comp.cat === 'semi'    ? 'Semiconductor'
+                   : comp.cat === 'source'  ? 'Source/Output'
+                   : comp.cat === 'switch'  ? 'Switch'
+                   : 'RF/Signal';
+
+    card.appendChild(cv); card.appendChild(nm); card.appendChild(ct);
+    grid.appendChild(card);
+  });
+}
+
+// ── Detail panel ─────────────────────────────────────────────────────────────────
+function showDetail(comp) {
+  const panel = document.getElementById('detail');
+  const dcv   = document.getElementById('detail-canvas');
+  document.getElementById('d-name').textContent  = comp.name;
+  document.getElementById('d-cat').textContent   =
+    comp.cat === 'passive' ? 'Passive Component'
+    : comp.cat === 'semi'  ? 'Semiconductor'
+    : comp.cat === 'source'? 'Source / Output'
+    : comp.cat === 'switch'? 'Switch'
+    : 'RF / Signal';
+  document.getElementById('d-desc').textContent  = comp.desc;
+  document.getElementById('d-exam').textContent  = comp.exam;
+  drawOn(dcv.getContext('2d'), comp.draw, 180);
+  panel.classList.add('show');
+}
+
+function hideDetail() {
+  document.getElementById('detail').classList.remove('show');
+  activeId = null;
+  buildGrid();
+}
+
+function onCardClick(id) {
+  if (quizMode) return;
+  if (activeId === id) { hideDetail(); return; }
+  activeId = id;
+  const comp = COMPONENTS.find(c => c.id === id);
+  showDetail(comp);
+  buildGrid();
+  document.getElementById('detail').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── Category filter ──────────────────────────────────────────────────────────────
+function setFilter(cat) {
+  activeFilter = cat;
+  ['all','passive','semi','source','switch','rf'].forEach(f => {
+    document.getElementById('f-'+f).classList.toggle('on', f === cat);
+  });
+  buildGrid();
+}
+
+// ── Quiz mode ────────────────────────────────────────────────────────────────────
+function toggleQuiz() {
+  quizMode = !quizMode;
+  document.getElementById('btn-quiz').classList.toggle('quiz-on', quizMode);
+  document.getElementById('quiz-panel').classList.toggle('show', quizMode);
+  document.getElementById('detail').classList.remove('show');
+  activeId = null;
+  buildGrid();
+  if (quizMode) nextQuestion();
+}
+
+function nextQuestion() {
+  // Pick random component (filtered if active filter set)
+  const pool = activeFilter === 'all'
+    ? COMPONENTS
+    : COMPONENTS.filter(c => c.cat === activeFilter);
+  if (pool.length < 4) return;
+
+  quizQ = pool[Math.floor(Math.random() * pool.length)];
+
+  // Draw on quiz canvas
+  const qcv = document.getElementById('quiz-canvas');
+  drawOn(qcv.getContext('2d'), quizQ.draw, 200);
+
+  // Build 4 options (correct + 3 random wrong)
+  const others = pool.filter(c => c.id !== quizQ.id);
+  const wrong = [];
+  while (wrong.length < 3) {
+    const pick = others[Math.floor(Math.random() * others.length)];
+    if (!wrong.includes(pick)) wrong.push(pick);
+  }
+  const opts = [quizQ, ...wrong].sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById('quiz-opts');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'qbtn';
+    btn.textContent = opt.name;
+    btn.onclick = () => answerQuiz(opt.id, btn, container);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('quiz-result').textContent = '';
+  updateScore();
+}
+
+function answerQuiz(id, btn, container) {
+  // Disable all buttons
+  container.querySelectorAll('.qbtn').forEach(b => { b.onclick = null; });
+  quizScore.total++;
+  if (id === quizQ.id) {
+    btn.classList.add('correct');
+    document.getElementById('quiz-result').textContent = '✓ Correct!';
+    document.getElementById('quiz-result').style.color = '#22c55e';
+    quizScore.correct++;
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct answer
+    container.querySelectorAll('.qbtn').forEach(b => {
+      if (b.textContent === quizQ.name) b.classList.add('correct');
+    });
+    document.getElementById('quiz-result').textContent = '✗ ' + quizQ.name;
+    document.getElementById('quiz-result').style.color = '#ef4444';
+  }
+  updateScore();
+  setTimeout(nextQuestion, 1600);
+}
+
+function updateScore() {
+  const el = document.getElementById('quiz-score');
+  if (quizScore.total === 0) { el.textContent = ''; return; }
+  const pct = Math.round(quizScore.correct / quizScore.total * 100);
+  el.textContent = `Score: ${quizScore.correct} / ${quizScore.total} (${pct}%)`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildGrid();
+</script>
+</body>
+</html>
