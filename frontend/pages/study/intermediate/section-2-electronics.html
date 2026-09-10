@@ -971,6 +971,19 @@ Resonant frequency halves.</pre>
         <iframe src="/interactives/component-symbols.html" style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="Component Symbols Interactive"></iframe>
       </div>
 
+      <h3>Semiconductor materials</h3>
+      <p><strong>Conductors</strong> (copper, aluminium) pass electric current easily &mdash; their atoms have loosely-bound electrons that drift when a voltage is applied. <strong>Insulators</strong> (glass, plastic) block current &mdash; their electrons are tightly bound. <strong>Semiconductors</strong> sit between the two: their conductivity can be controlled by adding tiny amounts of other elements.</p>
+      <p>The most common semiconductor is <strong>silicon</strong>. Pure silicon has fairly high resistance and isn't very useful on its own. It becomes useful once it is <strong>doped</strong> &mdash; small amounts of a different element are mixed in during manufacture:</p>
+      <ul>
+        <li><strong>N-type silicon</strong> is doped with atoms that <em>donate</em> spare electrons. It has an excess of mobile electrons &mdash; the charge carriers.</li>
+        <li><strong>P-type silicon</strong> is doped with atoms that leave a <em>shortage</em> of electrons in the crystal. The missing electrons are called <strong>holes</strong>, which behave as if they were positive charge carriers.</li>
+      </ul>
+      <p>When a piece of P-type silicon is joined to a piece of N-type silicon, the result is a <strong>P-N junction</strong> &mdash; the basis of every diode, transistor, LED and IC. At the boundary, electrons from the N side diffuse across and fill holes on the P side, forming a thin <strong>depletion layer</strong> that carries no free charge &mdash; an internal insulator that gives the junction its useful behaviour.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Historical note on current direction:</strong> current is really the flow of electrons from the negative to the positive terminal (electrons carry negative charge and are attracted to positive). Early physicists assumed the opposite direction &mdash; this legacy convention, called <strong>conventional current</strong>, is still used in circuit diagrams and arrows on components like diodes.</div>
+      </div>
+
       <h3>Diodes (2I1)</h3>
       <p>A <strong>diode</strong> allows current to flow in one direction only. It is a semiconductor P–N junction. The arrow in the symbol points in the direction of conventional current flow (anode → cathode).</p>
       <p><strong>Key applications:</strong></p>
@@ -984,9 +997,10 @@ Resonant frequency halves.</pre>
         <div class="callout-text"><strong>2I1:</strong> A diode is used to change alternating current to direct current. The diode only conducts when its anode is more positive than its cathode. Silicon forward voltage drop ≈ 0.6–0.7 V.</div>
       </div>
       <p><strong>Relay flyback protection:</strong> When a relay coil is de-energised, it produces a large back-EMF voltage spike. A diode across the coil (cathode to positive supply) clamps this spike and protects the driving transistor.</p>
+      <p><strong>Germanium diodes:</strong> an older semiconductor material with a much lower forward voltage drop of about <strong>0.25 V</strong> (silicon is 0.6&ndash;0.7 V). Because they conduct at very small voltages, germanium diodes are used in receiver <strong>detector circuits</strong> where the incoming RF signal may be only a few tens of millivolts &mdash; a silicon diode wouldn't switch on at all. Rare in modern radios but still found in crystal-set and simple detector designs.</p>
 
       <h3>Bipolar Junction Transistors (BJT)</h3>
-      <p>A <strong>BJT</strong> has three terminals: <strong>Base (B)</strong> — control input · <strong>Collector (C)</strong> — current flows in · <strong>Emitter (E)</strong> — current flows out. There are two types: NPN (more common) and PNP.</p>
+      <p>A <strong>BJT</strong> has three terminals: <strong>Base (B)</strong> — control input · <strong>Collector (C)</strong> — current flows in · <strong>Emitter (E)</strong> — current flows out. There are two types: NPN (more common) and PNP. <strong>The Intermediate syllabus only examines the NPN type</strong> &mdash; PNP works on the same principles with polarities reversed.</p>
       <p><strong>Current relationships in NPN:</strong></p>
       <pre>IC = β × IB        (collector current = gain × base current)
 IE = IC + IB       (emitter current = collector + base)
@@ -996,6 +1010,7 @@ IE = IC + IB       (emitter current = collector + base)
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2I3:</strong> The current gain β of a transistor is defined as IC / IB.</div>
       </div>
+      <p><strong>Base-emitter forward drop:</strong> the base-emitter junction of a BJT is a P-N junction just like a diode, so it needs about <strong>0.6 V</strong> of forward bias before any collector current flows at all. Below 0.6 V between base and emitter, the transistor is fully cut off.</p>
       <p><strong>Example:</strong> A transistor has β = 100. Base current = 50 μA. What is the collector current?</p>
       <pre>IC = β × IB = 100 × 0.00005 = 5 mA</pre>
 
@@ -1004,6 +1019,11 @@ IE = IC + IB       (emitter current = collector + base)
 
       <h4>Transistor biasing (2I4 and 2I5)</h4>
       <p><strong>Biasing</strong> provides the correct DC voltages and currents to set the transistor's operating point. Without correct bias, the transistor either cuts off or saturates.</p>
+      <p>For <strong>linear amplification</strong> (a faithful, larger copy of the input signal), the transistor must sit in its linear operating region. The classic rule: set the DC output voltage to <strong>half the supply voltage</strong>. That gives the maximum symmetrical voltage swing &mdash; the output can rise or fall equally before clipping against the supply rail (top) or ground (bottom). Bias too high or too low and the signal clips on one side, causing distortion. <strong>Coupling capacitors</strong> on the input and output block the DC bias from reaching the rest of the circuit while passing the AC signal through.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>&beta; manufacturing tolerance:</strong> the current gain &beta; of a given transistor type has a wide manufacturing spread &mdash; a "&beta; = 100" part might actually be anywhere from ~50 to ~300. Robust amplifier designs use resistor networks that make the bias point insensitive to &beta;, so the circuit works with any part from the batch.</div>
+      </div>
       <p>Amplifier classes describe how much of the input signal cycle the transistor conducts for. The class determines the trade-off between <strong>linearity</strong> (faithful reproduction of the signal) and <strong>efficiency</strong> (how much DC power is converted to useful output vs wasted as heat). This matters in radio because transmitter PA stages must balance signal quality against power efficiency.</p>
       <div class="table-wrapper">
         <table>
