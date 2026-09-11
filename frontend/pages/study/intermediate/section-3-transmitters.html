@@ -1118,6 +1118,11 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
       <h2>Oscillators</h2>
 
+      <h4>What is an oscillator?</h4>
+      <p>An <strong>oscillator</strong> is an amplifier whose output is fed back into its input in a controlled way. If the feedback reinforces the signal at one specific frequency, the circuit will produce a continuous sine wave at that frequency &mdash; you have an oscillator.</p>
+      <p><strong>The mic-and-speaker analogy:</strong> hold a microphone too close to a loudspeaker and you get the classic howling squeal. Sound from the speaker enters the mic, gets amplified, comes back out of the speaker louder, re-enters the mic&hellip; and rapidly builds into a single loud tone. That's positive feedback creating an unwanted acoustic oscillator. An electronic oscillator does exactly the same thing on purpose &mdash; a small feedback network fed back into an amplifier's input picks one specific frequency to sustain, and the amplifier keeps it going.</p>
+      <p><strong>Two things determine an oscillator's usefulness:</strong> the <strong>frequency</strong> (set by the feedback network) and the <strong>stability</strong> (how steady that frequency stays over time, temperature, and supply-voltage variation). The three common families below differ mostly in how they achieve stability.</p>
+
       <h3>Oscillator Types (3M1, 3M2, 3M3)</h3>
       <p>An <strong>oscillator</strong> generates a continuous sine wave at a specific frequency.</p>
       <div class="table-wrapper">
@@ -1133,8 +1138,34 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
           </tbody>
         </table>
       </div>
-      <p><strong>LC oscillator:</strong> uses a tuned LC circuit to set frequency. Cheap and tunable, but frequency drifts with temperature.</p>
-      <p><strong>Crystal oscillator:</strong> the crystal's mechanical resonance is very stable. Drift is measured in parts per million (ppm). Can be temperature-compensated (TCXO) or oven-controlled (OCXO) for even better stability.</p>
+      <p><strong>LC oscillator / VFO:</strong> replaces the crystal with a parallel LC tank as the frequency-setting element. Same Colpitts topology as the crystal oscillator above &mdash; a transistor amplifier with capacitive feedback &mdash; but with an inductor + variable capacitor tank in place of the crystal. This is the classic <strong>Variable Frequency Oscillator (VFO)</strong>. The frequency can be swept across a range by varying either L or C.</p>
+      <p>The tuning range depends on the min/max values of the variable cap (or variable inductor): a wider component range gives a wider tuning range. Cheap and continuously tunable, but far less stable than crystal &mdash; the LC values drift with temperature and mechanical shock.</p>
+      <p><strong>Crystal oscillator:</strong> uses a thin slab of <strong>quartz</strong> as the frequency-setting element. Quartz is <strong>piezoelectric</strong> &mdash; it physically changes shape when a voltage is applied across it, and it resonates most strongly at one specific frequency set by the slab's exact size and thickness. That mechanical resonance is what makes crystal oscillators so stable: the frequency is locked to a physical dimension, not to component values that drift with temperature.</p>
+      <p>Crystals are usually packaged in sealed metal cans with two wire terminals or short pins, ready to solder into a board or plug into a socket. Because the frequency is set by the physical slab, you can't tune a crystal oscillator over a wide range &mdash; but a small <strong>trimmer capacitor</strong> in series with the crystal lets you pull the frequency by a few kHz for fine calibration.</p>
+      <p>Drift is measured in <strong>parts per million (ppm)</strong>. Standard crystals are a few ppm; temperature-compensated crystal oscillators (<strong>TCXO</strong>) and oven-controlled crystal oscillators (<strong>OCXO</strong>) reduce this further for reference-grade stability.</p>
+      <p><strong>Circuit topology name-drop:</strong> the standard single-transistor crystal oscillator you'll see in circuit diagrams is called a <strong>Colpitts oscillator</strong> &mdash; identifiable by the pair of capacitors (C1, C2) forming a tapped-capacitor feedback network from the transistor output back to its input. You don't need to draw the full schematic for the exam, but you do need to be able to <em>identify</em> a crystal oscillator (Colpitts variant with a crystal) from an LC oscillator (Colpitts variant with an inductor).</p>
+
+      <h4>Keeping a VFO stable</h4>
+      <p>A VFO is only useful if it stays where you set it. RSGB's stability checklist for practical VFO construction:</p>
+      <ul>
+        <li><strong>Well-regulated power supply</strong> &mdash; supply-voltage changes shift the transistor's operating point, which nudges the frequency. A clean regulated rail keeps that fixed.</li>
+        <li><strong>Rigid mechanical construction</strong> &mdash; any physical vibration or flex of the coil, capacitor plates or PCB will shift the frequency. Build it solid.</li>
+        <li><strong>Screened enclosure</strong> &mdash; a metal box around the VFO keeps stray RF from other circuits (and vice versa) out of the tank.</li>
+        <li><strong>Temperature-stable components</strong> &mdash; use temperature-stable coil formers, NP0/C0G capacitors in the tank, and components with matched temperature coefficients so drift cancels rather than adds.</li>
+        <li><strong>Buffer stage</strong> &mdash; a small buffer amplifier between the VFO output and the rest of the circuit isolates the oscillator from load changes downstream. Without a buffer, keying the transmitter can pull the oscillator frequency.</li>
+      </ul>
+      <p>Even with all of the above, a VFO will still drift a little. That's why it needs to be calibrated at least at each band edge (see the Ch 3C Oscillator Drift block above for the maths of how much drift matters).</p>
+
+      <h4>Direct Digital Synthesis (DDS) &mdash; how the modern approach works</h4>
+      <p>Rather than using an analogue tank to set frequency, <strong>DDS</strong> generates a sine wave from digital samples. Inside the DDS chip:</p>
+      <ol>
+        <li>A <strong>lookup table</strong> stored in memory holds one full cycle of a sine wave as a sequence of digital values.</li>
+        <li>A <strong>digital counter</strong> steps through the table at a controllable rate &mdash; faster stepping = higher output frequency.</li>
+        <li>Each value is passed to a <strong>digital-to-analogue converter (DAC)</strong>, which outputs the corresponding voltage.</li>
+        <li>The sequence of voltages forms an analogue sine wave at the desired frequency.</li>
+      </ol>
+      <p><strong>Precision:</strong> more bits in the DAC = smaller voltage steps = smoother output = fewer spurious signals. Cheap DDS ICs (AD9850 and similar) are widely used in amateur kit projects. The DDS output is normally followed by a <strong>low-pass filter</strong> to remove any residual stepping artefacts and out-of-band spurious content.</p>
+      <p><strong>DDS + PLL combination:</strong> modern rigs often lock a PLL to a stable crystal reference and use a DDS to steer the PLL &mdash; combining crystal-grade stability with fine, wide-range digital tunability. This is why modern transceivers can tune in 1 Hz steps across every amateur band without any of the drift problems of an analogue VFO.</p>
 
       <h3>Phase Noise (3M2)</h3>
       <p><strong>Phase noise</strong> is a measure of frequency instability in an oscillator. It describes random short-term frequency fluctuations.</p>
