@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWR Sweep &mdash; Standing Waves &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a;
+  color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  padding: 1.5rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+
+.card {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.card-title {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #334155;
+  margin-bottom: 0.55rem;
+}
+
+/* Toggle buttons */
+.toggle-bar {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+.tbtn {
+  background: #1a2234;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  color: #94a3b8;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.28rem 0.6rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.tbtn:hover { color: #e2e8f0; border-color: #334155; }
+.tbtn.on { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+.tbtn.cyan-on  { background: #04141a; border-color: #06b6d4; color: #06b6d4; }
+.tbtn.amber-on { background: #1a1208; border-color: #f59e0b; color: #f59e0b; }
+
+/* Transmission line pane */
+#line-canvas { display: block; width: 100%; border-radius: 4px; background: #070d1a; }
+
+/* Impedance slider */
+.z-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.z-label {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  white-space: nowrap;
+}
+.z-slider-wrap { flex: 1 1 200px; display: flex; align-items: center; gap: 0.5rem; }
+input[type="range"] { flex: 1; accent-color: #a78bfa; cursor: pointer; }
+.z-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  min-width: 6ch;
+  text-align: right;
+}
+.swr-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Readout grid */
+.ro-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+@media (max-width: 640px) { .ro-grid { grid-template-columns: repeat(2, 1fr); } }
+.ro-item {
+  background: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  padding: 0.48rem 0.6rem;
+}
+.ro-label {
+  font-size: 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #e2e8f0; }
+.ro-val.cyan   { color: #06b6d4; }
+.ro-val.amber  { color: #f59e0b; }
+.ro-val.purple { color: #a78bfa; }
+.ro-val.green  { color: #22c55e; }
+.ro-val.red    { color: #f87171; }
+
+/* Formula overlay panel */
+#formula-panel {
+  background: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.85;
+  margin-top: 0.75rem;
+  display: none;
+}
+#formula-panel.visible { display: block; }
+#formula-panel strong { color: #e2e8f0; }
+#formula-panel .fval  { color: #a78bfa; }
+
+/* Responsive */
+@media (max-width: 500px) {
+  .ro-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>SWR Sweep &mdash; Standing Wave Visualiser</h1>
+<p class="subtitle">Vary antenna impedance and watch standing waves form on the feeder &mdash; reflection coefficient, SWR, return loss</p>
+
+<!-- Transmission line pane -->
+<div class="card">
+  <div class="card-title">&#9632; Transmission Line (Z&#x2080; = 50 &#x2126;)</div>
+
+  <div class="toggle-bar">
+    <button class="tbtn" id="btn-formula" onclick="toggleFormula()">&#402; Formulae</button>
+    <button class="tbtn" id="btn-power"   onclick="togglePower()">&#8594; Power flow</button>
+    <button class="tbtn on" id="btn-anim" onclick="toggleAnim()">&#9646;&#9646; Animate</button>
+  </div>
+
+  <canvas id="line-canvas" height="180"></canvas>
+
+  <div class="z-row">
+    <div class="z-label">Z<sub>ant</sub></div>
+    <div class="z-slider-wrap">
+      <input type="range" id="sZ" min="0" max="200" value="80" step="1" oninput="onZ()">
+      <span class="z-val" id="vZ">&mdash;</span>
+    </div>
+    <div class="swr-badge" id="swr-badge">SWR &mdash;</div>
+  </div>
+
+  <div class="ro-grid">
+    <div class="ro-item">
+      <div class="ro-label">Z<sub>ant</sub></div>
+      <div class="ro-val cyan" id="ro-zant">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">&#915; (complex)</div>
+      <div class="ro-val purple" id="ro-gamma">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">|&#915;| magnitude</div>
+      <div class="ro-val amber" id="ro-gmag">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">SWR</div>
+      <div class="ro-val" id="ro-swr">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">Return loss</div>
+      <div class="ro-val" id="ro-rl">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">Power reflected</div>
+      <div class="ro-val red" id="ro-pref">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">Power delivered</div>
+      <div class="ro-val green" id="ro-pdel">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">V<sub>max</sub> / V<sub>min</sub></div>
+      <div class="ro-val" id="ro-vrat">&mdash;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">Z&#x2080; (feeder)</div>
+      <div class="ro-val" id="ro-z0">50 &#x2126;</div>
+    </div>
+    <div class="ro-item">
+      <div class="ro-label">Match quality</div>
+      <div class="ro-val" id="ro-qual">&mdash;</div>
+    </div>
+  </div>
+
+  <div id="formula-panel">
+    <strong>Reflection coefficient:</strong>&nbsp; &#915; = (Z<sub>ant</sub> &minus; Z&#x2080;) / (Z<sub>ant</sub> + Z&#x2080;) = <span class="fval" id="fp-gamma">&mdash;</span><br>
+    <strong>SWR:</strong>&nbsp; (1 + |&#915;|) / (1 &minus; |&#915;|) = <span class="fval" id="fp-swr">&mdash;</span><br>
+    <strong>Return loss:</strong>&nbsp; &minus;20&middot;log&#x2081;&#x2080;(|&#915;|) = <span class="fval" id="fp-rl">&mdash;</span> dB<br>
+    <strong>Power reflected:</strong>&nbsp; |&#915;|&sup2; &times; 100 = <span class="fval" id="fp-pref">&mdash;</span> %<br>
+    <strong>Standing wave:</strong>&nbsp; |V(x)| = |V&#x207A;| &middot; &radic;(1 + |&#915;|&sup2; + 2|&#915;|&middot;cos(2&beta;x + &phi;&#915;))
+  </div>
+</div>
+
+<script>
+// ── Constants & state ─────────────────────────────────────────────────────────
+const Z0 = 50;
+let Z_ant = 50;          // current antenna impedance (Ω, real-valued for simplicity)
+let showFormula = false;
+let showPower   = false;
+let animRunning = true;
+let animPhase   = 0;     // 0..2π, advances each frame for the travelling-wave feel
+let lastWall    = null;
+
+const canvas  = document.getElementById('line-canvas');
+const ctx     = canvas.getContext('2d');
+
+// Slider range: 10–500 Ω, mapped from 0–200 slider
+function sliderToZ(v) {
+    // logarithmic: 10 → 500 Ω
+    return Math.round(Math.pow(10, 1 + (v / 200) * Math.log10(50)));
+}
+
+function onZ() {
+    const sv  = +document.getElementById('sZ').value;
+    Z_ant     = sliderToZ(sv);
+    document.getElementById('vZ').textContent = Z_ant + ' Ω';
+    updateReadouts();
+    // keep display in sync (canvas redraws in rAF anyway)
+}
+
+// ── Physics ───────────────────────────────────────────────────────────────────
+function calcGamma(za, z0) {
+    // Real-valued impedances → Γ is real
+    return (za - z0) / (za + z0);
+}
+function calcSWR(gMag) {
+    if (gMag >= 1) return Infinity;
+    return (1 + gMag) / (1 - gMag);
+}
+function calcRL(gMag) {
+    if (gMag <= 0) return Infinity;
+    return -20 * Math.log10(gMag);
+}
+
+// Standing-wave envelope at normalised position x ∈ [0,1], phase offset φ
+// |V(x)| = sqrt(1 + gMag² + 2·gMag·cos(2πx·N_halfwaves*2 + phiG + animPhase))
+// We show 3 half-wavelengths across the line for good visual effect
+function vMag(x, gMag, phiG, phase) {
+    const beta_x = Math.PI * 3 * x; // 3 half-wavelengths across the line
+    return Math.sqrt(Math.max(0, 1 + gMag*gMag + 2*gMag*Math.cos(2*beta_x + phiG + phase)));
+}
+
+// ── Readout update ────────────────────────────────────────────────────────────
+function updateReadouts() {
+    const gamma = calcGamma(Z_ant, Z0);
+    const gMag  = Math.abs(gamma);
+    const gPhi  = gamma >= 0 ? 0 : Math.PI;
+    const swr   = calcSWR(gMag);
+    const rl    = calcRL(gMag);
+    const pRef  = gMag * gMag * 100;
+    const pDel  = 100 - pRef;
+
+    document.getElementById('ro-zant').textContent  = Z_ant + ' Ω';
+    document.getElementById('ro-gamma').textContent = gamma.toFixed(3);
+    document.getElementById('ro-gmag').textContent  = gMag.toFixed(3);
+
+    const swrStr = swr >= 100 ? '>100' : swr.toFixed(2) + ':1';
+    document.getElementById('ro-swr').textContent   = swrStr;
+    document.getElementById('ro-rl').textContent    = isFinite(rl) ? rl.toFixed(1) + ' dB' : '∞ dB';
+    document.getElementById('ro-pref').textContent  = pRef.toFixed(1) + ' %';
+    document.getElementById('ro-pdel').textContent  = pDel.toFixed(1) + ' %';
+
+    const vmax = 1 + gMag, vmin = 1 - gMag;
+    document.getElementById('ro-vrat').textContent  = vmin > 0.001
+        ? (vmax / vmin).toFixed(2) : '∞';
+
+    // Quality label
+    let qual, qClass;
+    if (swr < 1.5)       { qual = 'Excellent'; qClass = 'green'; }
+    else if (swr < 2.0)  { qual = 'Good';      qClass = 'cyan';  }
+    else if (swr < 3.0)  { qual = 'Marginal';  qClass = 'amber'; }
+    else                 { qual = 'Poor';       qClass = 'red';   }
+    const qEl = document.getElementById('ro-qual');
+    qEl.textContent  = qual;
+    qEl.className    = 'ro-val ' + qClass;
+
+    // SWR badge
+    const badge = document.getElementById('swr-badge');
+    badge.textContent = 'SWR ' + swrStr;
+    badge.style.borderColor = qClass === 'green' ? '#22c55e'
+                            : qClass === 'cyan'  ? '#06b6d4'
+                            : qClass === 'amber' ? '#f59e0b'
+                            : '#f87171';
+    badge.style.color = badge.style.borderColor;
+    badge.style.background = qClass === 'green' ? '#0a1f0f'
+                           : qClass === 'cyan'  ? '#04141a'
+                           : qClass === 'amber' ? '#1a1208'
+                           : '#1a0a0a';
+
+    // SWR readout colour
+    const srEl = document.getElementById('ro-swr');
+    srEl.className = 'ro-val ' + qClass;
+
+    // Formula panel
+    document.getElementById('fp-gamma').textContent = gamma.toFixed(4);
+    document.getElementById('fp-swr').textContent   = swrStr;
+    document.getElementById('fp-rl').textContent    = isFinite(rl) ? rl.toFixed(2) : '∞';
+    document.getElementById('fp-pref').textContent  = pRef.toFixed(1);
+}
+
+// ── Canvas drawing ────────────────────────────────────────────────────────────
+function resizeCanvas() {
+    const w = Math.floor(canvas.parentElement.getBoundingClientRect().width) - 32;
+    if (canvas.width !== w) canvas.width = Math.max(200, w);
+}
+
+function drawLine() {
+    resizeCanvas();
+    const W = canvas.width;
+    const H = canvas.height;
+    const c = ctx;
+
+    c.fillStyle = '#070d1a';
+    c.fillRect(0, 0, W, H);
+
+    const gamma = calcGamma(Z_ant, Z0);
+    const gMag  = Math.abs(gamma);
+    const gPhi  = gamma >= 0 ? 0 : Math.PI;
+    const swr   = calcSWR(gMag);
+
+    // Layout
+    const padL  = 60, padR = 72;
+    const lineW = W - padL - padR;
+    const midY  = H / 2;
+    const maxAmp = H * 0.36;
+
+    // === λ/2 markers ===
+    const nHalf = 3; // 3 half-wavelengths shown
+    c.strokeStyle = '#131e2e';
+    c.lineWidth = 1;
+    c.setLineDash([3, 5]);
+    for (let k = 0; k <= nHalf; k++) {
+        const mx = padL + lineW * k / nHalf;
+        c.beginPath(); c.moveTo(mx, 24); c.lineTo(mx, H - 16); c.stroke();
+    }
+    c.setLineDash([]);
+    // λ/2 labels at top
+    c.fillStyle = '#1e2d3d';
+    c.font = '9px "IBM Plex Mono", monospace';
+    c.textAlign = 'center';
+    for (let k = 0; k < nHalf; k++) {
+        const lx = padL + lineW * (k + 0.5) / nHalf;
+        c.fillText('λ/2', lx, 20);
+    }
+
+    // === Feeder centre-line ===
+    c.strokeStyle = '#1e293b';
+    c.lineWidth   = 1;
+    c.beginPath(); c.moveTo(padL, midY); c.lineTo(padL + lineW, midY); c.stroke();
+
+    // === Standing-wave envelope (filled area) ===
+    const N = Math.max(200, lineW);
+
+    // Travelling wave phase offset for animation
+    const phase = animRunning ? animPhase : 0;
+
+    // Envelope function
+    const envPts = [];
+    for (let i = 0; i <= N; i++) {
+        const x  = i / N;
+        const vm = vMag(x, gMag, gPhi, 0); // static envelope (no phase)
+        envPts.push(vm);
+    }
+
+    // Instantaneous wave for animation (shows the travelling-wave motion when matched)
+    const wavePts = [];
+    for (let i = 0; i <= N; i++) {
+        const x  = i / N;
+        const vm = vMag(x, gMag, gPhi, phase);
+        wavePts.push(vm);
+    }
+
+    // Normalise so max = 1
+    const envMax = Math.max(...envPts, 1e-9);
+
+    // Fill between +envelope and -envelope (static, shows the extent of standing wave)
+    c.beginPath();
+    for (let i = 0; i <= N; i++) {
+        const px = padL + (i / N) * lineW;
+        const py = midY - (envPts[i] / envMax) * maxAmp;
+        i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+    }
+    for (let i = N; i >= 0; i--) {
+        const px = padL + (i / N) * lineW;
+        const py = midY + (envPts[i] / envMax) * maxAmp;
+        c.lineTo(px, py);
+    }
+    c.closePath();
+    // Colour: transitions from cyan (matched) toward amber (mismatched) with gMag
+    const envelopeAlpha = 0.08 + gMag * 0.12;
+    const r = Math.round(6   + gMag * (245 - 6));
+    const g = Math.round(182 + gMag * (158 - 182));
+    const b = Math.round(212 + gMag * (11  - 212));
+    c.fillStyle = `rgba(${r},${g},${b},${envelopeAlpha.toFixed(2)})`;
+    c.fill();
+
+    // Envelope edge lines
+    c.beginPath();
+    for (let i = 0; i <= N; i++) {
+        const px = padL + (i / N) * lineW;
+        const py = midY - (envPts[i] / envMax) * maxAmp;
+        i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+    }
+    c.strokeStyle = `rgba(${r},${g},${b},0.55)`;
+    c.lineWidth   = 1.5;
+    c.stroke();
+
+    c.beginPath();
+    for (let i = 0; i <= N; i++) {
+        const px = padL + (i / N) * lineW;
+        const py = midY + (envPts[i] / envMax) * maxAmp;
+        i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+    }
+    c.strokeStyle = `rgba(${r},${g},${b},0.55)`;
+    c.stroke();
+
+    // Instantaneous wave (animated sine trace)
+    if (gMag < 0.99) {
+        c.beginPath();
+        for (let i = 0; i <= N; i++) {
+            const px = padL + (i / N) * lineW;
+            const x  = i / N;
+            // Forward wave component
+            const fwd  = Math.cos(Math.PI * 3 * x * 2 - phase);
+            // Reflected wave component
+            const refl = gMag * Math.cos(Math.PI * 3 * x * 2 + gPhi + phase);
+            const py   = midY - ((fwd + refl) / (1 + gMag)) * maxAmp * 0.65;
+            i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+        }
+        c.strokeStyle = `rgba(${r},${g},${b},0.7)`;
+        c.lineWidth   = 1.2;
+        c.stroke();
+    }
+
+    // === Node / antinode markers ===
+    if (gMag > 0.08) {
+        // Voltage minima (nodes) along the envelope
+        for (let k = 0; k < nHalf; k++) {
+            // Nodes at 0, λ/2, λ etc from load (right edge) for real Γ<0
+            // For Γ>0: nodes at λ/4, 3λ/4 from load
+            const nodeOffset = gPhi === Math.PI ? 0.5 / nHalf : 0;
+            const nx = padL + lineW * (1 - ((k + nodeOffset) / nHalf) % 1);
+            if (nx >= padL && nx <= padL + lineW) {
+                c.beginPath();
+                c.arc(nx, midY, 4, 0, 2 * Math.PI);
+                c.fillStyle = `rgba(100,116,139,${(gMag * 0.7).toFixed(2)})`;
+                c.fill();
+            }
+        }
+    }
+
+    // === Power flow arrows (optional) ===
+    if (showPower) {
+        const arrowY_fwd  = midY - maxAmp - 18;
+        const arrowY_refl = midY + maxAmp + 18;
+        const nArrows = 5;
+        const spacing = lineW / (nArrows + 1);
+
+        // Forward power arrows (left to right, cyan)
+        c.fillStyle = `rgba(6,182,212,0.8)`;
+        c.font = '11px sans-serif';
+        for (let k = 0; k < nArrows; k++) {
+            const ax = padL + spacing * (k + 1) + (animRunning ? (animPhase / (2*Math.PI)) * spacing : 0);
+            const clampX = Math.min(Math.max(ax, padL + 6), padL + lineW - 6);
+            drawArrow(c, clampX - 10, arrowY_fwd, clampX + 10, arrowY_fwd, `rgba(6,182,212,0.75)`);
+        }
+        c.fillStyle = '#06b6d4';
+        c.font = '9px "IBM Plex Mono", monospace';
+        c.textAlign = 'right';
+        c.fillText('P+', padL - 4, arrowY_fwd + 4);
+
+        // Reflected power arrows (right to left, amber), scaled by gMag²
+        if (gMag > 0.02) {
+            const reflAlpha = Math.min(0.85, gMag * gMag * 2 + 0.2);
+            for (let k = 0; k < nArrows; k++) {
+                const ax = padL + lineW - spacing * (k + 1) - (animRunning ? (animPhase / (2*Math.PI)) * spacing : 0);
+                const clampX = Math.min(Math.max(ax, padL + 6), padL + lineW - 6);
+                drawArrow(c, clampX + 10, arrowY_refl, clampX - 10, arrowY_refl, `rgba(245,158,11,${reflAlpha.toFixed(2)})`);
+            }
+            c.fillStyle = '#f59e0b';
+            c.textAlign = 'right';
+            c.fillText('P−', padL - 4, arrowY_refl + 4);
+        }
+    }
+
+    // === TX label (left) ===
+    c.fillStyle = '#475569';
+    c.font = 'bold 10px "IBM Plex Mono", monospace';
+    c.textAlign = 'center';
+    c.fillText('TX', padL / 2, midY + 4);
+    // Small TX box
+    c.strokeStyle = '#334155';
+    c.lineWidth = 1.5;
+    c.strokeRect(padL / 2 - 14, midY - 14, 28, 18);
+
+    // === Antenna symbol (right) ===
+    const ax = W - padR / 2;
+    c.strokeStyle = '#475569';
+    c.lineWidth = 1.5;
+    // mast
+    c.beginPath(); c.moveTo(ax, midY + 14); c.lineTo(ax, midY - 8); c.stroke();
+    // two arms
+    const span = Z_ant === Z0 ? 18 : 16;
+    c.beginPath(); c.moveTo(ax - span, midY - 8); c.lineTo(ax + span, midY - 8); c.stroke();
+    // half-dipole ends (slight droop)
+    c.beginPath(); c.moveTo(ax - span, midY - 8); c.lineTo(ax - span - 4, midY - 2); c.stroke();
+    c.beginPath(); c.moveTo(ax + span, midY - 8); c.lineTo(ax + span + 4, midY - 2); c.stroke();
+    // Impedance label
+    c.fillStyle = gMag < 0.05 ? '#22c55e' : gMag < 0.3 ? '#06b6d4' : gMag < 0.6 ? '#f59e0b' : '#f87171';
+    c.font = '9px "IBM Plex Mono", monospace';
+    c.textAlign = 'center';
+    c.fillText(Z_ant + 'Ω', ax, midY + 26);
+
+    // === Feeder wire ===
+    c.strokeStyle = '#1e3a4a';
+    c.lineWidth = 2.5;
+    c.beginPath(); c.moveTo(padL, midY - 4); c.lineTo(padL + lineW, midY - 4); c.stroke();
+    c.beginPath(); c.moveTo(padL, midY + 4); c.lineTo(padL + lineW, midY + 4); c.stroke();
+}
+
+function drawArrow(c, x1, y1, x2, y2, color) {
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    c.strokeStyle = color;
+    c.fillStyle   = color;
+    c.lineWidth   = 1.5;
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    c.beginPath();
+    c.moveTo(x2, y2);
+    c.lineTo(x2 - 8 * Math.cos(ang - 0.4), y2 - 8 * Math.sin(ang - 0.4));
+    c.lineTo(x2 - 8 * Math.cos(ang + 0.4), y2 - 8 * Math.sin(ang + 0.4));
+    c.closePath(); c.fill();
+}
+
+// ── Toggle controls ───────────────────────────────────────────────────────────
+function toggleFormula() {
+    showFormula = !showFormula;
+    document.getElementById('formula-panel').classList.toggle('visible', showFormula);
+    document.getElementById('btn-formula').classList.toggle('cyan-on', showFormula);
+}
+function togglePower() {
+    showPower = !showPower;
+    document.getElementById('btn-power').classList.toggle('amber-on', showPower);
+}
+function toggleAnim() {
+    animRunning = !animRunning;
+    const btn = document.getElementById('btn-anim');
+    btn.classList.toggle('on', animRunning);
+    btn.textContent = animRunning ? '⏸ Animate' : '▶ Animate';
+    lastWall = null;
+}
+
+// ── Responsive slider (map 0–200 → 10–500Ω logarithmically) ─────────────────
+// We just re-display using sliderToZ; actual mapping done in onZ()
+
+// ── Animation loop ────────────────────────────────────────────────────────────
+function loop(wallMs) {
+    if (animRunning) {
+        const wallS = wallMs / 1000;
+        if (lastWall !== null) {
+            const dt = Math.min(0.05, wallS - lastWall);
+            animPhase = (animPhase + dt * Math.PI * 1.8) % (2 * Math.PI);
+        }
+        lastWall = wallMs / 1000;
+    }
+    drawLine();
+    requestAnimationFrame(loop);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => { resizeCanvas(); });
+
+// Set initial slider to Z=50 (matched): slider value that gives ~50Ω
+// sliderToZ(v) = 10^(1 + v/200 * log10(50)) = 50 when 1 + v/200*1.699 = 1.699 → v ≈ 82.3
+// Let's find the initial value:
+(function initSlider() {
+    const target = 50;
+    let best = 0, bestDiff = Infinity;
+    for (let v = 0; v <= 200; v++) {
+        const diff = Math.abs(sliderToZ(v) - target);
+        if (diff < bestDiff) { bestDiff = diff; best = v; }
+    }
+    document.getElementById('sZ').value = best;
+    Z_ant = target;
+    document.getElementById('vZ').textContent = Z_ant + ' Ω';
+})();
+
+updateReadouts();
+requestAnimationFrame(loop);
+</script>
+</main>
+</body>
+</html>
