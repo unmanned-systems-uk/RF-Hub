@@ -307,6 +307,28 @@ V_oc = 13.2 + (1 × 0.2) = 13.4 V</pre>
 
       <h3>Capacitors</h3>
       <p>A <strong>capacitor</strong> stores charge. It consists of <strong>two metal plates separated by an insulating material</strong> (the dielectric). Capacitance is measured in <strong>farads (F)</strong>. Practical units: μF (μ, "mu" — 10⁻⁶ F), nF (10⁻⁹ F), pF (10⁻¹² F).</p>
+
+      <h4>Reading capacitor markings &mdash; the 3-digit code</h4>
+      <p>Small ceramic and film capacitors are physically too tiny to print the full capacitance value on. Instead they use a compact <strong>3-digit code</strong> that gives the value in <strong>picofarads (pF)</strong>. Read it exactly like resistor colour codes:</p>
+      <ul>
+        <li>First two digits = significant figures</li>
+        <li>Third digit = number of zeros to append</li>
+        <li>Result is in pF</li>
+      </ul>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Marking</th><th>First two digits</th><th>Zeros to add</th><th>Value in pF</th><th>Common name</th></tr></thead>
+          <tbody>
+            <tr><td><code>102</code></td><td>1 0</td><td>2</td><td>1 000 pF</td><td>1 nF</td></tr>
+            <tr><td><code>221</code></td><td>2 2</td><td>1</td><td>220 pF</td><td>&mdash;</td></tr>
+            <tr><td><code>473</code></td><td>4 7</td><td>3</td><td>47 000 pF</td><td>47 nF</td></tr>
+            <tr><td><code>104</code></td><td>1 0</td><td>4</td><td>100 000 pF</td><td>0.1 &micro;F</td></tr>
+            <tr><td><code>105</code></td><td>1 0</td><td>5</td><td>1 000 000 pF</td><td>1 &micro;F</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Codes below <code>100</code> (like <code>47</code>, <code>68</code>) are just the raw pF value with no multiplier. Larger electrolytic capacitors usually have the value printed in full (e.g. "470 &micro;F 25 V").</p>
+
       <div class="table-wrapper">
         <table>
           <thead><tr><th>Type</th><th>Typical values</th><th>Key property</th></tr></thead>
@@ -343,6 +365,7 @@ V_oc = 13.2 + (1 × 0.2) = 13.4 V</pre>
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2D4:</strong> An inductor is a coil of wire with several turns. Inductance depends on number of turns, core material, and turn spacing. <strong>2D6:</strong> Reducing turn spacing increases inductance.</div>
       </div>
+      <p><strong>The corkscrew rule</strong> &mdash; a memory aid for the direction of the magnetic field: curl your right hand around the wire with your thumb pointing in the direction of <strong>conventional current flow</strong>; your fingers curl in the direction of the magnetic field lines. (Same principle as a corkscrew rotating clockwise as it drives forward into a cork.) In a coil, this means the direction of current flow determines which end acts as the magnetic "north" pole &mdash; and swapping the current direction swaps the poles.</p>
 
       <div class="self-checks">
         <h3>Self-Check — 2C</h3>
@@ -444,6 +467,10 @@ P = V² / R    (power from voltage and resistance)</pre>
       <p style="font-size:0.85rem;color:var(--text-dim);margin:0.25rem 0 0.5rem;">(² means "squared" — the value multiplied by itself; e.g. I² = I × I)</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>The squared relationship &mdash; doubling voltage quadruples power.</strong> Because P = V<sup>2</sup>/R, if you double the voltage across a fixed resistance, the power goes up by 2<sup>2</sup> = <strong>four times</strong>, not two times. This is why transmitting at 100 W into an antenna produces four times the radiated power of transmitting at 50 W (assuming the same antenna and feeder). Same reasoning in reverse: dropping to 25 W is a 4&times; power cut, not 2&times;.</div>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2D2:</strong> Know all three power formulas. Identify which two quantities you are given (V and R, V and I, or I and R) and pick the matching formula.</div>
       </div>
       <p><strong>Example:</strong> What power is dissipated in a 50 Ω resistor with 10 V across it?</p>
@@ -529,6 +556,7 @@ P = V² / R    (power from voltage and resistance)</pre>
         <li><strong>Period (T, "tee"):</strong> the time for one complete cycle — unit: <strong>seconds (s)</strong>.</li>
       </ul>
       <pre>f = 1 / T      T = 1 / f</pre>
+      <p><strong>Other waveform shapes:</strong> radio work is dominated by sine waves, but you'll meet <strong>square waves</strong> (constant amplitude at fixed high/low levels, used in digital logic and switching supplies) and <strong>triangle waves</strong> (linear ramps up and down) in test equipment and digital circuits. The full theory of these non-sinusoidal shapes belongs to the Full Licence &mdash; for the Intermediate exam, just recognise the names and know that any non-sine wave can be built up as a sum of sine waves at the fundamental frequency plus harmonics.</p>
       <p><strong>Example:</strong> Mains frequency = 50 Hz → Period = 1 / 50 = <strong>0.02 s (20 ms)</strong></p>
       <ul>
         <li><strong>Peak voltage (V_pk):</strong> the maximum voltage reached in one direction.</li>
@@ -553,6 +581,33 @@ V_pk  = V_rms × √2 ≈  V_rms × 1.414</pre>
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2E1:</strong> A capacitor will allow AC to flow but block DC. This is a fundamental property with many practical uses.</div>
       </div>
+
+      <h4>Charging and discharging &mdash; the RC and L/R curves</h4>
+      <p>When a capacitor charges through a resistor from a DC supply, the voltage across it rises <strong>exponentially</strong> &mdash; fast at first, then slowing as it approaches the supply voltage. Discharging is the mirror image: fast at first, then slowing as it approaches zero. An inductor's current behaves the same way &mdash; rises exponentially to a steady value when switched on, decays exponentially when switched off (though back-EMF makes the switch-off dramatic if there's no discharge path).</p>
+      <figure style="margin: 1rem 0;">
+        <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;" aria-label="RC charging/discharging and L/R current curves">
+          <text x="200" y="18" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#94a3b8">Capacitor charging then discharging (voltage vs time)</text>
+          <text x="600" y="18" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#94a3b8">Inductor current build-up then decay (current vs time)</text>
+          <line x1="30" y1="190" x2="370" y2="190" stroke="#334155" stroke-width="1"/>
+          <line x1="30" y1="40" x2="30" y2="190" stroke="#334155" stroke-width="1"/>
+          <line x1="30" y1="60" x2="370" y2="60" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="35" y="55" font-family="IBM Plex Mono,monospace" font-size="9" fill="#94a3b8">V<tspan baseline-shift="sub" font-size="7">supply</tspan></text>
+          <path d="M 30 190 Q 60 90 200 60" fill="none" stroke="#06b6d4" stroke-width="2"/>
+          <path d="M 200 60 Q 240 90 370 190" fill="none" stroke="#f59e0b" stroke-width="2"/>
+          <text x="115" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#06b6d4">charging (switch to +V)</text>
+          <text x="285" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#f59e0b">discharging (switch to ground)</text>
+          <line x1="430" y1="190" x2="770" y2="190" stroke="#334155" stroke-width="1"/>
+          <line x1="430" y1="40" x2="430" y2="190" stroke="#334155" stroke-width="1"/>
+          <line x1="430" y1="60" x2="770" y2="60" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="435" y="55" font-family="IBM Plex Mono,monospace" font-size="9" fill="#94a3b8">I<tspan baseline-shift="sub" font-size="7">steady</tspan></text>
+          <path d="M 430 190 Q 460 90 600 60" fill="none" stroke="#06b6d4" stroke-width="2"/>
+          <path d="M 600 60 Q 640 90 770 190" fill="none" stroke="#f59e0b" stroke-width="2"/>
+          <text x="515" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#06b6d4">current builds (switch on)</text>
+          <text x="685" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#f59e0b">current decays (switch off)</text>
+        </svg>
+        <figcaption style="text-align:center; font-family:'IBM Plex Sans',sans-serif; font-size:0.8rem; color:var(--text-dim); margin-top:0.5rem;">Both curves are exponential &mdash; fast change at first, slowing as the target value is approached. The <strong>time constant</strong> (&tau;&nbsp;=&nbsp;RC for capacitors, &tau;&nbsp;=&nbsp;L/R for inductors) sets how quickly this happens: after 1&tau; the value reaches 63% of its final level, after 5&tau; it's essentially there.</figcaption>
+      </figure>
+      <p>The <strong>time constant</strong> is a critical concept for filter design, keyclick suppression, and rise-time calculations &mdash; you'll meet it again in the filter module and in the CW keying discussion in section 3.</p>
 
       <h3>Reactance (2E4 and 2E5)</h3>
       <p><strong>Reactance</strong> is the opposition to AC offered by a capacitor or inductor. Measured in <strong>ohms (Ω)</strong>.</p>
@@ -1321,6 +1376,16 @@ IE = IC + IB       (emitter current = collector + base)
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2J1:</strong> The Ah rating is an indication of the stored energy when fully charged. A 10 Ah battery can supply 10 A for 1 hour, or 1 A for 10 hours.</div>
       </div>
+
+      <h4>Combining cells &mdash; series adds voltage, parallel adds capacity</h4>
+      <p>A single cell (e.g. an AA) produces a fixed <strong>voltage</strong> determined by its chemistry &mdash; ~1.5 V for a standard alkaline cell, ~1.2 V for a rechargeable NiMH, ~3.7 V for a lithium-ion. To get a different voltage or more capacity, cells are combined into a battery:</p>
+      <ul>
+        <li><strong>Cells in series</strong> &mdash; voltages add, capacity stays the same as one cell. Three 1.5 V AA cells in series give 4.5 V at the same mAh rating as a single cell.</li>
+        <li><strong>Cells in parallel</strong> &mdash; voltage stays the same as one cell, capacities add. Two 1.5 V AA cells in parallel give 1.5 V at double the mAh rating.</li>
+        <li><strong>Series-parallel</strong> combinations give both (e.g. a 12 V drill battery is typically 10&times; Li-ion cells wired as 3-series &times; multiple-parallel groups).</li>
+      </ul>
+      <p>The choice depends on the load: high-current transceivers need parallel groups to sustain the current draw; multi-cell voltages (12 V, 18 V, 24 V) are built by series stacks.</p>
+
       <p><strong>Example:</strong> An SDR receiver needs 6 V at 350 mA for 25 hours.</p>
       <pre>Capacity = 0.35 A × 25 h = 8.75 Ah → choose next size up: 10 Ah</pre>
 
