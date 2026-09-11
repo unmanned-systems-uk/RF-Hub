@@ -195,6 +195,14 @@
       </div>
       <h2>The Superheterodyne Receiver</h2>
 
+      <h3>The simplest receivers &mdash; before superhet</h3>
+      <p>Before we get to the superhet, it helps to see the two simpler receiver architectures that RSGB uses to introduce the ideas:</p>
+      <ul>
+        <li><strong>Crystal set / diode receiver</strong> &mdash; the earliest and simplest receiver. Just a tuned LC front-end, a <strong>germanium diode</strong> as detector (germanium's low forward voltage of ~0.25 V lets it rectify very weak signals a silicon diode would miss), and a high-impedance earphone. No amplification &mdash; powered entirely by the signal picked up by the antenna. Works for strong local AM stations but has poor sensitivity and poor selectivity.</li>
+        <li><strong>Tuned Radio Frequency (TRF) receiver</strong> &mdash; adds a tuned RF amplifier before the detector, giving much better sensitivity than a crystal set. Selectivity improves because the tuned amplifier only amplifies frequencies near f&#x2080;, so weak signals aren't swamped by strong local stations. Still limited &mdash; the tuning capacitor has to track across the whole band, and the filter shape isn't quite selective enough for closely-spaced signals.</li>
+      </ul>
+      <p>The <strong>superheterodyne</strong> below fixes the TRF's selectivity problem by mixing every received frequency down to a single fixed <strong>intermediate frequency (IF)</strong> where a high-quality narrow filter can be built once and used for the whole band.</p>
+
       <h3>Why Superhet? (3A2)</h3>
       <p>A <strong>crystal diode receiver</strong> (simple detector) can receive signals but has very limited selectivity. At low frequencies this is acceptable. Above about 3 MHz, signals are too close together and the receiver cannot separate them.</p>
       <p>The <strong>superheterodyne (superhet)</strong> design solves this by converting all incoming signals to a single fixed <strong>intermediate frequency (IF)</strong> before filtering and detection. Filtering at a fixed frequency is much easier to do well than filtering at hundreds of different RF frequencies.</p>
@@ -342,6 +350,7 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <li><strong>High Q, narrow bandwidth → high selectivity</strong> (can pick out one signal in a crowded band).</li>
         <li><strong>Low Q, wide bandwidth → low selectivity</strong> (nearby signals interfere).</li>
       </ul>
+      <p><strong>Formally:</strong> the bandwidth in Q = f&#x2080; / BW is measured between the two points where the response has dropped to <strong>half power</strong> &mdash; the <strong>&minus;3 dB points</strong>. Everything covered in the &minus;3 dB / cut-off block in Section 2 applies here too. Higher Q = narrower half-power bandwidth = more selective receiver.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>3H4 / 3I (D2F-M1-Q34):</strong> A highly selective receiver has a <strong>high Q-factor and narrow bandwidth.</strong> If the tuning sections have low Q, adjacent signals are more likely to interfere with the wanted signal.</div>
@@ -434,6 +443,7 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <li>An upper sideband (USB).</li>
         <li>A lower sideband (LSB).</li>
       </ul>
+      <p><strong>Why voice audio is band-limited to 300 Hz &ndash; 3 kHz:</strong> the microphone amplifier in every voice transmitter deliberately filters the audio to the range <strong>300 Hz to 3 kHz</strong>. This is the range that carries the intelligibility of human speech &mdash; frequencies below 300 Hz (rumble, low hum) and above 3 kHz (hiss, sibilance) can be removed without losing understanding. Narrower audio means narrower transmitted bandwidth, which means more stations fitting in each amateur band.</p>
       <p>AM bandwidth ≈ 2 × highest audio frequency. A 3 kHz audio signal produces 6 kHz AM bandwidth.</p>
 
       <h3>Single Sideband (SSB) (3E1, 3E2, 3F2)</h3>
@@ -482,6 +492,14 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-text"><strong>3M (D2F-M1-Q39):</strong> In a modern transceiver, the <strong>SSB filter</strong> is typically shared between transmit and receive circuits.</div>
       </div>
 
+      <h4>SSB demodulation &mdash; the product detector and CIO</h4>
+      <p>An SSB transmission has no carrier and only one sideband, so a simple envelope diode detector (which works fine for AM) produces garbage. The receiver has to <strong>put the carrier back</strong> at the demodulator to recover intelligible audio. This is done with two parts working together:</p>
+      <ul>
+        <li><strong>Carrier Insertion Oscillator (CIO)</strong> &mdash; a stable local oscillator running at the frequency of the suppressed carrier (i.e. just above or below the sideband, depending on USB vs LSB).</li>
+        <li><strong>Product detector</strong> &mdash; effectively another mixer that combines the IF-stage SSB signal with the CIO output. The mixing product at the audio frequency is what you hear.</li>
+      </ul>
+      <p>Tune the CIO wrong by even a few hundred Hz and voices sound unnaturally high or low ("Donald Duck" or "hoarse"). That's why SSB receivers need precise, stable CIO circuits. In modern rigs both the CIO and the main local oscillator are derived from the same crystal reference to keep them locked together.</p>
+
       <h3>CW Transmitters (3K1)</h3>
       <p>A <strong>CW (continuous wave)</strong> transmitter is simpler than an SSB transmitter:</p>
       <ul>
@@ -497,6 +515,7 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>3H (D2F-M1-Q33):</strong> The most desirable CW transmitted signal has shaped (soft) rise and fall times — not an abrupt square wave. This minimises key clicks.</div>
       </div>
+      <p><strong>Key clicks and the key click filter:</strong> when the transmitter's RF output rises or falls too abruptly at the start or end of each dot/dash, the sharp edges spread interference well outside the operating channel &mdash; heard on nearby frequencies as "clicks" in time with the CW. The cure is a <strong>key click filter</strong> in the keying line: a small RC (resistor + capacitor) or RC-L network that gently rounds off the rise and fall times, so the RF envelope shape is smooth rather than a hard rectangle. Slower rise-time = lower-frequency shaping = narrower splatter.</p>
       <p><strong>CW demodulation</strong> requires a <strong>Beat Frequency Oscillator (BFO).</strong></p>
       <p>In SSB/AM receive, the detector reconstructs audio from the IF. For CW, there is only a carrier — no audio. The BFO injects a signal close to the IF, producing a difference frequency in the audio range:</p>
       <pre>Audio tone = |IF - BFO frequency|</pre>
@@ -505,6 +524,10 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>3K1:</strong> The demodulator for a CW receiver requires a <strong>beat frequency oscillator (BFO).</strong> A BFO frequency of 599.3 kHz with a 600 kHz IF gives a 700 Hz audio tone.</div>
       </div>
+
+      <h4>Chirp &mdash; the other CW keying artefact</h4>
+      <p>When you press the CW key, the transmitter suddenly draws a lot more current from its power supply. If the supply isn't well regulated, the supply voltage sags briefly &mdash; and because the oscillator's frequency depends slightly on its supply voltage, the transmitted frequency <em>changes</em> during the first few milliseconds of the dot or dash. At the receiver end this sounds like a <strong>chirp</strong> &mdash; a characteristic "cheep" or downward-sweep on every key-down.</p>
+      <p><strong>The fix:</strong> a well-regulated power supply that holds voltage rock-steady when the load current changes, plus a proper <strong>buffer stage</strong> between the oscillator and the power amplifier so the keyed PA current can't get back to the oscillator supply. Good CW rigs run the oscillator continuously and just switch a separate keying stage, keeping the oscillator's operating conditions constant.</p>
 
       <div style="margin:1rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
         <iframe src="../../../interactives/tx-rx-complete.html" width="100%" height="750" style="display:block;border:none;" loading="lazy" title="Transmitter and Receiver block diagram interactive"></iframe>
@@ -698,6 +721,11 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-text"><strong>3E3:</strong> FM is generated by applying an AF signal to a <strong>variable capacitance diode connected to an oscillator circuit.</strong> The varicap changes capacitance with voltage, pulling the oscillator frequency.</div>
       </div>
 
+      <h3>FM demodulation &mdash; the discriminator</h3>
+      <p>FM carries information as changes in the <em>frequency</em> of a constant-amplitude carrier, so an amplitude-detecting diode (like a crystal set) recovers nothing. FM receivers need a <strong>frequency discriminator</strong> &mdash; a circuit whose output voltage is proportional to the instantaneous input frequency, not amplitude.</p>
+      <p>Classical designs use a tuned circuit deliberately set slightly off the received IF: as the incoming FM signal swings above and below its centre frequency, the tuned circuit's response converts those frequency swings into corresponding voltage swings, recovering the audio. In modern rigs the discriminator is often done in DSP after the ADC, but the principle is the same: <strong>frequency changes in &rarr; voltage changes out</strong>.</p>
+      <p><strong>Slope detection</strong> is a lash-up alternative: you can just about receive narrowband FM on an AM receiver by tuning it slightly off frequency so the FM swings ride up and down the slope of the receiver's IF filter, converting frequency to amplitude. Poor fidelity but works in a pinch &mdash; useful to know exists, not something you'd design in.</p>
+
       <h3>Harmonics (3G2)</h3>
       <p><strong>Harmonics</strong> are signals at exact multiples of the fundamental frequency.</p>
       <ul>
@@ -876,6 +904,11 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         </div>
       </div>
     </section>
+
+      <h3>Direct conversion receiver &mdash; the simpler alternative</h3>
+      <p>A <strong>direct conversion receiver</strong> skips the intermediate frequency stage entirely. It mixes the incoming RF signal directly with a local oscillator tuned to the <em>same</em> frequency as the wanted signal &mdash; the mixer output is already at audio frequency (the difference between two equal-or-near-equal signals is close to zero, which is where our voice audio sits).</p>
+      <p>Block diagram: antenna &rarr; RF amp &rarr; mixer &rarr; audio filter &rarr; audio amp &rarr; speaker. That's it &mdash; no IF filter, no IF amp stages, no image rejection headaches (the image is the audio you actually want).</p>
+      <p><strong>Trade-offs:</strong> extremely simple to build (popular in kit projects), inherently good CW/SSB reception (product detection is built into the mixing), no image-frequency problems. But: needs a very stable local oscillator (any drift walks the audio around), suffers from microphonic noise (the LO can pick up mechanical vibration), and typically has less selectivity than a good superhet. Often called <strong>homodyne</strong>, <strong>synchrodyne</strong>, or <strong>zero-IF</strong> receiver in the literature.</p>
 
     <hr class="divider">
 
@@ -1106,6 +1139,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
         <div class="callout-text"><strong>3M1 (D2F-M1-Q38):</strong> A spectrum display is produced by a <strong>Fourier transform process</strong> within the receiver. Time-domain samples are converted to a frequency-domain representation.</div>
       </div>
       <p>A <strong>waterfall display</strong> shows frequency vs time, with amplitude coded as colour. This makes it easy to spot signals appearing and disappearing, and to see their bandwidth.</p>
+      <p><strong>The digital filtering advantage:</strong> in a conventional analogue receiver, the IF filter is a physical crystal filter (or LC ladder) with a fixed bandwidth &mdash; if you want a wider filter for SSB and a narrower one for CW, you need two separate filter modules and a switch. In an SDR, all filtering happens in software after the ADC. Any filter shape you can describe mathematically can be implemented, and the bandwidth can be continuously adjustable from the front-panel knob. Digital filters can be much more selective than analogue ones (no resistive losses in the filter itself), and adding a new filter is a firmware update rather than a hardware swap. This flexibility is one of the biggest practical advantages of SDR over conventional architecture.</p>
     </section>
 
     <hr class="divider">
