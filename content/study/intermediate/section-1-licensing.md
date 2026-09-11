@@ -691,30 +691,33 @@ Some specific bands have different limits:
 
 | Band | Full licence max | Notes |
 |------|-----------------|-------|
-| 160 m 1.810–2.000 MHz | 26 dBW (400 W) | General |
-| 1.810–1.830 MHz | 30 dBW | Narrow CW segment — higher limit applies |
+| Most HF, VHF and UHF primary bands | 30 dBW (1 000 W) | Post-1-September-2024 Ofcom framework standard |
 | 60 m (5 MHz) | 15 W EIRP | Channelised, specific conditions |
-| Most HF | 26 dBW (400 W) | Standard Full limit |
-| VHF/UHF | Varies | Check current band plan |
+| 472 kHz (630 m) | 1 W EIRP | Full-only band, tight power limit |
+| 135.7 kHz (2200 m) | 1 W EIRP | Full-only band, tight power limit |
+| Specialist / shared / secondary bands | Varies | Check current Ofcom Amateur Radio Licence Schedule 1 Table A for band-by-band limits |
 
-> [INFO] **1H (D2F-M1-Q11):** The maximum permitted power supplied to the antenna in
-> the 1.810–1.830 MHz band is **30 dBW.**
+> [INFO] **1H (D2F-M1-Q11) — historical:** Under the pre-2024 framework, the 1.810–1.830 MHz narrow CW segment had a 30 dBW allowance whilst the rest of 160 m was capped at 26 dBW (400 W). Post-2024, the general Full-licence primary-band limit is 30 dBW (1 000 W), so the 1.810–1.830 MHz distinction has been folded into the general rule. Kept here for reference in case older exam papers or study materials cite the old figure.
 
 > [INFO] **1H (D2F-NEW-013):** The maximum power for a Full licence holder on the
 > **60 m (5 MHz) band** is **15 W EIRP.**
 
 > [INFO] **1H (D2F-NEW-014):** The maximum power a Full licence holder may use on
-> **most HF bands** is **26 dBW (400 W).**
+> **most primary HF bands** is **30 dBW (1 000 W)** under the post-2024 framework.
+> Specialist / secondary / band-specific exceptions still exist (60 m: 15 W EIRP; 472 kHz: 1 W EIRP; 135.7 kHz: 1 W EIRP).
 
 **Converting dBW to watts:**
 ```
 Power (W) = 10^(dBW / 10)
 
-26 dBW = 10^2.6 = 400 W
-30 dBW = 10^3   = 1 000 W
+30 dBW = 10^3   = 1 000 W   ← current Full HF limit
+26 dBW = 10^2.6 = 400 W     ← pre-2024 Full HF limit (still a useful conversion to recognise)
+20 dBW = 10^2   = 100 W     ← Intermediate HF limit
+14 dBW = 10^1.4 = 25 W      ← Foundation HF limit
+15 dBW = 10^1.5 = 32 W      ← Intermediate upper 1.8 MHz limit
 ```
 
-> [INFO] 26 dBW = 400 W. 30 dBW = 1 000 W. Know these conversions for exam questions.
+> [INFO] Know the standard conversions: **30 dBW = 1 000 W, 26 dBW = 400 W, 20 dBW = 100 W, 14 dBW = 25 W, 15 dBW = 32 W.** Exam questions may ask you to convert either way.
 
 ### 1H Theory — ISM Bands and Interference (1H1)
 
@@ -756,10 +759,16 @@ antenna types and power levels.
 
 ### 1H Self-Check Questions
 
-**Q1.** What is 26 dBW in watts?
+**Q1.** What is 30 dBW in watts, and what does this figure represent?
 <details><summary>Answer</summary>
 
-26 dBW = 10^(26/10) = 10^2.6 ≈ **400 W.** This is the standard Full licence HF power limit.
+30 dBW = 10^(30/10) = 10^3 = **1 000 W.** This is the standard Full licence limit on most primary HF, VHF and UHF bands under the post-2024 framework.
+</details>
+
+**Q1b.** What is 26 dBW in watts?
+<details><summary>Answer</summary>
+
+26 dBW = 10^(26/10) = 10^2.6 ≈ **400 W.** This was the pre-2024 Full HF limit — you'll still see it in older RSGB papers and it's worth recognising as a dBW conversion practice.
 </details>
 
 **Q2.** Which ISM band overlaps with the amateur 13 cm allocation?

@@ -697,7 +697,7 @@ FreeDV application for digital voice on HF SSB. Free and open source.
 **Foundation licence holders** can use **all digital mode types**. The restriction is on power, not modes:
 - Foundation: 25 W (10 W on some bands)
 - Intermediate: 100 W (50 W on some bands)
-- Full: 400 W (1 kW on some bands)
+- Full: 1 000 W on primary bands (lower limits on some specialist/secondary bands — e.g. 60 m 15 W EIRP, 472 kHz 1 W EIRP)
 
 FT8's weak-signal capability means Foundation power limits are rarely a problem — 25 W on FT8 works worldwide.
 
