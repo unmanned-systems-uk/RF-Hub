@@ -610,8 +610,8 @@ Each band section below shows the full RSGB band plan with mode segments, power 
 | Class | Power |
 |-------|-------|
 | Foundation | NOT PERMITTED |
-| Intermediate | 50 W |
-| Full | 400 W |
+| Intermediate | 100 W |
+| Full | 1000 W |
 
 > **Caution:** This band shares spectrum with L-band civil and military radar (1215–1400 MHz). Amateurs must not cause interference and must accept interference from primary users.
 
@@ -662,7 +662,7 @@ Each band section below shows the full RSGB band plan with mode segments, power 
 | 2m | 25 W | 100 W | 1,000 W | |
 | 70cm (430–432) | 25 W | 40 W ERP | 40 W ERP | London restriction |
 | 70cm (432–440) | 25 W | 100 W | 1,000 W | |
-| 23cm | — | 50 W | 400 W | Intermediate/Full only |
+| 23cm | — | 100 W | 1000 W | Intermediate/Full only |
 
 ### SSB Sideband Convention
 

@@ -123,7 +123,7 @@ A report of **59** on SSB means "perfectly readable, very strong signal." On CW,
 All Q-codes listed here are permitted at **Foundation** level and above. There are no Q-codes restricted by licence class — they're operating conventions, not regulatory requirements.
 
 However, Foundation licence holders should be aware:
-- **QRO** is limited by your licence power level (10 W for Foundation)
+- **QRO** is limited by your licence power level (25 W for Foundation)
 - **QSY** — you can only move to frequencies your licence class permits
 - **QSL** via LoTW requires a valid callsign and may need your licence document for verification
 
