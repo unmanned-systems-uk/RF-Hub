@@ -69,6 +69,28 @@ setup meets the EMF limits. This is usually done using the RSGB/Ofcom online cal
 > [INFO] **1G (RF-Hub Q24):** The EMF compliance limit for **Intermediate** licence
 > holders is **10 W average EIRP.** Below this, no assessment is required.
 
+#### The two EMF trigger thresholds (1G1)
+
+EMF compliance rules apply when your transmit power exceeds **either** of two thresholds —
+whichever you hit first:
+
+- **10 W EIRP averaged over any 6-minute period.** This catches high-duty-cycle modes like FM
+  (transmitter on the whole time you're keying) — ten watts averaged over six minutes is a very
+  modest continuous emission.
+- **100 W EIRP instantaneous (peak) value** even for a very short time. This catches SSB voice
+  peaks and short-duration digital-mode bursts — the instantaneous peak can be much higher than
+  the six-minute average.
+
+**Why two thresholds:** RF exposure risk depends on both the sustained energy the body absorbs
+(six-minute average, related to tissue heating) and the peak field strength (instantaneous,
+related to induced-current effects). The average threshold protects against long-term heating;
+the peak threshold catches short bursts that might not push the average up much but still
+represent a significant peak exposure.
+
+> [INFO] **1G1:** Two thresholds — **10 W EIRP average over 6 min** OR **100 W EIRP
+> instantaneous peak**. Exceed either and EMF compliance rules apply. Reassessment is required
+> whenever your antenna, power, or location changes.
+
 ### 1A Theory — Key Organisations
 
 | Abbreviation | Full name | Role |
@@ -249,6 +271,22 @@ operating from England under the Full licence call without regional indicator).
 > 100 W PEP — which applies here since the supervising operator holds a Full licence allowing
 > higher power. The limit is set by the supervising licensee's licence terms.
 
+#### Amateur radio nets (1B1)
+
+An **amateur radio net** is a group of amateurs who meet on a specific frequency at a
+scheduled time to enjoy QSOs with each other — typically for club discussion, regional
+round-tables, DX contests, emergency-service training, or interest-group chat (e.g. a
+homebrew-equipment net, a QRP net, a Foundation-holder net).
+
+**Under supervision:** once your supervising licensee has made initial contact with a member
+of the net using their callsign, you (as the supervisee) are then free to participate in that
+net using the supervisor's callsign under their responsibility, exactly as with any other
+supervised operation.
+
+> [INFO] **1B1:** A "net" is a scheduled multi-station on-air gathering. Recognise that
+> participation as a supervisee is permitted once the initial contact has been established
+> by the supervisor, subject to the usual supervision rules.
+
 ### 1B Self-Check Questions
 
 **Q1.** What is the maximum transmit power for an Intermediate licence holder?
@@ -360,6 +398,26 @@ to other radio users. This is a fundamental licence condition.
 - Some co-channel interference is unavoidable on shared bands
 - "Undue" means interference that is avoidable with reasonable care
 - Causes include: harmonics, overdriven amplifiers, poor filtering, illegal frequencies
+
+#### When Ofcom can modify or restrict your equipment (1D1)
+
+Ofcom has the authority to temporarily or permanently modify or restrict the use of your
+amateur radio equipment. RSGB lists **four specific circumstances** under which this applies:
+
+1. **If you breach the licence conditions** — e.g. exceeding power limits, operating outside
+   your permitted bands, or using amateur radio for non-amateur purposes (business, illegal messages).
+2. **If your equipment causes or contributes to undue interference** to other authorised radio services.
+3. **In the event of a local or national emergency** — Ofcom can require you to reduce power,
+   change frequency, or cease operating.
+4. **If an Ofcom investigation identifies your equipment as the cause** of an interference
+   complaint — you may be required to change operating (reduce power, change frequency, install
+   additional filtering), or to stop operating temporarily.
+
+You are required to **keep your licence available for inspection** by anyone authorised by Ofcom.
+
+> [INFO] **1D1 (D2F):** Know the four scenarios in which Ofcom can restrict or modify your
+> equipment: licence breach, undue interference, national/local emergency, or Ofcom investigation.
+> Any of the four is sufficient grounds.
 
 ### 1D Theory — Broadcasting Prohibition (1D2)
 
