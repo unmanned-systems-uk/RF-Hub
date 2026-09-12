@@ -570,6 +570,25 @@ CREATE TRIGGER update_exam_questions_updated_at BEFORE UPDATE ON exam_questions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ========================================
+-- 12. STUDY PROGRESS TABLE
+-- ========================================
+
+CREATE TABLE study_progress (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    page_url TEXT NOT NULL,
+    section VARCHAR(16),
+    syllabus_refs JSONB,
+    first_visited_at TIMESTAMPTZ DEFAULT NOW(),
+    last_visited_at TIMESTAMPTZ DEFAULT NOW(),
+    total_time_seconds INT NOT NULL DEFAULT 0,
+    UNIQUE(user_id, page_url)
+);
+
+CREATE INDEX idx_progress_user ON study_progress(user_id);
+CREATE INDEX idx_progress_section ON study_progress(section);
+
+-- ========================================
 -- COMMENTS FOR DOCUMENTATION
 -- ========================================
 
@@ -585,6 +604,7 @@ COMMENT ON TABLE saved_calculations IS 'User-saved calculator results';
 COMMENT ON TABLE exam_questions IS 'Question bank for mock licence exam practice across Foundation, Intermediate, and Full levels';
 COMMENT ON TABLE exam_attempts IS 'User exam session records with scores and detailed performance metrics';
 COMMENT ON TABLE exam_question_history IS 'Per-question user response tracking for weak-area analysis';
+COMMENT ON TABLE study_progress IS 'Per-user study page visit history with syllabus ref tracking and cumulative time-on-page';
 
 -- ========================================
 -- DONE
