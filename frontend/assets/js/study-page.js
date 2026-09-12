@@ -58,7 +58,17 @@
 }
 .study-sidebar-list a:hover { color: var(--text-primary); }
 .study-sidebar-sub { list-style: none; padding: 0 0 0 0.85rem; margin: 0.2rem 0 0; }
-input.sidebar-check { accent-color: var(--accent-h); margin-right: 0.35rem; cursor: pointer; }
+.study-save-place {
+  display: block; width: 100%;
+  background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.28);
+  border-radius: var(--radius-sm); color: var(--accent-h);
+  font-family: var(--font-mono); font-size: 0.72rem;
+  padding: 0.4rem 0.5rem; margin-bottom: 0.6rem;
+  cursor: pointer; transition: background 0.12s; text-align: left;
+}
+.study-save-place:hover { background: rgba(6,182,212,0.15); }
+.study-save-place.saved { background: rgba(6,182,212,0.2); color: var(--text-primary); }
+.save-place-icon { margin-right: 0.35rem; }
 .study-resume-banner {
   background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
   border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; margin-bottom: 0.75rem;
@@ -224,7 +234,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     ul.className = 'study-sidebar-list';
 
     const liMap = {};
-    const checkboxMap = {};
     let currentH2Li = null;
     let currentSubUl = null;
 
@@ -233,24 +242,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       liMap[heading.id] = li;
 
       if (heading.tagName === 'H2') {
-        if (user) {
-          const cb = document.createElement('input');
-          cb.type = 'checkbox';
-          cb.className = 'sidebar-check';
-          cb.setAttribute('aria-label', 'Mark section as read');
-          li.appendChild(cb);
-
-          const code = extractSectionCode(heading.textContent.trim());
-          if (code) {
-            checkboxMap[code] = cb;
-            cb.dataset.sectionCode = code;
-          }
-
-          cb.addEventListener('click', function () {
-            handleCheckboxClick(cb, heading, user, pathname);
-          });
-        }
-
         const a = document.createElement('a');
         a.href = '#' + heading.id;
         a.textContent = heading.textContent.trim();
@@ -287,42 +278,49 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       }
     });
 
+    // ── "Save my place" button (logged-in only) ──────────────────────────────
+
+    if (user) {
+      const saveBtn = document.createElement('button');
+      saveBtn.id = 'study-save-place-btn';
+      saveBtn.className = 'study-save-place';
+      saveBtn.innerHTML = '<span class="save-place-icon">📍</span><span class="save-place-text">Save my place</span>';
+      saveBtn.addEventListener('click', function () {
+        // Find the currently-active heading from liMap
+        var activeId = null;
+        Object.keys(liMap).forEach(function (id) {
+          if (liMap[id].classList.contains('active')) activeId = id;
+        });
+        var activeEl = activeId ? document.getElementById(activeId) : null;
+        // Fall back to the first h2 if scroll-spy hasn't activated anything yet
+        if (!activeEl) activeEl = headings.find(function (h) { return h.tagName === 'H2'; });
+        if (!activeEl) return;
+
+        var code = extractSectionCode(activeEl.textContent.trim()) || activeEl.id;
+        postMarkRead(user, pathname, code, activeEl)
+          .then(function () {
+            showToast('Saved place: §' + code);
+            saveBtn.classList.add('saved');
+            setTimeout(function () { saveBtn.classList.remove('saved'); }, 3000);
+          })
+          .catch(function () {
+            showToast("Couldn't save — try again");
+          });
+      });
+      mount.insertBefore(saveBtn, mount.firstChild);
+    }
+
     mount.appendChild(ul);
 
-    // ── Scroll-spy ───────────────────────────────────────────────────────────
-
-    const dwellTimers = {};
+    // ── Scroll-spy (visual only — no side effects) ───────────────────────────
 
     const observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         const id = entry.target.id;
         const li = liMap[id];
-
         if (entry.isIntersecting) {
           Object.values(liMap).forEach(function (el) { el.classList.remove('active'); });
           if (li) li.classList.add('active');
-
-          if (entry.target.tagName === 'H2' && user) {
-            if (!dwellTimers[id]) {
-              dwellTimers[id] = setTimeout(function () {
-                const code = extractSectionCode(entry.target.textContent.trim());
-                if (code) {
-                  const cb = checkboxMap[code];
-                  if (cb && !cb.checked) {
-                    cb.checked = true;
-                    postMarkRead(user, pathname, code, entry.target);
-                  }
-                }
-                delete dwellTimers[id];
-              }, 15000);
-            }
-          }
-
-        } else {
-          if (dwellTimers[id]) {
-            clearTimeout(dwellTimers[id]);
-            delete dwellTimers[id];
-          }
         }
       });
     }, { rootMargin: '-10% 0px -80% 0px' });
@@ -332,7 +330,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     // ── Load progress from API (logged-in only) ───────────────────────────────
 
     if (user) {
-      loadProgress(user, pathname, checkboxMap, mount);
+      loadProgress(user, pathname, mount);
     }
 
     // ── Handle intermediate index resume card ─────────────────────────────────
@@ -342,20 +340,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     }
   });
 
-  // ─── 5. Checkbox click handler ───────────────────────────────────────────────
-
-  function handleCheckboxClick(cb, heading, user, pathname) {
-    const previousState = !cb.checked;
-    const code = extractSectionCode(heading.textContent.trim());
-    if (!code) return;
-
-    postMarkRead(user, pathname, code, heading).catch(function () {
-      cb.checked = previousState;
-      showToast("Couldn't save — try again");
-    });
-  }
-
-  // ─── 6. POST mark-read ───────────────────────────────────────────────────────
+  // ─── 5. POST mark-read ───────────────────────────────────────────────────────
 
   function postMarkRead(user, pathname, sectionCode, heading) {
     const elapsed = Math.round((Date.now() - pageLoadTime) / 1000);
@@ -376,22 +361,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
 
   // ─── 7. Load progress ────────────────────────────────────────────────────────
 
-  function loadProgress(user, pathname, checkboxMap, mount) {
-    fetch(API_BASE + '/user/' + user.id, { headers: authHeaders() })
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (data) {
-        if (!data || !Array.isArray(data.progress)) return;
-        const pageEntry = data.progress.find(function (p) {
-          return p.page_url === pathname;
-        });
-        if (!pageEntry || !Array.isArray(pageEntry.sections)) return;
-        pageEntry.sections.forEach(function (code) {
-          const cb = checkboxMap[code];
-          if (cb) cb.checked = true;
-        });
-      })
-      .catch(function () {});
-
+  function loadProgress(user, pathname, mount) {
     fetch(API_BASE + '/recommendations/' + user.id, { headers: authHeaders() })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
