@@ -707,6 +707,16 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-text"><strong>3G4 / 3E (D2F-NEW-024):</strong> Carson's rule: BW ≈ 2(deviation + max audio). With 5 kHz deviation and 3 kHz audio: BW ≈ 16 kHz.</div>
       </div>
 
+      <h3>FM Capture Effect (3G4)</h3>
+      <p>When two FM signals arrive on the same frequency simultaneously, an FM receiver does not hear both equally &mdash; it <strong>locks onto the stronger signal and largely suppresses the weaker one</strong>. This is the <strong>FM capture effect</strong>.</p>
+      <p>For capture to occur, the stronger signal typically needs to be at least <strong>6 dB</strong> above the weaker one. If two signals are nearly equal in strength, the receiver may switch between them (&ldquo;threshold flutter&rdquo;) rather than capturing one cleanly.</p>
+      <p>This is a property unique to FM &mdash; AM and SSB receivers do not behave this way. AM and SSB simply add the two signals together, producing a mixed output. FM captures one.</p>
+      <p><strong>Amateur radio consequence:</strong> On VHF/UHF FM, two stations transmitting simultaneously on the same frequency will result in listeners hearing only the stronger signal. This is why simplex calling on 145.500 MHz uses a single calling convention &mdash; whoever transmits last, louder, or with better propagation to the receiving station &ldquo;wins&rdquo; the capture.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G4:</strong> The FM capture effect means an FM receiver <strong>captures the stronger of two co-channel signals</strong> and suppresses the weaker. This requires the dominant signal to be approximately 6 dB or more above the interferer. This property is unique to FM (not AM/SSB).</div>
+      </div>
+
       <h3>FM Sidebands and Modulation Index (3A3)</h3>
       <p>Unlike AM (which has only two sidebands), FM produces <strong>multiple sidebands</strong>. The number and amplitude of sidebands depends on the <strong>modulation index</strong> (β).</p>
       <ul>
@@ -1236,6 +1246,29 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
         <div class="callout-text"><strong>3M (D2F-M2-Q37):</strong> Be able to identify the correct frequency domain graph for a given time-domain waveform. Use f = 1/T to find the frequency.</div>
       </div>
 
+      <h3>Spurious Oscillations (3M3)</h3>
+      <p>A <strong>spurious oscillation</strong> (also called a <strong>parasitic oscillation</strong>) is an unintended oscillation within a transmitter, most commonly in the power amplifier (PA) stage. Unlike harmonics (which are exact multiples of the intended frequency), spurious oscillations can appear at unpredictable frequencies determined by stray component values rather than by the intended circuit design.</p>
+      <p><strong>How they arise:</strong> In any PCB or wiring, there is stray inductance (from wire and track lengths) and stray capacitance (between tracks, leads, and components). These parasitic L and C values can form unintended resonant circuits within the PA. If the stage has enough gain at the spurious frequency &mdash; which is often well above the intended operating frequency &mdash; it can oscillate at that stray frequency simultaneously with or instead of the intended frequency.</p>
+      <p><strong>Effects:</strong></p>
+      <ul>
+        <li>Transmission on unintended frequencies &mdash; a licence violation (UK licence requires transmissions only on licensed bands with specified characteristics)</li>
+        <li>Can cause interference on other amateur bands or services</li>
+        <li>Difficult to detect without a spectrum analyser &mdash; the spurious signal may be at a frequency far outside the band in use</li>
+        <li>PA efficiency may drop; the stage may heat excessively</li>
+      </ul>
+      <p><strong>Prevention:</strong></p>
+      <ul>
+        <li>Short, direct lead connections in the PA &mdash; minimise stray inductance</li>
+        <li>Ferrite beads on component leads to suppress high-frequency gain</li>
+        <li>RF bypassing (decoupling capacitors) at the PA supply rail</li>
+        <li>Screen the PA from other stages</li>
+        <li>Some designs include a small resistor in series with the base or gate to reduce HF gain and damp parasitic modes</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3M3:</strong> A spurious (parasitic) oscillation is an <strong>unintended oscillation</strong> in the PA caused by stray inductance and capacitance forming an unwanted resonant circuit. It produces signals at unpredictable frequencies, may cause interference outside the intended band, and is a licence violation if it results in out-of-band transmission. Prevention: short leads, ferrite beads, RF decoupling.</div>
+      </div>
+
       <div class="self-checks">
         <h3>Self-Check — 3M</h3>
         <div class="self-check">
@@ -1379,7 +1412,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260912-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260912-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1700" defer></script>
+  <script src="/assets/js/study-page.js?v=20260912-1700" defer></script>
 </body>
 </html>

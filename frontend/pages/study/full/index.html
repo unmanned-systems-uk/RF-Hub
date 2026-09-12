@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Licence Study — RF Learning Hub</title>
+  <!-- Favicons — SPOT (see /favicon.ico, /apple-touch-icon.png, /site.webmanifest) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260912-1700">
+  <style>
+    /* ── Section card grid ────────────────────────────────────────────────── */
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.1rem;
+      margin: 2rem 0;
+    }
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .section-card--available:hover {
+      border-color: rgba(167,139,250,0.4);
+      transform: translateY(-2px);
+    }
+    .section-card--soon {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
+    }
+    .section-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #a78bfa;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 0 0.2rem;
+    }
+    .section-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      margin: 0;
+    }
+    .section-status {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.5rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .section-status--available {
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      color: #4ade80;
+    }
+    .section-status--soon {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .section-weight {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .section-codes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+    .code-chip {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1rem 0.4rem;
+    }
+    .section-card-cta {
+      margin-top: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #a78bfa;
+      font-weight: 600;
+    }
+    .section-card--soon .section-card-cta {
+      color: var(--text-dim);
+    }
+
+    /* ── Exam info bar ────────────────────────────────────────────────────── */
+    .exam-info-bar {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+    .exam-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .exam-info-value {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .exam-info-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Sprint timeline notice ───────────────────────────────────────────── */
+    .sprint-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.85rem 1.1rem;
+      background: rgba(167,139,250,0.06);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .sprint-notice-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* ── Bottom CTA ───────────────────────────────────────────────────────── */
+    .bottom-cta {
+      text-align: center;
+      padding: 2.5rem 0 0;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    .bottom-cta p {
+      color: var(--text-dim);
+      margin: 0 0 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <!-- Nav SPOT (site-nav.html partial). Fallback link if JS fails. -->
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Full Licence</div>
+      <h1>Full Licence Study</h1>
+      <p class="hero-subtitle">All 10 sections for the RSGB Full amateur radio licence exam — building on Intermediate theory.</p>
+    </div>
+  </section>
+
+  <div class="container" style="padding-bottom: 4rem;">
+
+    <div class="exam-info-bar">
+      <div class="exam-info-item">
+        <span class="exam-info-value">62</span>
+        <span class="exam-info-label">Questions</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">105 min</span>
+        <span class="exam-info-label">Time limit</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">74%</span>
+        <span class="exam-info-label">Pass mark</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">10</span>
+        <span class="exam-info-label">Sections</span>
+      </div>
+      <div class="exam-info-item">
+        <span class="exam-info-value">400 W</span>
+        <span class="exam-info-label">Max power (HF)</span>
+      </div>
+    </div>
+
+    <div class="sprint-notice">
+      <span class="sprint-notice-icon">🚧</span>
+      <span>Full Licence content is being built in sprints — sections unlock as they complete. Intermediate licence holders: you already know more than you think. Start with <a href="/pages/study/intermediate/" style="color:#a78bfa;">Intermediate study</a> if you haven't sat that exam yet.</span>
+    </div>
+
+    <div id="study-resume-card"></div>
+    <div class="section-grid">
+
+      <!-- Section 1 — Coming soon -->
+      <a href="section-1-licence-conditions.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 1</p>
+            <h2 class="section-name">Licence Conditions</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 1 &nbsp;·&nbsp; Ofcom/RSGB licence terms</div>
+        <div class="section-codes">
+          <span class="code-chip">Emission designators</span>
+          <span class="code-chip">Callsigns</span>
+          <span class="code-chip">Band plans</span>
+          <span class="code-chip">Power limits</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 2 — Coming soon -->
+      <a href="section-2-operating-safety.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 2</p>
+            <h2 class="section-name">Operating &amp; Safety</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapters 2–3 &nbsp;·&nbsp; Operating + EMF/RF safety</div>
+        <div class="section-codes">
+          <span class="code-chip">Operating practices</span>
+          <span class="code-chip">EMF compliance</span>
+          <span class="code-chip">RF safety</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 3 — Coming soon -->
+      <a href="section-3-basic-circuits.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 3</p>
+            <h2 class="section-name">Basic Circuits</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 4 &nbsp;·&nbsp; Largest theory chapter</div>
+        <div class="section-codes">
+          <span class="code-chip">Resonance</span>
+          <span class="code-chip">Filters</span>
+          <span class="code-chip">Transformers</span>
+          <span class="code-chip">Q factor</span>
+          <span class="code-chip">Decibels</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 4 — Coming soon -->
+      <a href="section-4-semiconductors.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 4</p>
+            <h2 class="section-name">Semiconductors</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 5 &nbsp;·&nbsp; Active devices and power</div>
+        <div class="section-codes">
+          <span class="code-chip">BJT / FET</span>
+          <span class="code-chip">Op-amps</span>
+          <span class="code-chip">Rectifiers</span>
+          <span class="code-chip">Regulators</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 5 — Coming soon -->
+      <a href="section-5-signals-transmitters.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 5</p>
+            <h2 class="section-name">Signals &amp; Transmitters</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapters 6–7 &nbsp;·&nbsp; Modulation and TX design</div>
+        <div class="section-codes">
+          <span class="code-chip">Sampling / aliasing</span>
+          <span class="code-chip">Fourier</span>
+          <span class="code-chip">PLL / VFO</span>
+          <span class="code-chip">PEP power</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 6 — Coming soon -->
+      <a href="section-6-interference-receivers.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 6</p>
+            <h2 class="section-name">Interference &amp; Receivers</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapters 8–9 &nbsp;·&nbsp; TX spurious + RX architecture</div>
+        <div class="section-codes">
+          <span class="code-chip">IMD</span>
+          <span class="code-chip">Superhet</span>
+          <span class="code-chip">Image frequency</span>
+          <span class="code-chip">AGC</span>
+          <span class="code-chip">IP3</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 7 — Coming soon -->
+      <a href="section-7-sdr-feeders-antennas.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 7</p>
+            <h2 class="section-name">SDR &amp; Feeders/Antennas</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapters 10–11 &nbsp;·&nbsp; Software-defined radio + feedline</div>
+        <div class="section-codes">
+          <span class="code-chip">ADC / DAC</span>
+          <span class="code-chip">Sample rate</span>
+          <span class="code-chip">Coax loss</span>
+          <span class="code-chip">ATU / matching</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 8 — Coming soon -->
+      <a href="section-8-propagation.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 8</p>
+            <h2 class="section-name">Propagation</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 12 &nbsp;·&nbsp; HF/VHF/EME/meteor scatter</div>
+        <div class="section-codes">
+          <span class="code-chip">MUF / LUF</span>
+          <span class="code-chip">Skip distance</span>
+          <span class="code-chip">EME</span>
+          <span class="code-chip">Meteor scatter</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 9 — Coming soon -->
+      <a href="section-9-emc.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 9</p>
+            <h2 class="section-name">EMC</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 13 &nbsp;·&nbsp; Longest chapter</div>
+        <div class="section-codes">
+          <span class="code-chip">Field strength</span>
+          <span class="code-chip">CM / DM current</span>
+          <span class="code-chip">Filter design</span>
+          <span class="code-chip">Screening</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+      <!-- Section 10 — Coming soon -->
+      <a href="section-10-measurements.html" class="section-card section-card--soon">
+        <div class="section-card-top">
+          <div>
+            <p class="section-num">Section 10</p>
+            <h2 class="section-name">Measurements</h2>
+          </div>
+          <span class="section-status section-status--soon">Coming soon</span>
+        </div>
+        <div class="section-weight">Chapter 14 &nbsp;·&nbsp; Test equipment and procedures</div>
+        <div class="section-codes">
+          <span class="code-chip">VSWR / power</span>
+          <span class="code-chip">Oscilloscope</span>
+          <span class="code-chip">Spectrum analyser</span>
+          <span class="code-chip">Dip meter</span>
+        </div>
+        <span class="section-card-cta">Coming soon</span>
+      </a>
+
+    </div>
+
+    <div class="bottom-cta">
+      <p>Not yet sitting your Full exam? Work through Intermediate study first.</p>
+      <a href="/pages/study/intermediate/" class="btn btn--secondary" style="margin-right: 0.75rem;">
+        Intermediate Study →
+      </a>
+      <a href="/pages/study/" class="btn btn--ghost">
+        All Study Tracks →
+      </a>
+    </div>
+
+  </div>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/assets/js/api.js?v=20260912-1700"></script>
+  <script src="/assets/js/search.js?v=20260912-1700" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1700" defer></script>
+  <script src="/assets/js/study-page.js?v=20260912-1700" defer></script>
+</body>
+</html>

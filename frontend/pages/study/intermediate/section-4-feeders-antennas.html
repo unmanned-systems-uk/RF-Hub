@@ -163,6 +163,7 @@
         <li><a href="#ch-4e">4E Antenna Matching</a></li>
         <li><a href="#ch-4f">4F Antenna Concepts</a></li>
         <li><a href="#ch-4g">4G Self-Check</a></li>
+        <li><a href="#ch-4h">4H EMF &amp; Near-Field Safety</a></li>
       </ul>
     </div>
   </section>
@@ -180,6 +181,7 @@
         <li><a href="#ch-4e"><span class="toc-code">4E</span>Antenna Matching</a></li>
         <li><a href="#ch-4f"><span class="toc-code">4F</span>Antenna Concepts</a></li>
         <li><a href="#ch-4g"><span class="toc-code">★</span>Self-Check Questions</a></li>
+        <li><a href="#ch-4h"><span class="toc-code">4H</span>EMF &amp; Near-Field Safety</a></li>
         <li><a href="#formula-ref"><span class="toc-code">≡</span>Formula Reference</a></li>
       </ol>
     </div>
@@ -790,10 +792,17 @@ Impedance ratio = (turns ratio)&sup2;
         <div class="callout-text"><strong>4C2, 4C3:</strong> Key antenna types: dipole, vertical, inverted-V, Yagi, loop, EFHW. Each has different gain, radiation pattern, feedpoint impedance, and matching requirements.</div>
       </div>
 
+      <p><strong>Interactive &mdash; 3D Radiation Pattern (Dipole):</strong></p>
       <div style="margin: 1rem 0;">
-        <iframe src="/interactives/radiation-pattern-viewer.html"
-          style="width:100%; height:720px; border:1px solid #1e293b; border-radius:8px; display:block;"
-          loading="lazy" title="Radiation Pattern Viewer"></iframe>
+        <iframe src="/interactives/radiation-3d-v5.html?antenna=dipole&amp;ui=standard"
+          style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="3D Radiation Pattern — Dipole"></iframe>
+      </div>
+      <p><strong>Interactive &mdash; 3D Radiation Pattern (Yagi):</strong></p>
+      <div style="margin: 1rem 0;">
+        <iframe src="/interactives/radiation-3d-v5.html?antenna=yagi&amp;ui=standard"
+          style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="3D Radiation Pattern — Yagi"></iframe>
       </div>
     </section>
 
@@ -989,6 +998,48 @@ Turns ratio = &radic;(impedance ratio) = &radic;4 = <strong>2:1</strong></pre>
       </div>
     </section>
 
+    <!-- ═══════════════════ 4H: EMF AND NEAR-FIELD SAFETY ══════════════ -->
+    <section class="chapter" id="ch-4h">
+      <div class="chapter-header">
+        <span class="chapter-num">4H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>EMF and Near-Field Safety</h2>
+
+      <h3>Near-Field RF Exposure from Antennas (4H1)</h3>
+      <p>Every transmitting antenna produces an electromagnetic field around it. In the <strong>far field</strong> (distances much greater than a wavelength), the field falls off predictably with distance and the EIRP calculation gives a reliable estimate of exposure. In the <strong>near field</strong> &mdash; roughly within one wavelength of the antenna &mdash; the electric and magnetic field components are not in the simple 377 &Omega; free-space ratio, and fields can be significantly stronger than far-field predictions suggest.</p>
+      <p>This matters because amateur antennas are often erected close to occupied space: gardens below a dipole, the room beneath a loft antenna, neighbours whose gardens border your antenna site. The <strong>ICNIRP guidelines</strong> &mdash; referenced by your licence &mdash; set limits for areas accessible to members of the public and your household. Near-field exposures at antenna height or in the space directly under the antenna can exceed far-field estimates by a substantial factor.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4H1:</strong> Near-field EMF exposure is highest at and around the <strong>antenna feedpoint</strong> and along the radiating elements. A 100 W transmitter into a resonant dipole creates a strong near-field within the first few metres of the wire. This is both an EMF exposure concern and a <strong>direct RF burn hazard</strong> if you are in physical contact with the antenna &mdash; see <a href="section-8-safety.html" target="_blank"><strong>&sect;8C</strong></a> for RF burns. See <a href="section-1-licensing.html" target="_blank"><strong>&sect;1G</strong></a> for the full EMF compliance assessment framework.</div>
+      </div>
+
+      <h3>When a Compliance Assessment is Required (cross-ref &sect;1G)</h3>
+      <p>The two EIRP thresholds that trigger a formal EMF assessment are (from &sect;1G):</p>
+      <ul>
+        <li>Average EIRP exceeding <strong>10 W over any 6-minute period</strong>, or</li>
+        <li>Instantaneous peak EIRP exceeding <strong>100 W</strong></li>
+      </ul>
+      <p>At Intermediate power levels (up to 100 W), most HF antenna systems will exceed the average threshold. This does not mean your station is unsafe &mdash; it means you must verify compliance using the RSGB/Ofcom online EMF calculator, which accounts for antenna type, gain, operating frequency, duty cycle, and the distance from the antenna to any accessible area.</p>
+      <p><strong>Practical guidance by installation type:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Antenna type</th><th>Key exposure consideration</th></tr></thead>
+          <tbody>
+            <tr><td>Horizontal dipole, 10 m height</td><td>Near-field at ground level typically within limits at 100 W HF; check with calculator</td></tr>
+            <tr><td>Vertical with radials</td><td>Immediate vicinity of the antenna base requires checking; elevated field near feedpoint</td></tr>
+            <tr><td>Loft-mounted antenna</td><td>High risk &mdash; near-field extends into the occupied room below; seek advice before transmitting at full power</td></tr>
+            <tr><td>Yagi or beam</td><td>Higher gain in the main lobe increases field strength in that direction; ensure the main lobe does not point toward accessible areas at close range</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>4H1 WARNING:</strong> You cannot assume compliance without an assessment. A change of antenna type, power level, or operating location requires a fresh assessment. Use the RSGB/Ofcom EMF calculator at each installation. See <a href="section-1-licensing.html" target="_blank"><strong>&sect;1G</strong></a> for the trigger thresholds and the assessment process.</div>
+      </div>
+      <p><em>Related: <a href="section-8-safety.html" target="_blank">&sect;8C</a> (RF burn hazard at the feedpoint) &mdash; distinct from EMF field exposure but caused by the same transmitted energy.</em></p>
+    </section>
+
     <hr class="divider">
 
     <!-- ═══════════════════════ FORMULA REFERENCE ═════════════════════ -->
@@ -1061,7 +1112,7 @@ Turns ratio = &radic;(impedance ratio) = &radic;4 = <strong>2:1</strong></pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260912-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260912-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1730" defer></script>
+  <script src="/assets/js/study-page.js?v=20260912-1730" defer></script>
 </body>
 </html>

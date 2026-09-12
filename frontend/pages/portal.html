@@ -12,7 +12,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#06b6d4">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1600">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1700">
 <style>
 .stats-grid {
   display: grid;
@@ -218,7 +218,7 @@
   .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
 }
 </style>
-<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1600">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1700">
   <meta name="site-nav-active" content="">
 </head>
 <body>
@@ -279,6 +279,29 @@
     <div class="licence-study-cta">
       <a href="/pages/study/intermediate/" class="btn btn--secondary">All sections →</a>
       <a href="/pages/exam-practice/" class="btn btn--secondary">Mock Exam →</a>
+    </div>
+  </div>
+
+  <!-- Full Licence Study Card -->
+  <div class="card licence-study-card" style="margin-bottom: 24px; border-left-color: #a78bfa;">
+    <h3>Licence Study — Full</h3>
+
+    <div class="licence-study-resume">
+      <span class="resume-label">Bookmarked section:</span>
+      <strong class="resume-target" id="lsFullResumeSection" style="color:#a78bfa;">§— None yet</strong>
+      <a href="#" class="btn btn--primary" id="lsFullResumeBtn" style="display:none;">Resume →</a>
+    </div>
+
+    <div class="licence-study-progress">
+      <div class="progress-label">Sections opened: <strong id="lsFullSectionsOpened">0</strong> / 10</div>
+      <div class="progress-bar"><div class="progress-fill" id="lsFullProgressFill" style="width: 0%">0%</div></div>
+    </div>
+
+    <div class="licence-study-grid" id="lsFullSectionGrid" style="grid-template-columns: repeat(10, 1fr);"></div>
+    <p class="licence-study-legend"><span>📖</span> opened &nbsp;·&nbsp; <span>📌</span> bookmarked</p>
+
+    <div class="licence-study-cta">
+      <a href="/pages/study/full/" class="btn btn--secondary">All sections →</a>
     </div>
   </div>
 
@@ -399,9 +422,9 @@
   </footer>
 </div>
 
-<script src="../assets/js/api.js?v=20260912-1600"></script>
-<script src="../assets/js/storage.js?v=20260912-1600"></script>
-<script src="../assets/js/main.js?v=20260912-1600"></script>
+<script src="../assets/js/api.js?v=20260912-1700"></script>
+<script src="../assets/js/storage.js?v=20260912-1700"></script>
+<script src="../assets/js/main.js?v=20260912-1700"></script>
 <script>
 (function () {
   // ── Auth guard ────────────────────────────────────────────────────────────
@@ -778,6 +801,88 @@
     }).join('');
   }
 
+  // ── Full Licence Study card ───────────────────────────────────────────────
+  async function loadFullLicenceStudy() {
+    const user = api.getCurrentUser();
+    if (!user) return;
+    const userId = user.id || user.user_id;
+    if (!userId) return;
+
+    const SECTION_MAP = [
+      { code: '1',  name: 'Licence Conditions',       slug: 'section-1-licence-conditions' },
+      { code: '2',  name: 'Operating & Safety',        slug: 'section-2-operating-safety' },
+      { code: '3',  name: 'Basic Circuits',            slug: 'section-3-basic-circuits' },
+      { code: '4',  name: 'Semiconductors',            slug: 'section-4-semiconductors' },
+      { code: '5',  name: 'Signals & Transmitters',    slug: 'section-5-signals-transmitters' },
+      { code: '6',  name: 'Interference & Receivers',  slug: 'section-6-interference-receivers' },
+      { code: '7',  name: 'SDR & Feeders/Antennas',   slug: 'section-7-sdr-feeders-antennas' },
+      { code: '8',  name: 'Propagation',               slug: 'section-8-propagation' },
+      { code: '9',  name: 'EMC',                       slug: 'section-9-emc' },
+      { code: '10', name: 'Measurements',              slug: 'section-10-measurements' },
+    ];
+
+    const token = localStorage.getItem('authToken');
+    const authHdr = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+    let progressData = null, recData = null;
+    try {
+      const [pRes, rRes] = await Promise.all([
+        fetch('/api/v1/study/progress/user/' + userId, { headers: authHdr }),
+        fetch('/api/v1/study/progress/recommendations/' + userId, { headers: authHdr }),
+      ]);
+      if (pRes.ok) progressData = await pRes.json();
+      if (rRes.ok) recData = await rRes.json();
+    } catch (_) {}
+
+    // Only count progress for /pages/study/full/ URLs
+    const openedSlugs = new Set();
+    if (progressData && Array.isArray(progressData.progress)) {
+      progressData.progress.forEach(function (p) {
+        if (!p.page_url || p.page_url.indexOf('/pages/study/full/') === -1) return;
+        SECTION_MAP.forEach(function (sec) {
+          if (p.page_url.indexOf(sec.slug) !== -1) openedSlugs.add(sec.slug);
+        });
+      });
+    }
+
+    // Only show resume if bookmark is a Full study page
+    const resume = recData && recData.resume ? recData.resume : null;
+    let bookmarkedSlug = null;
+    if (resume && resume.page_url && resume.page_url.indexOf('/pages/study/full/') !== -1) {
+      SECTION_MAP.forEach(function (sec) {
+        if (resume.page_url.indexOf(sec.slug) !== -1) bookmarkedSlug = sec.slug;
+      });
+    }
+
+    const resumeSectionEl = document.getElementById('lsFullResumeSection');
+    const resumeBtn = document.getElementById('lsFullResumeBtn');
+    if (resume && resume.page_url && bookmarkedSlug) {
+      const secObj = SECTION_MAP.find(function (s) { return bookmarkedSlug === s.slug; });
+      const sectionCode = resume.section || (secObj ? secObj.code : '');
+      const sectionTitle = secObj ? secObj.name : '';
+      resumeSectionEl.textContent = '§' + (sectionCode || '—') + (sectionTitle ? ' — ' + sectionTitle : '');
+      const anchorId = sectionCode ? '#ch-' + sectionCode.toLowerCase() : '';
+      resumeBtn.href = resume.page_url + anchorId;
+      resumeBtn.style.display = 'inline-block';
+    }
+
+    const opened = openedSlugs.size;
+    const pct = Math.round((opened / SECTION_MAP.length) * 100);
+    document.getElementById('lsFullSectionsOpened').textContent = opened;
+    const fill = document.getElementById('lsFullProgressFill');
+    fill.style.width = pct + '%';
+    fill.textContent = pct + '%';
+
+    const grid = document.getElementById('lsFullSectionGrid');
+    grid.innerHTML = SECTION_MAP.map(function (sec) {
+      const isBookmarked = bookmarkedSlug === sec.slug;
+      const isOpened = openedSlugs.has(sec.slug);
+      const cls = isBookmarked ? 'bookmarked' : (isOpened ? 'opened' : '');
+      const icon = isBookmarked ? '📌' : (isOpened ? '📖' : '·');
+      return '<a href="/pages/study/full/' + sec.slug + '.html" class="' + cls + '" title="§' + sec.code + ' ' + sec.name + '"><span class="grid-icon">' + icon + '</span><span class="grid-code">§' + sec.code + '</span></a>';
+    }).join('');
+  }
+
   // ── Init ──────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     loadProfile();
@@ -787,10 +892,11 @@
     loadNextLesson();
     loadExamSection();
     loadLicenceStudy();
+    loadFullLicenceStudy();
   });
 })();
 </script>
-<script src="/assets/js/search.js?v=20260912-1600" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260912-1600" defer></script>
+<script src="/assets/js/search.js?v=20260912-1700" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1700" defer></script>
 </body>
 </html>
