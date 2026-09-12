@@ -316,15 +316,7 @@ VF also affects the accuracy of **coax stubs** (short sections of coax used as f
 
 **Balanced feeder** (also called ladder line, twin feeder, or open-wire feeder) consists of two parallel conductors, held at a fixed separation by periodic insulators (hence the ladder-like appearance). Both conductors carry equal and opposite RF currents.
 
-```
-  ——————————————————————————————————
-  conductor 1
-     |          |          |
-  spacer     spacer     spacer
-     |          |          |
-  conductor 2
-  ——————————————————————————————————
-```
+![Balanced feeder (ladder line) construction — two parallel conductors held apart by spacers. Common types: 300 Ω twin, 450 Ω windowed, 600 Ω open-wire.](/assets/images/study/section-4/balanced-feeder-ladder-line.png)
 
 Because the two conductors carry equal-and-opposite currents, their electromagnetic fields cancel in the far field — the feeder does not radiate, and it is largely immune to picking up interference.
 
