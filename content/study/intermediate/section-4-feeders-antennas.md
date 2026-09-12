@@ -32,15 +32,7 @@ The **half-wave dipole** is the reference antenna for everything that follows. I
 
 A half-wave dipole consists of two quarter-wave sections of wire, fed at the centre:
 
-```
-     λ/4              λ/4
-  ←———————→         ←———————→
- 
-  ===wire===  [feed] ===wire===
-             ↑
-         feedpoint
-         ≈ 73 Ω
-```
+![Half-wave dipole antenna diagram showing two λ/4 arms fed at the centre (73 Ω feedpoint), end insulators, wavelength formula, and a torus radiation pattern with maximum broadside and nulls off the ends.](/assets/images/study/section-4/half-wave-dipole-antenna.png)
 
 **Physical length formula:**
 
