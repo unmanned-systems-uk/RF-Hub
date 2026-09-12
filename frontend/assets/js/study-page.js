@@ -103,22 +103,25 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
   // ─── 1. Auth helpers ─────────────────────────────────────────────────────────
 
   function getUser() {
-    if (window.__RFH_USER && window.__RFH_USER.id) return window.__RFH_USER;
-    try {
-      // Site convention (login.html + nav-auth.js): 'currentUser' + 'authToken'
-      const raw = localStorage.getItem('currentUser');
-      if (raw) {
-        const u = typeof raw === 'string' ? JSON.parse(raw) : raw;
-        if (u && u.id) return u;
-      }
-      // Legacy fallback
-      const legacy = localStorage.getItem('rfh_user');
-      if (legacy) {
-        const u = typeof legacy === 'string' ? JSON.parse(legacy) : legacy;
-        if (u && u.id) return u;
-      }
-    } catch (_) {}
-    return null;
+    var u = null;
+    if (window.__RFH_USER && (window.__RFH_USER.id || window.__RFH_USER.user_id)) u = window.__RFH_USER;
+    if (!u) {
+      try {
+        var raw = localStorage.getItem('currentUser');
+        if (raw) u = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      } catch (_) {}
+    }
+    if (!u) {
+      try {
+        var legacy = localStorage.getItem('rfh_user');
+        if (legacy) u = typeof legacy === 'string' ? JSON.parse(legacy) : legacy;
+      } catch (_) {}
+    }
+    if (!u) return null;
+    // Normalise: backend stores user_id, frontend expects id
+    if (!u.id && u.user_id) u.id = u.user_id;
+    if (!u.id) return null;
+    return u;
   }
 
   function getAuthToken() {

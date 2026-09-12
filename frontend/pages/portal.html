@@ -12,7 +12,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#06b6d4">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1300">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1400">
 <style>
 .stats-grid {
   display: grid;
@@ -218,7 +218,7 @@
   .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
 }
 </style>
-<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1300">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1400">
   <meta name="site-nav-active" content="">
 </head>
 <body>
@@ -399,9 +399,9 @@
   </footer>
 </div>
 
-<script src="../assets/js/api.js?v=20260912-1300"></script>
-<script src="../assets/js/storage.js?v=20260912-1300"></script>
-<script src="../assets/js/main.js?v=20260912-1300"></script>
+<script src="../assets/js/api.js?v=20260912-1400"></script>
+<script src="../assets/js/storage.js?v=20260912-1400"></script>
+<script src="../assets/js/main.js?v=20260912-1400"></script>
 <script>
 (function () {
   // ── Auth guard ────────────────────────────────────────────────────────────
@@ -703,7 +703,9 @@
   // ── Licence Study card ────────────────────────────────────────────────────
   async function loadLicenceStudy() {
     const user = api.getCurrentUser();
-    if (!user || !user.id) return;
+    if (!user) return;
+    const userId = user.id || user.user_id;
+    if (!userId) return;
 
     const SECTION_MAP = [
       { code: '1', name: 'Licensing',          slug: 'section-1-licensing' },
@@ -723,8 +725,8 @@
     let progressData = null, recData = null;
     try {
       const [pRes, rRes] = await Promise.all([
-        fetch('/api/v1/study/progress/user/' + user.id, { headers: authHdr }),
-        fetch('/api/v1/study/progress/recommendations/' + user.id, { headers: authHdr }),
+        fetch('/api/v1/study/progress/user/' + userId, { headers: authHdr }),
+        fetch('/api/v1/study/progress/recommendations/' + userId, { headers: authHdr }),
       ]);
       if (pRes.ok) progressData = await pRes.json();
       if (rRes.ok) recData = await rRes.json();
@@ -787,7 +789,7 @@
   });
 })();
 </script>
-<script src="/assets/js/search.js?v=20260912-1300" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260912-1300" defer></script>
+<script src="/assets/js/search.js?v=20260912-1400" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1400" defer></script>
 </body>
 </html>
