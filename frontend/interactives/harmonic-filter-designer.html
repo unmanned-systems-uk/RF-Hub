@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmonic Filter Designer &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.ctrl-bar { display: flex; flex-wrap: wrap; gap: 1rem 1.8rem; align-items: flex-end; }
+.ctrl-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; }
+
+select { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; padding: 0.38rem 1.6rem 0.38rem 0.5rem; cursor: pointer; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; }
+select:focus { border-color: #475569; }
+
+.order-bar { display: flex; gap: 0.35rem; }
+.obtn { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.32rem 0.7rem; cursor: pointer; transition: all 0.15s; user-select: none; min-width: 2.4rem; text-align: center; }
+.obtn:hover { color: #e2e8f0; }
+.obtn.on { background: #04141a; border-color: #06b6d4; color: #06b6d4; }
+
+.mid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+@media (max-width: 640px) { .mid-grid { grid-template-columns: 1fr; } }
+
+#schem-canvas { display: block; width: 100%; background: #070d1a; border-radius: 4px; }
+#plot-canvas  { display: block; width: 100%; background: #070d1a; border-radius: 4px; }
+
+/* Attenuation table */
+.attn-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; }
+.attn-table th { color: #334155; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 0.4rem; text-align: right; font-weight: 400; }
+.attn-table th:first-child { text-align: left; }
+.attn-table td { padding: 0.32rem 0; border-top: 1px solid #1e293b; text-align: right; }
+.attn-table td:first-child { text-align: left; color: #64748b; }
+.pass   { color: #22c55e; }
+.warn   { color: #f59e0b; }
+.fail   { color: #f87171; }
+.cyan   { color: #06b6d4; }
+.amber  { color: #f59e0b; }
+.purple { color: #a78bfa; }
+
+/* Component list */
+.comp-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.comp-row { display: flex; justify-content: space-between; align-items: center; padding: 0.32rem 0.55rem; background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; }
+.comp-id  { color: #475569; min-width: 2.5rem; }
+.comp-val { color: #e2e8f0; }
+.comp-e12 { color: #a78bfa; min-width: 5rem; text-align: right; }
+.comp-note{ color: #334155; font-size: 0.62rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Harmonic Filter Designer</h1>
+<p class="subtitle">Butterworth LP filter for TX harmonic suppression &mdash; Pi topology, 50 &#937; system</p>
+
+<div class="card">
+  <div class="ctrl-bar">
+    <div class="ctrl-item">
+      <div class="ctrl-label">Operating Band</div>
+      <select id="sel-band" onchange="update()">
+        <option value="160m">160 m (1.8–2.0 MHz)</option>
+        <option value="80m">80 m (3.5–4.0 MHz)</option>
+        <option value="40m" selected>40 m (7.0–7.2 MHz)</option>
+        <option value="20m">20 m (14.0–14.35 MHz)</option>
+        <option value="15m">15 m (21.0–21.45 MHz)</option>
+        <option value="10m">10 m (28.0–29.7 MHz)</option>
+        <option value="6m">6 m (50–54 MHz)</option>
+        <option value="2m">2 m (144–148 MHz)</option>
+      </select>
+    </div>
+    <div class="ctrl-item">
+      <div class="ctrl-label">Filter Order</div>
+      <div class="order-bar">
+        <button class="obtn" id="o3" onclick="setOrder(3)">3rd</button>
+        <button class="obtn on" id="o5" onclick="setOrder(5)">5th</button>
+        <button class="obtn" id="o7" onclick="setOrder(7)">7th</button>
+      </div>
+    </div>
+    <div class="ctrl-item" style="margin-left:auto; text-align:right;">
+      <div class="ctrl-label">Cutoff frequency</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.85rem; color:#06b6d4;" id="lbl-fc">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="mid-grid">
+  <!-- Schematic -->
+  <div class="card" style="padding:1rem;">
+    <div class="card-title">Pi-ladder schematic</div>
+    <canvas id="schem-canvas" height="130"></canvas>
+  </div>
+
+  <!-- Right: attenuation + components -->
+  <div style="display:flex; flex-direction:column; gap:0.75rem;">
+    <div class="card">
+      <div class="card-title">Harmonic attenuation</div>
+      <table class="attn-table">
+        <thead>
+          <tr>
+            <th>Harmonic</th>
+            <th>Freq</th>
+            <th>Atten. (dB)</th>
+            <th>Meets −43 dB?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2nd</td><td class="cyan" id="at-f2">—</td><td class="amber" id="at-d2">—</td><td id="at-ok2">—</td></tr>
+          <tr><td>3rd</td><td class="cyan" id="at-f3">—</td><td class="amber" id="at-d3">—</td><td id="at-ok3">—</td></tr>
+          <tr><td>5th</td><td class="cyan" id="at-f5">—</td><td class="amber" id="at-d5">—</td><td id="at-ok5">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Component values (nearest E12)</div>
+      <div class="comp-list" id="comp-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Filter response — insertion gain (dB) vs frequency</div>
+  <canvas id="plot-canvas" height="230"></canvas>
+</div>
+</main>
+
+<script>
+// ── Band data ─────────────────────────────────────────────────────────────────
+const BANDS = {
+    '160m': { lo:1.8,  hi:2.0,  f0:1.9,  fc:2.15  },
+    '80m':  { lo:3.5,  hi:4.0,  f0:3.7,  fc:4.2   },
+    '40m':  { lo:7.0,  hi:7.2,  f0:7.1,  fc:7.6   },
+    '20m':  { lo:14.0, hi:14.35,f0:14.2, fc:15.2  },
+    '15m':  { lo:21.0, hi:21.45,f0:21.2, fc:22.0  },
+    '10m':  { lo:28.0, hi:29.7, f0:28.5, fc:30.5  },
+    '6m':   { lo:50.0, hi:54.0, f0:51.0, fc:55.0  },
+    '2m':   { lo:144,  hi:148,  f0:145,  fc:152   }
+};
+
+// Butterworth g-values (Pi topology: shunt-series-shunt…)
+const GVALS = {
+    3: [1.0000, 2.0000, 1.0000],
+    5: [0.6180, 1.6180, 2.0000, 1.6180, 0.6180],
+    7: [0.4450, 1.2470, 1.8019, 2.0000, 1.8019, 1.2470, 0.4450]
+};
+
+const E12 = [1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2];
+function nearestE12(v) {
+    if (v <= 0) return v;
+    const exp = Math.floor(Math.log10(v));
+    const m = v / Math.pow(10, exp);
+    let best = E12[0], bd = Infinity;
+    for (const e of E12) { const d = Math.abs(e - m); if (d < bd) { bd = d; best = e; } }
+    return best * Math.pow(10, exp);
+}
+function fmtC(pF) {
+    const e = nearestE12(pF);
+    if (e < 1000) return e.toPrecision(3).replace(/\.?0+$/, '') + ' pF';
+    return (e / 1000).toPrecision(3).replace(/\.?0+$/, '') + ' nF';
+}
+function fmtL(uH) {
+    const e = nearestE12(uH);
+    if (e < 1) return (e * 1000).toPrecision(3).replace(/\.?0+$/, '') + ' nH';
+    return e.toPrecision(3).replace(/\.?0+$/, '') + ' μH';
+}
+function fmtFreq(MHz) {
+    if (MHz >= 1000) return (MHz/1000).toFixed(2) + ' GHz';
+    if (MHz >= 1)    return MHz.toFixed(MHz >= 100 ? 1 : 2) + ' MHz';
+    return (MHz * 1000).toFixed(0) + ' kHz';
+}
+
+let filterOrder = 5;
+
+// ── Physics ───────────────────────────────────────────────────────────────────
+function butterGain(f_MHz, fc_MHz, n) {
+    const r = f_MHz / fc_MHz;
+    return -10 * Math.log10(1 + Math.pow(r, 2 * n));
+}
+
+function calcComponents(fc_MHz, n, R = 50) {
+    const w0 = 2 * Math.PI * fc_MHz * 1e6;
+    return GVALS[n].map((g, i) => {
+        if (i % 2 === 0) {
+            const C_pF = g / (w0 * R) * 1e12;
+            return { type: 'C', idx: Math.floor(i/2) + 1, raw: C_pF, unit: 'pF' };
+        } else {
+            const L_uH = g * R / w0 * 1e6;
+            return { type: 'L', idx: Math.floor(i/2) + 1, raw: L_uH, unit: 'μH' };
+        }
+    });
+}
+
+// ── Schematic canvas ──────────────────────────────────────────────────────────
+const sCanvas = document.getElementById('schem-canvas');
+const sCtx    = sCanvas.getContext('2d');
+
+function drawSchematic(parts, bandKey) {
+    const W = sCanvas.width, H = sCanvas.height;
+    sCtx.clearRect(0, 0, W, H);
+    sCtx.fillStyle = '#070d1a'; sCtx.fillRect(0, 0, W, H);
+
+    const railY = 52, gndY = 112;
+    const cParts = parts.filter(p => p.type === 'C');
+    const lParts = parts.filter(p => p.type === 'L');
+    const nC = cParts.length;  // = ceil(n/2)
+
+    // Place junctions (shunt-C positions) evenly
+    const xL = 28, xR = W - 28;
+    const segW = (xR - xL) / (nC + 1);
+    const junctions = Array.from({length: nC}, (_, i) => xL + (i + 1) * segW);
+
+    // Draw full rail
+    sCtx.strokeStyle = '#475569'; sCtx.lineWidth = 1.5;
+    sCtx.beginPath(); sCtx.moveTo(xL, railY); sCtx.lineTo(xR, railY); sCtx.stroke();
+
+    // Ground bus (dashed horizontal)
+    sCtx.strokeStyle = '#1e293b'; sCtx.lineWidth = 1; sCtx.setLineDash([3,4]);
+    sCtx.beginPath(); sCtx.moveTo(junctions[0], gndY + 10); sCtx.lineTo(junctions[nC-1], gndY + 10); sCtx.stroke();
+    sCtx.setLineDash([]);
+
+    // Draw shunt capacitors
+    cParts.forEach((p, i) => {
+        const x = junctions[i];
+        const cv = nearestE12(p.raw);
+        sCtx.strokeStyle = '#475569'; sCtx.lineWidth = 1.5;
+        // wire down
+        sCtx.beginPath(); sCtx.moveTo(x, railY); sCtx.lineTo(x, gndY - 14); sCtx.stroke();
+        // plates
+        sCtx.strokeStyle = '#06b6d4'; sCtx.lineWidth = 2;
+        sCtx.beginPath(); sCtx.moveTo(x - 11, gndY - 14); sCtx.lineTo(x + 11, gndY - 14); sCtx.stroke();
+        sCtx.beginPath(); sCtx.moveTo(x - 11, gndY - 7);  sCtx.lineTo(x + 11, gndY - 7);  sCtx.stroke();
+        // wire to ground node
+        sCtx.strokeStyle = '#475569'; sCtx.lineWidth = 1.5;
+        sCtx.beginPath(); sCtx.moveTo(x, gndY - 7); sCtx.lineTo(x, gndY + 10); sCtx.stroke();
+        // ground symbol
+        sCtx.strokeStyle = '#334155'; sCtx.lineWidth = 1;
+        for (let g = 0; g < 3; g++) {
+            const hw = 7 - g * 2;
+            sCtx.beginPath(); sCtx.moveTo(x - hw, gndY + 10 + g * 4); sCtx.lineTo(x + hw, gndY + 10 + g * 4); sCtx.stroke();
+        }
+        // label
+        sCtx.fillStyle = '#06b6d4'; sCtx.font = '8px IBM Plex Mono, monospace'; sCtx.textAlign = 'center';
+        sCtx.fillText('C' + p.idx, x, railY - 7);
+        sCtx.fillStyle = '#475569';
+        sCtx.fillText(fmtC(cv), x, gndY + 27);
+    });
+
+    // Draw series inductors between adjacent junctions
+    lParts.forEach((p, i) => {
+        const x1 = junctions[i], x2 = junctions[i + 1];
+        const cx = (x1 + x2) / 2;
+        const lv = nearestE12(p.raw);
+        const nBumps = 4, bR = (x2 - x1) / (nBumps * 2 + 2);
+        sCtx.strokeStyle = '#f59e0b'; sCtx.lineWidth = 1.5; sCtx.beginPath();
+        sCtx.moveTo(x1, railY);
+        sCtx.lineTo(x1 + bR, railY);
+        for (let b = 0; b < nBumps; b++) sCtx.arc(x1 + bR * (2*b + 2), railY, bR, Math.PI, 0, false);
+        sCtx.lineTo(x2, railY);
+        sCtx.stroke();
+        sCtx.fillStyle = '#f59e0b'; sCtx.font = '8px IBM Plex Mono, monospace'; sCtx.textAlign = 'center';
+        sCtx.fillText('L' + p.idx, cx, railY - 7);
+        sCtx.fillStyle = '#475569';
+        sCtx.fillText(fmtL(lv), cx, railY + 16);
+    });
+
+    // TX / Load labels
+    sCtx.fillStyle = '#334155'; sCtx.font = '8px IBM Plex Mono, monospace';
+    sCtx.textAlign = 'center';
+    sCtx.fillText('TX', xL, railY + 14);
+    sCtx.fillText('50 Ω', xR, railY + 14);
+}
+
+// ── Response plot ─────────────────────────────────────────────────────────────
+const pCanvas = document.getElementById('plot-canvas');
+const pCtx    = pCanvas.getContext('2d');
+
+function drawResponse(band, fc_MHz, n) {
+    const W = pCanvas.width, H = pCanvas.height;
+    const PL = 46, PR = 14, PT = 14, PB = 30;
+    const plotW = W - PL - PR, plotH = H - PT - PB;
+    const groundY = PT + plotH;
+
+    pCtx.clearRect(0, 0, W, H);
+
+    // Y range: 0 to -yMax
+    const attn5th = Math.abs(butterGain(band.f0 * 5, fc_MHz, n));
+    const yMax = Math.ceil((attn5th + 12) / 20) * 20;
+
+    const f0 = band.f0;
+    const fMin = f0 * 0.25, fMax = f0 * 11;
+    const logMin = Math.log10(fMin), logMax = Math.log10(fMax);
+
+    const fx = f => PL + (Math.log10(f) - logMin) / (logMax - logMin) * plotW;
+    const gy = db => PT + (-db / yMax) * plotH;
+
+    // Background
+    pCtx.fillStyle = '#070d1a'; pCtx.fillRect(PL, PT, plotW, plotH);
+
+    // Operating band shading
+    const xBlo = fx(band.lo), xBhi = fx(band.hi);
+    pCtx.fillStyle = '#22c55e18';
+    pCtx.fillRect(xBlo, PT, xBhi - xBlo, plotH);
+
+    // -43 dB line
+    const y43 = gy(-43);
+    pCtx.setLineDash([5, 5]); pCtx.strokeStyle = '#f87171'; pCtx.lineWidth = 1;
+    pCtx.beginPath(); pCtx.moveTo(PL, y43); pCtx.lineTo(PL + plotW, y43); pCtx.stroke();
+    pCtx.fillStyle = '#f87171'; pCtx.font = '8px IBM Plex Mono, monospace'; pCtx.textAlign = 'left';
+    pCtx.fillText('−43 dB', PL + 3, y43 - 3);
+    pCtx.setLineDash([]);
+
+    // Harmonic markers
+    const harmonics = [2, 3, 5];
+    const hColors = ['#a78bfa', '#f59e0b', '#06b6d4'];
+    harmonics.forEach((k, i) => {
+        const xH = fx(f0 * k);
+        if (xH < PL || xH > PL + plotW) return;
+        pCtx.strokeStyle = hColors[i] + '88'; pCtx.lineWidth = 1; pCtx.setLineDash([3, 5]);
+        pCtx.beginPath(); pCtx.moveTo(xH, PT); pCtx.lineTo(xH, groundY); pCtx.stroke();
+        pCtx.setLineDash([]);
+        pCtx.fillStyle = hColors[i]; pCtx.font = '8px IBM Plex Mono, monospace'; pCtx.textAlign = 'center';
+        pCtx.fillText(k + 'nd', xH, PT + 10);
+    });
+
+    // Y gridlines + labels
+    pCtx.strokeStyle = '#1e293b'; pCtx.lineWidth = 0.5; pCtx.fillStyle = '#475569';
+    pCtx.font = '9px IBM Plex Mono, monospace'; pCtx.textAlign = 'right';
+    for (let db = 0; db >= -yMax; db -= 20) {
+        const y = gy(db);
+        pCtx.beginPath(); pCtx.moveTo(PL, y); pCtx.lineTo(PL + plotW, y); pCtx.stroke();
+        pCtx.fillText(db + ' dB', PL - 4, y + 3);
+    }
+
+    // X gridlines + labels
+    pCtx.textAlign = 'center';
+    const xTicks = [0.5, 1, 2, 3, 5, 10].map(m => f0 * m);
+    for (const f of xTicks) {
+        if (f < fMin || f > fMax) continue;
+        const x = Math.round(fx(f)) + 0.5;
+        pCtx.strokeStyle = '#1e293b'; pCtx.lineWidth = 0.5;
+        pCtx.beginPath(); pCtx.moveTo(x, PT); pCtx.lineTo(x, groundY); pCtx.stroke();
+        pCtx.fillStyle = '#334155'; pCtx.font = '8px IBM Plex Mono, monospace';
+        pCtx.fillText(fmtFreq(f), x, groundY + 15);
+    }
+
+    // Response curve
+    pCtx.beginPath(); pCtx.strokeStyle = '#06b6d4'; pCtx.lineWidth = 2;
+    const steps = 500;
+    for (let i = 0; i <= steps; i++) {
+        const logF = logMin + i / steps * (logMax - logMin);
+        const f = Math.pow(10, logF);
+        const gain = butterGain(f, fc_MHz, n);
+        const clamped = Math.max(gain, -yMax);
+        const x = PL + i / steps * plotW;
+        const y = gy(clamped);
+        if (i === 0) pCtx.moveTo(x, y); else pCtx.lineTo(x, y);
+    }
+    pCtx.stroke();
+
+    // Band label
+    pCtx.fillStyle = '#22c55e'; pCtx.font = '8px IBM Plex Mono, monospace'; pCtx.textAlign = 'center';
+    pCtx.fillText('band', (xBlo + xBhi) / 2, groundY - 8);
+
+    // Border
+    pCtx.strokeStyle = '#1e293b'; pCtx.lineWidth = 1; pCtx.strokeRect(PL, PT, plotW, plotH);
+}
+
+// ── Update ────────────────────────────────────────────────────────────────────
+function update() {
+    const bandKey = document.getElementById('sel-band').value;
+    const band    = BANDS[bandKey];
+    const fc      = band.fc;
+    const n       = filterOrder;
+
+    document.getElementById('lbl-fc').textContent = fmtFreq(fc);
+
+    // Component values
+    const parts = calcComponents(fc, n);
+
+    const listEl = document.getElementById('comp-list');
+    listEl.innerHTML = '';
+    parts.forEach(p => {
+        const raw  = p.type === 'C' ? fmtC(p.raw) : fmtL(p.raw);
+        const e12v = p.type === 'C' ? fmtC(nearestE12(p.raw)) : fmtL(nearestE12(p.raw));
+        const label = p.type === 'C' ? 'C' + p.idx : 'L' + p.idx;
+        const row = document.createElement('div');
+        row.className = 'comp-row';
+        row.innerHTML = `
+            <span class="comp-id">${label}</span>
+            <span class="comp-note">${raw}</span>
+            <span class="comp-e12">${e12v} (E12)</span>`;
+        listEl.appendChild(row);
+    });
+
+    // Attenuation readouts
+    const hs = [2, 3, 5];
+    hs.forEach(k => {
+        const fH = band.f0 * k;
+        const db = Math.abs(butterGain(fH, fc, n));
+        document.getElementById('at-f' + k).textContent = fmtFreq(fH);
+        document.getElementById('at-d' + k).textContent = '−' + db.toFixed(1) + ' dB';
+        const ok = db >= 43;
+        const okEl = document.getElementById('at-ok' + k);
+        okEl.textContent = ok ? '✔ Yes' : '✘ No';
+        okEl.className = ok ? 'pass' : 'fail';
+    });
+
+    // Canvases
+    sCanvas.width = sCanvas.parentElement.clientWidth - 2;
+    drawSchematic(parts, bandKey);
+
+    pCanvas.width = pCanvas.parentElement.clientWidth - 2;
+    drawResponse(band, fc, n);
+}
+
+function setOrder(n) {
+    filterOrder = n;
+    [3, 5, 7].forEach(o => document.getElementById('o' + o).className = 'obtn' + (o === n ? ' on' : ''));
+    update();
+}
+
+window.addEventListener('resize', update);
+update();
+</script>
+</body>
+</html>
