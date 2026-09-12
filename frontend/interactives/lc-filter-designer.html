@@ -288,33 +288,18 @@ function butterHP_mag(u, n) {
     if (u <= 1e-9) return 0;
     return 1 / Math.sqrt(1 + Math.pow(1 / u, 2 * n));
 }
-function butterBP_mag(u_lo, u_hi, fc, bw, n) {
-    // centre freq f0 = fc, bandwidth bw
-    // Normalised LP→BP transform: s_lp = (s² + ω₀²)/(s·BW)
-    // For a given f: LP prototype freq = (f² - f0²)/(f·BW) ... magnitude
-    return function(f) {
-        const f0 = fc;
-        const lpFreq = Math.abs((f * f - f0 * f0) / (f * bw));
-        return butterLP_mag(lpFreq / f0 * f0 /* already normalised */, n);
-        // Actually normalise to fc: LP prototype: u = |f²-f0²|/(f*BW)
-    };
-}
 function filterMag(f, type, fc, bw, n) {
     switch (type) {
         case 'lp': return butterLP_mag(f / fc, n);
         case 'hp': return butterHP_mag(f / fc, n);
         case 'bp': {
-            const f0  = fc;
             if (f <= 0) return 0;
-            const u   = Math.abs((f * f - f0 * f0) / (f * bw));
-            return butterLP_mag(u / f0, n);
+            const u = Math.abs((f * f - fc * fc) / (f * bw));
+            return butterLP_mag(u, n);
         }
         case 'bs': {
-            const f0  = fc;
             if (f <= 0) return 1;
-            const denom = Math.abs((f * f - f0 * f0) / (f * bw));
-            const u     = denom / f0;
-            // Band-stop = 1 - BP
+            const u = Math.abs((f * f - fc * fc) / (f * bw));
             return Math.sqrt(1 - Math.pow(butterLP_mag(u, n), 2));
         }
     }
