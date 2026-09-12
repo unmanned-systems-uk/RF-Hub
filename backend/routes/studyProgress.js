@@ -63,8 +63,8 @@ router.get('/recommendations/:user_id', authenticateToken, async (req, res, next
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const recommendations = await StudyProgress.getRecommendations(user_id);
-    res.json({ user_id, recommendations });
+    const result = await StudyProgress.getRecommendations(user_id);
+    res.json({ user_id, ...result });
   } catch (error) {
     next(error);
   }

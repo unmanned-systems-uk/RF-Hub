@@ -59,7 +59,15 @@ const StudyProgress = {
       last_visited_page: lastRow ? lastRow.page_url : null,
       last_visited_at: lastRow ? lastRow.last_visited_at : null,
       sections,
-      syllabus_progress: syllabusProgress
+      syllabus_progress: syllabusProgress,
+      progress: rows.map(r => ({
+        page_url: r.page_url,
+        section: r.section,
+        syllabus_refs: r.syllabus_refs,
+        first_visited_at: r.first_visited_at,
+        last_visited_at: r.last_visited_at,
+        total_time_seconds: r.total_time_seconds
+      }))
     };
   },
 
@@ -140,7 +148,17 @@ const StudyProgress = {
       }
     }
 
-    return recommendations.slice(0, 5);
+    const resumeResult = await pool.query(
+      `SELECT page_url, section, syllabus_refs, last_visited_at
+       FROM study_progress
+       WHERE user_id = $1
+       ORDER BY last_visited_at DESC
+       LIMIT 1`,
+      [user_id]
+    );
+    const resume = resumeResult.rows[0] || null;
+
+    return { recommendations: recommendations.slice(0, 5), resume };
   }
 };
 
