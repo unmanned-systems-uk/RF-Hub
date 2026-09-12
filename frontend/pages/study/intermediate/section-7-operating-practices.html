@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 7: Operating Practices &amp; Procedures — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 7</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">2–3 / 46 questions &nbsp;·&nbsp; ~6%</span>
+      </div>
+      <h1>Operating Practices &amp; Procedures</h1>
+      <p class="hero-subtitle">Band plans, frequency etiquette, making contact, DX and pileup operating, digital modes, nets, contests, log-keeping, and good radio housekeeping.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-7a">7A Band Plans &amp; Etiquette</a></li>
+        <li><a href="#ch-7b">7B Making Contact</a></li>
+        <li><a href="#ch-7c">7C DX &amp; Pileups</a></li>
+        <li><a href="#ch-7d">7D Digital Modes</a></li>
+        <li><a href="#ch-7e">7E Nets</a></li>
+        <li><a href="#ch-7f">7F Contests</a></li>
+        <li><a href="#ch-7g">7G Log-keeping</a></li>
+        <li><a href="#ch-7h">7H Radio Housekeeping</a></li>
+        <li><a href="#ch-7i">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-7a"><span class="toc-code">7A</span>Band Plans &amp; Frequency Etiquette</a></li>
+        <li><a href="#ch-7b"><span class="toc-code">7B</span>Making Contact</a></li>
+        <li><a href="#ch-7c"><span class="toc-code">7C</span>DX Operating &amp; Pileups</a></li>
+        <li><a href="#ch-7d"><span class="toc-code">7D</span>Digital Modes Etiquette</a></li>
+        <li><a href="#ch-7e"><span class="toc-code">7E</span>Nets &amp; Group Operations</a></li>
+        <li><a href="#ch-7f"><span class="toc-code">7F</span>Contest Operating</a></li>
+        <li><a href="#ch-7g"><span class="toc-code">7G</span>Log-keeping</a></li>
+        <li><a href="#ch-7h"><span class="toc-code">7H</span>Good Radio Housekeeping</a></li>
+        <li><a href="#ch-7i"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 7A: BAND PLANS & FREQUENCY ETIQUETTE ═══════════════════ -->
+    <section class="chapter" id="ch-7a">
+      <div class="chapter-header">
+        <span class="chapter-num">7A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Band Plans &amp; Frequency Etiquette</h2>
+
+      <h3>Why Band Plans Exist (7A3)</h3>
+      <p>Band plans are voluntary coordination systems published by IARU (International Amateur Radio Union), adopted by national societies. The RSGB publishes UK band plans in RadCom annually. They carry no legal force but violating them makes you a bad neighbour. The UK is in IARU Region 1 (Europe, Africa, Middle East, part of Asia).</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7A3:</strong> Band plans are voluntary IARU agreements on how amateurs share the spectrum within each allocated band. They are not legally binding but are widely followed. The UK is IARU Region 1.</div>
+      </div>
+
+      <h3>What a Band Plan Shows (7A3, 7A4)</h3>
+      <p>A band plan divides each amateur band into sub-band segments assigned to specific modes and uses:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Segment type</th>
+              <th>What goes here</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CW only</td>
+              <td>Morse code — narrowest signals, lowest in the band</td>
+            </tr>
+            <tr>
+              <td>Narrow-band/digital</td>
+              <td>PSK31, RTTY, FT8/FT4, other narrow-band digital modes</td>
+            </tr>
+            <tr>
+              <td>SSB</td>
+              <td>Single-sideband voice — the widest common signal type</td>
+            </tr>
+            <tr>
+              <td>Beacons</td>
+              <td>Automated unattended beacon transmitters — never transmit here</td>
+            </tr>
+            <tr>
+              <td>Satellite</td>
+              <td>Uplink/downlink frequencies for amateur satellites</td>
+            </tr>
+            <tr>
+              <td>FM/repeaters</td>
+              <td>On VHF/UHF: simplex FM calling, repeater inputs/outputs</td>
+            </tr>
+            <tr>
+              <td>Calling frequencies</td>
+              <td>Agreed spots to make first contact, then move (QSY)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Never call CQ on a beacon frequency, an emergency calling channel, or a repeater output frequency. These are not general-use frequencies.</div>
+      </div>
+
+      <h3>Exam Scope — Which Bands Appear in the Exam?</h3>
+      <p>The RSGB Intermediate exam draws band plan questions from <strong>two bands only</strong>: <strong>14 MHz (20 m)</strong> and <strong>144 MHz (2 m)</strong>. Satellite sub-band questions are also limited to these two bands. Memorise these two plans; others are not tested at Intermediate level.</p>
+
+      <h3>The 2 m Band Plan (144–146 MHz)</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Sub-band</th>
+              <th>Frequencies</th>
+              <th>Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EME/CW</td>
+              <td>144.000–144.110</td>
+              <td>Moonbounce (EME) and CW only</td>
+            </tr>
+            <tr>
+              <td>CW</td>
+              <td>144.110–144.160</td>
+              <td>CW</td>
+            </tr>
+            <tr>
+              <td>SSB</td>
+              <td>144.160–144.400</td>
+              <td>SSB voice; 144.300 MHz is the SSB calling frequency</td>
+            </tr>
+            <tr>
+              <td>Beacons</td>
+              <td>144.400–144.500</td>
+              <td>Propagation beacons — receive only</td>
+            </tr>
+            <tr>
+              <td>All modes</td>
+              <td>144.500–144.794</td>
+              <td>Mixed: APRS at 144.800, digital modes</td>
+            </tr>
+            <tr>
+              <td>FM simplex</td>
+              <td>145.000–145.1875</td>
+              <td>FM simplex channels</td>
+            </tr>
+            <tr>
+              <td>Repeater outputs</td>
+              <td>145.200–145.5875</td>
+              <td>Repeater transmit frequencies — listen here</td>
+            </tr>
+            <tr>
+              <td>Repeater inputs</td>
+              <td>145.600–145.7875</td>
+              <td>You transmit here to reach repeater</td>
+            </tr>
+            <tr>
+              <td>Satellites</td>
+              <td>145.800–146.000</td>
+              <td>Amateur satellite uplink — reserved</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7A4:</strong> On 2 m, FM calling is <strong>145.500 MHz</strong>. SSB calling is <strong>144.300 MHz</strong>. Satellites use the segment <strong>145.800–146.000 MHz</strong> on 2 m.</div>
+      </div>
+
+      <h3>The 20 m Band Plan (14.000–14.350 MHz)</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Sub-band</th>
+              <th>Frequencies</th>
+              <th>Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CW</td>
+              <td>14.000–14.060</td>
+              <td>CW only; 14.050 MHz CW calling</td>
+            </tr>
+            <tr>
+              <td>Narrow-band/digital</td>
+              <td>14.060–14.099</td>
+              <td>PSK31, RTTY, FT8 (14.074 MHz)</td>
+            </tr>
+            <tr>
+              <td>Beacons</td>
+              <td>14.099–14.101</td>
+              <td>International beacon network — receive only</td>
+            </tr>
+            <tr>
+              <td>All modes / SSB</td>
+              <td>14.101–14.350</td>
+              <td>SSB voice; 14.225 MHz SSB calling</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>WARC Bands — No Contests</h3>
+      <p>Three amateur HF bands were gained at the 1979 World Administrative Radio Conference: <strong>10 MHz (30 m), 18 MHz (17 m), and 24 MHz (12 m)</strong>. No contest activity is permitted on WARC bands. The <strong>5 MHz (60 m)</strong> band carries the same convention.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>No contests on 5 MHz, 10 MHz, 18 MHz, or 24 MHz.</strong> These bands are WARC/post-WARC allocations and are kept contest-free by international agreement.</div>
+      </div>
+
+      <p>No SSB on 10 MHz — the 30 m band plan allocates 10 MHz to CW and narrow-band digital modes only. This appears regularly in Intermediate exam questions.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7A4 exam point:</strong> SSB is <strong>not permitted</strong> in the 10 MHz (30 m) band plan. CW and narrow-band digital modes only.</div>
+      </div>
+
+      <h3>Listen First</h3>
+      <p>Before transmitting on any frequency:</p>
+      <ol>
+        <li>Listen for at least a minute</li>
+        <li>Ask "Is this frequency in use?" — say this once on the frequency and pause</li>
+        <li>QSY to a clear spot — avoid setting up right on top of another QSO</li>
+      </ol>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7B: MAKING CONTACT ═══════════════════ -->
+    <section class="chapter" id="ch-7b">
+      <div class="chapter-header">
+        <span class="chapter-num">7B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Making Contact</h2>
+
+      <h3>The CQ Call (7B1)</h3>
+      <p>A CQ call is an open invitation for any station to reply. Standard form:</p>
+      <pre>CQ CQ CQ, this is [callsign] [callsign] [callsign], calling CQ and standing by.</pre>
+      <p>On SSB, give callsign in phonetics. On CW, send in Morse. After the call, release PTT and listen. Shorter version:</p>
+      <pre>CQ, this is [callsign], standing by.</pre>
+
+      <h3>NATO Phonetic Alphabet</h3>
+      <p>Phonetics exist because similar-sounding letters become indistinguishable over weak/noisy signals. NATO/ICAO phonetic alphabet is standard.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Word</th>
+              <th>Letter</th>
+              <th>Word</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>A</td><td>Alpha</td><td>N</td><td>November</td></tr>
+            <tr><td>B</td><td>Bravo</td><td>O</td><td>Oscar</td></tr>
+            <tr><td>C</td><td>Charlie</td><td>P</td><td>Papa</td></tr>
+            <tr><td>D</td><td>Delta</td><td>Q</td><td>Quebec</td></tr>
+            <tr><td>E</td><td>Echo</td><td>R</td><td>Romeo</td></tr>
+            <tr><td>F</td><td>Foxtrot</td><td>S</td><td>Sierra</td></tr>
+            <tr><td>G</td><td>Golf</td><td>T</td><td>Tango</td></tr>
+            <tr><td>H</td><td>Hotel</td><td>U</td><td>Uniform</td></tr>
+            <tr><td>I</td><td>India</td><td>V</td><td>Victor</td></tr>
+            <tr><td>J</td><td>Juliet</td><td>W</td><td>Whiskey</td></tr>
+            <tr><td>K</td><td>Kilo</td><td>X</td><td>X-ray</td></tr>
+            <tr><td>L</td><td>Lima</td><td>Y</td><td>Yankee</td></tr>
+            <tr><td>M</td><td>Mike</td><td>Z</td><td>Zulu</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">When giving your callsign — especially in a pileup or on a weak path — always use NATO phonetics. "Golf" is unambiguous; "G" is not.</div>
+      </div>
+
+      <h3>RST Signal Reports</h3>
+      <p>Every QSO conventionally exchanges signal reports using the RST system:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Scale</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>R — Readability</td>
+              <td>1–5</td>
+              <td>1 = unreadable, 5 = perfectly readable</td>
+            </tr>
+            <tr>
+              <td>S — Signal strength</td>
+              <td>1–9</td>
+              <td>1 = faint, 9 = extremely strong</td>
+            </tr>
+            <tr>
+              <td>T — Tone (CW only)</td>
+              <td>1–9</td>
+              <td>1 = very rough/broad, 9 = pure tone</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>On SSB, only R and S are used: "Five-nine" or "59". On CW, all three: "Five-nine-nine" or "599".</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">In contest and DX operating, 599 is conventionally exchanged even when the signal is not that strong — it is an accepted shorthand meaning "received and logged". This is normal practice.</div>
+      </div>
+
+      <h3>QSO Structure</h3>
+      <p>Typical casual SSB contact structure:</p>
+      <ol>
+        <li>First exchange: callsigns, signal reports</li>
+        <li>Introductions: name, location</li>
+        <li>Chat: antenna, rig, weather</li>
+        <li>Closing: thanks, 73, clear</li>
+      </ol>
+      <p>Closing convention is "73 and clear" or just "73". The word 73 comes from the old Landline Morse code book (Phillips Code) and means "best regards" — it is already plural. Saying "73's" is redundant.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">"73" = best regards. It is not a number requiring a plural suffix. Say "73" not "73s".</div>
+      </div>
+
+      <h3>Joining an Existing QSO</h3>
+      <p>Wait for a pause then transmit your callsign once: "M0XYZ". Do not transmit repeatedly or talk over the current operators.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7C: DX OPERATING AND PILEUPS ═══════════════════ -->
+    <section class="chapter" id="ch-7c">
+      <div class="chapter-header">
+        <span class="chapter-num">7C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>DX Operating and Pileups</h2>
+
+      <h3>DX Conventions</h3>
+      <p>Key conventions:</p>
+      <ul>
+        <li>The DX station controls the QSO. Wait for it to call.</li>
+        <li>Exchanges are brief: callsign, signal report, callsign confirmed, 73 and done.</li>
+        <li>Never transmit your callsign when the DX has just finished a QSO and not yet sent "QRZ?"</li>
+      </ul>
+
+      <h3>Split Operation</h3>
+      <p>A DX station working a large pileup will often operate split — transmitting on one frequency, listening on another. The DX station announces this: "QSL. QRZ? DX up 5."</p>
+      <pre>Operating split:  DX transmits 14.225 → you transmit on 14.230 (up 5)</pre>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never transmit on the DX station's published frequency when split is in use.</strong> Doing so blocks the DX signal for every other station.</div>
+      </div>
+
+      <h3>Pileup Behaviour — What Not To Do</h3>
+      <ul>
+        <li>Do not call over the top of another station already in QSO with the DX</li>
+        <li>Do not transmit your callsign repeatedly without pausing to listen</li>
+        <li>Do not call on the DX's transmit frequency in a split operation</li>
+        <li>Do not use excessive power to "punch through"</li>
+        <li>Do not transmit after the DX has said "QSL" to someone else and not yet called "QRZ"</li>
+      </ul>
+
+      <h3>QSL Cards and Award Confirmation</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>How it works</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Direct</td>
+              <td>Post your card directly to the other station, with a SASE or IRC for the reply</td>
+            </tr>
+            <tr>
+              <td>Bureau</td>
+              <td>The RSGB QSL Bureau handles bulk forwarding within the UK and internationally</td>
+            </tr>
+            <tr>
+              <td>LoTW</td>
+              <td>Logbook of the World (ARRL electronic system) — digital QSL, accepted by most major awards</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7D: DIGITAL MODES ETIQUETTE ═══════════════════ -->
+    <section class="chapter" id="ch-7d">
+      <div class="chapter-header">
+        <span class="chapter-num">7D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Digital Modes Etiquette</h2>
+
+      <h3>The Main Modes</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Bandwidth</th>
+              <th>Character</th>
+              <th>Typical use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>FT8</td>
+              <td>~50 Hz</td>
+              <td>Fully automated, 15 s cycles</td>
+              <td>Weak-signal DX on HF</td>
+            </tr>
+            <tr>
+              <td>FT4</td>
+              <td>~90 Hz</td>
+              <td>Faster FT8 variant, 7.5 s cycles</td>
+              <td>Contests, slightly less weak than FT8</td>
+            </tr>
+            <tr>
+              <td>PSK31</td>
+              <td>~31 Hz</td>
+              <td>Keyboard-to-keyboard chat</td>
+              <td>HF ragchew, very narrow</td>
+            </tr>
+            <tr>
+              <td>RTTY</td>
+              <td>~250 Hz typical shift</td>
+              <td>Teleprinter code, older</td>
+              <td>HF DX, contests</td>
+            </tr>
+            <tr>
+              <td>MSK144</td>
+              <td>~2.5 kHz</td>
+              <td>Fast burst mode for meteor scatter</td>
+              <td>144 MHz meteor scatter</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>On 20 m: FT8 at 14.074 MHz, PSK31 at 14.070–14.075 MHz, RTTY at 14.080–14.099 MHz.</p>
+
+      <h3>FT8 Etiquette</h3>
+      <ul>
+        <li>Do not call a station that has already exchanged callsigns and signal reports with another station</li>
+        <li>Do not "hound" a DX station by calling repeatedly on every cycle</li>
+        <li>Do not leave an unanswered QSO hanging</li>
+        <li>Keep your FT8 signal within the assigned sub-band window</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never transmit digital modes outside the designated digital sub-bands.</strong> FT8 appearing in the SSB portion of a band will sound like a buzzing tone to SSB operators — it is disruptive and inconsiderate.</div>
+      </div>
+
+      <h3>Digital Interfaces and Computer Audio</h3>
+      <ul>
+        <li>Set ALC correctly — if audio level into TX is too high, ALC clamps the signal and creates splatter. ALC meter should barely move.</li>
+        <li>Mute computer system sounds — Windows notification sounds will all be transmitted if you forget</li>
+        <li>Use USB computer control (CAT) to let the logging software handle PTT switching</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7E: NETS AND GROUP OPERATIONS ═══════════════════ -->
+    <section class="chapter" id="ch-7e">
+      <div class="chapter-header">
+        <span class="chapter-num">7E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Nets and Group Operations</h2>
+
+      <h3>Cross-Reference to §1</h3>
+      <p>The definition of a net, supervision rules, and legal framework for group operating are covered in Section 1 (Licensing &amp; Operating). Notes here are practical etiquette only.</p>
+
+      <h3>Checking Into a Net</h3>
+      <p>A net is a scheduled on-air meeting coordinated by a net control station (NCS). To join:</p>
+      <ol>
+        <li>Listen to the net for a full cycle before transmitting</li>
+        <li>When net control invites check-ins, transmit your callsign once, clearly with phonetics</li>
+        <li>Wait for net control to acknowledge you before speaking further</li>
+        <li>Keep transmissions brief unless the net format expects ragchew</li>
+        <li>Follow net control's instructions — if told to QSY, move</li>
+      </ol>
+
+      <h3>Emergency and Traffic Nets (RAYNET)</h3>
+      <p>RAYNET (Radio Amateurs' Emergency Network) provides amateur radio communication support for emergency services. RAYNET nets have a more disciplined format:</p>
+      <ul>
+        <li>Use approved call signs and procedures</li>
+        <li>Pass traffic accurately; if in doubt, ask for a repeat</li>
+        <li>Use pro-forma message formats where provided</li>
+        <li>Priority traffic takes absolute precedence</li>
+        <li>Do not transmit when you have nothing to contribute</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">RAYNET is a legitimate and important use of the amateur licence. Intermediate operators can participate under guidance. The net discipline is stricter than casual operating — think of it as a useful training environment.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7F: CONTEST OPERATING ═══════════════════ -->
+    <section class="chapter" id="ch-7f">
+      <div class="chapter-header">
+        <span class="chapter-num">7F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Contest Operating</h2>
+
+      <h3>What Contests Are</h3>
+      <p>Amateur radio contests are scheduled competitions where operators try to work as many stations as possible. They are legitimate and popular. Major examples: RSGB BERU, CQ WW, CQ WPX, RSGB National Field Day. During a contest, the bands will be busy with stations calling CQ rapidly — this is normal.</p>
+
+      <h3>The Contest Exchange</h3>
+      <p>Contest contacts are deliberately short. Typical exchange:</p>
+      <pre>Calling station: CQ Contest, M0XYZ M0XYZ
+Answering station: G4ABC
+Calling station: G4ABC, 59 001
+Answering station: 59 043
+Calling station: QSL, 73</pre>
+      <p>The serial number is unique to each contact. Some contests substitute with grid locator, ITU zone, US state, DXCC entity prefix, or other multiplier.</p>
+
+      <h3>WARC Band Restriction</h3>
+      <p>No contests on 5 MHz, 10 MHz, 18 MHz, or 24 MHz. (Short reminder — already covered in 7A.)</p>
+
+      <h3>Working Contests as a Non-Participant</h3>
+      <ul>
+        <li>Keep exchanges brief</li>
+        <li>Give callsign clearly once and wait</li>
+        <li>Accept that some calling stations may ask for certain regions only</li>
+        <li>Do not slow down a pileup by asking for more than the standard contest exchange</li>
+      </ul>
+
+      <h3>International Callsign Prefixes</h3>
+      <p>The RSGB Intermediate syllabus includes this list of country prefixes:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Prefix</th>
+              <th>Country</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EI</td><td>Eire (Republic of Ireland)</td></tr>
+            <tr><td>F</td><td>France</td></tr>
+            <tr><td>I</td><td>Italy</td></tr>
+            <tr><td>JA</td><td>Japan</td></tr>
+            <tr><td>PA</td><td>Netherlands</td></tr>
+            <tr><td>VE</td><td>Canada</td></tr>
+            <tr><td>VK</td><td>Australia</td></tr>
+            <tr><td>W</td><td>United States of America</td></tr>
+            <tr><td>ZL</td><td>New Zealand</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7G: LOG-KEEPING ═══════════════════ -->
+    <section class="chapter" id="ch-7g">
+      <div class="chapter-header">
+        <span class="chapter-num">7G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Log-keeping</h2>
+
+      <h3>Legal Position (Cross-Reference to §1)</h3>
+      <p>Log-keeping is no longer a condition of the UK amateur licence as of the 2024 licence update.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7G / §1D2:</strong> Log-keeping is no longer legally required under the 2024 UK amateur licence. However, it remains strongly recommended for practical reasons.</div>
+      </div>
+
+      <h3>Why You Should Still Keep a Log</h3>
+      <p>If a neighbour complains that their TV was disrupted at 7 pm on a Saturday, your log can immediately show whether you were transmitting at that time. Without a log, you cannot prove you were not the cause.</p>
+      <p>Logs are also used for:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Use</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>QSL matching</td>
+              <td>Confirm the date/time/band of a contact to issue or verify a QSL card</td>
+            </tr>
+            <tr>
+              <td>Awards</td>
+              <td>DXCC, IOTA, RSGB Counties Award, WAE — all require log evidence</td>
+            </tr>
+            <tr>
+              <td>Contest submission</td>
+              <td>Your log is uploaded as proof of your contacts after the contest</td>
+            </tr>
+            <tr>
+              <td>Interference disputes</td>
+              <td>Both parties may be asked to produce logs; comparable logs can prove or disprove cause</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What to Log</h3>
+      <p>A minimal useful log entry:</p>
+      <pre>Date  | UTC   | Band  | Mode | My callsign | Other callsign | RST sent | RST rcvd | Notes
+2026-09-12 | 14:23 | 14 MHz | SSB | M0XYZ | G4ABC | 59 | 57 | QSB on path</pre>
+      <p>Minimum fields: date, time (UTC), frequency or band, mode, other station's callsign, RST exchanged. Always use UTC.</p>
+
+      <h3>Logging Tools</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Examples</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Paper log</td>
+              <td>Standard exercise book; RSGB log books; FT-log pads</td>
+            </tr>
+            <tr>
+              <td>PC logging</td>
+              <td>Log4OM, CQRLOG (Linux), N1MM+ (contests), DXKeeper</td>
+            </tr>
+            <tr>
+              <td>Transceiver logging</td>
+              <td>Many modern rigs log contacts internally; export to ADIF</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>All export to ADIF (Amateur Data Interchange Format) — used by Logbook of the World, RSGB Bureau, and contest submission systems.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7H: GOOD RADIO HOUSEKEEPING ═══════════════════ -->
+    <section class="chapter" id="ch-7h">
+      <div class="chapter-header">
+        <span class="chapter-num">7H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Good Radio Housekeeping</h2>
+
+      <p>This section covers station layout, ergonomics, and equipment care. EMC-related housekeeping (ferrite chokes, mains filters, low-pass filters, harmonic checking) is fully covered in §6 and cross-referenced here.</p>
+
+      <h3>Station Layout</h3>
+      <p>A well-laid-out shack runs better and causes less interference. Key principles:</p>
+      <ul>
+        <li>Keep RF cables (coax) away from audio cables (microphone, headphone, speaker leads)</li>
+        <li>Use good quality coaxial cable with correctly fitted connectors</li>
+        <li>Label every cable</li>
+        <li>Keep the SWR meter accessible — checking SWR on each band before a session takes two minutes</li>
+      </ul>
+
+      <h3>Antenna Placement</h3>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Do not install antennas in the loft.</strong> Wiring a loft antenna means running RF feed cable throughout the house. RF from the antenna couples into the house mains wiring and data cables. The main TV reception antenna is typically also in the loft — you will have direct coupling into it. Loft antennas should be used as a last resort and at low power only.</div>
+      </div>
+
+      <p>RSGB guidance: keep antennas as far from the house as possible. Balanced antennas (dipoles) are less likely to cause interference than vertical antennas used without a good earth.</p>
+
+      <h3>Earthing — Two Earths</h3>
+      <p>Your shack needs two separate earth connections:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Earth type</th>
+              <th>Purpose</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mains safety earth</td>
+              <td>Protect against electric shock if a fault develops</td>
+              <td>Part of the 3-pin mains plug. Never remove it.</td>
+            </tr>
+            <tr>
+              <td>RF earth</td>
+              <td>Divert RF current to ground, reducing RF on metalwork and mains leads</td>
+              <td>Earth rods (~2 m long) driven into the ground near the shack, connected to transmitter and ATU with heavy-gauge cable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Confusing the two earths can cause problems: using only an RF earth without a proper mains safety earth is a safety hazard. Using only a mains safety earth without an RF earth can result in RF on the mains cabling. You need both.</div>
+      </div>
+
+      <p>See <a href="section-6-emc.html#ch-6d">§6D</a> for the full detail on RF earths and their role in reducing interference.</p>
+
+      <h3>Ergonomics</h3>
+      <p>A station you are comfortable in is a station you will spend more time in:</p>
+      <ul>
+        <li>Seated operating position — a proper chair at desk height for the rig</li>
+        <li>Microphone placement — at a natural speaking distance</li>
+        <li>CW paddle/key — at a height where your forearm rests level, wrist relaxed</li>
+        <li>Monitor angle — logging software should be readable without craning your neck</li>
+      </ul>
+
+      <h3>Regular Equipment Checks</h3>
+      <p>Brief pre-session checks:</p>
+      <ul>
+        <li>SWR on each band you plan to use — a change from last time signals a connector failure, water ingress, or antenna damage</li>
+        <li>Connector cleanliness — SO-239 and BNC sockets accumulate oxidation; a corroded joint shows as intermittent high SWR</li>
+        <li>ALC level — if running digital modes, check the ALC is not being driven hard</li>
+        <li>PTT function — confirm you are breaking squelch / that the TX is actually transmitting before sending a long CQ</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7I: SELF-CHECK ═══════════════════ -->
+    <section class="chapter" id="ch-7i">
+      <div class="chapter-header">
+        <span class="chapter-num">7I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. The IARU band plan for the UK falls under which ITU region?</p>
+          <button class="btn-reveal" data-target="sc-7i-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-1" hidden>
+            <p><strong>Region 1.</strong> IARU Region 1 covers Europe, Africa, the Middle East, and Northern Asia. The UK follows the IARU Region 1 band plan, published annually in the RSGB's RadCom.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. What is the FM calling frequency on the 2 m band?</p>
+          <button class="btn-reveal" data-target="sc-7i-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-2" hidden>
+            <p><strong>145.500 MHz.</strong> After establishing contact, operators move off the calling frequency (QSY) to a working frequency so the calling channel stays clear for others.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What does "DX up 5" mean?</p>
+          <button class="btn-reveal" data-target="sc-7i-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-3" hidden>
+            <p>The DX station is transmitting on its published frequency and <strong>listening 5 kHz above it</strong>. All calling stations should transmit 5 kHz higher than the DX station's transmit frequency. Never transmit on the DX station's frequency when split is in use.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. Why are contests not permitted on 10 MHz?</p>
+          <button class="btn-reveal" data-target="sc-7i-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-4" hidden>
+            <p>10 MHz (30 m) is a <strong>WARC band</strong>. The WARC bands (10 MHz, 18 MHz, 24 MHz) were allocated to amateurs in 1979 on the condition that they remain free from contest activity. The 5 MHz band carries the same convention. Additionally, 10 MHz has no SSB segment in its band plan — CW and narrow-band digital modes only.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. Which Q-code means "I am experiencing fading"?</p>
+          <button class="btn-reveal" data-target="sc-7i-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-5" hidden>
+            <p><strong>QSB</strong> — QSB means fading (the signal is varying in strength). Other common Q-codes:</p>
+            <ul>
+              <li>QRM — man-made interference</li>
+              <li>QRN — natural noise</li>
+              <li>QRO — high power</li>
+              <li>QRP — low power</li>
+              <li>QRT — closing down</li>
+              <li>QSL — I confirm</li>
+              <li>QSO — a contact</li>
+              <li>QSY — change frequency</li>
+              <li>QTH — location/home station</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. Is log-keeping required under the 2024 UK amateur licence?</p>
+          <button class="btn-reveal" data-target="sc-7i-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-6" hidden>
+            <p><strong>No.</strong> Log-keeping was removed as a licence condition in the 2024 update. However, keeping a log is strongly recommended for interference dispute evidence, QSL matching, and award applications.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. Your shack requires two earth connections. What are they and what does each do?</p>
+          <button class="btn-reveal" data-target="sc-7i-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-7" hidden>
+            <p><strong>Mains safety earth</strong> — part of the 3-pin mains connection on all shack equipment. Protects against electric shock if a fault develops. Never remove it.</p>
+            <p><strong>RF earth</strong> — copper earth rods (~2 m long) driven into the ground near the shack, connected to the transmitter and ATU with heavy-gauge cable. Diverts RF current away from the mains cabling and metalwork.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. A DX station is transmitting on 14.195 MHz and announces "QRZ, up 3 to 5". Where should you transmit your callsign?</p>
+          <button class="btn-reveal" data-target="sc-7i-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-7i-8" hidden>
+            <p>Somewhere between <strong>14.198 MHz and 14.200 MHz</strong>. "Up 3 to 5" means the DX station is listening 3 to 5 kHz above its transmit frequency. Spreading calls across a range helps the DX operator pick out individual callsigns in a large pileup.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE-PLACEHOLDER: band-plan-viewer -->
+    <!-- INTERACTIVE-PLACEHOLDER: cq-call-generator -->
+    <!-- INTERACTIVE-PLACEHOLDER: qso-proforma-trainer -->
+
+    <!-- ═══════════════════ SECTION NAV ═══════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-6-emc.html" class="section-nav__link">&larr; Section 6: EMC</a>
+      <a href="#" class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="#" class="section-nav__link section-nav__link--disabled">Section 8 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" style="margin-top:4rem;">
+    <div class="footer-container">
+      <p class="footer-copy" style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    (function () {
+      const bar = document.getElementById('progress-bar');
+      function update() {
+        const scrolled = window.scrollY;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    // Self-check reveal buttons
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var hidden = target.hasAttribute('hidden');
+        if (hidden) {
+          target.removeAttribute('hidden');
+          btn.textContent = 'Hide answer';
+        } else {
+          target.setAttribute('hidden', '');
+          btn.textContent = 'Show answer';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -261,6 +261,19 @@ window.SEARCH_INDEX = [
     sections: ["What is EMC", "Sources of Interference", "Effects", "Fixing Interference", "Checking Your TX"]
   },
   {
+    title: "Section 7: Operating Practices & Procedures — Intermediate",
+    url: "/pages/study/intermediate/section-7-operating-practices.html",
+    description: "Study notes for Section 7 of the Intermediate licence: band plans, frequency etiquette, making contact, DX and pileup operating, digital modes, nets, contests, log-keeping, good radio housekeeping",
+    keywords: ["band plan", "IARU", "ITU region 1", "WARC bands", "CQ call", "phonetics", "NATO phonetic",
+               "RST", "signal report", "QSO", "DX", "pileup", "split operation", "QSL", "LoTW",
+               "FT8", "FT4", "PSK31", "RTTY", "digital modes", "ALC", "net", "RAYNET", "net control",
+               "contest", "CQ WW", "serial number", "callsign prefix", "log keeping", "ADIF", "Log4OM",
+               "station layout", "RF earth", "mains earth", "loft antenna", "SWR check",
+               "145.500", "144.300", "14.074", "10 MHz no SSB", "no contests WARC",
+               "7A", "7B", "7C", "7D", "7E", "7F", "7G", "7H", "intermediate section 7"],
+    sections: ["Band Plans & Etiquette", "Making Contact", "DX & Pileups", "Digital Modes", "Nets", "Contests", "Log-keeping", "Radio Housekeeping"]
+  },
+  {
     title: "Section 4: Feeders & Antennas — Intermediate",
     url: "/pages/study/intermediate/section-4-feeders-antennas.html",
     description: "Study notes for Section 4 of the Intermediate licence: SWR, reflection coefficient, return loss, coaxial cable, baluns, antenna matching, antenna types, gain, radiation patterns",
