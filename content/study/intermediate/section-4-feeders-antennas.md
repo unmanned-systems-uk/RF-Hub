@@ -88,8 +88,6 @@ The **polarisation** of a radio wave is defined by the orientation of its electr
 
 ## 4B — Standing Waves, SWR, and the Reflection Coefficient
 
-*This is where Section 2 (2F1) and Section 3 (3G3) promises are delivered. Read all of this.*
-
 ### Why Standing Waves Form
 
 When RF power travels from your transmitter along a feeder, it is a **travelling wave** — energy moving from source to load. If the load (antenna) has the same impedance as the feeder, all the power is absorbed and nothing comes back. This is the ideal case.
