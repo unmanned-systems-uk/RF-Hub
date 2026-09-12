@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feeder Loss vs Frequency &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a;
+  color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  padding: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+
+.card {
+  background: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.card-title {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #334155;
+  margin-bottom: 0.75rem;
+}
+
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+@media (max-width: 600px) {
+  .top-grid { grid-template-columns: 1fr; }
+}
+
+/* Controls */
+.ctrl-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.ctrl-label {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 0.3rem;
+}
+select {
+  width: 100%;
+  background: #1a2234;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  padding-right: 1.6rem;
+}
+select:focus { outline: none; border-color: #06b6d4; }
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #1e293b;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #06b6d4;
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #06b6d4;
+  border: none;
+  cursor: pointer;
+}
+.slider-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  color: #06b6d4;
+  min-width: 3.8rem;
+  text-align: right;
+}
+
+/* Readout table */
+.readout-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+}
+.readout-table th {
+  color: #334155;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-bottom: 0.4rem;
+  text-align: right;
+  font-weight: 400;
+}
+.readout-table th:first-child { text-align: left; }
+.readout-table td {
+  padding: 0.35rem 0;
+  border-top: 1px solid #1e293b;
+  text-align: right;
+  color: #94a3b8;
+}
+.readout-table td:first-child { text-align: left; color: #64748b; }
+.readout-table .val-matched { color: #06b6d4; }
+.readout-table .val-total   { color: #f59e0b; }
+
+/* Plot */
+#plot-canvas {
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  background: #070d1a;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+.legend-swatch {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Feeder Loss vs Frequency</h1>
+  <p class="subtitle">coaxial &amp; ladder-line attenuation — matched loss + SWR contribution</p>
+
+  <div class="top-grid">
+    <!-- Controls -->
+    <div class="card">
+      <div class="card-title">Cable &amp; Parameters</div>
+      <div class="ctrl-row">
+        <div>
+          <div class="ctrl-label">Cable type</div>
+          <select id="sel-cable">
+            <option value="rg58">RG-58 (50 Ω)</option>
+            <option value="rg213" selected>RG-213 (50 Ω)</option>
+            <option value="lmr400">LMR-400 (50 Ω)</option>
+            <option value="rg174">RG-174 (50 Ω)</option>
+            <option value="ladder">Ladder Line (450 Ω)</option>
+          </select>
+        </div>
+        <div>
+          <div class="ctrl-label">Cable length</div>
+          <div class="slider-wrap">
+            <input type="range" id="sl-length" min="1" max="100" step="1" value="20">
+            <span class="slider-val" id="lbl-length">20 m</span>
+          </div>
+        </div>
+        <div>
+          <div class="ctrl-label">SWR at antenna end</div>
+          <div class="slider-wrap">
+            <input type="range" id="sl-swr" min="10" max="50" step="1" value="10">
+            <span class="slider-val" id="lbl-swr">1.0 : 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Readouts -->
+    <div class="card">
+      <div class="card-title">Spot-frequency losses (current length)</div>
+      <table class="readout-table">
+        <thead>
+          <tr>
+            <th>Freq</th>
+            <th class="val-matched">Matched</th>
+            <th class="val-total">Total (SWR)</th>
+            <th style="color:#a78bfa">Extra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>14 MHz</td>
+            <td class="val-matched" id="ro-m14">—</td>
+            <td class="val-total"   id="ro-t14">—</td>
+            <td style="color:#a78bfa" id="ro-e14">—</td>
+          </tr>
+          <tr>
+            <td>50 MHz</td>
+            <td class="val-matched" id="ro-m50">—</td>
+            <td class="val-total"   id="ro-t50">—</td>
+            <td style="color:#a78bfa" id="ro-e50">—</td>
+          </tr>
+          <tr>
+            <td>144 MHz</td>
+            <td class="val-matched" id="ro-m144">—</td>
+            <td class="val-total"   id="ro-t144">—</td>
+            <td style="color:#a78bfa" id="ro-e144">—</td>
+          </tr>
+          <tr>
+            <td>432 MHz</td>
+            <td class="val-matched" id="ro-m432">—</td>
+            <td class="val-total"   id="ro-t432">—</td>
+            <td style="color:#a78bfa" id="ro-e432">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Plot -->
+  <div class="card">
+    <div class="card-title">Attenuation vs Frequency (1 – 450 MHz)</div>
+    <canvas id="plot-canvas" height="280"></canvas>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#06b6d4"></div>
+        Matched-line loss
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#f59e0b"></div>
+        Total loss (matched + SWR)
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#a78bfa; opacity:0.6"></div>
+        SWR additional loss
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// Cable data: k1, k2 → dB/100 ft at freq f MHz via k1·√f + k2·f
+// Constants derived from ARRL Handbook / manufacturer datasheets
+const CABLES = {
+    rg58:   { name: 'RG-58',        k1: 0.250,  k2: 0.00100, z0: 50  },
+    rg213:  { name: 'RG-213',       k1: 0.130,  k2: 0.00200, z0: 50  },
+    lmr400: { name: 'LMR-400',      k1: 0.0642, k2: 0.000283, z0: 50 },
+    rg174:  { name: 'RG-174',       k1: 0.463,  k2: 0.00370, z0: 50  },
+    ladder: { name: 'Ladder 450 Ω', k1: 0.010,  k2: 0.000500, z0: 450 }
+};
+
+const F_MIN = 1, F_MAX = 450;
+const SPOT_FREQS = [14, 50, 144, 432];
+
+// dB/100ft × length_m / 30.48 = total matched loss dB
+function matchedLoss(cable, f_MHz, length_m) {
+    const { k1, k2 } = cable;
+    const per100ft = k1 * Math.sqrt(f_MHz) + k2 * f_MHz;
+    return per100ft * length_m / 30.48;
+}
+
+// Exact formula for total loss on a mismatched lossy line
+// Γ = (SWR-1)/(SWR+1); α·l in nepers = matched_dB / 8.686
+function totalLoss(matched_dB, swr) {
+    if (swr <= 1.001) return matched_dB;
+    const gamma = (swr - 1) / (swr + 1);
+    const g2 = gamma * gamma;
+    const al = matched_dB / 8.686;  // nepers
+    const e2 = Math.exp(-2 * al);
+    const e4 = e2 * e2;
+    const denom = 1 - g2 * e4;
+    if (denom <= 0) return matched_dB + 40;
+    return -10 * Math.log10((1 - g2) * e2 / denom);
+}
+
+// --- DOM refs ---
+const selCable = document.getElementById('sel-cable');
+const slLength = document.getElementById('sl-length');
+const slSwr    = document.getElementById('sl-swr');
+const lblLength = document.getElementById('lbl-length');
+const lblSwr    = document.getElementById('lbl-swr');
+const canvas   = document.getElementById('plot-canvas');
+const ctx      = canvas.getContext('2d');
+
+// --- Readout cells ---
+const roCells = {};
+['14','50','144','432'].forEach(f => {
+    roCells[f] = {
+        m: document.getElementById('ro-m' + f),
+        t: document.getElementById('ro-t' + f),
+        e: document.getElementById('ro-e' + f)
+    };
+});
+
+// --- Plot helpers ---
+const LOG_MIN = Math.log10(F_MIN);
+const LOG_MAX = Math.log10(F_MAX);
+
+function fToX(f, plotX, plotW) {
+    return plotX + (Math.log10(f) - LOG_MIN) / (LOG_MAX - LOG_MIN) * plotW;
+}
+function dBToY(db, plotY, plotH, yMax) {
+    return plotY + plotH - (db / yMax) * plotH;
+}
+
+function drawPlot() {
+    const cable  = CABLES[selCable.value];
+    const length = +slLength.value;
+    const swr    = +slSwr.value / 10;
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const PAD_L = 52, PAD_R = 14, PAD_T = 14, PAD_B = 36;
+    const plotX = PAD_L, plotW = W - PAD_L - PAD_R;
+    const plotY = PAD_T, plotH = H - PAD_T - PAD_B;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Pre-compute curves
+    const N = 400;
+    const matched = new Float64Array(N);
+    const total   = new Float64Array(N);
+    let yMax = 0.5;
+
+    for (let i = 0; i < N; i++) {
+        const f = Math.pow(10, LOG_MIN + (i / (N - 1)) * (LOG_MAX - LOG_MIN));
+        matched[i] = matchedLoss(cable, f, length);
+        total[i]   = totalLoss(matched[i], swr);
+        if (total[i] > yMax) yMax = total[i];
+    }
+
+    // Round yMax up to a nice value
+    const rawMax = yMax * 1.12;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawMax)));
+    const steps = [1, 2, 2.5, 5, 10];
+    let step = mag;
+    for (const s of steps) {
+        const candidate = s * mag;
+        if (candidate >= rawMax) { step = candidate / 5; break; }
+    }
+    yMax = Math.ceil(rawMax / step) * step;
+
+    // Grid background
+    ctx.fillStyle = '#070d1a';
+    ctx.fillRect(plotX, plotY, plotW, plotH);
+
+    // Y grid lines
+    const yStep = step;
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.fillStyle = '#475569';
+    ctx.textAlign = 'right';
+    for (let db = 0; db <= yMax + 0.001; db += yStep) {
+        const y = Math.round(dBToY(db, plotY, plotH, yMax)) + 0.5;
+        ctx.beginPath();
+        ctx.moveTo(plotX, y);
+        ctx.lineTo(plotX + plotW, y);
+        ctx.stroke();
+        ctx.fillText(db.toFixed(db < 10 ? 1 : 0) + ' dB', plotX - 4, y + 3);
+    }
+
+    // X grid lines (log-spaced decades + halves)
+    const xTicks = [1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 450];
+    const xMajor = new Set([1, 10, 100]);
+    ctx.textAlign = 'center';
+    for (const f of xTicks) {
+        if (f > F_MAX) break;
+        const x = Math.round(fToX(f, plotX, plotW)) + 0.5;
+        ctx.strokeStyle = xMajor.has(f) ? '#2a3a50' : '#1e293b';
+        ctx.lineWidth = xMajor.has(f) ? 1 : 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x, plotY);
+        ctx.lineTo(x, plotY + plotH);
+        ctx.stroke();
+        ctx.fillStyle = '#475569';
+        ctx.font = '9px IBM Plex Mono, monospace';
+        ctx.fillText(f >= 1000 ? (f/1000)+'G' : f+'M', x, plotY + plotH + 14);
+    }
+
+    // Axis labels
+    ctx.fillStyle = '#334155';
+    ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Frequency', plotX + plotW / 2, H - 2);
+    ctx.save();
+    ctx.translate(10, plotY + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Attenuation (dB)', 0, 0);
+    ctx.restore();
+
+    // SWR fill region (between matched and total)
+    ctx.beginPath();
+    for (let i = 0; i < N; i++) {
+        const f = Math.pow(10, LOG_MIN + (i / (N - 1)) * (LOG_MAX - LOG_MIN));
+        const x = fToX(f, plotX, plotW);
+        const y = dBToY(total[i], plotY, plotH, yMax);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    for (let i = N - 1; i >= 0; i--) {
+        const f = Math.pow(10, LOG_MIN + (i / (N - 1)) * (LOG_MAX - LOG_MIN));
+        const x = fToX(f, plotX, plotW);
+        const y = dBToY(matched[i], plotY, plotH, yMax);
+        ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(167, 139, 250, 0.10)';
+    ctx.fill();
+
+    // Spot-frequency vertical markers
+    for (const sf of SPOT_FREQS) {
+        if (sf < F_MIN || sf > F_MAX) continue;
+        const x = Math.round(fToX(sf, plotX, plotW)) + 0.5;
+        ctx.setLineDash([3, 5]);
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, plotY);
+        ctx.lineTo(x, plotY + plotH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    // Matched-line curve (cyan)
+    ctx.beginPath();
+    ctx.strokeStyle = '#06b6d4';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < N; i++) {
+        const f = Math.pow(10, LOG_MIN + (i / (N - 1)) * (LOG_MAX - LOG_MIN));
+        const x = fToX(f, plotX, plotW);
+        const y = dBToY(matched[i], plotY, plotH, yMax);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Total loss curve (amber)
+    ctx.beginPath();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < N; i++) {
+        const f = Math.pow(10, LOG_MIN + (i / (N - 1)) * (LOG_MAX - LOG_MIN));
+        const x = fToX(f, plotX, plotW);
+        const y = dBToY(total[i], plotY, plotH, yMax);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Border
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(plotX, plotY, plotW, plotH);
+
+    // Update spot-frequency readouts
+    SPOT_FREQS.forEach(sf => {
+        const key = String(sf);
+        if (!roCells[key]) return;
+        const m = matchedLoss(cable, sf, length);
+        const t = totalLoss(m, swr);
+        const e = t - m;
+        roCells[key].m.textContent = m.toFixed(2) + ' dB';
+        roCells[key].t.textContent = t.toFixed(2) + ' dB';
+        roCells[key].e.textContent = '+' + e.toFixed(2) + ' dB';
+    });
+}
+
+function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const w   = canvas.parentElement.clientWidth - 40; // card padding × 2
+    canvas.width  = w * dpr;
+    canvas.height = 280 * dpr;
+    canvas.style.height = '280px';
+    ctx.scale(dpr, dpr);
+    drawPlot();
+}
+
+// Slider labels
+slLength.addEventListener('input', () => {
+    lblLength.textContent = slLength.value + ' m';
+    drawPlot();
+});
+slSwr.addEventListener('input', () => {
+    const swr = (+slSwr.value / 10).toFixed(1);
+    lblSwr.textContent = swr + ' : 1';
+    drawPlot();
+});
+selCable.addEventListener('change', drawPlot);
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+</body>
+</html>
