@@ -12,7 +12,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#06b6d4">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/rf-hub-v2.css">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1300">
 <style>
 .stats-grid {
   display: grid;
@@ -197,6 +197,26 @@
   text-align: center; padding: 1.5rem 0;
 }
 .exam-cta p { color: var(--text-dim); margin: 0 0 1rem; }
+
+/* ── Licence Study card ── */
+.licence-study-card { border-left: 3px solid var(--accent-h, #06b6d4); }
+.licence-study-resume { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin: 0.75rem 0; padding: 0.6rem 0.85rem; background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25); border-radius: var(--radius-sm); font-size: 0.9rem; }
+.resume-label { color: var(--text-dim); }
+.resume-target { color: var(--accent-h, #06b6d4); }
+.licence-study-progress { margin: 1rem 0; }
+.progress-label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.35rem; }
+.licence-study-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 0.4rem; margin: 0.75rem 0 0.4rem; }
+.licence-study-grid > a { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.3rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: var(--text-dim); font-family: var(--font-mono); font-size: 0.7rem; transition: border-color 0.15s, color 0.15s; }
+.licence-study-grid > a:hover { border-color: var(--accent-h, #06b6d4); color: var(--text-primary); }
+.licence-study-grid > a.opened { color: var(--text-primary); border-color: rgba(6,182,212,0.4); }
+.licence-study-grid > a.bookmarked { color: var(--accent-h, #06b6d4); border-color: var(--accent-h, #06b6d4); background: rgba(6,182,212,0.08); }
+.grid-icon { font-size: 1.05rem; margin-bottom: 0.15rem; }
+.grid-code { font-weight: 600; }
+.licence-study-legend { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); text-align: center; margin: 0.25rem 0 0.85rem; }
+.licence-study-cta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
+}
 </style>
 <link rel="stylesheet" href="/assets/css/search.css?v=20260912-1300">
   <meta name="site-nav-active" content="">
@@ -236,6 +256,30 @@
       <p id="welcomeMeta"></p>
     </div>
     <button class="btn-logout" id="logoutBtn">Log out</button>
+  </div>
+
+  <!-- Licence Study Card -->
+  <div class="card licence-study-card" style="margin-bottom: 24px;">
+    <h3>Licence Study — Intermediate</h3>
+
+    <div class="licence-study-resume">
+      <span class="resume-label">Bookmarked section:</span>
+      <strong class="resume-target" id="lsResumeSection">§— None yet</strong>
+      <a href="#" class="btn btn--primary" id="lsResumeBtn" style="display:none;">Resume →</a>
+    </div>
+
+    <div class="licence-study-progress">
+      <div class="progress-label">Sections opened: <strong id="lsSectionsOpened">0</strong> / 9</div>
+      <div class="progress-bar"><div class="progress-fill" id="lsProgressFill" style="width: 0%">0%</div></div>
+    </div>
+
+    <div class="licence-study-grid" id="lsSectionGrid"></div>
+    <p class="licence-study-legend"><span>📖</span> opened &nbsp;·&nbsp; <span>📌</span> bookmarked</p>
+
+    <div class="licence-study-cta">
+      <a href="/pages/study/intermediate/" class="btn btn--secondary">All sections →</a>
+      <a href="/pages/exam-practice/" class="btn btn--secondary">Mock Exam →</a>
+    </div>
   </div>
 
   <!-- Progress Dashboard -->
@@ -355,9 +399,9 @@
   </footer>
 </div>
 
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/storage.js"></script>
-<script src="../assets/js/main.js"></script>
+<script src="../assets/js/api.js?v=20260912-1300"></script>
+<script src="../assets/js/storage.js?v=20260912-1300"></script>
+<script src="../assets/js/main.js?v=20260912-1300"></script>
 <script>
 (function () {
   // ── Auth guard ────────────────────────────────────────────────────────────
@@ -656,6 +700,81 @@
       .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
+  // ── Licence Study card ────────────────────────────────────────────────────
+  async function loadLicenceStudy() {
+    const user = api.getCurrentUser();
+    if (!user || !user.id) return;
+
+    const SECTION_MAP = [
+      { code: '1', name: 'Licensing',          slug: 'section-1-licensing' },
+      { code: '2', name: 'Electronics',        slug: 'section-2-electronics' },
+      { code: '3', name: 'Transmitters',       slug: 'section-3-transmitters' },
+      { code: '4', name: 'Feeders & Antennas', slug: 'section-4-feeders-antennas' },
+      { code: '5', name: 'Propagation',        slug: 'section-5-propagation' },
+      { code: '6', name: 'EMC',                slug: 'section-6-emc' },
+      { code: '7', name: 'Operating',          slug: 'section-7-operating-practices' },
+      { code: '8', name: 'Safety',             slug: 'section-8-safety' },
+      { code: '9', name: 'Measurements',       slug: 'section-9-measurements' },
+    ];
+
+    const token = localStorage.getItem('authToken');
+    const authHdr = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+    let progressData = null, recData = null;
+    try {
+      const [pRes, rRes] = await Promise.all([
+        fetch('/api/v1/study/progress/user/' + user.id, { headers: authHdr }),
+        fetch('/api/v1/study/progress/recommendations/' + user.id, { headers: authHdr }),
+      ]);
+      if (pRes.ok) progressData = await pRes.json();
+      if (rRes.ok) recData = await rRes.json();
+    } catch (_) {}
+
+    const openedSlugs = new Set();
+    if (progressData && Array.isArray(progressData.progress)) {
+      progressData.progress.forEach(function (p) {
+        SECTION_MAP.forEach(function (sec) {
+          if (p.page_url && p.page_url.indexOf(sec.slug) !== -1) openedSlugs.add(sec.slug);
+        });
+      });
+    }
+
+    const resume = recData && recData.resume ? recData.resume : null;
+    let bookmarkedSlug = null;
+    if (resume && resume.page_url) {
+      SECTION_MAP.forEach(function (sec) {
+        if (resume.page_url.indexOf(sec.slug) !== -1) bookmarkedSlug = sec.slug;
+      });
+    }
+
+    const resumeSectionEl = document.getElementById('lsResumeSection');
+    const resumeBtn = document.getElementById('lsResumeBtn');
+    if (resume && resume.page_url) {
+      const secObj = SECTION_MAP.find(function (s) { return bookmarkedSlug === s.slug; });
+      const sectionCode = resume.section || (secObj ? '§' + secObj.code : '§?');
+      const sectionTitle = secObj ? secObj.name : '';
+      resumeSectionEl.textContent = sectionCode + (sectionTitle ? ' — ' + sectionTitle : '');
+      resumeBtn.href = resume.page_url;
+      resumeBtn.style.display = 'inline-block';
+    }
+
+    const opened = openedSlugs.size;
+    const pct = Math.round((opened / SECTION_MAP.length) * 100);
+    document.getElementById('lsSectionsOpened').textContent = opened;
+    const fill = document.getElementById('lsProgressFill');
+    fill.style.width = pct + '%';
+    fill.textContent = pct + '%';
+
+    const grid = document.getElementById('lsSectionGrid');
+    grid.innerHTML = SECTION_MAP.map(function (sec) {
+      const isBookmarked = bookmarkedSlug === sec.slug;
+      const isOpened = openedSlugs.has(sec.slug);
+      const cls = isBookmarked ? 'bookmarked' : (isOpened ? 'opened' : '');
+      const icon = isBookmarked ? '📌' : (isOpened ? '📖' : '·');
+      return '<a href="/pages/study/intermediate/' + sec.slug + '.html" class="' + cls + '" title="§' + sec.code + ' ' + sec.name + '"><span class="grid-icon">' + icon + '</span><span class="grid-code">§' + sec.code + '</span></a>';
+    }).join('');
+  }
+
   // ── Init ──────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     loadProfile();
@@ -664,6 +783,7 @@
     loadModules();
     loadNextLesson();
     loadExamSection();
+    loadLicenceStudy();
   });
 })();
 </script>
