@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ionospheric Layer Explorer &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+@media (max-width: 600px) { .top-grid { grid-template-columns: 1fr; } }
+
+.ctrl-row { display: flex; flex-direction: column; gap: 0.85rem; }
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 0.3rem; }
+
+.toggle-bar { display: flex; gap: 0.4rem; }
+.tbtn { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.3rem 0.9rem; cursor: pointer; transition: all 0.15s; user-select: none; }
+.tbtn:hover { color: #e2e8f0; }
+.tbtn.on-cyan { background: #04141a; border-color: #06b6d4; color: #06b6d4; }
+.tbtn.on-dim  { background: #0d0f18; border-color: #475569; color: #94a3b8; }
+
+.slider-wrap { display: flex; align-items: center; gap: 0.6rem; }
+input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #1e293b; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #a78bfa; cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #a78bfa; border: none; cursor: pointer; }
+.slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: #a78bfa; min-width: 2.8rem; text-align: right; }
+
+.ro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+.ro-item { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; padding: 0.45rem 0.6rem; }
+.ro-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 0.2rem; }
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; }
+.cyan { color: #06b6d4; } .amber { color: #f59e0b; } .purple { color: #a78bfa; } .red { color: #f87171; }
+
+#atmo-canvas { display: block; width: 100%; }
+
+.freq-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.fbtn { flex: 1; min-width: 56px; background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.32rem 0.3rem; cursor: pointer; transition: all 0.15s; user-select: none; }
+.fbtn:hover { color: #e2e8f0; border-color: #334155; }
+.fbtn.refract { border-color: #06b6d4; color: #06b6d4; background: #041818; }
+.fbtn.nvis    { border-color: #22d3ee; color: #22d3ee; background: #041818; }
+.fbtn.escape  { border-color: #f59e0b; color: #f59e0b; background: #1a1208; }
+
+.ray-status { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #475569; margin-top: 0.5rem; min-height: 1.1em; }
+</style>
+</head>
+<body>
+<main>
+<h1>Ionospheric Layer Explorer</h1>
+<p class="subtitle">D / E / F-layer cross-section &mdash; ray refraction, MUF, and D-layer absorption</p>
+
+<div class="top-grid">
+  <div class="card">
+    <div class="card-title">Ionospheric Conditions</div>
+    <div class="ctrl-row">
+      <div>
+        <div class="ctrl-label">Day / Night</div>
+        <div class="toggle-bar">
+          <button class="tbtn on-cyan" id="btn-day"   onclick="setDay(true)">&#9728; Day</button>
+          <button class="tbtn"         id="btn-night" onclick="setDay(false)">&#9790; Night</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">Sunspot Number (SSN)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-ssn" min="0" max="250" step="5" value="120">
+          <span class="slider-val" id="lbl-ssn">120</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ionospheric Parameters</div>
+    <div class="ro-grid">
+      <div class="ro-item"><div class="ro-label">foF2 (vertical MUF)</div><div class="ro-val cyan"   id="ro-fof2">—</div></div>
+      <div class="ro-item"><div class="ro-label">MUF — 2000 km path</div><div class="ro-val purple" id="ro-muf">—</div></div>
+      <div class="ro-item"><div class="ro-label">D-layer loss (sel. freq)</div><div class="ro-val amber"  id="ro-dabs">—</div></div>
+      <div class="ro-item"><div class="ro-label">Sky-wave status</div><div class="ro-val cyan"   id="ro-sw">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Atmosphere cross-section — click a frequency to trace a ray path</div>
+  <canvas id="atmo-canvas" height="400"></canvas>
+  <div class="freq-bar">
+    <button class="fbtn" id="fbtn-3"  onclick="fireRay(3)">3 MHz</button>
+    <button class="fbtn" id="fbtn-7"  onclick="fireRay(7)">7 MHz</button>
+    <button class="fbtn" id="fbtn-14" onclick="fireRay(14)">14 MHz</button>
+    <button class="fbtn" id="fbtn-28" onclick="fireRay(28)">28 MHz</button>
+    <button class="fbtn" id="fbtn-50" onclick="fireRay(50)">50 MHz</button>
+  </div>
+  <div id="ray-status" class="ray-status">Select a frequency above to trace a ray path</div>
+</div>
+</main>
+
+<script>
+const ALT_MAX  = 500;   // km altitude range shown
+const DIST_MAX = 2500;  // km horizontal range shown
+const F2_H     = 300;   // km, F2 reflection height used for geometry
+
+const PL = 52, PR = 82, PT = 12, PB = 30;  // padding: left/right/top/bottom
+
+let isDay = true, ssn = 120, selFreq = null;
+let rayT = 0, animId = null, lastTS = null;
+
+const canvas = document.getElementById('atmo-canvas');
+const ctx    = canvas.getContext('2d');
+
+// ── Physics ───────────────────────────────────────────────────────────────────
+function foF2() {
+    const base = 4.0 + 12.0 * (ssn / 250);   // 4–16 MHz
+    return isDay ? base : base * 0.68;
+}
+
+function muf2000() {
+    // 2000 km hop, F2 at 300 km: elev = atan(600/2000)
+    const sinE = Math.sin(Math.atan2(600, 2000));
+    return foF2() / sinE;
+}
+
+function dLayerAbs(f) {
+    if (!isDay || f <= 0) return 0;
+    // Empirical: 2 transits × 100*(1+SSN/250)/f²  dB
+    return 2 * 100 * (1 + ssn / 250) / (f * f);
+}
+
+// Returns { mode:'nvis'|'refract'|'escape', elev:degrees, skipKm, desc }
+function rayBehavior(f) {
+    const fo = foF2();
+    const muf15 = fo / Math.sin(15 * Math.PI / 180);
+    if (f <= fo) {
+        const sk = Math.round(2 * F2_H / Math.tan(70 * Math.PI / 180));
+        return { mode:'nvis', elev:70, skipKm:sk,
+            desc:`NVIS — f (${f} MHz) ≤ foF2 (${fo.toFixed(1)} MHz) — refracts near-vertically, skip ≈ ${sk} km` };
+    }
+    if (f < muf15) {
+        const sk = Math.round(2 * F2_H / Math.tan(15 * Math.PI / 180));
+        return { mode:'refract', elev:15, skipKm:sk,
+            desc:`Long-skip — F2 refraction at 15° elevation, skip ≈ ${sk.toLocaleString()} km` };
+    }
+    return { mode:'escape', elev:15, skipKm:null,
+        desc:`Above MUF (foF2 = ${fo.toFixed(1)} MHz) — signal escapes to space, no sky wave` };
+}
+
+// ── Layers ────────────────────────────────────────────────────────────────────
+function getLayers() {
+    const sf = ssn / 250;
+    const L = [];
+    if (isDay) {
+        L.push({ lo:60,  hi:90,             col:'#f97316', a:0.12+0.28*sf, lbl:'D  60–90 km'   });
+    }
+    const ea = isDay ? 0.18+0.20*sf : 0.06+0.08*sf;
+    L.push({     lo:100, hi:125,            col:'#f59e0b', a:ea,           lbl:'E  100–125 km' });
+    if (isDay) {
+        L.push({ lo:170, hi:230,            col:'#22d3ee', a:0.12+0.15*sf, lbl:'F1  ~200 km'   });
+        L.push({ lo:250, hi:350+50*sf,      col:'#818cf8', a:0.20+0.28*sf, lbl:'F2  250–400 km'});
+    } else {
+        L.push({ lo:200, hi:370+30*sf,      col:'#818cf8', a:0.14+0.22*sf, lbl:'F  (night)'    });
+    }
+    return L;
+}
+
+// ── Draw ──────────────────────────────────────────────────────────────────────
+function ly(alt) {
+    const H = canvas.height, plotH = H - PT - PB;
+    return PT + plotH - alt * plotH / ALT_MAX;
+}
+function lx(d) {
+    const W = canvas.width, plotW = W - PL - PR;
+    return PL + d * plotW / DIST_MAX;
+}
+
+function drawScene() {
+    const W = canvas.width, H = canvas.height;
+    const plotW = W - PL - PR, plotH = H - PT - PB;
+    const gY = PT + plotH;
+    const txX = PL;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Space background
+    const bg = ctx.createLinearGradient(0, PT, 0, gY);
+    bg.addColorStop(0, '#01020a'); bg.addColorStop(0.35, '#02040f'); bg.addColorStop(1, '#050c17');
+    ctx.fillStyle = bg;
+    ctx.fillRect(PL, PT, plotW, plotH);
+
+    // Altitude gridlines + labels
+    ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'right'; ctx.fillStyle = '#475569';
+    for (const alt of [100, 200, 300, 400, 500]) {
+        const y = Math.round(ly(alt)) + 0.5;
+        ctx.strokeStyle = '#1a2234'; ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(PL, y); ctx.lineTo(PL + plotW, y); ctx.stroke();
+        ctx.fillText(alt + ' km', PL - 4, y + 3);
+    }
+    ctx.fillText('0', PL - 4, gY + 3);
+
+    // Y-axis label
+    ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.save(); ctx.translate(10, PT + plotH / 2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign = 'center'; ctx.fillText('Altitude (km)', 0, 0); ctx.restore();
+
+    // Ionospheric layers
+    for (const L of getLayers()) {
+        const y1 = ly(L.hi), y2 = ly(L.lo);
+        const g = ctx.createLinearGradient(0, y1, 0, y2);
+        const toHex = v => Math.round(v * 255).toString(16).padStart(2,'0');
+        g.addColorStop(0,   L.col + toHex(L.a * 0.30));
+        g.addColorStop(0.5, L.col + toHex(L.a));
+        g.addColorStop(1,   L.col + toHex(L.a * 0.30));
+        ctx.fillStyle = g;
+        ctx.fillRect(PL, y1, plotW, y2 - y1);
+        // Label outside right
+        const midY = (y1 + y2) / 2;
+        ctx.fillStyle = L.col; ctx.font = '8px IBM Plex Mono, monospace'; ctx.textAlign = 'left';
+        ctx.fillText(L.lbl, PL + plotW + 5, midY + 3);
+    }
+
+    // Ground
+    const gg = ctx.createLinearGradient(0, gY, 0, gY + PB);
+    gg.addColorStop(0, '#1a2234'); gg.addColorStop(1, '#0d1520');
+    ctx.fillStyle = gg; ctx.fillRect(PL, gY, plotW, PB);
+    ctx.strokeStyle = '#2d3f56'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PL, gY); ctx.lineTo(PL + plotW, gY); ctx.stroke();
+
+    // TX antenna
+    ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(txX, gY); ctx.lineTo(txX, gY - 14); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(txX - 10, gY - 10); ctx.lineTo(txX + 10, gY - 10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(txX - 6, gY - 6); ctx.lineTo(txX + 6, gY - 6); ctx.stroke();
+    ctx.fillStyle = '#64748b'; ctx.font = '8px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center'; ctx.fillText('TX', txX, gY + 22);
+
+    // Distance labels
+    ctx.fillStyle = '#334155'; ctx.font = '8px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+    const dStep = W < 500 ? 1000 : 500;
+    for (let d = dStep; d < DIST_MAX; d += dStep) {
+        const x = lx(d);
+        if (x > PL + 20 && x < PL + plotW - 10) ctx.fillText(d + ' km', x, gY + PB - 5);
+    }
+
+    // Ray path
+    if (selFreq && rayT > 0) {
+        const beh  = rayBehavior(selFreq);
+        const tanE = Math.tan(beh.elev * Math.PI / 180);
+        const xF2  = lx(F2_H / tanE);
+        const yF2  = ly(F2_H);
+
+        // Build waypoints
+        let wpts;
+        if (beh.mode === 'escape') {
+            const topAlt = ALT_MAX * 0.91;
+            wpts = [ {x:txX, y:gY}, {x:xF2, y:yF2}, {x:lx(topAlt/tanE), y:ly(topAlt)} ];
+        } else {
+            const xLand = lx(2 * F2_H / tanE);
+            wpts = [ {x:txX, y:gY}, {x:xF2, y:yF2}, {x:xLand, y:gY} ];
+        }
+
+        // Compute cumulative lengths for progress interpolation
+        const segs = [];
+        let total = 0;
+        for (let i = 1; i < wpts.length; i++) {
+            const dx = wpts[i].x - wpts[i-1].x, dy = wpts[i].y - wpts[i-1].y;
+            const l = Math.sqrt(dx*dx + dy*dy);
+            segs.push(l); total += l;
+        }
+
+        const target = Math.min(rayT / 2.0, 1.0) * total;
+        const rayColor = beh.mode === 'escape' ? '#f59e0b' : '#06b6d4';
+
+        ctx.beginPath(); ctx.moveTo(wpts[0].x, wpts[0].y);
+        let walked = 0;
+        for (let i = 0; i < segs.length; i++) {
+            if (walked + segs[i] >= target) {
+                const frac = (target - walked) / segs[i];
+                ctx.lineTo(wpts[i].x + frac * (wpts[i+1].x - wpts[i].x),
+                           wpts[i].y + frac * (wpts[i+1].y - wpts[i].y));
+                break;
+            }
+            ctx.lineTo(wpts[i+1].x, wpts[i+1].y); walked += segs[i];
+        }
+        ctx.strokeStyle = rayColor; ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+
+        // Arrowhead when escape ray fully drawn
+        if (beh.mode === 'escape' && rayT >= 1.8) {
+            const tip = wpts[wpts.length - 1], pr2 = wpts[wpts.length - 2];
+            const ang = Math.atan2(tip.y - pr2.y, tip.x - pr2.x);
+            ctx.fillStyle = '#f59e0b'; ctx.beginPath();
+            ctx.moveTo(tip.x, tip.y);
+            ctx.lineTo(tip.x - 11*Math.cos(ang) + 5*Math.sin(ang), tip.y - 11*Math.sin(ang) - 5*Math.cos(ang));
+            ctx.lineTo(tip.x - 11*Math.cos(ang) - 5*Math.sin(ang), tip.y - 11*Math.sin(ang) + 5*Math.cos(ang));
+            ctx.closePath(); ctx.fill();
+        }
+
+        // Skip landing marker when refracted ray fully drawn
+        if (beh.mode !== 'escape' && rayT >= 2.0) {
+            const land = wpts[wpts.length - 1];
+            ctx.beginPath(); ctx.arc(land.x, land.y, 5, 0, 2*Math.PI);
+            ctx.fillStyle = '#06b6d4'; ctx.fill();
+            ctx.fillStyle = '#06b6d4'; ctx.font = '8px IBM Plex Mono, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('↓ ' + beh.skipKm.toLocaleString() + ' km', land.x, gY + 13);
+        }
+
+        // D-layer absorption tint: draw a second dimmer pass of the ray in the D-region
+        if (isDay && dLayerAbs(selFreq) > 0.5) {
+            const dLo = ly(90), dHi = ly(60);
+            ctx.save(); ctx.beginPath(); ctx.rect(PL, dHi, plotW, dLo - dHi);
+            ctx.clip();
+            ctx.strokeStyle = '#f97316'; ctx.lineWidth = 3; ctx.globalAlpha = Math.min(0.55, dLayerAbs(selFreq) / 20);
+            ctx.beginPath(); ctx.moveTo(wpts[0].x, wpts[0].y);
+            for (const p of wpts.slice(1)) ctx.lineTo(p.x, p.y);
+            ctx.stroke(); ctx.restore(); ctx.globalAlpha = 1;
+        }
+    }
+
+    // Border
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1; ctx.setLineDash([]);
+    ctx.strokeRect(PL, PT, plotW, plotH);
+}
+
+// ── Animation ─────────────────────────────────────────────────────────────────
+function animLoop(ts) {
+    if (!lastTS) lastTS = ts;
+    const dt = (ts - lastTS) / 1000; lastTS = ts;
+    rayT = Math.min(rayT + dt * 1.3, 2.0);
+    drawScene();
+    if (rayT < 2.0) animId = requestAnimationFrame(animLoop);
+    else { animId = null; drawScene(); }
+}
+
+function fireRay(f) {
+    selFreq = f;
+    const beh = rayBehavior(f);
+
+    // Update button states
+    [3, 7, 14, 28, 50].forEach(freq => {
+        const btn = document.getElementById('fbtn-' + freq);
+        const b2  = rayBehavior(freq);
+        btn.className = 'fbtn' + (freq === f ? ' ' + b2.mode : '');
+    });
+
+    document.getElementById('ray-status').textContent = beh.desc;
+
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    rayT = 0; lastTS = null;
+    animId = requestAnimationFrame(animLoop);
+    updateReadouts();
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function setDay(day) {
+    isDay = day;
+    document.getElementById('btn-day').className   = 'tbtn' + (day  ? ' on-cyan' : '');
+    document.getElementById('btn-night').className = 'tbtn' + (!day ? ' on-dim'  : '');
+    if (selFreq) fireRay(selFreq); else drawScene();
+    updateReadouts();
+}
+
+document.getElementById('sl-ssn').addEventListener('input', function () {
+    ssn = +this.value;
+    document.getElementById('lbl-ssn').textContent = ssn;
+    if (selFreq) fireRay(selFreq); else drawScene();
+    updateReadouts();
+});
+
+function updateReadouts() {
+    const fo  = foF2();
+    const muf = muf2000();
+    document.getElementById('ro-fof2').textContent = fo.toFixed(1) + ' MHz';
+    document.getElementById('ro-muf').textContent  = muf.toFixed(1) + ' MHz';
+
+    if (selFreq) {
+        const da  = dLayerAbs(selFreq);
+        document.getElementById('ro-dabs').textContent = isDay ? da.toFixed(1) + ' dB' : '0 dB (D absent)';
+        const beh = rayBehavior(selFreq);
+        const sw  = beh.mode === 'nvis'    ? 'NVIS — no skip zone'
+                  : beh.mode === 'refract' ? 'Skip ~' + beh.skipKm.toLocaleString() + ' km'
+                  :                          'Escaped — no sky wave';
+        document.getElementById('ro-sw').textContent = sw;
+        document.getElementById('ro-sw').className = 'ro-val ' + (beh.mode === 'escape' ? 'amber' : 'cyan');
+    } else {
+        document.getElementById('ro-dabs').textContent = '—';
+        document.getElementById('ro-sw').textContent   = '—';
+    }
+}
+
+// ── Resize ────────────────────────────────────────────────────────────────────
+function resize() {
+    canvas.width = Math.max(300, canvas.parentElement.clientWidth - 2);
+    if (selFreq) fireRay(selFreq); else drawScene();
+    updateReadouts();
+}
+window.addEventListener('resize', resize);
+resize();
+</script>
+</body>
+</html>
