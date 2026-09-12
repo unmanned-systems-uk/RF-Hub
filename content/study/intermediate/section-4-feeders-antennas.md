@@ -390,6 +390,8 @@ The most common type is the **choke balun** (also called a current balun):
                 └──────────────────────┘
 ```
 
+![Choke balun construction — coax wound around a ferrite toroid to block common-mode currents. Alternative constructions: ferrite beads / snap-on ferrite cores.](/assets/images/study/ferrite-choke-common-mode.png)
+
 **How it works:** The inductance of the coil in series with the outer braid presents a high impedance to common-mode currents (which try to travel along the outside of the braid). Differential-mode currents (the signal, flowing on the inside of the coax) see no impedance added. The ferrite core dramatically increases the inductance and therefore the choking effectiveness on lower frequencies.
 
 **Impedance ratio:** 1:1 — the balun does not change the impedance, it only converts between balanced and unbalanced.
