@@ -384,14 +384,16 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
         if (!data || !data.resume) return;
         const resume = data.resume;
         if (resume.page_url !== pathname) return;
+        const sectionCode = resume.section || '';
+        if (!sectionCode) return;
+        const anchorId = 'ch-' + sectionCode.toLowerCase();
         const banner = document.createElement('div');
         banner.className = 'study-resume-banner';
-        const anchor = resume.section_anchor || '';
-        banner.innerHTML = 'Resume from §' + anchor + '?';
+        banner.innerHTML = 'Resume from §' + sectionCode;
         const btn = document.createElement('button');
         btn.textContent = 'Go';
         btn.addEventListener('click', function () {
-          const target = document.getElementById(anchor);
+          const target = document.getElementById(anchorId);
           if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
         banner.appendChild(btn);
@@ -412,7 +414,8 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
           return;
         }
         const resume = data.resume;
-        const href = resume.page_url + (resume.section_anchor ? '#' + resume.section_anchor : '');
+        const resumeCode = resume.section || '';
+        const href = resume.page_url + (resumeCode ? '#ch-' + resumeCode.toLowerCase() : '');
         if (card) {
           card.innerHTML = '<div class="study-resume-inner">' +
             '<span class="study-resume-label">Continue where you left off</span>' +

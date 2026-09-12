@@ -12,7 +12,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#06b6d4">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1500">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260912-1600">
 <style>
 .stats-grid {
   display: grid;
@@ -218,7 +218,7 @@
   .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
 }
 </style>
-<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1500">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260912-1600">
   <meta name="site-nav-active" content="">
 </head>
 <body>
@@ -399,9 +399,9 @@
   </footer>
 </div>
 
-<script src="../assets/js/api.js?v=20260912-1500"></script>
-<script src="../assets/js/storage.js?v=20260912-1500"></script>
-<script src="../assets/js/main.js?v=20260912-1500"></script>
+<script src="../assets/js/api.js?v=20260912-1600"></script>
+<script src="../assets/js/storage.js?v=20260912-1600"></script>
+<script src="../assets/js/main.js?v=20260912-1600"></script>
 <script>
 (function () {
   // ── Auth guard ────────────────────────────────────────────────────────────
@@ -753,10 +753,11 @@
     const resumeBtn = document.getElementById('lsResumeBtn');
     if (resume && resume.page_url) {
       const secObj = SECTION_MAP.find(function (s) { return bookmarkedSlug === s.slug; });
-      const sectionCode = resume.section || (secObj ? '§' + secObj.code : '§?');
+      const sectionCode = resume.section || (secObj ? secObj.code : '');
       const sectionTitle = secObj ? secObj.name : '';
-      resumeSectionEl.textContent = sectionCode + (sectionTitle ? ' — ' + sectionTitle : '');
-      resumeBtn.href = resume.page_url;
+      resumeSectionEl.textContent = '§' + (sectionCode || '—') + (sectionTitle ? ' — ' + sectionTitle : '');
+      const anchorId = sectionCode ? '#ch-' + sectionCode.toLowerCase() : '';
+      resumeBtn.href = resume.page_url + anchorId;
       resumeBtn.style.display = 'inline-block';
     }
 
@@ -789,7 +790,7 @@
   });
 })();
 </script>
-<script src="/assets/js/search.js?v=20260912-1500" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260912-1500" defer></script>
+<script src="/assets/js/search.js?v=20260912-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260912-1600" defer></script>
 </body>
 </html>
