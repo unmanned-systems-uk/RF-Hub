@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 1: Licence Conditions — Full Licence Study | RF-Hub</title>
+  <!-- Favicons — SPOT (see /favicon.ico, /apple-touch-icon.png, /site.webmanifest) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260912-1800">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <!-- Nav SPOT (site-nav.html partial). Fallback link if JS fails. -->
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Full</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 1</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~5–6 / 62 questions &nbsp;·&nbsp; ~10%</span>
+      </div>
+      <h1>Licence Conditions</h1>
+      <p class="hero-subtitle">CEPT/HAREC, ITU regions, EMF compliance, emission designators, Schedule&nbsp;1 Primary/Secondary allocations, callsign formats, and unattended station operation.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-1A">1A How This Works</a></li>
+        <li><a href="#ch-1B">1B Message Content</a></li>
+        <li><a href="#ch-1C">1C Transmitter Standards</a></li>
+        <li><a href="#ch-1D">1D Remote Control</a></li>
+        <li><a href="#ch-1E">1E CEPT &amp; HAREC</a></li>
+        <li><a href="#ch-1F">1F ITU Regions</a></li>
+        <li><a href="#ch-1G">1G EMF Compliance</a></li>
+        <li><a href="#ch-1H">1H Schedule &amp; Callsigns</a></li>
+        <li><a href="#ch-1I">1I Emission Designators</a></li>
+        <li><a href="#ch-1J">1J Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-1A"><span class="toc-code">1A</span>How This Chapter Works</a></li>
+        <li><a href="#ch-1B"><span class="toc-code">1B</span>Content of Messages</a></li>
+        <li><a href="#ch-1C"><span class="toc-code">1C</span>Transmitter Standards</a></li>
+        <li><a href="#ch-1D"><span class="toc-code">1D</span>Remote Control Operation</a></li>
+        <li><a href="#ch-1E"><span class="toc-code">1E</span>CEPT T/R 61-01 &amp; HAREC</a></li>
+        <li><a href="#ch-1F"><span class="toc-code">1F</span>ITU Radio Regions</a></li>
+        <li><a href="#ch-1G"><span class="toc-code">1G</span>EMF Compliance Assessment</a></li>
+        <li><a href="#ch-1H"><span class="toc-code">1H</span>Schedule 1, Callsigns &amp; Ops</a></li>
+        <li><a href="#ch-1I"><span class="toc-code">1I</span>Emission Designators</a></li>
+        <li><a href="#ch-1J"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════════ 1A: HOW THIS CHAPTER WORKS ═══════════ -->
+    <section class="chapter" id="ch-1A">
+      <div class="chapter-header">
+        <span class="chapter-num">1A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>How This Chapter Works</h2>
+
+      <p>Most of the licensing conditions you need for everyday operating were covered at Foundation and Intermediate. The Full licence builds on that foundation in three main areas: <strong>international operating privileges</strong> (CEPT T/R 61-01), the <strong>EMF compliance framework</strong> (using the Ofcom calculator), and a deeper reading of <strong>Schedule 1</strong> including Primary/Secondary allocations, the 5 MHz conditions, EIRP limits, and callsign format. There is also new material on emission designators and bandwidth terminology.</p>
+      <p>The chapter is deliberately concise &mdash; the RSGB manual runs to only five pages, since many conditions are already familiar. However, the <strong>schedule and the Notice of Co-ordination</strong> both appear in the exam Reference Booklet (EX309) and their contents <em>are</em> examinable. When an exam question says &ldquo;which answer can be found in the Reference Booklet?&rdquo;, the answer is usually in the schedule notes.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">The Ofcom document <em>Amateur Radio Guidance</em> (OFW611) amplifies the licence and gives guidance on procedures and compliance. It is <strong>not</strong> itself examinable, but understanding it helps you interpret exam questions. A copy is provided in the Reference Booklet at the examination.</div>
+      </div>
+      <p>The Full Licence Manual references licence clauses as <strong>(N-n)</strong>, meaning Condition N, clause n. For example, <strong>(6-4)</strong> is Condition 6, clause 4 (the purpose of amateur radio). You will see these references in exam questions &mdash; look up the answer in the Reference Booklet during the exam.</p>
+      <p><strong>Terminology note:</strong> The word &ldquo;Licensee&rdquo; and specific terms in Initial Capitals have defined meanings in Condition 10 (Interpretation). When studying, check the exact meaning if a term seems unusual.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1B: CONTENT OF MESSAGES ═════════════ -->
+    <section class="chapter" id="ch-1B">
+      <div class="chapter-header">
+        <span class="chapter-num">1B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Content of Messages (1C1)</h2>
+
+      <h3>Plain Language and Permitted Codes</h3>
+      <p>Messages from your station must only be addressed to other amateur stations in the UK or around the world. The licence restricts transmissions to self-training and leisure activities &mdash; commercial use is not permitted <strong>(6-4)</strong>, with an exception when assisting in disaster or local, national, or international emergency <strong>(6-5)</strong>.</p>
+      <p>Amateur messages must be in <strong>plain language</strong> &mdash; anyone listening must be able to understand the general content. Q-codes and standard abbreviations are explicitly permitted because they facilitate passing messages when radio conditions are poor or there are language difficulties. They do not obscure the message in the way that encryption would. The distinction matters in exam questions.</p>
+      <p><strong>Encryption</strong> is not permitted in amateur transmissions except in a specific circumstance: when assisting a User Service (such as ambulance or mountain rescue) where the name of a casualty may need to be obscured, the licence allows an encrypted message or some other method of obscuring its real meaning <strong>(6-19)</strong>. The decision to use encryption in this context is that of the User Service, not the amateur.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1C1:</strong> Messages must be in plain language; Q-codes and abbreviations are permitted because they facilitate communication &mdash; they are not encryption. Encryption of content is not permitted. Exception: assisting a User Service where casualty identity must be protected <strong>(6-19)</strong>.</div>
+      </div>
+
+      <h3>Message Content Standards</h3>
+      <p>The <strong>Wireless Telegraphy (Content of Transmission) Regulations 1988</strong> prohibit grossly offensive, indecent, or menacing messages. The <strong>Communications Act 2003</strong> provides the broader legal framework.</p>
+      <p>When working overseas stations, bear in mind that cultural norms differ. You should strive to avoid causing offence even when technically within UK law.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1C: TRANSMITTER STANDARDS ═══════════ -->
+    <section class="chapter" id="ch-1C">
+      <div class="chapter-header">
+        <span class="chapter-num">1C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Transmitter Standards and Undue Interference (1D1)</h2>
+
+      <h3>Clean and Stable Transmissions</h3>
+      <p>Condition 6, clauses 1 and 2, require that your equipment:</p>
+      <ul>
+        <li>Transmits in accordance with the licence</li>
+        <li>Is designed, constructed, maintained, and used so it does <strong>not</strong> cause Undue Interference to any wireless telegraphy</li>
+      </ul>
+      <p>The Wireless Telegraphy Act 2006 defines <strong>Undue Interference</strong> as persistent and harmful interference.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1D1:</strong> &ldquo;Undue Interference&rdquo; is defined in the WT Act 2006 as persistent and harmful. Your transmitter must not drift excessively, produce excess harmonics, or cause sustained interference to other users. You must test periodically to confirm compliance.</div>
+      </div>
+
+      <h3>Ofcom Inspection</h3>
+      <p>A person authorised by Ofcom has the right to inspect your licence and equipment &mdash; either if an urgent situation exists (e.g. a complaint about excessive field strengths) or to verify compliance with the licence <strong>(7-1)</strong>. This may result from a neighbour complaint about TV interference or field strengths that exceed EMC directive limits.</p>
+      <p>You also have an obligation to <strong>conduct periodic tests</strong> to ensure your station is not causing Undue Interference, and to keep records of those tests.</p>
+
+      <h3>Receiving Capability</h3>
+      <p>The licence requires you to have equipment capable of <strong>receiving messages on all frequencies and modes</strong> used by your station. In practice this means you should be able to monitor your own transmission band while operating, and should carry out regular critical listening to check for frequency drift, excessive bandwidth, or spurious emissions.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1D: REMOTE CONTROL ══════════════════ -->
+    <section class="chapter" id="ch-1D">
+      <div class="chapter-header">
+        <span class="chapter-num">1D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Remote Control Operation (1E1)</h2>
+
+      <h3>What Remote Control Means</h3>
+      <p>The licence permits various forms of <strong>unattended and remote control</strong> operation. Remote control means you are not physically at the transmitter but have a control link that:</p>
+      <ul>
+        <li>Is adequately secure</li>
+        <li>Allows you to promptly turn off the transmitter <strong>(6-10 and 6-10x)</strong></li>
+        <li>Fails safely &mdash; loss of the link stops transmissions</li>
+      </ul>
+      <p>You are not required to be at the transmitter, but you must be able to terminate transmissions promptly from wherever you are.</p>
+
+      <h3>The Control Link</h3>
+      <p>The choice of link technology is yours. However, if the control link uses an amateur band, it <strong>must operate above 30 MHz (6-10b)</strong>. The normal licence conditions apply equally to the link and to the main transmitter &mdash; in particular, the link must <strong>not be encrypted (6-10)</strong>. This is because amateur transmissions &mdash; including the control signals &mdash; must remain in plain language. Security must be achieved by other means (authentication, secure access codes, physical security).</p>
+      <p>When using the internet as a remote control link, the licensee may be in another country while the transmitter remains in the UK. The licence terms and call sign remain the normal UK ones, because the radio transmission (which is what is licensed) originates in the UK.</p>
+
+      <h3>Remote Location Notice</h3>
+      <p>You must <strong>display a notice at the remote location</strong> giving your Licence Number in case you need to be contacted <strong>(6-10d)</strong>. Only Ofcom can relate the licence number to your personal details, keeping them secure.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1E1:</strong> Remote control: any communications link may be used; if in an amateur band it must be above 30 MHz; the link must not be encrypted; display licence number notice at remote location <strong>(6-10d)</strong>; the licence terms apply to the link as to the main station.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1E: CEPT / HAREC ════════════════════ -->
+    <section class="chapter" id="ch-1E">
+      <div class="chapter-header">
+        <span class="chapter-num">1E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>International Operation: CEPT T/R 61-01 and HAREC (1F1)</h2>
+
+      <h3>CEPT and the HAREC Certificate</h3>
+      <p><strong>CEPT</strong> (Conference of European Posts and Telecommunications) Recommendation <strong>T/R 61-01</strong> introduced the concept of reciprocal amateur radio operation across signatory countries. It applies <strong>only to holders of a Full (personal) licence</strong> &mdash; it does not extend to club licences or bilateral reciprocal licences.</p>
+      <p>All UK Full licence holders are issued with a <strong>HAREC</strong> (Harmonised Amateur Radio Examination Certificate) by the RSGB on passing the Full exam. The HAREC is internationally recognised across the signatory countries as proof that you have passed an examination at the required standard.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">CEPT T/R 61-01 applies to Full licence (HAREC) holders <strong>only</strong>. Foundation and Intermediate licence holders do not hold a HAREC and cannot use T/R 61-01. This is a standing exam rule and appears regularly in the question bank.</div>
+      </div>
+
+      <h3>Using T/R 61-01 Abroad</h3>
+      <p>T/R 61-01 covers <strong>temporary, non-resident operation for up to 3 months</strong> in about 50 CEPT and non-CEPT countries that have signed the recommendation. Under it you may:</p>
+      <ul>
+        <li>Set up your own station, or</li>
+        <li>Use the station of another licensed amateur</li>
+      </ul>
+      <p>When operating under T/R 61-01 you must:</p>
+      <ul>
+        <li>Have your UK licence available for inspection (carry a paper copy &mdash; don&rsquo;t rely on the internet)</li>
+        <li>Have a copy of the host country&rsquo;s rules, obtainable from their administration before you travel</li>
+        <li><strong>Identify with your home call sign prefixed by the host country code</strong> &mdash; e.g. operating in France as a UK M0 holder: <strong>F/M0ABC</strong></li>
+        <li>Comply with the host country&rsquo;s licence conditions, which may prohibit things allowed in the UK or allow things not permitted here</li>
+        <li><strong>Check HF Morse requirements</strong> &mdash; some host countries require a Morse test as a condition of HF operation; T/R 61-01 does not override this</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1F1:</strong> CEPT T/R 61-01 permits Full licence (HAREC) holders to operate temporarily abroad (up to 3 months) in ~50 signatory countries. You must identify as HOST/HOMECALL (e.g. F/M0ABC). Comply with host country rules. Carry licence + host rules paper copies.</div>
+      </div>
+
+      <h3>T/R 61-02 and the HAREC for Longer Stays</h3>
+      <p><strong>T/R 61-02</strong> introduced the HAREC framework. If you are staying in a signatory country for <strong>more than 3 months</strong> (beyond T/R 61-01&rsquo;s scope), you may use your HAREC to apply for a full licence from that country&rsquo;s administration, as if you had passed their examination.</p>
+
+      <h3>Reciprocal Agreements</h3>
+      <p><strong>Bilateral reciprocal agreements</strong> exist between individual countries. When in place, UK licensees may operate in the host country under the terms of the agreement, which may involve obtaining a temporary licence. Non-CEPT countries often use this route. Check before travelling &mdash; procedures and requirements vary and customs authorities may impound equipment without the correct paperwork.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1F: ITU REGIONS ═════════════════════ -->
+    <section class="chapter" id="ch-1F">
+      <div class="chapter-header">
+        <span class="chapter-num">1F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>ITU Radio Regions (1F2)</h2>
+
+      <p>The <strong>International Telecommunication Union (ITU)</strong> divides the world into three regions for the purpose of radio frequency allocation. The frequencies allocated to amateur radio vary between regions:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Region</th><th>Countries</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Region 1</strong></td><td>Europe, Africa, Russia, the Middle East, former Soviet republics</td></tr>
+            <tr><td><strong>Region 2</strong></td><td>The Americas (North, Central, South America and Caribbean)</td></tr>
+            <tr><td><strong>Region 3</strong></td><td>Asia and Oceania (China, Japan, Australia, India, South-East Asia, Pacific)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The UK is in <strong>Region 1</strong>. When operating abroad under T/R 61-01 (&sect;1E above), you must use <strong>only frequencies that appear in both your UK licence schedule AND are allocated to amateur radio in the region where you are operating</strong>. Do not assume that a frequency in your UK schedule is valid in Region 2 or 3 &mdash; the allocations differ.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1F2:</strong> The ITU divides the world into three regions. UK = Region 1. When operating abroad, use only frequencies listed in both your UK schedule AND the host country&rsquo;s regional allocation. Americas (R2) and Asia/Pacific (R3) have different amateur allocations from Region 1.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1G: EMF COMPLIANCE ══════════════════ -->
+    <section class="chapter" id="ch-1G">
+      <div class="chapter-header">
+        <span class="chapter-num">1G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>EMF Compliance Assessment (1G1)</h2>
+
+      <h3>The ICNIRP Framework</h3>
+      <p>The amateur licence requires that the RF fields around your station <strong>do not exceed the limits recommended by ICNIRP</strong> (International Commission on Non-Ionising Radiation Protection) applicable to members of the general public <strong>(Condition 9-1)</strong>. The &ldquo;general public&rdquo; includes non-amateur family, guests, neighbours, and anyone in areas accessible to them.</p>
+      <p>Licensed amateurs are assumed to have the knowledge to look after themselves &mdash; the protection requirement is for those who do not. The boundary of the &ldquo;general public zone&rdquo; is <strong>any location where the general public may or can reasonably be expected to be present</strong>, which includes your neighbours&rsquo; gardens and any public road or path adjacent to your antenna.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1G1:</strong> Your licence requires compliance with ICNIRP EMF limits for the general public <strong>(Condition 9-1)</strong>. You must know: the origin of the restrictions (ICNIRP), the meaning of &ldquo;general public&rdquo;, the areas to protect, the assessment procedure, record-keeping requirements, and emergency exceptions.</div>
+      </div>
+
+      <h3>When an Assessment is Required</h3>
+      <p>If the <strong>EIRP is below 10 W averaged over any 6-minute period OR the instantaneous peak EIRP is below 100 W</strong>, exclusion zones do not apply &mdash; no formal assessment is required for that operating scenario.</p>
+      <p>If you operate above those thresholds (which most Intermediate and Full licence holders will, given the 100 W Intermediate / 1000 W Full power limits), you <strong>must carry out a compliance assessment</strong> for each antenna installation.</p>
+
+      <h3>The Ofcom/RSGB Assessment Tool</h3>
+      <p>Ofcom have produced a spreadsheet that calculates the <strong>compliance distance</strong> (also called the exclusion zone distance) and the required <strong>horizontal and vertical separation</strong> from the antenna to any location where the general public may be present. The RSGB produce a simplified &ldquo;front page&rdquo; version of the spreadsheet.</p>
+      <p>The spreadsheet inputs are:</p>
+      <ul>
+        <li><strong>Transmit mode</strong> (SSB, FM, CW, data &mdash; affects average power via duty cycle)</li>
+        <li><strong>Transmit % in 6 minutes</strong> (e.g. 70% if you talk approximately 4 out of every 6 minutes)</li>
+        <li><strong>Feeder loss</strong> (reduces power reaching the antenna)</li>
+        <li><strong>Antenna type and gain</strong> (higher gain = higher EIRP in the main lobe)</li>
+        <li><strong>Height of antenna</strong> above ground level</li>
+      </ul>
+      <p>The outputs are:</p>
+      <ul>
+        <li><strong>Reactive near-field zone</strong> (typically 0.1&ndash;0.5 m for HF antennas)</li>
+        <li><strong>Ofcom Compliance Distance</strong> (horizontal distance from antenna base to nearest accessible area)</li>
+        <li><strong>Vertical Separation required</strong> (if people are below the antenna)</li>
+        <li><strong>Horizontal Separation required</strong></li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Example (from RSGB manual):</strong> 100 W FM on 2 m, 6-element Yagi at 7 m height &mdash; Ofcom Compliance Distance 9.2 m, Vertical Separation 5.2 m, Horizontal Separation 7.6 m. This distance could easily extend outside a small urban garden, requiring either power reduction or access restriction.</div>
+      </div>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">A high-gain beam antenna aimed at accessible areas at close range will have a <strong>higher</strong> compliance distance than a dipole at the same power. Directivity increases field strength in the main lobe. Do not assume a beam is &ldquo;safer&rdquo; because power is concentrated away from some directions.</div>
+      </div>
+
+      <h3>Record-Keeping</h3>
+      <p>You must <strong>keep a record showing how you are complying</strong> with EMF requirements <strong>(Condition 9-6)</strong>. This does not have to be complex &mdash; a printed copy of the Ofcom/RSGB spreadsheet with your station parameters filled in is sufficient. Update it whenever you change antenna, power level, or operating location.</p>
+
+      <h3>Emergency Exception</h3>
+      <p>There is no requirement to comply with ICNIRP guidelines during a genuine emergency if you are <strong>necessarily located</strong> at the site of the emergency and are conducting communications essential to the emergency response. Pre-planned exercises and preparedness training at a distance from the emergency do not qualify.</p>
+
+      <h3>Mobile Operation</h3>
+      <p>When operating mobile (in a vehicle), consider:</p>
+      <ul>
+        <li><strong>Proximity to pedestrians and vehicle occupants</strong> &mdash; if temporarily stationary you may be close to members of the public</li>
+        <li><strong>Non-amateur passengers</strong> in your own vehicle</li>
+        <li>A metal-bodied vehicle provides useful screening of occupants from RF fields &mdash; but you must be able to demonstrate this if challenged</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1H: SCHEDULE & CALLSIGNS ════════════ -->
+    <section class="chapter" id="ch-1H">
+      <div class="chapter-header">
+        <span class="chapter-num">1H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Schedule 1, Callsigns, and Operating Conditions (1H1)</h2>
+
+      <h3>Schedule 1 and the Notice of Co-ordination</h3>
+      <p>The <strong>Schedule to the licence</strong> (the frequency allocation table) and the <strong>Notice of Co-ordination</strong> both contain <strong>examinable content</strong>. At Full licence level you are expected to read these more carefully than at Foundation or Intermediate, checking the specific conditions attached to each band.</p>
+      <p>The schedule shows <strong>Primary</strong> and <strong>Secondary</strong> allocations. An amateur band with <strong>Secondary status</strong> must always give way to Primary users. You may not know the Primary user&rsquo;s identity, but you must move if asked &mdash; your equipment must allow QSY. A band with <strong>Secondary status</strong> does NOT mean you cannot use it; it means you do so on a non-interference basis.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Schedule example:</strong> At 1.81&ndash;1.83 MHz the schedule states: <em>&ldquo;Primary. Available on the basis of non-interference to other services outside the UK or Crown Dependencies.&rdquo;</em> This means you must give way to any service outside the UK claiming primary status on those frequencies.</div>
+      </div>
+
+      <h3>The 5 MHz (60 m) Conditions</h3>
+      <p>The 5 MHz allocation carries <strong>specific conditions in Schedule note G</strong> shared with the Ministry of Defence (MoD), who is the Primary user. Key constraints (verify against current schedule before operating):</p>
+      <ul>
+        <li>The allocation consists of individual <strong>channels</strong> (not a continuous band), varying in width from 3 kHz to 12.5 kHz</li>
+        <li>Staying within your allocated channel is essential because the adjacent channel may be in use by the MoD</li>
+        <li>There is a <strong>generic EIRP limit of 200 W</strong> in addition to the normal PEP limit <strong>(Schedule note G I i)</strong></li>
+        <li>At 100 W PEP you are limited to an antenna gain of <strong>3 dBi (isotropic) or 0.85 dBd (half-wave dipole)</strong>
+          <ul>
+            <li>At 5 MHz, a half-wave dipole is approximately <strong>28.5 m (93.5 ft) long</strong></li>
+            <li>Antenna <strong>height is limited to 20 m</strong> above ground level <strong>(Schedule note G II)</strong></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">The 5 MHz band is not a normal HF band &mdash; it has tightly defined channel widths, MoD primary use, EIRP limits, and antenna height restrictions. Operating outside these conditions is a licence violation. Verify against current Ofcom schedule and Notice of Co-ordination before operating on 5 MHz.</div>
+      </div>
+
+      <h3>Identification Requirements (Full Level)</h3>
+      <p>Identification at Full level is <strong>more specific</strong> than at Foundation/Intermediate:</p>
+      <ul>
+        <li><strong>On joining or leaving a net</strong> and <strong>every 15 minutes</strong> you must give your callsign <strong>(Schedule note G VI)</strong></li>
+        <li>You must be either at your <strong>main station address</strong> or a <strong>temporary location</strong>, and if at a temporary location must give that location every <strong>30 minutes (Schedule note G VIII)</strong></li>
+        <li>You must have a <strong>telephone</strong> at the number you registered on the Ofcom licensing portal when you took out the licence <strong>(Schedule note G IX)</strong>; you must be immediately reachable if Ofcom needs to contact you</li>
+        <li>Any <strong>change of personal details</strong> must be reported to Ofcom promptly <strong>(2-2)</strong></li>
+      </ul>
+
+      <h3>Callsign Format</h3>
+      <pre>G#naaa   or   M#naaa   or   2#naaa
+
+Where:
+  #  = optional Regional Secondary Locator (RSL) — a letter giving approximate location
+  n  = a digit (0–9)
+  aaa = three letters</pre>
+      <p>The <strong>Regional Secondary Locator (RSL)</strong> is optional in the sense that it need not be used, but when it <strong>is</strong> used it <strong>must be correct</strong> for the location of that transmission <strong>(6-23)</strong>. Using an incorrect RSL is a licence condition breach.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Prefix series</th><th>Licence class</th></tr></thead>
+          <tbody>
+            <tr><td><strong>M0, M1, M5</strong></td><td>Full licence (current series)</td></tr>
+            <tr><td><strong>G (various)</strong></td><td>Full licence (older series &mdash; G3, G4, G7 etc.)</td></tr>
+            <tr><td><strong>M8, M9</strong></td><td>Intermediate licence (new series, 2023+)</td></tr>
+            <tr><td><strong>2E</strong></td><td>Intermediate licence (older series)</td></tr>
+            <tr><td><strong>M3, M6, M7</strong></td><td>Foundation licence</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>1H1:</strong> At Full level you must know: Schedule note content (examinable); Primary/Secondary allocation meanings; 5 MHz channel conditions and EIRP/height limits; callsign prefixes by licence class (M0/M1/M5 = Full; M8/M9 = Intermediate; M3/M6/M7 = Foundation); RSL must be correct when used; ID every 15 minutes on nets; telephone registered with Ofcom.</div>
+      </div>
+
+      <h3>Unattended Operation Types</h3>
+      <p>The licence permits unattended operation beyond the basic remote control discussed in &sect;1D. Permitted types:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Type</th><th>Licence clause</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Beacon</strong></td>
+              <td>(6-12)</td>
+              <td>Automated propagation beacon &mdash; typically sends an identifying callsign and tone on a fixed frequency for others to assess propagation</td>
+            </tr>
+            <tr>
+              <td><strong>Gateway</strong></td>
+              <td>(6-14)</td>
+              <td>Connects the amateur station to the internet or other non-amateur network &mdash; e.g. Echolink, D-STAR reflector</td>
+            </tr>
+            <tr>
+              <td><strong>Repeater</strong></td>
+              <td>(6-15)</td>
+              <td>Receives on one frequency and simultaneously re-transmits on another &mdash; extends the range of mobile and portable stations</td>
+            </tr>
+            <tr>
+              <td><strong>Data station</strong></td>
+              <td>(6-17)</td>
+              <td>A generic term for any data transmitter or receiver (packet radio, APRS digipeater, etc.)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Requirements for each can be complex. A <strong>Notice of Co-ordination</strong> may be required from Ofcom before activating a repeater or gateway, and a <strong>separate callsign</strong> obtained from the RSGB. Consult the Ofcom Notice of Co-ordination document and RSGB guidance before activating these facilities.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1I: EMISSION DESIGNATORS ════════════ -->
+    <section class="chapter" id="ch-1I">
+      <div class="chapter-header">
+        <span class="chapter-num">1I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Emission Designators and Bandwidth Terms</h2>
+
+      <h3>The ITU Emission Designator System</h3>
+      <p>The ITU uses a standardised system to describe the type of emission produced by a station. An <strong>emission designator</strong> has three mandatory characters (sometimes preceded by an optional bandwidth figure in kHz/MHz/GHz):</p>
+      <pre>[Optional bandwidth] + Character 1 + Character 2 + Character 3
+
+Character 1 — Type of modulation:
+  A = Amplitude modulation, double sideband (AM)
+  F = Frequency modulation (FM)
+  G = Phase modulation (PM)
+  J = Single sideband, suppressed carrier (SSB)
+  R = Single sideband, reduced carrier
+  P = Unmodulated pulse
+
+Character 2 — Nature of the modulating signal:
+  0 = No modulating signal (unmodulated carrier)
+  1 = Single channel of digital information, no sub-carrier
+  2 = Single channel of digital information, with sub-carrier
+  3 = Single channel of analogue information
+  7 = Multiple channels of digital information
+  8 = Multiple channels of analogue information
+  9 = Composite (analogue + digital)
+
+Character 3 — Type of information transmitted:
+  A = Telegraphy (Morse code, for direct printing or visual use)
+  B = Telegraphy, for automatic reception
+  D = Data, telemetry, or telecommand
+  E = Telephony (voice)
+  F = Television (video)
+  N = No information (carrier only)
+  W = Combination of the above</pre>
+
+      <h3>Common Amateur Emission Designators</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Designator</th><th>Decodes as</th><th>Amateur use</th></tr></thead>
+          <tbody>
+            <tr><td><strong>A1A</strong></td><td>AM double sideband &mdash; single channel digital, no sub-carrier &mdash; Morse</td><td>CW (Morse code)</td></tr>
+            <tr><td><strong>A3E</strong></td><td>AM double sideband &mdash; single channel analogue &mdash; telephony</td><td>AM voice (broadcast-style)</td></tr>
+            <tr><td><strong>F3E</strong></td><td>FM &mdash; single channel analogue &mdash; telephony</td><td>FM voice (VHF/UHF repeaters and simplex)</td></tr>
+            <tr><td><strong>J3E</strong></td><td>SSB suppressed carrier &mdash; single channel analogue &mdash; telephony</td><td>SSB voice (HF standard mode)</td></tr>
+            <tr><td><strong>F1D</strong></td><td>FM &mdash; single channel digital, no sub-carrier &mdash; data</td><td>RTTY (FSK direct FM)</td></tr>
+            <tr><td><strong>J2D</strong></td><td>SSB suppressed carrier &mdash; digital with sub-carrier &mdash; data</td><td>AFSK digital modes on SSB (PSK31, WSPR via audio sub-carrier)</td></tr>
+            <tr><td><strong>G1D</strong></td><td>Phase modulation &mdash; single channel digital, no sub-carrier &mdash; data</td><td>PSK-based digital modes</td></tr>
+            <tr><td><strong>F2D</strong></td><td>FM &mdash; digital with sub-carrier &mdash; data</td><td>Audio FSK digital modes via FM transmitter</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">Key designators: <strong>A1A</strong> = CW, <strong>F3E</strong> = FM voice, <strong>J3E</strong> = SSB voice, <strong>A3E</strong> = AM voice, <strong>F1D</strong> = RTTY/FSK. The first letter gives the modulation type; the second the nature of the signal; the third the information type.</div>
+      </div>
+
+      <h3>Bandwidth Terminology</h3>
+      <p><strong>Necessary bandwidth</strong> &mdash; the minimum bandwidth sufficient to ensure the transmission of information at the required rate and quality under the specified conditions. This is a theoretical minimum &mdash; what the signal theoretically occupies.</p>
+      <p><strong>Occupied bandwidth</strong> &mdash; the frequency range within which 99% of the total mean power is radiated. Measured on a spectrum analyser: find the frequencies below which 0.5% of power lies and above which 0.5% lies; the range between them is the occupied bandwidth.</p>
+      <p><strong>Assigned bandwidth</strong> &mdash; the frequency band within which the emission is authorised. Slightly wider than the occupied bandwidth to allow for practical imperfections in the transmitter.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">In exam questions: <strong>necessary bandwidth</strong> = minimum theoretically needed; <strong>occupied bandwidth</strong> = 99% of power within; <strong>assigned bandwidth</strong> = what the licence authorises (widest of the three).</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 1J: SELF-CHECK ══════════════════════ -->
+    <section class="chapter" id="ch-1J">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+      <p>Work through these without looking at the answers first. The style matches actual RSGB Full exam questions.</p>
+
+      <div class="self-checks">
+        <h3>Section 1 — Licence Conditions</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. You hold a UK Full amateur licence and want to operate from France for two weeks. What document permits this and what call sign format must you use?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-1" hidden>
+            <p><strong>CEPT Recommendation T/R 61-01</strong> permits temporary non-resident operation up to 3 months for Full licence (HAREC) holders. Call sign format: <strong>F/M0ABC</strong> (host country code / your UK call sign). Carry paper copies of both your UK licence and the French amateur radio regulations.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. An Intermediate licensee asks if they can use T/R 61-01 to operate in Spain. What is the correct answer?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-2" hidden>
+            <p><strong>No.</strong> CEPT T/R 61-01 applies to holders of a Full (personal) licence that carries a HAREC certificate. Intermediate licence holders do not hold a HAREC and cannot use T/R 61-01. They would need to arrange a temporary licence through bilateral agreement, if one exists with Spain.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What does the emission designator J3E describe?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-3" hidden>
+            <p><strong>J</strong> = Single sideband, suppressed carrier. <strong>3</strong> = single channel of analogue information. <strong>E</strong> = telephony (voice). J3E is the standard emission type for SSB voice operation on amateur HF bands.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. Your station runs 100 W PEP into an antenna with 3 dBi gain. When operating on 5 MHz, is your EIRP within the schedule limit?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-4" hidden>
+            <p>100 W PEP at 3 dBi = <strong>200 W EIRP</strong> (100 W &times; 2 = 200 W). Schedule note G I i sets a generic EIRP limit of 200 W at 5 MHz. This is exactly at the limit &mdash; compliant, but no margin. If the antenna gain were any higher or the power any greater the limit would be exceeded. Verify against current Ofcom schedule before operating on 5 MHz.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. You operate from a temporary location. What identification obligations apply that differ from your home station?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-5" hidden>
+            <p>From a <strong>temporary location</strong> you must: (1) identify with your callsign every 15 minutes and on joining/leaving nets as normal; (2) give the temporary location every <strong>30 minutes</strong> (Schedule note G VIII); (3) have a telephone available at the number registered with Ofcom (Schedule note G IX). At your main station address you do not need to announce the location because it is your registered address.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. A new Intermediate licensee&rsquo;s call sign begins with M8. What does this tell you?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-6" hidden>
+            <p>The <strong>M8 and M9 series</strong> were introduced for Intermediate licences from 2023. The M-series: M0/M1/M5 = Full; M3/M6/M7 = Foundation; M8/M9 = Intermediate (new series, replacing the 2E prefix series).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. Your 100 W FM transmitter on 2 m with a 6-element Yagi shows a required Ofcom Compliance Distance of 9.2 m. Your garden is 8 m wide and your neighbours&rsquo; garden borders it. What must you do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-7" hidden>
+            <p>The compliance distance (9.2 m) extends beyond your property boundary (8 m). You must either: (a) <strong>reduce power or antenna gain</strong> until the compliance distance fits within your property boundary, or (b) <strong>restrict access</strong> to the area within the compliance distance &mdash; e.g. ensure neighbours understand they should not be in that area during transmissions. Simply transmitting at 100 W would not be compliant. Use the Ofcom/RSGB EMF spreadsheet to find the combination of power, gain, and mode that brings the compliance distance within acceptable limits.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. What is the difference between a Gateway and a Repeater in the context of unattended station operation?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-1-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-1-8" hidden>
+            <p>A <strong>Repeater (6-15)</strong> receives on one frequency and simultaneously re-transmits on another &mdash; extending range for mobile and portable stations; it stays within the amateur radio network. A <strong>Gateway (6-14)</strong> connects the amateur station to the internet or another non-amateur network &mdash; e.g. Echolink, D-STAR/YSF reflectors, IRLP. Both may require compliance with the Notice of Co-ordination procedures.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <span class="section-nav__link section-nav__link--disabled">&larr; Previous</span>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=1"
+         class="section-nav__link section-nav__practice" target="_blank">Practice This Section</a>
+      <a href="section-2-operating-safety.html" class="section-nav__link">Section 2 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      if (!bar) return;
+      function update() {
+        var s = document.documentElement;
+        var pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+        bar.style.width = Math.min(pct, 100) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+  <script src="/assets/js/nav-loader.js?v=20260912-1800" defer></script>
+  <script src="/assets/js/study-page.js?v=20260912-1800" defer></script>
+</body>
+</html>

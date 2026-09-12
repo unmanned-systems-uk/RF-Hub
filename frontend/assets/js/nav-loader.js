@@ -64,10 +64,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    loadPartial('site-nav-mount', '/partials/site-nav.html?v=20260912-1700', function (mount) {
+    loadPartial('site-nav-mount', '/partials/site-nav.html?v=20260912-1800', function (mount) {
       activateNav(mount, activeKey);
       wireAuth(mount);
     });
-    loadPartial('site-footer-mount', '/partials/site-footer.html?v=20260912-1700', null);
+    loadPartial('site-footer-mount', '/partials/site-footer.html?v=20260912-1800', null);
   });
 }());
