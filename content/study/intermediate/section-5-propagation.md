@@ -21,8 +21,6 @@ A radio signal leaving an HF antenna can reach a distant receiver by two complet
 
 **2. Sky wave** — travels upward at an angle, enters the ionosphere, is **refracted** back towards the earth, and returns to the surface at some distance from the transmitter.
 
-![HF propagation regions: ground wave (near the transmitter), skip zone / dead zone (no signal), and sky wave (distant reception after ionospheric refraction).](/assets/images/study/section-5/skip-distance-skip-zone.png)
-
 > [INFO] **Refracted, not reflected.** Amateur radio operators often say sky wave signals are "reflected" by the ionosphere — this is casual shorthand and is technically incorrect. The signal is **refracted** (bent) by the ionosphere, in the same way light bends when it enters glass or water. The RSGB syllabus uses the correct term: **refracted**. Use that word in exam answers.
 
 <!-- SVG: ground-wave-and-sky-wave-geometry — Earth curved surface, transmitter on left, ground wave hugging the surface, sky wave looping up through ionosphere layer, returning at receiver on right, dead zone labelled in between -->
@@ -60,13 +58,7 @@ At any given ionospheric state, there is a **maximum angle** from vertical above
 
 **Skip zone** (or dead zone) is the region between the end of the ground wave range and the start of the sky wave return. In this zone, no signals from your transmitter are heard:
 
-```
-TRANSMITTER                                              RECEIVER
-     |                                                      |
-     |←— ground wave ——→|←——— skip zone ———→|←— sky wave ——→|
-     |                  |    (dead zone)     |              |
-     |                  |  no signal heard   |              |
-```
+![HF propagation regions: ground wave (near the transmitter), skip zone / dead zone (no signal), and sky wave (distant reception after ionospheric refraction).](/assets/images/study/section-5/skip-distance-skip-zone.png)
 
 *(Fig 13.1 equivalent — RSGB Ch 13)*
 
