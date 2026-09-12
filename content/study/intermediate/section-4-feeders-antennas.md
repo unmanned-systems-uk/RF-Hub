@@ -443,13 +443,7 @@ This has important implications:
 
 **The system in order:** Transmitter → SWR meter → ATU → feeder → balun → antenna
 
-```
-┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────┐    ┌──────────┐
-│Transmitter├──→│ SWR meter ├──→│   ATU    ├──→│feeder├──→│ antenna  │
-└──────────┘    └──────────┘    └──────────┘    └──────┘    └──────────┘
-                    50 Ω             50 Ω         Z varies   Z_antenna
-                    good                           by SWR
-```
+![Antenna system signal path — each stage's role and characteristic impedance. The aim is to present a good match to the transmitter (50 Ω) while allowing the antenna to operate efficiently at its required impedance.](/assets/images/study/section-4/antenna-system-signal-path.png)
 
 (Fig 10.6-equivalent diagram — based on RSGB Intermediate Manual Fig 10.6)
 
