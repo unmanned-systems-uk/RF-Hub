@@ -561,14 +561,7 @@ The **Yagi-Uda antenna** (usually called simply "the Yagi") is the most common d
 - **Reflector** — slightly longer than the driven element, positioned behind it; reflects energy forward
 - **Director(s)** — slightly shorter than the driven element, positioned in front; focus energy in the forward direction
 
-```
-  REFLECTOR    DRIVEN    DIRECTOR  DIRECTOR
-  (slightly    ELEMENT   (slightly  (slightly
-   longer)    (fed here)  shorter)   shorter)
-    ═══         ═════      ════       ═══
-     ↑             ↑
-   Boom →→→→→→→→→→→→→→→→→→→→→→→→→→→→→→  [forward direction]
-```
+![Yagi-Uda antenna — reflector (behind), driven element (fed), directors (front). The reflector-to-director progression focuses energy in the forward direction, giving gain and directivity.](/assets/images/study/section-4/yagi-uda-antenna.png)
 
 Adding more director elements increases the forward gain and narrows the beamwidth, but you reach a point of diminishing returns beyond about 10–15 elements.
 
