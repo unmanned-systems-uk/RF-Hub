@@ -238,6 +238,29 @@ window.SEARCH_INDEX = [
     sections: ["Transmitters", "Receivers", "Modulation", "Filters"]
   },
   {
+    title: "Section 5: Propagation — Intermediate",
+    url: "/pages/study/intermediate/section-5-propagation.html",
+    description: "Study notes for Section 5 of the Intermediate licence: ground wave, sky wave, ionosphere, D/E/F layers, MUF, LUF, Sporadic-E, tropospheric ducting, sunspot cycle, fading",
+    keywords: ["propagation", "ground wave", "sky wave", "ionosphere", "D layer", "E layer", "F layer",
+               "MUF", "maximum usable frequency", "LUF", "lowest usable frequency",
+               "Sporadic-E", "sporadic E", "tropospheric ducting", "temperature inversion",
+               "sunspot cycle", "solar maximum", "solar minimum", "fading", "QSB",
+               "skip distance", "skip zone", "refraction", "grey line", "aurora",
+               "5A", "5B", "5C", "5D", "5E", "5F", "intermediate section 5"],
+    sections: ["Ground Wave & Sky Wave", "The Ionosphere", "MUF & LUF", "Solar Variation", "VHF/UHF Propagation"]
+  },
+  {
+    title: "Section 6: Electromagnetic Compatibility — Intermediate",
+    url: "/pages/study/intermediate/section-6-emc.html",
+    description: "Study notes for Section 6 of the Intermediate licence: EMC regulations, harmonics, spurious emissions, interference sources, ferrite chokes, low-pass filters, overmodulation",
+    keywords: ["EMC", "electromagnetic compatibility", "interference", "harmonics", "spurious emissions",
+               "ferrite choke", "ferrite ring", "low-pass filter", "overmodulation", "overdeviation",
+               "SMPS", "LED interference", "VDSL", "solar inverter", "dummy load", "noise floor",
+               "ALC", "key shaping", "ISM bands", "CE marking", "UKCA", "RSGB EMC",
+               "6A", "6B", "6C", "6D", "6E", "6F", "6G", "6H", "intermediate section 6"],
+    sections: ["What is EMC", "Sources of Interference", "Effects", "Fixing Interference", "Checking Your TX"]
+  },
+  {
     title: "Section 4: Feeders & Antennas — Intermediate",
     url: "/pages/study/intermediate/section-4-feeders-antennas.html",
     description: "Study notes for Section 4 of the Intermediate licence: SWR, reflection coefficient, return loss, coaxial cable, baluns, antenna matching, antenna types, gain, radiation patterns",

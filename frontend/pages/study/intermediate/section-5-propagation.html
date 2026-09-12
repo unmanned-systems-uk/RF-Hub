@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 5: Propagation — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <span>Section 5</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">3 / 46 questions &nbsp;&middot;&nbsp; 7%</span>
+      </div>
+      <h1>Propagation</h1>
+      <p class="hero-subtitle">Ground wave, sky wave, the ionosphere, MUF, LUF, Sporadic-E, tropospheric ducting, fading, and the sunspot cycle. How RF gets from your antenna to a distant receiver.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-5a">5A Ground Wave &amp; Sky Wave</a></li>
+        <li><a href="#ch-5b">5B The Ionosphere</a></li>
+        <li><a href="#ch-5c">5C MUF &amp; LUF</a></li>
+        <li><a href="#ch-5d">5D Solar &amp; Seasonal</a></li>
+        <li><a href="#ch-5e">5E VHF/UHF</a></li>
+        <li><a href="#ch-5f">5F Practical Effects</a></li>
+        <li><a href="#ch-5g">5G Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-5a"><span class="toc-code">5A</span>Ground Wave &amp; Sky Wave</a></li>
+        <li><a href="#ch-5b"><span class="toc-code">5B</span>The Ionosphere</a></li>
+        <li><a href="#ch-5c"><span class="toc-code">5C</span>MUF &amp; LUF</a></li>
+        <li><a href="#ch-5d"><span class="toc-code">5D</span>Seasonal &amp; Solar Variation</a></li>
+        <li><a href="#ch-5e"><span class="toc-code">5E</span>VHF &amp; UHF Propagation</a></li>
+        <li><a href="#ch-5f"><span class="toc-code">5F</span>Practical Propagation Effects</a></li>
+        <li><a href="#ch-5g"><span class="toc-code">&#9733;</span>Self-Check Questions</a></li>
+        <li><a href="#formula-ref"><span class="toc-code">&equiv;</span>Formula/Table Reference</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 5A: GROUND WAVE AND SKY WAVE ═════════════════ -->
+    <section class="chapter" id="ch-5a">
+      <div class="chapter-header">
+        <span class="chapter-num">5A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Ground Wave and Sky Wave</h2>
+
+      <p>Propagation is one of the most fascinating and unpredictable aspects of amateur radio. The same antenna and transmitter that gives you a local contact on Monday can, on Tuesday, put your signal into Japan. Understanding why requires understanding how radio waves interact with the atmosphere &mdash; and that depends on physics, solar activity, time of day, and season.</p>
+      <p>This section explains the mechanisms. Section 4 dealt with getting RF out of the antenna. This section deals with where it goes next.</p>
+
+      <h3>Two Paths for HF Signals (5A2, 5A3)</h3>
+      <p>A radio signal leaving an HF antenna can reach a distant receiver by two completely different routes:</p>
+      <ol>
+        <li><strong>Ground wave</strong> &mdash; travels along the surface of the earth directly from transmitter to receiver. The wave is gradually bent (diffracted) back down to the earth&rsquo;s surface as it travels, keeping it in contact with the ground.</li>
+        <li><strong>Sky wave</strong> &mdash; travels upward at an angle, enters the ionosphere, is <strong>refracted</strong> back towards the earth, and returns to the surface at some distance from the transmitter.</li>
+      </ol>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text"><strong>Refracted, not reflected.</strong> Amateur radio operators often say sky wave signals are &ldquo;reflected&rdquo; by the ionosphere &mdash; this is casual shorthand and is technically incorrect. The signal is <strong>refracted</strong> (bent) by the ionosphere, in the same way light bends when it enters glass or water. The RSGB syllabus uses the correct term: <strong>refracted</strong>. Use that word in exam answers.</div>
+      </div>
+
+      <h3>Ground Wave (5A2)</h3>
+      <p>The ground wave signal hugs the surface of the earth. It suffers two types of loss as it travels:</p>
+      <ul>
+        <li><strong>Resistive loss</strong> &mdash; the earth is not a perfect conductor. RF current induced in the ground surface causes losses, heating the earth. Wet, conductive ground (salt water, clay) has less loss than dry, rocky ground.</li>
+        <li><strong>Diffraction loss</strong> &mdash; energy is continuously bent back towards the earth surface, but this costs energy.</li>
+      </ul>
+      <p>As frequency increases, ground wave loss increases rapidly. Practical consequences:</p>
+      <ul>
+        <li><strong>MF (0.5&ndash;1.6 MHz, mediumwave):</strong> ground wave works well &mdash; national coverage in daylight. The BBC Radio 4 LW transmitter on 198 kHz reaches most of the UK by ground wave.</li>
+        <li><strong>Lower HF (3.5&ndash;7 MHz):</strong> ground wave range is reduced to a few hundred kilometres.</li>
+        <li><strong>Upper HF (14&ndash;30 MHz):</strong> ground wave range is just a few kilometres &mdash; essentially useless for anything beyond local.</li>
+      </ul>
+      <p>Ground wave is the dominant propagation mode for the foundation/intermediate exam question about LF/MF broadcasts: why can you hear medium wave stations during the day but get interference from distant stations at night? Because at night the sky wave arrives as well (more on that below).</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5A2:</strong> Ground wave propagation decreases rapidly with increasing frequency. It is the main propagation mode at LF and MF. At HF it is only useful for short-distance contacts.</div>
+      </div>
+
+      <h3>Sky Wave (5A3)</h3>
+      <p>The sky wave leaves the antenna at an upward angle, travels through the troposphere (which has no significant effect on HF), enters the ionosphere, is gradually refracted (bent) as it passes through increasing ion density, curves back downward, and returns to earth.</p>
+      <p>The angle matters: if the wave enters the ionosphere too steeply (nearly vertical), it punches straight through and escapes into space. If it enters at a shallower angle, the bending has more distance to accumulate and it curves back. Think of it like rolling a ball across a curved surface &mdash; a gentle approach keeps it on the surface; too steep and it bounces off.</p>
+      <p>At any given ionospheric state, there is a <strong>maximum angle</strong> from vertical above which a signal at a given frequency will not be refracted back. This determines the minimum skip distance (how close to the transmitter the sky wave can return).</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5A3:</strong> Sky wave is refracted by the ionosphere. The correct term is refracted, not reflected. The bending is gradual, caused by increasing ion density in the ionosphere.</div>
+      </div>
+
+      <h3>Skip Distance and Skip Zone (5A4)</h3>
+      <p><strong>Skip distance</strong> is the shortest distance from the transmitter at which sky wave signals can be received for a given frequency and ionospheric condition.</p>
+      <p><strong>Skip zone</strong> (or dead zone) is the region between the end of the ground wave range and the start of the sky wave return. In this zone, no signals from your transmitter are heard:</p>
+<pre>
+TRANSMITTER                                              RECEIVER
+     |                                                      |
+     |&larr;&mdash; ground wave &mdash;&mdash;&rarr;|&larr;&mdash;&mdash;&mdash; skip zone &mdash;&mdash;&mdash;&rarr;|&larr;&mdash; sky wave &mdash;&rarr;|
+     |                  |    (dead zone)     |              |
+     |                  |  no signal heard   |              |
+</pre>
+      <p>The skip zone is important because:</p>
+      <ul>
+        <li>Stations in the skip zone cannot hear you and you cannot hear them &mdash; no matter how much power you use</li>
+        <li>The skip zone changes throughout the day as ionospheric conditions change</li>
+        <li>Cross-town contacts on HF are difficult for this reason &mdash; you are likely inside the skip zone of stations in your own country while you are in contact with stations thousands of miles away</li>
+      </ul>
+      <p><strong>Multiple hops:</strong> The sky wave that returns to earth is re-reflected back up to the ionosphere, where it is refracted again. A single hop from the F2 layer reaches a maximum of about <strong>4,000 km</strong>. Multiple hops extend this to any distance, including around the world.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5A4:</strong> Skip distance is the minimum distance at which sky wave is received. The skip zone is the dead zone between ground wave range and the first sky wave return point. Multiple hops allow global communication.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5B: THE IONOSPHERE ═══════════════════════════ -->
+    <section class="chapter" id="ch-5b">
+      <div class="chapter-header">
+        <span class="chapter-num">5B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Ionosphere</h2>
+
+      <h3>What the Ionosphere Is (5B1)</h3>
+      <p>The ionosphere is a region of the upper atmosphere, from about <strong>60 km to 400 km</strong> altitude, in which molecules of air have been ionised (had electrons stripped off) by solar ultraviolet radiation and solar particle streams. These free electrons and ions are what radio waves interact with.</p>
+      <p>The ionosphere is not a single solid layer &mdash; it is a region of ionised gas (plasma), with density and height varying continuously with solar conditions, time of day, season, and geographic location. It can be thought of as a set of overlapping layers, each with different typical heights and densities.</p>
+
+      <h3>The D Layer (5B1)</h3>
+      <ul>
+        <li><strong>Height:</strong> approximately 60&ndash;90 km</li>
+        <li><strong>Behaviour:</strong> exists only during daylight (requires sunlight to maintain ionisation)</li>
+        <li><strong>Effect on radio waves:</strong> absorbs rather than refracts &mdash; particularly effective at absorbing lower-frequency HF signals</li>
+      </ul>
+      <p>The D layer is the gatekeeper that determines the <strong>Lowest Usable Frequency (LUF)</strong>: the minimum frequency that can pass through the D layer without being absorbed. Frequencies below the LUF are absorbed by the D layer and never reach the F layer.</p>
+      <p>At night, the D layer disappears (solar radiation stops; ions and electrons recombine rapidly at the higher density of low altitudes). This has major consequences:</p>
+      <ul>
+        <li>LF and MF sky waves can now reach the F layer and return to earth at long distances &mdash; this is why you hear distant medium-wave stations at night that you cannot hear during the day</li>
+        <li>Lower HF frequencies (3.5 MHz, 7 MHz) that were absorbed during the day can now propagate long distances</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B1:</strong> The D layer (60&ndash;90 km) absorbs HF signals during daylight, especially at lower frequencies. It disappears at night, allowing LF/MF and lower HF sky waves to propagate over long distances.</div>
+      </div>
+
+      <h3>The E Layer (5B1)</h3>
+      <ul>
+        <li><strong>Height:</strong> approximately 100&ndash;125 km</li>
+        <li><strong>Behaviour:</strong> weaker ionisation than F layers; exists by day, weakens significantly at night</li>
+        <li><strong>Effect on radio waves:</strong> provides short-skip propagation on lower HF bands; can refract signals on 3&ndash;10 MHz over distances of a few hundred to a thousand kilometres</li>
+      </ul>
+      <p>The most significant E-layer phenomenon for operators is <strong>Sporadic-E (Es)</strong>:</p>
+      <p><strong>Sporadic-E</strong> is the appearance of intense, patchy regions of very high ionisation in the E layer. These patches can refract signals at much higher frequencies than normal &mdash; typically 50 MHz (6 m) and sometimes up to 144 MHz (2 m). This allows contacts of up to <strong>2,000 km</strong> on bands that are normally line-of-sight only.</p>
+      <p>Key characteristics of Sporadic-E:</p>
+      <ul>
+        <li>Most common in <strong>summer</strong> (May&ndash;August in the UK) and to a lesser extent in December</li>
+        <li>Completely unpredictable &mdash; can appear and disappear within minutes</li>
+        <li>Not related to sunspot activity &mdash; caused by wind shear and jet stream behaviour in the lower atmosphere (exact mechanism still debated)</li>
+        <li>Contact completion must often be rapid as the opening can close without warning</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B1:</strong> The E layer (100&ndash;125 km) supports short-skip HF propagation. Sporadic-E brings intense patches of E-layer ionisation that allow VHF signals (up to ~150 MHz) to propagate up to 2,000 km. Most common in summer; completely unpredictable.</div>
+      </div>
+
+      <h3>The F Layer (5B1, 5B2)</h3>
+      <p>The F layer is the workhorse of long-distance HF communication:</p>
+      <ul>
+        <li><strong>Height daytime:</strong> splits into F1 (~300 km) and F2 (~400 km)</li>
+        <li><strong>Height night-time:</strong> F1 and F2 <strong>merge into a single F layer</strong> at about 250&ndash;300 km</li>
+        <li><strong>Behaviour:</strong> highest ionisation of any layer; ions at this altitude recombine slowly because the air is very thin &mdash; the F layer persists for several hours after sunset, continuing to support propagation</li>
+      </ul>
+      <p><strong>During the day:</strong> the F2 layer is responsible for the long-distance DX contacts on HF. The higher altitude means a single hop can cover up to 4,000 km. The F2 layer is at its most active when solar radiation is at maximum &mdash; mid-day and in summer.</p>
+      <p><strong>At night:</strong> F1 and F2 merge into a single weaker F layer. The MUF drops as ionisation decreases, so fewer frequencies can propagate via sky wave. Lower HF bands benefit because the D layer is gone (lower LUF), but the higher HF bands become less reliable.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B2:</strong> The F layer (F1 + F2 during the day, single F at night) provides long-distance HF propagation. F2 at ~400 km allows single-hop distances of up to 4,000 km. At night, F1 and F2 merge and the layer drops to ~250&ndash;300 km. The layer persists after sunset because ions recombine slowly at that altitude.</div>
+      </div>
+
+      <div style="margin: 1rem 0;">
+        <iframe src="/interactives/ionospheric-layers.html"
+          style="width:100%; height:720px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="Ionospheric Layers Explorer"></iframe>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5C: MUF & LUF ════════════════════════════════ -->
+    <section class="chapter" id="ch-5c">
+      <div class="chapter-header">
+        <span class="chapter-num">5C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Frequency-Dependent Behaviour</h2>
+
+      <h3>Maximum Usable Frequency (MUF) (5B2)</h3>
+      <p>The <strong>MUF (Maximum Usable Frequency)</strong> is the highest frequency that the ionosphere will refract back to earth for a given path length at a given moment.</p>
+      <p>Why there is a maximum: as frequency increases, the bending ability of the ionosphere decreases. Above the MUF, signals pass straight through the ionosphere and escape into space, regardless of angle. There is no sky wave above the MUF.</p>
+<pre>
+               IONOSPHERE
+              ──────────────────────────────
+              |                            |
+  BELOW MUF:  |  radio wave bends back     |  &rarr; returns to earth &#10003;
+              |                            |
+  ABOVE MUF:  |  radio wave passes through |  &rarr; escapes to space &#10007;
+              |                            |
+              ──────────────────────────────
+</pre>
+      <p>The MUF is not a fixed number &mdash; it changes:</p>
+      <ul>
+        <li><strong>With time of day:</strong> higher at mid-day, lower at night</li>
+        <li><strong>With season:</strong> higher in summer (stronger solar ionisation)</li>
+        <li><strong>With sunspot cycle:</strong> higher at solar maximum</li>
+        <li><strong>With path length:</strong> longer paths can support higher frequencies (the signal takes a shallower angle through the ionosphere)</li>
+      </ul>
+      <p>A practical approximation: above <strong>15 MHz</strong>, sky wave becomes less reliable; above <strong>30 MHz</strong>, the ionosphere almost never refracts signals back (the HF/VHF boundary). On days of high solar activity, 28 MHz (10 m) and sometimes 50 MHz (6 m) can open via the F2 layer.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B2:</strong> The MUF is the highest frequency refracted for a given path. Above the MUF, signals escape into space. The MUF changes with time of day, season, and sunspot activity. Above ~30 MHz, ionospheric refraction rarely occurs.</div>
+      </div>
+
+      <h3>Lowest Usable Frequency (LUF) (5B3)</h3>
+      <p>The <strong>LUF (Lowest Usable Frequency)</strong> is the minimum frequency at which sky wave propagation is useful for a given path. Below the LUF, the D layer absorbs too much of the signal energy for a usable signal to arrive.</p>
+      <p>LUF rises during the day (as the D layer strengthens) and falls at night (as the D layer disappears). In practical terms:</p>
+      <ul>
+        <li>On a summer afternoon, 3.5 MHz (80 m) may have a high LUF &mdash; the D layer absorbs most of your signal; only short local contacts work</li>
+        <li>At night, the LUF drops below 1 MHz &mdash; 80 m and even 160 m can propagate over long distances</li>
+      </ul>
+      <p>The usable frequency range for a given path at a given time sits <strong>between</strong> the LUF and the MUF:</p>
+<pre>
+LUF &larr;&mdash; usable range for this path &mdash;&rarr; MUF
+      &uarr; signal works in this range &uarr;
+</pre>
+      <p>If LUF &gt; MUF (unusual but possible during disturbed conditions), no HF frequency works for that path.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B3:</strong> The LUF is the minimum frequency at which sky wave is useful &mdash; below it, the D layer absorbs too much. The LUF rises with solar activity during the day and falls to near zero at night. The usable range for a given path lies between LUF and MUF.</div>
+      </div>
+
+      <!-- INTERACTIVE-PLACEHOLDER: muf-predictor -->
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5D: SEASONAL & SOLAR VARIATION ═══════════════ -->
+    <section class="chapter" id="ch-5d">
+      <div class="chapter-header">
+        <span class="chapter-num">5D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Seasonal and Solar Variation</h2>
+
+      <h3>Day and Night (5B1, 5B2)</h3>
+      <p>The most important cycle is the <strong>diurnal</strong> (daily) cycle, driven by sunlight:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Condition</th><th>D layer</th><th>F layer</th><th>Effect</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Daytime</td>
+              <td>Strong &mdash; absorbs low HF</td>
+              <td>F1 + F2, high and dense</td>
+              <td>Higher MUF, higher LUF; 14&ndash;28 MHz works well for DX</td>
+            </tr>
+            <tr>
+              <td>Night-time</td>
+              <td>Gone</td>
+              <td>Single F, lower, weaker</td>
+              <td>Lower MUF; 3.5&ndash;7 MHz propagates over long distances; LF/MF sky wave possible</td>
+            </tr>
+            <tr>
+              <td>Sunrise/sunset</td>
+              <td>Building / collapsing</td>
+              <td>Transition</td>
+              <td>Variable, sometimes excellent conditions (grey-line)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B1:</strong> During the day, the D layer blocks low HF frequencies but allows mid/upper HF to propagate. At night, the D layer disappears and low HF frequencies can propagate over long distances.</div>
+      </div>
+
+      <h3>Summer and Winter (5B3)</h3>
+      <p>In the northern hemisphere:</p>
+      <ul>
+        <li><strong>Summer:</strong> the sun is higher in the sky, solar radiation is more intense. The ionosphere is more strongly ionised &rarr; higher MUF &rarr; better 10 m and 15 m propagation. Sporadic-E is more common.</li>
+        <li><strong>Winter:</strong> the sun is lower. Less ionisation &rarr; lower MUF &rarr; 10 m and 15 m often dead. However, the absence of D layer absorption means lower bands (3.5 MHz, 7 MHz) can work better at night.</li>
+      </ul>
+      <p>This is explained by the 23.5&deg; tilt of the Earth&rsquo;s axis. When the UK faces toward the sun in summer, solar radiation arrives at a steeper angle, delivering more energy per unit area to the upper atmosphere.</p>
+
+      <h3>The Sunspot Cycle (5B3, 5B4)</h3>
+      <p><strong>Sunspots</strong> are dark, cooler regions on the sun&rsquo;s surface associated with strong magnetic fields. Their number follows an approximate <strong>11-year cycle</strong> between solar minimum (few sunspots) and solar maximum (many sunspots).</p>
+      <p>More sunspots = more solar activity = more UV and particle emission = more ionisation = higher MUF.</p>
+      <p>At <strong>solar maximum:</strong></p>
+      <ul>
+        <li>28 MHz (10 m) can be open to distant DX for hours at a time</li>
+        <li>F2-layer MUF may exceed 40 MHz on some paths</li>
+        <li>Trans-equatorial propagation (TEP) becomes possible</li>
+        <li>The amateur bands from 14&ndash;28 MHz are excellent for DX</li>
+      </ul>
+      <p>At <strong>solar minimum:</strong></p>
+      <ul>
+        <li>28 MHz may be silent for months</li>
+        <li>14 MHz and 21 MHz become less reliable for long distance</li>
+        <li>Lower bands (3.5 and 7 MHz) become the primary DX frequencies</li>
+        <li>MUF may rarely exceed 14 MHz for some paths</li>
+      </ul>
+      <p><strong>Solar cycle 25</strong> (current as of the time of writing) peaked around 2024&ndash;2025 with unusually high sunspot numbers, giving exceptional HF propagation. If you hear operators on 10 m and 6 m saying conditions are &ldquo;amazing&rdquo;, this is why.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B3, 5B4:</strong> The 11-year sunspot cycle modulates ionospheric ionisation and therefore MUF. Solar maximum gives excellent upper HF propagation. Solar minimum kills the higher bands.</div>
+      </div>
+
+      <h3>Solar Disturbances (5B4)</h3>
+      <p>The sun occasionally produces sudden events that affect propagation:</p>
+      <p><strong>Solar flares:</strong> sudden intense bursts of X-ray and UV radiation. Arrive at the speed of light (8 minutes to reach Earth). Cause rapid, intense ionisation of the D layer &rarr; <strong>HF blackout</strong> on the sunlit side of the Earth. Can last minutes to hours.</p>
+      <p><strong>Coronal Mass Ejections (CMEs):</strong> plasma clouds ejected from the sun. Arrive 1&ndash;3 days after the associated flare. Cause geomagnetic storms. These can either enhance propagation temporarily (via auroral ionisation) or disrupt it.</p>
+      <p><strong>Aurora:</strong> during geomagnetic storms, charged particles funnel into the polar regions and ionise the upper atmosphere. Signals reflected from the auroral curtain have a characteristic rasping, distorted quality. Some VHF operators use auroral backscatter for contacts on 50 MHz and 144 MHz.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B4:</strong> Solar flares cause HF blackouts (intense D-layer absorption) on the sunlit side of the Earth. CMEs follow 1&ndash;3 days later and cause geomagnetic storms. Aurora can enable VHF propagation via backscatter from the auroral curtain.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5E: VHF AND UHF PROPAGATION ══════════════════ -->
+    <section class="chapter" id="ch-5e">
+      <div class="chapter-header">
+        <span class="chapter-num">5E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>VHF and UHF Propagation</h2>
+
+      <h3>Line-of-Sight is the Norm (5B5)</h3>
+      <p>Above approximately <strong>30 MHz</strong>, signals almost never refract from the ionosphere under normal conditions. VHF and UHF propagation is primarily <strong>line-of-sight (LOS)</strong>: the transmitter and receiver must be able to &ldquo;see&rdquo; each other, with the signal limited by the horizon.</p>
+      <p>The <strong>radio horizon</strong> is slightly further than the visual horizon because the atmosphere bends radio waves slightly downward (atmospheric refraction). A useful approximation for VHF/UHF:</p>
+<pre>
+Radio range (km) &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx)
+</pre>
+      <p>Where h is antenna height in metres.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B5:</strong> VHF/UHF is primarily line-of-sight above ~30 MHz. The radio horizon is slightly further than the visual horizon due to atmospheric refraction. Antenna height is the primary factor in extending range.</div>
+      </div>
+
+      <h3>Tropospheric Ducting (5C3)</h3>
+      <p>The <strong>troposphere</strong> is the lowest layer of the atmosphere (0&ndash;12 km) &mdash; the layer where weather happens.</p>
+      <p>Normally, air temperature decreases with altitude. But under certain weather conditions, a <strong>temperature inversion</strong> occurs: a layer of warmer air sits above cooler air. Radio signals entering the warm layer are bent back downward and can become <strong>trapped in a duct</strong> &mdash; bouncing between the inversion layer and the earth&rsquo;s surface for hundreds of kilometres with very little loss.</p>
+<pre>
+                    &#9484;──── temperature inversion layer ────&#9488;
+                    &#9474;  warmer air                          &#9474;
+  Earth surface ════&#9575;══════════════════════════════════════&#9575;══
+</pre>
+      <p><strong>Tropo ducting characteristics:</strong></p>
+      <ul>
+        <li>Works on VHF and UHF (and lower microwave frequencies)</li>
+        <li>Typical range: a few hundred to over 1,000 km</li>
+        <li>Most common in <strong>summer</strong>, when temperature inversions form over sea areas (especially North Sea and English Channel)</li>
+        <li>Signals sound flat and strong &mdash; often stronger than expected from a local station</li>
+      </ul>
+      <p><strong>Weather also degrades UHF:</strong> heavy rain, snow, and hail absorb shorter wavelengths. At 10 GHz and above, rain fade becomes significant.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5C3:</strong> Tropospheric ducting occurs when a temperature inversion traps VHF/UHF signals in a layer, allowing propagation over hundreds of kilometres. Most common in summer. Heavy rain/snow/hail absorbs UHF signals.</div>
+      </div>
+
+      <h3>Sporadic-E and Other VHF/UHF Modes</h3>
+      <p><strong>Sporadic-E</strong> is covered in &sect;5B above &mdash; key point for VHF operators: Es is the most exciting regular VHF propagation mode. It brings unexpected contacts on 50 MHz (6 m) and occasionally 144 MHz (2 m) from continental Europe. Signals may be S9+ one moment and gone the next.</p>
+      <p><strong>Meteor scatter:</strong> brief pings of signal reflected from ionised meteor trails. Usable with weak-signal digital modes (MSK144). Major meteor showers produce the most activity.</p>
+      <p><strong>Moonbounce (EME):</strong> signal bounced off the lunar surface. Requires large antennas and high power or weak-signal digital modes (JT65). Real mode used by active amateurs.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5F: PRACTICAL PROPAGATION EFFECTS ════════════ -->
+    <section class="chapter" id="ch-5f">
+      <div class="chapter-header">
+        <span class="chapter-num">5F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Practical Propagation Effects</h2>
+
+      <h3>Fading (5B2)</h3>
+      <p><strong>Fading</strong> (or QSB &mdash; Q-code for signal variation) is the variation in received signal strength over time, caused by <strong>multipath propagation</strong>: multiple slightly different paths from transmitter to receiver, each arriving with a slightly different delay. As the ionosphere moves and changes, these paths vary in length by metres &mdash; enough to put the signals from each path in and out of phase.</p>
+      <p>When signals from two paths add in phase &rarr; signal is strong. When they partially cancel &rarr; signal is weak.</p>
+      <p><strong>Selective fading</strong> is when different frequencies within the same signal band fade at different rates. This is particularly destructive to SSB because parts of the voice spectrum fade while others don&rsquo;t, making the received audio garbled even when the signal appears to be present.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B2:</strong> Fading (QSB) is caused by multipath propagation &mdash; multiple slightly different path lengths cause signals to add and cancel as the ionosphere changes. Selective fading garbles SSB because different parts of the audio spectrum fade at different rates.</div>
+      </div>
+
+      <h3>Short Path and Long Path</h3>
+      <p>For any two points on earth, there are two Great Circle paths &mdash; a short path and a long path.</p>
+      <ul>
+        <li><strong>Short path:</strong> the shorter Great Circle arc &mdash; usually the strongest signal</li>
+        <li><strong>Long path:</strong> the longer arc &mdash; sometimes stronger when ionospheric conditions favour it</li>
+      </ul>
+      <p>To work long path, rotate your beam 180&deg; from the short-path heading.</p>
+
+      <h3>Grey-Line Propagation</h3>
+      <p>The <strong>grey line</strong> (or terminator) is the twilight zone at the boundary between the sunlit and dark sides of the earth. At this boundary, the D layer is building (morning) or collapsing (evening). For a brief period, D-layer absorption is low while the F layer is still present. LF and lower HF signals can propagate over very long distances with little D-layer loss.</p>
+      <p>Grey-line openings on 3.5 MHz (80 m) and 7 MHz (40 m) at dawn and dusk can produce exceptional intercontinental DX contacts that are impossible at mid-day.</p>
+
+      <h3>Typical Propagation Ranges</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Band</th><th>Mode</th><th>Typical range</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LF/MF (&lt; 1.8 MHz)</td>
+              <td>Ground wave</td>
+              <td>Hundreds of km</td>
+              <td>Day; national coverage</td>
+            </tr>
+            <tr>
+              <td>LF/MF</td>
+              <td>Sky wave</td>
+              <td>Thousands of km</td>
+              <td>Night only (D layer gone)</td>
+            </tr>
+            <tr>
+              <td>3.5 MHz (80 m)</td>
+              <td>Sky wave</td>
+              <td>500&ndash;2,000 km day; 3,000+ km night</td>
+              <td>D layer limits daytime range</td>
+            </tr>
+            <tr>
+              <td>7 MHz (40 m)</td>
+              <td>Sky wave</td>
+              <td>1,000&ndash;3,000 km day; global night</td>
+              <td>Excellent European band by day</td>
+            </tr>
+            <tr>
+              <td>14 MHz (20 m)</td>
+              <td>Sky wave</td>
+              <td>Global (multiple hops)</td>
+              <td>Best all-round DX band</td>
+            </tr>
+            <tr>
+              <td>21&ndash;28 MHz</td>
+              <td>Sky wave</td>
+              <td>Global near solar max</td>
+              <td>Dead near solar minimum</td>
+            </tr>
+            <tr>
+              <td>50 MHz (6 m)</td>
+              <td>Sporadic-E</td>
+              <td>Up to 2,000 km</td>
+              <td>Summer; unpredictable</td>
+            </tr>
+            <tr>
+              <td>144 MHz (2 m)</td>
+              <td>Line-of-sight</td>
+              <td>&lt; 100 km typically</td>
+              <td>Tropo/Es for longer</td>
+            </tr>
+            <tr>
+              <td>144 MHz</td>
+              <td>Tropo ducting</td>
+              <td>100&ndash;1,000+ km</td>
+              <td>Summer inversions</td>
+            </tr>
+            <tr>
+              <td>432 MHz+</td>
+              <td>Line-of-sight</td>
+              <td>&lt; 50 km typically</td>
+              <td>Rain/snow can attenuate</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 5G: SELF-CHECK QUESTIONS ══════════════════════ -->
+    <section class="chapter" id="ch-5g">
+      <div class="chapter-header">
+        <span class="chapter-num">5G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+      <p>Work through these without looking at the answers first. The style matches actual RSGB Intermediate exam questions.</p>
+
+      <div class="self-checks">
+        <h3>Self-Check &mdash; Section 5</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. A signal from the UK on 14 MHz arrives in Australia via the ionosphere. Is it refracted or reflected?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-1" hidden>
+            <p><strong>Refracted.</strong> The signal is gradually bent by the increasing ion density in the ionosphere &mdash; the bending is continuous and smooth, not a sharp bounce as the word &ldquo;reflected&rdquo; implies. The correct scientific term is refracted.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. At what height is the D layer, and what is its main effect on radio propagation?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-2" hidden>
+            <p>The D layer extends from approximately <strong>60 to 90 km</strong>. Its main effect is <strong>absorption</strong> of low-frequency and lower HF signals during daylight. It acts as a barrier that determines the Lowest Usable Frequency (LUF). At night, the D layer disappears, allowing LF, MF, and lower HF sky waves to propagate long distances.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What is the Maximum Usable Frequency (MUF) and what factors affect it?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-3" hidden>
+            <p>The MUF is the <strong>highest frequency the ionosphere will refract back to earth</strong> for a given path. Signals above the MUF pass straight through the ionosphere and escape into space. Factors that increase the MUF: more sunspot activity (solar maximum), daytime rather than night-time, summer rather than winter, longer path (shallower angle through the ionosphere).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. You are operating on 7 MHz in the UK at mid-afternoon and cannot make contact with a station 500 km away, but you can contact a station in Australia (17,000 km). Why?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-4" hidden>
+            <p>The 500 km station is in the <strong>skip zone</strong> (dead zone): too far for ground wave and too close for sky wave. The sky wave returns to earth past them. The Australian station is beyond the skip distance and is receiving your sky wave after multiple hops. The nearby station simply cannot be reached on 7 MHz at this time of day.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. Why can you hear distant medium-wave stations at night that you cannot hear during the day?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-5" hidden>
+            <p>During the day, the <strong>D layer</strong> absorbs medium-wave frequencies. Only the ground wave reaches you, which has limited range (hundreds of km). At night, the <strong>D layer disappears</strong>. The sky wave now reaches the F layer and is refracted back to earth, returning thousands of kilometres from the transmitter.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. What is Sporadic-E and why is it significant for VHF operators?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-6" hidden>
+            <p>Sporadic-E (Es) is the appearance of intense, localised patches of very high ionisation in the E layer (100&ndash;125 km altitude). These patches can refract signals at frequencies far higher than the E layer normally supports &mdash; typically up to <strong>150 MHz</strong> and occasionally higher. This allows contacts on 50 MHz (6 m) and sometimes 144 MHz (2 m) over distances of up to <strong>2,000 km</strong>. Es is most common in <strong>summer</strong>, is completely unpredictable, and can appear and disappear within minutes.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. What is tropospheric ducting and in what conditions does it occur?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-7" hidden>
+            <p>Tropospheric ducting occurs when a <strong>temperature inversion</strong> forms in the troposphere &mdash; a layer of warmer air above cooler air. VHF and UHF signals entering this layer are bent back downward and become trapped, propagating for hundreds of kilometres with very little loss. Most common in <strong>summer</strong>, when temperature inversions form over sea areas.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. An HF operator finds that 28 MHz works well for DX contacts today, but was silent for the past six months. What is the most likely explanation?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-5g-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-5g-8" hidden>
+            <p>The sunspot cycle. During a period of high sunspot numbers (<strong>solar maximum</strong>), ionospheric ionisation is intense and the MUF rises well above 28 MHz, supporting excellent F-layer propagation on 10 m. During low sunspot activity (<strong>solar minimum</strong>), the MUF may rarely reach 28 MHz, leaving the band &ldquo;dead&rdquo; for months. The ~11-year sunspot cycle is the main driver of long-term changes in upper-HF propagation.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ KEY FACTS SUMMARY ═════════════════════════ -->
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">&#9733;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Section 5 &mdash; Key Facts Summary</h2>
+      <div class="key-facts">
+        <ul>
+          <li><strong>Ground wave</strong> hugs the earth&rsquo;s surface; effective at LF/MF; rapidly attenuated above 3&ndash;7 MHz.</li>
+          <li><strong>Sky wave</strong> is <em>refracted</em> (not reflected) by the ionosphere; the correct exam term is refracted.</li>
+          <li><strong>Skip zone</strong> = dead zone between end of ground wave and first sky wave return; stations there cannot be contacted at that frequency.</li>
+          <li><strong>D layer (60&ndash;90 km):</strong> absorbs lower HF; exists only in daylight; disappears at night, enabling LF/MF/low-HF sky wave.</li>
+          <li><strong>E layer (100&ndash;125 km):</strong> short-skip HF; Sporadic-E enables VHF contacts up to 2,000 km; most common in summer.</li>
+          <li><strong>F layer (250&ndash;400 km):</strong> F1+F2 by day, merged at night; long-distance DX up to 4,000 km per hop; persists after sunset.</li>
+          <li><strong>MUF</strong> = highest frequency refracted for a given path; above it, signals escape to space; rises with sunspot activity, daytime, summer.</li>
+          <li><strong>LUF</strong> = lowest frequency for useful sky wave; below it, D-layer absorption kills the signal; rises during day, falls to ~0 at night.</li>
+          <li><strong>Usable range</strong> for a path = frequencies between LUF and MUF.</li>
+          <li><strong>11-year sunspot cycle:</strong> solar max = high MUF, excellent upper HF; solar min = low MUF, upper HF dead.</li>
+          <li><strong>Solar flares</strong> cause D-layer HF blackouts (8 min delay); <strong>CMEs</strong> cause geomagnetic storms 1&ndash;3 days later.</li>
+          <li><strong>VHF/UHF</strong> is normally line-of-sight; radio horizon &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx) km.</li>
+          <li><strong>Tropospheric ducting</strong> traps VHF/UHF in temperature inversions; hundreds to 1,000+ km; most common in summer.</li>
+          <li><strong>Fading (QSB)</strong> caused by multipath; selective fading garbles SSB audio.</li>
+          <li><strong>Grey-line</strong> propagation at dawn/dusk: low D-layer absorption + active F layer = exceptional LF/lower HF DX.</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ FORMULA/TABLE REFERENCE ═══════════════════ -->
+    <section class="chapter" id="formula-ref">
+      <div class="chapter-header">
+        <span class="chapter-num">&equiv;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Section 5 &mdash; Formula &amp; Table Reference</h2>
+      <div class="table-wrapper">
+        <table class="formula-ref-table">
+          <thead>
+            <tr><th>Formula / Concept</th><th>Use / Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Radio range (km) &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx)</td>
+              <td>VHF/UHF line-of-sight range; h in metres</td>
+            </tr>
+            <tr>
+              <td>Skip zone</td>
+              <td>Conceptual: dead zone between end of ground wave and first sky wave return; no formula, changes with frequency and ionospheric conditions</td>
+            </tr>
+            <tr>
+              <td>MUF (Maximum Usable Frequency)</td>
+              <td>Highest frequency refracted for a given path; no single formula &mdash; depends on path length, solar activity, time of day and season. Above MUF: signal escapes to space.</td>
+            </tr>
+            <tr>
+              <td>LUF (Lowest Usable Frequency)</td>
+              <td>Minimum frequency for useful sky wave; below LUF: D-layer absorbs signal. No single formula &mdash; determined by D-layer strength (solar activity, time of day).</td>
+            </tr>
+            <tr>
+              <td>Single F2-hop max distance</td>
+              <td>&asymp; 4,000 km per hop; multiple hops enable global paths</td>
+            </tr>
+            <tr>
+              <td>Sporadic-E max range</td>
+              <td>Up to ~2,000 km; E layer at 100&ndash;125 km; refracts up to ~150 MHz</td>
+            </tr>
+            <tr>
+              <td>Sunspot cycle period</td>
+              <td>~11 years; solar max = high MUF; solar min = low MUF</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ════════════════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-4-feeders-antennas.html" class="section-nav__link">&larr; Section 4: Feeders &amp; Antennas</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=5"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-6-emc.html" class="section-nav__link">Section 6: EMC &rarr;</a>
+    </nav>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+  <footer class="site-footer" style="margin-top:4rem;">
+    <div class="footer-container">
+      <p class="footer-copy" style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+    </div>
+  </footer>
+</body>
+</html>

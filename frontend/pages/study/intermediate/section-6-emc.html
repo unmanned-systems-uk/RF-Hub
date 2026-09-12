@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 6: Electromagnetic Compatibility — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 6</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">4 / 46 questions &nbsp;·&nbsp; 9%</span>
+      </div>
+      <h1>Electromagnetic Compatibility</h1>
+      <p class="hero-subtitle">Interference sources, harmonics, spurious emissions, ferrite chokes, low-pass filters, and how to diagnose and resolve EMC problems — as the potential cause and as the victim.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-6a">6A What is EMC</a></li>
+        <li><a href="#ch-6b">6B Sources</a></li>
+        <li><a href="#ch-6c">6C Effects</a></li>
+        <li><a href="#ch-6d">6D Fixing at Source</a></li>
+        <li><a href="#ch-6e">6E Fixing at Victim</a></li>
+        <li><a href="#ch-6f">6F Checking Your TX</a></li>
+        <li><a href="#ch-6g">6G Getting Help</a></li>
+        <li><a href="#ch-6h">6H ISM Bands</a></li>
+        <li><a href="#ch-6i">6I Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-6a"><span class="toc-code">6A</span>What is EMC?</a></li>
+        <li><a href="#ch-6b"><span class="toc-code">6B</span>Sources of Interference</a></li>
+        <li><a href="#ch-6c"><span class="toc-code">6C</span>Effects of Interference</a></li>
+        <li><a href="#ch-6d"><span class="toc-code">6D</span>Fixing Interference at the Source</a></li>
+        <li><a href="#ch-6e"><span class="toc-code">6E</span>Fixing Interference at the Victim</a></li>
+        <li><a href="#ch-6f"><span class="toc-code">6F</span>Checking Your Transmitter</a></li>
+        <li><a href="#ch-6g"><span class="toc-code">6G</span>Getting Help</a></li>
+        <li><a href="#ch-6h"><span class="toc-code">6H</span>ISM Bands</a></li>
+        <li><a href="#ch-6i"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 6A: WHAT IS EMC? ═══════════════════ -->
+    <section class="chapter" id="ch-6a">
+      <div class="chapter-header">
+        <span class="chapter-num">6A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>What is EMC?</h2>
+
+      <h3>Definition (6A1, 6A2)</h3>
+      <p><strong>Electromagnetic Compatibility (EMC)</strong> is the ability of equipment to function correctly in its electromagnetic environment without itself causing unacceptable interference to other equipment in that environment.</p>
+      <p>The definition has two sides:</p>
+      <ol>
+        <li><strong>Emission</strong> — your equipment must not radiate RF energy that interferes with other equipment</li>
+        <li><strong>Susceptibility/Immunity</strong> — your equipment must be able to operate in the presence of RF energy from other equipment without being disrupted</li>
+      </ol>
+      <p>Both sides are legally required. The EMC Directive (now adopted into UK law post-Brexit as the <strong>Electromagnetic Compatibility Regulations</strong>) requires that:</p>
+      <ul>
+        <li>Manufacturers must design equipment that does not cause undue interference</li>
+        <li>Manufacturers must ensure equipment has adequate immunity to interference</li>
+        <li>Equipment must carry the <strong>CE marking</strong> (or UKCA marking post-Brexit) to confirm it meets these requirements</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6A1, 6A2:</strong> EMC has two sides: emission (don't cause interference) and immunity (withstand interference from others). Both are legal requirements under UK/EU EMC Regulations. CE/UKCA marking indicates compliance.</div>
+      </div>
+
+      <h3>The Amateur's Position (6A3, 6A4)</h3>
+      <p>Amateur radio is unusual: we are licensed to <strong>transmit at significant power levels in residential areas</strong> — a privilege that comes with responsibility. This puts us in a dual position:</p>
+      <ul>
+        <li>As <strong>transmitters:</strong> we are potentially a source of interference to neighbours' televisions, radios, telephones, speakers, and any other electronic devices</li>
+        <li>As <strong>receivers:</strong> we are victims of the modern electrical noise floor — switch-mode power supplies, LED drivers, solar inverters, VDSL modems, and hundreds of other domestic sources all radiate broadband noise that degrades our weak-signal reception</li>
+      </ul>
+      <p>Your amateur licence conditions include a requirement to <strong>accept interference from lawfully operated equipment</strong> (particularly ISM devices) and an obligation to ensure your transmissions comply with the licence conditions regarding spurious emissions.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6A3, 6A4:</strong> Amateurs have a special dual role: we are both potential sources of interference (to neighbours) and victims of interference (from domestic electronics). The licence obliges us to operate cleanly and to accept some interference from lawfully operated equipment.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6B: SOURCES OF INTERFERENCE ═══════════════════ -->
+    <section class="chapter" id="ch-6b">
+      <div class="chapter-header">
+        <span class="chapter-num">6B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Sources of Interference</h2>
+
+      <h3>Harmonics from Your Transmitter (6B1)</h3>
+      <p>As covered in Section 3, <strong>harmonics</strong> are signals at exact multiples of the fundamental frequency:</p>
+      <pre>Fundamental: f
+2nd harmonic: 2f
+3rd harmonic: 3f
+nth harmonic: nf</pre>
+      <p>A transmitter on 7.050 MHz produces harmonics at 14.100 MHz, 21.150 MHz, 28.200 MHz, etc. If these harmonics are not suppressed, they will be radiated from your antenna along with the wanted signal.</p>
+      <p>Why harmonics are produced: all power amplifiers have some non-linearity. A perfectly linear amplifier would produce only the fundamental frequency. Real amplifiers produce small amounts of harmonics. A <strong>low-pass filter</strong> at the transmitter output suppresses harmonics above the operating frequency.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6B1:</strong> Harmonics are produced by non-linearity in the transmitter PA. They fall at exact multiples of the fundamental. A low-pass filter in the transmitter output path suppresses them. Check: the 2nd harmonic of a 50 MHz signal is 100 MHz (FM broadcast band) — an unlicensed transmission on that frequency.</div>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text">Harmonics, non-linearity, and filter theory from an electronics perspective are covered in <a href="section-2-electronics.html" style="color:#06b6d4;">Section 2 — Electronics &amp; Electrical</a>. The low-pass filter role in suppressing harmonics is part of §2's filter coverage.</div>
+      </div>
+
+      <h3>Spurious Emissions (6B1)</h3>
+      <p>Beyond harmonics, transmitters can produce <strong>spurious emissions</strong> — unwanted signals that are not simply multiples of the fundamental:</p>
+      <ul>
+        <li><strong>Mixer products</strong> — intermodulation products from the mixing stages in a transceiver</li>
+        <li><strong>Oscillator leakage</strong> — the local oscillator or synthesiser signal leaking to the output</li>
+        <li><strong>Phase noise</strong> — noise sidebands on a signal generated by an impure oscillator</li>
+        <li><strong>Parasitic oscillations</strong> — the PA oscillating at a frequency it was not designed for</li>
+      </ul>
+      <p>Well-designed modern equipment has very low spurious levels. Home-built or modified equipment needs careful checking.</p>
+
+      <h3>Domestic and Commercial Interference Sources (6B2, 6B3)</h3>
+      <p>The modern home is a broadband noise generator. Common sources:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Typical frequency range</th>
+              <th>What it sounds like</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Switch-mode power supplies (chargers, LED drivers, PC PSUs)</td>
+              <td>Broadband, 50 kHz–30 MHz+</td>
+              <td>Broadband hiss or ticking</td>
+            </tr>
+            <tr>
+              <td>VDSL modems (FTTC broadband)</td>
+              <td>Up to ~17 MHz</td>
+              <td>Broadband noise, especially 3.5–7 MHz</td>
+            </tr>
+            <tr>
+              <td>LED lighting (cheap unfiltered drivers)</td>
+              <td>Broadband</td>
+              <td>Buzzing</td>
+            </tr>
+            <tr>
+              <td>Solar PV inverters</td>
+              <td>Broadband, variable</td>
+              <td>Wideband hash</td>
+            </tr>
+            <tr>
+              <td>Arcing thermostats</td>
+              <td>Broadband, triggered cyclically</td>
+              <td>Click/buzz correlated with thermostat switching</td>
+            </tr>
+            <tr>
+              <td>Electric motors / motor brushes</td>
+              <td>Broadband</td>
+              <td>Buzzing correlated with motor running</td>
+            </tr>
+            <tr>
+              <td>Computers and peripherals</td>
+              <td>Broadband, clock harmonics</td>
+              <td>Broadband + regular peaks at clock harmonics</td>
+            </tr>
+            <tr>
+              <td>Vehicle ignition systems</td>
+              <td>Broadband, pulse</td>
+              <td>Ticking/buzzing while engine runs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>A receiving amateur in a modern residential area may experience a <strong>noise floor of S5–S7</strong> on HF. This is one of the biggest practical challenges for HF reception in urban environments.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6B2, 6B3:</strong> Common domestic interference sources include SMPS, LED lighting, VDSL modems, solar inverters, arcing thermostats, and computers. These raise the HF noise floor. All are covered by EMC Regulations requiring a minimum immunity level.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6C: EFFECTS OF INTERFERENCE ═══════════════════ -->
+    <section class="chapter" id="ch-6c">
+      <div class="chapter-header">
+        <span class="chapter-num">6C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Effects of Interference</h2>
+
+      <h3>What Breakthrough Looks and Sounds Like (6C1, 6C2)</h3>
+      <p><strong>When amateur transmissions break through into domestic equipment:</strong></p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Cause</th>
+              <th>Effect on victim equipment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AM or SSB speech</td>
+              <td>Speech sounds heard on analogue radio, telephone, or hi-fi speakers</td>
+            </tr>
+            <tr>
+              <td>FM transmissions</td>
+              <td>Muted or reduced volume on FM receiver ("capture effect" — FM receiver locks onto the stronger signal)</td>
+            </tr>
+            <tr>
+              <td>Digital modes</td>
+              <td>Buzzing or clicking sounds correlated with the digital signal rhythm</td>
+            </tr>
+            <tr>
+              <td>CW</td>
+              <td>Clicking or tone correlated with the keying</td>
+            </tr>
+            <tr>
+              <td>Any strong RF</td>
+              <td>Digital audio dropouts, VDSL disconnections, DAB muting, pixelation on digital TV</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6C1:</strong> AM/SSB breakthrough causes speech sounds. FM breakthrough causes muted/reduced volume (capture effect). Strong RF on any mode can disrupt VDSL, DAB, digital TV.</div>
+      </div>
+
+      <p><strong>When domestic interference affects your reception:</strong></p>
+      <p>Raised noise floor. On HF, a quiet rural amateur may have an S0–S2 noise floor; an urban amateur surrounded by switch-mode power supplies may have S5–S7. Weak DX signals that would otherwise be S4–S5 simply disappear into the noise.</p>
+      <p>The effect is particularly severe on 3.5 MHz (80 m) and 7 MHz (40 m), which are most affected by VDSL and SMPS noise. The higher bands are progressively less affected above 10–15 MHz.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6D: FIXING AT THE SOURCE ═══════════════════ -->
+    <section class="chapter" id="ch-6d">
+      <div class="chapter-header">
+        <span class="chapter-num">6D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Fixing Interference at the Source</h2>
+
+      <h3>At the Transmitter (6D1, 6D3)</h3>
+      <p>If your transmissions are causing interference, first determine whether the problem originates in your transmitter or in the victim equipment's inadequate immunity:</p>
+      <p><strong>Diagnostic test:</strong> Disconnect your antenna and connect a dummy load. Transmit. If the interference disappears, the problem is caused by radiated RF from the antenna. If it persists, RF is entering the victim equipment via the mains supply or some other conducted path.</p>
+      <p><strong>If it is radiated RF from the antenna:</strong></p>
+      <ul>
+        <li>Check your transmitter for harmonics and spurious emissions</li>
+        <li>Fit an <strong>external low-pass filter</strong> at the transmitter RF output, between the TX and the SWR meter/ATU</li>
+        <li>Ensure your antenna is resonant — a mismatched antenna can cause RF current to flow in unexpected paths</li>
+        <li>Reduce power to the minimum needed for the contact</li>
+      </ul>
+      <p><strong>If it is conducted RF via the mains:</strong></p>
+      <ul>
+        <li>Fit a <strong>ferrite ring</strong> or <strong>clip-on ferrite</strong> to the mains lead at the transmitter, as close to the equipment as possible</li>
+        <li>Fit a <strong>mains filter</strong> on the transmitter power supply lead to prevent RF entering the mains wiring</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6D1, 6D3:</strong> Low-pass filter at the TX output suppresses harmonics. Ferrite rings on mains leads prevent RF entering the domestic mains. Always place ferrites as close to the equipment as possible. Disconnect the antenna and test with a dummy load to determine whether the problem is radiated or conducted.</div>
+      </div>
+
+      <h3>Route Separation and Cable Management (6D4)</h3>
+      <p>Good cable management prevents many EMC problems before they start.</p>
+      <pre>Mains →[ferrite]→[PSU]→────────→[TX/RX]→[SWR]→[ATU]→[Coax]→ Antenna
+                                    ↑
+                          [screened microphone lead]
+                          [screened audio cables]</pre>
+      <p><strong>Principles:</strong></p>
+      <ul>
+        <li><strong>Physical separation:</strong> keep RF cables away from mains cables, audio cables, and control cables. Even 20–30 cm of separation can make a significant difference.</li>
+        <li><strong>Screened cables:</strong> use good-quality coax with a heavy braid. Microphone leads and audio cables should be screened. A poor connector is as bad as no screen.</li>
+        <li><strong>RF earth:</strong> provide a dedicated RF earth in addition to the safety mains earth. The RF earth uses copper-coated steel rods (~2 m long) driven into the ground close to the shack, with a heavy gauge cable direct to the transmitter chassis.</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>6A3:</strong> Two earths are required in a shack: a <strong>mains earth</strong> (safety — keep, never remove) and an <strong>RF earth</strong> (performance). Confusing these or removing the mains earth is a safety hazard and can cause fatal electric shock.</div>
+      </div>
+
+      <h3>Ferrite Chokes (6D2)</h3>
+      <p><strong>Ferrite rings and clip-on ferrites</strong> are the most versatile tools in EMC troubleshooting. Different ferrite materials are optimised for different frequency ranges:</p>
+      <ul>
+        <li><strong>Material 31/43:</strong> effective from 1–300 MHz — good general purpose for HF/VHF chokes</li>
+        <li><strong>Material 61:</strong> effective at VHF and above — best above 30 MHz</li>
+        <li><strong>Material 77:</strong> lower frequencies, good from 500 kHz to ~10 MHz</li>
+      </ul>
+      <p>A ferrite increases the inductance of a choke without adding significant resistance. The more turns through a ferrite, the higher the impedance to common-mode currents.</p>
+      <p>Practical use:</p>
+      <ul>
+        <li>Wrap several turns of the mains lead through a ferrite ring</li>
+        <li>Fit to TV downleads at the point where they enter the house</li>
+        <li>Fit to the audio cable from the microphone to the transmitter</li>
+        <li>Fit to the control cable of the ATU</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6D2:</strong> Ferrite chokes on cables suppress common-mode RF currents. Different materials suit different frequency ranges (material 43: HF/VHF; material 61: VHF+). More turns = higher impedance. Place ferrites as close to the equipment as possible.</div>
+      </div>
+
+      <!-- INTERACTIVE-PLACEHOLDER: harmonic-filter-designer -->
+
+      <!-- INTERACTIVE-PLACEHOLDER: ferrite-choke -->
+
+      <h3>Antenna Position (6D4)</h3>
+      <p>Antenna placement is the single most effective EMC measure. No amount of filtering fully substitutes for putting the antenna away from the problem:</p>
+      <ul>
+        <li>Keep antennas <strong>as far from houses as possible</strong> — in the garden, not in the loft</li>
+        <li><strong>Never install antennas in the loft.</strong> House wiring runs throughout the structure. RF coupled into the loft wiring is distributed around the entire house.</li>
+        <li>For verticals, use as many <strong>ground radials</strong> as practical</li>
+        <li>If interference is mainly to one neighbour, position the antenna to minimise radiation in that direction</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6D4:</strong> Antenna position is the most important EMC factor. Antennas in lofts couple RF into house wiring. Keep antennas outside and as far from neighbouring properties as practical.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6E: FIXING AT THE VICTIM ═══════════════════ -->
+    <section class="chapter" id="ch-6e">
+      <div class="chapter-header">
+        <span class="chapter-num">6E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Fixing Interference at the Victim</h2>
+
+      <h3>The Immunity Argument (6E1, 6E2)</h3>
+      <p>Sometimes you have done everything right but interference to a neighbour's equipment continues. This can happen because <strong>the victim equipment is inadequately immune</strong> to RF.</p>
+      <p>The EMC Regulations (BS EN standards) require domestic equipment to have a <strong>minimum level of immunity</strong> to radio frequency interference. Equipment designed and marked to these standards should not be disrupted by transmissions from a legally operated amateur station.</p>
+      <p>If the victim equipment fails this immunity test, the <strong>manufacturer bears responsibility</strong> — not the amateur. You are not legally obliged to shut down to protect a poorly-designed device. However, being right does not necessarily make the situation with your neighbour comfortable. The diplomatic approach matters even when the law is on your side.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6E1, 6E2:</strong> Domestic equipment must meet BS EN immunity standards. An adequately immune device should tolerate legal amateur transmissions. If equipment fails despite the amateur operating cleanly, the cause may be inadequate immunity — the manufacturer's responsibility, not the amateur's.</div>
+      </div>
+
+      <h3>Fixes at the Victim (6E2, 6E3)</h3>
+      <p>Simple improvements to the victim device often solve the problem quickly and cost very little:</p>
+      <ul>
+        <li><strong>Ferrite chokes on the victim's mains lead and signal cables</strong> — a snap-on ferrite on the TV's aerial cable entry point often eliminates breakthrough entirely.</li>
+        <li><strong>High-pass filter on the TV aerial socket</strong> — passes TV frequencies (470–850 MHz) but rejects HF amateur signals.</li>
+        <li><strong>Low-pass filter on audio inputs</strong> — for hi-fi amplifiers picking up speech from an SSB transmission.</li>
+        <li><strong>Mains filter on the victim device</strong> — suppresses RF entering via the power lead.</li>
+        <li><strong>Improving screening on old equipment</strong> — ferrite chokes on every lead connected to the victim device.</li>
+      </ul>
+      <p><strong>Before making any modifications</strong> to a neighbour's equipment, ask permission and make clear that the modification is reversible.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6F: CHECKING YOUR TRANSMITTER ═══════════════════ -->
+    <section class="chapter" id="ch-6f">
+      <div class="chapter-header">
+        <span class="chapter-num">6F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Checking Your Own Transmitter</h2>
+
+      <h3>The Legal Requirement (6F2)</h3>
+      <p>Your licence conditions require you to <strong>check your transmissions periodically</strong> for harmonics and spurious emissions. You must not transmit signals that cause unnecessary interference.</p>
+      <p><strong>How to check for harmonics:</strong></p>
+      <ol>
+        <li>Calculate the frequencies of your harmonics: 2×f, 3×f, 4×f, 5×f</li>
+        <li>Connect a well-screened dummy load to the transmitter (not an antenna)</li>
+        <li>Set a second receiver or SDR to one of the harmonic frequencies, positioned a short distance from the transmitter</li>
+        <li>Key the transmitter on CW</li>
+        <li>The receiver should show a very weak signal, or nothing. If the harmonic is almost as strong as the fundamental, seek help.</li>
+      </ol>
+      <p>A <strong>spectrum analyser</strong> is the ideal tool — it shows the fundamental and all harmonics simultaneously. An <strong>RTL-SDR dongle</strong> with appropriate software can function as a basic spectrum analyser.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6F2:</strong> Check your transmitter periodically for harmonics and spurious emissions as required by your licence conditions. Use a dummy load and a receiver tuned to harmonic frequencies. A spectrum analyser or RTL-SDR gives a comprehensive view.</div>
+      </div>
+
+      <h3>Overmodulation and Overdeviation (6F3)</h3>
+      <p><strong>Overmodulation (AM/SSB):</strong> occurs when the audio amplitude fed to the modulator is too high. The transmitted signal becomes distorted and wider than it should be, causing <strong>adjacent channel interference</strong>.</p>
+      <p>How to avoid: set the <strong>microphone gain</strong> so that the <strong>ALC meter</strong> shows peaks at the top of the normal range — not pegged hard against the limit.</p>
+      <p><strong>Overdeviation (FM):</strong> occurs when the audio amplitude causes the carrier to deviate more than the permitted amount (typically ±2.5 kHz for NFM, ±5 kHz for wideband FM). Results in a wider transmitted signal and interference to adjacent channels.</p>
+      <p><strong>CW key shaping:</strong> a transmitter keyed with an abrupt square waveform produces harmonics of the keying frequency as sidebands. A well-designed CW transmitter includes a <strong>key shaping circuit</strong> that slows the rise and fall times of the RF envelope, keeping the transmitted signal narrow.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>6F3:</strong> Overmodulation (AM/SSB) and overdeviation (FM) produce excessive bandwidth and adjacent channel interference. Adjust microphone gain and audio levels to keep the ALC within normal range. For CW, key shaping (slowing the rise/fall of the RF envelope) prevents keying-waveform harmonics.</div>
+      </div>
+
+      <h3>Log Keeping (6F2)</h3>
+      <p>Although a logbook is no longer a condition of the UK amateur licence, keeping a log is <strong>strongly advisable</strong> for EMC purposes:</p>
+      <ul>
+        <li>If a complaint of interference is made, you can demonstrate whether or not you were transmitting at the time</li>
+        <li>If you were transmitting, the log shows the band, power, mode, and antenna — data useful for reproducing and diagnosing the problem</li>
+        <li>A logbook may be required as a first step if a complaint reaches Ofcom</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6G: GETTING HELP ═══════════════════ -->
+    <section class="chapter" id="ch-6g">
+      <div class="chapter-header">
+        <span class="chapter-num">6G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Getting Help</h2>
+
+      <h3>The RSGB EMC Committee (6D1, 6F2)</h3>
+      <p>The RSGB EMC Committee at <strong>rsgb.org/emc</strong> is the UK amateur's first port of call for complex interference problems:</p>
+      <ul>
+        <li>Produces leaflets on common EMC problems (available free to download)</li>
+        <li>Leaflets aimed at both amateurs and neighbours/complainants</li>
+        <li>Committee members can provide expert advice and may be able to assist directly</li>
+      </ul>
+
+      <h3>Ofcom (6F2)</h3>
+      <p>If the interference source is not an amateur station (domestic or commercial interference into your receiver), and it is persistent:</p>
+      <ul>
+        <li>Report to <strong>Ofcom</strong> — the UK spectrum regulator</li>
+        <li>Ofcom can investigate unlicensed or non-compliant emissions</li>
+      </ul>
+      <p>If <strong>you</strong> are the source of a formal complaint and cannot resolve it directly, Ofcom may become involved. Having a record of your diagnostic steps demonstrates good faith.</p>
+
+      <h3>Diplomatic Approach to Complaints (6E3)</h3>
+      <p>If a neighbour complains:</p>
+      <ul>
+        <li>Be honest, open, and professional — do not become defensive</li>
+        <li><strong>Offer not to transmit</strong> at key times while the investigation is underway — as a cooperative measure while a technical solution is found</li>
+        <li>Do not admit blame before you have done any investigation — the problem may not be caused by you</li>
+        <li>Ask the neighbour to cooperate with tests: note when the interference happens, check whether it correlates with your transmissions</li>
+        <li>Be sympathetic — from the neighbour's perspective their TV is broken and the obvious explanation is the antenna in your garden</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6H: ISM BANDS ═══════════════════ -->
+    <section class="chapter" id="ch-6h">
+      <div class="chapter-header">
+        <span class="chapter-num">6H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>ISM Bands</h2>
+
+      <p>The <strong>ISM (Industrial, Scientific, and Medical) bands</strong> are frequency allocations that can be used without a specific licence. Common examples:</p>
+      <ul>
+        <li><strong>2.4 GHz:</strong> Wi-Fi, Bluetooth, microwave ovens</li>
+        <li><strong>5.8 GHz:</strong> Wi-Fi (5 GHz)</li>
+        <li><strong>433.92 MHz:</strong> key fobs, remote sensors, short-range devices</li>
+      </ul>
+      <p>Amateur radio shares some ISM allocations. As an amateur, you <strong>must accept interference from lawfully operated ISM devices</strong> on these shared frequencies. You cannot compel an ISM user to stop operating lawfully, even if their emissions disrupt your communications.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>ISM overlap:</strong> Amateurs must accept interference from ISM devices on shared frequencies. This is a licence condition. See Section 1 for the full ISM band discussion.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 6I: SELF-CHECK QUESTIONS ═══════════════════ -->
+    <section class="chapter" id="ch-6i">
+      <div class="chapter-header">
+        <span class="chapter-num">6I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. What does EMC stand for, and what two obligations does it place on equipment manufacturers?</p>
+          <button class="btn-reveal" data-target="sc-6i-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-1" hidden>
+            <p><strong>Electromagnetic Compatibility.</strong> The two obligations are: (1) Equipment must not cause undue electromagnetic interference to other equipment (emission limit). (2) Equipment must have adequate <strong>immunity</strong> — it must function satisfactorily in the presence of electromagnetic interference from other lawfully operated equipment. Both are required under UK EMC Regulations.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. You are transmitting SSB on 14 MHz. A neighbour complains that speech sounds are audible on their hi-fi system. You disconnect your antenna and connect a dummy load. The speech sounds disappear. What does this tell you, and what should you do next?</p>
+          <button class="btn-reveal" data-target="sc-6i-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-2" hidden>
+            <p>The speech sounds <strong>disappearing with the dummy load</strong> tells you the interference is caused by <strong>radiated RF from your antenna</strong> — not by RF conducted via the mains supply. Next steps: check your transmitter for overmodulation (ALC within range, microphone gain correct); check for harmonics or spurious emissions; consider adding a low-pass filter at the transmitter output; suggest fitting a ferrite choke on the hi-fi's speaker cables and mains lead; check the hi-fi is CE-marked and meets EMC immunity standards.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What is a low-pass filter in this context, and where should it be fitted?</p>
+          <button class="btn-reveal" data-target="sc-6i-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-3" hidden>
+            <p>A <strong>low-pass filter</strong> passes signals below a certain cut-off frequency and attenuates signals above it. In a transmitter context, it is fitted at the <strong>RF output</strong>, between the transmitter and the SWR meter/ATU, to suppress harmonic and spurious emissions above the operating frequency while allowing the wanted signal to pass. It does not affect the fundamental transmission — only the unwanted higher-frequency emissions.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. You are operating legally and your transmissions appear clean, but a neighbour's TV breaks up whenever you transmit. What would you tell the neighbour about who is responsible?</p>
+          <button class="btn-reveal" data-target="sc-6i-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-4" hidden>
+            <p>UK EMC Regulations (BS EN standards) require domestic equipment to have a <strong>minimum level of immunity</strong> to RF interference from lawfully operated stations. If the TV is certified to these standards, it should tolerate your transmissions. If the TV is failing despite your transmissions being clean and legal, the <strong>manufacturer bears responsibility</strong> for inadequate immunity — not you. However: confirm your transmissions are clean first; try a ferrite choke on the TV's aerial lead; approach the situation diplomatically.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. List four common domestic sources of radio frequency interference that can raise the HF noise floor.</p>
+          <button class="btn-reveal" data-target="sc-6i-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-5" hidden>
+            <p>Any four from:</p>
+            <ul>
+              <li>Switch-mode power supplies (chargers, PC power supplies, LED drivers)</li>
+              <li>VDSL modems (FTTC broadband equipment)</li>
+              <li>LED lighting (cheap/unfiltered)</li>
+              <li>Solar PV inverters</li>
+              <li>Arcing thermostats</li>
+              <li>Electric motors (brushed)</li>
+              <li>Computers and peripherals</li>
+              <li>Plasma TVs (now mostly obsolete)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. Where should you place a ferrite choke on the mains lead of your transmitter, and why?</p>
+          <button class="btn-reveal" data-target="sc-6i-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-6" hidden>
+            <p>As <strong>close to the transmitter as possible</strong>. This ensures that RF current trying to escape via the mains lead is choked before it can travel along the lead into the house wiring. A ferrite placed near the mains socket would leave the entire length of the lead acting as an RF radiator.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. Why is it strongly advisable to keep a log of your transmissions even though it is no longer a licence requirement?</p>
+          <button class="btn-reveal" data-target="sc-6i-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-6i-7" hidden>
+            <p>A log allows you to demonstrate whether you were transmitting during a period when interference was reported. If you were transmitting, the log records the band, power, mode, and antenna — data useful for diagnosing the cause. If you were not transmitting, you can quickly eliminate yourself as the source. Ofcom may require a log as a first step if a complaint is formally registered.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ KEY FACTS SUMMARY ═══════════════════ -->
+    <section aria-label="Key facts summary">
+      <h2 style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-primary);">Key Facts Summary</h2>
+      <div class="key-facts">
+        <ul>
+          <li><strong>EMC definition:</strong> Equipment must not cause undue interference (emission) AND must withstand interference from others (immunity). Both are legal requirements under UK EMC Regulations.</li>
+          <li><strong>CE/UKCA marking</strong> confirms compliance with EMC Regulations for emission and immunity.</li>
+          <li><strong>Harmonics</strong> are produced by non-linearity in the PA and fall at exact multiples of the fundamental. A <strong>low-pass filter at the TX output</strong> is the standard remedy.</li>
+          <li><strong>Spurious emissions</strong> include mixer products, oscillator leakage, phase noise, and parasitic oscillations — not just harmonics.</li>
+          <li><strong>Dummy load test:</strong> if interference disappears when the antenna is replaced by a dummy load, the problem is radiated RF; if it persists, the problem is conducted (mains path).</li>
+          <li><strong>Ferrite chokes</strong> suppress common-mode RF currents on cables. Place as close to the equipment as possible. Material 43 suits HF/VHF; material 61 suits VHF and above.</li>
+          <li><strong>Antenna in the loft:</strong> never — house wiring distributes RF throughout the building. Keep antennas outside and away from neighbouring properties.</li>
+          <li><strong>Manufacturer's responsibility:</strong> if victim equipment fails BS EN immunity standards, the manufacturer is responsible — not the amateur operating legally.</li>
+          <li><strong>Overmodulation (AM/SSB)</strong> and <strong>overdeviation (FM)</strong> widen the transmitted signal and cause adjacent channel interference. Monitor ALC and set microphone gain correctly.</li>
+          <li><strong>CW key shaping</strong> slows the RF envelope rise/fall to prevent keying-waveform harmonics.</li>
+          <li><strong>Log keeping</strong> is not a licence condition but is strongly advisable for EMC evidence.</li>
+          <li><strong>ISM device interference</strong> must be accepted by amateurs on shared frequencies — a licence condition.</li>
+          <li><strong>RSGB EMC Committee</strong> (rsgb.org/emc) provides leaflets and expert advice. <strong>Ofcom</strong> handles persistent non-amateur interference sources.</li>
+          <li><strong>Two earths required:</strong> mains earth (safety — never remove) and RF earth (performance). Never confuse them.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ SECTION NAV ═══════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-5-propagation.html" class="section-nav__link">&larr; Section 5: Propagation</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=6"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="#" class="section-nav__link section-nav__link--disabled">Section 7 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" style="margin-top:4rem;">
+    <div class="footer-container">
+      <p class="footer-copy" style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    (function () {
+      const bar = document.getElementById('progress-bar');
+      function update() {
+        const scrolled = window.scrollY;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    // Self-check reveal buttons
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var hidden = target.hasAttribute('hidden');
+        if (hidden) {
+          target.removeAttribute('hidden');
+          btn.textContent = 'Hide answer';
+        } else {
+          target.setAttribute('hidden', '');
+          btn.textContent = 'Show answer';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
