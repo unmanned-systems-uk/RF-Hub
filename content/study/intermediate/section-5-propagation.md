@@ -141,16 +141,7 @@ The **MUF (Maximum Usable Frequency)** is the highest frequency that the ionosph
 
 Why there is a maximum: as frequency increases, the bending ability of the ionosphere decreases. Above the MUF, signals pass straight through the ionosphere and escape into space, regardless of angle. There is no sky wave above the MUF.
 
-```
-               IONOSPHERE
-              ──────────────────────────────
-              |                            |
-  BELOW MUF:  |  radio wave bends back     |  → returns to earth ✓
-              |                            |
-  ABOVE MUF:  |  radio wave passes through |  → escapes to space ✗
-              |                            |
-              ──────────────────────────────
-```
+![Maximum Usable Frequency — below MUF, signals refract back to earth; above MUF, they escape to space. The MUF depends on ionospheric conditions and path geometry.](/assets/images/study/section-5/maximum-usable-frequency-muf.png)
 
 The MUF is not a fixed number — it changes:
 - **With time of day:** higher at mid-day, lower at night
