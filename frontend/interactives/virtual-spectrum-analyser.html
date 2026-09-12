@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Spectrum Analyser &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.main-grid { display: grid; grid-template-columns: 1fr 310px; gap: 0.75rem; }
+@media (max-width: 720px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* SA display */
+.sa-wrap {
+  background: #020810; border: 3px solid #1e293b; border-radius: 10px;
+  position: relative; overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,20,40,0.8);
+}
+#sa-canvas { display: block; width: 100%; }
+
+/* Hover readout */
+#hover-line {
+  position: absolute; top: 0; bottom: 0; width: 1px;
+  background: rgba(247,159,9,0.5); pointer-events: none; display: none;
+}
+#hover-tip {
+  position: absolute; top: 6px;
+  background: rgba(0,0,0,0.85); border: 1px solid #f59e0b;
+  border-radius: 4px; padding: 3px 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #f59e0b;
+  pointer-events: none; display: none; white-space: nowrap;
+}
+
+/* Peak marker */
+#peak-marker {
+  position: absolute;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: #22c55e;
+  pointer-events: none; display: none;
+  background: rgba(0,0,0,0.7); border: 1px solid #22c55e;
+  border-radius: 3px; padding: 1px 5px;
+}
+
+/* Controls */
+.ctrl-panel { display: flex; flex-direction: column; gap: 0.6rem; }
+.ctrl-section { background: #0d1321; border: 1px solid #1e293b; border-radius: 6px; padding: 0.75rem; }
+.ctrl-sec-title { font-size: 0.58rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.5rem; }
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 0.2rem; }
+
+.slider-wrap { display: flex; align-items: center; gap: 0.5rem; }
+input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #1e293b; outline: none; cursor: pointer; min-width: 60px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #06b6d4; cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border-radius: 50%; background: #06b6d4; border: none; }
+.slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #06b6d4; min-width: 4.5rem; text-align: right; }
+
+select {
+  background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+  padding: 0.3rem 1.4rem 0.3rem 0.4rem; cursor: pointer; outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.4rem center;
+  width: 100%;
+}
+
+.seg-ctrl { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.seg-btn {
+  background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #64748b; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+  padding: 0.25rem 0.5rem; cursor: pointer; transition: background 0.12s, color 0.12s;
+}
+.seg-btn:hover { background: #222d42; }
+.seg-btn.active { background: #0e2a36; border-color: #06b6d4; color: #06b6d4; }
+
+/* Spike table */
+.spike-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; margin-top: 0.5rem; }
+.spike-table th { color: #334155; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 0.3rem; text-align: right; font-weight: 400; }
+.spike-table th:first-child { text-align: left; }
+.spike-table td { padding: 0.2rem 0; border-top: 1px solid #0d1321; text-align: right; color: #94a3b8; }
+.spike-table td:first-child { text-align: left; color: #64748b; }
+.spike-peak { color: #22c55e; }
+</style>
+</head>
+<body>
+<main>
+<h1>Virtual Spectrum Analyser</h1>
+<p class="subtitle">X = frequency (log), Y = amplitude (dBm) — hover to read, centre/span to zoom</p>
+
+<div class="main-grid">
+
+  <!-- Display -->
+  <div>
+    <div class="sa-wrap" id="sa-wrap">
+      <canvas id="sa-canvas"></canvas>
+      <div id="hover-line"></div>
+      <div id="hover-tip"></div>
+      <div id="peak-marker"></div>
+    </div>
+
+    <!-- Spike table -->
+    <div class="card" style="margin-top:0.5rem;">
+      <div class="card-title">Detected Spectral Components</div>
+      <table class="spike-table">
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Frequency</th>
+            <th>dBm</th>
+            <th>dBc</th>
+          </tr>
+        </thead>
+        <tbody id="spike-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="ctrl-panel">
+
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Signal Source</div>
+      <div class="ctrl-label">Type</div>
+      <select id="sel-sig" onchange="update()">
+        <option value="cw">Pure sine (CW)</option>
+        <option value="harm2">Sine + 2nd harmonic</option>
+        <option value="harm3">Sine + 2nd + 3rd harmonic</option>
+        <option value="am">AM (m = 80%, sidebands)</option>
+        <option value="fm">FM (β = 2, Carson sidebands)</option>
+        <option value="noise">Broadband noise</option>
+      </select>
+      <div style="margin-top:0.5rem;">
+        <div class="ctrl-label">Carrier frequency</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-fc" min="0" max="50" step="1" value="20" oninput="update()">
+          <span class="slider-val" id="lbl-fc">—</span>
+        </div>
+      </div>
+      <div style="margin-top:0.4rem;">
+        <div class="ctrl-label">Carrier power</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-pwr" min="-30" max="10" step="1" value="-10" oninput="update()">
+          <span class="slider-val" id="lbl-pwr">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Display</div>
+      <div class="ctrl-label">Centre frequency</div>
+      <div class="slider-wrap">
+        <input type="range" id="sl-centre" min="0" max="50" step="1" value="20" oninput="update()">
+        <span class="slider-val" id="lbl-centre">—</span>
+      </div>
+      <div style="margin-top:0.4rem;">
+        <div class="ctrl-label">Span</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-span" min="0" max="30" step="1" value="15" oninput="update()">
+          <span class="slider-val" id="lbl-span">—</span>
+        </div>
+      </div>
+      <div style="margin-top:0.4rem;">
+        <div class="ctrl-label">Ref level (dBm)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-ref" min="-50" max="20" step="5" value="10" oninput="update()">
+          <span class="slider-val" id="lbl-ref">—</span>
+        </div>
+      </div>
+      <div style="margin-top:0.4rem;">
+        <div class="ctrl-label">Resolution BW</div>
+        <div class="seg-ctrl" id="rbw-ctrl">
+          <button class="seg-btn" data-v="1000"    onclick="setRBW(1000)">1 kHz</button>
+          <button class="seg-btn" data-v="10000"   onclick="setRBW(10000)">10 kHz</button>
+          <button class="seg-btn active" data-v="100000" onclick="setRBW(100000)">100 kHz</button>
+          <button class="seg-btn" data-v="1000000" onclick="setRBW(1000000)">1 MHz</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0.75rem;">
+      <div class="card-title">Key Identifiers</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.3rem;" id="key-list">
+        <li style="font-size:0.72rem;color:#94a3b8;">Select a signal to see its spectral signature.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+</main>
+
+<script>
+// ── Frequency tables ─────────────────────────────────────────────────────────
+// 51 entries covering 1 kHz – 10 GHz on a log scale for sliders 0..50
+const FREQ_TABLE = (function() {
+  const arr = [];
+  const fMin = 1e3, fMax = 10e9;
+  for (let i = 0; i <= 50; i++) {
+    arr.push(fMin * Math.pow(fMax / fMin, i / 50));
+  }
+  return arr;
+})();
+
+// 31 entries for span: 1 kHz – 10 GHz
+const SPAN_TABLE = (function() {
+  const arr = [];
+  const sMin = 1e3, sMax = 10e9;
+  for (let i = 0; i <= 30; i++) {
+    arr.push(sMin * Math.pow(sMax / sMin, i / 30));
+  }
+  return arr;
+})();
+
+// FM Bessel J_n(2) values
+const BESSEL2 = [0.2239, 0.5767, 0.3528, 0.1289, 0.0340, 0.0066];
+// indices 0..5 → J0..J5 of β=2
+
+let rbw = 100000;
+
+function setRBW(v) {
+  rbw = v;
+  document.querySelectorAll('#rbw-ctrl .seg-btn').forEach(b => {
+    b.className = 'seg-btn' + (parseInt(b.dataset.v) === v ? ' active' : '');
+  });
+  update();
+}
+
+// ── Spike definition ─────────────────────────────────────────────────────────
+// Returns array of { freq, dbm, label }
+function getSpikes(sigType, fc, pwr) {
+  const spikes = [];
+  switch (sigType) {
+    case 'cw':
+      spikes.push({ freq: fc, dbm: pwr, label: 'Carrier (f)' });
+      break;
+    case 'harm2':
+      spikes.push({ freq: fc,     dbm: pwr,      label: 'Fundamental (f)' });
+      spikes.push({ freq: fc * 2, dbm: pwr - 20, label: '2nd harmonic (2f)' });
+      break;
+    case 'harm3':
+      spikes.push({ freq: fc,     dbm: pwr,      label: 'Fundamental (f)' });
+      spikes.push({ freq: fc * 2, dbm: pwr - 20, label: '2nd harmonic (2f)' });
+      spikes.push({ freq: fc * 3, dbm: pwr - 30, label: '3rd harmonic (3f)' });
+      break;
+    case 'am': {
+      // m = 0.8 → each sideband at 20*log10(0.8/2) = −7.96 dBc
+      const sideLevel = pwr + 20 * Math.log10(0.8 / 2);
+      const fm = fc / 10;  // modulation tone at fc/10
+      spikes.push({ freq: fc,      dbm: pwr,       label: 'Carrier (f_c)' });
+      spikes.push({ freq: fc - fm, dbm: sideLevel, label: 'LSB (f_c − f_m)' });
+      spikes.push({ freq: fc + fm, dbm: sideLevel, label: 'USB (f_c + f_m)' });
+      break;
+    }
+    case 'fm': {
+      // β=2, fm = fc/10, Carson BW = 2(β+1)fm = 6fm
+      // Components at fc + n*fm for n = -5..5, amplitude ∝ J|n|(β)
+      const fm = fc / 10;
+      for (let n = -5; n <= 5; n++) {
+        const jn = BESSEL2[Math.abs(n)];
+        if (!jn) continue;
+        const compDbm = pwr + 20 * Math.log10(jn);
+        const label = n === 0 ? 'Carrier (f_c)' : (n > 0 ? `f_c + ${n}f_m` : `f_c − ${Math.abs(n)}f_m`);
+        spikes.push({ freq: fc + n * fm, dbm: compDbm, label });
+      }
+      break;
+    }
+    case 'noise':
+      // Broadband noise — no discrete spikes, handled separately in draw
+      break;
+  }
+  return spikes;
+}
+
+// ── Canvas ───────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('sa-canvas');
+const ctx = canvas.getContext('2d');
+const PLOT_H = 360;  // CSS px
+const HDIVS = 10, VDIVS = 8;
+const MARGIN = { top: 10, right: 10, bottom: 30, left: 50 };
+
+let plotW = 500;  // updated on resize
+
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = canvas.parentElement.clientWidth;
+  canvas.width  = cssW * dpr;
+  canvas.height = PLOT_H * dpr;
+  canvas.style.height = PLOT_H + 'px';
+  plotW = cssW - MARGIN.left - MARGIN.right;
+  ctx.scale(dpr, dpr);
+  update();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ── Draw ─────────────────────────────────────────────────────────────────────
+function freqToX(f, fStart, fEnd) {
+  // Log-X axis
+  if (f <= 0 || fStart <= 0) return 0;
+  return MARGIN.left + (Math.log10(f / fStart) / Math.log10(fEnd / fStart)) * plotW;
+}
+function dbmToY(dbm, refLevel) {
+  // Y: refLevel at top, 10 dB/div, 8 divs = 80 dB range
+  const dBrange = 80;
+  return MARGIN.top + ((refLevel - dbm) / dBrange) * (PLOT_H - MARGIN.top - MARGIN.bottom);
+}
+function yToDbm(y, refLevel) {
+  const dBrange = 80;
+  const plotHpx = PLOT_H - MARGIN.top - MARGIN.bottom;
+  return refLevel - ((y - MARGIN.top) / plotHpx) * dBrange;
+}
+
+function drawGrid(cssW, fStart, fEnd, refLevel) {
+  ctx.clearRect(0, 0, cssW, PLOT_H);
+
+  // Background
+  ctx.fillStyle = '#020810';
+  ctx.fillRect(0, 0, cssW, PLOT_H);
+
+  const plotHpx = PLOT_H - MARGIN.top - MARGIN.bottom;
+
+  // Horizontal grid lines (10 dB steps, 8 divs)
+  ctx.strokeStyle = 'rgba(0,183,212,0.15)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= VDIVS; i++) {
+    const y = MARGIN.top + (i / VDIVS) * plotHpx;
+    ctx.beginPath(); ctx.moveTo(MARGIN.left, y); ctx.lineTo(cssW - MARGIN.right, y); ctx.stroke();
+    // Y-axis label
+    const dbm = refLevel - i * 10;
+    ctx.fillStyle = '#334155';
+    ctx.font = '8px IBM Plex Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(dbm + 'dBm', MARGIN.left - 4, y + 3);
+  }
+
+  // Vertical grid lines (log-spaced per decade)
+  // Draw decade markers
+  const log10Start = Math.log10(fStart);
+  const log10End   = Math.log10(fEnd);
+  ctx.fillStyle = '#334155';
+  ctx.font = '8px IBM Plex Mono, monospace';
+  ctx.textAlign = 'center';
+
+  // Fine grid within current span
+  const nLogLines = 10;
+  for (let i = 0; i <= nLogLines; i++) {
+    const logF = log10Start + (i / nLogLines) * (log10End - log10Start);
+    const f = Math.pow(10, logF);
+    const x = freqToX(f, fStart, fEnd);
+    ctx.strokeStyle = 'rgba(0,183,212,0.12)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x, MARGIN.top); ctx.lineTo(x, PLOT_H - MARGIN.bottom); ctx.stroke();
+    if (i === 0 || i === nLogLines / 2 || i === nLogLines) {
+      ctx.fillStyle = '#334155';
+      ctx.fillText(fmtHz(f), x, PLOT_H - MARGIN.bottom + 12);
+    }
+  }
+
+  // Axes
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(MARGIN.left, MARGIN.top);
+  ctx.lineTo(MARGIN.left, PLOT_H - MARGIN.bottom);
+  ctx.lineTo(cssW - MARGIN.right, PLOT_H - MARGIN.bottom);
+  ctx.stroke();
+}
+
+function drawNoise(cssW, fStart, fEnd, refLevel, noisePwr) {
+  // Seeded LCG for repeatable noise floor
+  let seed = 0x5a4d;
+  function lcg() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff; }
+
+  const npts = Math.floor(plotW);
+  ctx.strokeStyle = 'rgba(148,163,184,0.4)';
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  for (let px = 0; px < npts; px++) {
+    const noise = (lcg() - 0.5) * 6;   // ±3 dB variation
+    const dbm = noisePwr + noise;
+    const y = dbmToY(dbm, refLevel);
+    if (px === 0) ctx.moveTo(MARGIN.left + px, y);
+    else ctx.lineTo(MARGIN.left + px, y);
+  }
+  ctx.stroke();
+}
+
+function drawSpike(cssW, f, dbm, refLevel, fStart, fEnd, colour) {
+  const x = freqToX(f, fStart, fEnd);
+  if (x < MARGIN.left || x > cssW - MARGIN.right) return;
+  const yTop = dbmToY(dbm, refLevel);
+  const yBase = dbmToY(refLevel - 80, refLevel);
+
+  // Gaussian broadening based on RBW
+  const sigPx = (rbw / (fEnd / fStart)) * plotW / Math.log10(fEnd / fStart) / 2.35;
+  // simplified: use linear sigPx proportional to RBW / span
+  const sigPxLinear = (rbw / (fEnd - fStart)) * plotW / 2.35;
+  const sigPxUse = Math.max(1.5, sigPxLinear);
+
+  // Draw Gaussian spike
+  const peakDbm = dbm;
+  const nPts = Math.ceil(sigPxUse * 6);
+  ctx.beginPath();
+  for (let i = -nPts; i <= nPts; i++) {
+    const px = x + i;
+    if (px < MARGIN.left || px > cssW - MARGIN.right) continue;
+    const gaussDbm = peakDbm - (i * i) / (2 * sigPxUse * sigPxUse) * 4.343;  // 4.343 = 10/ln(10) ×  Gaussian σ→dB
+    const py = dbmToY(gaussDbm, refLevel);
+    if (i === -nPts || px === MARGIN.left) ctx.moveTo(px, Math.min(py, yBase));
+    else ctx.lineTo(px, Math.min(py, yBase));
+  }
+  ctx.lineTo(x + nPts, yBase);
+  ctx.lineTo(x - nPts, yBase);
+  ctx.closePath();
+  ctx.fillStyle = colour + '33';
+  ctx.fill();
+
+  // Bright edge trace
+  ctx.strokeStyle = colour;
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = colour;
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  for (let i = -nPts; i <= nPts; i++) {
+    const px = x + i;
+    if (px < MARGIN.left || px > cssW - MARGIN.right) continue;
+    const gaussDbm = peakDbm - (i * i) / (2 * sigPxUse * sigPxUse) * 4.343;
+    const py = dbmToY(gaussDbm, refLevel);
+    if (i === -nPts) ctx.moveTo(px, Math.min(py, yBase));
+    else ctx.lineTo(px, Math.min(py, yBase));
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+// ── Update ────────────────────────────────────────────────────────────────────
+let currentSpikes = [];
+let currentFStart = 1e6, currentFEnd = 1e9, currentRef = 10;
+
+function update() {
+  const cssW = canvas.parentElement ? canvas.parentElement.clientWidth : 700;
+  plotW = cssW - MARGIN.left - MARGIN.right;
+
+  const fcIdx    = parseInt(document.getElementById('sl-fc').value);
+  const pwrRaw   = parseInt(document.getElementById('sl-pwr').value);
+  const centreIdx= parseInt(document.getElementById('sl-centre').value);
+  const spanIdx  = parseInt(document.getElementById('sl-span').value);
+  const refLevel = parseInt(document.getElementById('sl-ref').value);
+  const sigType  = document.getElementById('sel-sig').value;
+
+  const fc     = FREQ_TABLE[fcIdx];
+  const pwr    = pwrRaw;
+  const fCentre= FREQ_TABLE[centreIdx];
+  const span   = SPAN_TABLE[spanIdx];
+
+  let fStart = Math.max(1e3, fCentre / Math.sqrt(span / 1e3));
+  let fEnd   = fStart * (span / 1e3);
+  // Simpler: centre ± span/2 in log
+  fStart = fCentre * Math.pow(10, -Math.log10(span / 1e3) / 2);
+  fEnd   = fCentre * Math.pow(10,  Math.log10(span / 1e3) / 2);
+  fStart = Math.max(1e3, fStart);
+  fEnd   = Math.max(fStart * 10, fEnd);
+
+  currentFStart = fStart; currentFEnd = fEnd; currentRef = refLevel;
+
+  // Labels
+  document.getElementById('lbl-fc').textContent     = fmtHz(fc);
+  document.getElementById('lbl-pwr').textContent    = pwr + ' dBm';
+  document.getElementById('lbl-centre').textContent = fmtHz(fCentre);
+  document.getElementById('lbl-span').textContent   = fmtHz(span);
+  document.getElementById('lbl-ref').textContent    = refLevel + ' dBm';
+
+  const spikes = getSpikes(sigType, fc, pwr);
+  currentSpikes = spikes;
+
+  // Draw
+  drawGrid(cssW, fStart, fEnd, refLevel);
+
+  // Noise floor at pwr − 50 (for non-noise signals) or pwr − 20 for noise
+  const noiseFloor = sigType === 'noise' ? pwr - 20 : pwr - 55;
+  drawNoise(cssW, fStart, fEnd, refLevel, noiseFloor);
+
+  // Spikes
+  const colours = ['#06b6d4', '#f59e0b', '#a78bfa', '#f87171', '#22c55e',
+                   '#38bdf8', '#fb923c', '#c084fc', '#fca5a5', '#86efac',
+                   '#67e8f9', '#fcd34d'];
+  spikes.forEach((sp, i) => {
+    drawSpike(cssW, sp.freq, sp.dbm, refLevel, fStart, fEnd, colours[i % colours.length]);
+  });
+
+  // Peak marker on highest visible spike
+  let peakSp = null;
+  spikes.forEach(sp => {
+    const x = freqToX(sp.freq, fStart, fEnd);
+    if (x >= MARGIN.left && x <= cssW - MARGIN.right) {
+      if (!peakSp || sp.dbm > peakSp.dbm) peakSp = sp;
+    }
+  });
+  const pm = document.getElementById('peak-marker');
+  if (peakSp) {
+    const px = freqToX(peakSp.freq, fStart, fEnd);
+    const py = dbmToY(peakSp.dbm, refLevel);
+    pm.style.display = 'block';
+    pm.style.left = (px + 4) + 'px';
+    pm.style.top  = (py - 16) + 'px';
+    pm.textContent = fmtHz(peakSp.freq) + ' / ' + peakSp.dbm.toFixed(1) + ' dBm';
+  } else {
+    pm.style.display = 'none';
+  }
+
+  // Spike table
+  updateTable(spikes, pwr);
+
+  // Key identifiers
+  updateKeyList(sigType);
+}
+
+function updateTable(spikes, carrierPwr) {
+  const tbody = document.getElementById('spike-tbody');
+  if (!spikes.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#334155;text-align:center;padding:0.3rem;">No discrete components (broadband noise)</td></tr>';
+    return;
+  }
+  const sorted = [...spikes].sort((a, b) => b.dbm - a.dbm);
+  tbody.innerHTML = sorted.map((sp, i) => {
+    const dbc = sp.dbm - carrierPwr;
+    const isCarrier = Math.abs(dbc) < 0.1;
+    return `<tr>
+      <td>${sp.label}</td>
+      <td>${fmtHz(sp.freq)}</td>
+      <td class="${i === 0 ? 'spike-peak' : ''}">${sp.dbm.toFixed(1)}</td>
+      <td>${isCarrier ? '0.0 (ref)' : dbc.toFixed(1)}</td>
+    </tr>`;
+  }).join('');
+}
+
+const KEY_LISTS = {
+  cw:     ['Single spike at f_c — pure tone, no harmonics, no sidebands.'],
+  harm2:  ['Fundamental at f_c, −20 dBc harmonic at 2f_c.',
+            'Even harmonics suggest distortion asymmetry (e.g. even-order nonlinearity).'],
+  harm3:  ['Fundamental + 2nd (−20 dBc) + 3rd (−30 dBc) harmonic.',
+            '3rd harmonic common in power amplifiers (cross-over distortion).',
+            'EMC: 3rd harmonic of 50 MHz falls in FM broadcast band.'],
+  am:     ['Carrier + two symmetric sidebands separated by f_m.',
+            'Each sideband at −7.96 dBc for 80% modulation depth.',
+            'Total occupied BW = 2 × f_m (DSB-FC, no carrier suppression).'],
+  fm:     ['Carson\'s rule: BW ≈ 2(β+1)f_m = 6f_m for β = 2.',
+            'Multiple sidebands at f_c ± n·f_m weighted by J_n(β).',
+            'Higher β → more sidebands, wider spectrum, constant total power.'],
+  noise:  ['Flat (white) noise floor — no discrete components.',
+            'Level set by noise power density × resolution BW.',
+            'Narrowing RBW lowers the visible noise floor.']
+};
+
+function updateKeyList(sig) {
+  const ul = document.getElementById('key-list');
+  const items = KEY_LISTS[sig] || [];
+  ul.innerHTML = items.map(t =>
+    `<li style="font-size:0.72rem;color:#94a3b8;padding-left:1rem;position:relative;margin-bottom:0.3rem;line-height:1.4;">
+      <span style="position:absolute;left:0;color:#06b6d4;">▸</span>${t}
+    </li>`
+  ).join('');
+}
+
+// ── Hover interaction ─────────────────────────────────────────────────────────
+const saWrap = document.getElementById('sa-wrap');
+const hoverLine = document.getElementById('hover-line');
+const hoverTip  = document.getElementById('hover-tip');
+
+saWrap.addEventListener('mousemove', e => {
+  const rect = saWrap.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+
+  hoverLine.style.display = 'block';
+  hoverLine.style.left = px + 'px';
+
+  // Convert px to frequency
+  const logF = Math.log10(currentFStart) +
+    ((px - MARGIN.left) / plotW) * Math.log10(currentFEnd / currentFStart);
+  const f = Math.pow(10, logF);
+  if (f > 0 && px >= MARGIN.left && px <= MARGIN.left + plotW) {
+    const dbm = yToDbm(py, currentRef);
+    hoverTip.style.display = 'block';
+    hoverTip.style.left = (px + 8) + 'px';
+    hoverTip.textContent = fmtHz(f) + ' / ' + dbm.toFixed(1) + ' dBm';
+
+    // Snap to nearest spike within 20px
+    let nearest = null, nearestDx = 999;
+    currentSpikes.forEach(sp => {
+      const sx = freqToX(sp.freq, currentFStart, currentFEnd);
+      const dx = Math.abs(sx - px);
+      if (dx < 20 && dx < nearestDx) { nearestDx = dx; nearest = sp; }
+    });
+    if (nearest) {
+      hoverTip.textContent = nearest.label + ': ' + fmtHz(nearest.freq) + ' / ' + nearest.dbm.toFixed(1) + ' dBm';
+    }
+  } else {
+    hoverTip.style.display = 'none';
+  }
+});
+saWrap.addEventListener('mouseleave', () => {
+  hoverLine.style.display = 'none';
+  hoverTip.style.display = 'none';
+});
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function fmtHz(f) {
+  if (f < 1e3)  return f.toFixed(0) + ' Hz';
+  if (f < 1e6)  return (f / 1e3).toFixed(f < 10e3 ? 2 : 1) + ' kHz';
+  if (f < 1e9)  return (f / 1e6).toFixed(f < 10e6 ? 2 : 1) + ' MHz';
+  return (f / 1e9).toFixed(1) + ' GHz';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+resizeCanvas();
+</script>
+</body>
+</html>
