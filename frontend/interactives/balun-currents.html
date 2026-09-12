@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balun Current Flow &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; }
+.toggle-bar { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; }
+.tbtn {
+  background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+  padding: 0.3rem 0.65rem; cursor: pointer; transition: all 0.15s; user-select: none;
+}
+.tbtn:hover { color: #e2e8f0; border-color: #334155; }
+.tbtn.on { background: #1e293b; border-color: #475569; color: #e2e8f0; }
+.tbtn.balun-on { background: #0a1f0f; border-color: #22c55e; color: #22c55e; }
+.panels-row { display: flex; gap: 0.75rem; }
+@media (max-width: 660px) { .panels-row { flex-direction: column; } }
+.panel-wrap {
+  flex: 1 1 0; min-width: 0;
+  background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+  padding: 0.5rem 0.5rem 0.35rem; display: flex; flex-direction: column; gap: 0.3rem;
+}
+.panel-title { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; }
+.panel-title.bad  { color: #f87171; }
+.panel-title.good { color: #22c55e; }
+canvas { display: block; width: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.4rem 0.85rem; margin-top: 0.3rem; }
+.legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; color: #64748b; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.explain {
+  background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+  padding: 0.65rem 0.85rem; font-size: 0.8rem; line-height: 1.7; color: #94a3b8;
+  margin-top: 0.75rem;
+}
+.explain strong { color: #e2e8f0; }
+.explain .hi { color: #f87171; }
+.explain .ok { color: #22c55e; }
+</style>
+</head>
+<body>
+<main>
+<h1>Balun Current Flow</h1>
+<p class="subtitle">Common-mode current on the coax braid — why it matters and how a choke balun stops it</p>
+<div class="card">
+  <div class="toggle-bar">
+    <button class="tbtn on" id="btn-anim" onclick="toggleAnim()">&#9646;&#9646; Animate</button>
+    <button class="tbtn balun-on" id="btn-balun" onclick="toggleBalun()">&#10003; Choke balun shown</button>
+    <span style="margin-left:auto;font-size:0.7rem;font-family:'IBM Plex Mono',monospace;color:#334155">Click to toggle</span>
+  </div>
+  <div class="panels-row">
+    <div class="panel-wrap">
+      <div class="panel-title bad">&#9632; No balun — common-mode current present</div>
+      <canvas id="canNo" height="240"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Inner conductor (signal+)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Braid inside (signal−)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>Braid outside (common-mode)</div>
+      </div>
+    </div>
+    <div class="panel-wrap" id="panel-balun">
+      <div class="panel-title good">&#10003; Choke balun — common-mode choked</div>
+      <canvas id="canYes" height="240"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Inner conductor (signal+)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>Braid inside (signal−)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Choke — common-mode blocked</div>
+      </div>
+    </div>
+  </div>
+  <div class="explain" id="explain-box">
+    <strong>No balun:</strong> The coax carries three currents. The <strong>inner conductor</strong> feeds one dipole arm (cyan). The <em>inside</em> of the braid returns current through the other arm (purple) — these two are differential and balanced. But a <span class="hi"><strong>third current</strong> flows on the <em>outside</em> of the braid</span> (red) — the common-mode current. This turns the coax itself into a radiator, distorting the pattern and causing RFI at the shack.
+    <br><br>
+    <span class="ok"><strong>With a choke balun:</strong></span> The ferrite core presents a very high impedance (hundreds of Ω) to common-mode current while leaving the differential signal unaffected. The outside-braid current is <span class="ok"><strong>choked off</strong></span>, the dipole sees a balanced feed, and the pattern is symmetric.
+  </div>
+</div>
+</main>
+
+<script>
+// ── Animation state ───────────────────────────────────────────────────────────
+let animRunning = true;
+let showBalun   = true;
+let phase       = 0; // 0..1, advances per frame
+let lastWall    = null;
+
+function toggleAnim() {
+  animRunning = !animRunning;
+  const b = document.getElementById('btn-anim');
+  b.textContent  = animRunning ? '⏸ Animate' : '▶ Animate';
+  b.classList.toggle('on', animRunning);
+  lastWall = null;
+}
+function toggleBalun() {
+  showBalun = !showBalun;
+  const b = document.getElementById('btn-balun');
+  b.textContent = showBalun ? '✓ Choke balun shown' : '✗ Choke balun hidden';
+  b.classList.toggle('balun-on', showBalun);
+  document.getElementById('panel-balun').style.opacity = showBalun ? '1' : '0.35';
+}
+
+// ── Drawing helpers ───────────────────────────────────────────────────────────
+function dot(ctx, x, y, r, color, alpha) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color.replace(')', `,${alpha})`).replace('rgb(', 'rgba(') ;
+  // simpler: just use globalAlpha
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawCoil(ctx, cx, cy, r, n, color) {
+  // Ferrite ring with coax wound around it
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+  ctx.strokeStyle = '#475569';
+  ctx.fillStyle   = '#1a1208';
+  ctx.lineWidth   = 2;
+  ctx.fill(); ctx.stroke();
+  // Wound turns
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 2.5;
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * 2 * Math.PI;
+    const x1 = cx + (r - 5) * Math.cos(a - 0.25);
+    const y1 = cy + (r - 5) * Math.sin(a - 0.25);
+    const x2 = cx + (r + 8) * Math.cos(a);
+    const y2 = cy + (r + 8) * Math.sin(a);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  }
+  ctx.font = '9px "IBM Plex Mono", monospace';
+  ctx.fillStyle = '#f59e0b';
+  ctx.textAlign = 'center';
+  ctx.fillText('FERRITE', cx, cy + r + 18);
+}
+
+function drawDipole(ctx, cx, dipoleY, armLen, color, alpha) {
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 3;
+  ctx.beginPath(); ctx.moveTo(cx - armLen, dipoleY); ctx.lineTo(cx + armLen, dipoleY); ctx.stroke();
+  // Feedpoint gap
+  ctx.fillStyle   = '#0d1321';
+  ctx.fillRect(cx - 5, dipoleY - 5, 10, 10);
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth   = 1;
+  ctx.strokeRect(cx - 5, dipoleY - 5, 10, 10);
+  ctx.globalAlpha = 1;
+}
+
+// Move dots along a path
+// paths: array of {x, y} points
+// dotPhase: 0..1 per dot, dotCount dots
+function flowDots(ctx, pts, count, speed, color, phase, dotR) {
+  if (pts.length < 2) return;
+  // Build cumulative length
+  const seg = [];
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i].x - pts[i-1].x, dy = pts[i].y - pts[i-1].y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    seg.push({ len: d, cum: total + d });
+    total += d;
+  }
+  for (let d = 0; d < count; d++) {
+    const t = ((phase + d / count) % 1) * total;
+    let x, y;
+    for (let s = 0; s < seg.length; s++) {
+      if (t <= seg[s].cum) {
+        const prev = s === 0 ? 0 : seg[s-1].cum;
+        const frac = (t - prev) / seg[s].len;
+        x = pts[s].x + frac * (pts[s+1].x - pts[s].x);
+        y = pts[s].y + frac * (pts[s+1].y - pts[s].y);
+        break;
+      }
+    }
+    ctx.beginPath(); ctx.arc(x, y, dotR, 0, 2*Math.PI);
+    ctx.fillStyle = color; ctx.fill();
+  }
+}
+
+// ── Main draw functions ───────────────────────────────────────────────────────
+function drawPanel(canvas, withBalun, phase) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  ctx.fillStyle = '#0d1321';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx    = W / 2;
+  const topY  = 28;          // dipole y
+  const coaxX = cx;
+  const coaxT = topY;        // coax enters dipole feedpoint
+  const coaxB = H - 18;      // coax exits at bottom
+  const armLen = W * 0.34;
+
+  // Choke balun position
+  const balunY = topY + (coaxB - coaxT) * 0.45;
+
+  // ── Draw coax (two-conductor representation) ──
+  const innerX = coaxX - 5;
+  const braidInsideX = coaxX + 5;
+  const braidOutsideX = coaxX + 12;
+
+  // Coax sheath outline
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth   = 22;
+  ctx.beginPath();
+  ctx.moveTo(coaxX, withBalun ? balunY + 22 : coaxT);
+  ctx.lineTo(coaxX, coaxB);
+  ctx.stroke();
+  ctx.strokeStyle = '#111827';
+  ctx.lineWidth   = 18;
+  ctx.beginPath();
+  ctx.moveTo(coaxX, withBalun ? balunY + 22 : coaxT);
+  ctx.lineTo(coaxX, coaxB);
+  ctx.stroke();
+
+  // Choke section of coax (above balun)
+  if (withBalun) {
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth   = 22;
+    ctx.beginPath();
+    ctx.moveTo(coaxX, coaxT);
+    ctx.lineTo(coaxX, balunY - 22);
+    ctx.stroke();
+    ctx.strokeStyle = '#111827';
+    ctx.lineWidth   = 18;
+    ctx.beginPath();
+    ctx.moveTo(coaxX, coaxT);
+    ctx.lineTo(coaxX, balunY - 22);
+    ctx.stroke();
+  }
+
+  // ── Dipole ──
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth   = 3.5;
+  ctx.beginPath(); ctx.moveTo(cx - armLen, topY); ctx.lineTo(cx + armLen, topY); ctx.stroke();
+  // End caps
+  [cx - armLen, cx + armLen].forEach(ex => {
+    ctx.beginPath(); ctx.arc(ex, topY, 4, 0, 2*Math.PI);
+    ctx.fillStyle = '#64748b'; ctx.fill();
+  });
+  // Feedpoint gap
+  ctx.fillStyle = '#0d1321';
+  ctx.fillRect(cx - 6, topY - 6, 12, 12);
+  ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
+  ctx.strokeRect(cx - 6, topY - 6, 12, 12);
+
+  // ── Ferrite choke balun ──
+  if (withBalun) {
+    drawCoil(ctx, coaxX, balunY, 26, 6, '#22c55e');
+    // High-Z label
+    ctx.fillStyle = '#1a4a2a';
+    ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('HIGH Z', coaxX - 32, balunY + 4);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillText('→ CM', coaxX - 32, balunY + 14);
+  }
+
+  // ── Animated current dots ──
+  const dpSpeed = 1;
+
+  // Path: inner conductor (centre of coax, top half → left dipole arm)
+  const innerPath = [
+    { x: coaxX - 1, y: coaxB },
+    { x: coaxX - 1, y: coaxT },
+    { x: cx - armLen, y: topY }
+  ];
+  // Path: braid inside (top half → right dipole arm, opposite direction)
+  const braidInsidePath = [
+    { x: cx + armLen, y: topY },
+    { x: coaxX + 3, y: coaxT },
+    { x: coaxX + 3, y: coaxB }
+  ];
+  // Path: braid outside (common-mode, flows down the outside of braid)
+  const outerPath = [
+    { x: coaxX + 12, y: coaxT },
+    { x: coaxX + 12, y: coaxB }
+  ];
+
+  // Inner conductor dots (cyan, flowing up)
+  flowDots(ctx, innerPath, 5, 1, '#06b6d4', phase, 4);
+  // Braid inside dots (purple, flowing down into other arm)
+  flowDots(ctx, braidInsidePath, 5, 1, '#a78bfa', phase, 4);
+
+  // Common-mode current on outside
+  if (!withBalun) {
+    // Full amplitude
+    flowDots(ctx, outerPath, 5, 1, '#f87171', phase, 4);
+    // "Leakage" label
+    ctx.fillStyle = '#7f1d1d';
+    ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('Common-mode', coaxX + 20, coaxB * 0.55);
+    ctx.fillStyle = '#f87171';
+    ctx.fillText('→ coax radiates!', coaxX + 20, coaxB * 0.55 + 12);
+  } else {
+    // Above balun: show partial/decaying dots
+    const abovePath = [
+      { x: coaxX + 12, y: coaxT },
+      { x: coaxX + 12, y: balunY - 26 }
+    ];
+    flowDots(ctx, abovePath, 3, 1, '#f87171', phase, 4);
+    // Below balun: dots fade out
+    const belowPath = [
+      { x: coaxX + 12, y: balunY + 26 },
+      { x: coaxX + 12, y: coaxB }
+    ];
+    // Fade
+    for (let d = 0; d < 3; d++) {
+      const t = ((phase + d / 3) % 1);
+      const fadeY = balunY + 26 + t * (coaxB - balunY - 26);
+      const alpha = 0.4 - t * 0.38;
+      ctx.beginPath(); ctx.arc(coaxX + 12, fadeY, 3, 0, 2*Math.PI);
+      ctx.globalAlpha = Math.max(0, alpha);
+      ctx.fillStyle = '#f87171'; ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = '#1a4a2a';
+    ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('Choked!', coaxX + 35, balunY + 4);
+  }
+
+  // ── Small polar pattern inset (bottom-right) ──
+  const pR   = 28;
+  const pCx  = W - pR - 12;
+  const pCy  = H - pR - 12;
+  ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(pCx, pCy, pR, 0, 2*Math.PI); ctx.stroke();
+  [0.5, 1.0].forEach(r => {
+    ctx.beginPath(); ctx.arc(pCx, pCy, pR*r, 0, 2*Math.PI);
+    ctx.strokeStyle = '#141f2e'; ctx.stroke();
+  });
+  // Pattern: figure-8 for balanced dipole, or distorted if no balun
+  ctx.beginPath();
+  for (let i = 0; i <= 360; i++) {
+    const a   = i * Math.PI / 180;
+    let r;
+    if (!withBalun) {
+      // Distorted: common-mode adds a vertical asymmetry
+      r = pR * Math.abs(Math.sin(a)) * (1 + 0.4 * Math.cos(a + Math.PI/2));
+    } else {
+      r = pR * Math.abs(Math.sin(a));
+    }
+    const px = pCx + r * Math.cos(a - Math.PI/2);
+    const py = pCy - r * Math.sin(a - Math.PI/2);
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fillStyle   = withBalun ? 'rgba(6,182,212,0.18)' : 'rgba(248,113,113,0.15)';
+  ctx.strokeStyle = withBalun ? '#06b6d4' : '#f87171';
+  ctx.lineWidth   = 1.5; ctx.fill(); ctx.stroke();
+
+  ctx.fillStyle = '#334155'; ctx.font = '8px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Pattern', pCx, pCy + pR + 10);
+
+  // ── Labels ──
+  ctx.fillStyle = '#475569'; ctx.font = '9px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+  ctx.fillText('Dipole', cx, topY - 12);
+  ctx.fillStyle = '#334155'; ctx.textAlign = 'left';
+  ctx.fillText('Coax', coaxX + 18, coaxB - 4);
+  ctx.fillStyle = '#334155'; ctx.textAlign = 'right';
+  ctx.fillText('TX end', coaxX - 18, coaxB - 4);
+}
+
+// ── Resize & loop ─────────────────────────────────────────────────────────────
+function resizeCanvases() {
+  ['canNo','canYes'].forEach(id => {
+    const canvas = document.getElementById(id);
+    const wrap   = canvas.closest('.panel-wrap');
+    const w      = Math.max(120, Math.floor(wrap.getBoundingClientRect().width) - 16);
+    if (canvas.width !== w) { canvas.width = w; canvas.height = Math.round(w * 1.1); }
+  });
+}
+
+function loop(wallMs) {
+  resizeCanvases();
+  if (animRunning) {
+    const ws = wallMs / 1000;
+    if (lastWall !== null) phase = (phase + (ws - lastWall) * 0.45) % 1;
+    lastWall = wallMs / 1000;
+  }
+  drawPanel(document.getElementById('canNo'),  false, phase);
+  drawPanel(document.getElementById('canYes'), true,  phase);
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('resize', resizeCanvases);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
