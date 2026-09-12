@@ -152,6 +152,13 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     return m ? m[1] : null;
   }
 
+  function normaliseCodeFromId(id) {
+    if (!id) return null;
+    // "ch-5a" → "5A", "ch-5c-fading-effects" → "5C", "5a" → "5A"
+    var m = String(id).match(/(?:^|-)([0-9]+[a-zA-Z])(?=[-]|$)/);
+    return m ? m[1].toUpperCase() : null;
+  }
+
   // ─── 4. Main init ────────────────────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -299,7 +306,13 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
         if (!activeEl) activeEl = headings.find(function (h) { return h.tagName === 'H2'; });
         if (!activeEl) return;
 
-        var code = extractSectionCode(activeEl.textContent.trim()) || activeEl.id;
+        var code = extractSectionCode(activeEl.textContent.trim())
+                || normaliseCodeFromId(activeEl.id)
+                || normaliseCodeFromId(activeEl.closest && activeEl.closest('section[id]') && activeEl.closest('section[id]').id);
+        if (!code) {
+          showToast("Couldn't determine section");
+          return;
+        }
         postMarkRead(user, pathname, code, activeEl)
           .then(function () {
             showToast('Saved place: §' + code);
