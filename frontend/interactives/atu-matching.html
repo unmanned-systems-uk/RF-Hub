@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATU Matching Network &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1200px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.65rem; }
+
+.ctrl-strip { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: flex-end; margin-bottom: 0.85rem; }
+.ctrl-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.ctrl-item label { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; }
+select, input[type="number"] { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; padding: 0.3rem 0.5rem; cursor: pointer; outline: none; }
+select:focus, input[type="number"]:focus { border-color: #475569; }
+input[type="number"] { width: 8ch; }
+.num-row { display: flex; align-items: center; gap: 0.3rem; }
+.unit { font-size: 0.7rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; }
+
+.slider-row { display: flex; align-items: center; gap: 0.5rem; }
+input[type="range"] { accent-color: #a78bfa; cursor: pointer; width: 140px; }
+.sval { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: #e2e8f0; min-width: 8ch; text-align: right; }
+
+.main-row { display: flex; gap: 0.75rem; align-items: stretch; }
+@media (max-width: 760px) { .main-row { flex-direction: column; } }
+
+.sch-panel {
+  flex: 0 0 290px; background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+  padding: 0.5rem; display: flex; align-items: center; justify-content: center;
+}
+@media (max-width: 760px) { .sch-panel { flex: none; width: 100%; } }
+#schCanvas { display: block; max-width: 100%; }
+
+.meter-panel {
+  flex: 1 1 0; min-width: 0; background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+  padding: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.meter-title { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; color: #334155; }
+
+/* SWR needle meter */
+.swr-meter-wrap { position: relative; }
+#meterCanvas { display: block; width: 100%; }
+
+.ro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+@media (max-width: 500px) { .ro-grid { grid-template-columns: repeat(2, 1fr); } }
+.ro-item { background: #111827; border: 1px solid #1e293b; border-radius: 4px; padding: 0.45rem 0.55rem; }
+.ro-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.18rem; }
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; }
+.ro-val.cyan   { color: #06b6d4; }
+.ro-val.amber  { color: #f59e0b; }
+.ro-val.purple { color: #a78bfa; }
+.ro-val.green  { color: #22c55e; }
+.ro-val.red    { color: #f87171; }
+
+.status-bar {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+  padding: 0.4rem 0.6rem; border-radius: 4px; text-align: center;
+  border: 1px solid transparent;
+}
+.status-bar.good { background: #0a1f0f; border-color: #22c55e; color: #22c55e; }
+.status-bar.warn { background: #1a1208; border-color: #f59e0b; color: #f59e0b; }
+.status-bar.bad  { background: #1a0a0a; border-color: #f87171; color: #f87171; }
+</style>
+</head>
+<body>
+<main>
+<h1>ATU / Matching Network</h1>
+<p class="subtitle">L-match, π-match, T-match — compute input impedance and SWR live as component values change</p>
+
+<div class="card">
+  <div class="card-title">&#9632; Network topology &amp; load</div>
+  <div class="ctrl-strip">
+    <div class="ctrl-item">
+      <label>Topology</label>
+      <select id="sel-topo" onchange="onParam()">
+        <option value="L">L-match</option>
+        <option value="pi" selected>π-match</option>
+        <option value="T">T-match</option>
+      </select>
+    </div>
+    <div class="ctrl-item">
+      <label>Frequency</label>
+      <div class="num-row">
+        <input type="number" id="inp-f" value="14.2" min="0.1" step="0.1" oninput="onParam()">
+        <span class="unit">MHz</span>
+      </div>
+    </div>
+    <div class="ctrl-item">
+      <label>Load R (Ω)</label>
+      <div class="num-row">
+        <input type="number" id="inp-rl" value="150" min="1" step="1" oninput="onParam()">
+        <span class="unit">Ω</span>
+      </div>
+    </div>
+    <div class="ctrl-item">
+      <label>Load X (Ω)</label>
+      <div class="num-row">
+        <input type="number" id="inp-xl" value="30" step="1" oninput="onParam()">
+        <span class="unit">Ω</span>
+      </div>
+    </div>
+    <div class="ctrl-item">
+      <label>TX Z₀</label>
+      <div class="num-row">
+        <input type="number" id="inp-z0" value="50" min="1" step="1" oninput="onParam()">
+        <span class="unit">Ω</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Component sliders — rebuilt by JS per topology -->
+  <div id="slider-section" class="ctrl-strip"></div>
+
+  <div class="main-row">
+    <div class="sch-panel">
+      <canvas id="schCanvas" width="278" height="190"></canvas>
+    </div>
+    <div class="meter-panel">
+      <div class="meter-title">&#9632; TX-end SWR meter</div>
+      <div class="swr-meter-wrap">
+        <canvas id="meterCanvas" height="120"></canvas>
+      </div>
+      <div class="ro-grid">
+        <div class="ro-item"><div class="ro-label">Z_in (real)</div><div class="ro-val cyan" id="ro-zr">—</div></div>
+        <div class="ro-item"><div class="ro-label">Z_in (imag)</div><div class="ro-val amber" id="ro-zi">—</div></div>
+        <div class="ro-item"><div class="ro-label">SWR at TX</div><div class="ro-val" id="ro-swr">—</div></div>
+        <div class="ro-item"><div class="ro-label">|Γ|</div><div class="ro-val purple" id="ro-gm">—</div></div>
+        <div class="ro-item"><div class="ro-label">Return loss</div><div class="ro-val" id="ro-rl-val">—</div></div>
+        <div class="ro-item"><div class="ro-label">Z_load</div><div class="ro-val" id="ro-zl">—</div></div>
+      </div>
+      <div class="status-bar good" id="status-bar">Calculating…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Complex arithmetic ────────────────────────────────────────────────────────
+function C(r, i) { return { r, i }; }
+function Cadd(a, b) { return C(a.r + b.r, a.i + b.i); }
+function Cmul(a, b) { return C(a.r*b.r - a.i*b.i, a.r*b.i + a.i*b.r); }
+function Cdiv(a, b) {
+  const d = b.r*b.r + b.i*b.i;
+  return C((a.r*b.r + a.i*b.i)/d, (a.i*b.r - a.r*b.i)/d);
+}
+function Cmag(a) { return Math.sqrt(a.r*a.r + a.i*a.i); }
+function Cpar(a, b) { return Cdiv(Cmul(a,b), Cadd(a,b)); }
+
+// ── Input impedance calculations ──────────────────────────────────────────────
+// All impedances as complex C objects, ω = 2πf
+function Zind(L_uH, f_MHz) {
+  const w = 2 * Math.PI * f_MHz * 1e6;
+  return C(0, w * L_uH * 1e-6);
+}
+function Zcap(C_pF, f_MHz) {
+  const w = 2 * Math.PI * f_MHz * 1e6;
+  return C(0, -1 / (w * C_pF * 1e-12));
+}
+
+function calcZin(topo, params, ZL, f) {
+  // params: {L1,C1,L2?,C2?} in µH / pF
+  // Returns Z seen by TX (C object)
+  const ZL_c = ZL;  // already complex
+
+  if (topo === 'L') {
+    // L-match: series L + shunt C to ground (before load)
+    // TX → [series L1] → node → [shunt C1 to gnd] → load
+    const ZserL = Zind(params.L1, f);
+    const ZshC  = Zcap(params.C1, f);
+    const Znode = Cpar(ZshC, ZL_c);          // shunt C || load
+    return Cadd(ZserL, Znode);               // series L + above
+  }
+  if (topo === 'pi') {
+    // π-match: shunt C1 || (series L || (shunt C2 || load))
+    // TX → node_A — C1 shunt — [series L1] — node_B — C2 shunt — load
+    const ZserL = Zind(params.L1, f);
+    const ZshC1 = Zcap(params.C1, f);
+    const ZshC2 = Zcap(params.C2, f);
+    const ZnodeB = Cpar(ZshC2, ZL_c);        // C2 || load
+    const Zbranch = Cadd(ZserL, ZnodeB);     // L + (C2||ZL)
+    return Cpar(ZshC1, Zbranch);             // C1 || above
+  }
+  if (topo === 'T') {
+    // T-match: series C1 + shunt L + series C2 + load
+    // TX → [ser C1] → node — [shunt L] — [ser C2] → load
+    const ZserC1 = Zcap(params.C1, f);
+    const ZshL   = Zind(params.L1, f);
+    const ZserC2 = Zcap(params.C2, f);
+    const Zrhs   = Cadd(ZserC2, ZL_c);      // C2 + ZL
+    const ZnodeB = Cpar(ZshL, Zrhs);        // shunt L || (C2+ZL)
+    return Cadd(ZserC1, ZnodeB);            // C1 + above
+  }
+  return ZL_c;
+}
+
+// ── Topology parameter definitions ───────────────────────────────────────────
+const TOPOS = {
+  L: {
+    label: 'L-match',
+    sliders: [
+      { id: 'L1', label: 'Series L₁', unit: 'µH', min: 0.1, max: 20,  step: 0.1, def: 2.2,  color: '#a78bfa' },
+      { id: 'C1', label: 'Shunt C₁',  unit: 'pF', min: 10,  max: 2000, step: 10,  def: 300,  color: '#06b6d4' }
+    ]
+  },
+  pi: {
+    label: 'π-match',
+    sliders: [
+      { id: 'C1', label: 'Shunt C₁', unit: 'pF', min: 10,  max: 3000, step: 10,  def: 500,  color: '#06b6d4' },
+      { id: 'L1', label: 'Series L₁', unit: 'µH', min: 0.1, max: 20,  step: 0.1, def: 1.8,  color: '#a78bfa' },
+      { id: 'C2', label: 'Shunt C₂', unit: 'pF', min: 10,  max: 3000, step: 10,  def: 200,  color: '#06b6d4' }
+    ]
+  },
+  T: {
+    label: 'T-match',
+    sliders: [
+      { id: 'C1', label: 'Series C₁', unit: 'pF', min: 10,  max: 2000, step: 10,  def: 200,  color: '#06b6d4' },
+      { id: 'L1', label: 'Shunt L₁',  unit: 'µH', min: 0.1, max: 20,  step: 0.1, def: 3.0,  color: '#a78bfa' },
+      { id: 'C2', label: 'Series C₂', unit: 'pF', min: 10,  max: 2000, step: 10,  def: 200,  color: '#06b6d4' }
+    ]
+  }
+};
+
+let sliderValues = {};
+
+function buildSliders(topo) {
+  const sec  = document.getElementById('slider-section');
+  sec.innerHTML = '';
+  TOPOS[topo].sliders.forEach(s => {
+    if (!(s.id in sliderValues)) sliderValues[s.id] = s.def;
+    const div = document.createElement('div');
+    div.className = 'ctrl-item';
+    div.innerHTML = `
+      <label style="color:${s.color}">${s.label}</label>
+      <div class="slider-row">
+        <input type="range" id="sl-${s.id}" min="${s.min}" max="${s.max}" step="${s.step}"
+               value="${sliderValues[s.id]}" oninput="onSlider('${s.id}',+this.value)">
+        <span class="sval" id="sv-${s.id}">${sliderValues[s.id]} ${s.unit}</span>
+      </div>`;
+    sec.appendChild(div);
+  });
+}
+
+function onSlider(id, v) {
+  sliderValues[id] = v;
+  const topo   = document.getElementById('sel-topo').value;
+  const s      = TOPOS[topo].sliders.find(x => x.id === id);
+  if (s) document.getElementById('sv-' + id).textContent = v + ' ' + s.unit;
+  compute();
+}
+
+// ── Schematic drawing ─────────────────────────────────────────────────────────
+function drawSchematic(topo, params, f) {
+  const canvas = document.getElementById('schCanvas');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#0d1321'; ctx.fillRect(0, 0, W, H);
+
+  const railY = H * 0.42;
+  const gndY  = railY + 55;
+  const srcX  = 18, loadX = W - 22;
+  const wire  = '#475569';
+
+  // TX source
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(srcX + 6, railY, 9, 0, 2*Math.PI); ctx.stroke();
+  ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(srcX + 2, railY);
+  ctx.bezierCurveTo(srcX + 4, railY - 4, srcX + 8, railY + 4, srcX + 10, railY);
+  ctx.stroke();
+  ctx.fillStyle = '#334155'; ctx.font = '8px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center'; ctx.fillText('TX', srcX + 6, railY + 20);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8';
+  ctx.fillText('50 Ω', srcX + 6, railY + 30);
+
+  // Wire from TX to first element
+  ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(srcX + 15, railY); ctx.lineTo(srcX + 38, railY); ctx.stroke();
+
+  // Ground bus
+  ctx.strokeStyle = '#1e293b'; ctx.setLineDash([3,4]);
+  ctx.beginPath(); ctx.moveTo(srcX, gndY); ctx.lineTo(loadX, gndY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Ground connections from source and load
+  ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(srcX + 6, railY + 9); ctx.lineTo(srcX + 6, gndY); ctx.stroke();
+
+  // ── Topology-specific elements ──
+  function drawInductor(x1, x2, y, lbl) {
+    const n = 4, bw = (x2 - x1) / n, br = bw / 2.5;
+    ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x1, y);
+    for (let k = 0; k < n; k++) ctx.arc(x1 + bw*(k+0.5), y, br, Math.PI, 0, false);
+    ctx.lineTo(x2, y); ctx.stroke();
+    ctx.fillStyle = '#a78bfa'; ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center'; ctx.fillText(lbl, (x1+x2)/2, y - 10);
+  }
+  function drawCapH(x, y, w, lbl) {
+    // Vertical shunt capacitor
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 16); ctx.stroke();
+    ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(x - w, y + 16); ctx.lineTo(x + w, y + 16); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - w, y + 22); ctx.lineTo(x + w, y + 22); ctx.stroke();
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, y + 22); ctx.lineTo(x, gndY); ctx.stroke();
+    ctx.fillStyle = '#06b6d4'; ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center'; ctx.fillText(lbl, x, y + 36);
+  }
+  function drawCapS(x1, x2, y, lbl) {
+    // Horizontal series capacitor
+    const mid = (x1+x2)/2;
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x1, y); ctx.lineTo(mid - 4, y); ctx.stroke();
+    ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(mid - 4, y - 9); ctx.lineTo(mid - 4, y + 9); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mid + 4, y - 9); ctx.lineTo(mid + 4, y + 9); ctx.stroke();
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(mid + 4, y); ctx.lineTo(x2, y); ctx.stroke();
+    ctx.fillStyle = '#06b6d4'; ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center'; ctx.fillText(lbl, mid, y - 13);
+  }
+  function drawShuntL(x, y, lbl) {
+    // Vertical shunt inductor
+    const n = 3, bh = 10, br = bh/2.5;
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 6); ctx.stroke();
+    ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x, y+6);
+    for (let k=0; k<n; k++) ctx.arc(x, y+6+bh*(k+0.5), br, -Math.PI/2, Math.PI/2, false);
+    ctx.lineTo(x, y + 6 + bh*n); ctx.stroke();
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, y + 6 + bh*n); ctx.lineTo(x, gndY); ctx.stroke();
+    ctx.fillStyle = '#a78bfa'; ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'right'; ctx.fillText(lbl, x - 14, y + bh*1.5 + 6);
+  }
+
+  // Load
+  const loadW = 14, loadH = 10;
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(loadX - loadW, railY - loadH/2, loadW*2, loadH);
+  ctx.strokeStyle = wire;
+  ctx.beginPath(); ctx.moveTo(loadX, railY + loadH/2); ctx.lineTo(loadX, gndY); ctx.stroke();
+  ctx.fillStyle = '#64748b'; ctx.font = '8px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center'; ctx.fillText('Z_L', loadX, railY - loadH/2 - 4);
+
+  if (topo === 'L') {
+    drawInductor(srcX + 38, srcX + 110, railY, 'L₁');
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(srcX + 110, railY); ctx.lineTo(loadX - loadW, railY); ctx.stroke();
+    const nodeX = (srcX + 110 + loadX - loadW) / 2;
+    drawCapH(nodeX, railY, 14, 'C₁');
+  } else if (topo === 'pi') {
+    drawCapH(srcX + 60, railY, 14, 'C₁');
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(srcX + 38, railY); ctx.lineTo(srcX + 60, railY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(srcX + 60, railY); ctx.lineTo(srcX + 88, railY); ctx.stroke();
+    drawInductor(srcX + 88, srcX + 175, railY, 'L₁');
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(srcX + 175, railY); ctx.lineTo(loadX - loadW - 40, railY); ctx.stroke();
+    drawCapH(loadX - loadW - 40, railY, 14, 'C₂');
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(loadX - loadW - 40, railY); ctx.lineTo(loadX - loadW, railY); ctx.stroke();
+  } else { // T
+    drawCapS(srcX + 38, srcX + 95, railY, 'C₁');
+    const midX = (srcX + 95 + loadX - loadW - 45) / 2;
+    drawShuntL(midX, railY, 'L₁');
+    ctx.strokeStyle = wire; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(srcX + 95, railY); ctx.lineTo(midX, railY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(midX, railY); ctx.lineTo(loadX - loadW - 45, railY); ctx.stroke();
+    drawCapS(loadX - loadW - 45, loadX - loadW, railY, 'C₂');
+  }
+}
+
+// ── SWR needle meter ──────────────────────────────────────────────────────────
+function drawMeter(swr) {
+  const canvas = document.getElementById('meterCanvas');
+  const ctx    = canvas.getContext('2d');
+  const W = Math.max(100, Math.floor(canvas.parentElement.getBoundingClientRect().width));
+  if (canvas.width !== W) canvas.width = W;
+  const H = canvas.height;
+  ctx.fillStyle = '#0d1321'; ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H * 0.92, r = Math.min(W * 0.40, H * 0.82);
+  const startA = Math.PI, endA = 0;
+
+  // Scale arc
+  const zones = [
+    { from: 1.0, to: 1.5, color: '#22c55e' },
+    { from: 1.5, to: 2.5, color: '#06b6d4' },
+    { from: 2.5, to: 3.5, color: '#f59e0b' },
+    { from: 3.5, to: 10,  color: '#f87171' }
+  ];
+  const swrToAngle = s => Math.PI * (1 - Math.min(1, Math.log10(Math.max(1, s)) / Math.log10(10)));
+  zones.forEach(z => {
+    const a1 = swrToAngle(z.from), a2 = swrToAngle(z.to);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, Math.PI - a1, Math.PI - a2, false);
+    ctx.lineWidth = 10; ctx.strokeStyle = z.color; ctx.stroke();
+  });
+
+  // Scale ticks & labels
+  [1, 1.5, 2, 3, 5, 10].forEach(sv => {
+    const a  = swrToAngle(sv);
+    const ax = Math.PI - a;
+    const x1 = cx + (r - 14) * Math.cos(ax), y1 = cy + (r - 14) * Math.sin(ax);
+    const x2 = cx + (r + 2)  * Math.cos(ax), y2 = cy + (r + 2)  * Math.sin(ax);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.strokeStyle = '#475569'; ctx.lineWidth = 1; ctx.stroke();
+    const lx = cx + (r - 24) * Math.cos(ax), ly = cy + (r - 24) * Math.sin(ax);
+    ctx.fillStyle = '#64748b'; ctx.font = '8px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillText(sv === 1 ? '1:1' : sv + '', lx, ly + 3);
+  });
+
+  // Needle
+  const swrClamped = Math.min(10, Math.max(1, swr));
+  const needleAngle = Math.PI - swrToAngle(swrClamped);
+  const nx = cx + (r - 8) * Math.cos(needleAngle), ny = cy + (r - 8) * Math.sin(needleAngle);
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny);
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, 5, 0, 2*Math.PI);
+  ctx.fillStyle = '#475569'; ctx.fill();
+
+  // SWR label
+  ctx.fillStyle = '#e2e8f0'; ctx.font = 'bold 13px "IBM Plex Mono", monospace'; ctx.textAlign = 'center';
+  const swrStr = swr >= 100 ? '>100' : swr.toFixed(2) + ':1';
+  ctx.fillText('SWR ' + swrStr, cx, cy - r * 0.35);
+}
+
+// ── Main compute & render ─────────────────────────────────────────────────────
+function compute() {
+  const topo = document.getElementById('sel-topo').value;
+  const f    = parseFloat(document.getElementById('inp-f').value) || 14.2;
+  const RL   = parseFloat(document.getElementById('inp-rl').value) || 150;
+  const XL   = parseFloat(document.getElementById('inp-xl').value) || 0;
+  const Z0   = parseFloat(document.getElementById('inp-z0').value) || 50;
+  const ZL   = C(RL, XL);
+
+  const params = {};
+  TOPOS[topo].sliders.forEach(s => { params[s.id] = sliderValues[s.id] ?? s.def; });
+
+  const Zin  = calcZin(topo, params, ZL, f);
+  const Z0c  = C(Z0, 0);
+  const num  = { r: Zin.r - Z0, i: Zin.i };
+  const den  = { r: Zin.r + Z0, i: Zin.i };
+  const gMag = Cmag(Cdiv(num, den));
+  const swr  = gMag >= 1 ? Infinity : (1 + gMag) / (1 - gMag);
+  const rl   = gMag <= 1e-9 ? Infinity : -20 * Math.log10(gMag);
+
+  // Readouts
+  document.getElementById('ro-zr').textContent = Zin.r.toFixed(1) + ' Ω';
+  document.getElementById('ro-zi').textContent = (Zin.i >= 0 ? '+' : '') + Zin.i.toFixed(1) + 'j Ω';
+  document.getElementById('ro-gm').textContent = gMag.toFixed(3);
+  const swrStr = swr >= 100 ? '>100:1' : isFinite(swr) ? swr.toFixed(2) + ':1' : '∞';
+  document.getElementById('ro-swr').textContent    = swrStr;
+  document.getElementById('ro-rl-val').textContent = isFinite(rl) ? rl.toFixed(1) + ' dB' : '∞ dB';
+  document.getElementById('ro-zl').textContent     = RL + (XL >= 0 ? '+' : '') + XL + 'j Ω';
+
+  // Colour SWR readout
+  const swrEl = document.getElementById('ro-swr');
+  if (swr < 1.5)      swrEl.className = 'ro-val green';
+  else if (swr < 2.5) swrEl.className = 'ro-val cyan';
+  else if (swr < 3.5) swrEl.className = 'ro-val amber';
+  else                swrEl.className = 'ro-val red';
+
+  // Status bar
+  const sb = document.getElementById('status-bar');
+  if (swr < 1.5)      { sb.textContent = 'Excellent match'; sb.className = 'status-bar good'; }
+  else if (swr < 2.5) { sb.textContent = 'Acceptable — adjust components to improve'; sb.className = 'status-bar warn'; }
+  else if (swr < 5)   { sb.textContent = 'Poor match — TX may reduce power'; sb.className = 'status-bar bad'; }
+  else                { sb.textContent = 'Very poor match — significant reflected power'; sb.className = 'status-bar bad'; }
+
+  drawSchematic(topo, params, f);
+  drawMeter(swr);
+}
+
+function onParam() {
+  const topo = document.getElementById('sel-topo').value;
+  sliderValues = {};  // reset on topology change
+  buildSliders(topo);
+  compute();
+}
+
+window.addEventListener('resize', compute);
+onParam(); // init
+</script>
+</main>
+</body>
+</html>
