@@ -613,7 +613,13 @@ For verticals, ground-plane radials define the reference ground — elevated rad
 
 **See also:** [Antenna Curriculum Lesson 4: Antenna Types Tour](/pages/antenna-curriculum/unit-1-how-antennas-work/lesson-04-antenna-types-tour.html) — overview of all types.
 
-<!-- INTERACTIVE REQUEST: Radiation pattern viewer — select antenna type, height above ground (slider), display azimuth and elevation radiation plots. Include dipole, vertical, Yagi, inverted-V, loop. -->
+**Interactive — 3D Radiation Pattern (Dipole):**
+
+<iframe src="/interactives/radiation-3d-v5.html?antenna=dipole&ui=standard" style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="3D Radiation Pattern — Dipole"></iframe>
+
+**Interactive — 3D Radiation Pattern (Yagi):**
+
+<iframe src="/interactives/radiation-3d-v5.html?antenna=yagi&ui=standard" style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="3D Radiation Pattern — Yagi"></iframe>
 
 ---
 
