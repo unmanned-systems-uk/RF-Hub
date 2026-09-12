@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUF / Skip-Distance Predictor &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.main-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 0.75rem; }
+@media (max-width: 680px) { .main-grid { grid-template-columns: 1fr; } }
+
+.ctrl-row { display: flex; flex-direction: column; gap: 0.85rem; }
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 0.3rem; }
+
+select {
+  width: 100%; background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+  padding: 0.38rem 1.6rem 0.38rem 0.5rem; cursor: pointer; outline: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.5rem center;
+}
+select:focus { border-color: #475569; }
+
+.slider-wrap { display: flex; align-items: center; gap: 0.6rem; }
+input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #1e293b; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #06b6d4; cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #06b6d4; border: none; cursor: pointer; }
+.slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: #06b6d4; min-width: 5rem; text-align: right; }
+
+.toggle-bar { display: flex; gap: 0.4rem; }
+.tbtn { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.3rem 0.9rem; cursor: pointer; transition: all 0.15s; user-select: none; }
+.tbtn.active { background: #04141a; border-color: #06b6d4; color: #06b6d4; }
+
+/* Result panel */
+.result-box { background: #0d1321; border: 1px solid #1e293b; border-radius: 6px; padding: 1rem; }
+.result-freq { font-family: 'IBM Plex Mono', monospace; font-size: 1.5rem; color: #06b6d4; }
+.result-muf  { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.85rem; }
+
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.85rem; }
+.ro-item { background: #111827; border: 1px solid #1e293b; border-radius: 4px; padding: 0.45rem 0.6rem; }
+.ro-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 0.2rem; }
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; }
+.cyan   { color: #06b6d4; } .amber  { color: #f59e0b; }
+.purple { color: #a78bfa; } .green  { color: #22c55e; } .red    { color: #f87171; }
+
+.status-bar { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.4rem 0.65rem; border-radius: 4px; text-align: center; }
+.status-bar.ok  { background: #04140a; border: 1px solid #22c55e; color: #22c55e; }
+.status-bar.bad { background: #1a0808; border: 1px solid #f87171; color: #f87171; }
+.status-bar.nvis{ background: #04141a; border: 1px solid #06b6d4; color: #06b6d4; }
+
+/* Arc canvas */
+#arc-canvas { display: block; width: 100%; }
+</style>
+</head>
+<body>
+<main>
+<h1>MUF / Skip-Distance Predictor</h1>
+<p class="subtitle">maximum usable frequency &mdash; single F2 hop &mdash; skip zone estimation</p>
+
+<div class="main-grid">
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-title">Path Parameters</div>
+    <div class="ctrl-row">
+      <div>
+        <div class="ctrl-label">Operating Frequency</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-freq" min="5" max="150" step="1" value="14">
+          <span class="slider-val" id="lbl-freq">14.0 MHz</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">Solar Conditions</div>
+        <select id="sel-solar">
+          <option value="min">Solar Minimum</option>
+          <option value="mid" selected>Average (mid-cycle)</option>
+          <option value="max">Solar Maximum</option>
+        </select>
+      </div>
+      <div>
+        <div class="ctrl-label">Day / Night</div>
+        <div class="toggle-bar">
+          <button class="tbtn active" id="btn-day"   onclick="setDay(true)">&#9728; Day</button>
+          <button class="tbtn"         id="btn-night" onclick="setDay(false)">&#9790; Night</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">TX Latitude</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-lat" min="-60" max="60" step="5" value="52">
+          <span class="slider-val" id="lbl-lat">52° N</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results + arc -->
+  <div style="display:flex; flex-direction:column; gap:0.75rem;">
+    <div class="card">
+      <div class="card-title">Propagation Assessment</div>
+      <div class="result-box">
+        <div class="result-freq" id="ro-freq">14.0 MHz</div>
+        <div class="result-muf" id="ro-muf-line">vs MUF: calculating…</div>
+        <div class="result-grid">
+          <div class="ro-item"><div class="ro-label">foF2 (vertical)</div><div class="ro-val cyan"   id="ro-fof2">—</div></div>
+          <div class="ro-item"><div class="ro-label">MUF (2000 km)</div><div class="ro-val purple" id="ro-muf">—</div></div>
+          <div class="ro-item"><div class="ro-label">Skip distance</div><div class="ro-val amber"  id="ro-skip">—</div></div>
+          <div class="ro-item"><div class="ro-label">Skip zone width</div><div class="ro-val amber"  id="ro-zone">—</div></div>
+        </div>
+        <div class="status-bar ok" id="status-bar">Calculating…</div>
+      </div>
+    </div>
+    <div class="card" style="padding:1.25rem 1.25rem 0.75rem;">
+      <div class="card-title">Sky-wave arc diagram</div>
+      <canvas id="arc-canvas" height="200"></canvas>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+const H_F2 = 300;   // km, F2 layer height for geometry
+
+// foF2 base values (MHz) by solar condition and day/night
+const FOF2 = {
+    min: { day: 4.5,  night: 3.1  },
+    mid: { day: 9.0,  night: 6.3  },
+    max: { day: 14.5, night: 10.2 }
+};
+
+let freq = 14, solar = 'mid', isDay = true, lat = 52;
+
+const arcCanvas = document.getElementById('arc-canvas');
+const actx      = arcCanvas.getContext('2d');
+
+// ── Physics ───────────────────────────────────────────────────────────────────
+function getFoF2() {
+    const base = FOF2[solar][isDay ? 'day' : 'night'];
+    // Latitude correction: equatorial belt has higher foF2 (roughly +30% at 0°)
+    const latFactor = 1 + 0.30 * Math.cos(lat * Math.PI / 180) - 0.15;
+    return base * Math.max(0.7, latFactor);
+}
+
+// MUF for a given one-hop skip distance (km) via F2 at H_F2 km
+function mufForSkip(skipKm) {
+    const fo = getFoF2();
+    // elevation angle: ε = atan( 2*H / skip )
+    const sinE = Math.sin(Math.atan2(2 * H_F2, skipKm));
+    return fo / sinE;
+}
+
+// Minimum skip distance at which the operating frequency is reflected (km)
+function minSkip(f) {
+    const fo = getFoF2();
+    if (f <= fo) return 0;  // NVIS — any angle works
+    // f = fo / sin(ε) → sin(ε) = fo/f → ε = arcsin(fo/f)
+    const sinE = fo / f;
+    if (sinE >= 1) return 0;
+    const tanE = sinE / Math.sqrt(1 - sinE*sinE);
+    return Math.round(2 * H_F2 / tanE);
+}
+
+// Maximum possible single-hop skip with this layer (grazing incidence, ε→0)
+// Practical cap: use ε = 3° as minimum elevation
+function maxSkip() {
+    return Math.round(2 * H_F2 / Math.tan(3 * Math.PI / 180));
+}
+
+// ── Update ────────────────────────────────────────────────────────────────────
+function update() {
+    const fo   = getFoF2();
+    const muf2 = mufForSkip(2000);
+    const skip = minSkip(freq);
+    const maxSk = maxSkip();
+
+    document.getElementById('ro-fof2').textContent = fo.toFixed(1) + ' MHz';
+    document.getElementById('ro-muf').textContent  = muf2.toFixed(1) + ' MHz';
+    document.getElementById('ro-freq').textContent = freq.toFixed(1) + ' MHz';
+
+    const sb  = document.getElementById('status-bar');
+    const mufLine = document.getElementById('ro-muf-line');
+    const roSkip  = document.getElementById('ro-skip');
+    const roZone  = document.getElementById('ro-zone');
+
+    if (freq <= fo) {
+        // NVIS — vertical incidence works
+        sb.className = 'status-bar nvis';
+        sb.textContent = `NVIS — f ≤ foF2 (${fo.toFixed(1)} MHz) — near-vertical reflection, all angles useful`;
+        mufLine.textContent = `f (${freq} MHz) ≤ foF2 — NVIS propagation`;
+        roSkip.textContent = '0 km (NVIS)';
+        roZone.textContent = 'none — NVIS';
+        roSkip.className = 'ro-val cyan'; roZone.className = 'ro-val cyan';
+        drawArc('nvis', freq, fo, 0, 0);
+    } else if (freq < mufForSkip(maxSk)) {
+        // Sky wave possible — compute skip geometry
+        const zoneEnd = skip;    // skip distance where signal first returns
+        const zoneWidth = skip;  // dead zone from TX to skip distance
+        sb.className = 'status-bar ok';
+        sb.textContent = `Sky wave available — skip distance ≈ ${skip.toLocaleString()} km (f < MUF)`;
+        mufLine.textContent = `f (${freq} MHz) < MUF (${mufForSkip(2000).toFixed(1)} MHz for 2000 km)`;
+        roSkip.textContent = skip > 0 ? skip.toLocaleString() + ' km' : '< 100 km';
+        roZone.textContent = skip > 0 ? skip.toLocaleString() + ' km' : '—';
+        roSkip.className = 'ro-val amber'; roZone.className = 'ro-val amber';
+        drawArc('skip', freq, fo, skip, maxSk);
+    } else {
+        // Above MUF — escapes
+        sb.className = 'status-bar bad';
+        sb.textContent = `Above MUF — signal escapes to space, no F2 sky wave`;
+        mufLine.textContent = `f (${freq} MHz) > MUF — no single-hop reflection`;
+        roSkip.textContent = '—';
+        roZone.textContent = '—';
+        roSkip.className = 'ro-val red'; roZone.className = 'ro-val red';
+        drawArc('escape', freq, fo, 0, 0);
+    }
+}
+
+// ── Arc diagram ───────────────────────────────────────────────────────────────
+function drawArc(mode, f, fo, skipKm, maxSkKm) {
+    const W = arcCanvas.width, H = arcCanvas.height;
+    actx.clearRect(0, 0, W, H);
+
+    const PL = 40, PR = 20, PB = 28, PT = 12;
+    const plotW = W - PL - PR, plotH = H - PT - PB;
+    const gY = PT + plotH;
+
+    // Distance range shown: 0 to ~12000 km (practical max hop)
+    const DMAX = 11200;
+
+    const dx = d => PL + d / DMAX * plotW;
+    const hy = alt => gY - alt * plotH / 800;  // scale: 800 km = full height
+
+    // Background
+    actx.fillStyle = '#070d1a';
+    actx.fillRect(PL, PT, plotW, plotH);
+
+    // F2 layer band
+    const f2lo = hy(250), f2hi = hy(420);
+    const lg = actx.createLinearGradient(0, f2hi, 0, f2lo);
+    lg.addColorStop(0, '#818cf820'); lg.addColorStop(0.5, '#818cf840'); lg.addColorStop(1, '#818cf820');
+    actx.fillStyle = lg; actx.fillRect(PL, f2hi, plotW, f2lo - f2hi);
+    actx.fillStyle = '#818cf8'; actx.font = '8px IBM Plex Mono, monospace';
+    actx.textAlign = 'left'; actx.fillText('F2 layer', PL + plotW - 55, f2hi + 11);
+
+    // Ground line
+    actx.strokeStyle = '#2d3f56'; actx.lineWidth = 1;
+    actx.beginPath(); actx.moveTo(PL, gY); actx.lineTo(PL + plotW, gY); actx.stroke();
+
+    // TX antenna
+    actx.strokeStyle = '#64748b'; actx.lineWidth = 1.5;
+    actx.beginPath(); actx.moveTo(PL, gY); actx.lineTo(PL, gY - 12); actx.stroke();
+    actx.beginPath(); actx.moveTo(PL - 9, gY - 9); actx.lineTo(PL + 9, gY - 9); actx.stroke();
+
+    // Altitude labels
+    actx.fillStyle = '#334155'; actx.font = '8px IBM Plex Mono, monospace'; actx.textAlign = 'right';
+    for (const alt of [200, 400]) {
+        actx.fillText(alt + ' km', PL - 3, hy(alt) + 3);
+    }
+    actx.fillText('0', PL - 3, gY + 3);
+
+    // Distance labels
+    actx.textAlign = 'center'; actx.fillStyle = '#334155';
+    const dStep = W < 450 ? 4000 : 2000;
+    for (let d = dStep; d < DMAX; d += dStep) {
+        actx.fillText((d/1000).toFixed(0) + 'k', dx(d), gY + PB - 5);
+    }
+    actx.textAlign = 'center'; actx.fillStyle = '#475569';
+    actx.fillText('Distance from TX (km)', PL + plotW / 2, H - 2);
+
+    if (mode === 'nvis') {
+        // Near-vertical arc, very short ground range
+        const xPeak = dx(80), yPeak = hy(300);
+        actx.beginPath();
+        actx.moveTo(PL, gY);
+        actx.bezierCurveTo(PL + 15, hy(150), xPeak - 10, yPeak + 20, xPeak, yPeak);
+        actx.bezierCurveTo(xPeak + 10, yPeak + 20, dx(160) - 10, hy(150), dx(160), gY);
+        actx.strokeStyle = '#06b6d4'; actx.lineWidth = 2; actx.setLineDash([]); actx.stroke();
+        actx.fillStyle = '#06b6d4'; actx.font = '8px IBM Plex Mono, monospace'; actx.textAlign = 'center';
+        actx.fillText('NVIS', dx(80), gY + 13);
+
+    } else if (mode === 'skip') {
+        // Skip zone (dead zone)
+        if (skipKm > 0) {
+            const xSkip = dx(Math.min(skipKm, DMAX * 0.95));
+            actx.fillStyle = '#f87171' + '18';
+            actx.fillRect(PL + 1, PT, xSkip - PL - 1, plotH);
+            actx.fillStyle = '#f87171'; actx.font = '8px IBM Plex Mono, monospace';
+            actx.textAlign = 'center';
+            actx.fillText('skip zone', PL + (xSkip - PL) / 2, PT + 14);
+        }
+
+        // Sky-wave arc
+        const sk = Math.min(skipKm, DMAX * 0.9);
+        const xMid = dx(sk / 2), yPeak = hy(H_F2);
+        const xLand = dx(sk);
+        actx.beginPath();
+        actx.moveTo(PL, gY);
+        actx.bezierCurveTo(dx(sk * 0.25), hy(H_F2 * 0.7), xMid - 20, yPeak, xMid, yPeak);
+        actx.bezierCurveTo(xMid + 20, yPeak, dx(sk * 0.75), hy(H_F2 * 0.7), xLand, gY);
+        actx.strokeStyle = '#06b6d4'; actx.lineWidth = 2; actx.stroke();
+
+        // Landing dot
+        actx.beginPath(); actx.arc(xLand, gY, 5, 0, 2*Math.PI);
+        actx.fillStyle = '#06b6d4'; actx.fill();
+        actx.fillStyle = '#06b6d4'; actx.font = '8px IBM Plex Mono, monospace';
+        actx.textAlign = 'center'; actx.fillText(skipKm.toLocaleString() + ' km', xLand, gY + 13);
+
+        // Second hop hint (dashed)
+        if (sk < DMAX * 0.5) {
+            const sk2 = sk * 2;
+            const xM2 = dx(sk * 1.5), xL2 = dx(Math.min(sk2, DMAX * 0.95));
+            actx.beginPath();
+            actx.moveTo(xLand, gY);
+            actx.bezierCurveTo(dx(sk * 1.25), hy(H_F2 * 0.7), xM2 - 20, yPeak, xM2, yPeak);
+            actx.bezierCurveTo(xM2 + 20, yPeak, dx(sk * 1.75), hy(H_F2 * 0.7), xL2, gY);
+            actx.strokeStyle = '#06b6d4'; actx.lineWidth = 1.5; actx.setLineDash([4, 5]); actx.stroke();
+            actx.setLineDash([]);
+            actx.fillStyle = '#334155'; actx.font = '8px IBM Plex Mono, monospace';
+            actx.textAlign = 'center'; actx.fillText('2nd hop (dashed)', dx(sk * 1.5), hy(H_F2) - 6);
+        }
+
+    } else {
+        // Escape — straight-line ray going up and off canvas
+        const ang = 20 * Math.PI / 180;  // ~20° elevation
+        const tipX = PL + plotH / Math.tan(ang), tipY = PT + 5;
+        actx.beginPath();
+        actx.moveTo(PL, gY); actx.lineTo(Math.min(tipX, PL + plotW - 10), tipY);
+        actx.strokeStyle = '#f87171'; actx.lineWidth = 2; actx.setLineDash([]); actx.stroke();
+        // Arrow tip
+        const ang2 = -Math.atan2(gY - tipY, Math.min(tipX, PL + plotW - 10) - PL);
+        actx.fillStyle = '#f87171'; actx.beginPath();
+        actx.moveTo(Math.min(tipX, PL + plotW - 10), tipY);
+        actx.lineTo(Math.min(tipX, PL + plotW - 10) - 11*Math.cos(ang2) + 5*Math.sin(ang2),
+                   tipY - 11*Math.sin(ang2) - 5*Math.cos(ang2));
+        actx.lineTo(Math.min(tipX, PL + plotW - 10) - 11*Math.cos(ang2) - 5*Math.sin(ang2),
+                   tipY - 11*Math.sin(ang2) + 5*Math.cos(ang2));
+        actx.closePath(); actx.fill();
+        actx.fillStyle = '#f87171'; actx.font = '8px IBM Plex Mono, monospace';
+        actx.textAlign = 'left'; actx.fillText('escapes to space', PL + 12, PT + 22);
+    }
+
+    // Border
+    actx.strokeStyle = '#1e293b'; actx.lineWidth = 1; actx.setLineDash([]);
+    actx.strokeRect(PL, PT, plotW, plotH);
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function setDay(d) {
+    isDay = d;
+    document.getElementById('btn-day').className   = 'tbtn' + (d  ? ' active' : '');
+    document.getElementById('btn-night').className = 'tbtn' + (!d ? ' active' : '');
+    update();
+}
+
+document.getElementById('sl-freq').addEventListener('input', function () {
+    freq = +this.value;
+    document.getElementById('lbl-freq').textContent = freq.toFixed(1) + ' MHz';
+    update();
+});
+document.getElementById('sel-solar').addEventListener('change', function () {
+    solar = this.value; update();
+});
+document.getElementById('sl-lat').addEventListener('input', function () {
+    lat = +this.value;
+    const ns = lat >= 0 ? lat + '° N' : Math.abs(lat) + '° S';
+    document.getElementById('lbl-lat').textContent = ns; update();
+});
+
+// ── Resize ────────────────────────────────────────────────────────────────────
+function resize() {
+    arcCanvas.width = Math.max(280, arcCanvas.parentElement.clientWidth - 2);
+    update();
+}
+window.addEventListener('resize', resize);
+resize();
+</script>
+</body>
+</html>
