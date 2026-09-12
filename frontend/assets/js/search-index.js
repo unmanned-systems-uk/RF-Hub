@@ -274,6 +274,20 @@ window.SEARCH_INDEX = [
     sections: ["Band Plans & Etiquette", "Making Contact", "DX & Pileups", "Digital Modes", "Nets", "Contests", "Log-keeping", "Radio Housekeeping"]
   },
   {
+    title: "Section 8: Safety — Intermediate",
+    url: "/pages/study/intermediate/section-8-safety.html",
+    description: "Study notes for Section 8 of the Intermediate licence: mains electrical safety, fuse ratings, RCDs, electric shock response, RF burns, RF exposure, working at height, battery hazards, soldering safety, fire, lightning protection",
+    keywords: ["safety", "mains", "230V", "fuse", "fuse rating", "RCD", "RCBO", "MCB", "electric shock",
+               "CPR", "capacitor discharge", "live circuit", "one hand rule", "RF burn", "RF exposure",
+               "ICNIRP", "NIHP", "EMF", "antenna height", "ladder safety", "overhead power lines",
+               "lead acid battery", "lithium battery", "LiPo", "thermal runaway", "soldering",
+               "solder fumes", "rosin flux", "lead solder", "CO2 extinguisher", "electrical fire",
+               "lightning", "gas discharge arrestor", "static bleed resistor", "rodent damage",
+               "fast blow", "slow blow", "bleed resistor", "master switch", "shack earth",
+               "8A", "8B", "8C", "8D", "8E", "8F", "8G", "8H", "intermediate section 8"],
+    sections: ["Mains Electrical Safety", "Working on Live Circuits", "RF Burns & Exposure", "Antenna Work at Height", "Battery Safety", "Soldering Safety", "Fire & Emergency", "Environmental Safety & Lightning"]
+  },
+  {
     title: "Section 4: Feeders & Antennas — Intermediate",
     url: "/pages/study/intermediate/section-4-feeders-antennas.html",
     description: "Study notes for Section 4 of the Intermediate licence: SWR, reflection coefficient, return loss, coaxial cable, baluns, antenna matching, antenna types, gain, radiation patterns",

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 8: Safety — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 8</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">3–4 / 46 questions &nbsp;·&nbsp; ~8%</span>
+      </div>
+      <h1>Safety</h1>
+      <p class="hero-subtitle">Mains electrical safety, fuse ratings, RCDs, electric shock response, live working precautions, RF burns, working at height, battery hazards, soldering safety, fire, and lightning protection.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-8a">8A Mains Electrical Safety</a></li>
+        <li><a href="#ch-8b">8B Working on Live Circuits</a></li>
+        <li><a href="#ch-8c">8C RF Burns &amp; RF Exposure</a></li>
+        <li><a href="#ch-8d">8D Antenna Work at Height</a></li>
+        <li><a href="#ch-8e">8E Battery Safety</a></li>
+        <li><a href="#ch-8f">8F Soldering Safety</a></li>
+        <li><a href="#ch-8g">8G Fire &amp; Emergency</a></li>
+        <li><a href="#ch-8h">8H Environmental Safety &amp; Lightning</a></li>
+        <li><a href="#ch-8i">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-8a"><span class="toc-code">8A</span>Mains Electrical Safety</a></li>
+        <li><a href="#ch-8b"><span class="toc-code">8B</span>Working on Live Circuits</a></li>
+        <li><a href="#ch-8c"><span class="toc-code">8C</span>RF Burns &amp; RF Exposure</a></li>
+        <li><a href="#ch-8d"><span class="toc-code">8D</span>Antenna Work at Height</a></li>
+        <li><a href="#ch-8e"><span class="toc-code">8E</span>Battery Safety</a></li>
+        <li><a href="#ch-8f"><span class="toc-code">8F</span>Soldering Safety</a></li>
+        <li><a href="#ch-8g"><span class="toc-code">8G</span>Fire &amp; Emergency</a></li>
+        <li><a href="#ch-8h"><span class="toc-code">8H</span>Environmental Safety &amp; Lightning</a></li>
+        <li><a href="#ch-8i"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 8A: MAINS ELECTRICAL SAFETY ═══════════════════ -->
+    <section class="chapter" id="ch-8a">
+      <div class="chapter-header">
+        <span class="chapter-num">8A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Mains Electrical Safety</h2>
+
+      <h3>The UK Mains Supply (8A1)</h3>
+      <p>The UK mains supply is <strong>230 V RMS at 50 Hz</strong>. RMS (Root Mean Square) is the equivalent DC value in terms of power delivery — but the actual peak voltage is higher.</p>
+
+<pre>V_peak = V_RMS × √2 = 230 × 1.414 ≈ 325 V</pre>
+
+      <p>Every time you handle a mains-connected device, up to 325 V is present across the conductors. The hazard is not the voltage alone but the current that voltage drives through the body:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Current through body</th>
+              <th>Effect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>~1 mA</td>
+              <td>Perception — slight tingling</td>
+            </tr>
+            <tr>
+              <td>~15 mA</td>
+              <td>Cannot let go — muscular contraction locks the grip</td>
+            </tr>
+            <tr>
+              <td>~50 mA</td>
+              <td>Respiratory paralysis — breathing stops</td>
+            </tr>
+            <tr>
+              <td>~100 mA</td>
+              <td>Ventricular fibrillation — almost certainly fatal without immediate intervention</td>
+            </tr>
+            <tr>
+              <td>&gt;1 A</td>
+              <td>Deep burns, cardiac arrest</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Even relatively low voltages can produce fatal currents. The body's resistance varies widely with skin condition.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>8A1:</strong> The path that kills is current across the heart. Current entering one hand and leaving the other passes directly through the chest. This is why the one-hand rule (§8B) matters — keeping one hand away from the circuit removes that path.</div>
+      </div>
+
+      <h3>Fuses and Fuse Ratings (8A4)</h3>
+      <p>A fuse protects the equipment by breaking the circuit if the current exceeds a safe level. It does not protect a person from shock — that is the RCD's job.</p>
+
+      <p><strong>Calculating the correct fuse rating:</strong></p>
+
+<pre>Current (A) = Power (W) ÷ Voltage (V)</pre>
+
+      <p>Example: A transceiver rated at 500 W connected to 230 V mains:</p>
+
+<pre>I = 500 ÷ 230 = 2.17 A</pre>
+
+      <p>Select the <strong>next higher standard fuse rating</strong> above the calculated current. UK standard BS 1362 plug fuses:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fuse</th>
+              <th>Typical appliances</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>3 A</td>
+              <td>Clock radio, DVD player, fan, fridge, lamp, PC, radio, television</td>
+            </tr>
+            <tr>
+              <td>5 A</td>
+              <td>Coffee maker, hi-fi system, microwave oven, toaster</td>
+            </tr>
+            <tr>
+              <td>13 A</td>
+              <td>Dishwasher, hair dryer, electric iron, kettle</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>For the 2.17 A example above, the correct fuse is <strong>3 A</strong> (next standard rating above 2.17 A).</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8A4:</strong> I = P ÷ V. Always fit the <strong>manufacturer's specified fuse</strong>. If no manufacturer guidance is available, calculate and fit the nearest standard rating above. Never fit a fuse higher than necessary — it defeats the protection.</div>
+      </div>
+
+      <p><strong>Fuses must not be substituted with wire, foil, or oversized fuses.</strong></p>
+
+      <h4>Fast-Blow and Slow-Blow Fuses</h4>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Characteristic</th>
+              <th>When to use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fast-blow</td>
+              <td>Blows quickly at rated current</td>
+              <td>Sensitive electronics, integrated circuits</td>
+            </tr>
+            <tr>
+              <td>Slow-blow (time-delay)</td>
+              <td>Tolerates brief current surges before blowing</td>
+              <td>Motor loads, transformers — high inrush current at start-up is normal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Fast-blow and slow-blow fuses are <strong>not interchangeable</strong>. Fitting a fast-blow where a slow-blow is specified will cause nuisance blowing on start-up. Fitting a slow-blow where a fast-blow is specified may allow a damaging current surge through sensitive components before the fuse reacts.</div>
+      </div>
+
+      <h3>Residual Current Devices (8A6)</h3>
+      <p>An RCD detects current leaking to earth by comparing current flowing out on the live wire with current returning on the neutral wire. If they differ by approximately <strong>30 mA</strong>, the RCD trips the circuit in <strong>25–40 milliseconds</strong>.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>What it protects against</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>MCB (Miniature Circuit Breaker)</td>
+              <td>Overcurrent — too much current flows, protecting cables and equipment</td>
+            </tr>
+            <tr>
+              <td>RCD (Residual Current Device)</td>
+              <td>Earth leakage — current taking an unexpected path, typically through a person</td>
+            </tr>
+            <tr>
+              <td>RCBO</td>
+              <td>Both — an MCB and RCD combined in a single unit</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Portable RCDs plug directly into a mains socket and add RCD protection to any appliance. Strongly recommended outdoors or at field day sites.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8A6:</strong> An RCD trips at ~30 mA in 25–40 ms, providing protection against fatal electric shock. A portable RCD can be added to any socket. Make sure your shack is protected by an RCD or RCBO at the consumer unit.</div>
+      </div>
+
+      <h3>What to Do if Someone Gets an Electric Shock (8A8)</h3>
+      <p>This procedure must be memorised. A person in contact with a live mains circuit cannot release themselves.</p>
+
+      <p><strong>Correct sequence:</strong></p>
+      <ol>
+        <li>DO NOT touch the victim while they are in contact with the live source</li>
+        <li>Immediately switch off the power — at the socket, or at the consumer unit</li>
+        <li>Call 999</li>
+        <li>Start CPR if the person is unresponsive and not breathing normally — continue until emergency services arrive</li>
+      </ol>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>8A8:</strong> Step 1 is not "pull them away" — it is "switch off the power first." Grabbing a person in contact with 230 V mains will pass current through both of you. Find the off switch first.</div>
+      </div>
+
+      <p><strong>Shack master switch:</strong> Install a clearly labelled master switch that cuts all mains power to the shack. Anyone entering the room can isolate power immediately in an emergency.</p>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8B: WORKING ON LIVE CIRCUITS ═══════════════════ -->
+    <section class="chapter" id="ch-8b">
+      <div class="chapter-header">
+        <span class="chapter-num">8B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Working on Live Circuits</h2>
+
+      <h3>The Golden Rule (8B4, 8B6)</h3>
+      <p><strong>Do not work on live circuits.</strong> Isolate the supply before touching any internal wiring, components, or connectors.</p>
+
+      <p>When live working is unavoidable, precautions:</p>
+      <ol>
+        <li>Risk assessment first</li>
+        <li>One hand behind your back — keeps one hand clear, preventing current flowing hand-to-hand across the heart</li>
+        <li>Insulated tools only — properly insulated screwdrivers, probes, and clip leads rated for the voltage</li>
+        <li>Rubber gloves — appropriate electrical insulating gloves</li>
+        <li>No jewellery — rings, bracelets, and watch straps are conductors; remove them</li>
+        <li>Dry environment — water dramatically reduces skin resistance</li>
+        <li>Do not work alone — have someone present who can call for help</li>
+      </ol>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8B4, 8B6:</strong> Even when live working cannot be avoided, minimise risk: one hand rule, insulated tools, no jewellery, never alone. Ensure a master switch is accessible so someone nearby can isolate power instantly.</div>
+      </div>
+
+      <h3>Test Before Touch (8B6)</h3>
+      <p>Before touching any component in a de-energised circuit, verify it is de-energised with a multimeter set to AC volts. A switched-off appliance is not necessarily safe:</p>
+      <ul>
+        <li>A power supply may have its switch on the secondary side, leaving the mains transformer primary live</li>
+        <li>A fault can cause unexpected live voltages on chassis metalwork</li>
+        <li>Mains is not always switched off simply because the equipment appears dead</li>
+      </ul>
+
+      <p><strong>Measure first, touch second — every time.</strong></p>
+
+      <h3>Capacitor Discharge Hazard (8B4, 8B6)</h3>
+      <p>Large electrolytic capacitors — particularly filter capacitors in mains power supplies — can <strong>retain a lethal charge for minutes or hours after the supply is switched off</strong>.</p>
+
+<pre>Energy stored = ½ × C × V²
+Example: ½ × 0.002 × 400² = 160 joules  ← well above the lethal threshold</pre>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Switching off the PSU does not discharge the capacitors.</strong> Always allow several minutes, then measure with a multimeter before touching any component inside a power supply. A <strong>bleed resistor</strong> across the capacitor drains the charge safely at switch-off — check that the design includes one, or add one.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8C: RF BURNS & RF EXPOSURE ═══════════════════ -->
+    <section class="chapter" id="ch-8c">
+      <div class="chapter-header">
+        <span class="chapter-num">8C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>RF Burns &amp; RF Exposure (8B5)</h2>
+
+      <h3>Direct RF Burns</h3>
+      <p>RF energy at high power levels causes real physical burns. Unlike an electric shock, RF burns develop gradually through tissue heating — you may not immediately realise how much damage is occurring.</p>
+
+      <p>The hazard is highest at:</p>
+      <ul>
+        <li>Antenna feedpoints and connectors — especially on HF at 100 W (Intermediate maximum)</li>
+        <li>Coaxial connectors that are not properly tightened</li>
+        <li>ATUs with internal components at high RF voltage</li>
+      </ul>
+
+      <p><strong>Never touch any part of an antenna system while transmitting.</strong></p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>8B5:</strong> RF does not give the same warning signal as mains. You may feel warmth before realising you are being burned. At Intermediate power levels (up to 100 W), contact with live antenna components can cause deep tissue burns. Keep hands clear whenever transmitting.</div>
+      </div>
+
+      <h3>RF Field Exposure</h3>
+      <p>Concentrated RF energy causes heating within body tissue. Specific situations requiring care:</p>
+      <ul>
+        <li>Microwave frequencies (3 GHz and above) — eyes and brain are particularly susceptible. Never look into a waveguide aperture or stand in front of a dish antenna while transmitting on microwave bands.</li>
+        <li>Antennas too close to the operating position — including loft antennas — may expose the operator or building occupants to RF fields above recommended limits.</li>
+        <li>Handheld radios — keep the antenna away from the face when transmitting.</li>
+      </ul>
+
+      <p>Regulatory bodies:</p>
+      <ul>
+        <li><strong>ICNIRP</strong> — International Commission on Non-Ionising Radiation Protection: publishes the exposure guidelines forming the basis of UK and EU limits</li>
+        <li><strong>NIHP</strong> — National Institute for Health Protection: UK body with oversight of non-ionising radiation safety</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8B5, cross-ref §1G:</strong> You need to know the names ICNIRP and NIHP. The exam does not require you to memorise the specific exposure limits. The practical rules: never touch a transmitting antenna, keep antennas as far from occupied space as possible, and take special care on microwave frequencies. See <a href="section-1-licensing.html#ch-1g">§1G</a> for the EMF compliance framework.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8D: ANTENNA WORK AT HEIGHT ═══════════════════ -->
+    <section class="chapter" id="ch-8d">
+      <div class="chapter-header">
+        <span class="chapter-num">8D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Antenna Work at Height</h2>
+
+      <h3>Working at Height — The Hazards</h3>
+      <p>Falls from height are one of the leading causes of fatal accidents in and around the home.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never work at height alone.</strong> A person who falls from a ladder or roof may be incapacitated. A spotter on the ground can raise the alarm, stabilise the ladder, and call 999. Do not treat this as optional.</div>
+      </div>
+
+      <h3>Ladder Safety (8D1, 8D2)</h3>
+      <p>The <strong>1-in-4 rule:</strong> for every 4 m of height, the base of the ladder should be 1 m out from the wall (~75° angle for stability).</p>
+
+      <p>Additional precautions:</p>
+      <ul>
+        <li>Tie the top of the ladder to a fixed point before climbing</li>
+        <li>Three points of contact at all times — two feet and one hand on the ladder</li>
+        <li>Wear rubber-soled footwear</li>
+        <li>No tools in hands while climbing — use a tool bag or rope and bucket</li>
+        <li>Do not overreach — descend and move the ladder</li>
+      </ul>
+
+      <h3>Roof Work (8D3)</h3>
+      <p>Working on a pitched roof requires a safety harness anchored to a ridge bolt or roof anchor. Check the weather forecast before starting. Establish an exclusion zone at ground level below the work area. If others are present on the ground, wear hard hats.</p>
+
+      <h3>Overhead Power Lines (8B2)</h3>
+      <p>High-voltage cables can arc across several metres — direct contact is not necessary for electrocution.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>8B2:</strong> Before erecting any antenna, mast, or pole, look up. Check the area above and around the work site for overhead power lines. Maintain clearance at least equal to the height of the structure being erected. If a power line is too close to the intended antenna site, relocate or contact your distribution network operator. If any equipment contacts an overhead line, call 105 (UK Power Networks emergency) and keep everyone clear until the network operator confirms the line is de-energised.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8E: BATTERY SAFETY ═══════════════════ -->
+    <section class="chapter" id="ch-8e">
+      <div class="chapter-header">
+        <span class="chapter-num">8E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Battery Safety</h2>
+
+      <h3>Lead-Acid Batteries</h3>
+      <p>Lead-acid batteries contain sulphuric acid electrolyte (H₂SO₄) — a highly corrosive liquid that causes serious chemical burns.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Hazard</th>
+              <th>Precaution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sulphuric acid electrolyte</td>
+              <td>Wear eye protection and gloves when handling. If acid contacts skin, flush immediately with large amounts of water. If eyes are affected, flush continuously and get medical help.</td>
+            </tr>
+            <tr>
+              <td>Hydrogen gas during charging</td>
+              <td>Charging produces hydrogen (H₂), which is explosive. Charge in a ventilated area — never in a sealed room.</td>
+            </tr>
+            <tr>
+              <td>Short-circuit</td>
+              <td>Produces enormous currents — easily several hundred amps — causing violent arcing, extreme heat, fire, and possible explosion. Keep tools clear of battery terminals.</td>
+            </tr>
+            <tr>
+              <td>Acid spill</td>
+              <td>Neutralise with sodium bicarbonate (baking soda) before cleaning up.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Never short-circuit any battery. Even a small 12 V lead-acid battery can weld metal, ignite fires, and cause the battery case to rupture. Keep battery terminals covered or insulated when the battery is not connected.</div>
+      </div>
+
+      <h3>Lithium-Ion and LiPo Batteries</h3>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Hazard</th>
+              <th>Precaution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Thermal runaway</td>
+              <td>A damaged, punctured, or incorrectly charged Li-ion cell can enter thermal runaway — an uncontrolled self-heating reaction resulting in fire and possible explosion.</td>
+            </tr>
+            <tr>
+              <td>Overcharging</td>
+              <td>Use only a charger specifically designed for the battery chemistry and capacity. Using the wrong charger is a leading cause of Li-ion fires.</td>
+            </tr>
+            <tr>
+              <td>Physical damage</td>
+              <td>A bent, crushed, or punctured Li-ion cell must be treated as unsafe. Do not continue using it; do not charge it.</td>
+            </tr>
+            <tr>
+              <td>Disposal</td>
+              <td>Li-ion batteries must not go in general refuse. Take to a designated battery recycling point.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never puncture, crush, or short-circuit a lithium battery.</strong> If a Li-ion battery begins to bulge, feel hot, or smell of solvent, treat it as a fire risk: remove it from the equipment (if safe to do so), place it on a non-combustible surface away from flammable material, and observe it. Do not put it in a bin.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8F: SOLDERING SAFETY ═══════════════════ -->
+    <section class="chapter" id="ch-8f">
+      <div class="chapter-header">
+        <span class="chapter-num">8F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Soldering Safety (8B3)</h2>
+
+      <h3>Heat</h3>
+      <p>A soldering iron tip operates at <strong>300 to 400 °C</strong>. Contact with skin produces an instant, serious burn.</p>
+      <ul>
+        <li>Always rest the iron in its stand when not actively using it — never lay it on the bench</li>
+        <li>Assume the iron is hot if it has been plugged in</li>
+        <li>Allow solder joints to cool before handling the board</li>
+        <li>Wear safety glasses when clipping component leads — small lengths of wire fly off at speed</li>
+      </ul>
+
+      <h3>Solder Fumes</h3>
+      <p>The flux core in solder (typically rosin/colophony flux) produces fumes when heated. These fumes can irritate the eyes, throat, and lungs.</p>
+      <ul>
+        <li>Work in a well-ventilated area — open a window, or use a fume extractor</li>
+        <li>Do not bend over the iron so that fumes rise into your face</li>
+        <li>HSE guidance: INDG248 (<em>Solder Fumes and You</em>) and INDG249F (<em>Controlling Health Risks from Rosin Based Solder Fluxes</em>) at www.hse.gov.uk</li>
+      </ul>
+
+      <h3>Lead Solder</h3>
+      <p>Traditional tin-lead solder (60% tin, 40% lead) — lead is a cumulative toxin:</p>
+      <ul>
+        <li>Do not inhale solder fumes or dust</li>
+        <li>Do not eat, drink, or touch your face at the soldering bench</li>
+        <li>Wash hands thoroughly after a soldering session</li>
+        <li>Keep lead solder away from children</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8B3:</strong> The three soldering safety rules for the exam: ventilate to remove fumes, wear eye protection when clipping leads, and wash hands after using lead solder.</div>
+      </div>
+
+      <h3>Good and Bad Solder Joints</h3>
+      <p>A correctly made solder joint is <strong>bright and shiny</strong> with a smooth, concave fillet. A <strong>dry joint</strong> (cold joint) is dull and grey — the solder did not flow properly. Dry joints are a common cause of intermittent faults in home-built equipment.</p>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8G: FIRE & EMERGENCY ═══════════════════ -->
+    <section class="chapter" id="ch-8g">
+      <div class="chapter-header">
+        <span class="chapter-num">8G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Fire &amp; Emergency</h2>
+
+      <h3>Electrical Fire — Never Use Water</h3>
+      <p>Electrical fires must <strong>never</strong> be tackled with water. Water conducts electricity.</p>
+
+      <p><strong>Correct extinguisher for an electrical fire: CO₂ (carbon dioxide).</strong></p>
+
+      <p>CO₂ extinguishers:</p>
+      <ul>
+        <li>Do not conduct electricity</li>
+        <li>Leave no residue that damages equipment</li>
+        <li>Suffocate the fire by displacing oxygen</li>
+        <li>Are identified by a <strong>black label</strong> on the cylinder</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never use a water extinguisher on an electrical fire.</strong> If in doubt about an extinguisher type, evacuate and call 999.</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Fire class</th>
+              <th>Material</th>
+              <th>Extinguisher</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A</td>
+              <td>Ordinary combustibles (wood, paper, fabric)</td>
+              <td>Water, foam</td>
+            </tr>
+            <tr>
+              <td>B</td>
+              <td>Flammable liquids (petrol, paint)</td>
+              <td>Foam, CO₂, dry powder</td>
+            </tr>
+            <tr>
+              <td>C</td>
+              <td>Flammable gases</td>
+              <td>Dry powder</td>
+            </tr>
+            <tr>
+              <td>E (electrical)</td>
+              <td>Live electrical equipment</td>
+              <td>CO₂ only</td>
+            </tr>
+            <tr>
+              <td>F</td>
+              <td>Cooking oils</td>
+              <td>Wet chemical</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Shack Fire Precautions</h3>
+      <ul>
+        <li>Keep a CO₂ fire extinguisher in or immediately outside the shack</li>
+        <li>Install a smoke detector in the shack</li>
+        <li>Know your evacuation route — keep the path to the door clear</li>
+        <li>Never leave charging lithium batteries unattended in an enclosed space overnight</li>
+      </ul>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8H: ENVIRONMENTAL SAFETY & LIGHTNING ═══════════════════ -->
+    <section class="chapter" id="ch-8h">
+      <div class="chapter-header">
+        <span class="chapter-num">8H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Environmental Safety &amp; Lightning</h2>
+
+      <h3>Lightning (8E1)</h3>
+      <p>A direct lightning strike will destroy antenna systems regardless of protective measures. Best approach is avoidance.</p>
+
+      <p><strong>Practical measures for nearby strikes and induced surges:</strong></p>
+      <ul>
+        <li>Disconnect coaxial feeders from all equipment during electrical storms — a nearby strike induces enormous transient voltages in antenna systems and feed cables</li>
+        <li>Disconnect mains — induced surges can also travel via the mains wiring</li>
+        <li>Gas discharge arrestors in the feeder path: present an open circuit at normal voltages but break down and conduct at the high voltages produced by a nearby lightning strike, diverting the surge to earth</li>
+        <li>Static discharge resistor — a resistor of <strong>greater than 100 kΩ</strong> connected across the antenna provides a bleed path for static electricity that builds up on antennas. The resistor is high enough in value that it has negligible effect on normal antenna operation.</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>8E1:</strong> The correct order of protection: (1) disconnect during storms — primary protection, (2) gas discharge arrestors for nearby-strike surge diversion, (3) static bleed resistor for static charge. None of these protects against a direct strike.</div>
+      </div>
+
+      <h3>Overhead Power Lines (Repeated Safety Point)</h3>
+      <p>Check above before erecting any structure. If a line is too close, contact your Distribution Network Operator (call 105 in the UK).</p>
+
+      <h3>Temperature, Humidity, and Ventilation</h3>
+      <ul>
+        <li>Keep transceivers and power supplies in a ventilated area — convection cooling depends on airflow</li>
+        <li>Do not operate in high humidity environments without checking the equipment's specified operating range</li>
+        <li>Allow equipment brought in from the cold to reach room temperature before powering up — condensation forms on cold surfaces placed in warm air</li>
+      </ul>
+
+      <h3>Rodent Damage</h3>
+      <p>Rodents gnaw through coaxial cable insulation, mains leads, and connecting cables. A mains cable with damaged insulation is a fire and electrocution hazard. Inspect all cables periodically. Replace any cable with damaged insulation immediately — do not tape over damage to mains cables.</p>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 8I: SELF-CHECK ═══════════════════ -->
+    <section class="chapter" id="ch-8i">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your knowledge</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. UK mains is 230 V RMS. What is the approximate peak voltage?</p>
+          <button class="btn-reveal" data-target="sc-8i-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-1" hidden>
+            <p><strong>325 V.</strong> Peak voltage = RMS × √2 = 230 × 1.414 ≈ 325 V. The peak voltage is substantially higher than the RMS figure suggests.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. A desk lamp is rated 60 W. Connected to 230 V mains, which fuse should be fitted in the plug?</p>
+          <button class="btn-reveal" data-target="sc-8i-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-2" hidden>
+            <p><strong>3 A.</strong> Calculate: I = P ÷ V = 60 ÷ 230 = 0.26 A. The next standard UK fuse rating above 0.26 A is 3 A.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What is the correct type of fire extinguisher to use on a live electrical fire?</p>
+          <button class="btn-reveal" data-target="sc-8i-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-3" hidden>
+            <p><strong>CO₂ (carbon dioxide), identified by a black label.</strong> Water conducts electricity and must never be used on live electrical equipment. CO₂ does not conduct, leaves no residue, and smothers the fire by displacing oxygen.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. Someone in your shack has received an electric shock and is still in contact with the live conductor. What is the first thing you must do?</p>
+          <button class="btn-reveal" data-target="sc-8i-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-4" hidden>
+            <p><strong>Switch off the power.</strong> Do NOT touch the person until the circuit is de-energised — grabbing them will pass current through you as well. Turn off power at the socket or at the consumer unit. Then call 999, and start CPR if the person is unresponsive and not breathing normally.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. An RCD detects a current imbalance of approximately how many milliamps and trips in how long?</p>
+          <button class="btn-reveal" data-target="sc-8i-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-5" hidden>
+            <p><strong>~30 mA, in 25–40 milliseconds.</strong> This is fast enough to prevent ventricular fibrillation in most cases, since the heart-stopping threshold is ~100 mA and the RCD disconnects the supply before the full lethal current can flow.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. You switch off a mains power supply to work inside it. Why might it still be dangerous to touch internal components immediately?</p>
+          <button class="btn-reveal" data-target="sc-8i-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-6" hidden>
+            <p><strong>Large electrolytic capacitors retain their charge</strong> after the supply is switched off. A power supply filter capacitor can hold hundreds of volts for minutes or hours. Always wait, then measure across the capacitors with a voltmeter before touching any internal components.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. What is the purpose of a static discharge resistor (&gt;100 kΩ) connected across an antenna to earth?</p>
+          <button class="btn-reveal" data-target="sc-8i-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-7" hidden>
+            <p><strong>It bleeds away static charge</strong> that builds up on the antenna from atmospheric electricity or nearby lightning activity. The high resistance means it has negligible effect on normal RF transmission, but provides a continuous discharge path for static. It does not protect against direct lightning strikes or the high-voltage surge from a nearby strike (that requires a gas discharge arrestor).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. When soldering, why should gloves not be worn when drilling metal and eye protection be worn when clipping component leads?</p>
+          <button class="btn-reveal" data-target="sc-8i-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-8i-8" hidden>
+            <p><strong>Drilling:</strong> Gloves can catch on the rotating drill bit and drag the hand into the chuck — bare hands are safer because you can feel the bite and pull away. Secure the workpiece in a vice instead.</p>
+            <p><strong>Clipping leads:</strong> Small lengths of wire fly off unpredictably when cut with side-cutters. Eye protection prevents them entering the eye.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE-PLACEHOLDER: fuse-rating-calculator -->
+    <!-- INTERACTIVE-PLACEHOLDER: rf-exposure-decision-tree -->
+
+    <!-- ═══════════════════ SECTION NAV ═══════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-7-operating-practices.html" class="section-nav__link">&larr; Section 7: Operating Practices</a>
+      <a href="#" class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="#" class="section-nav__link section-nav__link--disabled">Section 9 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" style="margin-top:4rem;">
+    <div class="footer-container">
+      <p class="footer-copy" style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    (function () {
+      const bar = document.getElementById('progress-bar');
+      function update() {
+        const scrolled = window.scrollY;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    // Self-check reveal buttons
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var hidden = target.hasAttribute('hidden');
+        if (hidden) {
+          target.removeAttribute('hidden');
+          btn.textContent = 'Hide answer';
+        } else {
+          target.setAttribute('hidden', '');
+          btn.textContent = 'Show answer';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
