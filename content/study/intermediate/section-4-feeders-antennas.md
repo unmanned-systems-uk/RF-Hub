@@ -372,16 +372,6 @@ The most common type is the **choke balun** (also called a current balun):
 
 **Construction:** Coil several turns of coax around a ferrite toroid, or wind it through multiple ferrite beads/cores.
 
-```
-                ┌──────────────────────┐
-                │  ferrite ring/core   │
-                │  ┌────────────┐      │
-                │  │ coax coil  │      │  → to balanced antenna
-    from TX ────┼──┤            ├──────┼──
-                │  │ (5–10 turns)│     │
-                └──────────────────────┘
-```
-
 ![Choke balun construction — coax wound around a ferrite toroid to block common-mode currents. Alternative constructions: ferrite beads / snap-on ferrite cores.](/assets/images/study/ferrite-choke-common-mode.png)
 
 **How it works:** The inductance of the coil in series with the outer braid presents a high impedance to common-mode currents (which try to travel along the outside of the braid). Differential-mode currents (the signal, flowing on the inside of the coax) see no impedance added. The ferrite core dramatically increases the inductance and therefore the choking effectiveness on lower frequencies.
