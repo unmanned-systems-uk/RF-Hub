@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiation Pattern Viewer &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1200px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; }
+.ctrl-strip { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: flex-end; margin-bottom: 0.85rem; }
+.ctrl-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.ctrl-item label { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; }
+select { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; padding: 0.3rem 0.5rem; cursor: pointer; outline: none; }
+select:focus { border-color: #475569; }
+.slider-row { display: flex; align-items: center; gap: 0.5rem; }
+input[type="range"] { accent-color: #a78bfa; cursor: pointer; width: 130px; }
+.sval { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: #e2e8f0; min-width: 5ch; }
+.plots-row { display: flex; gap: 0.75rem; align-items: stretch; }
+@media (max-width: 660px) { .plots-row { flex-direction: column; } }
+.plot-wrap {
+  flex: 1 1 0; min-width: 0;
+  background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+  padding: 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+}
+.plot-lbl { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; color: #334155; }
+canvas { display: block; }
+.ro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.75rem; }
+@media (max-width: 600px) { .ro-grid { grid-template-columns: repeat(2, 1fr); } }
+.ro-item { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; padding: 0.48rem 0.6rem; }
+.ro-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.18rem; }
+.ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; }
+.ro-val.cyan   { color: #06b6d4; }
+.ro-val.amber  { color: #f59e0b; }
+.ro-val.purple { color: #a78bfa; }
+.ro-val.green  { color: #22c55e; }
+.ro-val.dim    { color: #475569; }
+.note { font-size: 0.7rem; color: #334155; font-family: 'IBM Plex Mono', monospace; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Radiation Pattern Viewer</h1>
+<p class="subtitle">Far-field polar patterns — azimuth (top view) + elevation (side view) with ground effect</p>
+<div class="card">
+  <div class="ctrl-strip">
+    <div class="ctrl-item">
+      <label>Antenna type</label>
+      <select id="sel-ant" onchange="update()">
+        <option value="dipole">Dipole (λ/2 horizontal)</option>
+        <option value="vertical">λ/4 Vertical (monopole)</option>
+        <option value="yagi3">Yagi — 3 element</option>
+        <option value="yagi5">Yagi — 5 element</option>
+        <option value="loop">Small Loop</option>
+      </select>
+    </div>
+    <div class="ctrl-item" id="height-ctrl">
+      <label>Height above ground</label>
+      <div class="slider-row">
+        <input type="range" id="sH" min="1" max="30" value="5" step="1" oninput="update()">
+        <span class="sval" id="vH">0.5 λ</span>
+      </div>
+    </div>
+    <div class="ctrl-item">
+      <label>Frequency</label>
+      <div class="slider-row">
+        <input type="range" id="sF" min="5" max="150" value="14" step="1" oninput="update()">
+        <span class="sval" id="vF">14 MHz</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="plots-row">
+    <div class="plot-wrap">
+      <div class="plot-lbl">Azimuth — top view</div>
+      <canvas id="azCanvas"></canvas>
+    </div>
+    <div class="plot-wrap">
+      <div class="plot-lbl">Elevation — side view</div>
+      <canvas id="elCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="ro-grid">
+    <div class="ro-item"><div class="ro-label">Gain</div><div class="ro-val purple" id="ro-gain">—</div></div>
+    <div class="ro-item"><div class="ro-label">Front-to-back</div><div class="ro-val amber" id="ro-ftb">—</div></div>
+    <div class="ro-item"><div class="ro-label">Max elev. angle</div><div class="ro-val cyan" id="ro-el">—</div></div>
+    <div class="ro-item"><div class="ro-label">Az. beamwidth (−3dB)</div><div class="ro-val green" id="ro-bw">—</div></div>
+  </div>
+  <p class="note" id="ro-note"></p>
+</div>
+</main>
+
+<script>
+const DEG = Math.PI / 180;
+
+// ── Antenna pattern library ───────────────────────────────────────────────────
+const ANTENNAS = {
+  dipole: {
+    name: 'Dipole (λ/2)',
+    gain_dBi: 2.15,
+    ftb: null,
+    isHorizontal: true,
+    // Azimuth: figure-8, max broadside (φ=90°/270°), null end-fire (φ=0°/180°)
+    azimuth: phi => Math.abs(Math.sin(phi)),
+    // Intrinsic elevation: cos(π/2·sin(el)) / cos(el)
+    intrinsicEl: el => {
+      const c = Math.cos(el);
+      if (c < 1e-4) return 0;
+      return Math.abs(Math.cos(Math.PI / 2 * Math.sin(el)) / c);
+    }
+  },
+  vertical: {
+    name: 'λ/4 Vertical',
+    gain_dBi: 2.15,
+    ftb: null,
+    isHorizontal: false,
+    azimuth: () => 1.0,
+    intrinsicEl: el => {
+      const c = Math.cos(el);
+      if (c < 1e-4) return 0;
+      return Math.abs(Math.cos(Math.PI / 2 * Math.sin(el)) / c);
+    }
+  },
+  yagi3: {
+    name: 'Yagi 3-el',
+    gain_dBi: 7.2,
+    ftb: 18,
+    isHorizontal: true,
+    // Forward lobe cos^4(φ/2), small back lobe 0.126 (→18 dB F/B)
+    azimuth: phi => {
+      const fwd  = Math.pow(Math.max(0, Math.cos(phi / 2)), 4);
+      const back = 0.126 * Math.pow(Math.max(0, Math.cos((phi - Math.PI) / 2)), 4);
+      return fwd + back;
+    },
+    intrinsicEl: el => {
+      const c = Math.cos(el);
+      if (c < 1e-4) return 0;
+      return Math.abs(Math.cos(Math.PI / 2 * Math.sin(el)) / c);
+    }
+  },
+  yagi5: {
+    name: 'Yagi 5-el',
+    gain_dBi: 10.5,
+    ftb: 24,
+    isHorizontal: true,
+    // Narrower: cos^6(φ/2), smaller back lobe (24 dB F/B → ratio 15.8)
+    azimuth: phi => {
+      const fwd  = Math.pow(Math.max(0, Math.cos(phi / 2)), 6);
+      const back = 0.063 * Math.pow(Math.max(0, Math.cos((phi - Math.PI) / 2)), 4);
+      return fwd + back;
+    },
+    intrinsicEl: el => {
+      const c = Math.cos(el);
+      if (c < 1e-4) return 0;
+      return Math.abs(Math.cos(Math.PI / 2 * Math.sin(el)) / c);
+    }
+  },
+  loop: {
+    name: 'Small Loop',
+    gain_dBi: 1.76,
+    ftb: null,
+    isHorizontal: true,
+    // Figure-8 rotated 90° from dipole: null at φ=90°/270°, max at φ=0°/180°
+    azimuth: phi => Math.abs(Math.cos(phi)),
+    intrinsicEl: el => Math.cos(el)
+  }
+};
+
+// ── Full elevation pattern (intrinsic × ground factor) ────────────────────────
+function elevPattern(ant, h_lambda, el) {
+  if (el < 0 || el > Math.PI) return 0;
+  const intrinsic = ant.intrinsicEl(el);
+  if (!ant.isHorizontal) {
+    // Vertical: ground-mounted monopole, no height dependency in this model
+    return intrinsic;
+  }
+  // Horizontal antenna over perfect ground (image method)
+  const gnd = 2 * Math.abs(Math.sin(2 * Math.PI * h_lambda * Math.sin(el)));
+  return intrinsic * gnd;
+}
+
+// ── Polar plot drawing ────────────────────────────────────────────────────────
+function drawPolar(canvas, patternFn, opts) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2;
+  const cy = opts.isElevation ? H * 0.54 : H / 2;
+  const R  = Math.min(W * 0.42, H * (opts.isElevation ? 0.44 : 0.42));
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0d1321';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground fill for elevation plot
+  if (opts.isElevation) {
+    ctx.fillStyle = 'rgba(30,41,59,0.4)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, R + 4, 0, Math.PI, true); // lower half
+    ctx.closePath();
+    ctx.fill();
+    // Ground line
+    ctx.strokeStyle = '#2d3f50';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx - R - 6, cy); ctx.lineTo(cx + R + 6, cy); ctx.stroke();
+    ctx.fillStyle = '#1e3a2a';
+    ctx.font = '8px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('GROUND', cx, cy + 14);
+  }
+
+  // Grid rings (normalised at 0.25, 0.5, 0.75, 1.0)
+  [0.25, 0.5, 0.75, 1.0].forEach((r, i) => {
+    ctx.beginPath();
+    if (opts.isElevation) {
+      ctx.arc(cx, cy, R * r, Math.PI, 0, true); // upper semicircle
+    } else {
+      ctx.arc(cx, cy, R * r, 0, 2 * Math.PI);
+    }
+    ctx.strokeStyle = i === 3 ? '#1e293b' : '#141f2e';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    if (r < 1.0) {
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '8px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'left';
+      const labelX = cx + R * r + 2;
+      const labelY = opts.isElevation ? cy - 2 : cy - 2;
+      ctx.fillText((20 * Math.log10(r)).toFixed(0) + 'dB', labelX, labelY);
+    }
+  });
+
+  // Grid spokes
+  const spokeAngles = opts.isElevation
+    ? [0, 30, 60, 90, 120, 150, 180]           // upper half only
+    : [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+  ctx.strokeStyle = '#141f2e';
+  ctx.lineWidth = 1;
+  spokeAngles.forEach(deg => {
+    const a = deg * DEG;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(a), cy - R * Math.sin(a));
+    ctx.stroke();
+  });
+
+  // Degree labels around the plot
+  ctx.fillStyle = '#334155';
+  ctx.font = '9px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  const labelAngles = opts.isElevation
+    ? [0, 30, 60, 90, 120, 150, 180]
+    : [0, 90, 180, 270];
+  labelAngles.forEach(deg => {
+    const a = deg * DEG;
+    const lx = cx + (R + 14) * Math.cos(a);
+    const ly = cy - (R + 14) * Math.sin(a);
+    const txt = opts.isElevation
+      ? (deg === 90 ? '90°\nZenith' : deg + '°')
+      : opts.labels[deg] || deg + '°';
+    ctx.fillText(txt, lx, ly + 3);
+  });
+  if (opts.isElevation) {
+    ctx.fillStyle = '#334155';
+    ctx.fillText('Zenith', cx, cy - R - 8);
+  }
+
+  // Find max value for normalisation
+  const N = 720;
+  let maxVal = 0;
+  for (let i = 0; i < N; i++) {
+    const a = (i / N) * 2 * Math.PI;
+    maxVal = Math.max(maxVal, patternFn(a));
+  }
+  if (maxVal < 1e-9) return;
+
+  // Draw pattern
+  ctx.beginPath();
+  let first = true;
+  for (let i = 0; i <= N; i++) {
+    const a   = (i / N) * 2 * Math.PI;
+    const val = patternFn(a) / maxVal;
+    const r   = val * R;
+    // Polar → canvas: a=0 = right, a=π/2 = up (subtract π/2 for "north up" azimuth)
+    const offset = opts.isElevation ? 0 : -Math.PI / 2;
+    const px  = cx + r * Math.cos(a + offset);
+    const py  = cy - r * Math.sin(a + offset);
+    first ? (ctx.moveTo(px, py), first = false) : ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fillStyle   = opts.fill   || 'rgba(6,182,212,0.12)';
+  ctx.strokeStyle = opts.stroke || '#06b6d4';
+  ctx.lineWidth   = 2;
+  ctx.fill();
+  ctx.stroke();
+
+  // -3 dB contour ring (show what half-power looks like)
+  ctx.beginPath();
+  first = true;
+  for (let i = 0; i <= N; i++) {
+    const a   = (i / N) * 2 * Math.PI;
+    const val = patternFn(a) / maxVal;
+    const r   = Math.min(val / 0.7071, 1) * R * 0.7071;
+    const offset = opts.isElevation ? 0 : -Math.PI / 2;
+    const px  = cx + r * Math.cos(a + offset);
+    const py  = cy - r * Math.sin(a + offset);
+    first ? (ctx.moveTo(px, py), first = false) : ctx.lineTo(px, py);
+  }
+  // Just mark the -3dB ring on the outer grid
+}
+
+// ── Readout calculations ──────────────────────────────────────────────────────
+function calcElMaxAngle(ant, h) {
+  let maxVal = 0, maxEl = 0;
+  for (let el = 0; el <= 90; el += 0.5) {
+    const v = elevPattern(ant, h, el * DEG);
+    if (v > maxVal) { maxVal = v; maxEl = el; }
+  }
+  return maxEl;
+}
+
+function calcAzBeamwidth(azFn) {
+  const N = 3600;
+  let maxVal = 0, maxIdx = 0;
+  for (let i = 0; i < N; i++) {
+    const v = azFn(i / N * 2 * Math.PI);
+    if (v > maxVal) { maxVal = v; maxIdx = i; }
+  }
+  if (maxVal < 1e-9) return 360;
+  const thresh = maxVal * 0.7071; // -3 dB
+  // Sweep outward from max to find half-power edges
+  let leftEdge = maxIdx, rightEdge = maxIdx;
+  for (let d = 1; d < N; d++) {
+    if (azFn(((maxIdx + d) % N) / N * 2 * Math.PI) < thresh) { rightEdge = (maxIdx + d) % N; break; }
+  }
+  for (let d = 1; d < N; d++) {
+    if (azFn(((maxIdx - d + N) % N) / N * 2 * Math.PI) < thresh) { leftEdge = (maxIdx - d + N) % N; break; }
+  }
+  let bw = ((rightEdge - leftEdge + N) % N) / N * 360;
+  if (bw > 180) bw = 360 - bw;
+  return bw;
+}
+
+// ── Resize & update ───────────────────────────────────────────────────────────
+function canvasSize() {
+  const plotWrap = document.querySelector('.plot-wrap');
+  const pw = plotWrap ? plotWrap.getBoundingClientRect().width : 240;
+  return Math.max(160, Math.floor(Math.min(pw - 16, 280)));
+}
+
+function update() {
+  const antKey = document.getElementById('sel-ant').value;
+  const ant    = ANTENNAS[antKey];
+  const hSlide = +document.getElementById('sH').value;
+  const fMHz   = +document.getElementById('sF').value;
+  const h_lambda = hSlide / 10; // slider 1-30 → 0.1–3.0 λ
+
+  document.getElementById('vH').textContent = (h_lambda).toFixed(1) + ' λ';
+  document.getElementById('vF').textContent = fMHz + ' MHz';
+
+  // Height control visibility
+  document.getElementById('height-ctrl').style.opacity = ant.isHorizontal ? '1' : '0.4';
+
+  const sz = canvasSize();
+
+  // ── Azimuth plot ──
+  const azCanvas = document.getElementById('azCanvas');
+  azCanvas.width = azCanvas.height = sz;
+
+  // Azimuth labels: N/S/E/W
+  const azLabels = { 0: 'N', 90: 'E', 180: 'S', 270: 'W' };
+  // For Yagi, label forward direction
+  if (antKey === 'yagi3' || antKey === 'yagi5') azLabels[0] = '→';
+
+  drawPolar(azCanvas, ant.azimuth, {
+    isElevation: false,
+    fill:   'rgba(6,182,212,0.13)',
+    stroke: '#06b6d4',
+    labels: azLabels
+  });
+
+  // ── Elevation plot ──
+  const elCanvas = document.getElementById('elCanvas');
+  elCanvas.width = sz; elCanvas.height = Math.round(sz * 0.75);
+
+  const elFn = a => {
+    // a=0 → right (horizon), a=π/2 → top (zenith); only upper half has signal
+    if (a > Math.PI && a < 2 * Math.PI) return 0;
+    return elevPattern(ant, h_lambda, a <= Math.PI ? a : 2 * Math.PI - a);
+  };
+
+  drawPolar(elCanvas, elFn, {
+    isElevation: true,
+    fill:   'rgba(245,158,11,0.12)',
+    stroke: '#f59e0b',
+    labels: {}
+  });
+
+  // ── Readouts ──
+  const maxElAngle = ant.isHorizontal ? calcElMaxAngle(ant, h_lambda) : 0;
+  const bw = calcAzBeamwidth(ant.azimuth);
+
+  document.getElementById('ro-gain').textContent = ant.gain_dBi.toFixed(1) + ' dBi';
+  document.getElementById('ro-ftb').textContent  = ant.ftb ? ant.ftb + ' dB' : '—';
+  document.getElementById('ro-el').textContent   = ant.isHorizontal
+      ? maxElAngle.toFixed(0) + '°'
+      : '0° (gnd wave)';
+
+  const bwStr = bw >= 355 ? '360° (omni)' : bw.toFixed(0) + '°';
+  document.getElementById('ro-bw').textContent = bwStr;
+
+  document.getElementById('ro-ftb').className = ant.ftb ? 'ro-val amber' : 'ro-val dim';
+
+  let note = '';
+  if (antKey === 'dipole' && h_lambda < 0.26) {
+    note = 'At h < λ/4 the main lobe is near-vertical — good for NVIS propagation.';
+  } else if (antKey === 'vertical') {
+    note = 'Vertical monopole: height slider does not apply (ground-mounted model).';
+  } else if (antKey === 'yagi3' || antKey === 'yagi5') {
+    note = '0° in the azimuth plot is the forward/boom direction.';
+  }
+  document.getElementById('ro-note').textContent = note;
+}
+
+window.addEventListener('resize', update);
+update();
+</script>
+</main>
+</body>
+</html>
