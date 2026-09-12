@@ -236,5 +236,17 @@ window.SEARCH_INDEX = [
                "modulation", "demodulation", "bandwidth", "selectivity", "sensitivity",
                "3A", "3C", "3E", "3G", "3H", "3I", "3K", "3M", "intermediate section 3"],
     sections: ["Transmitters", "Receivers", "Modulation", "Filters"]
+  },
+  {
+    title: "Section 4: Feeders & Antennas — Intermediate",
+    url: "/pages/study/intermediate/section-4-feeders-antennas.html",
+    description: "Study notes for Section 4 of the Intermediate licence: SWR, reflection coefficient, return loss, coaxial cable, baluns, antenna matching, antenna types, gain, radiation patterns",
+    keywords: ["feeders", "antennas", "SWR", "VSWR", "standing wave ratio", "reflection coefficient",
+               "return loss", "coaxial", "coax", "ladder line", "balanced feeder", "velocity factor",
+               "balun", "choke balun", "impedance matching", "ATU", "AMU", "antenna tuning unit",
+               "dipole", "Yagi", "vertical", "radiation pattern", "antenna gain", "dBi", "dBd",
+               "beamwidth", "front-to-back ratio", "polarisation", "feedpoint impedance",
+               "antenna traps", "EIRP", "4A", "4B", "4C", "4D", "4E", "4F", "intermediate section 4"],
+    sections: ["Antenna Fundamentals", "Standing Waves & SWR", "Feeders", "Baluns", "Antenna Matching", "Antenna Concepts"]
   }
 ];
