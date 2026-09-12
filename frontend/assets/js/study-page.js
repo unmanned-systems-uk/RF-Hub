@@ -80,7 +80,11 @@ input.sidebar-check { accent-color: var(--accent-h); margin-right: 0.35rem; curs
 .study-resume-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
 #study-resume-card { display: none; }
 #study-resume-card.visible { display: block; }
-main.study-page-main { display: flex; gap: 2rem; align-items: flex-start; }
+main.study-page-main {
+  display: flex; gap: 2rem; align-items: flex-start;
+  max-width: 1280px; margin-left: auto; margin-right: auto;
+  padding-left: 2rem; padding-right: 2rem;
+}
 main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     `;
     document.head.appendChild(style);
@@ -127,8 +131,50 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
 
     const user = getUser();
     const pathname = window.location.pathname;
+    const root = document.querySelector('main') || document.body;
 
-    // Add mobile hamburger button
+    // ── Change 1: Discover headings FIRST, before any DOM restructuring ───────
+    //
+    // Our study pages place IDs on <section class="chapter" id="ch-5a">,
+    // not on the <h2> inside. Fall back to section[id] > h2 so the sidebar
+    // always populates on these pages, and synthesise IDs for h3 sub-items.
+
+    const seen = new Set();
+    const headings = [];
+
+    // Explicit h2[id] / h3[id] (future-proof for pages that do have IDs on headings)
+    Array.from(root.querySelectorAll('h2[id], h3[id]')).forEach(function (h) {
+      if (!seen.has(h)) { seen.add(h); headings.push(h); }
+    });
+
+    // Implicit h2: section[id] > h2 — attribute the section's ID to the heading
+    Array.from(root.querySelectorAll('section[id] > h2')).forEach(function (h) {
+      if (!h.id) h.id = h.closest('section[id]').id;
+      if (!seen.has(h)) { seen.add(h); headings.push(h); }
+    });
+
+    // Implicit h3: h3 inside section[id] — synthesise slug-based IDs
+    Array.from(root.querySelectorAll('section[id] h3')).forEach(function (h3) {
+      if (!h3.id) {
+        var slug = h3.textContent.trim().toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        h3.id = h3.closest('section[id]').id + '-' + slug;
+      }
+      if (!seen.has(h3)) { seen.add(h3); headings.push(h3); }
+    });
+
+    // Restore DOM order (concat above may interleave)
+    headings.sort(function (a, b) {
+      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1;
+    });
+
+    // ── Change 2: Guard — if no headings, hide mount and bail ─────────────────
+    if (!headings.length) {
+      mount.style.display = 'none';
+      return;
+    }
+
+    // ── Add mobile hamburger ──────────────────────────────────────────────────
     const toggleBtn = document.createElement('button');
     toggleBtn.id = 'study-sidebar-toggle';
     toggleBtn.textContent = '☰';
@@ -138,10 +184,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     });
     document.body.appendChild(toggleBtn);
 
-    // Collect headings from <main> or <body>
-    const root = document.querySelector('main') || document.body;
-
-    // Wrap existing main content in .study-content-wrap (exclude the mount itself)
+    // ── Auto-wrap: runs AFTER heading check (Change 2 guard passed) ───────────
     if (root.tagName === 'MAIN') {
       root.classList.add('study-page-main');
       const existingChildren = Array.from(root.childNodes).filter(function (node) {
@@ -150,7 +193,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       const wrap = document.createElement('div');
       wrap.className = 'study-content-wrap';
       existingChildren.forEach(function (node) { wrap.appendChild(node); });
-      // Determine where to insert: before mount if mount is in root, else append
       if (mount.parentNode === root) {
         root.insertBefore(wrap, mount);
       } else {
@@ -158,23 +200,13 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       }
     }
 
-    // Collect h2 and h3 elements with id attributes
-    const contentRoot = root.querySelector('.study-content-wrap') || root;
-    const headings = Array.from(contentRoot.querySelectorAll('h2[id], h3[id]'));
-
-    if (!headings.length) return;
-
     // ── Build sidebar TOC ────────────────────────────────────────────────────
 
     const ul = document.createElement('ul');
     ul.className = 'study-sidebar-list';
 
-    // Map from heading id to <li> for scroll-spy
     const liMap = {};
-
-    // Map from section code to checkbox for progress loading
     const checkboxMap = {};
-
     let currentH2Li = null;
     let currentSubUl = null;
 
@@ -183,7 +215,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       liMap[heading.id] = li;
 
       if (heading.tagName === 'H2') {
-        // Chapter-level item with optional checkbox
         if (user) {
           const cb = document.createElement('input');
           cb.type = 'checkbox';
@@ -197,7 +228,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
             cb.dataset.sectionCode = code;
           }
 
-          // Attach click handler for mark-read
           cb.addEventListener('click', function () {
             handleCheckboxClick(cb, heading, user, pathname);
           });
@@ -213,7 +243,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
         ul.appendChild(li);
 
       } else if (heading.tagName === 'H3') {
-        // Sub-item nested under current h2
         if (!currentSubUl) {
           currentSubUl = document.createElement('ul');
           currentSubUl.className = 'study-sidebar-sub';
@@ -231,7 +260,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
         currentSubUl.appendChild(li);
       }
 
-      // Smooth scroll on link click
       const anchor = li.querySelector('a');
       if (anchor) {
         anchor.addEventListener('click', function (e) {
@@ -245,7 +273,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
 
     // ── Scroll-spy ───────────────────────────────────────────────────────────
 
-    // Dwell timers for auto-mark (§5)
     const dwellTimers = {};
 
     const observer = new IntersectionObserver(function (entries) {
@@ -254,11 +281,9 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
         const li = liMap[id];
 
         if (entry.isIntersecting) {
-          // Set active
           Object.values(liMap).forEach(function (el) { el.classList.remove('active'); });
           if (li) li.classList.add('active');
 
-          // Start dwell timer for h2 headings only (§5)
           if (entry.target.tagName === 'H2' && user) {
             if (!dwellTimers[id]) {
               dwellTimers[id] = setTimeout(function () {
@@ -276,7 +301,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
           }
 
         } else {
-          // Cancel dwell timer if heading leaves viewport before 15s
           if (dwellTimers[id]) {
             clearTimeout(dwellTimers[id]);
             delete dwellTimers[id];
@@ -293,7 +317,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       loadProgress(user, pathname, checkboxMap, mount);
     }
 
-    // ── Handle intermediate index resume card (§6) ────────────────────────────
+    // ── Handle intermediate index resume card ─────────────────────────────────
 
     if (pathname.includes('/study/intermediate/index') && user) {
       loadResumeCard(user);
@@ -303,12 +327,12 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
   // ─── 5. Checkbox click handler ───────────────────────────────────────────────
 
   function handleCheckboxClick(cb, heading, user, pathname) {
-    const previousState = !cb.checked; // state before click (we optimistically apply new state)
+    const previousState = !cb.checked;
     const code = extractSectionCode(heading.textContent.trim());
     if (!code) return;
 
     postMarkRead(user, pathname, code, heading).catch(function () {
-      cb.checked = previousState; // revert
+      cb.checked = previousState;
       showToast("Couldn't save — try again");
     });
   }
@@ -335,7 +359,6 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
   // ─── 7. Load progress ────────────────────────────────────────────────────────
 
   function loadProgress(user, pathname, checkboxMap, mount) {
-    // Load completed sections
     fetch(API_BASE + '/user/' + user.id)
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
@@ -351,14 +374,12 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       })
       .catch(function () {});
 
-    // Load resume recommendation (for banner on current page)
     fetch(API_BASE + '/recommendations/' + user.id)
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !data.resume) return;
         const resume = data.resume;
         if (resume.page_url !== pathname) return;
-        // Show resume banner above sidebar list
         const banner = document.createElement('div');
         banner.className = 'study-resume-banner';
         const anchor = resume.section_anchor || '';
