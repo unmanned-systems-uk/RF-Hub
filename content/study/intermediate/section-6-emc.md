@@ -143,14 +143,7 @@ If your transmissions are causing interference, the first thing to check is whet
 
 Good cable management prevents many EMC problems before they start. The shack layout matters:
 
-```
-Mains →[ferrite]→[PSU]→────────→[TX/RX]→[SWR]→[ATU]→[Coax]→ Antenna
-                                    ↑                              
-                          [screened microphone lead]
-                          [screened audio cables]
-```
-
-*(Fig 8.2 equivalent — RSGB Good Radio Housekeeping)*
+![EMC in a radio station — mains filtering, screened cables, physical route separation and RF earthing all work together to keep the station clean and reliable.](/assets/images/study/section-6/emc-station-layout.png)
 
 **Principles:**
 - **Physical separation:** keep RF cables away from mains cables, audio cables, and control cables. The coupling between cables decreases with distance (falls roughly as 1/distance). Even 20–30 cm of separation can make a significant difference.
