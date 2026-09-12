@@ -288,6 +288,20 @@ window.SEARCH_INDEX = [
     sections: ["Mains Electrical Safety", "Working on Live Circuits", "RF Burns & Exposure", "Antenna Work at Height", "Battery Safety", "Soldering Safety", "Fire & Emergency", "Environmental Safety & Lightning"]
   },
   {
+    title: "Section 9: Measurements & Test Equipment — Intermediate",
+    url: "/pages/study/intermediate/section-9-measurements.html",
+    description: "Study notes for Section 9 of the Intermediate licence: multimeters, oscilloscopes, signal generators, SWR meters, spectrum analysers, dip meters, antenna analysers, dummy loads, test setups, and safety during testing",
+    keywords: ["measurements", "test equipment", "multimeter", "voltmeter", "ammeter", "ohmmeter",
+               "oscilloscope", "V/div", "time/div", "Vpp", "frequency measurement", "signal generator",
+               "AF generator", "RF generator", "function generator", "SWR meter", "power meter",
+               "directional coupler", "reflected power", "spectrum analyser", "dBm", "harmonics",
+               "tinySA", "RSA5065N", "dip meter", "antenna analyser", "dummy load", "attenuator",
+               "receiver sensitivity", "transmitter test", "calibration", "fault finding",
+               "virtual multimeter", "virtual oscilloscope", "virtual spectrum analyser",
+               "9A", "9B", "9C", "9D", "9E", "9F", "9G", "9H", "intermediate section 9"],
+    sections: ["Introduction to Test Equipment", "The Multimeter", "The Oscilloscope", "Signal Generators", "SWR Meters & Power Meters", "Spectrum Analysers", "Dip Meters & Antenna Analysers", "Test Setups & Procedures"]
+  },
+  {
     title: "Section 4: Feeders & Antennas — Intermediate",
     url: "/pages/study/intermediate/section-4-feeders-antennas.html",
     description: "Study notes for Section 4 of the Intermediate licence: SWR, reflection coefficient, return loss, coaxial cable, baluns, antenna matching, antenna types, gain, radiation patterns",

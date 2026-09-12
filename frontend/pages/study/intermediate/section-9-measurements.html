@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 9: Measurements &amp; Test Equipment — Intermediate Licence Study | RF-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/css/rf-hub-v2.css">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal pre { margin: 0.5rem 0 0; font-size: 0.8rem; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="../../../index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../frequency-bands.html">Spectrum</a></li>
+        <li><a href="../../antennas.html">Antennas</a></li>
+        <li><a href="../../learning-path.html">Learn</a></li>
+        <li><a href="../../sidebands/">Sidebands</a></li>
+        <li><a href="../../gsm-cellular.html">GSM</a></li>
+        <li><a href="../../blog/">Blog</a></li>
+        <li><a href="../" class="active">Study</a></li>
+        <li><a href="../../exam-practice/">Exams</a></li>
+        <li><a href="../../about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Intermediate</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 9</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Intermediate Licence</span>
+        <span class="badge badge--warning">~3 / 46 questions &nbsp;·&nbsp; ~7%</span>
+      </div>
+      <h1>Measurements &amp; Test Equipment</h1>
+      <p class="hero-subtitle">Multimeters, oscilloscopes, signal generators, SWR meters, spectrum analysers, antenna analysers, and dummy loads — how to connect, read, and use each correctly for fault-finding, calibration, and licence-condition testing.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-9a">9A Introduction to Test Equipment</a></li>
+        <li><a href="#ch-9b">9B The Multimeter</a></li>
+        <li><a href="#ch-9c">9C The Oscilloscope</a></li>
+        <li><a href="#ch-9d">9D Signal Generators</a></li>
+        <li><a href="#ch-9e">9E SWR Meters &amp; Power Meters</a></li>
+        <li><a href="#ch-9f">9F Spectrum Analysers</a></li>
+        <li><a href="#ch-9g">9G Dip Meters &amp; Antenna Analysers</a></li>
+        <li><a href="#ch-9h">9H Test Setups &amp; Procedures</a></li>
+        <li><a href="#ch-9i">9I Safety During Testing</a></li>
+        <li><a href="#ch-9j">★ Self-Check Questions</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container" style="padding-bottom: 2rem;">
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-9a"><span class="toc-code">9A</span>Introduction to Test Equipment</a></li>
+        <li><a href="#ch-9b"><span class="toc-code">9B</span>The Multimeter</a></li>
+        <li><a href="#ch-9c"><span class="toc-code">9C</span>The Oscilloscope</a></li>
+        <li><a href="#ch-9d"><span class="toc-code">9D</span>Signal Generators</a></li>
+        <li><a href="#ch-9e"><span class="toc-code">9E</span>SWR Meters &amp; Power Meters</a></li>
+        <li><a href="#ch-9f"><span class="toc-code">9F</span>Spectrum Analysers</a></li>
+        <li><a href="#ch-9g"><span class="toc-code">9G</span>Dip Meters &amp; Antenna Analysers</a></li>
+        <li><a href="#ch-9h"><span class="toc-code">9H</span>Test Setups &amp; Procedures</a></li>
+        <li><a href="#ch-9i"><span class="toc-code">9I</span>Safety During Testing</a></li>
+        <li><a href="#ch-9j"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ═══════════════════ 9A: INTRODUCTION TO TEST EQUIPMENT ═══════════════════ -->
+    <section class="chapter" id="ch-9a">
+      <div class="chapter-header">
+        <span class="chapter-num">9A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Introduction to Test Equipment</h2>
+
+      <h3>Why Measure?</h3>
+      <p>Test equipment serves four purposes:</p>
+      <ol>
+        <li>Verify a design — does the circuit do what was intended before it is connected to a transceiver?</li>
+        <li>Diagnose faults — where in the signal chain does the signal degrade or disappear?</li>
+        <li>Prove compliance — is the transmitter within its harmonic and power limits?</li>
+        <li>Calibrate — is the instrument itself, or the rig's built-in meter, reading correctly?</li>
+      </ol>
+
+      <h3>Categories of Instrument</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Instruments</th>
+              <th>Measures</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DC/AC electrical</td>
+              <td>Multimeter, LCR meter</td>
+              <td>Voltage, current, resistance, inductance, capacitance</td>
+            </tr>
+            <tr>
+              <td>RF</td>
+              <td>SWR meter, power meter, spectrum analyser, antenna analyser</td>
+              <td>Power, SWR, impedance, frequency, spectral content</td>
+            </tr>
+            <tr>
+              <td>Waveform</td>
+              <td>Oscilloscope</td>
+              <td>Voltage vs time</td>
+            </tr>
+            <tr>
+              <td>Source</td>
+              <td>Signal generator, function generator</td>
+              <td>Injects known signals for testing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Analogue vs Digital Instruments (9A2)</h3>
+
+      <p><strong>Analogue meters</strong> (moving-coil):</p>
+      <ul>
+        <li>A needle deflects across a printed scale, driven by current through a coil in a magnetic field</li>
+        <li>Advantage: easy to follow an unstable or varying reading — the eye can track the needle's movement smoothly</li>
+        <li>Advantage: excellent for peaking and nulling adjustments (ATU tuning, filter peaking) where you want maximum or minimum deflection</li>
+        <li>Disadvantage: harder to read to a precise value; parallax error if viewed from an angle</li>
+        <li>Analogue ohmmeters require <strong>zeroing</strong> before use — connect probes together and adjust until needle reads exactly zero</li>
+      </ul>
+
+      <p><strong>Digital meters (DMM):</strong></p>
+      <ul>
+        <li>Reading displayed as digits on an LCD or LED display</li>
+        <li>Advantage: easy to read a precise value; many decimal places; auto-ranging types select best scale automatically</li>
+        <li>Advantage: much higher input impedance than analogue meters — draws negligible current from the circuit under test</li>
+        <li>Disadvantage: update rate can be slow, making it difficult to track a rapidly changing value</li>
+        <li>Disadvantage: some DMMs are confused by non-sinusoidal AC waveforms</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9A2:</strong> Analogue meters are better for peaking/tuning adjustments where you want to see direction of change. Digital meters are better for precise static readings and have less effect on the circuit being measured.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9B: THE MULTIMETER ═══════════════════ -->
+    <section class="chapter" id="ch-9b">
+      <div class="chapter-header">
+        <span class="chapter-num">9B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Multimeter</h2>
+
+      <p>The multimeter (also called a VOM or DMM) is the most-used instrument in any shack or workshop. For the Intermediate licence, three measurements matter (9A5): Voltage, Current, Resistance.</p>
+
+      <h3>Probes</h3>
+      <p>A multimeter has two probes:</p>
+      <ul>
+        <li>Black probe — negative / common / ground (marked COM)</li>
+        <li>Red probe — positive / live (marked V/Ω/mA or similar)</li>
+      </ul>
+      <p>Probe leads must be well insulated. Never touch probe tips with your fingers while taking measurements.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Never let the two probe tips touch each other</strong> while connected to a circuit. This creates a short circuit. On a powered circuit it can cause circuit damage or a blown multimeter fuse; on a mains circuit it is dangerous.</div>
+      </div>
+
+      <h3>Before Connecting — Range and Mode</h3>
+      <p><strong>Always set the correct function and range before connecting the probes.</strong> Connecting a meter set to current (ammeter) mode across a voltage source effectively short-circuits it through the meter's near-zero internal resistance. Connecting a meter set to voltage mode in series produces only a tiny, misleading reading.</p>
+
+      <p>Range selection:</p>
+      <ul>
+        <li>Manual ranging: start at the <strong>highest range</strong> available, connect, read, then switch to a lower range if needed. Never start on a low range with an unknown input — an analogue meter's needle will crash into the end-stop.</li>
+        <li>Auto-ranging: the meter selects the best range automatically. Simply connect and read.</li>
+      </ul>
+
+      <h3>Measuring Voltage (9A1)</h3>
+      <p>Voltage is always measured <strong>across</strong> (in parallel with) the component or circuit element:</p>
+
+<pre>      ┌────[R1]────┬────[R2]────┐
+      │            │            │
+     Vb          [V]           Vb
+      │            │            │
+      └────────────┴────────────┘
+
+  Voltmeter placed IN PARALLEL with R2</pre>
+
+      <p>Voltmeters are designed to have <strong>very high input resistance</strong> (typically 10 MΩ on a DMM). Only a tiny current flows through the meter.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9A1:</strong> Voltage is measured with the meter in <strong>parallel</strong> with the component. The voltmeter's high impedance means it takes negligible current from the circuit.</div>
+      </div>
+
+      <h3>Measuring Current (9A1)</h3>
+      <p>Current is measured by placing the meter <strong>in series</strong> in the circuit:</p>
+
+<pre>      ┌────[R1]────[A]────[R2]────┐
+      │                           │
+     Vb                          Vb
+      │                           │
+      └───────────────────────────┘
+
+  Ammeter placed IN SERIES — circuit broken and meter inserted</pre>
+
+      <p>In current mode, the ammeter has <strong>very low internal resistance</strong> — it acts like a piece of wire. The current is the same at every point in a series circuit.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>9A1:</strong> Never connect an ammeter in parallel across a component or voltage source. The ammeter's near-zero resistance creates a near-short circuit. At best, the meter's internal fuse blows; at worst the circuit and/or the meter are damaged.</div>
+      </div>
+
+      <p>Note: many multimeters have a <strong>separate input terminal</strong> for current measurements (often labelled A or mA). Check the meter's markings before connecting.</p>
+
+      <h3>Measuring Power with a Voltmeter and Ammeter</h3>
+      <p>For DC power consumed by a load:</p>
+
+<pre>P (watts) = V (volts) × I (amps)</pre>
+
+      <p>Connect a voltmeter <strong>across the load</strong> and an ammeter <strong>in series with the load</strong> simultaneously. Read both, multiply. Example: voltmeter reads 12.6 V, ammeter reads 3.5 A → power = 12.6 × 3.5 = <strong>44.1 W</strong>.</p>
+
+      <h3>Measuring Resistance (9A5)</h3>
+      <p>Set the meter to resistance (Ω) mode. Connect probes across the component — with the component <strong>removed from the circuit</strong> or at least with the circuit de-energised.</p>
+      <ul>
+        <li>Auto-ranging DMM: displays resistance to the best resolution automatically</li>
+        <li>Manual ranging DMM/analogue: start at highest range, work down</li>
+        <li>Analogue meter — zero first: connect probes together and adjust zero-control until needle reads exactly 0 Ω</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Never measure resistance in a live (powered) circuit. The meter applies its own small internal voltage; an external voltage will give a wrong reading and may damage the meter.</div>
+      </div>
+
+      <h3>Continuity Testing</h3>
+      <p>Most multimeters have a <strong>continuity</strong> function — emits an audible beep when probes are connected to a near-zero resistance. Uses:</p>
+      <ul>
+        <li>Checking fuses (beep = good; silence = blown)</li>
+        <li>Checking lamp filaments</li>
+        <li>Tracing wires and identifying which wire is which at the far end of a cable loom</li>
+        <li>Verifying solder joints and connector pins</li>
+      </ul>
+
+      <!-- INTERACTIVE-PLACEHOLDER: virtual-multimeter -->
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9C: THE OSCILLOSCOPE ═══════════════════ -->
+    <section class="chapter" id="ch-9c">
+      <div class="chapter-header">
+        <span class="chapter-num">9C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Oscilloscope</h2>
+
+      <p>An oscilloscope displays <strong>voltage versus time</strong> — it draws the waveform on screen as it changes. This is the only test instrument that shows you the shape of a signal.</p>
+
+      <h3>Key Controls</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Control</th>
+              <th>What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vertical scale (V/div)</td>
+              <td>Sets how many volts each vertical division of the graticule represents</td>
+            </tr>
+            <tr>
+              <td>Horizontal scale (time/div)</td>
+              <td>Sets how many seconds (or ms/µs/ns) each horizontal division represents</td>
+            </tr>
+            <tr>
+              <td>Trigger</td>
+              <td>Tells the scope when to start drawing — usually at a defined voltage level on a rising or falling edge</td>
+            </tr>
+            <tr>
+              <td>Coupling</td>
+              <td>DC = displays signal including any DC offset; AC = blocks the DC component, shows only the AC waveform; GND = disconnects input and shows where the 0 V reference sits</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Reading Waveforms</h3>
+      <p><strong>Peak-to-peak voltage:</strong></p>
+<pre>Vpp = (number of vertical divisions peak-to-peak) × (V/div setting)
+Example: 4 divisions × 2 V/div = 8 Vpp</pre>
+
+      <p><strong>Period and frequency:</strong></p>
+<pre>T (seconds) = (number of horizontal divisions per complete cycle) × (time/div setting)
+f (Hz) = 1 ÷ T
+
+Example: one complete cycle spans 5 divisions; time/div = 1 ms
+T = 5 × 1 ms = 5 ms = 0.005 s
+f = 1 ÷ 0.005 = 200 Hz</pre>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9C1:</strong> The oscilloscope shows waveform shape, period, and amplitude. It is the essential tool for checking modulation depth, waveform distortion, oscillator purity, and audio signal paths.</div>
+      </div>
+
+      <h3>Amateur Radio Uses</h3>
+      <ul>
+        <li>Modulation depth — check AM or FM carrier waveform for overmodulation</li>
+        <li>CW key shaping — verify the transmitter has a correctly shaped key envelope (no hard clicks)</li>
+        <li>Oscillator output — check the waveform of a VFO or crystal oscillator</li>
+        <li>Audio chain — trace audio from microphone preamp through to the modulator</li>
+      </ul>
+
+      <!-- INTERACTIVE-PLACEHOLDER: virtual-oscilloscope -->
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9D: SIGNAL GENERATORS ═══════════════════ -->
+    <section class="chapter" id="ch-9d">
+      <div class="chapter-header">
+        <span class="chapter-num">9D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Signal Generators</h2>
+
+      <p>A signal generator produces a <strong>known frequency at a known amplitude</strong> — it is the "known input" against which you test a receiver, amplifier, or filter.</p>
+
+      <h3>Types</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Frequency range</th>
+              <th>Primary use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Audio signal generator (AF)</td>
+              <td>~10 Hz to 100 kHz</td>
+              <td>Testing audio stages, microphone pre-amps, tone generation</td>
+            </tr>
+            <tr>
+              <td>RF signal generator</td>
+              <td>~100 kHz to several GHz</td>
+              <td>Receiver sensitivity, alignment, filter response</td>
+            </tr>
+            <tr>
+              <td>Function generator</td>
+              <td>AF to several MHz</td>
+              <td>Multiple waveform shapes (sine, square, triangle, pulse) for general circuit testing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Receiver Sensitivity Testing</h3>
+      <p>Inject a signal from an RF signal generator at a known frequency and level:</p>
+      <ol>
+        <li>Connect generator output through an attenuator to the receiver antenna input</li>
+        <li>Set generator to the frequency and level to be tested</li>
+        <li>Measure receiver output (S-meter reading, audio level, or SNR)</li>
+        <li>Reduce generator level until the receiver produces a specified SNR (commonly 10 dB for the "minimum discernible signal")</li>
+      </ol>
+      <p>This gives the receiver's sensitivity in dBm or µV at a specified point.</p>
+
+      <h3>Filter and Amplifier Testing</h3>
+      <p>Sweep the generator frequency across the band of interest while reading the output — this plots the <strong>frequency response</strong> of the device under test. A bandpass filter will show a peak at the centre frequency; a low-pass filter will show a roll-off above its corner frequency.</p>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9E: SWR METERS & POWER METERS ═══════════════════ -->
+    <section class="chapter" id="ch-9e">
+      <div class="chapter-header">
+        <span class="chapter-num">9E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>SWR Meters &amp; Power Meters</h2>
+
+      <h3>How an SWR Meter Works</h3>
+      <p>An SWR meter contains a <strong>directional coupler</strong> that samples both forward power (travelling toward the antenna) and reflected power (returning from the antenna). From these two values, the meter calculates SWR.</p>
+
+<pre>SWR meter internal structure:
+
+  TX ─── [forward coupler] ─── [reverse coupler] ─── Antenna
+                  │                       │
+           Forward power            Reflected power
+           (sampled here)           (sampled here)
+                  └───────────────────────┘
+                       Processed to display SWR</pre>
+
+      <p>Cross-ref: the maths behind SWR is covered fully in <a href="section-4-feeders-antennas.html#ch-4b">§4B</a>.</p>
+
+      <h3>Placement (9B1)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Placement</th>
+              <th>What it reads</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Between TX and ATU</td>
+              <td>SWR as seen by the transmitter output — useful for protecting the PA</td>
+            </tr>
+            <tr>
+              <td>Between ATU and feeder</td>
+              <td>True antenna system SWR — what the ATU is actually matching</td>
+            </tr>
+            <tr>
+              <td>At the far end of a long feeder</td>
+              <td>True antenna SWR — only practical with a remote analyser</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">An SWR meter placed after the ATU will read close to 1:1 even if the antenna itself is badly mismatched — the ATU is hiding the mismatch. This tells you the PA is protected but tells you nothing about the antenna's actual impedance. See <a href="section-4-feeders-antennas.html#ch-4e">§4E</a>.</div>
+      </div>
+
+      <h3>Power Meters</h3>
+      <p>A power meter measures the actual RF power being delivered to a load. The meter must be:</p>
+      <ul>
+        <li>Rated for at least the maximum power you will apply (use a meter rated for 150 W minimum when testing a 100 W transmitter)</li>
+        <li>Matched to 50 Ω (standard amateur feeder impedance)</li>
+        <li>Calibrated for the frequency range in use</li>
+      </ul>
+      <p>Power can vary between modes:</p>
+      <ul>
+        <li>CW: constant carrier, easy to read</li>
+        <li>FM: constant carrier at full deviation — use a fixed audio tone to maintain constant deviation</li>
+        <li>SSB: varies with speech; use a fixed audio tone (1 kHz sine wave) for a steady reading</li>
+      </ul>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9F: SPECTRUM ANALYSERS ═══════════════════ -->
+    <section class="chapter" id="ch-9f">
+      <div class="chapter-header">
+        <span class="chapter-num">9F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Spectrum Analysers</h2>
+
+      <h3>What a Spectrum Analyser Shows</h3>
+      <p>A spectrum analyser displays <strong>signal amplitude versus frequency</strong>. Where an oscilloscope shows voltage against time, a spectrum analyser shows what frequencies are present in a signal and how strong each is.</p>
+
+<pre>dBm |
+ 0  |     ██
+-10 |     ██
+-20 |     ██    █
+-30 |     ██    ██           █
+-40 |     ██    ██           ██
+    └─────────────────────────────── MHz
+          f   2f  3f              (fundamental + harmonics visible)</pre>
+
+      <p>The vertical axis is <strong>dBm</strong> (power relative to 1 mW). The horizontal axis is <strong>frequency</strong>.</p>
+
+      <h3>Amateur Radio Uses</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Use</th>
+              <th>How</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Harmonic check (licence condition)</td>
+              <td>Transmit into dummy load; look for signals at 2f, 3f, etc. on the spectrum display</td>
+            </tr>
+            <tr>
+              <td>Spurious emission hunt</td>
+              <td>Identify any signal appearing where it should not be</td>
+            </tr>
+            <tr>
+              <td>EMC debugging (cross-ref <a href="section-6-emc.html#ch-6b">§6B</a>)</td>
+              <td>Identify the frequency of a noise source to determine its likely origin</td>
+            </tr>
+            <tr>
+              <td>Filter response</td>
+              <td>Inject a sweep from a signal generator, monitor the output on the spectrum analyser</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Modern Amateur Equipment</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Examples</th>
+              <th>Capability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SDR-based</td>
+              <td>RTL-SDR dongle + SDR# software</td>
+              <td>~24 MHz to 1.7 GHz; limited dynamic range; adequate for general HF/VHF hunting</td>
+            </tr>
+            <tr>
+              <td>Dedicated hobbyist</td>
+              <td>tinySA, tinySA Ultra</td>
+              <td>100 kHz to 350 MHz / 960 MHz; better calibration; small and portable</td>
+            </tr>
+            <tr>
+              <td>Mid-range lab</td>
+              <td>Rigol DSA815</td>
+              <td>9 kHz to 1.5 GHz; lab-grade dynamic range; suitable for licence-condition harmonic checks</td>
+            </tr>
+            <tr>
+              <td>High-end</td>
+              <td>Rigol RSA5065N, Keysight</td>
+              <td>9 kHz to 6.5 GHz; real-time spectrum analysis, vector signal analysis</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text">See the sideband deep-dives for RSA5065N-specific procedures: <a href="/pages/sidebands/vswr-bridge-measurement.html" target="_blank">VSWR bridge measurement</a> and <a href="/pages/blog/understanding-s11.html" target="_blank">Understanding S11</a>.</div>
+      </div>
+
+      <!-- INTERACTIVE-PLACEHOLDER: virtual-spectrum-analyser -->
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9G: DIP METERS & ANTENNA ANALYSERS ═══════════════════ -->
+    <section class="chapter" id="ch-9g">
+      <div class="chapter-header">
+        <span class="chapter-num">9G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Dip Meters &amp; Antenna Analysers</h2>
+
+      <h3>The Dip Meter</h3>
+      <p>A dip meter (or grid-dip oscillator) is a tuneable LC oscillator with an exposed coil. When held near an external tuned circuit (an antenna, an inductor, a coax stub), energy couples from the oscillator into the external circuit. When the oscillator frequency matches the resonant frequency of the external circuit, maximum energy transfers — and the oscillator's own amplitude <strong>dips</strong>, indicated by a meter built into the instrument.</p>
+      <p>Use: find the resonant frequency of an antenna or tuned circuit <strong>without connecting test leads</strong> — purely by proximity coupling.</p>
+
+      <h3>The Antenna Analyser</h3>
+      <p>A modern antenna analyser (RigExpert AA-series, Nano VNA, MFJ-259) is the practical replacement for the dip meter. It sweeps a range of frequencies and simultaneously measures:</p>
+      <ul>
+        <li>SWR at each frequency</li>
+        <li>Impedance (magnitude and phase, or R and X components)</li>
+        <li>Resonant frequency (where X = 0)</li>
+      </ul>
+      <p>Results are displayed as a plot vs frequency — far more information than a dip meter. Cross-ref: see <a href="section-4-feeders-antennas.html#ch-4b">§4B</a> and <a href="section-4-feeders-antennas.html#ch-4e">§4E</a> for how to interpret SWR and impedance plots.</p>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9H: TEST SETUPS & PROCEDURES ═══════════════════ -->
+    <section class="chapter" id="ch-9h">
+      <div class="chapter-header">
+        <span class="chapter-num">9H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Test Setups &amp; Procedures</h2>
+
+      <h3>Transmitter Test Setup</h3>
+      <p>The basic transmitter test uses a <strong>dummy load</strong> — a 50 Ω non-inductive resistive load that absorbs all RF power as heat. The dummy load prevents radiation during testing and provides a stable, known load impedance.</p>
+
+<pre>TX → [SWR meter] → [Dummy load]
+         │
+    [Directional coupler] → [Spectrum analyser or power meter]</pre>
+
+      <p>Key points:</p>
+      <ul>
+        <li>The dummy load must be <strong>rated for the full transmit power</strong> (plus headroom) — a 100 W TX needs at least a 100 W rated load</li>
+        <li>The dummy load must be rated for the <strong>frequency range</strong> in use</li>
+        <li>Never transmit into an open (unconnected) antenna port — the resulting very high SWR stresses the PA</li>
+      </ul>
+
+      <h3>Receiver Test Setup</h3>
+<pre>[RF signal generator] → [Attenuator(s)] → [Receiver antenna input]</pre>
+
+      <ul>
+        <li>The attenuator pads down the generator output to the very low levels a receiver input expects</li>
+        <li>The attenuator also presents a stable 50 Ω source impedance to the receiver</li>
+        <li>Measure the receiver's output: S-meter reading, audio level into a voltmeter, or an SNR measurement</li>
+      </ul>
+
+      <h3>Common Measurement Errors</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Error</th>
+              <th>Consequence</th>
+              <th>Prevention</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wrong function or range selected before connecting</td>
+              <td>Meter or circuit damaged</td>
+              <td>Always set function/range first</td>
+            </tr>
+            <tr>
+              <td>Ammeter connected in parallel across voltage</td>
+              <td>Near-short circuit; blown fuse</td>
+              <td>Connect ammeters IN SERIES only</td>
+            </tr>
+            <tr>
+              <td>SWR meter placed after the ATU</td>
+              <td>Reads 1:1 even with badly mismatched antenna</td>
+              <td>Place between TX and ATU for PA protection</td>
+            </tr>
+            <tr>
+              <td>Power meter range too low</td>
+              <td>Meter damaged; incorrect reading</td>
+              <td>Use a meter rated above maximum expected power</td>
+            </tr>
+            <tr>
+              <td>Measuring resistance in a live circuit</td>
+              <td>Wrong reading; possible meter damage</td>
+              <td>De-energise and discharge capacitors before measuring resistance</td>
+            </tr>
+            <tr>
+              <td>Analogue ohmmeter not zeroed</td>
+              <td>Wrong reading</td>
+              <td>Always zero the ohmmeter before use</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9I: SAFETY DURING TESTING ═══════════════════ -->
+    <section class="chapter" id="ch-9i">
+      <div class="chapter-header">
+        <span class="chapter-num">9I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Safety During Testing</h2>
+
+      <p>This section repeats the key safety rules from <a href="section-8-safety.html">§8</a> as they apply specifically to test equipment use.</p>
+
+      <ul>
+        <li><strong>Live circuits (<a href="section-8-safety.html#ch-8b">§8B</a>):</strong> Follow the one-hand rule and never work alone when fault-finding with live equipment powered on. Keep a multimeter set on voltage range ready to verify de-energised before touching.</li>
+        <li><strong>RF exposure (<a href="section-8-safety.html#ch-8c">§8C</a> / <a href="section-1-licensing.html#ch-1g">§1G</a>):</strong> When transmitting for tests, even into a dummy load, keep away from the feeder and dummy load — they carry RF current and can cause burns. Use minimum power necessary for the test.</li>
+        <li><strong>Capacitor discharge (<a href="section-8-safety.html#ch-8b">§8B</a>):</strong> Power supplies discharged fully before internal measurements. Verify with a voltmeter before touching.</li>
+        <li><strong>Battery charging (<a href="section-8-safety.html#ch-8e">§8E</a>):</strong> If using portable equipment on battery, ensure correct charging — see §8E for lead-acid and lithium safety.</li>
+        <li><strong>Spectrum analyser input limits:</strong> Never connect a transmitter directly to a spectrum analyser input. Use a directional coupler or high-power attenuator rated for the transmit power — input stages on analysers are fragile and destroyed instantly by transmit-level power.</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">A spectrum analyser input is typically rated at <strong>+20 to +30 dBm maximum</strong> (100 mW to 1 W). A 100 W transmitter delivers +50 dBm. Connecting directly will destroy the analyser's input immediately and permanently.</div>
+      </div>
+
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 9J: SELF-CHECK ═══════════════════ -->
+    <section class="chapter" id="ch-9j">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your knowledge</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. A lamp is drawing current from a battery. How do you connect a multimeter to measure the current?</p>
+          <button class="btn-reveal" data-target="sc-9j-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-1" hidden>
+            <p><strong>In series</strong> — break the circuit between the battery and the lamp, and insert the ammeter so that the full current flows through it. In current mode, the ammeter has near-zero resistance and acts like a wire; placing it in series causes minimal disturbance to the circuit.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. You accidentally connect a digital multimeter set to current (ammeter) mode across a 12 V battery. What happens?</p>
+          <button class="btn-reveal" data-target="sc-9j-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-2" hidden>
+            <p><strong>The meter's internal fuse blows</strong> (at minimum). The ammeter's near-zero internal resistance effectively short-circuits the battery terminal to terminal through the meter. A large current flows, limited only by the battery's internal resistance. The blown fuse protects the meter's internal circuitry from further damage, but the fuse must be replaced before the meter will work again.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. You want to measure the resonant frequency of a home-brew dipole without cutting the feedline. Which instrument is appropriate?</p>
+          <button class="btn-reveal" data-target="sc-9j-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-3" hidden>
+            <p>A <strong>dip meter</strong> (or modern <strong>antenna analyser</strong>). The dip meter couples inductively to the antenna feedpoint without a direct connection; the frequency at which the oscillator's amplitude dips indicates the antenna's resonant frequency. A modern antenna analyser connects directly to the feedpoint but provides much more information (SWR and impedance versus frequency across a sweep).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. An oscilloscope is displaying a sine wave. The waveform spans 4 vertical divisions peak-to-peak and the vertical scale is set to 500 mV/div. The time/div is set to 2 ms and one complete cycle occupies 5 horizontal divisions. What is the peak-to-peak voltage and the frequency?</p>
+          <button class="btn-reveal" data-target="sc-9j-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-4" hidden>
+            <p><strong>Vpp = 4 × 500 mV = 2 V</strong> / <strong>T = 5 × 2 ms = 10 ms</strong> / <strong>f = 1 ÷ 0.010 = 100 Hz</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. Where should an SWR meter be placed to protect the transmitter's PA from an antenna mismatch?</p>
+          <button class="btn-reveal" data-target="sc-9j-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-5" hidden>
+            <p><strong>Between the transmitter output and the ATU (antenna matching unit).</strong> Placed here, the meter shows the SWR that the PA "sees". If the SWR rises above a safe level, the PA is at risk. Placing the meter between the ATU and the feeder shows true antenna SWR but does not protect the PA — the ATU transforms the impedance and the PA sees whatever the ATU presents to it.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. You want to check your transmitter's harmonic output to satisfy the licence's requirement for clean transmissions. What is the correct test setup?</p>
+          <button class="btn-reveal" data-target="sc-9j-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-6" hidden>
+            <p><strong>TX → SWR meter → dummy load</strong>, with the spectrum analyser connected via a directional coupler or high-power attenuator between the SWR meter and dummy load. The dummy load prevents radiation. The spectrum analyser displays the fundamental and any harmonics. Never connect the spectrum analyser directly to the TX output — its input cannot tolerate transmit power levels.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. Why does a digital multimeter (DMM) disturb the circuit under test less than an analogue multimeter when measuring voltage?</p>
+          <button class="btn-reveal" data-target="sc-9j-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-9j-7" hidden>
+            <p><strong>The DMM has much higher input impedance</strong> (typically 10 MΩ) compared to an analogue meter (which may be only 20 kΩ/V). A higher-impedance voltmeter draws less current from the circuit under test, causing less voltage drop across the source resistance and giving a more accurate reading. In circuits with high source impedances, a low-impedance voltmeter would significantly load the circuit and give a falsely low reading.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ SECTION NAV ═══════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-8-safety.html" class="section-nav__link">&larr; Section 8: Safety</a>
+      <a href="#" class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="./" class="section-nav__link">Back to Intermediate &rarr;</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" style="margin-top:4rem;">
+    <div class="footer-container">
+      <p class="footer-copy" style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    (function () {
+      const bar = document.getElementById('progress-bar');
+      function update() {
+        const scrolled = window.scrollY;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    // Self-check reveal buttons
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var hidden = target.hasAttribute('hidden');
+        if (hidden) {
+          target.removeAttribute('hidden');
+          btn.textContent = 'Hide answer';
+        } else {
+          target.setAttribute('hidden', '');
+          btn.textContent = 'Show answer';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
