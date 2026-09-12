@@ -473,14 +473,7 @@ How a trap works:
 
 <!-- SVG: trapped-dipole-diagram — show 40m dipole with 20m traps inserted, label sections -->
 
-```
-     ← 5 m →    [TRAP]    ← 5 m →       [END INSULATOR]
-  ════════════  parallel  ════════════════════════════════
-  centre                              (outer section only
-  insulator                           active on 40 m,
-  feedpoint                           inner section active
-  50 Ω coax                           on 20 m)
-```
+![40 m / 20 m trap dipole — parallel LC traps at ~14 MHz isolate the outer sections on 20 m and pass current through on 40 m. Single antenna, two bands.](/assets/images/study/section-4/trap-dipole-40m-20m.png)
 
 **Fig 12.7 equivalent:** A 'trapped dipole' uses RF traps to disconnect parts of the antenna above the trap frequency.
 
