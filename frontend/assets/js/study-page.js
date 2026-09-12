@@ -90,18 +90,36 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     document.head.appendChild(style);
   }
 
-  // ─── 1. Auth helper ──────────────────────────────────────────────────────────
+  // ─── 1. Auth helpers ─────────────────────────────────────────────────────────
 
   function getUser() {
     if (window.__RFH_USER && window.__RFH_USER.id) return window.__RFH_USER;
     try {
-      const raw = localStorage.getItem('rfh_user');
+      // Site convention (login.html + nav-auth.js): 'currentUser' + 'authToken'
+      const raw = localStorage.getItem('currentUser');
       if (raw) {
         const u = typeof raw === 'string' ? JSON.parse(raw) : raw;
         if (u && u.id) return u;
       }
+      // Legacy fallback
+      const legacy = localStorage.getItem('rfh_user');
+      if (legacy) {
+        const u = typeof legacy === 'string' ? JSON.parse(legacy) : legacy;
+        if (u && u.id) return u;
+      }
     } catch (_) {}
     return null;
+  }
+
+  function getAuthToken() {
+    return localStorage.getItem('authToken') || null;
+  }
+
+  function authHeaders(extra) {
+    const h = extra || {};
+    const t = getAuthToken();
+    if (t) h['Authorization'] = 'Bearer ' + t;
+    return h;
   }
 
   // ─── 2. Toast helper ─────────────────────────────────────────────────────────
@@ -343,7 +361,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
     const elapsed = Math.round((Date.now() - pageLoadTime) / 1000);
     return fetch(API_BASE + '/mark-read', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         user_id: user.id,
         page_url: pathname,
@@ -359,7 +377,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
   // ─── 7. Load progress ────────────────────────────────────────────────────────
 
   function loadProgress(user, pathname, checkboxMap, mount) {
-    fetch(API_BASE + '/user/' + user.id)
+    fetch(API_BASE + '/user/' + user.id, { headers: authHeaders() })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !Array.isArray(data.progress)) return;
@@ -374,7 +392,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
       })
       .catch(function () {});
 
-    fetch(API_BASE + '/recommendations/' + user.id)
+    fetch(API_BASE + '/recommendations/' + user.id, { headers: authHeaders() })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !data.resume) return;
@@ -400,7 +418,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
 
   function loadResumeCard(user) {
     const card = document.getElementById('study-resume-card');
-    fetch(API_BASE + '/recommendations/' + user.id)
+    fetch(API_BASE + '/recommendations/' + user.id, { headers: authHeaders() })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !data.resume) {
