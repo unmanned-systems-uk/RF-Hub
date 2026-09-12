@@ -348,8 +348,9 @@ function drawPlot() {
     const length = +slLength.value;
     const swr    = +slSwr.value / 10;
 
-    const W = canvas.width;
-    const H = canvas.height;
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.width  / dpr;
+    const H = canvas.height / dpr;
     const PAD_L = 52, PAD_R = 14, PAD_T = 14, PAD_B = 36;
     const plotX = PAD_L, plotW = W - PAD_L - PAD_R;
     const plotY = PAD_T, plotH = H - PAD_T - PAD_B;
