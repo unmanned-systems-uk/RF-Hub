@@ -84,7 +84,7 @@
 - **Label:** "Interactive impedance triangle"
 - **Type:** iframe-embed
 - **Embed anchor:** `#2f--impedance-resonance-q-factor`
-- **Notes:** The sideband page embeds this at `#section-impedance`. lc-filter.html is referenced in task description but does **not** exist in `/frontend/interactives/` — do not link.
+- **Notes:** The sideband page embeds this at `#section-impedance`. lc-filter.html exists in `/frontend/interactives/` and is linked.
 
 ### 2G — Semiconductors, Transformers
 - (no existing content)
