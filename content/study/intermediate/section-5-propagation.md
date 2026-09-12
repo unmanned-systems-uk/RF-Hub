@@ -272,13 +272,7 @@ The **troposphere** is the lowest layer of the atmosphere (0–12 km) — the la
 
 Normally, air temperature decreases with altitude. But under certain weather conditions, a **temperature inversion** occurs: a layer of warmer air sits above cooler air. Radio signals entering the warm layer are bent back downward and can become **trapped in a duct** — bouncing between the inversion layer and the earth's surface for hundreds of kilometres with very little loss.
 
-```
-                    ┌──── temperature inversion layer ────┐
-                    │  warmer air                          │
-  Earth surface ════╧══════════════════════════════════════╧══
-```
-
-*(Fig 13.5 equivalent — RSGB Ch 13)*
+![Tropospheric ducting — a warmer air layer above cooler air traps VHF/UHF signals, allowing extended line-of-sight propagation well beyond the normal radio horizon.](/assets/images/study/section-5/temperature-inversion-tropo-ducting.png)
 
 **Tropo ducting characteristics:**
 - Works on VHF and UHF (and lower microwave frequencies)
