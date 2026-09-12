@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Oscilloscope &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.top-grid { display: grid; grid-template-columns: 1fr 320px; gap: 0.75rem; }
+@media (max-width: 750px) { .top-grid { grid-template-columns: 1fr; } }
+
+/* CRT screen */
+.crt-wrap {
+  background: #020810; border: 3px solid #1e293b; border-radius: 10px;
+  position: relative; overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,20,40,0.8);
+}
+#scope-canvas { display: block; width: 100%; }
+
+/* Badges */
+.badge-bar {
+  position: absolute; top: 6px; left: 6px; right: 6px;
+  display: flex; gap: 0.4rem; pointer-events: none;
+}
+.badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+  padding: 2px 6px; border-radius: 3px;
+  background: rgba(0,0,0,0.7); border: 1px solid;
+}
+.badge-clip  { border-color: #f59e0b; color: #f59e0b; display: none; }
+.badge-trig  { border-color: #f87171; color: #f87171; display: none; }
+.badge-fn    { border-color: #06b6d4; color: #06b6d4; }
+.badge-coup  { border-color: #a78bfa; color: #a78bfa; }
+.badge-spacer{ flex: 1; }
+
+/* Readout overlay */
+.readout-overlay {
+  position: absolute; bottom: 6px; left: 6px; right: 6px;
+  display: flex; justify-content: space-between; pointer-events: none;
+}
+.readout-val {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+  background: rgba(0,0,0,0.75); border: 1px solid #1e293b;
+  border-radius: 3px; padding: 2px 6px; color: #06b6d4;
+}
+
+/* Control panel */
+.ctrl-panel { display: flex; flex-direction: column; gap: 0.6rem; }
+.ctrl-section { background: #0d1321; border: 1px solid #1e293b; border-radius: 6px; padding: 0.75rem; }
+.ctrl-sec-title { font-size: 0.58rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.5rem; }
+
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 0.25rem; }
+.slider-wrap { display: flex; align-items: center; gap: 0.5rem; }
+input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #1e293b; outline: none; cursor: pointer; min-width: 60px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #06b6d4; cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 13px; height: 13px; border-radius: 50%; background: #06b6d4; border: none; }
+.slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: #06b6d4; min-width: 4rem; text-align: right; }
+
+.seg-ctrl { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.seg-btn {
+  background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #64748b; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+  padding: 0.25rem 0.5rem; cursor: pointer; transition: background 0.12s, color 0.12s;
+}
+.seg-btn:hover { background: #222d42; }
+.seg-btn.active { background: #0e2a36; border-color: #06b6d4; color: #06b6d4; }
+.seg-btn.active-v { background: #1a1e36; border-color: #a78bfa; color: #a78bfa; }
+.seg-btn.active-o { background: #2a1a0e; border-color: #f59e0b; color: #f59e0b; }
+
+/* Signal select */
+select {
+  background: #1a2234; border: 1px solid #1e293b; border-radius: 4px;
+  color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+  padding: 0.3rem 1.4rem 0.3rem 0.4rem; cursor: pointer; outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.4rem center;
+  width: 100%;
+}
+
+.ctrl-row { display: flex; gap: 0.4rem; align-items: center; margin-bottom: 0.4rem; }
+.ctrl-row:last-child { margin-bottom: 0; }
+
+.info-row { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.info-item { flex: 1 1 150px; }
+.info-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; color: #334155; }
+.info-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; color: #06b6d4; }
+</style>
+</head>
+<body>
+<main>
+<h1>Virtual Oscilloscope</h1>
+<p class="subtitle">adjust V/div and time/div to frame the waveform — read Vpp and period from the grid</p>
+
+<div class="top-grid">
+
+  <!-- CRT display -->
+  <div>
+    <div class="crt-wrap">
+      <canvas id="scope-canvas"></canvas>
+      <div class="badge-bar">
+        <span class="badge badge-fn"  id="badge-fn">SINE</span>
+        <span class="badge badge-coup" id="badge-coup">DC</span>
+        <span class="badge-spacer"></span>
+        <span class="badge badge-clip" id="badge-clip">CLIP</span>
+        <span class="badge badge-trig" id="badge-trig">TRIG?</span>
+      </div>
+      <div class="readout-overlay">
+        <span class="readout-val" id="ro-vpp">Vpp: —</span>
+        <span class="readout-val" id="ro-period">T: —</span>
+        <span class="readout-val" id="ro-freq">f: —</span>
+      </div>
+    </div>
+    <div class="info-row card" style="margin-top:0.5rem;">
+      <div class="info-item">
+        <div class="info-label">V/div</div>
+        <div class="info-val" id="info-vdiv">—</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Time/div</div>
+        <div class="info-val" id="info-tdiv">—</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Trigger</div>
+        <div class="info-val" id="info-trig">—</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Coupling</div>
+        <div class="info-val" id="info-coup">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="ctrl-panel">
+
+    <!-- Signal generator -->
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Signal Input</div>
+      <div class="ctrl-row">
+        <div style="flex:1">
+          <div class="ctrl-label">Waveform</div>
+          <select id="sel-wave" onchange="update()">
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="triangle">Triangle</option>
+            <option value="am">AM (sine carrier)</option>
+            <option value="fm">FM (β = 2)</option>
+          </select>
+        </div>
+      </div>
+      <div class="ctrl-row" style="margin-top:0.4rem;">
+        <div style="flex:1">
+          <div class="ctrl-label">Frequency</div>
+          <div class="slider-wrap">
+            <input type="range" id="sl-freq" min="0" max="40" step="1" value="15" oninput="update()">
+            <span class="slider-val" id="lbl-freq">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <div style="flex:1">
+          <div class="ctrl-label">Amplitude (peak)</div>
+          <div class="slider-wrap">
+            <input type="range" id="sl-amp" min="1" max="30" step="1" value="10" oninput="update()">
+            <span class="slider-val" id="lbl-amp">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <div style="flex:1">
+          <div class="ctrl-label">DC Offset</div>
+          <div class="slider-wrap">
+            <input type="range" id="sl-offset" min="-20" max="20" step="1" value="0" oninput="update()">
+            <span class="slider-val" id="lbl-offset">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vertical -->
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Vertical (CH1)</div>
+      <div class="ctrl-label">V / div</div>
+      <div class="seg-ctrl" id="vdiv-ctrl"></div>
+    </div>
+
+    <!-- Horizontal -->
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Horizontal</div>
+      <div class="ctrl-label">Time / div</div>
+      <div class="seg-ctrl" id="tdiv-ctrl"></div>
+    </div>
+
+    <!-- Trigger -->
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Trigger</div>
+      <div class="ctrl-label" style="margin-bottom:0.25rem;">Mode</div>
+      <div class="seg-ctrl" id="trig-mode-ctrl">
+        <button class="seg-btn active" data-val="auto" onclick="setTrigMode('auto')">Auto</button>
+        <button class="seg-btn"       data-val="free" onclick="setTrigMode('free')">Free run</button>
+      </div>
+      <div style="margin-top:0.45rem;">
+        <div class="ctrl-label">Level (V)</div>
+        <div class="slider-wrap">
+          <input type="range" id="sl-trig" min="-30" max="30" step="1" value="0" oninput="update()">
+          <span class="slider-val" id="lbl-trig">0.0 V</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupling -->
+    <div class="ctrl-section">
+      <div class="ctrl-sec-title">Coupling</div>
+      <div class="seg-ctrl" id="coup-ctrl">
+        <button class="seg-btn active" data-val="dc"  onclick="setCoupling('dc')">DC</button>
+        <button class="seg-btn"        data-val="ac"  onclick="setCoupling('ac')">AC</button>
+        <button class="seg-btn"        data-val="gnd" onclick="setCoupling('gnd')">GND</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</main>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const VDIV_STEPS = [0.05, 0.1, 0.2, 0.5, 1, 2, 5];   // V per div
+const TDIV_STEPS = [1e-6, 2e-6, 5e-6, 10e-6, 20e-6, 50e-6,
+                    100e-6, 200e-6, 500e-6, 1e-3, 2e-3, 5e-3,
+                    10e-3, 20e-3, 50e-3, 100e-3];
+const FREQ_TABLE = [100,200,500,1e3,2e3,5e3,10e3,20e3,50e3,
+                    100e3,200e3,500e3,1e6,2e6,5e6,10e6,
+                    20e6,50e6,100e6,200e6,500e6,
+                    1e9,2e9,5e9,10e9,20e9,50e9,
+                    100e9,200e9,500e9,
+                    1e12,2e12,5e12,
+                    10e12,20e12,50e12,
+                    100e12,200e12,500e12,
+                    1e15,2e15];  // 41 entries for slider 0–40
+
+const HDIVS = 10, VDIVS = 8;
+const DIV_PX = 50;   // pixels per division (logical)
+
+let vdivIdx = 3, tdivIdx = 6, coupling = 'dc', trigMode = 'auto';
+
+// ── Build step buttons ───────────────────────────────────────────────────────
+function buildStepBtns(containerId, steps, fmtFn, activeIdx, clickFn, activeClass) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  steps.forEach((v, i) => {
+    const b = document.createElement('button');
+    b.className = 'seg-btn' + (i === activeIdx ? ' ' + activeClass : '');
+    b.dataset.idx = i;
+    b.textContent = fmtFn(v);
+    b.onclick = () => clickFn(i);
+    el.appendChild(b);
+  });
+}
+
+function fmtVdiv(v) {
+  if (v < 1) return (v * 1000).toFixed(0) + 'm';
+  return v + 'V';
+}
+function fmtTdiv(s) {
+  if (s < 1e-3) return (s * 1e6).toFixed(0) === '1' ? '1μ' : (s * 1e6 < 10 ? (s * 1e6).toFixed(0) : (s * 1e6).toFixed(0)) + 'μ';
+  if (s < 1)    return (s * 1e3).toFixed(0) + 'ms';
+  return s.toFixed(0) + 's';
+}
+
+function setVdiv(i) {
+  vdivIdx = i;
+  document.querySelectorAll('#vdiv-ctrl .seg-btn').forEach((b, j) => {
+    b.className = 'seg-btn' + (j === i ? ' active' : '');
+  });
+  update();
+}
+function setTdiv(i) {
+  tdivIdx = i;
+  document.querySelectorAll('#tdiv-ctrl .seg-btn').forEach((b, j) => {
+    b.className = 'seg-btn' + (j === i ? ' active' : '');
+  });
+  update();
+}
+function setCoupling(c) {
+  coupling = c;
+  document.querySelectorAll('#coup-ctrl .seg-btn').forEach(b => {
+    b.className = 'seg-btn' + (b.dataset.val === c ? ' active' : '');
+  });
+  update();
+}
+function setTrigMode(m) {
+  trigMode = m;
+  document.querySelectorAll('#trig-mode-ctrl .seg-btn').forEach(b => {
+    b.className = 'seg-btn' + (b.dataset.val === m ? ' active' : '');
+  });
+  update();
+}
+
+// ── Signal generation ────────────────────────────────────────────────────────
+function getParams() {
+  const freqIdx = parseInt(document.getElementById('sl-freq').value);
+  const amp = parseInt(document.getElementById('sl-amp').value) / 10;   // 0.1..3.0 V
+  const offset = parseInt(document.getElementById('sl-offset').value) / 10;
+  const trigLevel = parseInt(document.getElementById('sl-trig').value) / 10;
+  const wave = document.getElementById('sel-wave').value;
+  const freq = FREQ_TABLE[freqIdx];
+  return { freq, amp, offset, trigLevel, wave };
+}
+
+function genSamples(freq, amp, offset, wave, sampleRate, nSamples) {
+  const out = new Float32Array(nSamples);
+  const fMod = freq / 10;   // modulation frequency at 1/10 of carrier
+  for (let i = 0; i < nSamples; i++) {
+    const t = i / sampleRate;
+    const phi = 2 * Math.PI * freq * t;
+    let v;
+    switch (wave) {
+      case 'sine':
+        v = amp * Math.sin(phi);
+        break;
+      case 'square':
+        v = amp * Math.sign(Math.sin(phi));
+        break;
+      case 'triangle': {
+        const phase = ((freq * t) % 1 + 1) % 1;
+        v = amp * (phase < 0.5 ? 4 * phase - 1 : 3 - 4 * phase);
+        break;
+      }
+      case 'am':
+        v = amp * (1 + 0.7 * Math.sin(2 * Math.PI * fMod * t)) * Math.sin(phi);
+        break;
+      case 'fm':
+        v = amp * Math.sin(phi + 2 * Math.sin(2 * Math.PI * fMod * t));
+        break;
+      default:
+        v = 0;
+    }
+    out[i] = v + offset;
+  }
+  return out;
+}
+
+function applyCoupling(samples, coupling) {
+  if (coupling === 'gnd') return new Float32Array(samples.length);
+  if (coupling === 'ac') {
+    let sum = 0;
+    for (let i = 0; i < samples.length; i++) sum += samples[i];
+    const mean = sum / samples.length;
+    return samples.map(v => v - mean);
+  }
+  return samples;
+}
+
+function findTrigger(samples, trigLevel, sampleRate) {
+  // Find first rising-edge crossing of trigLevel
+  for (let i = 1; i < samples.length - 1; i++) {
+    if (samples[i - 1] < trigLevel && samples[i] >= trigLevel) return i;
+  }
+  return -1;   // no trigger found
+}
+
+// ── Canvas setup ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('scope-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = canvas.parentElement.clientWidth;
+  const cssH = VDIVS * DIV_PX;
+  canvas.width  = cssW * dpr;
+  canvas.height = cssH * dpr;
+  canvas.style.height = cssH + 'px';
+  W = canvas.width;
+  H = canvas.height;
+  ctx.scale(dpr, dpr);
+  update();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ── Draw ─────────────────────────────────────────────────────────────────────
+function drawGrid(cssW) {
+  const dpr = window.devicePixelRatio || 1;
+  ctx.clearRect(0, 0, cssW, VDIVS * DIV_PX);
+
+  // Background
+  ctx.fillStyle = '#020810';
+  ctx.fillRect(0, 0, cssW, VDIVS * DIV_PX);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,183,212,0.15)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= HDIVS; i++) {
+    const x = i * DIV_PX;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, VDIVS * DIV_PX); ctx.stroke();
+  }
+  for (let j = 0; j <= VDIVS; j++) {
+    const y = j * DIV_PX;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cssW, y); ctx.stroke();
+  }
+
+  // Centre crosshair brighter
+  ctx.strokeStyle = 'rgba(0,183,212,0.30)';
+  ctx.lineWidth = 0.8;
+  const cx = Math.floor(HDIVS / 2) * DIV_PX;
+  const cy = Math.floor(VDIVS / 2) * DIV_PX;
+  ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, VDIVS * DIV_PX); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(cssW, cy); ctx.stroke();
+
+  // Tick marks on centre lines
+  ctx.strokeStyle = 'rgba(0,183,212,0.45)';
+  ctx.lineWidth = 0.8;
+  for (let i = 0; i <= HDIVS * 5; i++) {
+    const x = i * (DIV_PX / 5);
+    ctx.beginPath(); ctx.moveTo(x, cy - 3); ctx.lineTo(x, cy + 3); ctx.stroke();
+  }
+  for (let j = 0; j <= VDIVS * 5; j++) {
+    const y = j * (DIV_PX / 5);
+    ctx.beginPath(); ctx.moveTo(cx - 3, y); ctx.lineTo(cx + 3, y); ctx.stroke();
+  }
+}
+
+function update() {
+  const cssW = canvas.parentElement ? canvas.parentElement.clientWidth : HDIVS * DIV_PX;
+  const { freq, amp, offset, trigLevel, wave } = getParams();
+  const vdiv = VDIV_STEPS[vdivIdx];
+  const tdiv = TDIV_STEPS[tdivIdx];
+
+  // Update labels
+  document.getElementById('lbl-freq').textContent   = fmtHz(freq);
+  document.getElementById('lbl-amp').textContent    = (amp).toFixed(1) + ' V';
+  document.getElementById('lbl-offset').textContent = (parseInt(document.getElementById('sl-offset').value)/10).toFixed(1) + ' V';
+  document.getElementById('lbl-trig').textContent   = trigLevel.toFixed(1) + ' V';
+  document.getElementById('info-vdiv').textContent  = fmtVdiv(vdiv) + '/div';
+  document.getElementById('info-tdiv').textContent  = fmtTdivLong(tdiv) + '/div';
+  document.getElementById('info-trig').textContent  = trigMode.toUpperCase() + ' ' + trigLevel.toFixed(1) + 'V';
+  document.getElementById('info-coup').textContent  = coupling.toUpperCase();
+  document.getElementById('badge-fn').textContent   = wave.toUpperCase();
+  document.getElementById('badge-coup').textContent = coupling.toUpperCase();
+
+  // How many screen pixels wide
+  const screenPx = Math.min(cssW, HDIVS * DIV_PX);
+  const totalTime = HDIVS * tdiv;
+
+  // Generate at 5× oversampling for smooth rendering
+  const sampleRate = screenPx * 5 / totalTime;
+  const nSamples = Math.ceil(screenPx * 5 + 200);   // extra headroom for trigger search
+
+  const raw = genSamples(freq, amp, offset, wave, sampleRate, nSamples);
+  const coupled = applyCoupling(raw, coupling);
+
+  // Find trigger
+  let startIdx = 0;
+  let triggered = true;
+  if (trigMode === 'auto') {
+    const ti = findTrigger(coupled, trigLevel, sampleRate);
+    if (ti < 0) { triggered = false; startIdx = 0; }
+    else startIdx = ti;
+  }
+
+  // Centre Y of screen
+  const midY = (VDIVS / 2) * DIV_PX;
+
+  // Check for clipping
+  let clipped = false;
+  const halfVscreen = (VDIVS / 2) * vdiv;
+  for (let i = 0; i < screenPx * 5; i++) {
+    if (Math.abs(coupled[startIdx + i] || 0) > halfVscreen) { clipped = true; break; }
+  }
+
+  // Draw
+  drawGrid(cssW);
+
+  // Trigger level line
+  ctx.strokeStyle = 'rgba(247,159,9,0.5)';
+  ctx.lineWidth = 0.8;
+  ctx.setLineDash([4, 4]);
+  const trigY = midY - (trigLevel / vdiv) * DIV_PX;
+  ctx.beginPath(); ctx.moveTo(0, trigY); ctx.lineTo(cssW, trigY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Trace
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = 'rgba(6,182,212,0.4)';
+  ctx.shadowBlur = 4;
+  ctx.beginPath();
+  for (let px = 0; px < screenPx; px++) {
+    const si = startIdx + Math.round(px * 5);
+    const v = (si < coupled.length) ? coupled[si] : 0;
+    const x = px;
+    const y = midY - (v / vdiv) * DIV_PX;
+    if (px === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Badges
+  document.getElementById('badge-clip').style.display = clipped ? 'inline' : 'none';
+  document.getElementById('badge-trig').style.display = (!triggered && trigMode === 'auto') ? 'inline' : 'none';
+
+  // Readouts — Vpp and period from measured trace
+  let vMin = Infinity, vMax = -Infinity;
+  for (let i = 0; i < screenPx * 5; i++) {
+    const v = coupled[startIdx + i] || 0;
+    if (v < vMin) vMin = v; if (v > vMax) vMax = v;
+  }
+  const vpp = vMax - vMin;
+  const measDivs = vpp / vdiv;
+  const periodDiv = (1 / freq) / tdiv;
+
+  document.getElementById('ro-vpp').textContent    = 'Vpp: ' + measDivs.toFixed(2) + ' div = ' + vpp.toFixed(3) + ' V';
+  document.getElementById('ro-period').textContent = 'T: ' + periodDiv.toFixed(2) + ' div = ' + fmtTime(1 / freq);
+  document.getElementById('ro-freq').textContent   = 'f: ' + fmtHz(freq);
+}
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function fmtHz(f) {
+  if (f < 1e3)  return f.toFixed(0) + ' Hz';
+  if (f < 1e6)  return (f / 1e3).toFixed(f < 10e3 ? 2 : 1) + ' kHz';
+  if (f < 1e9)  return (f / 1e6).toFixed(f < 10e6 ? 2 : 1) + ' MHz';
+  return (f / 1e9).toFixed(1) + ' GHz';
+}
+function fmtTime(s) {
+  if (s < 1e-6) return (s * 1e9).toFixed(2) + ' ns';
+  if (s < 1e-3) return (s * 1e6).toFixed(2) + ' μs';
+  if (s < 1)    return (s * 1e3).toFixed(2) + ' ms';
+  return s.toFixed(3) + ' s';
+}
+function fmtTdivLong(s) {
+  if (s < 1e-3) return (s * 1e6).toFixed(0) + ' μs';
+  if (s < 1)    return (s * 1e3).toFixed(0) + ' ms';
+  return s.toFixed(0) + ' s';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildStepBtns('vdiv-ctrl', VDIV_STEPS, fmtVdiv, vdivIdx, setVdiv, 'active');
+buildStepBtns('tdiv-ctrl', TDIV_STEPS, fmtTdiv, tdivIdx, setTdiv, 'active');
+resizeCanvas();
+</script>
+</body>
+</html>
