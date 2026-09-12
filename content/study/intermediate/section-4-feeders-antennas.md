@@ -789,6 +789,39 @@ The maximum gain direction is always at right angles to the wire, and the minimu
 
 ---
 
+## 4H — EMF and Near-Field Safety (4H1)
+
+### Near-Field RF Exposure from Antennas
+
+Every transmitting antenna produces an electromagnetic field around it. In the **far field** (distances much greater than a wavelength), the field falls off predictably with distance and the EIRP calculation gives a reliable estimate of exposure. In the **near field** — roughly within one wavelength of the antenna — the electric and magnetic field components are not in the simple 377 Ω free-space ratio, and fields can be significantly stronger than far-field predictions suggest.
+
+This matters because amateur antennas are often erected close to occupied space: gardens below a dipole, the room beneath a loft antenna, neighbours whose gardens border your antenna site. The **ICNIRP guidelines** — referenced by your licence — set limits for areas accessible to members of the public and your household. Near-field exposures at antenna height or in the space directly under the antenna can exceed far-field estimates by a substantial factor.
+
+> [INFO] **4H1:** Near-field EMF exposure is highest at and around the **antenna feedpoint** and along the radiating elements. A 100 W transmitter into a resonant dipole creates a strong near-field within the first few metres of the wire. This is both an EMF exposure concern and a **direct RF burn hazard** if you are in physical contact with the antenna — see **§8C** for RF burns. See **§1G** for the full EMF compliance assessment framework.
+
+### When a Compliance Assessment is Required (cross-ref §1G)
+
+The two EIRP thresholds that trigger a formal EMF assessment are (from §1G):
+- Average EIRP exceeding **10 W over any 6-minute period**, or
+- Instantaneous peak EIRP exceeding **100 W**
+
+At Intermediate power levels (up to 100 W), most HF antenna systems will exceed the average threshold. This does not mean your station is unsafe — it means you must verify compliance using the RSGB/Ofcom online EMF calculator, which accounts for antenna type, gain, operating frequency, duty cycle, and the distance from the antenna to any accessible area.
+
+**Practical guidance by installation type:**
+
+| Antenna type | Key exposure consideration |
+|---|---|
+| Horizontal dipole, 10 m height | Near-field at ground level typically within limits at 100 W HF; check with calculator |
+| Vertical with radials | Immediate vicinity of the antenna base requires checking; elevated field near feedpoint |
+| Loft-mounted antenna | High risk — near-field extends into the occupied room below; seek advice before transmitting at full power |
+| Yagi or beam | Higher gain in the main lobe increases field strength in that direction; ensure the main lobe does not point toward accessible areas at close range |
+
+> [WARNING] **4H1:** You cannot assume compliance without an assessment. A change of antenna type, power level, or operating location requires a fresh assessment. Use the RSGB/Ofcom EMF calculator at each installation. See **§1G** for the trigger thresholds and the assessment process.
+
+*Related: §8C (RF burn hazard at the feedpoint) — distinct from EMF field exposure but caused by the same transmitted energy. §7H (station layout and antenna placement recommendations).*
+
+---
+
 ## Suggested Interactives for RFH-Interactives
 
 The following interactives would significantly strengthen this section. Passing this list to RFH-Master for scoping:
