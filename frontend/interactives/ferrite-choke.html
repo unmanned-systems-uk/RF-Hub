@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferrite Choke Effectiveness &mdash; RF-Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e1a; color: #e2e8f0;
+  font-family: 'IBM Plex Sans', sans-serif; font-weight: 300;
+  padding: 1.5rem; max-width: 1100px; margin: 0 auto;
+}
+h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+.subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+.card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+.card-title { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.75rem; }
+
+.ctrl-bar { display: flex; flex-wrap: wrap; gap: 1rem 1.8rem; align-items: flex-end; }
+.ctrl-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.ctrl-label { font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; }
+
+select { background: #1a2234; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; padding: 0.38rem 1.6rem 0.38rem 0.5rem; cursor: pointer; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; }
+select:focus { border-color: #475569; }
+
+.slider-wrap { display: flex; align-items: center; gap: 0.6rem; }
+input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #1e293b; outline: none; cursor: pointer; min-width: 100px; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #a78bfa; cursor: pointer; }
+input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #a78bfa; border: none; cursor: pointer; }
+.slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: #a78bfa; min-width: 3.2rem; text-align: right; }
+
+.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+@media (max-width: 640px) { .bottom-grid { grid-template-columns: 1fr; } }
+
+#plot-canvas { display: block; width: 100%; background: #070d1a; border-radius: 4px; }
+
+/* Readout table */
+.ro-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; }
+.ro-table th { color: #334155; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 0.4rem; text-align: right; font-weight: 400; }
+.ro-table th:first-child { text-align: left; }
+.ro-table td { padding: 0.32rem 0; border-top: 1px solid #1e293b; text-align: right; color: #94a3b8; }
+.ro-table td:first-child { text-align: left; color: #64748b; }
+.z-high { color: #22c55e; }
+.z-med  { color: #f59e0b; }
+.z-low  { color: #f87171; }
+
+/* Peak info */
+.peak-box { background: #0d1321; border: 1px solid #1e293b; border-radius: 6px; padding: 0.75rem; margin-top: 0.75rem; }
+.peak-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.peak-item { flex: 1 1 120px; }
+.peak-label { font-size: 0.6rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; color: #475569; margin-bottom: 0.2rem; }
+.peak-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; }
+.cyan   { color: #06b6d4; }
+.amber  { color: #f59e0b; }
+.purple { color: #a78bfa; }
+.green  { color: #22c55e; }
+
+/* Legend */
+.legend { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.leg-item { display: flex; align-items: center; gap: 0.45rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #94a3b8; }
+.leg-swatch { width: 22px; height: 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Ferrite Choke Effectiveness</h1>
+<p class="subtitle">common-mode impedance vs frequency — R + jX model using Debye permeability</p>
+
+<div class="card">
+  <div class="ctrl-bar">
+    <div class="ctrl-item">
+      <div class="ctrl-label">Ferrite Material</div>
+      <select id="sel-mat" onchange="update()">
+        <option value="type43" selected>Type 43 (μi ≈ 850)</option>
+        <option value="type61">Type 61 (μi ≈ 125)</option>
+        <option value="type77">Type 77 (μi ≈ 2000)</option>
+        <option value="mix31">Mix 31 (μi ≈ 1500)</option>
+        <option value="mix46">Mix 46 (μi ≈ 625)</option>
+      </select>
+    </div>
+    <div class="ctrl-item">
+      <div class="ctrl-label">Turns of cable through core</div>
+      <div class="slider-wrap">
+        <input type="range" id="sl-turns" min="1" max="10" step="1" value="5">
+        <span class="slider-val" id="lbl-turns">5 t</span>
+      </div>
+    </div>
+    <div class="ctrl-item">
+      <div class="ctrl-label">Cable diameter</div>
+      <div class="slider-wrap">
+        <input type="range" id="sl-diam" min="2" max="15" step="1" value="5">
+        <span class="slider-val" id="lbl-diam">5 mm</span>
+      </div>
+    </div>
+    <div class="ctrl-item" style="margin-left:auto;">
+      <div class="ctrl-label">Reference core</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#334155;line-height:1.4;">
+        FT-240 size<br>Ae/le ≈ 0.88 cm
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Impedance vs Frequency (10 kHz – 300 MHz, log–log scale)</div>
+  <canvas id="plot-canvas" height="280"></canvas>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-swatch" style="background:#a78bfa;height:3px;"></div>|Z| total</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#06b6d4;height:2px;"></div>R (resistive)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#f59e0b;height:2px;"></div>X (reactive)</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#22c55e;height:1px;border-top:1px dashed #22c55e;"></div>500 Ω (good choke)</div>
+  </div>
+</div>
+
+<div class="bottom-grid">
+  <div class="card">
+    <div class="card-title">Spot-frequency common-mode impedance</div>
+    <table class="ro-table">
+      <thead>
+        <tr><th>Band</th><th>Freq</th><th>|Z| Ω</th><th>R Ω</th><th>X Ω</th></tr>
+      </thead>
+      <tbody id="spot-tbody"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Choke parameters</div>
+    <div class="peak-box">
+      <div class="peak-row">
+        <div class="peak-item">
+          <div class="peak-label">Peak |Z|</div>
+          <div class="peak-val purple" id="pk-z">—</div>
+        </div>
+        <div class="peak-item">
+          <div class="peak-label">Peak frequency</div>
+          <div class="peak-val cyan" id="pk-f">—</div>
+        </div>
+        <div class="peak-item">
+          <div class="peak-label">Best bands</div>
+          <div class="peak-val green" id="pk-bands">—</div>
+        </div>
+        <div class="peak-item">
+          <div class="peak-label">DC inductance (n²·AL)</div>
+          <div class="peak-val amber" id="pk-l">—</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:#334155;margin-top:0.75rem;line-height:1.6;">
+      Rule of thumb: Z &gt; 500 Ω good; Z &gt; 1500 Ω excellent.<br>
+      Choose material whose peak aligns with your operating band.
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+// ── Ferrite material definitions ──────────────────────────────────────────────
+// Debye single-relaxation model
+// AL: μ0·μi·Ae/le (nH/turn²), f0: relaxation frequency (Hz)
+// μ_i: initial permeability
+const MATS = {
+    type43: { name:'Type 43',  AL:885,   mu_i:850,  f0:30e6,   bestBands:'HF 10–50 MHz' },
+    type61: { name:'Type 61',  AL:68,    mu_i:125,  f0:200e6,  bestBands:'VHF 100–500 MHz' },
+    type77: { name:'Type 77',  AL:3000,  mu_i:2000, f0:0.8e6,  bestBands:'LF/MF 0.5–5 MHz' },
+    mix31:  { name:'Mix 31',   AL:1400,  mu_i:1500, f0:3e6,    bestBands:'HF 1–50 MHz' },
+    mix46:  { name:'Mix 46',   AL:600,   mu_i:625,  f0:25e6,   bestBands:'HF 7–100 MHz' }
+};
+
+const SPOT_FREQS = [
+    { band:'160 m', f: 1.8e6  },
+    { band:'80 m',  f: 3.5e6  },
+    { band:'40 m',  f: 7.0e6  },
+    { band:'20 m',  f: 14.0e6 },
+    { band:'10 m',  f: 28.0e6 },
+    { band:'6 m',   f: 50.0e6 },
+    { band:'2 m',   f: 144e6  }
+];
+
+const F_MIN = 10e3, F_MAX = 300e6;
+const LOG_MIN = Math.log10(F_MIN), LOG_MAX = Math.log10(F_MAX);
+
+// Debye model: returns { R, X, Z } per unit (before n² scaling)
+function debyeZ(mat_key, f_Hz, fill) {
+    const m = MATS[mat_key];
+    // L0 per turn (H): AL / mu_i gives air-core L per turn
+    const L0 = m.AL * 1e-9 / m.mu_i * fill;
+    const ratio = f_Hz / m.f0;
+    const dmu = m.mu_i - 1;
+    const mu_prime    = 1 + dmu / (1 + ratio * ratio);
+    const mu_dpprime  = dmu * ratio / (1 + ratio * ratio);
+    const omega = 2 * Math.PI * f_Hz;
+    return {
+        R: omega * L0 * mu_dpprime,
+        X: omega * L0 * mu_prime
+    };
+}
+
+function choke(mat, f_Hz, n, fill) {
+    const z1 = debyeZ(mat, f_Hz, fill);
+    const R = n * n * z1.R;
+    const X = n * n * z1.X;
+    return { R, X, Z: Math.sqrt(R * R + X * X) };
+}
+
+function fmtZ(z) {
+    if (z >= 10000) return (z / 1000).toFixed(1) + ' kΩ';
+    if (z >= 1000)  return (z / 1000).toFixed(2) + ' kΩ';
+    return z.toFixed(0) + ' Ω';
+}
+
+function fmtFreq(hz) {
+    if (hz >= 1e6) return (hz/1e6).toPrecision(3).replace(/\.?0+$/, '') + ' MHz';
+    if (hz >= 1e3) return (hz/1e3).toPrecision(3).replace(/\.?0+$/, '') + ' kHz';
+    return hz.toFixed(0) + ' Hz';
+}
+
+// ── Plot ──────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('plot-canvas');
+const ctx    = canvas.getContext('2d');
+
+function drawPlot(mat, n, fill) {
+    const W = canvas.width, H = canvas.height;
+    const PL = 52, PR = 14, PT = 12, PB = 30;
+    const plotW = W - PL - PR, plotH = H - PT - PB;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Pre-compute for auto-scaling Y
+    const N_STEPS = 400;
+    const Rs = new Float64Array(N_STEPS);
+    const Xs = new Float64Array(N_STEPS);
+    const Zs = new Float64Array(N_STEPS);
+    let zMax = 1;
+    for (let i = 0; i < N_STEPS; i++) {
+        const f = Math.pow(10, LOG_MIN + i / (N_STEPS - 1) * (LOG_MAX - LOG_MIN));
+        const z = choke(mat, f, n, fill);
+        Rs[i] = z.R; Xs[i] = z.X; Zs[i] = z.Z;
+        if (z.Z > zMax) zMax = z.Z;
+    }
+
+    // Y log scale: 0.1 to yLogMax (in Ω)
+    const yLogMin = -1;  // 0.1 Ω
+    const yLogMax = Math.ceil(Math.log10(zMax * 1.5));
+
+    const fx = f   => PL + (Math.log10(f) - LOG_MIN) / (LOG_MAX - LOG_MIN) * plotW;
+    const yz = ohm => ohm > 0 ? PT + plotH - (Math.log10(ohm) - yLogMin) / (yLogMax - yLogMin) * plotH : PT + plotH;
+
+    // Background
+    ctx.fillStyle = '#070d1a'; ctx.fillRect(PL, PT, plotW, plotH);
+
+    // Y grid (decades)
+    ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'right'; ctx.fillStyle = '#475569';
+    for (let exp = yLogMin; exp <= yLogMax; exp++) {
+        const y = Math.round(yz(Math.pow(10, exp))) + 0.5;
+        if (y < PT || y > PT + plotH) continue;
+        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(PL, y); ctx.lineTo(PL + plotW, y); ctx.stroke();
+        const label = exp < 0 ? (Math.pow(10, exp)).toFixed(-exp) : Math.pow(10, exp).toFixed(0);
+        ctx.fillText(label + ' Ω', PL - 4, y + 3);
+    }
+
+    // Y axis label
+    ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.save();
+    ctx.translate(10, PT + plotH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.fillText('Impedance (Ω)', 0, 0); ctx.restore();
+
+    // X grid (log decades)
+    const xTicks = [10e3, 100e3, 1e6, 10e6, 100e6];
+    const xMajor = new Set([10e3, 1e6, 100e6]);
+    ctx.textAlign = 'center';
+    for (const f of xTicks) {
+        const x = Math.round(fx(f)) + 0.5;
+        ctx.strokeStyle = xMajor.has(f) ? '#1e293b' : '#141c2b'; ctx.lineWidth = xMajor.has(f) ? 1 : 0.5;
+        ctx.beginPath(); ctx.moveTo(x, PT); ctx.lineTo(x, PT + plotH); ctx.stroke();
+        ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace';
+        ctx.fillText(fmtFreq(f), x, PT + plotH + 16);
+    }
+    ctx.fillStyle = '#475569'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+    ctx.fillText('Frequency', PL + plotW / 2, PT + plotH + PB - 3);
+
+    // 500 Ω guideline
+    const y500 = yz(500);
+    if (y500 > PT && y500 < PT + plotH) {
+        ctx.setLineDash([4, 6]); ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(PL, y500); ctx.lineTo(PL + plotW, y500); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#22c55e'; ctx.font = '8px IBM Plex Mono, monospace'; ctx.textAlign = 'right';
+        ctx.fillText('500 Ω', PL + plotW - 4, y500 - 3);
+    }
+
+    // Draw curves (R, X, |Z|)
+    const curves = [
+        { data: Xs, color: '#f59e0b', lw: 1.5 },
+        { data: Rs, color: '#06b6d4', lw: 1.5 },
+        { data: Zs, color: '#a78bfa', lw: 2.5 }
+    ];
+    for (const cv of curves) {
+        ctx.beginPath(); ctx.strokeStyle = cv.color; ctx.lineWidth = cv.lw;
+        for (let i = 0; i < N_STEPS; i++) {
+            const f = Math.pow(10, LOG_MIN + i / (N_STEPS - 1) * (LOG_MAX - LOG_MIN));
+            const x = PL + i / (N_STEPS - 1) * plotW;
+            const y = Math.max(PT, Math.min(PT + plotH, yz(cv.data[i])));
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+
+    // Border
+    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1; ctx.strokeRect(PL, PT, plotW, plotH);
+}
+
+// ── Update ────────────────────────────────────────────────────────────────────
+function getFill() {
+    const diam = +document.getElementById('sl-diam').value;
+    return 1.0 - 0.50 * (diam - 2) / 13;
+}
+
+function update() {
+    const mat   = document.getElementById('sel-mat').value;
+    const n     = +document.getElementById('sl-turns').value;
+    const fill  = getFill();
+    const m     = MATS[mat];
+
+    // Resize and redraw plot
+    canvas.width = Math.max(280, canvas.parentElement.clientWidth - 2);
+    drawPlot(mat, n, fill);
+
+    // Find peak |Z| frequency
+    let pkZ = 0, pkF = 0;
+    for (let e = LOG_MIN; e <= LOG_MAX; e += 0.01) {
+        const f = Math.pow(10, e);
+        const z = choke(mat, f, n, fill);
+        if (z.Z > pkZ) { pkZ = z.Z; pkF = f; }
+    }
+
+    document.getElementById('pk-z').textContent = fmtZ(pkZ);
+    document.getElementById('pk-f').textContent = fmtFreq(pkF);
+    document.getElementById('pk-bands').textContent = m.bestBands;
+    const L_dc = n * n * m.AL;
+    document.getElementById('pk-l').textContent = L_dc >= 1000 ? (L_dc/1000).toFixed(2) + ' mH' : L_dc.toFixed(0) + ' nH';
+
+    // Spot-frequency table
+    const tbody = document.getElementById('spot-tbody');
+    tbody.innerHTML = '';
+    for (const sp of SPOT_FREQS) {
+        const z = choke(mat, sp.f, n, fill);
+        const cls = z.Z >= 1500 ? 'z-high' : z.Z >= 500 ? 'z-med' : 'z-low';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${sp.band}</td>
+            <td>${fmtFreq(sp.f)}</td>
+            <td class="${cls}">${fmtZ(z.Z)}</td>
+            <td class="cyan">${fmtZ(z.R)}</td>
+            <td class="amber">${fmtZ(z.X)}</td>`;
+        tbody.appendChild(tr);
+    }
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+document.getElementById('sl-turns').addEventListener('input', function () {
+    document.getElementById('lbl-turns').textContent = this.value + ' t'; update();
+});
+document.getElementById('sl-diam').addEventListener('input', function () {
+    document.getElementById('lbl-diam').textContent = this.value + ' mm'; update();
+});
+
+window.addEventListener('resize', update);
+update();
+</script>
+</body>
+</html>
