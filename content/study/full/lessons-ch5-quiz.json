@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "chapter": 5,
+    "title": "Semiconductors",
+    "level": "full",
+    "syllabus_refs": ["5A1", "5B1", "5C1", "5D1", "5E1", "5F1", "5G1", "5H1", "5I1", "5J1"],
+    "source_content": "/content/study/full/section-5-semiconductors.md",
+    "question_count": 30,
+    "generated": "2026-09-13"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "5A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5A",
+      "section_name": "Semiconductors — P-N Junction Diode",
+      "question": "What is the approximate forward voltage drop across a conducting silicon diode at normal operating current?",
+      "options": [
+        "0.2 V",
+        "0.4 V",
+        "0.6 V",
+        "1.2 V"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A silicon diode begins to conduct at approximately 0.6 V forward bias. At higher currents the ohmic resistance of the device causes the drop to rise slightly towards 0.7 V. This value must be subtracted in rectifier calculations to find the actual output voltage. Germanium diodes have a lower forward drop of around 0.2–0.3 V, which is why Schottky diodes (also ~0.2 V) are preferred in low-voltage detector circuits.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5a2--the-pn-junction-and-depletion-layer",
+      "tags": ["diode", "forward-voltage", "silicon", "5A1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5A",
+      "section_name": "Semiconductors — P-N Junction Diode",
+      "question": "When a P-N junction diode is reverse biased, what happens to the depletion layer?",
+      "options": [
+        "It collapses, allowing majority carriers to flow freely",
+        "It narrows, reducing the junction's capacitance",
+        "It widens, increasing the barrier to current flow",
+        "It disappears entirely, leaving only the bulk resistance of the semiconductor"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Reverse bias pulls the majority carriers (electrons and holes) away from the junction, widening the depletion layer. The wider depletion layer means a larger barrier region with no mobile charge carriers, so virtually no current flows. This is also the principle behind the varactor diode — the widening depletion layer increases the effective plate separation of the junction capacitor, reducing the capacitance.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5a2--the-pn-junction-and-depletion-layer",
+      "tags": ["depletion-layer", "reverse-bias", "5A1", "P-N-junction"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5B",
+      "section_name": "Semiconductors — Rectifier Circuits",
+      "question": "What is the main practical advantage of a bridge rectifier over a full-wave centre-tapped rectifier for the same transformer secondary voltage?",
+      "options": [
+        "It uses fewer diodes so costs less to build",
+        "It does not require a centre-tapped transformer, allowing a simpler and cheaper transformer to be used",
+        "Each diode in the bridge circuit carries the full average load current rather than half",
+        "The peak inverse voltage rating required for each diode is twice as high, giving extra reliability"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The bridge circuit uses four diodes arranged in a diamond, conducting in pairs on alternate half-cycles, and requires no centre tap on the transformer secondary. The centre-tapped design uses only two diodes but needs a transformer with a centre-tapped secondary winding (effectively using only half the winding at a time). Both circuits produce full-wave rectification with 100 Hz ripple from 50 Hz mains. The bridge is the most common arrangement in practice.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5b4--bridge-rectifier",
+      "tags": ["bridge-rectifier", "full-wave", "transformer", "5B1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5B",
+      "section_name": "Semiconductors — Rectifier Circuits",
+      "question": "A power supply uses a full-wave bridge rectifier connected to the 50 Hz UK mains supply. At what frequency does the output ripple occur, and why is this an advantage over half-wave rectification?",
+      "options": [
+        "50 Hz — the same as mains, so the smoothing capacitor can be made smaller",
+        "100 Hz — twice the mains frequency; the shorter time between recharge pulses reduces ripple and requires a smaller smoothing capacitor",
+        "25 Hz — half the mains frequency; the longer period makes smoothing easier",
+        "200 Hz — the bridge doubles frequency twice, greatly easing the smoothing requirement"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Full-wave rectification produces two output pulses per mains cycle, giving a ripple frequency of 2 × 50 = 100 Hz. Compared with half-wave (50 Hz), the capacitor has only half the time to discharge between recharge pulses, so a smaller capacitor value achieves the same ripple voltage. This is one of the key advantages of full-wave over half-wave rectification — smaller, cheaper smoothing components for the same output quality.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5b3--full-wave-rectifier-centre-tap",
+      "tags": ["ripple-frequency", "full-wave", "smoothing", "5B1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5B",
+      "section_name": "Semiconductors — Rectifier Circuits",
+      "question": "A half-wave rectifier with a reservoir capacitor is connected to a transformer with a 20 V RMS secondary. What minimum peak inverse voltage (PIV) rating must the diode have?",
+      "options": [
+        "20 V",
+        "28 V",
+        "57 V",
+        "114 V"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "First convert RMS to peak: V_peak = 20 × √2 ≈ 28.3 V. The reservoir capacitor charges to this positive peak and holds it while the AC supply swings negative. At the negative peak the diode must withstand the capacitor voltage (+28 V) plus the supply's negative peak (−28 V) in reverse — a total PIV of approximately 28 + 28 = 56–57 V. Without a reservoir capacitor the PIV would be only 28 V; the capacitor roughly doubles the PIV requirement. Diodes used in mains-derived PSUs must be rated well above this value for reliability.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5b2--smoothing-capacitor",
+      "tags": ["PIV", "peak-inverse-voltage", "half-wave", "smoothing-capacitor", "5B1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5C",
+      "section_name": "Semiconductors — Special Diodes",
+      "question": "In which operating mode is a zener diode used when acting as a voltage reference in a power supply?",
+      "options": [
+        "Forward bias — it conducts at a precise voltage above 0.6 V",
+        "Reverse bias — it is held in controlled reverse breakdown at the zener voltage",
+        "Alternating bias — it averages the forward and reverse voltages to give the reference",
+        "Unbiased — the zener voltage is produced by the internal potential difference of the junction"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The zener diode is designed to operate in reverse breakdown at a specific, stable voltage V_z (the zener voltage). Unlike a normal diode, this breakdown is non-destructive provided a series resistor limits the current. The zener clamps the voltage across it to V_z regardless of modest changes in supply voltage or load current, making it useful as a precision voltage reference. A series resistor R_S must always be present to limit the current and keep power dissipation P = V_z × I within the device's rating.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5c1--zener-diode",
+      "tags": ["zener", "reverse-breakdown", "voltage-reference", "5C1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5C",
+      "section_name": "Semiconductors — Special Diodes",
+      "question": "A varactor (varicap) diode is used in a voltage-controlled tuning circuit. What happens to its capacitance as the reverse voltage applied to it is increased?",
+      "options": [
+        "Capacitance increases because the depletion layer acts as a thinner dielectric",
+        "Capacitance remains constant — only the current through the varactor changes",
+        "Capacitance decreases because the widening depletion layer increases the effective plate separation",
+        "Capacitance increases then decreases, forming a resonance at the varactor's rated voltage"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "In a reverse-biased P-N junction, the depletion layer acts as the dielectric of a capacitor with the P and N regions as its plates. Increasing the reverse voltage widens the depletion layer, which increases the effective plate separation and therefore reduces the capacitance (C ∝ 1/d for a parallel-plate capacitor). This voltage-controlled capacitance is exploited in varactor-tuned VFOs, AFC circuits and PLL synthesisers — a DC tuning voltage replaces a mechanical variable capacitor.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5c2--varactor-varicap-diode",
+      "tags": ["varactor", "varicap", "capacitance", "reverse-bias", "5C1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5D",
+      "section_name": "Semiconductors — Bipolar Junction Transistors",
+      "question": "A bipolar transistor has a DC current gain β (h_FE) of 120. If a base current of 80 μA flows, what is the collector current?",
+      "options": [
+        "0.67 mA",
+        "9.6 mA",
+        "80 mA",
+        "960 mA"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "I_C = β × I_B = 120 × 80 × 10⁻⁶ = 9600 × 10⁻⁶ A = 9.6 mA. This is the fundamental BJT relationship: a small base current controls a much larger collector current, giving current amplification. The ratio β (or h_FE in data sheets) varies with collector current and temperature, and differs between transistors of the same type — a source of bias instability if not managed carefully in circuit design.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5d1--npn-structure-and-operation",
+      "tags": ["BJT", "current-gain", "beta", "hFE", "5D1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5D",
+      "section_name": "Semiconductors — Bipolar Junction Transistors",
+      "question": "Why is a simple single base-resistor bias circuit for a BJT amplifier considered unstable in production?",
+      "options": [
+        "The base resistor limits the operating frequency of the amplifier",
+        "The quiescent collector current is set by I_B × β, and β varies widely between transistors of the same type — if β doubles, I_C doubles, potentially saturating the transistor",
+        "The base resistor has a positive temperature coefficient which alters the bias at elevated temperatures",
+        "The collector resistor cannot be accurately matched to the base resistor in a production environment"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "With a single base resistor, I_B is set by (V_CC − V_BE)/R_B, and I_C = β × I_B. For a BC108, β may be anywhere from 110 to 800 — a factor of over 7. If a circuit is designed for β = 150 but the transistor has β = 300, the collector current doubles, dropping the collector voltage to near zero (saturation) and destroying the amplifier's operating point. This is why the stable bias circuit using a potential divider (R1/R2) and emitter resistor (R_E) is used in practice.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5d3--simple-biasing-and-its-instability",
+      "tags": ["BJT", "bias-stability", "beta-variation", "5D1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5D",
+      "section_name": "Semiconductors — Bipolar Junction Transistors",
+      "question": "In the stable potential-divider bias circuit for a BJT amplifier, what is the primary function of the emitter resistor R_E?",
+      "options": [
+        "It increases the voltage gain of the stage by increasing the AC load on the transistor",
+        "It provides negative DC feedback: if the collector current rises, the emitter voltage rises, reducing V_BE and opposing the increase in current",
+        "It prevents the collector resistor from drawing excessive current during large signal swings",
+        "It isolates the DC bias network from the AC signal path"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The emitter resistor applies negative feedback to the DC operating point. If I_C rises (e.g. due to a transistor with higher β), I_E = I_C + I_B ≈ I_C also rises, increasing the voltage across R_E. Since the base voltage is held constant by the R1/R2 divider, V_BE = V_B − V_E falls, reducing I_B and opposing the rise in I_C. This self-correcting mechanism keeps the quiescent point stable across a wide spread of β values. An emitter bypass capacitor (C3) short-circuits R_E at AC signal frequencies to restore the full voltage gain.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5d4--stable-bias-potential-divider-and-emitter-resistor",
+      "tags": ["BJT", "emitter-resistor", "negative-feedback", "bias-stability", "5D1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5D",
+      "section_name": "Semiconductors — Bipolar Junction Transistors",
+      "question": "A BJT amplifier stage is to be biased with a quiescent collector current of 5 mA from a +10 V supply, with the collector voltage set at 5 V. The transistor current gain β = 100. What is the required collector resistor R_C and the quiescent base current I_B?",
+      "options": [
+        "R_C = 500 Ω; I_B = 500 μA",
+        "R_C = 1 kΩ; I_B = 50 μA",
+        "R_C = 1 kΩ; I_B = 500 μA",
+        "R_C = 2 kΩ; I_B = 50 μA"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The voltage across R_C = V_CC − V_C = 10 − 5 = 5 V. With I_C = 5 mA: R_C = 5 V / 5 mA = 1 kΩ. The base current: I_B = I_C / β = 5 mA / 100 = 50 μA. These are the starting values for designing the bias network — the potential-divider current should be set much larger than I_B (say 10× to 20×) and R_E chosen to provide the desired emitter voltage, with R1 and R2 calculated from the resulting voltage divider requirements.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5d3--simple-biasing-and-its-instability",
+      "tags": ["BJT", "bias-design", "collector-resistor", "5D1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5E",
+      "section_name": "Semiconductors — BJT Circuit Configurations",
+      "question": "Which BJT configuration has the lowest input impedance, making it useful for matching to low-impedance sources such as 50 Ω coaxial cable at VHF?",
+      "options": [
+        "Common emitter — input impedance approximately 1 kΩ",
+        "Common base — input impedance approximately 50 Ω",
+        "Common collector — input impedance 50 kΩ to 2 MΩ",
+        "All three configurations have the same input impedance"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The common base (CB) configuration has an input impedance of approximately 50 Ω — the lowest of the three BJT configurations. This happens to match the impedance of 50 Ω coaxial cable and is one reason CB stages are used at VHF and UHF. The CB configuration also achieves the highest operating frequency of the three because the base (at AC ground) prevents capacitive feedback from collector to input (the Miller effect), which limits CE performance at high frequencies.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5e2--common-base-cb",
+      "tags": ["common-base", "input-impedance", "BJT-configurations", "5E1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5E",
+      "section_name": "Semiconductors — BJT Circuit Configurations",
+      "question": "Which BJT configuration produces a 180° phase inversion between the input and output signals?",
+      "options": [
+        "Common base only",
+        "Common collector only",
+        "Common emitter only",
+        "All three configurations produce phase inversion"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Only the common emitter (CE) configuration inverts the signal. When the input increases V_BE, I_B increases, I_C increases, the voltage drop across R_C increases, and the collector voltage falls — so the output goes down when the input goes up: 180° inversion. The common base and common collector (emitter follower) configurations both pass the signal in phase. In a two-stage CE amplifier, the two 180° inversions cancel and the overall phase is 0°, which matters for feedback amplifiers.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5e1--common-emitter-ce",
+      "tags": ["common-emitter", "phase-inversion", "BJT-configurations", "5E1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5E",
+      "section_name": "Semiconductors — BJT Circuit Configurations",
+      "question": "A common-collector (emitter-follower) stage is inserted between a crystal oscillator and a mixer. What is the primary purpose of this stage?",
+      "options": [
+        "To invert the oscillator signal polarity before it reaches the mixer",
+        "To multiply the oscillator frequency so the mixer receives a higher frequency signal",
+        "To transform the oscillator's medium-to-high output impedance to the low input impedance of the mixer without significant signal loss",
+        "To filter the oscillator harmonics using the inherent low-pass characteristic of the emitter follower"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The emitter follower (common collector) has very high input impedance (50 kΩ–2 MΩ) and very low output impedance (10–500 Ω). It presents a light load to the oscillator (preserving frequency stability and avoiding pulling) while driving the low-input-impedance mixer stage with sufficient current. The voltage gain is approximately 1 (unity) and there is no phase inversion, so it acts purely as an impedance buffer. This role is fundamental in RF circuit design wherever impedance mismatch would otherwise cause signal loss or oscillator instability.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5e3--common-collector-emitter-follower",
+      "tags": ["emitter-follower", "buffer", "impedance-matching", "5E1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5E",
+      "section_name": "Semiconductors — BJT Circuit Configurations",
+      "question": "Which combination of properties correctly describes the common base BJT configuration?",
+      "options": [
+        "Low Z_in (~50 Ω), high Z_out (~50 kΩ), no current gain, output in phase with input",
+        "Medium Z_in (~1 kΩ), medium Z_out (~5 kΩ), current gain present, 180° phase inversion",
+        "Very high Z_in (50 kΩ+), very low Z_out (<500 Ω), current gain present, no phase inversion",
+        "Low Z_in (~50 Ω), medium Z_out (~5 kΩ), current gain present, 180° phase inversion"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Common base: Z_in ≈ 50 Ω (very low — the input is the emitter), Z_out ≈ 50 kΩ (very high), there is voltage gain but no current gain (I_out < I_in because α = I_C/I_E < 1), and the output is in phase with the input. The very low input impedance makes it ideal for 50 Ω systems at VHF; the high output impedance suits it to driving a tuned circuit load. The absence of current gain distinguishes it clearly from the CE and CC configurations.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5e2--common-base-cb",
+      "tags": ["common-base", "impedance", "current-gain", "5E1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5E",
+      "section_name": "Semiconductors — BJT Circuit Configurations",
+      "question": "A circuit specification requires: input impedance greater than 200 kΩ; output impedance less than 300 Ω; output in phase with input. Which BJT configuration satisfies all three requirements simultaneously?",
+      "options": [
+        "Common emitter: Z_in ~1 kΩ (too low), Z_out ~5 kΩ (too high), signal inverted — fails all three",
+        "Common base: Z_in ~50 Ω (too low), Z_out ~50 kΩ (too high) — fails two criteria",
+        "Common collector (emitter follower): Z_in 50 kΩ–2 MΩ ✓, Z_out 10–500 Ω ✓, in phase ✓",
+        "No single BJT configuration can simultaneously achieve high input and low output impedance"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Only the common collector (emitter follower) meets all three criteria: Z_in is 50 kΩ to 2 MΩ (well above 200 kΩ), Z_out is 10–500 Ω (within the 300 Ω limit), and the output follows the input in phase with unity voltage gain. The common emitter fails on Z_in (too low) and phase (inverted). The common base fails on Z_in (very low ~50 Ω) and Z_out (too high ~50 kΩ). This type of specification comparison is typical of Full licence exam questions on BJT configurations.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5e--bjt-circuit-configurations",
+      "tags": ["BJT-configurations", "specification", "emitter-follower", "5E1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5F",
+      "section_name": "Semiconductors — Amplifier Bias Classes",
+      "question": "For what proportion of the input cycle does a Class A biased transistor conduct collector current?",
+      "options": [
+        "Less than 180° (less than half the cycle)",
+        "Exactly 180° (half the cycle)",
+        "Slightly more than 180°",
+        "The full 360° of every cycle"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "A Class A amplifier has its Q-point biased in the centre of the linear I_C–V_CE region, so collector current flows continuously throughout the full 360° of the input signal cycle. This gives the lowest distortion of all bias classes (provided the signal is not large enough to drive the transistor into saturation or cut-off) but requires a high quiescent current — at least equal to the peak signal current — resulting in continuous power dissipation even with no input signal, and low efficiency.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5f1--class-a",
+      "tags": ["Class-A", "bias", "conduction-angle", "5F1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "5F",
+      "section_name": "Semiconductors — Amplifier Bias Classes",
+      "question": "Why is Class C biasing not suitable for amplifying SSB or AM voice signals?",
+      "options": [
+        "Class C amplifiers have insufficient gain for voice frequencies",
+        "The severe non-linear distortion in Class C destroys amplitude information, generating harmonics and intermodulation products that corrupt the transmitted signal",
+        "Class C amplifiers can only operate above 30 MHz so they cannot cover the HF bands",
+        "The high quiescent current in Class C causes frequency instability in SSB transmitters"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In Class C the transistor conducts for less than 180° of the cycle — only at the peaks of the drive signal. The output is a series of narrow current pulses that bear almost no resemblance to the input waveform. While a tuned resonant circuit can reconstruct the fundamental from these pulses (for FM or CW), the non-linear transfer characteristic introduces severe amplitude distortion and harmonics that would completely corrupt an SSB signal, which encodes information in amplitude variations. Class C is limited to constant-envelope modes (CW, FM, FSK).",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5f4--class-c",
+      "tags": ["Class-C", "SSB", "distortion", "bias", "5F1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5F",
+      "section_name": "Semiconductors — Amplifier Bias Classes",
+      "question": "A Class B push-pull audio amplifier exhibits a characteristic distortion known as crossover distortion. What causes this and how is it eliminated in practice?",
+      "options": [
+        "Crossover distortion is caused by the output transformer saturation near the zero crossing; eliminated by using a toroidal output transformer",
+        "Crossover distortion occurs near the zero-crossing where neither transistor is conducting (dead zone around V_BE < 0.6 V); eliminated by biasing both transistors slightly into conduction (Class AB) using diodes or a bias potentiometer",
+        "Crossover distortion is caused by phase mismatch between the two transistors; eliminated by matching transistors with identical β values",
+        "Crossover distortion results from the transistors switching too slowly; eliminated by using transistors with higher transition frequency f_T"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a pure Class B push-pull amplifier, each transistor begins conducting only when the drive signal exceeds V_BE ≈ 0.6 V. Near the zero-crossing of the signal there is a brief interval where neither transistor conducts, creating a notch of distortion in the output waveform. The solution is Class AB biasing: small forward-biasing diodes (or a bias potentiometer) in the bias circuit hold both transistors just at the onset of conduction so there is no dead zone. Class AB combines the efficiency advantage of Class B with the low crossover distortion of Class A.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5f3--class-ab",
+      "tags": ["Class-B", "Class-AB", "crossover-distortion", "push-pull", "5F1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5F",
+      "section_name": "Semiconductors — Amplifier Bias Classes",
+      "question": "An RF power amplifier uses a Class C stage. Which of the following correctly explains why a tuned resonant circuit is essential at the output?",
+      "options": [
+        "The resonant circuit provides additional voltage gain to compensate for the low β of RF power transistors",
+        "The resonant circuit limits the peak collector current to prevent the transistor being destroyed during each conduction pulse",
+        "The resonant circuit selects the fundamental frequency from the narrow conduction pulses and attenuates the harmonics, reconstructing a clean sinewave output",
+        "The resonant circuit provides the DC supply path to the collector, replacing the collector resistor used in Class A designs"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The Class C stage produces narrow current pulses, each rich in harmonics. A tuned parallel-resonant circuit (tank circuit) at the collector resonates at the fundamental frequency; it stores energy during the brief conduction pulse and releases it as a continuous sinewave during the rest of the cycle. Harmonics are rejected because they lie far from the resonant peak. Without the tuned circuit the output would be highly distorted and the harmonics would violate the spurious emission limits in the licence. The resonant circuit also provides DC isolation between the supply and the load.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5f4--class-c",
+      "tags": ["Class-C", "tuned-circuit", "harmonics", "RF-PA", "5F1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5F",
+      "section_name": "Semiconductors — Amplifier Bias Classes",
+      "question": "A Class A output transistor is required to drive a load with a peak signal current swing of 150 mA. What minimum quiescent collector current must be set, and what is the power consequence when no signal is applied?",
+      "options": [
+        "I_Q = 75 mA; the device dissipates 75 mA × V_CE as heat at all times",
+        "I_Q = 150 mA; the device dissipates the full quiescent power (I_Q × V_CE) even with no input signal",
+        "I_Q = 300 mA; extra headroom is needed because Class A efficiency is less than 50%",
+        "I_Q depends only on the supply voltage, not on the required signal swing"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For Class A operation the transistor must conduct throughout the full 360° of every cycle, including the most negative portion of the signal. The Q-point must therefore be set at least at the peak signal current (150 mA here) so that the collector current can swing from near zero (at the negative peak) to 2 × I_Q (at the positive peak) without hitting cut-off. With no signal present, the transistor still draws I_Q = 150 mA continuously, dissipating I_Q × V_CE as heat. This constant dissipation is the fundamental inefficiency of Class A — in a battery-powered device it would drain the battery even in silence.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5f1--class-a",
+      "tags": ["Class-A", "quiescent-current", "efficiency", "5F1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5G",
+      "section_name": "Semiconductors — Field Effect Transistors",
+      "question": "How does a field effect transistor (FET) differ fundamentally from a bipolar junction transistor (BJT) in the way it is controlled?",
+      "options": [
+        "The FET is controlled by a base current; the BJT is controlled by gate voltage",
+        "The FET is controlled by the gate-source voltage V_GS; no gate current is needed, making it a voltage-controlled device",
+        "The FET is controlled by its drain current, which in turn sets the gate voltage via feedback",
+        "Both devices are controlled by base/gate current — the FET simply requires a smaller current than the BJT"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A FET is a voltage-controlled device: the gate-source voltage V_GS determines the width of the conducting channel and hence the drain current, without any gate current flowing. In a JFET the gate junction is reverse-biased (so no DC gate current); in an IGFET/MOSFET the gate is isolated by an insulating oxide layer (so essentially zero gate current at DC). This contrasts with the BJT where a base current (I_B) is required to produce the collector current (I_C = β × I_B). The FET's very high input impedance is a direct consequence of this voltage-control mechanism.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5g1--jfet-operation",
+      "tags": ["FET", "BJT", "voltage-controlled", "gate-current", "5G1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5G",
+      "section_name": "Semiconductors — Field Effect Transistors",
+      "question": "A dual-gate MOSFET is used in a receiver front-end amplifier with the RF signal applied to Gate 1. What function is Gate 2 most commonly used for in this application?",
+      "options": [
+        "Gate 2 is connected to the 0V rail as a DC return path for Gate 1 bias current",
+        "Gate 2 is the AGC control input — varying its DC voltage controls the transconductance and hence the gain of the stage",
+        "Gate 2 is used as the output, with the drain providing the second input for a differential configuration",
+        "Gate 2 provides the local oscillator injection for the mixing function in all dual-gate MOSFET circuits"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a receiver front-end or IF amplifier, Gate 2 is typically held at a positive DC voltage and varied by the AGC (Automatic Gain Control) circuit. Increasing or decreasing the Gate 2 voltage changes the transconductance of the device and hence the stage gain, allowing the receiver to maintain a constant audio output as the RF input signal strength varies. A dual-gate MOSFET can also be used as a mixer by applying the local oscillator signal to Gate 2, with the RF signal on Gate 1 — the device then multiplies the two signals, producing sum and difference frequencies at the drain.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5g3--dual-gate-mosfet",
+      "tags": ["dual-gate-MOSFET", "AGC", "Gate2", "5G1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5G",
+      "section_name": "Semiconductors — Field Effect Transistors",
+      "question": "Why are MOSFET and CMOS devices far more susceptible to electrostatic damage than bipolar transistors?",
+      "options": [
+        "MOSFETs are physically smaller and therefore more easily damaged by mechanical stress",
+        "The extremely thin oxide insulation between the gate electrode and the channel breaks down at voltages as low as 5–10 V; a typical person can carry several kilovolts of static",
+        "CMOS devices operate at lower supply voltages so relatively smaller static charges cause proportionally higher stress",
+        "MOSFETs draw no gate current so there is no path to discharge static charge, which accumulates and eventually destroys the silicon lattice"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The gate insulation in a MOSFET is an extremely thin layer of silicon dioxide — thin enough to give very high capacitance and high input impedance, but fragile enough to break down permanently at as little as 5–10 V. A person walking on a synthetic carpet can accumulate several kilovolts; touching a MOSFET gate pin discharges this through the oxide, instantly destroying the device. BJT base-emitter junctions can tolerate much higher reverse voltages before breaking down. Antistatic precautions (wristband, antistatic mat, conductive packaging) are essential when handling MOSFETs and CMOS ICs.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5g4--esd-precautions",
+      "tags": ["MOSFET", "ESD", "static-discharge", "5G1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5G1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5G",
+      "section_name": "Semiconductors — Field Effect Transistors",
+      "question": "A JFET amplifier has its gate connected to the 0V rail through a 2.7 MΩ resistor to set the DC gate potential. Why can such a large resistor value be used, when a BJT amplifier would require a much lower resistance in a similar position?",
+      "options": [
+        "A JFET has much higher transconductance than a BJT's β so a larger resistor is needed to limit the controlling quantity to the correct level",
+        "The gate-channel junction of a JFET is reverse-biased in normal operation, so virtually no DC gate current flows; the voltage drop across even a very large resistor is therefore negligible",
+        "The 2.7 MΩ resistor resonates with the junction capacitance at the operating frequency, providing a low-impedance AC path",
+        "JFETs operate at much lower supply voltages than BJTs, so the same gate current flows through a proportionally larger resistance"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a JFET the gate-source junction is reverse-biased, so no DC current flows into the gate terminal. Ohm's law requires a voltage drop only if current flows: V = I × R. With gate current ≈ 0, even a 2.7 MΩ resistor produces no appreciable voltage drop, so the gate sits at the required DC potential. In contrast, a BJT's base requires a continuous base current for the transistor to conduct; this current flowing through the bias resistor creates the voltage that sets V_BE, so the resistor value must be low enough to supply that current. The JFET's high-impedance gate is one of its key practical advantages.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5g1--jfet-operation",
+      "tags": ["JFET", "gate-resistor", "gate-current", "input-impedance", "5G1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5H",
+      "section_name": "Semiconductors — Regulated Power Supplies",
+      "question": "An antistatic wristband used when handling MOSFETs is connected to earth via a series resistor of a few megohms. What is the purpose of this resistor?",
+      "options": [
+        "To slow the static discharge rate and prevent thermal shock damage to delicate components",
+        "To limit the current to a safe level if the wearer accidentally contacts a live mains voltage, while still providing a path for static charges to drain harmlessly to earth",
+        "To increase the time constant of the discharge to match the ESD immunity rating of the device being handled",
+        "To prevent interference from the earthed wristband affecting the RF circuits being worked on"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Static charges on the body are typically a few microcoulombs at most; even through a few MΩ, they drain to earth in a fraction of a second — safely protecting components. However, if the wearer accidentally touched a live mains circuit, a direct metal connection to earth would be lethal. A resistance of a few MΩ limits the fault current to safe levels (230 V / 2 MΩ ≈ 115 μA) while still being completely effective at draining static. This is why the wristband must never be worn when working on live mains-connected equipment — the earthing protection applies only to static work on de-energised circuits.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5g4--esd-precautions",
+      "tags": ["ESD", "wristband", "series-resistor", "safety", "5H1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5H1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5H",
+      "section_name": "Semiconductors — Regulated Power Supplies",
+      "question": "A 7812 IC voltage regulator requires two small capacitors fitted as close as possible to its input and output pins. What type of capacitor should be used and what happens if they are omitted?",
+      "options": [
+        "Standard large-value aluminium electrolytics; without them the output ripple increases to an unacceptable level",
+        "Low-inductance types such as tantalum electrolytics (typically 2 μF); without them the IC regulator's high internal gain may cause oscillation at RF frequencies, potentially damaging the IC and connected equipment",
+        "High-capacitance ceramic types (100 μF+); without them the output voltage is higher than the rated value",
+        "Polystyrene film types for best frequency response; without them the transient response degrades but regulation is otherwise unaffected"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The 78xx series IC regulators have very high internal gain. Without adequate decoupling the feedback path within the IC can oscillate at RF frequencies — the chip then generates RF noise and may be damaged by the sustained oscillation. Low-inductance capacitors (tantalum electrolytics or multilayer ceramics) are specified because standard aluminium electrolytics have too much series inductance to be effective at the oscillation frequency. A value of 2 μF is typical, often supplemented by a 0.1 μF polyester or ceramic cap in parallel for very-high-frequency decoupling. These components must be physically close to the IC pins to minimise lead inductance.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5h3--ic-voltage-regulator-78xx--79xx-series",
+      "tags": ["78xx", "IC-regulator", "decoupling-capacitors", "oscillation", "5H1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5I",
+      "section_name": "Semiconductors — Switch-Mode Power Supplies",
+      "question": "A switch-mode power supply chops the mains-derived DC at 50 kHz before passing it through a transformer. Why is a ferrite core used for this transformer rather than the laminated iron core of a conventional mains transformer?",
+      "options": [
+        "Ferrite has higher saturation flux density than iron, allowing a more compact core for the same power",
+        "At 50 kHz, laminated iron cores would have catastrophic eddy current losses and heating; ferrite is a non-conductive ceramic so eddy currents cannot flow within it",
+        "Ferrite cores provide inherent RF shielding that prevents the switching harmonics from radiating from the transformer",
+        "Ferrite cores are less expensive than iron laminations at the small core sizes used in SMPS designs"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Iron is a conductor; at 50 kHz, alternating flux induces large eddy currents in a solid iron core, causing massive I²R heating losses that would make the transformer impractical. Laminated iron (used in mains transformers at 50 Hz) reduces eddy currents by splitting the core into thin, insulated sheets — but at 50 kHz even thin laminations are inadequate. Ferrite is a non-conductive ceramic (made from iron oxides and other metal oxides) so eddy currents cannot flow at all. Additionally, at 50 kHz the core only needs to hold flux for 20 μs instead of 10 ms, so the transformer can be over 1000 times smaller and lighter than an equivalent 50 Hz design.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5i1--principle-of-operation",
+      "tags": ["SMPS", "ferrite", "eddy-currents", "switching-frequency", "5I1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "5J",
+      "section_name": "Semiconductors — Integrated Circuits and Op-Amps",
+      "question": "In an op-amp inverting amplifier, the junction between R_in and R_f is described as a 'virtual earth'. Which statement best explains why this point is held at approximately 0 V even though it is not directly connected to the 0 V rail?",
+      "options": [
+        "The junction is connected to the 0V rail through the very low output impedance of the op-amp output stage",
+        "The op-amp's extremely high open-loop gain means any tiny voltage appearing at the inverting input drives a large corrective output; negative feedback continuously forces the inverting input to within microvolts of 0 V",
+        "The two resistors R_in and R_f form a potential divider that sets the junction voltage to exactly 0 V when their values are equal",
+        "The non-inverting input (+) is connected to 0 V and the differential input stage actively zeros any difference between the two inputs"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The op-amp has an open-loop gain of perhaps 100,000 or more. If the inverting input (−) rises even slightly above 0 V, the output swings strongly negative (via the high gain), which feeds back through R_f to pull the inverting input back towards 0 V. This action is so fast and powerful that the inverting input is held within microvolts of 0 V in steady state — a virtual earth. The concept is fundamental to op-amp circuit analysis: assuming V_− = 0 V (virtual earth) and I_in = 0 allows the gain equation to be derived directly from Ohm's law without needing to know the open-loop gain.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5j2--the-operational-amplifier-op-amp",
+      "tags": ["op-amp", "virtual-earth", "negative-feedback", "inverting-amplifier", "5J1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "5J1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "5J",
+      "section_name": "Semiconductors — Integrated Circuits and Op-Amps",
+      "question": "An op-amp inverting amplifier has R_in = 22 kΩ and R_f = 220 kΩ. An input voltage of +0.5 V is applied. What is the output voltage?",
+      "options": [
+        "+5.0 V",
+        "−5.0 V",
+        "+50 V",
+        "−0.05 V"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For an inverting op-amp amplifier, gain = −R_f / R_in = −220 kΩ / 22 kΩ = −10. V_out = gain × V_in = −10 × 0.5 V = −5.0 V. The negative sign indicates phase inversion — a positive input produces a negative output. The virtual earth principle makes this analysis straightforward: the inverting input is at 0 V (virtual earth), so the input current is V_in/R_in = 0.5/22kΩ ≈ 22.7 μA; this same current flows through R_f (since no current enters the op-amp input); V_out = 0 − (22.7 μA × 220 kΩ) = −5 V.",
+      "source_content": "/content/study/full/section-5-semiconductors.md#5j2--the-operational-amplifier-op-amp",
+      "tags": ["op-amp", "inverting-amplifier", "gain-calculation", "virtual-earth", "5J1"],
+      "active": true
+    }
+  ]
+}
