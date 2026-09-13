@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oscilloscope Simulator — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.6rem; }
+
+    /* Scope screen */
+    #scopeScreen { display: block; width: 100%; border-radius: 4px; background: #020d04; border: 1px solid #1a2e1c; }
+
+    /* Controls */
+    .ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    .cf { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #94a3b8; }
+    .ctrl-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; color: #e2e8f0; }
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #1e293b; border-radius: 2px; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; cursor: pointer; }
+    select { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; padding: 0.35rem 0.5rem; outline: none; cursor: pointer; width: 100%; }
+
+    /* Measurements strip */
+    .meas-strip { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+    .meas { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; padding: 0.3rem 0.6rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; flex: 1; min-width: 90px; }
+    .ml { color: #334155; font-size: 0.62rem; text-transform: uppercase; }
+    .mv { color: #22c55e; }
+
+    .tbtn { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 0.22rem 0.55rem; border-radius: 4px; border: 1px solid #1e293b; background: #0d1321; color: #64748b; cursor: pointer; transition: border-color 0.13s, color 0.13s; }
+    .tbtn.on { border-color: #22c55e; color: #22c55e; }
+
+    @media (max-width: 420px) { .ctrl-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Oscilloscope Simulator</h1>
+  <p class="subtitle">Virtual oscilloscope · time-domain waveform display · §14 Measurements</p>
+
+  <!-- Scope screen -->
+  <div class="card" style="padding:0.75rem;">
+    <canvas id="scopeScreen" height="240"></canvas>
+    <div class="meas-strip">
+      <div class="meas"><div class="ml">Freq</div><div class="mv" id="mFreq">—</div></div>
+      <div class="meas"><div class="ml">Period</div><div class="mv" id="mPeriod">—</div></div>
+      <div class="meas"><div class="ml">Amplitude</div><div class="mv" id="mAmp">—</div></div>
+      <div class="meas"><div class="ml">Time/div</div><div class="mv" id="mTdiv">—</div></div>
+      <div class="meas"><div class="ml">V/div</div><div class="mv" id="mVdiv">—</div></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-label">Channel / Signal</div>
+    <div class="ctrl-grid">
+      <div class="cf">
+        <label>Waveform</label>
+        <select id="selWave">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="triangle">Triangle</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="am">AM Modulated</option>
+          <option value="fm">FM Modulated</option>
+          <option value="pulse">Pulse (DC offset)</option>
+        </select>
+      </div>
+      <div class="cf">
+        <label>Frequency: <span class="ctrl-val" id="lblFreq">1.0 kHz</span></label>
+        <input type="range" id="slFreq" min="1" max="5" step="0.01" value="3">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:#334155;">log scale 10 Hz – 100 kHz</span>
+      </div>
+      <div class="cf">
+        <label>Amplitude: <span class="ctrl-val" id="lblAmp">1.00 V</span></label>
+        <input type="range" id="slAmp" min="0.1" max="5" step="0.1" value="1">
+      </div>
+      <div class="cf" id="modGroup">
+        <label>Mod depth / index: <span class="ctrl-val" id="lblMod">50 %</span></label>
+        <input type="range" id="slMod" min="0" max="100" step="5" value="50">
+      </div>
+    </div>
+    <div class="card-label" style="margin-top:0.85rem;">Timebase &amp; Scale</div>
+    <div class="ctrl-grid">
+      <div class="cf">
+        <label>Time/div (µs): <span class="ctrl-val" id="lblTdiv">100</span></label>
+        <input type="range" id="slTdiv" min="1" max="1000" step="1" value="100">
+      </div>
+      <div class="cf">
+        <label>V/div: <span class="ctrl-val" id="lblVdiv">0.5 V</span></label>
+        <input type="range" id="slVdiv" min="0.1" max="5" step="0.1" value="0.5">
+      </div>
+    </div>
+    <div style="display:flex;gap:0.4rem;margin-top:0.75rem;flex-wrap:wrap;">
+      <button class="tbtn on" id="btnRun">▶ Running</button>
+      <button class="tbtn on" id="btnGrid">Grid on</button>
+      <button class="tbtn on" id="btnPersist">Persistence off</button>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var canvas = document.getElementById('scopeScreen');
+    var ctx = canvas.getContext('2d');
+
+    var running = true, showGrid = true, persist = false;
+    var phase = 0;
+    var DIVX = 10, DIVY = 8;
+    var persistBuf = null;
+
+    function resize() {
+      var w = canvas.parentElement.getBoundingClientRect().width - 24;
+      canvas.width = Math.max(240, Math.floor(w));
+      canvas.height = Math.round(canvas.width * 0.5);
+      persistBuf = null;
+    }
+    resize();
+    window.addEventListener('resize', function () { resize(); });
+
+    /* Sliders */
+    var freqLog = 3, amp = 1, tdivUs = 100, vdiv = 0.5, modVal = 50;
+    var waveType = 'sine';
+
+    document.getElementById('slFreq').addEventListener('input', function () {
+      freqLog = parseFloat(this.value);
+      var f = Math.pow(10, freqLog);
+      document.getElementById('lblFreq').textContent = fmtHz(f);
+      persistBuf = null;
+    });
+    document.getElementById('slAmp').addEventListener('input', function () {
+      amp = parseFloat(this.value);
+      document.getElementById('lblAmp').textContent = amp.toFixed(2) + ' V';
+      persistBuf = null;
+    });
+    document.getElementById('slTdiv').addEventListener('input', function () {
+      tdivUs = parseFloat(this.value);
+      document.getElementById('lblTdiv').textContent = tdivUs >= 1000 ? (tdivUs/1000).toFixed(1) + ' ms' : tdivUs + ' µs';
+      persistBuf = null;
+    });
+    document.getElementById('slVdiv').addEventListener('input', function () {
+      vdiv = parseFloat(this.value);
+      document.getElementById('lblVdiv').textContent = vdiv.toFixed(1) + ' V';
+    });
+    document.getElementById('slMod').addEventListener('input', function () {
+      modVal = parseFloat(this.value);
+      document.getElementById('lblMod').textContent = modVal + (waveType === 'fm' ? ' kHz dev' : ' %');
+    });
+    document.getElementById('selWave').addEventListener('change', function () {
+      waveType = this.value;
+      var showMod = waveType === 'am' || waveType === 'fm';
+      document.getElementById('modGroup').style.display = showMod ? 'flex' : 'none';
+      document.getElementById('lblMod').textContent = modVal + (waveType === 'fm' ? ' kHz dev' : ' %');
+      persistBuf = null;
+    });
+
+    document.getElementById('btnRun').addEventListener('click', function () {
+      running = !running;
+      this.textContent = running ? '▶ Running' : '⏸ Frozen';
+      this.classList.toggle('on', running);
+    });
+    document.getElementById('btnGrid').addEventListener('click', function () {
+      showGrid = !showGrid;
+      this.textContent = showGrid ? 'Grid on' : 'Grid off';
+      this.classList.toggle('on', showGrid);
+    });
+    document.getElementById('btnPersist').addEventListener('click', function () {
+      persist = !persist;
+      this.textContent = persist ? 'Persistence on' : 'Persistence off';
+      this.classList.toggle('on', persist);
+      if (!persist) persistBuf = null;
+    });
+
+    /* Wave function */
+    function wave(t_s) {
+      var f = Math.pow(10, freqLog);
+      var w = 2 * Math.PI * f;
+      switch (waveType) {
+        case 'sine': return amp * Math.sin(w * t_s + phase);
+        case 'square': return amp * (Math.sin(w * t_s + phase) >= 0 ? 1 : -1);
+        case 'triangle': return amp * (2 / Math.PI) * Math.asin(Math.sin(w * t_s + phase));
+        case 'sawtooth': return amp * (2 * ((f * t_s + phase/(2*Math.PI)) % 1) - 1);
+        case 'am': {
+          var m = modVal / 100;
+          return amp * (1 + m * Math.sin(2 * Math.PI * f/10 * t_s)) * Math.sin(w * t_s + phase);
+        }
+        case 'fm': {
+          var dev = modVal * 1e3;
+          return amp * Math.sin(w * t_s + (dev / (f/10)) * Math.sin(2 * Math.PI * f/10 * t_s) + phase);
+        }
+        case 'pulse': return amp * (Math.sin(w * t_s + phase) > 0.7 ? 1.2 : -0.3);
+        default: return 0;
+      }
+    }
+
+    function draw() {
+      var W = canvas.width, H = canvas.height;
+      var divW = W / DIVX, divH = H / DIVY;
+      var cy = H / 2;
+
+      /* Persistence */
+      if (persist && persistBuf) {
+        ctx.drawImage(persistBuf, 0, 0);
+        ctx.fillStyle = 'rgba(2,13,4,0.12)';
+        ctx.fillRect(0, 0, W, H);
+      } else {
+        ctx.fillStyle = '#020d04';
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      /* Grid */
+      if (showGrid) {
+        ctx.strokeStyle = 'rgba(0,255,64,0.08)'; ctx.lineWidth = 1; ctx.setLineDash([]);
+        for (var i = 1; i < DIVX; i++) {
+          ctx.beginPath(); ctx.moveTo(i * divW, 0); ctx.lineTo(i * divW, H); ctx.stroke();
+        }
+        for (var j = 1; j < DIVY; j++) {
+          ctx.beginPath(); ctx.moveTo(0, j * divH); ctx.lineTo(W, j * divH); ctx.stroke();
+        }
+        /* Tick marks on center lines */
+        ctx.strokeStyle = 'rgba(0,255,64,0.2)';
+        for (var i = 0; i <= DIVX; i += 0.5) {
+          var x = i * divW; var tick = (i % 1 === 0) ? 5 : 3;
+          ctx.beginPath(); ctx.moveTo(x, cy - tick); ctx.lineTo(x, cy + tick); ctx.stroke();
+        }
+        for (var j = 0; j <= DIVY; j += 0.5) {
+          var y = j * divH; var cx2 = W / 2; var tick = (j % 1 === 0) ? 5 : 3;
+          ctx.beginPath(); ctx.moveTo(cx2 - tick, y); ctx.lineTo(cx2 + tick, y); ctx.stroke();
+        }
+      }
+
+      /* Waveform */
+      var tdivSec = tdivUs * 1e-6;
+      var totalTime = DIVX * tdivSec;
+      var N = Math.min(W, 1000);
+
+      ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+      ctx.beginPath();
+      for (var i = 0; i <= N; i++) {
+        var t = i / N * totalTime;
+        var v = wave(t);
+        var px = i / N * W;
+        var py = cy - (v / vdiv) * divH;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      /* Trigger line (faint) */
+      ctx.strokeStyle = 'rgba(251,191,36,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+      ctx.setLineDash([]);
+
+      /* Labels */
+      var f = Math.pow(10, freqLog);
+      ctx.fillStyle = 'rgba(34,197,94,0.6)'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'left';
+      ctx.fillText('CH1  ' + amp.toFixed(2) + 'V  ' + vdiv.toFixed(1) + 'V/div', 6, 12);
+      ctx.fillText(tdivUs >= 1000 ? (tdivUs/1000).toFixed(1)+'ms/div' : tdivUs+'µs/div', 6, 22);
+      ctx.textAlign = 'right';
+      ctx.fillText(fmtHz(f), W - 6, 12);
+
+      /* Persist capture */
+      if (persist) {
+        persistBuf = document.createElement('canvas');
+        persistBuf.width = W; persistBuf.height = H;
+        persistBuf.getContext('2d').drawImage(canvas, 0, 0);
+      }
+
+      /* Measurements */
+      var f2 = Math.pow(10, freqLog);
+      document.getElementById('mFreq').textContent   = fmtHz(f2);
+      document.getElementById('mPeriod').textContent = fmtTime(1 / f2);
+      document.getElementById('mAmp').textContent    = amp.toFixed(2) + ' V pk';
+      document.getElementById('mTdiv').textContent   = tdivUs >= 1000 ? (tdivUs/1000).toFixed(1) + ' ms' : tdivUs + ' µs';
+      document.getElementById('mVdiv').textContent   = vdiv.toFixed(1) + ' V';
+    }
+
+    function fmtHz(f) {
+      if (f >= 1e6) return (f/1e6).toFixed(2) + ' MHz';
+      if (f >= 1e3) return (f/1e3).toFixed(2) + ' kHz';
+      return f.toFixed(0) + ' Hz';
+    }
+    function fmtTime(t) {
+      if (t >= 1) return t.toFixed(3) + ' s';
+      if (t >= 1e-3) return (t*1e3).toFixed(2) + ' ms';
+      if (t >= 1e-6) return (t*1e6).toFixed(2) + ' µs';
+      return (t*1e9).toFixed(2) + ' ns';
+    }
+
+    var lastT = 0;
+    function frame(ts) {
+      if (running) {
+        var dt = lastT ? (ts - lastT) / 1000 : 0;
+        lastT = ts;
+        phase = (phase + 2 * Math.PI * Math.pow(10, freqLog) * dt) % (2 * Math.PI);
+        draw();
+      } else {
+        lastT = 0;
+        draw();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+  </script>
+</body>
+</html>

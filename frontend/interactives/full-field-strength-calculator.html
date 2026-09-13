@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field-Strength Calculator — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.65rem; }
+    .mode-tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .mode-tab { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; padding: 0.28rem 0.7rem; border-radius: 4px; border: 1px solid #1e293b; background: #0d1321; color: #64748b; cursor: pointer; transition: border-color 0.13s, color 0.13s; }
+    .mode-tab.active { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.08); }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="number"] { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; padding: 0.42rem 0.65rem; width: 100%; outline: none; transition: border-color 0.13s; }
+    input[type="number"]:focus { border-color: #a78bfa; }
+    .fhint { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #334155; }
+    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 0.9rem; }
+    .rc { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 0.8rem 0.95rem; }
+    .rc.span2 { grid-column: 1 / -1; }
+    .rc-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.22rem; }
+    .rc-val { font-family: 'IBM Plex Mono', monospace; font-size: 1.05rem; font-weight: 600; }
+    .rc-sub { font-size: 0.74rem; color: #64748b; margin-top: 0.15rem; }
+    .c-E { color: #a78bfa; } .c-S { color: #06b6d4; } .c-d { color: #4ade80; } .c-P { color: #fbbf24; }
+    .formula-box { background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0; padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.77rem; color: #64748b; line-height: 1.8; }
+    .formula-box .purple { color: #a78bfa; } .formula-box .cyan { color: #06b6d4; } .formula-box .hi { color: #e2e8f0; } .formula-box .amber { color: #fbbf24; }
+    @media (max-width: 420px) { .input-grid, .results-grid { grid-template-columns: 1fr; } .rc.span2 { grid-column: 1; } }
+  </style>
+</head>
+<body>
+  <h1>Field-Strength Calculator</h1>
+  <p class="subtitle">E-field · power density · EIRP · distance — far-field free-space model</p>
+
+  <div class="card">
+    <div class="card-label">Mode</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="tx">TX → Field</button>
+      <button class="mode-tab" data-mode="field">Field → EIRP / Distance</button>
+      <button class="mode-tab" data-mode="convert">Unit Converter</button>
+    </div>
+
+    <!-- TX → Field -->
+    <div id="pane-tx">
+      <div class="input-grid">
+        <div class="field"><label>TX Power (W)</label><input type="number" id="tx-P" value="100" min="0.001" step="any"><span class="fhint">P_TX</span></div>
+        <div class="field"><label>Antenna Gain (dBi)</label><input type="number" id="tx-G" value="2.15" step="any"><span class="fhint">0 dBi = isotropic</span></div>
+        <div class="field"><label>Distance (m)</label><input type="number" id="tx-d" value="10" min="0.1" step="any"><span class="fhint">From antenna</span></div>
+        <div class="field"><label>Frequency (MHz)</label><input type="number" id="tx-f" value="144" min="0.1" step="any"><span class="fhint">For λ context only</span></div>
+      </div>
+    </div>
+
+    <!-- Field → derive -->
+    <div id="pane-field" style="display:none;">
+      <div class="input-grid">
+        <div class="field"><label>Field Strength (V/m)</label><input type="number" id="f-E" value="10" min="0.001" step="any"></div>
+        <div class="field"><label>Distance (m)</label><input type="number" id="f-d" value="10" min="0.1" step="any"></div>
+      </div>
+    </div>
+
+    <!-- Unit converter -->
+    <div id="pane-convert" style="display:none;">
+      <div class="input-grid">
+        <div class="field"><label>E-field (V/m)</label><input type="number" id="cv-E" value="1" min="0.001" step="any"></div>
+        <div class="field"><label style="opacity:0;">—</label><input type="number" id="cv-dbuvm" value="" step="any" placeholder="or enter dBµV/m"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid">
+    <div class="rc"><div class="rc-lbl" id="r0lbl">E-field</div><div class="rc-val c-E" id="r0val">—</div><div class="rc-sub" id="r0sub"></div></div>
+    <div class="rc"><div class="rc-lbl" id="r1lbl">dBµV/m</div><div class="rc-val c-E" id="r1val">—</div><div class="rc-sub" id="r1sub"></div></div>
+    <div class="rc"><div class="rc-lbl" id="r2lbl">Power Density</div><div class="rc-val c-S" id="r2val">—</div><div class="rc-sub" id="r2sub"></div></div>
+    <div class="rc"><div class="rc-lbl" id="r3lbl">EIRP</div><div class="rc-val c-P" id="r3val">—</div><div class="rc-sub" id="r3sub"></div></div>
+    <div class="rc span2"><div class="rc-lbl" id="r4lbl">Context</div><div class="rc-val" id="r4val" style="font-size:0.85rem;color:#94a3b8;"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Formulae</div>
+    <div class="formula-box">
+      <span class="purple">E</span> = √(30 × <span class="amber">EIRP</span>) / <span class="cyan">d</span>  &nbsp; [V/m]<br>
+      <span class="amber">EIRP</span> = P × G_linear = P × 10^(dBi/10)  &nbsp; [W]<br>
+      S = <span class="purple">E</span>² / 377  &nbsp; [W/m²] &nbsp; (η₀ = 377 Ω, free-space impedance)<br>
+      S = <span class="amber">EIRP</span> / (4π<span class="cyan">d</span>²)  &nbsp; [W/m²]<br>
+      <span class="purple">E</span><sub>dBµV/m</sub> = 20·log₁₀(E × 10⁶) = 20·log₁₀(E) + 120
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var mode = 'tx';
+    document.querySelectorAll('.mode-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.mode-tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        mode = btn.dataset.mode;
+        ['tx','field','convert'].forEach(function (m) {
+          document.getElementById('pane-' + m).style.display = m === mode ? 'block' : 'none';
+        });
+        calc();
+      });
+    });
+    document.querySelectorAll('input').forEach(function (i) { i.addEventListener('input', calc); });
+
+    /* Sync V/m ↔ dBµV/m in converter */
+    document.getElementById('cv-E').addEventListener('input', function () {
+      var v = parseFloat(this.value);
+      if (isFinite(v) && v > 0) document.getElementById('cv-dbuvm').value = (20 * Math.log10(v * 1e6)).toFixed(2);
+    });
+    document.getElementById('cv-dbuvm').addEventListener('input', function () {
+      var v = parseFloat(this.value);
+      if (isFinite(v)) document.getElementById('cv-E').value = (Math.pow(10, v / 20) / 1e6).toFixed(6);
+    });
+
+    function calc() {
+      if (mode === 'tx') {
+        var P = parseFloat(document.getElementById('tx-P').value);
+        var G_dBi = parseFloat(document.getElementById('tx-G').value);
+        var d = parseFloat(document.getElementById('tx-d').value);
+        var fMHz = parseFloat(document.getElementById('tx-f').value);
+        if (!isFinite(P) || !isFinite(G_dBi) || !isFinite(d) || P <= 0 || d <= 0) { clearResults(); return; }
+        var G = Math.pow(10, G_dBi / 10);
+        var EIRP = P * G;
+        var E = Math.sqrt(30 * EIRP) / d;
+        var S = EIRP / (4 * Math.PI * d * d);
+        var dbuvm = 20 * Math.log10(E * 1e6);
+        var lambda = isFinite(fMHz) && fMHz > 0 ? 300 / fMHz : null;
+        var farField = lambda ? d > 2 * lambda : true;
+        show('E-field', fmt(E, 3) + ' V/m', '= ' + dbuvm.toFixed(1) + ' dBµV/m',
+             'dBµV/m', dbuvm.toFixed(1), '',
+             'Power density (S)', fmtS(S), '',
+             'EIRP', fmt(EIRP, 1) + ' W (' + (10 * Math.log10(EIRP)).toFixed(1) + ' dBW)',  G_dBi + ' dBi gain × ' + P + ' W',
+             (farField ? '' : '⚠ d < 2λ — near-field: formula applies to far field only') + (lambda ? '  λ = ' + lambda.toFixed(1) + ' m at ' + fMHz + ' MHz' : ''));
+      } else if (mode === 'field') {
+        var E = parseFloat(document.getElementById('f-E').value);
+        var d = parseFloat(document.getElementById('f-d').value);
+        if (!isFinite(E) || !isFinite(d) || E <= 0 || d <= 0) { clearResults(); return; }
+        var S = E * E / 377;
+        var EIRP = E * E * d * d / 30;
+        var dbuvm = 20 * Math.log10(E * 1e6);
+        show('E-field', fmt(E, 4) + ' V/m', 'input',
+             'dBµV/m', dbuvm.toFixed(1), '',
+             'Power Density', fmtS(S), '',
+             'Implied EIRP', fmt(EIRP, 2) + ' W', 'from E and d');
+        set('r4val', 'Distance to achieve ' + fmt(E,3) + ' V/m from 1 W EIRP: ' + fmt(Math.sqrt(30 / (E * E)), 1) + ' m');
+      } else {
+        var E = parseFloat(document.getElementById('cv-E').value);
+        if (!isFinite(E) || E <= 0) { clearResults(); return; }
+        var dbuvm = 20 * Math.log10(E * 1e6);
+        var S = E * E / 377;
+        show('V/m', fmt(E, 6), '',
+             'dBµV/m', dbuvm.toFixed(2), '',
+             'Power Density', fmtS(S), '',
+             'dBm/m²', (10 * Math.log10(S * 1000)).toFixed(1), 'dBm per square metre');
+        set('r4val', '1 V/m = 120 dBµV/m &nbsp;·&nbsp; 0 dBµV/m = 1 µV/m');
+      }
+    }
+
+    function show(l0,v0,s0,l1,v1,s1,l2,v2,s2,l3,v3,s3,ctx) {
+      set('r0lbl',l0); setText('r0val',v0,'c-E'); set('r0sub',s0);
+      set('r1lbl',l1); setText('r1val',v1,'c-E'); set('r1sub',s1);
+      set('r2lbl',l2); setText('r2val',v2,'c-S'); set('r2sub',s2);
+      set('r3lbl',l3); setText('r3val',v3,'c-P'); set('r3sub',s3);
+      if (ctx !== undefined) set('r4val',ctx);
+    }
+
+    function clearResults() {
+      ['r0val','r1val','r2val','r3val','r4val'].forEach(function(id){ document.getElementById(id).textContent = '—'; });
+    }
+
+    function set(id, text) { var e = document.getElementById(id); if (e) e.textContent = text; }
+    function setText(id, text, cls) {
+      var e = document.getElementById(id); if (!e) return;
+      e.textContent = text;
+      e.className = 'rc-val ' + (cls || '');
+    }
+
+    function fmt(v, dec) {
+      if (!isFinite(v)) return '—';
+      if (v >= 1e6) return (v/1e6).toFixed(dec) + ' M';
+      if (v >= 1e3) return (v/1e3).toFixed(dec) + ' k';
+      if (v < 0.001) return (v * 1e6).toFixed(2) + ' µ';
+      return v.toFixed(dec);
+    }
+
+    function fmtS(S) {
+      if (!isFinite(S)) return '—';
+      if (S >= 1) return S.toFixed(3) + ' W/m²';
+      if (S >= 1e-3) return (S*1e3).toFixed(3) + ' mW/m²';
+      if (S >= 1e-6) return (S*1e6).toFixed(3) + ' µW/m²';
+      return (S*1e9).toFixed(3) + ' nW/m²';
+    }
+
+    calc();
+  })();
+  </script>
+</body>
+</html>

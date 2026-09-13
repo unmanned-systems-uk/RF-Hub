@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sampling &amp; Aliasing Visualiser — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.75rem; }
+    .ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="range"] { width: 100%; accent-color: #a78bfa; cursor: pointer; }
+    .val-row { display: flex; justify-content: space-between; align-items: baseline; }
+    .val-disp { font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; color: #e2e8f0; }
+    .val-hint { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #334155; }
+
+    /* canvas panels */
+    .panel { background: #0d1117; border: 1px solid #1e293b; border-radius: 6px; overflow: hidden; margin-bottom: 0.7rem; position: relative; }
+    .panel-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.35rem 0.65rem 0; }
+    canvas { display: block; width: 100%; }
+
+    /* status banner */
+    .nyquist-banner { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; padding: 0.55rem 0.9rem; border-radius: 6px; text-align: center; margin-bottom: 0.7rem; transition: background 0.2s, color 0.2s; }
+    .nyquist-ok  { background: rgba(74,222,128,0.1); border: 1px solid #4ade80; color: #4ade80; }
+    .nyquist-warn{ background: rgba(251,191,36,0.1);  border: 1px solid #fbbf24; color: #fbbf24; }
+    .nyquist-bad { background: rgba(239,68,68,0.1);  border: 1px solid #ef4444; color: #ef4444; }
+
+    /* info grid */
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 0.7rem; }
+    .ic { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 0.65rem 0.8rem; }
+    .ic-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.18rem; }
+    .ic-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; font-weight: 600; }
+    .c-sig { color: #a78bfa; } .c-fs { color: #06b6d4; } .c-alias { color: #f97316; }
+
+    /* spectrum panel */
+    .formula-box { background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0; padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.77rem; color: #64748b; line-height: 1.8; }
+    .formula-box .purple { color: #a78bfa; } .formula-box .cyan { color: #06b6d4; } .formula-box .orange { color: #f97316; }
+
+    .preset-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .preset { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.26rem 0.65rem; border-radius: 4px; border: 1px solid #1e293b; background: #0d1321; color: #64748b; cursor: pointer; transition: border-color 0.13s, color 0.13s; }
+    .preset:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    @media (max-width: 420px) { .ctrl-grid, .info-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Sampling &amp; Aliasing Visualiser</h1>
+  <p class="subtitle">Nyquist theorem · sample-rate · alias frequency · time &amp; frequency domain</p>
+
+  <div class="card">
+    <div class="card-label">Presets</div>
+    <div class="preset-row">
+      <button class="preset" data-fs="8" data-f="1">fs = 8 × f (safe)</button>
+      <button class="preset" data-fs="2.5" data-f="1">fs = 2.5 × f (Nyquist margin)</button>
+      <button class="preset" data-fs="2" data-f="1">fs = 2 × f (Nyquist limit)</button>
+      <button class="preset" data-fs="1.5" data-f="1">fs = 1.5 × f (aliasing)</button>
+      <button class="preset" data-fs="0.8" data-f="1">fs = 0.8 × f (heavy alias)</button>
+    </div>
+    <div class="ctrl-grid">
+      <div class="field">
+        <div class="val-row"><label>Signal Frequency</label><span class="val-disp" id="d-f">1.0 kHz</span></div>
+        <input type="range" id="sl-f" min="0.5" max="10" step="0.1" value="1">
+        <span class="val-hint">f_signal</span>
+      </div>
+      <div class="field">
+        <div class="val-row"><label>Sample Rate</label><span class="val-disp" id="d-fs">8.0 kHz</span></div>
+        <input type="range" id="sl-fs" min="0.5" max="40" step="0.1" value="8">
+        <span class="val-hint">f_s (samples/sec)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nyquist-banner nyquist-ok" id="nyquist-banner">Nyquist satisfied — fs ≥ 2·f_signal → no aliasing</div>
+
+  <div class="info-grid">
+    <div class="ic"><div class="ic-lbl">Signal</div><div class="ic-val c-sig" id="iv-f">1.0 kHz</div></div>
+    <div class="ic"><div class="ic-lbl">Sample Rate</div><div class="ic-val c-fs" id="iv-fs">8.0 kHz</div></div>
+    <div class="ic"><div class="ic-lbl">Alias Frequency</div><div class="ic-val c-alias" id="iv-alias">—</div></div>
+  </div>
+
+  <!-- Time domain -->
+  <div class="panel">
+    <div class="panel-lbl">Time Domain — original signal + samples + reconstruction</div>
+    <canvas id="cvTime" height="180"></canvas>
+  </div>
+
+  <!-- Spectrum -->
+  <div class="panel">
+    <div class="panel-lbl">Frequency Domain — spectrum &amp; aliases</div>
+    <canvas id="cvSpec" height="140"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Nyquist-Shannon Theorem</div>
+    <div class="formula-box">
+      Nyquist criterion:  <span class="cyan">f_s</span> &gt; 2 × <span class="purple">f_signal</span><br>
+      Alias frequency:  <span class="orange">f_alias</span> = | <span class="purple">f_signal</span> − round(<span class="purple">f_signal</span> / <span class="cyan">f_s</span>) × <span class="cyan">f_s</span> |<br>
+      Spectrum images at:  n × <span class="cyan">f_s</span> ± <span class="purple">f_signal</span>  for n = 0, 1, 2, …<br>
+      Anti-alias filter must remove all content above  <span class="cyan">f_s</span> / 2  (Nyquist frequency)<br>
+      Oversampling ratio:  <span class="cyan">f_s</span> / (2 × <span class="purple">f_signal</span>)  — keep > 1 for alias-free recovery
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var cvTime = document.getElementById('cvTime');
+    var cvSpec = document.getElementById('cvSpec');
+    var ctxTime = cvTime.getContext('2d');
+    var ctxSpec = cvSpec.getContext('2d');
+
+    var f = 1.0;   // kHz signal
+    var fs = 8.0;  // kHz sample rate
+
+    function getF()  { return parseFloat(document.getElementById('sl-f').value); }
+    function getFs() { return parseFloat(document.getElementById('sl-fs').value); }
+
+    function aliasFreq(sig, sr) {
+      /* fold: f_alias = |f_sig mod fs| folded into [0, fs/2] */
+      var rem = sig % sr;
+      if (rem < 0) rem += sr;
+      if (rem > sr / 2) rem = sr - rem;
+      return rem;
+    }
+
+    function fmtKHz(v) { return v.toFixed(2) + ' kHz'; }
+
+    function updateInfo() {
+      f = getF(); fs = getFs();
+      var fAlias = aliasFreq(f, fs);
+      var ratio = fs / (2 * f);
+
+      document.getElementById('d-f').textContent = fmtKHz(f);
+      document.getElementById('d-fs').textContent = fmtKHz(fs);
+      document.getElementById('iv-f').textContent = fmtKHz(f);
+      document.getElementById('iv-fs').textContent = fmtKHz(fs);
+
+      var banner = document.getElementById('nyquist-banner');
+      if (ratio >= 1.0) {
+        var alias = (ratio >= 1.0 && fAlias > 0.001 && Math.abs(fAlias - f) > 0.001) ? fAlias : null;
+        if (ratio >= 2) {
+          banner.className = 'nyquist-banner nyquist-ok';
+          banner.textContent = 'Nyquist satisfied — fs ≥ 2·f_signal → no aliasing (ratio ' + ratio.toFixed(2) + '×)';
+          document.getElementById('iv-alias').textContent = '—';
+        } else {
+          banner.className = 'nyquist-banner nyquist-warn';
+          banner.textContent = 'Nyquist margin tight — fs / (2·f) = ' + ratio.toFixed(2) + '× — marginal';
+          document.getElementById('iv-alias').textContent = '—';
+        }
+      } else {
+        banner.className = 'nyquist-banner nyquist-bad';
+        banner.textContent = '⚠ Aliasing! fs < 2·f_signal — alias appears at ' + fmtKHz(fAlias);
+        document.getElementById('iv-alias').textContent = fmtKHz(fAlias);
+      }
+    }
+
+    function drawTime() {
+      var W = cvTime.offsetWidth;
+      var H = cvTime.height;
+      cvTime.width = W * (window.devicePixelRatio || 1);
+      cvTime.height = H * (window.devicePixelRatio || 1);
+      var dpr = window.devicePixelRatio || 1;
+      ctxTime.scale(dpr, dpr);
+
+      ctxTime.clearRect(0, 0, W, H);
+      ctxTime.fillStyle = '#0d1117';
+      ctxTime.fillRect(0, 0, W, H);
+
+      var pad = { l: 8, r: 8, t: 18, b: 28 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+      var cx = pad.l;
+      var cy = pad.t + ph / 2;
+
+      /* grid */
+      ctxTime.strokeStyle = '#1e293b';
+      ctxTime.lineWidth = 0.5;
+      for (var i = 0; i <= 10; i++) {
+        var x = cx + (i / 10) * pw;
+        ctxTime.beginPath(); ctxTime.moveTo(x, pad.t); ctxTime.lineTo(x, H - pad.b); ctxTime.stroke();
+      }
+      ctxTime.beginPath(); ctxTime.moveTo(cx, cy); ctxTime.lineTo(cx + pw, cy); ctxTime.stroke();
+
+      /* show 4 signal cycles in time window */
+      var T_show = 4 / f; /* 4 periods of signal in kHz units (time in ms) */
+      var N = 500;
+
+      /* original signal (purple, thin) */
+      ctxTime.beginPath();
+      ctxTime.strokeStyle = 'rgba(167,139,250,0.5)';
+      ctxTime.lineWidth = 1.5;
+      for (var i = 0; i <= N; i++) {
+        var t = (i / N) * T_show;
+        var y_s = Math.sin(2 * Math.PI * f * t);
+        var px2 = cx + (i / N) * pw;
+        var py2 = cy - y_s * (ph / 2 - 4);
+        if (i === 0) ctxTime.moveTo(px2, py2); else ctxTime.lineTo(px2, py2);
+      }
+      ctxTime.stroke();
+
+      /* sample points */
+      var T_s = 1 / fs; /* sample period in ms */
+      var numSamples = Math.floor(T_show / T_s) + 1;
+      var samples = [];
+      for (var k = 0; k <= numSamples; k++) {
+        var t_k = k * T_s;
+        if (t_k > T_show + T_s * 0.5) break;
+        var amp = Math.sin(2 * Math.PI * f * t_k);
+        samples.push({ t: t_k, a: amp });
+      }
+
+      /* sample stems */
+      ctxTime.strokeStyle = '#06b6d4';
+      ctxTime.lineWidth = 1.2;
+      samples.forEach(function (s) {
+        var px3 = cx + (s.t / T_show) * pw;
+        var py3 = cy - s.a * (ph / 2 - 4);
+        ctxTime.beginPath();
+        ctxTime.moveTo(px3, cy);
+        ctxTime.lineTo(px3, py3);
+        ctxTime.stroke();
+        ctxTime.beginPath();
+        ctxTime.arc(px3, py3, 3, 0, 2 * Math.PI);
+        ctxTime.fillStyle = '#06b6d4';
+        ctxTime.fill();
+      });
+
+      /* reconstructed / alias signal */
+      var fAlias = aliasFreq(f, fs);
+      var hasAlias = fs < 2 * f;
+      var f_recon = hasAlias ? fAlias : f;
+      var col_recon = hasAlias ? '#f97316' : '#4ade80';
+
+      ctxTime.beginPath();
+      ctxTime.strokeStyle = col_recon;
+      ctxTime.lineWidth = 2;
+      /* sinc reconstruction approximated by connecting sample dots with a smooth curve at alias freq */
+      for (var i = 0; i <= N; i++) {
+        var t = (i / N) * T_show;
+        /* sinc interpolation: sum over samples */
+        var val = 0;
+        samples.forEach(function (s) {
+          var arg = Math.PI * (t - s.t) * fs;
+          val += s.a * (Math.abs(arg) < 1e-9 ? 1 : Math.sin(arg) / arg);
+        });
+        var px4 = cx + (i / N) * pw;
+        var py4 = cy - val * (ph / 2 - 4);
+        if (i === 0) ctxTime.moveTo(px4, py4); else ctxTime.lineTo(px4, py4);
+      }
+      ctxTime.stroke();
+
+      /* legend */
+      ctxTime.font = '10px IBM Plex Mono, monospace';
+      var lx = cx + 6;
+      var ly = pad.t + 12;
+      ctxTime.fillStyle = 'rgba(167,139,250,0.7)'; ctxTime.fillText('original', lx, ly);
+      ctxTime.fillStyle = '#06b6d4'; ctxTime.fillText('samples', lx + 62, ly);
+      ctxTime.fillStyle = col_recon; ctxTime.fillText(hasAlias ? 'alias' : 'reconstruction', lx + 128, ly);
+    }
+
+    function drawSpec() {
+      var W = cvSpec.offsetWidth;
+      var H = cvSpec.height;
+      cvSpec.width = W * (window.devicePixelRatio || 1);
+      cvSpec.height = H * (window.devicePixelRatio || 1);
+      var dpr = window.devicePixelRatio || 1;
+      ctxSpec.scale(dpr, dpr);
+
+      ctxSpec.clearRect(0, 0, W, H);
+      ctxSpec.fillStyle = '#0d1117';
+      ctxSpec.fillRect(0, 0, W, H);
+
+      var pad = { l: 10, r: 10, t: 14, b: 28 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+      var bx = pad.l;
+      var by = pad.t + ph;
+
+      /* x axis: 0 to 3*fs */
+      var f_max = Math.max(3 * fs, f * 4);
+      function xp(freq) { return bx + (freq / f_max) * pw; }
+
+      /* grid lines at 0, fs/2, fs, 3fs/2, 2fs ... */
+      ctxSpec.strokeStyle = '#1e293b';
+      ctxSpec.lineWidth = 0.5;
+      for (var n = 0; n <= 6; n++) {
+        var fx = n * fs / 2;
+        if (fx > f_max) break;
+        var xv = xp(fx);
+        ctxSpec.beginPath(); ctxSpec.moveTo(xv, pad.t); ctxSpec.lineTo(xv, by); ctxSpec.stroke();
+      }
+
+      /* Nyquist line at fs/2 */
+      ctxSpec.strokeStyle = 'rgba(251,191,36,0.25)';
+      ctxSpec.setLineDash([4, 3]);
+      ctxSpec.beginPath(); ctxSpec.moveTo(xp(fs / 2), pad.t); ctxSpec.lineTo(xp(fs / 2), by); ctxSpec.stroke();
+      ctxSpec.setLineDash([]);
+
+      var barH = ph * 0.65;
+
+      function drawBar(freq, color, label, alpha) {
+        if (freq < 0 || freq > f_max) return;
+        var xv = xp(freq);
+        ctxSpec.save();
+        ctxSpec.globalAlpha = alpha || 1;
+        ctxSpec.strokeStyle = color;
+        ctxSpec.lineWidth = 3;
+        ctxSpec.beginPath(); ctxSpec.moveTo(xv, by); ctxSpec.lineTo(xv, by - barH); ctxSpec.stroke();
+        if (label) {
+          ctxSpec.font = '9px IBM Plex Mono, monospace';
+          ctxSpec.fillStyle = color;
+          ctxSpec.fillText(label, xv + 3, by - barH - 2);
+        }
+        ctxSpec.restore();
+      }
+
+      /* Images at n*fs ± f for n = 0,1,2 */
+      for (var n = 0; n <= 3; n++) {
+        var center = n * fs;
+        var imgPos = center + f;
+        var imgNeg = center - f;
+        if (n === 0) {
+          drawBar(f, '#a78bfa', fmtKHz(f), 1);
+        } else {
+          drawBar(imgPos, '#475569', '', 0.4);
+          if (imgNeg > 0) drawBar(imgNeg, '#475569', '', 0.4);
+          if (Math.abs(imgPos - f_max) < 0.1) break;
+        }
+      }
+
+      /* Alias (if any) highlighted in orange */
+      if (fs < 2 * f) {
+        var fa = aliasFreq(f, fs);
+        drawBar(fa, '#f97316', fmtKHz(fa) + ' alias', 1);
+      }
+
+      /* axis labels */
+      ctxSpec.font = '9px IBM Plex Mono, monospace';
+      ctxSpec.fillStyle = '#475569';
+      for (var n = 0; n <= 4; n++) {
+        var fx2 = n * fs;
+        if (fx2 > f_max) break;
+        ctxSpec.fillText(n + 'fs', xp(fx2) - 6, by + 12);
+      }
+      var nyxp = xp(fs / 2);
+      ctxSpec.fillStyle = 'rgba(251,191,36,0.6)';
+      ctxSpec.fillText('fs/2', nyxp - 10, by + 12);
+
+      /* baseline */
+      ctxSpec.strokeStyle = '#1e293b';
+      ctxSpec.lineWidth = 1;
+      ctxSpec.beginPath(); ctxSpec.moveTo(bx, by); ctxSpec.lineTo(bx + pw, by); ctxSpec.stroke();
+    }
+
+    function draw() {
+      updateInfo();
+      drawTime();
+      drawSpec();
+    }
+
+    document.getElementById('sl-f').addEventListener('input', function () {
+      f = getF(); draw();
+    });
+    document.getElementById('sl-fs').addEventListener('input', function () {
+      fs = getFs(); draw();
+    });
+
+    document.querySelectorAll('.preset').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var ratio = parseFloat(btn.dataset.fs);
+        var sigF = parseFloat(btn.dataset.f);
+        var newFs = ratio * sigF;
+        document.getElementById('sl-f').value = sigF;
+        document.getElementById('sl-fs').value = Math.min(Math.max(newFs, 0.5), 40);
+        draw();
+      });
+    });
+
+    window.addEventListener('resize', draw);
+
+    draw();
+  })();
+  </script>
+</body>
+</html>

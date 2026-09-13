@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LC Filter Designer — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.65rem; }
+    .tab-row { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .tab { font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; padding: 0.28rem 0.7rem; border-radius: 4px; border: 1px solid #1e293b; background: #0d1321; color: #64748b; cursor: pointer; transition: border-color 0.13s, color 0.13s; }
+    .tab.active { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.08); }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="number"] { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; padding: 0.42rem 0.65rem; width: 100%; outline: none; transition: border-color 0.13s; }
+    input[type="number"]:focus { border-color: #a78bfa; }
+    #responseCanvas { display: block; width: 100%; border-radius: 4px; background: #070d1a; }
+    .comp-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; margin-bottom: 0.5rem; }
+    .comp-table th { text-align: left; color: #475569; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.3rem 0.5rem; border-bottom: 1px solid #1e293b; }
+    .comp-table td { padding: 0.4rem 0.5rem; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .comp-table td:first-child { color: #64748b; }
+    .td-L { color: #a78bfa !important; } .td-C { color: #06b6d4 !important; }
+    .formula-box { background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0; padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; color: #64748b; line-height: 1.8; }
+    .formula-box .purple { color: #a78bfa; } .formula-box .cyan { color: #06b6d4; } .formula-box .hi { color: #e2e8f0; }
+    @media (max-width: 420px) { .input-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>LC Filter Designer</h1>
+  <p class="subtitle">Butterworth ladder network — LP / HP · 1st to 4th order · frequency response</p>
+
+  <div class="card">
+    <div class="card-label">Filter Type</div>
+    <div class="tab-row" id="typeTabs">
+      <button class="tab active" data-type="LP">Low-pass</button>
+      <button class="tab" data-type="HP">High-pass</button>
+    </div>
+    <div class="card-label">Order</div>
+    <div class="tab-row" id="orderTabs">
+      <button class="tab" data-order="1">1st</button>
+      <button class="tab active" data-order="2">2nd</button>
+      <button class="tab" data-order="3">3rd</button>
+      <button class="tab" data-order="4">4th</button>
+    </div>
+    <div class="input-grid" style="margin-top:0.75rem;">
+      <div class="field"><label>Cutoff Frequency (MHz)</label><input type="number" id="inFc" value="100" min="0.001" step="any"></div>
+      <div class="field"><label>System Impedance (Ω)</label><input type="number" id="inZ0" value="50" min="1" step="any"></div>
+    </div>
+  </div>
+
+  <!-- Response chart -->
+  <div class="card">
+    <div class="card-label">Frequency Response</div>
+    <canvas id="responseCanvas" height="200"></canvas>
+  </div>
+
+  <!-- Component table -->
+  <div class="card">
+    <div class="card-label">Component Values</div>
+    <table class="comp-table" id="compTable">
+      <thead><tr><th>Element</th><th>Position</th><th>Value</th></tr></thead>
+      <tbody id="compBody"></tbody>
+    </table>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#334155;margin-top:0.4rem;" id="filterNote"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Butterworth Normalized Values (n-th order, R₀=1Ω, fc=1/(2π) Hz)</div>
+    <div class="formula-box">
+      1st: <span class="purple">L</span>=1.000 or <span class="cyan">C</span>=1.000<br>
+      2nd: <span class="purple">L₁</span>=1.414 &nbsp;<span class="cyan">C₂</span>=1.414<br>
+      3rd: <span class="purple">L₁</span>=1.000 &nbsp;<span class="cyan">C₂</span>=2.000 &nbsp;<span class="purple">L₃</span>=1.000<br>
+      4th: <span class="cyan">C₁</span>=0.7654 <span class="purple">L₂</span>=1.8478 <span class="cyan">C₃</span>=1.8478 <span class="purple">L₄</span>=0.7654<br><br>
+      Scale: <span class="purple">L</span> = L_norm × <span class="hi">Z₀</span> / (2π·<span class="hi">fc</span>) &nbsp;&nbsp; <span class="cyan">C</span> = C_norm / (<span class="hi">Z₀</span> × 2π·<span class="hi">fc</span>)<br>
+      Response: |H(f)| = 1 / √(1 + (f/fc)^(2n))
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var filterType = 'LP', order = 2;
+
+    /* Butterworth normalized element values (LP prototype, series-L/shunt-C ladder) */
+    var BUTTER = {
+      1: [{ t:'L', g:1.0000 }],
+      2: [{ t:'L', g:1.4142 }, { t:'C', g:1.4142 }],
+      3: [{ t:'L', g:1.0000 }, { t:'C', g:2.0000 }, { t:'L', g:1.0000 }],
+      4: [{ t:'C', g:0.7654 }, { t:'L', g:1.8478 }, { t:'C', g:1.8478 }, { t:'L', g:0.7654 }]
+    };
+
+    document.querySelectorAll('#typeTabs .tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('#typeTabs .tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        filterType = btn.dataset.type;
+        calc();
+      });
+    });
+
+    document.querySelectorAll('#orderTabs .tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('#orderTabs .tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        order = parseInt(btn.dataset.order);
+        calc();
+      });
+    });
+
+    document.querySelectorAll('input').forEach(function (i) { i.addEventListener('input', calc); });
+
+    var canvas = document.getElementById('responseCanvas');
+    var ctx = canvas.getContext('2d');
+
+    function resize() {
+      var w = canvas.parentElement.getBoundingClientRect().width - 40;
+      canvas.width = Math.max(240, Math.floor(w));
+    }
+    resize();
+    window.addEventListener('resize', function () { resize(); calc(); });
+
+    function calc() {
+      var fc = parseFloat(document.getElementById('inFc').value) * 1e6;
+      var Z0 = parseFloat(document.getElementById('inZ0').value);
+      if (!isFinite(fc) || !isFinite(Z0) || fc <= 0 || Z0 <= 0) return;
+
+      var w0 = 2 * Math.PI * fc;
+      var proto = BUTTER[order];
+
+      /* Scale elements */
+      var elements = proto.map(function (el, i) {
+        var type = filterType === 'LP' ? el.t : (el.t === 'L' ? 'C' : 'L'); /* HP: swap L↔C */
+        var val;
+        if (filterType === 'LP') {
+          val = el.t === 'L' ? el.g * Z0 / w0 : el.g / (Z0 * w0);
+        } else {
+          /* HP transformation: L_hp = 1/(w0²·C_lp) and vice versa via dual */
+          val = el.t === 'L' ? 1 / (el.g * Z0 * w0) : Z0 / (el.g * w0); /* C←LP L, L←LP C */
+          type = el.t === 'L' ? 'C' : 'L';
+        }
+        return { type: type, val: val, pos: 'Element ' + (i + 1), lp_type: el.t };
+      });
+
+      /* Component table */
+      var tbody = document.getElementById('compBody');
+      tbody.innerHTML = elements.map(function (el, i) {
+        var vstr = el.type === 'L' ? fmtL(el.val) : fmtC(el.val);
+        var cls = el.type === 'L' ? 'td-L' : 'td-C';
+        var position = (el.lp_type === 'L') ? 'Series' : 'Shunt to GND';
+        if (filterType === 'HP') position = (el.type === 'C') ? 'Series' : 'Shunt to GND';
+        return '<tr><td>' + el.type + (i+1) + '</td><td>' + position + '</td><td class="' + cls + '">' + vstr + '</td></tr>';
+      }).join('');
+
+      document.getElementById('filterNote').textContent =
+        filterType + ' Butterworth · order ' + order + ' · fc = ' + (fc/1e6).toFixed(3) + ' MHz · Z₀ = ' + Z0 + ' Ω · −3 dB at fc · roll-off ' + (20*order) + ' dB/decade';
+
+      /* Draw response */
+      drawResponse(fc, order, filterType);
+    }
+
+    function drawResponse(fc, n, type) {
+      var W = canvas.width, H = canvas.height;
+      var padL = 42, padR = 10, padT = 12, padB = 26;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#070d1a'; ctx.fillRect(padL, padT, W-padL-padR, H-padT-padB);
+
+      var dBmin = -60, dBmax = 3;
+      function toY(dB) { return padT + (dBmax - dB) / (dBmax - dBmin) * (H - padT - padB); }
+      /* log frequency axis: fc/30 to fc*30 */
+      var fLo = fc / 30, fHi = fc * 30;
+      function toX(f) { return padL + (Math.log10(f/fLo)) / Math.log10(fHi/fLo) * (W-padL-padR); }
+
+      /* Grid dB */
+      [-60,-40,-20,-10,-3,0].forEach(function (dB) {
+        var y = toY(dB);
+        ctx.strokeStyle = dB === -3 ? 'rgba(251,191,36,0.3)' : 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1; ctx.setLineDash(dB === -3 ? [3,3] : []);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + W - padL - padR, y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = dB === -3 ? '#fbbf24' : '#334155';
+        ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'right';
+        ctx.fillText(dB + ' dB', padL - 3, y + 3);
+      });
+
+      /* Decade markers */
+      [0.1,0.2,0.5,1,2,5,10,20].forEach(function (mult) {
+        var f = fc * mult;
+        if (f < fLo || f > fHi) return;
+        var x = toX(f);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.setLineDash([2,4]);
+        ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + H - padT - padB); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+        ctx.fillText(mult + 'fc', x, H - 8);
+      });
+
+      /* Response curve */
+      ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2; ctx.setLineDash([]);
+      ctx.save(); ctx.beginPath(); ctx.rect(padL, padT, W-padL-padR, H-padT-padB); ctx.clip();
+      ctx.beginPath();
+      var STEPS = 300;
+      for (var i = 0; i <= STEPS; i++) {
+        var logF = Math.log10(fLo) + i / STEPS * Math.log10(fHi / fLo);
+        var f = Math.pow(10, logF);
+        var ratio = f / fc;
+        var H_sq = 1 / (1 + Math.pow(ratio, 2 * n));
+        if (type === 'HP') H_sq = 1 / (1 + Math.pow(1/ratio, 2 * n));
+        var dB = 10 * Math.log10(H_sq);
+        var x = toX(f), y = toY(Math.max(dBmin, dB));
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      /* fc marker */
+      var xfc = toX(fc), yfc = toY(-3);
+      ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(xfc, yfc, 4, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = '#fbbf24'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('fc (−3 dB)', xfc, padT + 10);
+    }
+
+    function fmtL(H) {
+      if (H >= 1e-3) return (H*1e3).toFixed(3) + ' mH';
+      if (H >= 1e-6) return (H*1e6).toFixed(3) + ' µH';
+      return (H*1e9).toFixed(3) + ' nH';
+    }
+    function fmtC(F) {
+      if (F >= 1e-6) return (F*1e6).toFixed(3) + ' µF';
+      if (F >= 1e-9) return (F*1e9).toFixed(3) + ' nF';
+      return (F*1e12).toFixed(3) + ' pF';
+    }
+
+    calc();
+  })();
+  </script>
+</body>
+</html>

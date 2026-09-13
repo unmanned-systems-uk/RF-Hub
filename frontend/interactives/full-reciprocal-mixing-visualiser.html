@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reciprocal Mixing Visualiser — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem; }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.75rem; }
+    .ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="range"] { width: 100%; accent-color: #a78bfa; cursor: pointer; }
+    .val-row { display: flex; justify-content: space-between; align-items: baseline; }
+    .val-disp { font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; color: #e2e8f0; }
+    .val-hint { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #334155; }
+
+    .panel { background: #0d1117; border: 1px solid #1e293b; border-radius: 6px; overflow: hidden; margin-bottom: 0.7rem; }
+    .panel-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.35rem 0.65rem 0; }
+    canvas { display: block; width: 100%; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 0.7rem; }
+    .ic { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 0.65rem 0.8rem; }
+    .ic-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.18rem; }
+    .ic-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.92rem; font-weight: 600; }
+    .c-des { color: #a78bfa; } .c-lo { color: #06b6d4; } .c-int { color: #ef4444; } .c-if { color: #fbbf24; }
+
+    .step-list { list-style: none; counter-reset: steps; }
+    .step-list li { counter-increment: steps; padding: 0.35rem 0 0.35rem 2rem; position: relative; font-size: 0.82rem; color: #94a3b8; border-bottom: 1px solid #0f172a; }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before { content: counter(steps); position: absolute; left: 0; top: 0.35rem; width: 1.4rem; height: 1.4rem; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #a78bfa; text-align: center; line-height: 1.4rem; }
+    .hl { color: #e2e8f0; }
+
+    .formula-box { background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0; padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.77rem; color: #64748b; line-height: 1.8; }
+    .formula-box .purple { color: #a78bfa; } .formula-box .cyan { color: #06b6d4; } .formula-box .red { color: #ef4444; } .formula-box .amber { color: #fbbf24; }
+
+    .toggle-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+    .tog { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.26rem 0.65rem; border-radius: 4px; border: 1px solid #1e293b; background: #0d1321; color: #64748b; cursor: pointer; transition: border-color 0.13s, color 0.13s; }
+    .tog.on { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+    @media (max-width: 420px) { .ctrl-grid, .info-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Reciprocal Mixing Visualiser</h1>
+  <p class="subtitle">LO phase noise · adjacent interferer · noise floor degradation in the IF</p>
+
+  <div class="card">
+    <div class="card-label">Controls</div>
+    <div class="ctrl-grid">
+      <div class="field">
+        <div class="val-row"><label>LO Phase Noise (dBc/Hz @ 1kHz)</label><span class="val-disp" id="d-pn">−90 dBc/Hz</span></div>
+        <input type="range" id="sl-pn" min="-130" max="-60" step="1" value="-90">
+        <span class="val-hint">Phase noise of local oscillator</span>
+      </div>
+      <div class="field">
+        <div class="val-row"><label>Interferer Offset (kHz)</label><span class="val-disp" id="d-off">20 kHz</span></div>
+        <input type="range" id="sl-off" min="1" max="100" step="1" value="20">
+        <span class="val-hint">Δf from desired signal</span>
+      </div>
+      <div class="field">
+        <div class="val-row"><label>Interferer Level (dBm)</label><span class="val-disp" id="d-int">0 dBm</span></div>
+        <input type="range" id="sl-int" min="-30" max="40" step="1" value="0">
+        <span class="val-hint">Strong adjacent channel signal</span>
+      </div>
+      <div class="field">
+        <div class="val-row"><label>Desired Signal Level (dBm)</label><span class="val-disp" id="d-des">−100 dBm</span></div>
+        <input type="range" id="sl-des" min="-130" max="-40" step="1" value="-100">
+        <span class="val-hint">Wanted signal at antenna</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <button class="tog on" id="tog-lo">LO phase noise</button>
+    <button class="tog on" id="tog-rf">RF signals</button>
+    <button class="tog on" id="tog-if">IF noise floor</button>
+    <button class="tog on" id="tog-des">Desired signal</button>
+  </div>
+
+  <div class="info-grid">
+    <div class="ic"><div class="ic-lbl">Interferer − Desired</div><div class="ic-val c-int" id="iv-delta">—</div></div>
+    <div class="ic"><div class="ic-lbl">PN @ offset</div><div class="ic-val c-lo" id="iv-pn-off">—</div></div>
+    <div class="ic"><div class="ic-lbl">IF Noise Rise</div><div class="ic-val c-if" id="iv-rise">—</div></div>
+  </div>
+
+  <!-- RF domain -->
+  <div class="panel">
+    <div class="panel-lbl">RF Domain — desired signal + interferer relative to LO</div>
+    <canvas id="cvRF" height="160"></canvas>
+  </div>
+
+  <!-- LO phase noise -->
+  <div class="panel">
+    <div class="panel-lbl">LO Phase Noise Spectrum (centred on f_LO)</div>
+    <canvas id="cvLO" height="140"></canvas>
+  </div>
+
+  <!-- IF domain -->
+  <div class="panel">
+    <div class="panel-lbl">IF Domain — noise floor raised by reciprocal mixing</div>
+    <canvas id="cvIF" height="160"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="card-label">How Reciprocal Mixing Works</div>
+    <ul class="step-list">
+      <li>The <span class="hl">local oscillator (LO)</span> is not a pure tone — its phase noise creates a noise skirt around f_LO</li>
+      <li>A <span class="hl">strong adjacent-channel signal</span> at f_LO ± Δf mixes with the LO noise skirt offset by −Δf</li>
+      <li>The mixing product lands <span class="hl">directly in the IF passband</span>, raising the noise floor by the interferer's power minus the phase-noise density at that offset</li>
+      <li>The noise rise is: <span class="hl">ΔNF ≈ P_int + PN(Δf) + 10·log10(BW)</span> relative to thermal noise floor</li>
+      <li>A <span class="hl">better LO</span> (lower phase noise) or a <span class="hl">narrower roofing filter</span> before the mixer reduces the effect</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Key Formulae</div>
+    <div class="formula-box">
+      Phase noise slope:  <span class="purple">L(Δf)</span> ≈ L(1kHz) − 20·log10(Δf/1kHz)  [dBc/Hz]<br>
+      Noise rise in IF:  ΔNF = <span class="red">P_int</span> + <span class="purple">L(Δf)</span> + 10·log10(<span class="amber">BW</span>)  [dBm]<br>
+      IF noise ≥ thermal when:  ΔNF > −174 dBm/Hz + NF_rx + 10·log10(BW)<br>
+      Reciprocal mixing spurs:  f_IF ± Δf  from each RF interferer offset ±Δf from channel
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var cvRF = document.getElementById('cvRF');
+    var cvLO = document.getElementById('cvLO');
+    var cvIF = document.getElementById('cvIF');
+    var ctxRF = cvRF.getContext('2d');
+    var ctxLO = cvLO.getContext('2d');
+    var ctxIF = cvIF.getContext('2d');
+
+    var showLO = true, showRF = true, showIF = true, showDes = true;
+
+    document.getElementById('tog-lo').addEventListener('click', function () {
+      showLO = !showLO; this.classList.toggle('on', showLO); draw();
+    });
+    document.getElementById('tog-rf').addEventListener('click', function () {
+      showRF = !showRF; this.classList.toggle('on', showRF); draw();
+    });
+    document.getElementById('tog-if').addEventListener('click', function () {
+      showIF = !showIF; this.classList.toggle('on', showIF); draw();
+    });
+    document.getElementById('tog-des').addEventListener('click', function () {
+      showDes = !showDes; this.classList.toggle('on', showDes); draw();
+    });
+
+    function vals() {
+      return {
+        pn: parseFloat(document.getElementById('sl-pn').value),
+        off: parseFloat(document.getElementById('sl-off').value),
+        int_lvl: parseFloat(document.getElementById('sl-int').value),
+        des: parseFloat(document.getElementById('sl-des').value)
+      };
+    }
+
+    function pnAtOffset(pn_1k, offset_khz) {
+      /* 20 dB/decade roll-off from 1 kHz reference */
+      return pn_1k - 20 * Math.log10(offset_khz / 1);
+    }
+
+    function updateInfo(v) {
+      document.getElementById('d-pn').textContent = v.pn + ' dBc/Hz';
+      document.getElementById('d-off').textContent = v.off + ' kHz';
+      document.getElementById('d-int').textContent = v.int_lvl + ' dBm';
+      document.getElementById('d-des').textContent = v.des + ' dBm';
+      var delta = v.int_lvl - v.des;
+      document.getElementById('iv-delta').textContent = '+' + delta.toFixed(0) + ' dB';
+      var pn_off = pnAtOffset(v.pn, v.off);
+      document.getElementById('iv-pn-off').textContent = pn_off.toFixed(1) + ' dBc/Hz';
+      /* noise rise in 500 Hz BW */
+      var bw = 500;
+      var rise = v.int_lvl + pn_off + 10 * Math.log10(bw);
+      document.getElementById('iv-rise').textContent = rise.toFixed(1) + ' dBm in 500Hz';
+    }
+
+    function setupCtx(cv, ctx) {
+      var W = cv.offsetWidth;
+      var H = cv.height;
+      cv.width = W * (window.devicePixelRatio || 1);
+      cv.height = H * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#0d1117';
+      ctx.fillRect(0, 0, W, H);
+      return { W: W, H: H };
+    }
+
+    function drawGrid(ctx, W, H, pad) {
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 0.5;
+      for (var i = 0; i <= 8; i++) {
+        var x = pad.l + (i / 8) * (W - pad.l - pad.r);
+        ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H - pad.b); ctx.stroke();
+      }
+      for (var j = 0; j <= 4; j++) {
+        var y = pad.t + (j / 4) * (H - pad.t - pad.b);
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+      }
+    }
+
+    function drawRF(v) {
+      var d = setupCtx(cvRF, ctxRF);
+      var W = d.W, H = d.H;
+      var pad = { l: 10, r: 10, t: 18, b: 28 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+      drawGrid(ctxRF, W, H, pad);
+
+      /* x axis: −(off+20) to +(off+20) kHz relative to LO */
+      var f_range = v.off * 2.5;
+      function xp(f_khz) { return pad.l + ((f_khz + f_range) / (2 * f_range)) * pw; }
+
+      /* y axis: dBm, from -140 to +50 */
+      var y_min = -140, y_max = 50;
+      function yp(dbm) { return pad.t + (1 - (dbm - y_min) / (y_max - y_min)) * ph; }
+
+      /* draw LO phase noise skirt on RF domain */
+      if (showLO) {
+        ctxRF.beginPath();
+        ctxRF.strokeStyle = 'rgba(6,182,212,0.6)';
+        ctxRF.lineWidth = 1.5;
+        var N = 300;
+        for (var i = 0; i <= N; i++) {
+          var freq = -f_range + (i / N) * 2 * f_range;
+          var abs_f = Math.max(Math.abs(freq), 0.01);
+          /* LO at f_LO plotted at freq=0; phase noise referenced */
+          var pn = pnAtOffset(v.pn, abs_f) + 10 * Math.log10(1); /* per Hz */
+          var dbm_noise = 10 + pn; /* assume LO power ~10 dBm */
+          var x = xp(freq);
+          var y = yp(dbm_noise);
+          if (i === 0) ctxRF.moveTo(x, y); else ctxRF.lineTo(x, y);
+        }
+        ctxRF.stroke();
+
+        /* LO carrier spike */
+        ctxRF.strokeStyle = '#06b6d4';
+        ctxRF.lineWidth = 2.5;
+        ctxRF.beginPath();
+        ctxRF.moveTo(xp(0), yp(y_min));
+        ctxRF.lineTo(xp(0), yp(10));
+        ctxRF.stroke();
+        ctxRF.font = '9px IBM Plex Mono,monospace';
+        ctxRF.fillStyle = '#06b6d4';
+        ctxRF.fillText('LO', xp(0) + 4, pad.t + 14);
+      }
+
+      /* desired signal */
+      if (showDes) {
+        ctxRF.strokeStyle = '#a78bfa';
+        ctxRF.lineWidth = 2.5;
+        ctxRF.beginPath();
+        ctxRF.moveTo(xp(-v.off), yp(y_min));
+        ctxRF.lineTo(xp(-v.off), yp(v.des));
+        ctxRF.stroke();
+        ctxRF.font = '9px IBM Plex Mono,monospace';
+        ctxRF.fillStyle = '#a78bfa';
+        ctxRF.fillText('desired', xp(-v.off) + 4, yp(v.des) - 4);
+      }
+
+      /* interferer */
+      if (showRF) {
+        ctxRF.strokeStyle = '#ef4444';
+        ctxRF.lineWidth = 2.5;
+        ctxRF.beginPath();
+        ctxRF.moveTo(xp(v.off), yp(y_min));
+        ctxRF.lineTo(xp(v.off), yp(v.int_lvl));
+        ctxRF.stroke();
+        ctxRF.font = '9px IBM Plex Mono,monospace';
+        ctxRF.fillStyle = '#ef4444';
+        ctxRF.fillText('interferer', xp(v.off) + 4, yp(v.int_lvl) - 4);
+      }
+
+      /* x axis labels */
+      ctxRF.font = '9px IBM Plex Mono,monospace';
+      ctxRF.fillStyle = '#475569';
+      ctxRF.fillText('0 (LO)', xp(0) - 14, H - pad.b + 12);
+      ctxRF.fillText('+' + v.off + 'k', xp(v.off) - 12, H - pad.b + 12);
+      ctxRF.fillText('−' + v.off + 'k', xp(-v.off) - 16, H - pad.b + 12);
+
+      /* mixing arrow: interferer PN at -v.off meets desired */
+      if (showLO && showRF) {
+        var pn_here = 10 + pnAtOffset(v.pn, v.off);
+        ctxRF.strokeStyle = 'rgba(251,191,36,0.5)';
+        ctxRF.setLineDash([3, 3]);
+        ctxRF.lineWidth = 1;
+        ctxRF.beginPath();
+        ctxRF.moveTo(xp(v.off), yp(pn_here));
+        ctxRF.lineTo(xp(-v.off), yp(pn_here));
+        ctxRF.stroke();
+        ctxRF.setLineDash([]);
+        ctxRF.fillStyle = 'rgba(251,191,36,0.8)';
+        ctxRF.font = '8px IBM Plex Mono,monospace';
+        ctxRF.fillText('PN×INT product', xp(-v.off * 0.2), yp(pn_here) - 4);
+      }
+    }
+
+    function drawLO(v) {
+      var d = setupCtx(cvLO, ctxLO);
+      var W = d.W, H = d.H;
+      var pad = { l: 50, r: 10, t: 14, b: 28 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+
+      /* x: log offset 0.1 kHz to 500 kHz */
+      var f_min_log = Math.log10(0.1);
+      var f_max_log = Math.log10(500);
+      function xp(f_khz) {
+        var l = Math.log10(Math.max(f_khz, 0.1));
+        return pad.l + ((l - f_min_log) / (f_max_log - f_min_log)) * pw;
+      }
+      /* y: dBc/Hz from -160 to -50 */
+      var y_min = -160, y_max = -50;
+      function yp(dbc) { return pad.t + (1 - (dbc - y_min) / (y_max - y_min)) * ph; }
+
+      drawGrid(ctxLO, W, H, pad);
+
+      /* Phase noise curve */
+      if (showLO) {
+        ctxLO.beginPath();
+        ctxLO.strokeStyle = '#06b6d4';
+        ctxLO.lineWidth = 2;
+        var N = 200;
+        for (var i = 0; i <= N; i++) {
+          var flog = f_min_log + (i / N) * (f_max_log - f_min_log);
+          var f_khz = Math.pow(10, flog);
+          var pn = pnAtOffset(v.pn, f_khz);
+          var x = xp(f_khz);
+          var y = yp(Math.max(pn, y_min));
+          if (i === 0) ctxLO.moveTo(x, y); else ctxLO.lineTo(x, y);
+        }
+        ctxLO.stroke();
+      }
+
+      /* dot at offset frequency */
+      var pn_at_off = pnAtOffset(v.pn, v.off);
+      var dot_x = xp(v.off);
+      var dot_y = yp(Math.max(pn_at_off, y_min));
+      ctxLO.beginPath();
+      ctxLO.arc(dot_x, dot_y, 4, 0, 2 * Math.PI);
+      ctxLO.fillStyle = '#fbbf24';
+      ctxLO.fill();
+      ctxLO.font = '9px IBM Plex Mono,monospace';
+      ctxLO.fillStyle = '#fbbf24';
+      ctxLO.fillText(pn_at_off.toFixed(0) + ' dBc/Hz', dot_x + 6, dot_y - 3);
+
+      /* y axis labels */
+      ctxLO.font = '9px IBM Plex Mono,monospace';
+      ctxLO.fillStyle = '#475569';
+      ctxLO.textAlign = 'right';
+      [y_min, -130, -120, -110, -100, -90, -80, -70, -60, -50].forEach(function (v) {
+        var y = yp(v);
+        if (y >= pad.t && y <= H - pad.b) {
+          ctxLO.fillText(v, pad.l - 4, y + 3);
+        }
+      });
+      ctxLO.textAlign = 'left';
+
+      /* x axis labels */
+      ctxLO.fillStyle = '#475569';
+      [0.1, 1, 10, 100].forEach(function (f) {
+        var x = xp(f);
+        ctxLO.fillText(f < 1 ? f + '' : (f >= 1 ? f + 'k' : f), x - 8, H - pad.b + 12);
+      });
+      ctxLO.fillText('Hz offset →', pad.l, H - pad.b + 22);
+      ctxLO.fillText('dBc/Hz', 2, pad.t + 12);
+    }
+
+    function drawIF(v) {
+      var d = setupCtx(cvIF, ctxIF);
+      var W = d.W, H = d.H;
+      var pad = { l: 10, r: 10, t: 18, b: 28 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+      drawGrid(ctxIF, W, H, pad);
+
+      /* x: frequency offset from IF centre, ±(off+10) kHz */
+      var f_range = v.off * 1.8;
+      function xp(f_khz) { return pad.l + ((f_khz + f_range) / (2 * f_range)) * pw; }
+      var y_min = -140, y_max = 20;
+      function yp(dbm) { return pad.t + (1 - (dbm - y_min) / (y_max - y_min)) * ph; }
+
+      /* thermal noise floor baseline (500 Hz BW, 0 dB NF) */
+      var bw = 500;
+      var thermal = -174 + 10 * Math.log10(bw); /* ≈ −147 dBm */
+      ctxIF.strokeStyle = 'rgba(100,116,139,0.4)';
+      ctxIF.setLineDash([4, 3]);
+      ctxIF.lineWidth = 1;
+      ctxIF.beginPath();
+      ctxIF.moveTo(pad.l, yp(thermal));
+      ctxIF.lineTo(W - pad.r, yp(thermal));
+      ctxIF.stroke();
+      ctxIF.setLineDash([]);
+      ctxIF.font = '9px IBM Plex Mono,monospace';
+      ctxIF.fillStyle = '#475569';
+      ctxIF.fillText('thermal floor ' + thermal.toFixed(0) + 'dBm/500Hz', pad.l + 4, yp(thermal) - 3);
+
+      /* noise floor raised by reciprocal mixing */
+      if (showIF) {
+        var pn_off = pnAtOffset(v.pn, v.off);
+        var rise_level = v.int_lvl + pn_off + 10 * Math.log10(bw);
+        var noise_floor_raised = Math.max(rise_level, thermal);
+
+        /* noise floor across IF band */
+        ctxIF.strokeStyle = 'rgba(251,191,36,0.5)';
+        ctxIF.lineWidth = 1.5;
+        ctxIF.beginPath();
+        ctxIF.moveTo(pad.l, yp(noise_floor_raised));
+        ctxIF.lineTo(W - pad.r, yp(noise_floor_raised));
+        ctxIF.stroke();
+        ctxIF.fillStyle = '#fbbf24';
+        ctxIF.font = '9px IBM Plex Mono,monospace';
+        ctxIF.fillText('raised noise floor ' + noise_floor_raised.toFixed(0) + 'dBm', pad.l + 4, yp(noise_floor_raised) - 3);
+
+        /* shade between floors */
+        if (noise_floor_raised > thermal) {
+          ctxIF.fillStyle = 'rgba(251,191,36,0.05)';
+          ctxIF.fillRect(pad.l, yp(noise_floor_raised), pw, yp(thermal) - yp(noise_floor_raised));
+        }
+      }
+
+      /* desired signal at IF centre */
+      if (showDes) {
+        ctxIF.strokeStyle = '#a78bfa';
+        ctxIF.lineWidth = 2.5;
+        ctxIF.beginPath();
+        ctxIF.moveTo(xp(0), yp(y_min));
+        ctxIF.lineTo(xp(0), yp(v.des));
+        ctxIF.stroke();
+        ctxIF.font = '9px IBM Plex Mono,monospace';
+        ctxIF.fillStyle = '#a78bfa';
+        ctxIF.fillText('desired ' + v.des + 'dBm', xp(0) + 4, yp(v.des) - 4);
+      }
+
+      /* reciprocal mixing product at IF — a raised noise lump */
+      if (showIF && showRF) {
+        var pn_off = pnAtOffset(v.pn, v.off);
+        /* The RM spur is a noise-like blob around IF centre */
+        /* draw as gaussian noise elevation around 0 offset */
+        ctxIF.beginPath();
+        ctxIF.strokeStyle = 'rgba(239,68,68,0.7)';
+        ctxIF.lineWidth = 1.5;
+        var spur_peak = v.int_lvl + pn_off + 10 * Math.log10(bw);
+        var spur_width = v.off * 0.5;
+        var N = 200;
+        for (var i = 0; i <= N; i++) {
+          var f_khz = -f_range + (i / N) * 2 * f_range;
+          var gauss = Math.exp(-0.5 * Math.pow(f_khz / spur_width, 2));
+          var lev = spur_peak + 20 * Math.log10(gauss + 1e-10);
+          lev = Math.max(lev, y_min);
+          var x = xp(f_khz);
+          var y = yp(lev);
+          if (i === 0) ctxIF.moveTo(x, y); else ctxIF.lineTo(x, y);
+        }
+        ctxIF.stroke();
+        ctxIF.font = '9px IBM Plex Mono,monospace';
+        ctxIF.fillStyle = '#ef4444';
+        ctxIF.fillText('RM noise spur', xp(f_range * 0.4), yp(spur_peak) - 6);
+      }
+
+      /* x axis */
+      ctxIF.font = '9px IBM Plex Mono,monospace';
+      ctxIF.fillStyle = '#475569';
+      ctxIF.fillText('0 (IF centre)', xp(0) - 28, H - pad.b + 12);
+    }
+
+    function draw() {
+      var v = vals();
+      updateInfo(v);
+      drawRF(v);
+      drawLO(v);
+      drawIF(v);
+    }
+
+    document.querySelectorAll('input[type="range"]').forEach(function (el) {
+      el.addEventListener('input', draw);
+    });
+
+    window.addEventListener('resize', draw);
+
+    draw();
+  })();
+  </script>
+</body>
+</html>
