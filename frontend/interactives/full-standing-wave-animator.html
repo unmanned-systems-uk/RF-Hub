@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standing-Wave Animator — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── Canvas ────────────────────────────────────────── */
+    #waveCanvas {
+      display: block;
+      width: 100%;
+      border-radius: 4px;
+      background: #070d1a;
+    }
+
+    /* ── Controls ──────────────────────────────────────── */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .ctrl-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: #1e293b;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #a78bfa;
+      cursor: pointer;
+    }
+
+    /* Toggle buttons */
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .tbtn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+      background: #0d1321;
+      cursor: pointer;
+      transition: border-color 0.13s, color 0.13s, background 0.13s;
+    }
+
+    .tbtn-fwd  { color: #06b6d4; }
+    .tbtn-ref  { color: #ef4444; }
+    .tbtn-env  { color: #a78bfa; }
+    .tbtn-play { color: #e2e8f0; }
+
+    .tbtn.on { background: rgba(255,255,255,0.05); }
+    .tbtn-fwd.on  { border-color: #06b6d4; }
+    .tbtn-ref.on  { border-color: #ef4444; }
+    .tbtn-env.on  { border-color: #a78bfa; }
+    .tbtn-play    { border-color: #a78bfa; color: #a78bfa; }
+
+    /* ── Readout strip ─────────────────────────────────── */
+    .readout-strip {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+
+    .rout {
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 0.35rem 0.65rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .rout-label { color: #475569; font-size: 0.62rem; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .rout-val   { color: #e2e8f0; }
+    .rout-val.cyan   { color: #06b6d4; }
+    .rout-val.purple { color: #a78bfa; }
+    .rout-val.red    { color: #ef4444; }
+
+    /* ── Legend ────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+
+    .legend-line {
+      width: 20px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .legend-line-dashed {
+      width: 20px;
+      height: 0;
+      border-top: 2px dashed;
+    }
+
+    /* ── Formula ───────────────────────────────────────── */
+    .formula-box {
+      background: #0d1321;
+      border-left: 2px solid #1e293b;
+      border-radius: 0 4px 4px 0;
+      padding: 0.6rem 0.85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.77rem;
+      color: #64748b;
+      line-height: 1.8;
+    }
+
+    .formula-box .cyan   { color: #06b6d4; }
+    .formula-box .red    { color: #ef4444; }
+    .formula-box .hi     { color: #e2e8f0; }
+    .formula-box .purple { color: #a78bfa; }
+
+    @media (max-width: 420px) {
+      .ctrl-group { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Standing-Wave Animator</h1>
+  <p class="subtitle">Forward + reflected superposition on a transmission line · vary VSWR to watch nodes form</p>
+
+  <!-- Canvas card -->
+  <div class="card">
+    <canvas id="waveCanvas" height="220"></canvas>
+
+    <!-- Layer toggles -->
+    <div class="toggle-row">
+      <button class="tbtn tbtn-fwd on" id="btnFwd">Forward wave</button>
+      <button class="tbtn tbtn-ref on" id="btnRef">Reflected wave</button>
+      <button class="tbtn tbtn-env on" id="btnEnv">Envelope</button>
+      <button class="tbtn tbtn-play" id="btnPlay">⏸ Pause</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <div class="ctrl-label">VSWR: <span id="vswrLabel">2.0</span></div>
+        <input type="range" id="slVSWR" min="1" max="10" step="0.05" value="2">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Speed</div>
+        <input type="range" id="slSpeed" min="0.005" max="0.06" step="0.005" value="0.025">
+      </div>
+    </div>
+
+    <!-- Readouts -->
+    <div class="readout-strip">
+      <div class="rout">
+        <div class="rout-label">VSWR</div>
+        <div class="rout-val cyan" id="rVSWR">2.00</div>
+      </div>
+      <div class="rout">
+        <div class="rout-label">|Γ|</div>
+        <div class="rout-val purple" id="rGamma">0.333</div>
+      </div>
+      <div class="rout">
+        <div class="rout-label">V_max / V_min</div>
+        <div class="rout-val" id="rRatio">2.0 : 1</div>
+      </div>
+      <div class="rout">
+        <div class="rout-label">Return Loss</div>
+        <div class="rout-val" id="rRL">9.5 dB</div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend" style="margin-top:0.75rem;">
+      <span class="legend-item"><span class="legend-line-dashed" style="border-color:#06b6d4;"></span>Forward</span>
+      <span class="legend-item"><span class="legend-line-dashed" style="border-color:#ef4444;"></span>Reflected</span>
+      <span class="legend-item"><span class="legend-line" style="background:#e2e8f0;"></span>Sum</span>
+      <span class="legend-item"><span class="legend-line" style="background:rgba(167,139,250,0.4); height:8px; border-radius:3px;"></span>Envelope</span>
+      <span class="legend-item" style="color:#475569;">N = node &nbsp; A = antinode</span>
+    </div>
+  </div>
+
+  <!-- Formula reference -->
+  <div class="card">
+    <div class="card-label">What you're seeing</div>
+    <div class="formula-box">
+      <span class="cyan">V_fwd</span>(x, t) = cos(ωt − βx)  &nbsp;← travels rightward →<br>
+      <span class="red">V_ref</span>(x, t) = <span class="purple">|Γ|</span> · cos(ωt + βx)  &nbsp;← travels leftward ←<br>
+      <span class="hi">V_total</span>(x, t) = <span class="cyan">V_fwd</span> + <span class="red">V_ref</span>  &nbsp;← standing pattern<br><br>
+      Nodes (zero voltage): spaced λ/2 apart; fixed in space<br>
+      Antinodes (peak voltage): midway between nodes<br>
+      VSWR = V_max / V_min = (1 + <span class="purple">|Γ|</span>) / (1 − <span class="purple">|Γ|</span>)
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var canvas  = document.getElementById('waveCanvas');
+    var ctx     = canvas.getContext('2d');
+    var phi     = 0;
+    var running = true;
+    var showFwd = true, showRef = true, showEnv = true;
+    var gamma   = 1/3; /* VSWR 2.0 */
+    var speed   = 0.025;
+    var N       = 300; /* drawing points */
+
+    /* ── Resize ──────────────────────────────────────────── */
+    function resize() {
+      var w = canvas.parentElement.getBoundingClientRect().width - 40;
+      canvas.width = Math.max(200, Math.floor(w));
+    }
+    resize();
+    window.addEventListener('resize', function () { resize(); draw(); });
+
+    /* ── Slider wiring ───────────────────────────────────── */
+    document.getElementById('slVSWR').addEventListener('input', function () {
+      var vswr = parseFloat(this.value);
+      gamma = (vswr - 1) / (vswr + 1);
+      updateReadouts(vswr, gamma);
+    });
+
+    document.getElementById('slSpeed').addEventListener('input', function () {
+      speed = parseFloat(this.value);
+    });
+
+    /* ── Toggle buttons ──────────────────────────────────── */
+    function wireToggle(id, get, set) {
+      document.getElementById(id).addEventListener('click', function () {
+        set(!get());
+        this.classList.toggle('on', get());
+      });
+    }
+
+    wireToggle('btnFwd', function() { return showFwd; }, function(v) { showFwd = v; });
+    wireToggle('btnRef', function() { return showRef; }, function(v) { showRef = v; });
+    wireToggle('btnEnv', function() { return showEnv; }, function(v) { showEnv = v; });
+
+    document.getElementById('btnPlay').addEventListener('click', function () {
+      running = !running;
+      this.textContent = running ? '⏸ Pause' : '▶ Play';
+    });
+
+    /* ── Readouts ────────────────────────────────────────── */
+    function updateReadouts(vswr, g) {
+      document.getElementById('vswrLabel').textContent = vswr.toFixed(2);
+      document.getElementById('rVSWR').textContent    = vswr.toFixed(2);
+      document.getElementById('rGamma').textContent   = g.toFixed(4);
+      document.getElementById('rRatio').textContent   = vswr.toFixed(2) + ' : 1';
+      var rl = g > 0 ? (-20 * Math.log10(g)).toFixed(1) + ' dB' : '∞ dB';
+      document.getElementById('rRL').textContent = rl;
+    }
+    updateReadouts(2.0, gamma);
+
+    /* ── Envelope at position u (u ∈ [0,1] = 0 to 2λ) ──── */
+    function envelope(u) {
+      var angle = 4 * Math.PI * u;
+      var a = (1 + gamma) * Math.cos(angle);
+      var b = (gamma - 1) * Math.sin(angle);
+      return Math.sqrt(a * a + b * b);
+    }
+
+    /* ── Wave value at (u, phi) ──────────────────────────── */
+    function fwd(u) { return Math.cos(phi - 4 * Math.PI * u); }
+    function ref(u) { return gamma * Math.cos(phi + 4 * Math.PI * u); }
+    function sum(u) { return fwd(u) + ref(u); }
+
+    /* ── Node positions (where envelope ≈ min) ─────────────
+     * For real Γ > 0: envelope min at cos(4πu)=0 → u=0.125, 0.375, 0.625, 0.875
+     * Antinode positions: u=0, 0.25, 0.5, 0.75, 1.0
+     */
+    var NODE_U     = [0.125, 0.375, 0.625, 0.875];
+    var ANTINODE_U = [0.0, 0.25, 0.5, 0.75, 1.0];
+
+    /* ── Draw ────────────────────────────────────────────── */
+    function draw() {
+      var W  = canvas.width;
+      var H  = canvas.height;
+      var cy = H / 2;
+      var scale = H * 0.36 / (1 + Math.max(gamma, 0.01));
+
+      ctx.clearRect(0, 0, W, H);
+
+      /* Grid: horizontal centre line */
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(W, cy);
+      ctx.stroke();
+
+      /* Envelope fill */
+      if (showEnv && gamma > 0.005) {
+        ctx.fillStyle = 'rgba(167,139,250,0.1)';
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var u  = i / N;
+          var ev = envelope(u) * scale;
+          var px = u * W;
+          if (i === 0) ctx.moveTo(px, cy - ev);
+          else ctx.lineTo(px, cy - ev);
+        }
+        for (var i = N; i >= 0; i--) {
+          var u  = i / N;
+          var ev = envelope(u) * scale;
+          ctx.lineTo(i / N * W, cy + ev);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        /* Envelope border lines */
+        ctx.strokeStyle = 'rgba(167,139,250,0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var u = i / N, px = u * W;
+          var py = cy - envelope(u) * scale;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var u = i / N, px = u * W;
+          var py = cy + envelope(u) * scale;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      /* Forward wave */
+      if (showFwd) {
+        ctx.strokeStyle = 'rgba(6,182,212,0.75)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var u = i / N, px = u * W;
+          var py = cy - fwd(u) * scale;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      /* Reflected wave */
+      if (showRef && gamma > 0.005) {
+        ctx.strokeStyle = 'rgba(239,68,68,0.75)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        for (var i = 0; i <= N; i++) {
+          var u = i / N, px = u * W;
+          var py = cy - ref(u) * scale;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      /* Sum (total) */
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      for (var i = 0; i <= N; i++) {
+        var u = i / N, px = u * W;
+        var py = cy - sum(u) * scale;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      /* Axis labels */
+      ctx.font = '10px IBM Plex Mono, monospace';
+      ctx.fillStyle = '#334155';
+      ctx.textAlign = 'center';
+      ctx.fillText('SOURCE', 18, H - 6);
+      ctx.fillText('LOAD', W - 18, H - 6);
+      ctx.fillText('← 2λ →', W / 2, H - 6);
+
+      /* Node / antinode markers (only when VSWR > 1.1) */
+      if (gamma > 0.05) {
+        ctx.font = '9px IBM Plex Mono, monospace';
+
+        /* Nodes */
+        ctx.fillStyle = 'rgba(239,68,68,0.5)';
+        ctx.strokeStyle = 'rgba(239,68,68,0.25)';
+        ctx.lineWidth = 1;
+        NODE_U.forEach(function (u) {
+          var px = u * W;
+          ctx.setLineDash([2, 3]);
+          ctx.beginPath();
+          ctx.moveTo(px, 8);
+          ctx.lineTo(px, H - 16);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillText('N', px, 8);
+        });
+
+        /* Antinodes */
+        ctx.fillStyle = 'rgba(6,182,212,0.5)';
+        ctx.strokeStyle = 'rgba(6,182,212,0.2)';
+        ANTINODE_U.forEach(function (u) {
+          var px = u * W;
+          /* Skip source/load edges for label clutter */
+          if (u > 0.05 && u < 0.95) {
+            ctx.setLineDash([2, 3]);
+            ctx.beginPath();
+            ctx.moveTo(px, 16);
+            ctx.lineTo(px, H - 16);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillText('A', px, 16);
+          }
+        });
+        ctx.setLineDash([]);
+      }
+    }
+
+    /* ── Animation loop ──────────────────────────────────── */
+    function frame() {
+      if (running) phi = (phi + speed) % (2 * Math.PI);
+      draw();
+      requestAnimationFrame(frame);
+    }
+
+    frame();
+  })();
+  </script>
+</body>
+</html>
