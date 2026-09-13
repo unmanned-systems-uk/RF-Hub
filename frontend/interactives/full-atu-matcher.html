@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATU Matcher — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.65rem; }
+
+    /* ── Mode tabs ─────────────────────────────────────── */
+    .mode-tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .mode-tab {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      padding: 0.3rem 0.75rem; border-radius: 4px;
+      border: 1px solid #1e293b; background: #0d1321; color: #64748b;
+      cursor: pointer; transition: border-color 0.13s, color 0.13s, background 0.13s;
+    }
+    .mode-tab.active { border-color: #a78bfa; color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+    /* ── Inputs ────────────────────────────────────────── */
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .field { display: flex; flex-direction: column; gap: 0.28rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="number"] {
+      background: #0d1321; border: 1px solid #1e293b; border-radius: 4px;
+      color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;
+      padding: 0.42rem 0.65rem; width: 100%; outline: none; transition: border-color 0.13s;
+    }
+    input[type="number"]:focus { border-color: #a78bfa; }
+    .field-hint { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #334155; }
+
+    /* ── Sub-type selector ─────────────────────────────── */
+    .sub-tabs { display: flex; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .sub-tab {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+      padding: 0.22rem 0.55rem; border-radius: 4px;
+      border: 1px solid #1e293b; background: #0d1321; color: #64748b;
+      cursor: pointer; transition: border-color 0.13s, color 0.13s;
+    }
+    .sub-tab.active { border-color: #06b6d4; color: #06b6d4; }
+
+    /* ── Schematic canvas ──────────────────────────────── */
+    #schematicCanvas {
+      display: block; width: 100%; border-radius: 4px; background: #070d1a;
+    }
+
+    /* ── Results ───────────────────────────────────────── */
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 0.9rem; }
+    .r-cell { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 0.75rem 0.9rem; }
+    .r-cell.span3 { grid-column: 1 / -1; }
+    .r-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+    .r-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.05rem; font-weight: 600; color: #e2e8f0; }
+    .r-sub { font-size: 0.74rem; color: #64748b; margin-top: 0.15rem; }
+
+    .c-C { color: #06b6d4; }
+    .c-L { color: #a78bfa; }
+    .c-Q { color: #fbbf24; }
+    .c-err { color: #ef4444; font-size: 0.82rem; }
+
+    /* ── Formula ───────────────────────────────────────── */
+    .formula-box {
+      background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0;
+      padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.76rem; color: #64748b; line-height: 1.8;
+    }
+    .formula-box .hi     { color: #e2e8f0; }
+    .formula-box .cyan   { color: #06b6d4; }
+    .formula-box .purple { color: #a78bfa; }
+    .formula-box .amber  { color: #fbbf24; }
+
+    @media (max-width: 440px) {
+      .input-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ATU Matcher</h1>
+  <p class="subtitle">L · Pi · T network solver — resistive source to resistive load</p>
+
+  <!-- Network type -->
+  <div class="card">
+    <div class="card-label">Network Topology</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-net="L">L-network</button>
+      <button class="mode-tab" data-net="Pi">Pi (π) network</button>
+      <button class="mode-tab" data-net="T">T-network</button>
+    </div>
+
+    <!-- L sub-type -->
+    <div id="lSubPane">
+      <div class="card-label" style="margin-bottom:0.4rem;">Type</div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-ltype="LP">Low-pass (shunt-C / series-L)</button>
+        <button class="sub-tab" data-ltype="HP">High-pass (shunt-L / series-C)</button>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="input-grid" style="margin-top:0.75rem;">
+      <div class="field">
+        <label>Source R (Ω)</label>
+        <input type="number" id="inRs" min="1" step="any" value="50" inputmode="decimal">
+        <span class="field-hint">Transmitter / Z₀</span>
+      </div>
+      <div class="field">
+        <label>Load R (Ω)</label>
+        <input type="number" id="inRl" min="1" step="any" value="200" inputmode="decimal">
+        <span class="field-hint">Antenna / feeder impedance</span>
+      </div>
+      <div class="field">
+        <label>Frequency (MHz)</label>
+        <input type="number" id="inF" min="0.01" step="any" value="14" inputmode="decimal">
+        <span class="field-hint">Centre frequency</span>
+      </div>
+      <div class="field" id="qField">
+        <label>Network Q</label>
+        <input type="number" id="inQ" min="0.5" max="30" step="0.1" value="3" inputmode="decimal">
+        <span class="field-hint" id="qHint">Min Q shown after calc</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schematic -->
+  <div class="card">
+    <div class="card-label">Schematic</div>
+    <canvas id="schematicCanvas" height="130"></canvas>
+  </div>
+
+  <!-- Results -->
+  <div class="results-grid" id="resultsGrid">
+    <div class="r-cell" id="rcA">
+      <div class="r-label" id="rcALabel">C (pF)</div>
+      <div class="r-value c-C" id="rcAVal">—</div>
+      <div class="r-sub" id="rcASub"></div>
+    </div>
+    <div class="r-cell" id="rcB">
+      <div class="r-label" id="rcBLabel">L (µH)</div>
+      <div class="r-value c-L" id="rcBVal">—</div>
+      <div class="r-sub" id="rcBSub"></div>
+    </div>
+    <div class="r-cell" id="rcC">
+      <div class="r-label" id="rcCLabel">—</div>
+      <div class="r-value" id="rcCVal">—</div>
+      <div class="r-sub" id="rcCSub"></div>
+    </div>
+    <div class="r-cell span3" id="rcInfo">
+      <div class="r-label">Network</div>
+      <div class="r-value" id="rcInfoVal" style="font-size:0.85rem;"></div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="errBox" style="display:none; font-family:'IBM Plex Mono',monospace; font-size:0.82rem; color:#ef4444; margin-bottom:0.9rem; padding:0.5rem 0;"></div>
+
+  <!-- Formula card -->
+  <div class="card" id="formulaCard">
+    <div class="card-label">Formulae</div>
+    <div class="formula-box" id="formulaBox"></div>
+  </div>
+
+  <script>
+  (function () {
+    var netType = 'L', lType = 'LP';
+
+    /* ── Tab wiring ──────────────────────────────────────── */
+    document.querySelectorAll('.mode-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.mode-tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        netType = btn.dataset.net;
+        document.getElementById('lSubPane').style.display = netType === 'L' ? 'block' : 'none';
+        document.getElementById('qField').style.display   = netType !== 'L' ? 'flex' : 'none';
+        calc();
+      });
+    });
+
+    document.querySelectorAll('.sub-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.sub-tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        lType = btn.dataset.ltype;
+        calc();
+      });
+    });
+
+    document.querySelectorAll('input[type="number"]').forEach(function (inp) {
+      inp.addEventListener('input', calc);
+    });
+
+    /* ── Init ────────────────────────────────────────────── */
+    document.getElementById('qField').style.display = 'none';
+
+    /* ── Core calc ───────────────────────────────────────── */
+    function calc() {
+      var Rs = parseFloat(document.getElementById('inRs').value);
+      var Rl = parseFloat(document.getElementById('inRl').value);
+      var f  = parseFloat(document.getElementById('inF').value) * 1e6;
+      var w  = 2 * Math.PI * f;
+      var Q  = parseFloat(document.getElementById('inQ').value);
+      var err = '';
+
+      clearErr();
+
+      if (isNaN(Rs) || isNaN(Rl) || isNaN(f) || Rs <= 0 || Rl <= 0 || f <= 0) { showErr('Enter valid positive values.'); return; }
+      if (netType !== 'L' && isNaN(Q)) { showErr('Enter a valid Q.'); return; }
+
+      if (netType === 'L') {
+        solveL(Rs, Rl, f, w, lType);
+      } else if (netType === 'Pi') {
+        solvePi(Rs, Rl, f, w, Q);
+      } else {
+        solveT(Rs, Rl, f, w, Q);
+      }
+    }
+
+    /* ── L-network ───────────────────────────────────────── */
+    function solveL(Rs, Rl, f, w, type) {
+      /* For L-network the Q is determined by the impedance ratio */
+      var Rh = Math.max(Rs, Rl), Rl2 = Math.min(Rs, Rl);
+      var Q = Math.sqrt(Rh / Rl2 - 1);
+      var X_shunt, X_series;
+
+      /* Shunt element is at the HIGH-Z end */
+      X_shunt = Rh / Q;
+      X_series = Q * Rl2;
+
+      var swap = (Rl > Rs); /* load is high-Z: swap which end gets the shunt */
+
+      var C_val, L_val, C_loc, L_loc;
+      if (type === 'LP') {
+        /* Shunt cap at high-Z, series L in line */
+        C_val = 1e12 / (w * X_shunt); /* pF */
+        L_val = 1e6 * X_series / w;   /* µH */
+        C_loc = swap ? 'at load end'   : 'at source end';
+        L_loc = 'series';
+        showResults(
+          { label:'C shunt', val:fmt(C_val, 1) + ' pF', cls:'c-C', sub:'Shunt cap ' + C_loc },
+          { label:'L series', val:fmt(L_val, 3) + ' µH', cls:'c-L', sub:'Series inductor' },
+          null,
+          'L-network low-pass · Q = ' + Q.toFixed(2) + ' · ' + (swap ? 'step-down (load → source)' : 'step-down (source → load)')
+        );
+        drawL(swap, 'LP', C_val, L_val);
+      } else {
+        /* Shunt L at high-Z, series C in line */
+        L_val = 1e6 * X_shunt / w;
+        C_val = 1e12 / (w * X_series);
+        C_loc = 'series';
+        L_loc = swap ? 'at load end' : 'at source end';
+        showResults(
+          { label:'L shunt', val:fmt(L_val, 3) + ' µH', cls:'c-L', sub:'Shunt inductor ' + L_loc },
+          { label:'C series', val:fmt(C_val, 1) + ' pF', cls:'c-C', sub:'Series capacitor' },
+          null,
+          'L-network high-pass · Q = ' + Q.toFixed(2)
+        );
+        drawL(swap, 'HP', C_val, L_val);
+      }
+      showFormula('L');
+    }
+
+    /* ── Pi-network ──────────────────────────────────────── */
+    function solvePi(Rs, Rl, f, w, Q) {
+      /* Ensure Rs is the high-Z side for our formulas */
+      var swapped = Rl > Rs;
+      var R_h = swapped ? Rl : Rs;
+      var R_l = swapped ? Rs : Rl;
+      var Q_min = Math.sqrt(R_h / R_l - 1);
+      if (Q < Q_min) {
+        Q = Q_min + 0.05;
+        document.getElementById('inQ').value = Q.toFixed(2);
+        document.getElementById('qHint').textContent = 'Q_min = ' + Q_min.toFixed(2) + ' (auto-adjusted)';
+      } else {
+        document.getElementById('qHint').textContent = 'Q_min = ' + Q_min.toFixed(2);
+      }
+
+      var R_mid = R_h / (1 + Q * Q);
+      var Q_B   = Math.sqrt(R_l / R_mid - 1);
+
+      var X_C1  = R_h / Q;                          /* shunt cap at high-Z */
+      var X_C2  = R_l / Q_B;                        /* shunt cap at low-Z  */
+      var X_L   = (Q + Q_B) * R_mid;                /* series L */
+
+      var C1 = 1e12 / (w * X_C1);
+      var C2 = 1e12 / (w * X_C2);
+      var L  = 1e6  * X_L / w;
+
+      var c1Label = swapped ? 'C2 (load)' : 'C1 (source)';
+      var c2Label = swapped ? 'C1 (source)' : 'C2 (load)';
+
+      showResults(
+        { label: c1Label, val: fmt(swapped ? C2 : C1, 1) + ' pF', cls: 'c-C', sub: 'Shunt cap at R = ' + (swapped ? Rl : Rs) + ' Ω' },
+        { label: 'L series', val: fmt(L, 3) + ' µH', cls: 'c-L', sub: 'Series inductor' },
+        { label: c2Label, val: fmt(swapped ? C1 : C2, 1) + ' pF', cls: 'c-C', sub: 'Shunt cap at R = ' + (swapped ? Rs : Rl) + ' Ω' },
+        'Pi (π) low-pass · Q = ' + Q.toFixed(2) + ' · Q_B = ' + Q_B.toFixed(2) + ' · BW ≈ ' + fmt(parseFloat(document.getElementById('inF').value) * 1e3 / Q, 0) + ' kHz'
+      );
+      drawPi(C1, L, C2, swapped);
+      showFormula('Pi');
+    }
+
+    /* ── T-network ───────────────────────────────────────── */
+    function solveT(Rs, Rl, f, w, Q_A) {
+      var Q_min = Math.sqrt(Math.max(Rs, Rl) / Math.min(Rs, Rl)); /* approx minimum */
+      if (Q_A < 1) {
+        Q_A = 1.0;
+        document.getElementById('inQ').value = '1.0';
+        document.getElementById('qHint').textContent = 'Minimum practical Q';
+      } else {
+        document.getElementById('qHint').textContent = 'Choose Q ≥ 1 for T-network';
+      }
+
+      /* R_virtual is the intermediate node resistance (higher than both) */
+      var R_v = Rs * (1 + Q_A * Q_A);
+      var Q_B  = Math.sqrt(R_v / Rl - 1);
+
+      var X_L1 = Q_A * Rs;
+      var X_L2 = Q_B * Rl;
+      var X_C  = R_v / (Q_A + Q_B);
+
+      var L1 = 1e6 * X_L1 / w;
+      var L2 = 1e6 * X_L2 / w;
+      var C  = 1e12 / (w * X_C);
+
+      showResults(
+        { label: 'L1 (source)', val: fmt(L1, 3) + ' µH', cls: 'c-L', sub: 'Series L at source' },
+        { label: 'C shunt',     val: fmt(C, 1)  + ' pF',  cls: 'c-C', sub: 'Shunt cap at junction' },
+        { label: 'L2 (load)',   val: fmt(L2, 3) + ' µH', cls: 'c-L', sub: 'Series L at load' },
+        'T-network · Q_A = ' + Q_A.toFixed(2) + ' · Q_B = ' + Q_B.toFixed(2) + ' · R_v = ' + fmt(R_v, 0) + ' Ω'
+      );
+      drawT(L1, C, L2);
+      showFormula('T');
+    }
+
+    /* ── Display helpers ─────────────────────────────────── */
+    function showResults(a, b, c, info) {
+      set('rcALabel', a.label); set('rcAVal', a.val, a.cls); set('rcASub', a.sub);
+      set('rcBLabel', b.label); set('rcBVal', b.val, b.cls); set('rcBSub', b.sub);
+      if (c) {
+        document.getElementById('rcC').style.display = '';
+        set('rcCLabel', c.label); set('rcCVal', c.val, c.cls); set('rcCSub', c.sub);
+      } else {
+        document.getElementById('rcC').style.display = 'none';
+      }
+      set('rcInfoVal', info);
+    }
+
+    function set(id, text, cls) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      if (cls !== undefined) {
+        el.className = el.className.replace(/c-[A-Za-z]+/g, '').trim() + (cls ? ' ' + cls : '');
+      }
+    }
+
+    function showErr(msg) {
+      var el = document.getElementById('errBox');
+      el.style.display = 'block';
+      el.textContent = msg;
+    }
+    function clearErr() { document.getElementById('errBox').style.display = 'none'; }
+
+    function fmt(v, dec) {
+      if (!isFinite(v) || isNaN(v)) return '—';
+      if (v >= 1000) return (v / 1000).toFixed(dec) + 'k';
+      return v.toFixed(dec);
+    }
+
+    /* ── Schematic drawing ───────────────────────────────── */
+    function resize() {
+      var c = document.getElementById('schematicCanvas');
+      var w = c.parentElement.getBoundingClientRect().width - 40;
+      c.width = Math.max(240, Math.floor(w));
+    }
+    resize();
+    window.addEventListener('resize', function () { resize(); calc(); });
+
+    var canvas = document.getElementById('schematicCanvas');
+    var ctx    = canvas.getContext('2d');
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function wire(x1, y1, x2, y2) {
+      ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+
+    function drawInductor(cx, cy, horiz) {
+      /* Draw inductor symbol (series of bumps) */
+      ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      var bumps = 4, bumpR = horiz ? 6 : 4;
+      if (horiz) {
+        var startX = cx - bumps * bumpR;
+        for (var i = 0; i < bumps; i++) {
+          var bx = startX + i * 2 * bumpR + bumpR;
+          ctx.beginPath();
+          ctx.arc(bx, cy, bumpR, Math.PI, 0, false);
+          ctx.stroke();
+        }
+      } else {
+        var startY = cy - bumps * bumpR;
+        for (var i = 0; i < bumps; i++) {
+          var by = startY + i * 2 * bumpR + bumpR;
+          ctx.beginPath();
+          ctx.arc(cx, by, bumpR, 1.5 * Math.PI, 0.5 * Math.PI, false);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawCapacitor(cx, cy, horiz) {
+      ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      if (horiz) {
+        var gap = 5;
+        ctx.beginPath(); ctx.moveTo(cx - gap, cy - 12); ctx.lineTo(cx - gap, cy + 12); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx + gap, cy - 12); ctx.lineTo(cx + gap, cy + 12); ctx.stroke();
+      } else {
+        var gap = 5;
+        ctx.beginPath(); ctx.moveTo(cx - 12, cy - gap); ctx.lineTo(cx + 12, cy - gap); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx - 12, cy + gap); ctx.lineTo(cx + 12, cy + gap); ctx.stroke();
+      }
+    }
+
+    function drawGnd(x, y) {
+      ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(x - 10, y); ctx.lineTo(x + 10, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - 6, y + 4); ctx.lineTo(x + 6, y + 4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - 2, y + 8); ctx.lineTo(x + 2, y + 8); ctx.stroke();
+    }
+
+    function label(txt, x, y, col) {
+      ctx.font = '10px IBM Plex Mono, monospace';
+      ctx.fillStyle = col || '#64748b';
+      ctx.textAlign = 'center';
+      ctx.fillText(txt, x, y);
+    }
+
+    function drawL(swapped, type, cVal, lVal) {
+      clearCanvas();
+      var W = canvas.width, H = canvas.height, cy = H / 2;
+      var x1 = 30, x2 = W - 30, xMid = W / 2;
+
+      /* Left wire → shunt position → series → right wire */
+      var xShunt = swapped ? xMid + 50 : xMid - 50;
+      var xSeries = xMid;
+
+      wire(x1, cy, xShunt, cy);
+      wire(xShunt, cy, x2, cy);
+
+      if (type === 'LP') {
+        /* Shunt cap (vertical), series L (horizontal) */
+        var shuntX = xShunt;
+        wire(shuntX, cy, shuntX, cy + 30);
+        drawCapacitor(shuntX, cy + 45, false);
+        wire(shuntX, cy + 60, shuntX, cy + 70);
+        drawGnd(shuntX, cy + 70);
+        label('C = ' + fmt(cVal, 0) + ' pF', shuntX, cy + 90, '#06b6d4');
+
+        var lx = swapped ? (xShunt - 40) : (xShunt + 40);
+        drawInductor(lx, cy, true);
+        label('L = ' + fmt(lVal, 2) + ' µH', lx, cy - 16, '#a78bfa');
+      } else {
+        /* Shunt L (vertical), series C (horizontal) */
+        var shuntX = xShunt;
+        wire(shuntX, cy, shuntX, cy + 20);
+        drawInductor(shuntX, cy + 45, false);
+        wire(shuntX, cy + 68, shuntX, cy + 78);
+        drawGnd(shuntX, cy + 78);
+        label('L = ' + fmt(lVal, 2) + ' µH', shuntX, cy + 98, '#a78bfa');
+
+        var cx2 = swapped ? (xShunt - 45) : (xShunt + 45);
+        drawCapacitor(cx2, cy, true);
+        label('C = ' + fmt(cVal, 0) + ' pF', cx2, cy - 20, '#06b6d4');
+      }
+
+      /* Port labels */
+      label('IN', x1 - 10, cy - 5, '#475569');
+      label('OUT', x2 + 12, cy - 5, '#475569');
+    }
+
+    function drawPi(C1, L, C2, swapped) {
+      clearCanvas();
+      var W = canvas.width, H = canvas.height, cy = H / 2 - 10;
+      var x1 = 30, x2 = W - 30;
+      var xC1 = x1 + 50, xL = W / 2, xC2 = x2 - 50;
+
+      wire(x1, cy, xC1, cy);
+      wire(xC1, cy, xC2, cy);
+      wire(xC2, cy, x2, cy);
+
+      /* C1 shunt */
+      wire(xC1, cy, xC1, cy + 30);
+      drawCapacitor(xC1, cy + 45, false);
+      wire(xC1, cy + 60, xC1, cy + 70);
+      drawGnd(xC1, cy + 70);
+      label('C1 = ' + fmt(swapped ? C2 : C1, 0) + ' pF', xC1, cy + 90, '#06b6d4');
+
+      /* L series */
+      drawInductor(xL, cy, true);
+      label('L = ' + fmt(L, 2) + ' µH', xL, cy - 16, '#a78bfa');
+
+      /* C2 shunt */
+      wire(xC2, cy, xC2, cy + 30);
+      drawCapacitor(xC2, cy + 45, false);
+      wire(xC2, cy + 60, xC2, cy + 70);
+      drawGnd(xC2, cy + 70);
+      label('C2 = ' + fmt(swapped ? C1 : C2, 0) + ' pF', xC2, cy + 90, '#06b6d4');
+
+      label('IN', x1 - 10, cy - 5, '#475569');
+      label('OUT', x2 + 12, cy - 5, '#475569');
+    }
+
+    function drawT(L1, C, L2) {
+      clearCanvas();
+      var W = canvas.width, H = canvas.height, cy = H / 2 - 10;
+      var x1 = 30, x2 = W - 30, xC = W / 2;
+      var xL1 = x1 + 80, xL2 = x2 - 80;
+
+      wire(x1, cy, xL1, cy);
+      wire(xL1 + 48, cy, xC, cy); /* gap for L1 */
+      wire(xC, cy, xL2 - 48, cy);
+      wire(xL2 + 48, cy, x2, cy); /* gap for L2 */
+
+      /* Wire fix: just draw continuous top then add shunt */
+      clearCanvas();
+      wire(x1, cy, x2, cy);
+
+      drawInductor(xL1, cy, true);
+      label('L1 = ' + fmt(L1, 2) + ' µH', xL1, cy - 16, '#a78bfa');
+
+      drawInductor(xL2, cy, true);
+      label('L2 = ' + fmt(L2, 2) + ' µH', xL2, cy - 16, '#a78bfa');
+
+      wire(xC, cy, xC, cy + 30);
+      drawCapacitor(xC, cy + 45, false);
+      wire(xC, cy + 60, xC, cy + 70);
+      drawGnd(xC, cy + 70);
+      label('C = ' + fmt(C, 0) + ' pF', xC, cy + 90, '#06b6d4');
+
+      label('IN', x1 - 10, cy - 5, '#475569');
+      label('OUT', x2 + 12, cy - 5, '#475569');
+    }
+
+    /* ── Formula display ─────────────────────────────────── */
+    var FORMULAS = {
+      L: 'Q = √(R_high / R_low − 1)  [determined by impedance ratio]\n' +
+         'X_shunt = R_high / Q  →  shunt element at high-Z end\n' +
+         'X_series = Q × R_low  →  series element in line\n' +
+         'C = 1 / (2πf × X)  [F]   L = X / (2πf)  [H]',
+      Pi: 'Q_min = √(R_high / R_low − 1)  [choose Q ≥ Q_min]\n' +
+          'R_mid = R_high / (1 + Q²)  [virtual intermediate resistance]\n' +
+          'Q_B = √(R_low / R_mid − 1)\n' +
+          'X_C1 = R_high / Q  ·  X_C2 = R_low / Q_B  ·  X_L = (Q + Q_B) × R_mid',
+      T:  'R_v = R_s × (1 + Q_A²)  [virtual high-Z node]\n' +
+          'Q_B = √(R_v / R_l − 1)\n' +
+          'X_L1 = Q_A × R_s  ·  X_L2 = Q_B × R_l  ·  X_C = R_v / (Q_A + Q_B)\n' +
+          'T-network has higher R_v than Pi → typically lossier at low Q'
+    };
+
+    function showFormula(type) {
+      document.getElementById('formulaBox').textContent = FORMULAS[type] || '';
+    }
+
+    /* ── Run ─────────────────────────────────────────────── */
+    calc();
+  })();
+  </script>
+</body>
+</html>
