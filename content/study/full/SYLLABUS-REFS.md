@@ -56,11 +56,23 @@
 
 ## Ch 4: Basic Circuits (pp 19–30)
 
-*TBD — populate when `04-basic-circuits.pdf` is read. Chapter covers: Ohm's law, Kirchhoff's laws, capacitance, inductance, AC, reactance, impedance, phasors, resonance, Q factor, transformers, decibels (~37 subsections, diagram-dense).*
+*Populated 2026-09-13. Section file: `section-4-basic-circuits.md`. Largest theory chapter (~18–22% exam weight).*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 4A1 | TBD | — |
+| 4A1 | 19 | Current (ampere), charge (coulomb), energy (joule), PD (volt); power P=VI / P=I²R / P=V²/R [VERIFY] |
+| 4B1 | 19–20 | Kirchhoff's Voltage Law (loop sum = 0); Kirchhoff's Current Law (current in = current out); resistors series (R_total=R1+R2) and parallel (1/R_total=1/R1+1/R2); potential divider V_out=V_in×R2/(R1+R2) [VERIFY] |
+| 4C1 | 20–21 | Real battery: EMF + internal resistance r; terminal voltage = EMF − Ir; maximum power transfer when R_load = r [VERIFY] |
+| 4D1 | 21–22 | Capacitance C=Q/V; parallel-plate C=KA/d; safe working voltage; RC time constant τ=CR (63% at 1τ, fully charged ≈5τ); capacitors in series and parallel; dielectric types [VERIFY] |
+| 4E1 | 23–24 | Inductance: back-EMF, 1H = 1V at 1A/s change; types (air, ferrite, slug-tuned, toroid); inductors series/parallel; LR time constant τ=L/R [VERIFY] |
+| 4F1 | 24 | AC sinewave; V_rms = V_peak/√2 = 0.707·V_peak; phase; harmonics; Fourier analysis [VERIFY] |
+| 4G1 | 25–26 | Capacitive reactance X_C=1/(2πfC); inductive reactance X_L=2πfL; phasor diagrams (Pythagoras); impedance Z=√(R²+X²); coupling/decoupling capacitors; RF chokes [VERIFY] |
+| 4H1 | 27–28 | Series resonance (minimum Z, V magnification); parallel resonance (maximum Z, dynamic resistance R_D=L/CR); resonant frequency f_r=1/(2π√(LC)); Q=f_r/BW=X_L/R; bandwidth BW=f_r/Q; circulating currents [VERIFY] |
+| 4I1 | 29 | Quartz crystals: piezo-electric effect; equivalent circuit (L-C1-R series + C2 parallel); two resonances; Q up to 50,000; frequency pulling by external capacitance; overtone operation [VERIFY] |
+| 4J1 | 28–29 | Transformers: V_S/V_P = N_S/N_P; I_P/I_S = N_S/N_P; impedance Z_in = Z_out×(N_P/N_S)²; eddy currents and laminations; ferrite cores; Faraday screening [VERIFY] |
+| 4K1 | 29–30 | Temperature coefficients (ppm/°C): capacitors (positive/negative/NP0); inductors (positive TC); compensation by combining ±TC components; inductor screening cans (1.5× coil diameter minimum) [VERIFY] |
+
+**Populate status: ✅ Ch4 — section file written 2026-09-13**
 
 ---
 
