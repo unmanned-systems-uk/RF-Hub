@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Callsign Parser — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── Input ─────────────────────────────────────────── */
+    #callInput {
+      width: 100%;
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #callInput:focus { border-color: #a78bfa; }
+    #callInput::placeholder { color: #1e293b; font-weight: 400; letter-spacing: 0.06em; }
+
+    .example-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .ex-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.73rem;
+      color: #64748b;
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 0.22rem 0.55rem;
+      cursor: pointer;
+      transition: border-color 0.13s, color 0.13s;
+      letter-spacing: 0.05em;
+    }
+    .ex-btn:hover { border-color: #a78bfa; color: #a78bfa; }
+
+    /* ── Breakdown display ─────────────────────────────── */
+    .breakdown-card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.5rem 1rem 1.1rem;
+      margin-bottom: 0.9rem;
+      min-height: 7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cs-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.15rem;
+    }
+
+    .cs-segment {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0.05rem;
+    }
+
+    .cs-chars {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 2.6rem;
+      line-height: 1;
+      padding: 0 0.1rem 0.25rem;
+      border-bottom: 3px solid transparent;
+    }
+
+    .cs-lbl {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-top: 0.4rem;
+    }
+
+    /* Segment colours */
+    .seg-region .cs-chars { color: #06b6d4; border-bottom-color: #06b6d4; }
+    .seg-region .cs-lbl   { color: #06b6d4; }
+    .seg-digit  .cs-chars { color: #a78bfa; border-bottom-color: #a78bfa; }
+    .seg-digit  .cs-lbl   { color: #a78bfa; }
+    .seg-suffix .cs-chars { color: #e2e8f0; border-bottom-color: #1e293b; }
+    .seg-suffix .cs-lbl   { color: #475569; }
+    .seg-qual   .cs-chars { color: #f59e0b; border-bottom-color: #f59e0b; }
+    .seg-qual   .cs-lbl   { color: #f59e0b; }
+    .seg-qual-am .cs-chars { color: #ef4444; border-bottom-color: #ef4444; }
+    .seg-qual-am .cs-lbl   { color: #ef4444; }
+    .seg-qual-t .cs-chars  { color: #fb923c; border-bottom-color: #fb923c; }
+    .seg-qual-t .cs-lbl    { color: #fb923c; }
+
+    .placeholder-msg {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #1e293b;
+    }
+
+    .error-msg {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #ef4444;
+    }
+
+    /* ── Analysis grid ─────────────────────────────────── */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .a-cell {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+
+    .a-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.3rem;
+    }
+
+    .a-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .a-sub {
+      font-size: 0.77rem;
+      color: #64748b;
+      margin-top: 0.2rem;
+      line-height: 1.45;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    .c-full         { color: #a78bfa; }
+    .c-intermediate { color: #06b6d4; }
+    .c-foundation   { color: #4ade80; }
+    .c-am           { color: #ef4444; }
+    .c-warn         { color: #fb923c; }
+    .c-dim          { color: #94a3b8; }
+
+    /* ── Notes ─────────────────────────────────────────── */
+    .notes-box {
+      background: #0d1321;
+      border-left: 2px solid #1e293b;
+      border-radius: 0 4px 4px 0;
+      padding: 0.65rem 0.9rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.65;
+    }
+    .notes-box p + p { margin-top: 0.6rem; }
+
+    /* ── Qualifier reference ───────────────────────────── */
+    .qual-ref {
+      display: flex;
+      flex-direction: column;
+      gap: 0.38rem;
+    }
+
+    .qual-ref-row {
+      display: flex;
+      gap: 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.77rem;
+    }
+
+    .qual-ref-tag {
+      min-width: 3.2rem;
+      color: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .qual-ref-tag.am { color: #ef4444; }
+    .qual-ref-tag.t  { color: #fb923c; }
+
+    .qual-ref-desc { color: #64748b; }
+
+    /* ── Responsive ────────────────────────────────────── */
+    @media (max-width: 420px) {
+      .analysis-grid { grid-template-columns: 1fr; }
+      .cs-chars { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>UK Callsign Parser</h1>
+  <p class="subtitle">decompose prefix · licence class · region · operating mode</p>
+
+  <!-- Input -->
+  <div class="card">
+    <input type="text" id="callInput" placeholder="M0ABC or G4FOO/P" maxlength="12" autocomplete="off" spellcheck="false" inputmode="text">
+    <div class="card-label" style="margin-top:0.8rem;margin-bottom:0.35rem;">Examples</div>
+    <div class="example-row">
+      <button class="ex-btn" data-call="M0ABC">M0ABC</button>
+      <button class="ex-btn" data-call="G3XYZ">G3XYZ</button>
+      <button class="ex-btn" data-call="2E0DEF">2E0DEF</button>
+      <button class="ex-btn" data-call="M7QRP">M7QRP</button>
+      <button class="ex-btn" data-call="ME7ZZZ">ME7ZZZ</button>
+      <button class="ex-btn" data-call="MM0ABC">MM0ABC</button>
+      <button class="ex-btn" data-call="GW3ABC">GW3ABC</button>
+      <button class="ex-btn" data-call="G4FOO/P">G4FOO/P</button>
+      <button class="ex-btn" data-call="G4FOO/MM">G4FOO/MM</button>
+      <button class="ex-btn" data-call="M0XYZ/AM">M0XYZ/AM</button>
+      <button class="ex-btn" data-call="2E0ABC/T">2E0ABC/T</button>
+      <button class="ex-btn" data-call="MD0XYZ">MD0XYZ</button>
+    </div>
+  </div>
+
+  <!-- Breakdown -->
+  <div class="breakdown-card" id="bdCard">
+    <span class="placeholder-msg">Enter a callsign above</span>
+  </div>
+
+  <!-- Analysis -->
+  <div class="analysis-grid" id="aGrid" style="display:none;">
+    <div class="a-cell">
+      <div class="a-label">Region</div>
+      <div class="a-value" id="aRegion">—</div>
+      <div class="a-sub"  id="aRegionSub"></div>
+    </div>
+    <div class="a-cell">
+      <div class="a-label">Licence Class</div>
+      <div class="a-value" id="aLicence">—</div>
+      <div class="a-sub"  id="aLicenceSub"></div>
+    </div>
+    <div class="a-cell">
+      <div class="a-label">Max TX Power</div>
+      <div class="a-value" id="aPower">—</div>
+      <div class="a-sub"  id="aPowerSub"></div>
+    </div>
+    <div class="a-cell">
+      <div class="a-label">Operating Mode</div>
+      <div class="a-value" id="aMode">—</div>
+      <div class="a-sub"  id="aModeSub"></div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="card" id="notesCard" style="display:none;">
+    <div class="card-label">Notes</div>
+    <div class="notes-box" id="notesBox"></div>
+  </div>
+
+  <!-- Qualifier reference -->
+  <div class="card">
+    <div class="card-label">Qualifier Reference</div>
+    <div class="qual-ref">
+      <div class="qual-ref-row"><span class="qual-ref-tag">/M</span>  <span class="qual-ref-desc">Mobile — vehicle or vessel in UK territorial waters. Normal licence power.</span></div>
+      <div class="qual-ref-row"><span class="qual-ref-tag">/P</span>  <span class="qual-ref-desc">Portable — temporary fixed location away from registered address. Normal power.</span></div>
+      <div class="qual-ref-row"><span class="qual-ref-tag">/MM</span> <span class="qual-ref-desc">Maritime Mobile — vessel at sea. Normal power.</span></div>
+      <div class="qual-ref-row"><span class="qual-ref-tag am">/AM</span><span class="qual-ref-desc">Airborne Mobile — <strong style="color:#ef4444;">500 mW EIRP maximum</strong>, all licence classes, primary bands only.</span></div>
+      <div class="qual-ref-row"><span class="qual-ref-tag">/A</span>  <span class="qual-ref-desc">Alternative address — notified to Ofcom. Normal power.</span></div>
+      <div class="qual-ref-row"><span class="qual-ref-tag t">/T</span>  <span class="qual-ref-desc">Training/Temporary — supervised station; Foundation limits apply regardless of operator class.</span></div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+
+    /* ── Regex ───────────────────────────────────────────────── */
+    /*
+     * Prefix groups (ordered: longest/most-specific first):
+     *   2[EWMI]      England/Wales/Scotland/N.Ireland Intermediate
+     *   G[WMDIJU]?   G (England) or GW GI GM GD GJ GU (regional) — all Full historic
+     *   ME           England ME7 Foundation
+     *   M[WMDIJU]?   M (England) or MW MI MM MD MJ MU (regional)
+     */
+    var CS_RE = /^(2[EWMI]|G[WMDIJU]?|ME|M[WMDIJU]?)([0-9])([A-Z]{2,3})(?:\/(AM|MM|PM|[MPATQR]))?$/i;
+
+    /* ── Tables ──────────────────────────────────────────────── */
+    var REGIONS = {
+      'G':'England', 'M':'England', 'ME':'England', '2E':'England',
+      'GW':'Wales',  'MW':'Wales',  '2W':'Wales',
+      'GM':'Scotland','MM':'Scotland','2M':'Scotland',
+      'GI':'Northern Ireland','MI':'Northern Ireland','2I':'Northern Ireland',
+      'GD':'Isle of Man','MD':'Isle of Man',
+      'GJ':'Jersey',  'MJ':'Jersey',
+      'GU':'Guernsey','MU':'Guernsey'
+    };
+
+    var REGION_DESC = {
+      'G':  'England — historic G-prefix Full series',
+      'GW': 'Wales — historic GW-prefix Full series',
+      'GM': 'Scotland — historic GM-prefix Full series',
+      'GI': 'Northern Ireland — historic GI-prefix Full series',
+      'GD': 'Isle of Man — historic GD-prefix Full series',
+      'GJ': 'Jersey — historic GJ-prefix Full series',
+      'GU': 'Guernsey — historic GU-prefix Full series',
+      'M':  'England — modern M-prefix series',
+      'ME': 'England — ME7 Foundation block',
+      'MW': 'Wales — modern MW-prefix series',
+      'MM': 'Scotland — modern MM-prefix series',
+      'MI': 'Northern Ireland — modern MI-prefix series',
+      'MD': 'Isle of Man — modern MD-prefix series',
+      'MJ': 'Jersey — modern MJ-prefix series',
+      'MU': 'Guernsey — modern MU-prefix series',
+      '2E': 'England — Intermediate 2E series',
+      '2W': 'Wales — Intermediate 2W series',
+      '2M': 'Scotland — Intermediate 2M series',
+      '2I': 'Northern Ireland — Intermediate 2I series'
+    };
+
+    var QUAL_INFO = {
+      'M':  { label:'Mobile',            sub:'Vehicle or vessel, UK territorial waters.',             cls:'' },
+      'P':  { label:'Portable',          sub:'Temporary fixed location, away from registered address.',cls:'' },
+      'MM': { label:'Maritime Mobile',   sub:'Vessel at sea, outside UK territorial waters.',         cls:'' },
+      'AM': { label:'Airborne Mobile',   sub:'500 mW EIRP limit — all licence classes equally.',      cls:'c-am' },
+      'PM': { label:'Portable Maritime', sub:'Portable operation from a vessel.',                     cls:'' },
+      'A':  { label:'Alternative Address',sub:'Notified alternative location. Normal licence power.',  cls:'' },
+      'T':  { label:'Training Station',  sub:'Supervised training — Foundation power limits apply.',  cls:'c-warn' },
+      'Q':  { label:'QRP (informal)',    sub:'Low-power operation — not an official Ofcom qualifier.',cls:'c-dim' },
+      'R':  { label:'Repeater (informal)',sub:'Not a standard callsign qualifier.',                    cls:'c-dim' }
+    };
+
+    /* ── Core parser ─────────────────────────────────────────── */
+    function parse(raw) {
+      var s = raw.trim().toUpperCase().replace(/\s/g, '');
+      if (!s) return null;
+      var m = CS_RE.exec(s);
+      if (!m) return { valid: false, raw: s };
+      var prefix = m[1].toUpperCase();
+      var digit  = m[2];
+      var suffix = m[3].toUpperCase();
+      var qual   = m[4] ? m[4].toUpperCase() : null;
+      return {
+        valid: true, raw: s, prefix: prefix, digit: digit,
+        suffix: suffix, qual: qual,
+        region: REGIONS[prefix] || 'Unknown',
+        cls: licenceClass(prefix, digit)
+      };
+    }
+
+    function licenceClass(prefix, digit) {
+      var p = prefix.toUpperCase(), d = parseInt(digit, 10);
+      /* 2-prefix → always Intermediate */
+      if (p.charAt(0) === '2') return 'intermediate';
+      /* G-prefix → always Full (digit is sequential, not class indicator) */
+      if (p.charAt(0) === 'G') return 'full';
+      /* ME → Foundation (ME7 block) */
+      if (p === 'ME') return 'foundation';
+      /* M-prefix: digit IS the licence-class indicator */
+      if (d === 0 || d === 1 || d === 5) return 'full';
+      if (d === 3 || d === 6 || d === 7) return 'foundation';
+      if (d === 8 || d === 9)            return 'intermediate';
+      return 'full'; /* digits 2, 4 are unallocated blocks; assume Full */
+    }
+
+    function powerInfo(cls, qual) {
+      if (qual === 'AM') return { val:'500 mW EIRP', sub:'Airborne limit — applies to all licence tiers', cls:'c-am' };
+      if (qual === 'T')  return { val:'25 W PEP',    sub:'Foundation limits apply for training stations',  cls:'c-warn' };
+      if (cls === 'full')         return { val:'1 000 W PEP', sub:'Most primary HF/VHF/UHF bands (exceptions at 60 m, 472 kHz)', cls:'c-full' };
+      if (cls === 'intermediate') return { val:'100 W PEP',   sub:'Most bands; 50 W on some; 1 W at 135.7 kHz',                  cls:'c-intermediate' };
+      if (cls === 'foundation')   return { val:'25 W PEP',    sub:'Most standard amateur bands (10 W some restricted bands)',     cls:'c-foundation' };
+      return { val:'—', sub:'', cls:'' };
+    }
+
+    /* ── Render ──────────────────────────────────────────────── */
+    function render(r) {
+      var bd = document.getElementById('bdCard');
+      var ag = document.getElementById('aGrid');
+      var nc = document.getElementById('notesCard');
+
+      if (!r) {
+        bd.innerHTML = '<span class="placeholder-msg">Enter a callsign above</span>';
+        ag.style.display = 'none';
+        nc.style.display = 'none';
+        return;
+      }
+
+      if (!r.valid) {
+        bd.innerHTML = '<span class="error-msg">Not a recognised UK amateur callsign — check format</span>';
+        ag.style.display = 'none';
+        nc.style.display = 'none';
+        return;
+      }
+
+      /* Breakdown segments */
+      var qualCls = r.qual === 'AM' ? 'seg-qual-am' : r.qual === 'T' ? 'seg-qual-t' : 'seg-qual';
+      var html = '<div class="cs-row">';
+      html += mkSeg('seg-region', r.prefix, 'Region');
+      html += mkSeg('seg-digit',  r.digit,  'Licence');
+      html += mkSeg('seg-suffix', r.suffix, 'Suffix');
+      if (r.qual) html += mkSeg(qualCls, '/' + r.qual, 'Mode');
+      html += '</div>';
+      bd.innerHTML = html;
+
+      /* Analysis cells */
+      ag.style.display = 'grid';
+      var LI = { full:'Full', intermediate:'Intermediate', foundation:'Foundation' };
+      var LS = { full:'M0, G0–G9, regional MM/MW/MI etc.', intermediate:'2E0/2E1, M8, M9, 2M/2W/2I', foundation:'M7, M6, M3, ME7, and regional variants' };
+      var LC = { full:'c-full', intermediate:'c-intermediate', foundation:'c-foundation' };
+      var pw = powerInfo(r.cls, r.qual);
+      var qi = r.qual ? QUAL_INFO[r.qual] : null;
+
+      setText('aRegion',    r.region,               '');
+      setText('aRegionSub', REGION_DESC[r.prefix] || r.prefix, '');
+      setText('aLicence',    LI[r.cls],              LC[r.cls]);
+      setText('aLicenceSub', LS[r.cls],              '');
+      setText('aPower',      pw.val,                 pw.cls);
+      setText('aPowerSub',   pw.sub,                 '');
+      if (qi) {
+        setText('aMode',    qi.label, qi.cls);
+        setText('aModeSub', qi.sub,   '');
+      } else {
+        setText('aMode',    'Fixed / Home Station', '');
+        setText('aModeSub', 'Operation from the Ofcom-registered station address.', '');
+      }
+
+      /* Notes */
+      var notes = buildNotes(r);
+      if (notes.length) {
+        nc.style.display = 'block';
+        document.getElementById('notesBox').innerHTML = notes.map(function (n) {
+          return '<p>' + esc(n) + '</p>';
+        }).join('');
+      } else {
+        nc.style.display = 'none';
+      }
+    }
+
+    function mkSeg(cls, chars, lbl) {
+      return '<div class="cs-segment ' + cls + '">' +
+        '<span class="cs-chars">' + esc(chars) + '</span>' +
+        '<span class="cs-lbl">'   + esc(lbl)   + '</span>' +
+        '</div>';
+    }
+
+    function setText(id, text, cls) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      if (cls !== undefined) el.className = (el.className.replace(/\bc-\S+/g, '').trim()) + (cls ? ' ' + cls : '');
+    }
+
+    function buildNotes(r) {
+      var notes = [];
+      var p = r.prefix, d = parseInt(r.digit, 10);
+
+      /* G-prefix context */
+      if (p.charAt(0) === 'G') {
+        notes.push('G-prefix callsigns are all Full licence. The digit reflects sequential block allocation under pre-2003 licensing — it does not indicate licence class as it does for the modern M-prefix series.');
+      }
+
+      /* M3 / M6 historic context */
+      if (p === 'M' && d === 3) notes.push('M3 was the original Foundation prefix block, introduced around 2003. It was later supplemented by M6 (2004) and then M7 (2019). All three blocks remain valid Foundation allocations.');
+      if (p === 'M' && d === 6) notes.push('M6 was the primary Foundation prefix from around 2004. The newer M7 block was introduced in 2019 to relieve pressure on M6. Both remain valid; the prefix carries no operational difference.');
+
+      /* ME7 */
+      if (p === 'ME') notes.push('ME7 is a special Foundation prefix block — structurally it looks like a two-letter region prefix but it is not a separate geographic region. It is an England callsign.');
+
+      /* Intermediate homebrew note */
+      if (r.cls === 'intermediate') {
+        notes.push('Intermediate licence holders may build and operate home-brew transmitters from scratch. Foundation is restricted to commercial or kit equipment (or ≤2 W on 2.4 GHz / 5 GHz bands only).');
+      }
+
+      /* Full CEPT note */
+      if (r.cls === 'full') {
+        notes.push('Full licence holders benefit from CEPT T/R 61-01 reciprocal recognition — operable in participating CEPT countries without a separate local licence. Foundation and Intermediate do not have this.');
+      }
+
+      /* /AM power */
+      if (r.qual === 'AM') {
+        notes.push('/AM (Airborne Mobile) is subject to a 500 mW EIRP limit regardless of licence class. This is a radio-regulation constraint, not a licence-tier constraint — a Full licence holder on /AM is still limited to 500 mW EIRP.');
+      }
+
+      /* /T training */
+      if (r.qual === 'T') {
+        notes.push('/T training stations must operate under direct supervision of a licensed amateur. Foundation power limits (25 W PEP) apply regardless of the supervising operator\'s class. The /T suffix appears on the licensee\'s own callsign during supervised sessions.');
+      }
+
+      /* Crown dependencies */
+      if (p === 'MD' || p === 'GD' || p === 'MJ' || p === 'GJ' || p === 'MU' || p === 'GU') {
+        notes.push('Isle of Man, Jersey, and Guernsey are Crown dependencies with their own licensing authorities (IOMPO, JCRA, GCRA respectively), but they operate compatible RSGB/Ofcom-aligned frameworks. CEPT reciprocal rights may differ — check locally before operating abroad.');
+      }
+
+      /* /MM maritime */
+      if (r.qual === 'MM') {
+        notes.push('Maritime Mobile operation in international waters requires the operator to append /MM. In UK territorial waters, /M is used instead. Intermediate and Foundation licences permit maritime mobile within UK waters; Full licence holders have expanded maritime mobile privileges.');
+      }
+
+      return notes;
+    }
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    /* ── Wire up ─────────────────────────────────────────────── */
+    var inp = document.getElementById('callInput');
+
+    inp.addEventListener('input', function () {
+      /* Strip non-callsign characters; allow letters, digits, slash */
+      inp.value = inp.value.toUpperCase().replace(/[^A-Z0-9\/]/g, '');
+      render(parse(inp.value));
+    });
+
+    document.querySelectorAll('.ex-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        inp.value = btn.dataset.call;
+        render(parse(inp.value));
+        inp.focus();
+      });
+    });
+
+    render(null);
+  })();
+  </script>
+</body>
+</html>

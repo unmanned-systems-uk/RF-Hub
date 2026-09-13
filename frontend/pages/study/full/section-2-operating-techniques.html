@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 2: Operating Techniques — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260913-1200">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto;
+      font-size: 0.82rem; color: var(--text-secondary); margin: 1rem 0;
+    }
+    .chapter table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem;
+    }
+    .chapter th {
+      text-align: left; padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono); font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-dim); border-bottom: 1px solid var(--border);
+    }
+    .chapter td {
+      padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-secondary); vertical-align: top;
+    }
+    .chapter td:first-child { color: var(--text-primary); font-family: var(--font-mono); font-size: 0.88rem; }
+    .chapter tr:last-child td { border-bottom: none; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    /* Going Deeper <details> blocks */
+    details.going-deeper {
+      background: rgba(167,139,250,0.04);
+      border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-md);
+      margin: 1.75rem 0 0.5rem;
+    }
+    details.going-deeper summary {
+      cursor: pointer;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.88rem;
+      color: var(--accent-em);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      user-select: none;
+    }
+    details.going-deeper summary::-webkit-details-marker { display: none; }
+    details.going-deeper summary::before {
+      content: '▶';
+      font-size: 0.6rem;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    details.going-deeper[open] > summary::before { transform: rotate(90deg); }
+    details.going-deeper .details-body {
+      padding: 0 1.25rem 1.25rem;
+      color: var(--text-secondary);
+      font-size: 0.93rem;
+      border-top: 1px solid rgba(167,139,250,0.12);
+      margin-top: 0;
+    }
+    details.going-deeper .details-body p { margin: 0.8rem 0; }
+    details.going-deeper .details-body h4 {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      margin-top: 1.1rem;
+      margin-bottom: 0.35rem;
+    }
+    details.going-deeper .details-body ul,
+    details.going-deeper .details-body ol {
+      margin: 0.4rem 0 0.9rem 1.25rem;
+    }
+    details.going-deeper .details-body li { margin-bottom: 0.3rem; }
+    details.going-deeper .details-body li strong { color: var(--text-primary); }
+    details.going-deeper .details-body table {
+      width: 100%; border-collapse: collapse; font-size: 0.87rem; margin: 0.75rem 0;
+    }
+    details.going-deeper .details-body th {
+      text-align: left; padding: 0.4rem 0.6rem;
+      font-family: var(--font-mono); font-size: 0.76rem;
+      text-transform: uppercase; color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    details.going-deeper .details-body td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    details.going-deeper .details-body tr:last-child td { border-bottom: none; }
+    details.going-deeper .details-body pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.85rem 1rem;
+      font-size: 0.82rem; color: var(--text-secondary); overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+    .verify-note {
+      font-family: var(--font-mono); font-size: 0.8em;
+      color: var(--text-dim); font-style: normal;
+    }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Full</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 2</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~3–4 / 62 questions &nbsp;·&nbsp; ~7%</span>
+      </div>
+      <h1>Operating Techniques</h1>
+      <p class="hero-subtitle">472 kHz and 5&nbsp;MHz specific conditions, split-frequency pileup operation, band plans abroad, callsign suffixes, special event stations, and supervising unlicensed operators.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-2A">2A 472 kHz &amp; 5 MHz</a></li>
+        <li><a href="#ch-2B">2B Pileups &amp; Split</a></li>
+        <li><a href="#ch-2C">2C Band Plans Abroad</a></li>
+        <li><a href="#ch-2D">2D Callsigns &amp; Supervision</a></li>
+        <li><a href="#ch-2E">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-2A"><span class="toc-code">2A</span>472 kHz and 5 MHz Operating Conditions</a></li>
+        <li><a href="#ch-2B"><span class="toc-code">2B</span>Pileups and Operating Split</a></li>
+        <li><a href="#ch-2C"><span class="toc-code">2C</span>Band Plans in Other Countries</a></li>
+        <li><a href="#ch-2D"><span class="toc-code">2D</span>Callsigns, Special Events &amp; Supervision</a></li>
+        <li><a href="#ch-2E"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem;">Chapter 2 of the RSGB Full Licence Manual is deliberately short &mdash; one and a half pages &mdash; because most everyday operating practice was covered at Foundation and Intermediate level. For the exam, the new material falls into four areas: <strong>operating on the 472 kHz and 5 MHz bands</strong> (both have specific restrictions not applicable elsewhere); <strong>working split frequency in a pileup</strong>; <strong>band plans when operating abroad or contacting overseas stations</strong>; and <strong>callsign suffixes, special event stations, and supervising unlicensed operators</strong>.</p>
+
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2.5rem;">Each required section is followed by a <strong>Going Deeper</strong> block covering practical operating skills that are not directly examinable but make the content immediately useful on air. These blocks are collapsed by default &mdash; click to expand.</p>
+
+    <!-- ═══════════════════════ 2A: 472 kHz AND 5 MHz ═══════════════════ -->
+    <section class="chapter" id="ch-2A">
+      <div class="chapter-header">
+        <span class="chapter-num">2A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>472 kHz and 5 MHz Operating Conditions</h2>
+
+      <h3>2A.1 — The 472–479 kHz Band (&ldquo;630 metres&rdquo;)</h3>
+
+      <p>The 472&ndash;479 kHz band is allocated to amateur radio on a <strong>secondary basis</strong>, with maritime mobile as the primary user. The amateur allocation at this frequency is unusual in several ways:</p>
+      <ul>
+        <li><strong>Power limit: 5 W EIRP</strong> as the general maximum</li>
+        <li><strong>Reduced limit: 1 W EIRP</strong> when your station is within 800 km of certain neighbouring countries that operate specific radio services on these frequencies <span class="verify-note">[VERIFY current list against Ofcom schedule]</span></li>
+        <li>The wavelength at 472 kHz is approximately <strong>630 metres</strong> &mdash; a half-wave antenna would need to be over 300 m long, and a quarter-wave vertical 157 m. A typical amateur antenna operating on this band will be drastically shorter than a resonant length and will be very inefficient. You <strong>must calculate your actual EIRP</strong> (transmitter power &times; feed efficiency &times; antenna gain) rather than assuming your EIRP equals your transmitter output power; the antenna&rsquo;s efficiency losses may reduce EIRP considerably, keeping you within the limit even at moderate transmitter output</li>
+        <li>The 1 W EIRP condition within 800 km of specified countries is <strong>geographic</strong>, not reciprocal &mdash; it applies regardless of whether that country&rsquo;s stations are actually active on the frequency</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2A1:</strong> 472&ndash;479 kHz &mdash; secondary allocation; maritime mobile primary. 5 W EIRP maximum; 1 W EIRP within 800 km of specified countries. Wavelength ~630 m &mdash; typical amateur antennas will be highly inefficient; calculate EIRP from actual antenna system, do not assume it equals transmitter output. <span class="verify-note">[VERIFY against current Ofcom schedule]</span></div>
+      </div>
+
+      <h3>2A.2 — The 5 MHz Band (&ldquo;60 metres&rdquo;) in Detail</h3>
+
+      <p>The 5 MHz allocation is unlike any other amateur band. Rather than a continuous block, it consists of <strong>individual narrow channel slots</strong> spread across the range 5.2585&ndash;5.4065 MHz, with the Ministry of Defence (MoD) as the <strong>primary user</strong> and amateur radio on a strict <strong>secondary non-interference basis</strong>. The MoD will notice if you transmit outside your allocated slot &mdash; the edges of slots matter.</p>
+
+      <h4>Frequency slots and mode guidance <span class="verify-note">[Band Plan — see Reference Booklet EX309]</span></h4>
+      <ul>
+        <li><strong>Lower end of the slots:</strong> CW recommended, maximum bandwidth 200 Hz; also used for QRSS (very slow-speed telegraphy used for long-distance propagation experiments at very low power)</li>
+        <li><strong>Upper end of the slots:</strong> digital modes permitted, bandwidth up to 500 Hz; all transmitted carriers or tones for a digital mode must lie wholly within the slot</li>
+        <li>AM and standard CW are explicitly permitted</li>
+        <li>SSB voice is the most common mode used in the slots (slot widths of 3&ndash;12.5 kHz accommodate SSB comfortably)</li>
+      </ul>
+
+      <h4>Power and antenna limits <span class="verify-note">[VERIFY against current schedule]</span></h4>
+      <ul>
+        <li>Maximum <strong>200 W EIRP</strong> (see also <a href="section-1-licence-conditions.html#ch-1H" target="_blank">§1H &mdash; Schedule 1 conditions</a>, which covers the 5 MHz EIRP and antenna height limits in the licence context)</li>
+        <li>Maximum transmitter output: <strong>100 W PEP</strong></li>
+        <li>Antenna: <strong>&le;20 m above ground level</strong></li>
+      </ul>
+
+      <h4>Contact with military personnel</h4>
+      <p>The MoD&rsquo;s position as primary user on 5 MHz means there is a practical exception to the normal restriction on communicating with non-amateur stations: <strong>contact with military personnel and military cadets is permitted on the 5 MHz band</strong>. Military stations use their own callsigns and procedures. The exception recognises that 5 MHz is a military band on which amateurs are guests, and military users legitimately operating there may want to exchange communications with amateur stations.</p>
+
+      <h4>Band Plan stability</h4>
+      <p>The 5 MHz band plan is subject to change as the MoD&rsquo;s use of the band evolves. The Reference Booklet (EX309) contains the current version. <strong>Do not memorise specific slot frequencies for the exam &mdash; know that slots exist, know the mode and bandwidth guidance, and look up the actual slot list from EX309 or the RSGB website before operating.</strong></p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">5 MHz is not a conventional HF band. Transmitting outside your allocated slot &mdash; even by a small amount &mdash; may interfere with a primary MoD user. Stay within the slot boundaries. Check the current band plan before each session if you are new to the band. <span class="verify-note">[VERIFY]</span> all slot frequencies and conditions against the current Ofcom schedule and Reference Booklet before operating.</div>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2A1:</strong> 5 MHz slots: 5.2585&ndash;5.4065 MHz range; MoD primary, amateurs secondary; 200 W EIRP / 100 W PEP; antenna &le;20 m; CW max 200 Hz / digital max 500 Hz &mdash; all tones must be within the slot; AM and CW permitted; contact with military and military cadets allowed; band plan in EX309, subject to change. <span class="verify-note">[VERIFY against current schedule]</span></div>
+      </div>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; Operating on 472 kHz and 5 MHz in Practice</strong></summary>
+        <div class="details-body">
+          <h4>630 m (472 kHz) in practice</h4>
+          <p>The 630 m band attracts operators interested in MF propagation, including transatlantic paths using low-power digital modes (particularly WSPR and JT9). At 5 W EIRP the band is quiet enough that digital modes can decode signals far below the noise floor. A typical setup uses an ATU with a shortened vertical (with loading coil) or an end-fed wire run as low as roof height. The antenna efficiency may be as low as 1&ndash;5%, so even 5 W EIRP may require 100 W or more into the antenna system. Calculate carefully.</p>
+
+          <h4>5 MHz in practice</h4>
+          <p>5 MHz behaves like classic 60 m HF: it is particularly useful for reliable medium-distance communication (300&ndash;2000 km) and often provides a path when 40 m and 80 m are congested or affected by poor conditions. It is popular with RAYNET and emergency communication groups for regional coverage. Key operating tips:</p>
+          <ul>
+            <li>Identify the slot centre frequency and set your rig&rsquo;s carrier to place your SSB signal entirely within the slot</li>
+            <li>Modern rigs with narrow DSP filters make it easy to display your signal&rsquo;s bandwidth on a panadapter &mdash; use this to verify you are within the slot</li>
+            <li>QRSS stations transmit at very low speed (3-second dots and longer) to achieve propagation over paths where normal CW would be inaudible; they use software (Argo, WSPR) to decode visually on a spectrogram display</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 2B: PILEUPS AND SPLIT ═══════════════════ -->
+    <section class="chapter" id="ch-2B">
+      <div class="chapter-header">
+        <span class="chapter-num">2B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Pileups and Operating Split</h2>
+
+      <h3>What a Pileup Is</h3>
+      <p>When a rare DX station (operating from a seldom-activated country or island) comes on the air, large numbers of operators want to make contact. The result is a <strong>pileup</strong>: dozens or hundreds of stations calling simultaneously. The DX station cannot pick individual calls from a solid wall of signals all on the same frequency, so it uses <strong>split frequency operation</strong>.</p>
+
+      <h3>How Split Operation Works</h3>
+      <p>The DX station <strong>transmits on its published (advertised) frequency</strong> and <strong>listens 5&ndash;10 kHz higher in the band</strong> (sometimes lower on bands where band plans require it, but upward is the convention on most HF bands). The DX station announces this by saying, for example, &ldquo;Listening 5 to 10&rdquo; or &ldquo;Up 5&rdquo;, meaning callers should transmit somewhere between 5 and 10 kHz above the DX transmit frequency.</p>
+
+      <p><strong>For the caller, the procedure is:</strong></p>
+      <ol>
+        <li>Note the DX station&rsquo;s transmit frequency &mdash; this is where you listen to the DX</li>
+        <li>Set your <strong>transmit VFO (VFO-B or &ldquo;split&rdquo; mode)</strong> to a frequency in the listening range &mdash; e.g. 5&ndash;10 kHz above the DX transmit</li>
+        <li>Listen to the DX to work out exactly where it is picking up callers &mdash; if it replies to a station, can you tell roughly where in the listening range that station was? Adjust accordingly</li>
+        <li>Call briefly and precisely when the DX invites calls &mdash; not continuously, not over the DX transmit frequency</li>
+        <li>If the DX does not hear you and keeps working stations you cannot hear, you may be outside the portion of the listening range it is currently favouring &mdash; move your transmit frequency up or down within the range</li>
+      </ol>
+
+      <p><strong>What not to do:</strong></p>
+      <ul>
+        <li>Do <strong>not</strong> transmit on the DX station&rsquo;s transmit frequency &mdash; you will be calling where nobody is listening, and you will annoy every other operator who is trying to listen to the DX</li>
+        <li>Do not transmit repeatedly without pausing to listen</li>
+        <li>Do not call if the DX is mid-QSO with someone else</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2B1:</strong> Pileup split operation: DX transmits on published frequency, listens 5&ndash;10 kHz up (or as announced). Caller sets transmit VFO into the listening range. Do not call on DX transmit frequency. Listen to identify where DX is picking up callers, then position transmit frequency accordingly. <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <h3>The Two-Rig Split</h3>
+      <p>If you have two transceivers and want to transmit on one while monitoring the DX on the other, be aware that transmitting on one rig while the other is connected to the same antenna (or an adjacent antenna) may couple significant RF into the second rig&rsquo;s front end. In most cases you will need to ensure the antennas are separated, or that one rig is <strong>remotely operated</strong> and its antenna is at a different location. The RSGB manual notes this as a practical consideration &mdash; not an exam point, but worth knowing before you try it.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2B1:</strong> Two-rig split: transmitting on one rig with the other listening on a nearby frequency can damage or desensitise the second rig&rsquo;s receiver unless the antennas are adequately separated or one station is remotely operated. <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; Pileup Discipline and Technique</strong></summary>
+        <div class="details-body">
+          <p>Working a DX pileup efficiently is a skill developed through patient listening. Here are the practical principles:</p>
+
+          <h4>Before calling</h4>
+          <p>Spend at least five minutes listening. How fast is the DX working? Is it working stations by partial call suffix (e.g. &ldquo;only stations ending in 3&rdquo;)? Is it moving systematically across the listening range, or staying in a fixed spot? Are the stations it is replying to audible to you, or is there a path advantage you can&rsquo;t overcome?</p>
+
+          <h4>When to call</h4>
+          <ul>
+            <li>Call at the beginning of the DX&rsquo;s listening period (immediately after it sends a call or &ldquo;QRZ&rdquo;), not in the middle of an exchange already in progress</li>
+            <li>Give your callsign once &mdash; not twice, not phonetically unless specifically requested, not prefixed with the DX callsign. Simply send your callsign clearly, once</li>
+            <li>CW pileups: send at the DX station&rsquo;s speed, or slightly slower; much faster or slower stands out badly</li>
+          </ul>
+
+          <h4>Reading the pileup</h4>
+          <ul>
+            <li>If you hear the DX reply &ldquo;M0 &mdash; &rdquo; it is looking for a UK Full-class M0 station. This tells you something about who is getting through</li>
+            <li>If you cannot hear any of the responding stations and the DX keeps replying to calls you don&rsquo;t copy, your antenna or propagation to the DX is marginal &mdash; patience is required</li>
+            <li>Some DX stations use a <strong>keyer split search</strong>: they methodically move across the listening range 1 kHz at a time. Wait until they are in your portion of the range before calling</li>
+          </ul>
+
+          <h4>After the QSO</h4>
+          <ul>
+            <li>Log immediately: UTC time, frequency, callsign, mode, and the exchange you sent and received</li>
+            <li>Do not call again after completing a contact &mdash; it is unsportsmanlike and wastes other operators&rsquo; time</li>
+            <li>Post the DX spot on a DX cluster (e.g. DX Summit, DX Watch) if it has not already been spotted &mdash; this helps other operators find it</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 2C: BAND PLANS ABROAD ═══════════════════ -->
+    <section class="chapter" id="ch-2C">
+      <div class="chapter-header">
+        <span class="chapter-num">2C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Band Plans in Other Countries</h2>
+
+      <h3>IARU and Regional Constraints</h3>
+      <p>The <strong>IARU</strong> (International Amateur Radio Union) attempts to harmonise amateur band plans across its three regions (which align with the ITU regions covered in <a href="section-1-licence-conditions.html#ch-1F" target="_blank">§1F &mdash; ITU Radio Regions</a>). However, IARU&rsquo;s band plans are <strong>recommendations</strong> &mdash; individual national administrations make the final allocation decisions within the framework of the ITU Radio Regulations. This means band plans differ between countries, and activity that is standard in the UK may not be permitted elsewhere.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C1:</strong> IARU harmonises band plans across regions 1&ndash;3 but national administrations and ITU regional allocations constrain what is actually permitted in each country. When operating abroad, the host country&rsquo;s band plan and licence conditions take precedence &mdash; they may also be a licence requirement under the terms of the permission you are using to operate there (e.g. T/R 61-01: see <a href="section-1-licence-conditions.html#ch-1E" target="_blank">§1E &mdash; CEPT T/R 61-01</a>). <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <h3>Tiered Licence Structures and Frequency Access</h3>
+      <p>Many countries operate a tiered licence system similar to the UK (Foundation &rarr; Intermediate &rarr; Full). A lower-tier licensee in another country may not have access to all bands or modes. This creates a practical situation: you may be able to hear a station on a particular frequency, but they may not be permitted to reply on that same frequency under their licence tier.</p>
+      <p>The key principle: <strong>just because you can speak to someone on a frequency does not mean they can legally reply to you on the same frequency</strong>. If an overseas station with restricted access wants to contact a UK station, they will know their own frequency restrictions and will either indicate where they are listening (at a frequency within their permitted range) or will initiate the contact from a frequency that suits both parties.</p>
+
+      <h3>Listening Outside the UK Schedule</h3>
+      <p>You may hear amateur transmissions from overseas stations on frequencies that fall outside the UK licence schedule &mdash; either because those frequencies are allocated to amateur radio in their ITU region but not in Region 1, or because their national allocation differs from the UK&rsquo;s.</p>
+      <p>It is <strong>perfectly legitimate to listen</strong> to such transmissions &mdash; the licence imposes no restriction on reception. You may <strong>reply</strong> to such a station, but you must <strong>reply on a frequency within the UK schedule</strong>. If the overseas station wants to make contact with you specifically (e.g. they are running a special event or are a rare DX entity), they will be aware of the UK frequency schedule and will indicate a frequency where they can be heard &mdash; within your permitted range.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2C1:</strong> You may listen to amateur transmissions on any frequency. You may only transmit on frequencies within your UK licence schedule. When an overseas station wishes to contact UK stations, they will choose a frequency within the UK schedule or indicate their listening frequency. Tiered licences in other countries limit some operators&rsquo; reply frequencies &mdash; be aware of this when running a net or contest. <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; Net Procedures</strong></summary>
+        <div class="details-body">
+          <p>A <strong>net</strong> is a scheduled on-air meeting of a group of stations, usually on a fixed frequency at a fixed time. Nets use a <strong>net control station (NCS)</strong> to manage traffic and ensure orderly communication.</p>
+
+          <h4>Checking into a net</h4>
+          <ul>
+            <li>Listen before transmitting &mdash; if the net is already in progress, wait for the NCS to invite check-ins</li>
+            <li>When invited, give your callsign (phonetically on voice nets) clearly and once</li>
+            <li>Wait to be acknowledged by the NCS before transmitting further</li>
+            <li>If you have traffic (a message to pass or information to share), indicate this when checking in: e.g. &ldquo;M0ABC with one item of traffic&rdquo;</li>
+          </ul>
+
+          <h4>What net control does</h4>
+          <ul>
+            <li>Opens the net at the scheduled time with a brief statement of purpose and frequency</li>
+            <li>Takes check-ins from all stations, acknowledging each in turn</li>
+            <li>Manages the traffic flow &mdash; allocating time slots for stations with messages</li>
+            <li>Maintains a list of all stations checked in</li>
+            <li>Closes the net cleanly when business is complete</li>
+          </ul>
+
+          <h4>HF nets and propagation</h4>
+          <p>HF nets require all participants to be able to hear each other AND net control. On a long-distance HF net this can be difficult &mdash; you may hear the NCS perfectly but not hear other check-ins. If you can&rsquo;t hear everyone, you can still participate but should be cautious about doubling (transmitting at the same time as another station you can&rsquo;t hear). Reporting that you &ldquo;cannot copy the other stations&rdquo; helps the NCS understand the situation.</p>
+
+          <h4>RAYNET and emergency nets</h4>
+          <p>RAYNET (Radio Amateurs&rsquo; Emergency Network) nets practise more formal message-passing procedures, including PROFORMA message handling. Knowing net procedure is useful background for Full licence candidates interested in emergency communication. Cross-reference: supervising unlicensed operators (§2D) is directly relevant here &mdash; a RAYNET incident may involve supervised unlicensed operators.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 2D: CALLSIGNS, EVENTS, SUPERVISION ══════ -->
+    <section class="chapter" id="ch-2D">
+      <div class="chapter-header">
+        <span class="chapter-num">2D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Callsign Suffixes, Special Event Stations, and Supervising Unlicensed Operators</h2>
+
+      <h3>2D.1 &mdash; Callsign Suffixes</h3>
+      <p>The following suffixes may be appended to your callsign to indicate operating status <span class="verify-note">[VERIFY &mdash; note that these suffixes are not formally defined in the current licence text itself, though they remain in use by convention and are referenced in RSGB operating guidance]</span>:</p>
+
+      <table>
+        <thead>
+          <tr><th>Suffix</th><th>Meaning</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>/A</td>
+            <td>Alternative address</td>
+            <td style="color:var(--text-secondary)">Operating from registered alternative premises (e.g. a second home registered on your licence)</td>
+          </tr>
+          <tr>
+            <td>/M</td>
+            <td>Mobile</td>
+            <td style="color:var(--text-secondary)">Moving vehicle, or on foot (updated post-2024 licence revision to include pedestrian mobile)</td>
+          </tr>
+          <tr>
+            <td>/P</td>
+            <td>Portable</td>
+            <td style="color:var(--text-secondary)">Fixed temporary site not being the main or alternative address (e.g. a hilltop, field day site, contest location)</td>
+          </tr>
+          <tr>
+            <td>/MM</td>
+            <td>Maritime mobile</td>
+            <td style="color:var(--text-secondary)">Operating at sea &mdash; particularly relevant in international waters where the flag-state callsign rules apply</td>
+          </tr>
+          <tr>
+            <td>/AM</td>
+            <td>Aeronautical mobile</td>
+            <td style="color:var(--text-secondary)">Operating from an aircraft &mdash; introduced in the February 2024 licence revision <span class="verify-note">[VERIFY]</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>Format examples:</strong> <code>M0ABC/P</code>, <code>G4XYZ/M</code>, <code>M8DEF/A</code></p>
+      <p>The suffix follows the callsign. On CW, the separator is typically sent as a fraction bar (DN, &ldquo;stroke&rdquo;). On voice, you say &ldquo;M zero ABC stroke portable&rdquo; or &ldquo;M zero ABC portable&rdquo;.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D1:</strong> Callsign suffixes: /A = alternative premises, /M = mobile (incl. on foot post-2024), /P = portable (fixed temporary site), /MM = maritime mobile, /AM = aeronautical mobile (Feb 2024). Suffixes are operational convention &mdash; <span class="verify-note">[VERIFY]</span> precise definitions against current licence text and RSGB operating guidance, as the licence document itself may not formally list them.</div>
+      </div>
+
+      <h3>2D.2 &mdash; Special Event Stations</h3>
+      <p>A <strong>special event station</strong> is a temporary amateur station set up to mark a specific occasion &mdash; a heritage railway event, a historical anniversary, a public demonstration of amateur radio, or an RSGB contest activation. Special event stations are issued <strong>short, memorable callsigns</strong> (often in the <code>GB0</code>, <code>GB2</code>, <code>GB4</code>, <code>GB6</code>, or <code>GB75</code> series, depending on the nature of the event) by Ofcom through a <strong>Notice of Variation (NoV)</strong> attached to the organising amateur&rsquo;s licence.</p>
+
+      <p><strong>Key points:</strong></p>
+      <ul>
+        <li>The special event callsign is <strong>signed on air</strong> as the station&rsquo;s callsign during the event</li>
+        <li>The operating licensee (Full licence holder) remains <strong>legally responsible</strong> for all transmissions under the special event callsign at all times</li>
+        <li>The Full licence holder does not abandon their own callsign &mdash; they are operating under the NoV which temporarily authorises the use of the event callsign</li>
+        <li>A special event station is not itself a separate licence &mdash; it is a variation of an existing Full licence</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D1:</strong> Special event stations: issued via NoV from Ofcom, typically GB0/GB2 series callsigns. The Full licensee operating the station is legally responsible for all transmissions. The NoV is a variation of an existing Full licence, not a separate licence. <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <h3>2D.3 &mdash; Supervising Unlicensed Operators</h3>
+      <p>A <strong>Full licence holder</strong> may allow an unlicensed person to operate their station under direct supervision. This applies to trainees, family members, visitors, or anyone else who does not hold an amateur licence.</p>
+
+      <p><strong>The rules:</strong></p>
+      <ul>
+        <li>The unlicensed operator uses the <strong>Full licensee&rsquo;s callsign</strong> &mdash; not a special trainee callsign, and not any other designator</li>
+        <li>The Full licensee must be <strong>present and in direct supervision</strong> of the transmission (or be in remote control with the ability to stop transmissions immediately &mdash; see <a href="section-1-licence-conditions.html#ch-1D" target="_blank">§1D &mdash; Remote Control</a>)</li>
+        <li>The Full licensee is <strong>legally responsible for every transmission</strong> made by the unlicensed person &mdash; it is the Full licensee&rsquo;s licence at risk</li>
+        <li>&ldquo;Supervision&rdquo; means active oversight &mdash; not simply being in the same building while the trainee operates unmonitored</li>
+        <li>The exam treats this as a <strong>licensing matter</strong> (the Full licensee&rsquo;s obligations, not the trainee&rsquo;s rights): the question in an exam context is always &ldquo;what are the Full licensee&rsquo;s responsibilities?&rdquo;</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">The Full licence holder is personally and legally responsible for all transmissions made by a supervised unlicensed operator, exactly as if they had made those transmissions themselves. The licence is the Full licensee&rsquo;s &mdash; if a breach occurs during supervised operation, the Full licensee faces the regulatory consequences.</div>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>2D1:</strong> Supervising unlicensed operators: Full licensee may permit unlicensed persons to operate; unlicensed person uses Full licensee&rsquo;s callsign; Full licensee is legally responsible for all transmissions; direct supervision required (or remote-stop capability); this is a licensing obligation of the Full licensee. <span class="verify-note">[VERIFY]</span></div>
+      </div>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; Digital Mode Waterfall Discipline</strong></summary>
+        <div class="details-body">
+          <p>Modern digital modes (FT8, FT4, WSPR, JS8Call, PSK31, RTTY) are operated by selecting a <strong>dial frequency</strong> and then choosing a sub-frequency (audio tone offset) within the audio passband. The <strong>waterfall display</strong> shows the full audio passband as a spectrum &mdash; you can see which frequencies within the passband are in use and choose a clear one.</p>
+
+          <h4>Key principles</h4>
+          <ul>
+            <li><strong>Do not transmit over another station.</strong> If a frequency on the waterfall is occupied, choose another. FT8 uses 50 Hz tone spacing &mdash; even moving 50 Hz away from an active signal is sufficient</li>
+            <li><strong>Respect the band plan sub-band.</strong> FT8 on 40 m has a gentlemen&rsquo;s agreement around 7.074 MHz. Transmitting RTTY in the FT8 sub-band (and vice versa) causes interference and frustration. Check the IARU Region 1 band plan for the agreed sub-band allocations</li>
+            <li><strong>WSPR:</strong> Set power to the minimum needed. WSPR transmitters that run at maximum power crowd out weaker stations that could otherwise be decoded. The point of WSPR is to test propagation with very low power</li>
+            <li><strong>5 MHz digital modes:</strong> As noted in §2A, all tones must be within the licensed slot. On a typical SSB radio, the slot appears in your audio passband starting at the carrier frequency plus the lower audio tone frequency. Ensure the upper tone of a multi-tone mode does not extend outside the slot. Use a panadapter or waterfall to verify</li>
+          </ul>
+
+          <h4>FT8 operating practice</h4>
+          <p>FT8 sequences are 15 seconds long. You must transmit in synchronisation with the UTC clock (even seconds for one side, odd seconds for the other). WSJT-X software handles this automatically. Never transmit when your software shows you are in the wrong half of the sequence &mdash; you will collide with other stations.</p>
+        </div>
+      </details>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; Contest Exchange Mechanics</strong></summary>
+        <div class="details-body">
+          <p>Amateur radio contests exchange brief, structured information to verify and count contacts. Understanding the exchange format is essential for efficient contesting.</p>
+
+          <h4>Typical exchange elements</h4>
+          <table>
+            <thead>
+              <tr><th>Element</th><th>Example</th><th>Used in</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Signal report (RST)</td><td>59 (voice) / 599 (CW)</td><td>Almost all contests</td></tr>
+              <tr><td>Serial number</td><td>001, 002&hellip;</td><td>Most HF contests (CQ WW, RSGB HF)</td></tr>
+              <tr><td>CQ zone</td><td>14 (UK = zone 14)</td><td>CQ World Wide</td></tr>
+              <tr><td>ITU zone</td><td>27 (UK = zone 27)</td><td>IARU HF Championship</td></tr>
+              <tr><td>DXCC entity / country</td><td>ENG, G</td><td>Some national contests</td></tr>
+              <tr><td>Grid square</td><td>IO91</td><td>VHF/UHF contests</td></tr>
+              <tr><td>Postcode district</td><td>SW1, M60</td><td>RSGB club championship</td></tr>
+            </tbody>
+          </table>
+
+          <h4>A typical SSB contest exchange (CQ WW)</h4>
+          <pre>DX station: "CQ Contest, X2YZ"
+You:        "M0ABC"
+DX:         "M0ABC, 59, 14"  (report, zone)
+You:        "59, 14, thanks, 73"
+Total air time: under 10 seconds</pre>
+
+          <p><strong>CW is faster:</strong> CW exchanges are abbreviated further &mdash; &ldquo;TU M0ABC 599 14&rdquo; and you reply &ldquo;599 14 TU&rdquo;. Many operators use computer-keyed macros that send pre-set messages at the press of a function key.</p>
+
+          <h4>Logging during a contest</h4>
+          <p>All contacts go in the contest log with UTC time, band, mode, callsign, and the sent and received exchange. Contest logging software (N1MM+, YFKLOG, MSHV) handles duplicate checking (ensuring you do not work the same station twice in the same band/mode) and calculates your score in real time.</p>
+
+          <p><strong>Cross-reference:</strong> Contest exchanges at Full level extend beyond Intermediate &mdash; you are expected to understand score multipliers (DXCC entities, zones, or districts) and the difference between contest-valid modes (CW, SSB, digital per the rules) and non-valid modes. Full licence holders will typically have a wider band access for contesting than Intermediate or Foundation licence holders.</p>
+        </div>
+      </details>
+
+      <details class="going-deeper">
+        <summary><strong>Going Deeper &mdash; QSL Cards, LoTW, and Award Confirmation</strong></summary>
+        <div class="details-body">
+          <p>A <strong>QSL card</strong> is a written confirmation of a contact, traditionally sent by post. The name comes from the Q-code QSL (&ldquo;I acknowledge receipt&rdquo;). For award applications, confirmed contacts are the currency &mdash; whether you need 100 countries (DXCC), a clean sweep of US states (WAS), or UK counties (RSGB Counties Award), you need proof that each contact happened.</p>
+
+          <h4>Paper QSL</h4>
+          <p>The traditional route is to send a QSL card (via the RSGB bureau for overseas contacts, or direct) and receive one in return. Bureau cards are collected and distributed by national societies &mdash; cheap but slow (weeks to months). Direct QSL (stamped addressed envelope or return postage) is faster but costs money.</p>
+
+          <h4>LoTW (Logbook of The World)</h4>
+          <p>ARRL&rsquo;s LoTW system digitally signs log uploads using a cryptographic certificate tied to your callsign. When two stations both upload a contact and it matches, the confirmation is automatically awarded. LoTW is the primary confirmation method for DXCC and most major ARRL awards. It is free for basic use. Registering requires sending a copy of your licence to ARRL, who issue the signing certificate.</p>
+
+          <h4>eQSL</h4>
+          <p>eQSL.cc provides a simpler electronic QSL system (no cryptographic signing, but &ldquo;Authenticity Guaranteed&rdquo; tier adds validation). Accepted by some awards but not DXCC. Useful for casual confirmation and collecting attractive digital cards.</p>
+
+          <p><strong>For Full licence candidates:</strong> Knowing the difference between LoTW and eQSL is useful general knowledge rather than an exam topic. The exam is more likely to ask about the <strong>log-keeping obligations</strong> in the licence and what must be recorded, rather than the specific QSL confirmation systems.</p>
+        </div>
+      </details>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 2E: SELF-CHECK ═══════════════════════════ -->
+    <section class="chapter" id="ch-2E">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test yourself on Section 2</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. You are operating on 472 kHz with 10 W into an antenna that has an efficiency of 10%. What is your EIRP, and is this within the band limit?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-1" hidden>
+            <p>10 W &times; 10% efficiency = <strong>1 W radiated power</strong>. If the antenna has no gain over an isotropic reference, EIRP = 1 W. This is within the general 5 W EIRP limit &mdash; but if your station is within 800 km of a specified neighbouring country, the limit is 1 W EIRP, which means 1 W is exactly at the limit. <span class="verify-note">[VERIFY]</span> the current country list against Ofcom schedule. The key lesson: at 472 kHz you must calculate actual EIRP from the antenna system efficiency, not assume EIRP equals transmitter output.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. A DX station announces it is listening &ldquo;5 to 10 up&rdquo;. You set your transmit VFO to 5 kHz above the DX transmit frequency and call repeatedly but get no reply. What should you consider?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-2" hidden>
+            <p>The DX station is listening across a 5&ndash;10 kHz range, not fixed at 5 kHz above. If you are not getting through, try moving your transmit frequency toward the upper part of the range (e.g. 7&ndash;10 kHz up). Also: listen to where the DX stations it <em>does</em> reply to are calling from &mdash; this tells you which part of the listening range is working. You could also be experiencing a path disadvantage (propagation, power) rather than a frequency issue. Be patient, adjust, and listen more than you transmit.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. You hear an overseas amateur transmitting on a frequency that is not in the UK licence schedule. Can you reply to them, and if so, on which frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-3" hidden>
+            <p>Yes, you may listen to any amateur transmission. You may <strong>reply only on a frequency within your UK licence schedule</strong>. You cannot transmit outside the UK schedule to match their frequency. If the overseas station wants to make contact with UK stations, they will either indicate a frequency where they are listening that falls within the UK schedule, or they will choose a frequency that accommodates both parties.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. A digital mode you want to use on 5 MHz has two tones, 400 Hz apart, with the lower tone at 500 Hz audio. The slot you are operating in is 3 kHz wide. Your USB carrier frequency is set to the lower edge of the slot. Are all your tones within the slot?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-4" hidden>
+            <p>Lower tone: carrier + 500 Hz. Upper tone: carrier + 500 Hz + 400 Hz = carrier + 900 Hz. Both tones are within 900 Hz above the carrier. Since the slot is 3 kHz wide, both tones are comfortably within the slot. However, check that your <strong>carrier frequency is set correctly</strong> to the slot&rsquo;s reference &mdash; USB dial frequency must be such that the audio-offset tones fall within the slot boundaries, not merely that the audio offsets are internally consistent. <span class="verify-note">[VERIFY]</span> slot boundaries and carrier reference convention against current band plan and your rig&rsquo;s documentation.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. An unlicensed friend is operating your Full licence station under your supervision. They make a transmission that accidentally contains inappropriate language. Who is responsible, and what are the consequences?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-5" hidden>
+            <p><strong>You, the Full licence holder</strong>, are legally responsible. The unlicensed operator used your callsign under your licence and under your supervision. You bear full responsibility for every transmission made from your station during supervised operation, as if you had made those transmissions yourself. The consequences could include a formal warning, licence variation, or in serious cases, licence revocation &mdash; all applied to <strong>your</strong> licence, not the unlicensed operator&rsquo;s (who has no licence to lose).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. You want to operate your station from a hilltop for a weekend activation. Which suffix should you use, and where should you use it?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-6" hidden>
+            <p>Use <strong>/P</strong> (portable) &mdash; you are at a fixed temporary site that is neither your main station address nor a registered alternative address. Append it to your callsign when identifying: e.g. &ldquo;M0ABC stroke portable&rdquo; or &ldquo;M0ABC/P&rdquo; on CW. If you were in a moving vehicle, you would use /M. If at a registered second address, /A. <span class="verify-note">[VERIFY]</span> current licence wording for the precise definition of when /P applies vs /A.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. What is a Notice of Variation (NoV) in the context of special event stations, and who issues it?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-7" hidden>
+            <p>A <strong>Notice of Variation (NoV)</strong> is a document issued by <strong>Ofcom</strong> that modifies the terms of an existing Full amateur licence to permit specific additional activity &mdash; in this case, the use of a special event callsign (e.g. GB0XXX) during a defined period and for a defined purpose. It is attached to the organising Full licence holder&rsquo;s licence. The Full licence holder operating under the NoV remains legally responsible for all transmissions under the special event callsign.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. On the 5 MHz band, you want to make contact with a military cadet who is using a 5 MHz military station. Is this permitted?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-2-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-2-8" hidden>
+            <p>Yes. Contact with military personnel and military cadets is explicitly permitted on the 5 MHz band, recognising that the MoD is the primary user of the band and military stations legitimately operate there. The military station will use its own military callsigns and procedures. You must still operate within your licensed slot and comply with all other 5 MHz conditions. <span class="verify-note">[VERIFY]</span> against current Ofcom schedule and Reference Booklet EX309.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-1-licence-conditions.html" class="section-nav__link">&larr; Section 1</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=2"
+         class="section-nav__link section-nav__practice" target="_blank">Practice This Section</a>
+      <a href="section-3-amateur-radio-safety.html" class="section-nav__link">Section 3 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      if (!bar) return;
+      function update() {
+        var s = document.documentElement;
+        var pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+        bar.style.width = Math.min(pct, 100) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+  <script src="/assets/js/nav-loader.js?v=20260913-1200" defer></script>
+  <script src="/assets/js/study-page.js?v=20260913-1200" defer></script>
+</body>
+</html>
