@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 3: Amateur Radio Safety — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260913-1300">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ol, .self-check__reveal ul {
+      margin: 0.4rem 0 0.4rem 1.25rem; color: var(--text-secondary); font-size: 0.9rem;
+    }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem;
+    }
+    .chapter th {
+      text-align: left; padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono); font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-dim); border-bottom: 1px solid var(--border);
+    }
+    .chapter td {
+      padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-secondary); vertical-align: top;
+    }
+    .chapter td:first-child { color: var(--text-primary); font-weight: 500; }
+    .chapter tr:last-child td { border-bottom: none; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    /* Danger callout */
+    .callout--danger {
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.3);
+    }
+    .callout--danger .callout-icon { color: #ef4444; }
+    /* PME critical section highlight */
+    .pme-critical {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-md);
+      padding: 0.15rem 0;
+      margin: 0 -0.25rem;
+    }
+    /* Placeholder box for pending interactives */
+    .interactive-placeholder {
+      background: rgba(167,139,250,0.04);
+      border: 1px dashed rgba(167,139,250,0.25);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin: 1rem 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+    .verify-note {
+      font-family: var(--font-mono); font-size: 0.8em;
+      color: var(--text-dim); font-style: normal;
+    }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Full</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 3</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~4 / 62 questions &nbsp;·&nbsp; ~8%</span>
+      </div>
+      <h1>Amateur Radio Safety</h1>
+      <p class="hero-subtitle">Shack electrical safety, risk assessment for public events, vehicle installation, overseas mains supply, RF exposure (ICNIRP), lightning protection, and Protective Multiple Earthing (PME).</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-3A">3A Shack Electricity</a></li>
+        <li><a href="#ch-3B">3B Temporary &amp; Public Events</a></li>
+        <li><a href="#ch-3C">3C Vehicle Safety</a></li>
+        <li><a href="#ch-3D">3D Overseas Mains</a></li>
+        <li><a href="#ch-3E">3E RF Exposure</a></li>
+        <li><a href="#ch-3F">3F Lightning</a></li>
+        <li><a href="#ch-3G">3G PME</a></li>
+        <li><a href="#ch-3H">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-3A"><span class="toc-code">3A</span>Safe Use of Electricity in the Shack</a></li>
+        <li><a href="#ch-3B"><span class="toc-code">3B</span>Temporary Locations and Public Events</a></li>
+        <li><a href="#ch-3C"><span class="toc-code">3C</span>Vehicle Safety</a></li>
+        <li><a href="#ch-3D"><span class="toc-code">3D</span>Overseas and Temporary Mains Supply</a></li>
+        <li><a href="#ch-3E"><span class="toc-code">3E</span>Exposure to RF Energy</a></li>
+        <li><a href="#ch-3F"><span class="toc-code">3F</span>Thunderstorms and Lightning Protection</a></li>
+        <li><a href="#ch-3G"><span class="toc-code">3G</span>Protective Multiple Earthing (PME)</a></li>
+        <li><a href="#ch-3H"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">Safety at Full licence level builds substantially on the groundwork from Foundation and Intermediate. If you are coming directly from the Intermediate, you should be familiar with the 30 V threshold, basic earthing, fuses and MCBs, soldering safety, antenna mechanical safety, and disconnecting antennas before a thunderstorm &mdash; all covered in <a href="../intermediate/section-8-safety.html" target="_blank">Intermediate §8</a>. This chapter introduces the topics where Full licence material goes further: the hazards of high-voltage equipment, risk assessment for public events and temporary locations, vehicle installation standards, RF exposure compliance under ICNIRP, static discharge protection for antennas, and &mdash; the single largest new topic &mdash; <strong>Protective Multiple Earthing (PME)</strong> and the potentially fatal consequences of adding an RF earth in a PME-supplied property without proper bonding.</p>
+
+    <div class="callout callout--danger">
+      <div class="callout-icon">⚠</div>
+      <div class="callout-text">High voltage is the most significant hazard in the amateur shack. Valve rigs and linear amplifiers may have HT supplies at <strong>2 kV or more</strong>. Less obviously: <strong>even 30 V can cause an accident</strong> under adverse conditions (poor health, wet skin, compromised path to earth). No voltage can be defined as absolutely safe. Never assume any supply is harmless.</div>
+    </div>
+
+    <!-- ═══════════════════════ 3A: SHACK ELECTRICITY ═══════════════════ -->
+    <section class="chapter" id="ch-3A">
+      <div class="chapter-header">
+        <span class="chapter-num">3A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Safe Use of Electricity in the Shack (3A1)</h2>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Syllabus ref 3A1 <span class="verify-note">[VERIFY]</span>:</strong> Electrical safety in the amateur shack &mdash; earthing practice, RCDs and RCBOs, switching off before working, indicator lamps, test probe insulation, the one-hand rule.</div>
+      </div>
+
+      <h3>Earthing</h3>
+      <p>All mains-powered equipment in the shack must be properly earthed &mdash; including ancillary items such as Morse keys and microphones. The earth connection provides a <strong>low-resistance path to earth</strong>: if a fault develops (for example, the mains live conductor contacts the chassis), current flows to earth rather than through the operator, and the fuse blows or the circuit breaker trips.</p>
+      <p>Metalwork that is truly floating (genuinely at extra-low voltage with no connection to mains potential) does not need to be earthed. In practice, most shack equipment is mains-powered, and the earthing requirement applies.</p>
+      <ul>
+        <li>Test earth wiring periodically to confirm nothing has worked loose or corroded</li>
+        <li>Earthing provides fault current diversion &mdash; it is not a substitute for a fuse or breaker; it works alongside one</li>
+      </ul>
+
+      <h3>Switching Off Before Working</h3>
+      <p>The general rule is that <strong>no work should be undertaken on live equipment</strong> if it can be done safely with the power off. If you can take the safer option, take it.</p>
+      <ul>
+        <li>When removing or replacing circuit boards or components: <strong>turn the equipment off</strong>; for mains-powered equipment, unplug the mains as well</li>
+        <li>Measuring potential differences or currents through components sometimes requires power on &mdash; but if the measurement can equally be done with power off (for example, a continuity or resistance check), power down first</li>
+      </ul>
+
+      <h3>RCDs and RCBOs</h3>
+      <p>Two related devices protect against earth-fault currents:</p>
+
+      <table>
+        <thead>
+          <tr><th>Device</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RCD (Residual Current Device)</td>
+            <td>Detects current imbalance between live and neutral &mdash; indicating earth fault current &mdash; and disconnects the circuit. Does not protect against overcurrent (overload or short).</td>
+          </tr>
+          <tr>
+            <td>RCBO (Residual Current Circuit Breaker with Overcurrent protection)</td>
+            <td>Combines RCD protection with overcurrent protection (fuse/MCB equivalent) in a single unit.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>The standard RCD trip threshold is <strong>30 mA in 25&ndash;40 ms</strong>. This matters because <strong>less than 100 mA can stop the heart</strong> &mdash; the 30 mA threshold provides a significant safety margin but is not guaranteed protection in all circumstances.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">An RCD is not the same as an RCBO. An RCD alone does not provide overcurrent protection. For full protection at a circuit level, use an RCBO, which handles both earth fault and overload/short circuit.</div>
+      </div>
+
+      <h3>The Double-Pole Switch and Master OFF</h3>
+      <p>A <strong>double-pole switch</strong> isolates both the live and neutral conductors simultaneously. Because neutral is bonded to earth at the supply point, it can still carry dangerous voltage relative to true earth if a fault occurs in the distribution network &mdash; disconnecting neutral as well as live removes this risk.</p>
+      <p>All shack equipment should be controlled by a <strong>clearly marked master OFF switch</strong> that is:</p>
+      <ul>
+        <li>Double-pole</li>
+        <li>Easily reached (not hidden behind equipment)</li>
+        <li>Clearly labelled &mdash; especially important in an emergency when someone else may need to cut power</li>
+      </ul>
+
+      <h3>Indicator Lamps and Warning Reminders</h3>
+      <p>An indicator lamp is a useful reminder that equipment is live &mdash; but a lamp that is not lit does <strong>not</strong> mean the equipment is safe. The lamp itself may have failed. Always confirm with a meter before touching internal components.</p>
+      <ul>
+        <li><strong>Neon lamps:</strong> reliable for mains voltage indication (glow reliably at 230 V AC)</li>
+        <li><strong>LEDs:</strong> better for low-voltage circuits; they may be off simply because the voltage is low, not because it is absent</li>
+        <li>Good practice: a brighter indicator on the main input, a dimmer lamp for standby state &mdash; helps distinguish standby from fully off</li>
+      </ul>
+
+      <h3>Test Probes and Insulated Tools</h3>
+      <p>When working in or around live equipment:</p>
+      <ul>
+        <li>Use test probes with <strong>insulated shafts and a very small exposed metal tip</strong> &mdash; minimises the area that can accidentally bridge two conductors</li>
+        <li>Use screwdrivers similarly insulated &mdash; prevents inadvertent short circuits when adjusting live components</li>
+        <li><strong>Remove metal watch straps and rings</strong> before working on or near live equipment &mdash; metal jewellery can bridge terminals and cause a short circuit or burn</li>
+      </ul>
+
+      <h3>The One-Hand Rule</h3>
+      <p>When making measurements inside live equipment that is at high potential:</p>
+      <ul>
+        <li><strong>Keep one hand in your pocket</strong> (or behind your back)</li>
+        <li>This eliminates the hand-to-hand current path &mdash; a current passing hand-to-hand travels through the chest cavity and across the heart</li>
+        <li>Current passing hand-to-foot still travels through the body but avoids the most dangerous path</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Avoid wearing headphones when adjusting live equipment. A sudden burst of noise (for example, a relay closing, a signal appearing) can cause an involuntary flinching movement &mdash; precisely when you do not want to lose control of where your hands are.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3B: TEMPORARY AND PUBLIC EVENTS ═════════ -->
+    <section class="chapter" id="ch-3B">
+      <div class="chapter-header">
+        <span class="chapter-num">3B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Safety at Temporary Locations and Public Events (3B1)</h2>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Syllabus ref 3B1 <span class="verify-note">[VERIFY]</span>:</strong> Temporary station safety &mdash; site surveys, risk assessment for public events, tripping hazards, outdoor power supplies, generator safety, RF exposure at public events.</div>
+      </div>
+
+      <p>Both mobile stations and temporary stations are operated in unfamiliar territory. A site survey <strong>before</strong> setting up is essential.</p>
+
+      <h3>Site Survey</h3>
+      <ul>
+        <li>Check for <strong>overhead power lines</strong> &mdash; any vertical antenna or support pole must be far enough away from power lines that it cannot reach them even if it falls over; consider the full height of the structure and the direction it would fall</li>
+        <li>Plan ladder use for temporary antennas carefully &mdash; safe positioning, footing on uneven ground, having a second person present</li>
+        <li>Identify all hazards before deploying: trip hazards, uneven terrain, proximity to the public</li>
+      </ul>
+
+      <h3>Risk Assessment for Public Events</h3>
+      <p>When operating a Special Event Station or any station where members of the public are present, a <strong>formal risk assessment</strong> is required. The structure is:</p>
+      <ol>
+        <li><strong>Identify all realistic hazards</strong> &mdash; electrical, mechanical (trip hazards, antenna guy-lines, falling poles), RF exposure, generator/fuel hazards</li>
+        <li><strong>Assess each hazard:</strong> how <em>likely</em> is it to occur; what <em>degree of harm</em> could it cause</li>
+        <li><strong>Score = likelihood &times; severity</strong>; for each hazard, document the <strong>mitigation</strong> (physical barriers, cable ramps, reduced power, exclusion zones)</li>
+        <li><strong>Document it</strong> &mdash; insurers will require to see the risk assessment if an incident occurs</li>
+      </ol>
+      <p>A Special Event Station is a public showcase for amateur radio. Accidents at a public event are not acceptable and can damage the reputation of the hobby. Seek professional advice for complex or high-risk scenarios.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>RF exposure must be included in the risk assessment</strong> for public events. Members of the public may approach closer to antennas than would be possible in a domestic shack, and higher powers may be used. Calculate compliance distances (see §3E) and enforce exclusion zones.</div>
+      </div>
+
+      <h3>Cabling and Tripping Hazards</h3>
+      <ul>
+        <li>Route cables <strong>around the edges of rooms and walkways</strong>, secured flat to avoid raised loops</li>
+        <li>Where cables must cross a walkway: use <strong>rubber cable protectors</strong> (ramp-style covers)</li>
+        <li>Over doorways: secure cables above head height or tape them in a conduit across the top of the door frame</li>
+        <li>Any electrical supply cables used <strong>outdoors</strong> must be <strong>weatherproof</strong>; connectors must be suitable for outdoor use</li>
+      </ul>
+
+      <h3>Outdoor Power and RCD/RCBO</h3>
+      <p>When using mains power outdoors, the risk profile is different from a dry shack floor:</p>
+      <ul>
+        <li><strong>Wet ground has much better earth conductivity</strong> than a dry shack floor &mdash; fault currents can be significantly higher</li>
+        <li>An <strong>RCD or RCBO is mandatory for outdoor use</strong> &mdash; this should be the first item in the outdoor supply chain before any equipment is connected</li>
+        <li>A clearly labelled <strong>single master OFF switch</strong> is still required &mdash; it must be obvious to anyone on site, not buried under cables</li>
+      </ul>
+      <p><strong>Before connecting any equipment:</strong></p>
+      <ul>
+        <li>Check all mains plugs and DC leads for visible damage (cracked insulation, bent pins, corroded connectors)</li>
+        <li>Verify that fuses are <strong>correctly rated</strong> &mdash; a 13 A fuse protecting a 5 A circuit provides little protection; at 5 A draw, the fuse will not blow until catastrophic overload</li>
+      </ul>
+
+      <h3>Generator Safety</h3>
+      <p>Generators introduce hazards beyond normal mains supply:</p>
+      <ul>
+        <li><strong>Fuel storage:</strong> store fuel in an appropriate container in a safe place, <strong>away from the generator</strong> and away from the public area; obey fire safety requirements</li>
+        <li><strong>Refuelling:</strong> never refuel a running generator; follow the generator supplier&rsquo;s advice on safe refuelling procedures; allow the generator to cool before refuelling if it has been running</li>
+        <li><strong>Fire extinguishers:</strong> must be readily available in the generator area; check that they are <strong>suitable for the fuel type</strong> (e.g. CO&sub2; or dry powder for petrol/diesel &mdash; water is not suitable for fuel fires)</li>
+        <li><strong>Physical barriers:</strong> the generator area should be closed off with clear barriers so the public and untrained personnel cannot access it</li>
+        <li><strong>Carbon monoxide:</strong> generators produce CO &mdash; never operate indoors or in an enclosed space; ensure adequate ventilation even in a marquee or partial enclosure</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3C: VEHICLE SAFETY ══════════════════════ -->
+    <section class="chapter" id="ch-3C">
+      <div class="chapter-header">
+        <span class="chapter-num">3C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Vehicle Safety (3C1)</h2>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Syllabus ref 3C1 <span class="verify-note">[VERIFY]</span>:</strong> Vehicle installation &mdash; secure mounting, antenna positioning, driver distraction, wiring to FCS 1362 standard, RF interference to vehicle electronics, insurance.</div>
+      </div>
+
+      <h3>Secure Mounting of Equipment and Antennas</h3>
+      <ul>
+        <li>All radio equipment in a vehicle must be <strong>securely fastened</strong> &mdash; loose equipment can become a projectile in sudden braking or an accident, with serious injury potential</li>
+        <li>Antennas must be <strong>securely attached</strong> to the vehicle bodywork</li>
+        <li>Antenna height: not so tall as to be impractical for the operating area (low bridges, car parks, tree-lined roads)</li>
+        <li>Antenna flexibility: not so flexible as to whip and risk striking pedestrians when the vehicle moves slowly</li>
+      </ul>
+
+      <h3>Driver Distraction</h3>
+      <p>Using a <strong>hand-held microphone while driving</strong> is not a <em>prima facie</em> offence in the same way as using a handheld mobile phone &mdash; but it does risk prosecution for <strong>&ldquo;driving without due care and attention&rdquo;</strong> and will be very significant in the event of an accident. It may also affect your motor insurance validity.</p>
+      <p>Strongly recommended practice:</p>
+      <ul>
+        <li><strong>Remote TX/RX switching</strong> at the steering wheel (PTT button or footswitch)</li>
+        <li><strong>Hands-free microphone</strong> (headset or boom mic) for voice operation</li>
+        <li><strong>Major retuning or resetting of controls:</strong> only when the vehicle is stationary; a passenger can adjust controls while the vehicle is moving</li>
+      </ul>
+
+      <h3>Wiring Standard (FCS 1362)</h3>
+      <p>The following wiring guidance reflects advice from the motor vehicle and communications industries (FCS 1362, 2009 standard &mdash; <span class="verify-note">[VERIFY against current guidance]</span>):</p>
+      <ul>
+        <li><strong>Positive lead:</strong> connect to battery positive via a <strong>suitable fuse</strong>, or in accordance with the vehicle manufacturer&rsquo;s instructions noting the current requirements of the radio equipment</li>
+        <li><strong>Negative lead:</strong> connect directly to the vehicle chassis; the negative lead <strong>should NOT be fused</strong> (this applies to vehicles with a &ldquo;negative chassis&rdquo; earthing system, which covers the vast majority of modern vehicles)</li>
+        <li>Wiring should be <strong>tucked away</strong> so as not to interfere with vehicle controls (pedals, gear lever, steering column)</li>
+        <li>Where cables pass through <strong>bulkheads:</strong> use proper rubber grommets to protect the cable from the sharp metal edge</li>
+        <li>Protect cables from sharp edges and abrasion throughout their run</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Incorrectly wired DC leads can start fires in a vehicle. A fused positive and an unfused direct-to-chassis negative is the correct configuration. Do not fuse the negative &mdash; it slows fault isolation and can leave the chassis at battery potential relative to ground during a fault. <span class="verify-note">[VERIFY]</span> FCS 1362 wiring guidance before installation.</div>
+      </div>
+
+      <h3>RF Interference to Vehicle Electronics</h3>
+      <p>Modern vehicles contain many electronic control units (ECUs) &mdash; engine management, ABS, airbag systems, stability control. RF interference with these systems is not merely an inconvenience; it is a <strong>safety hazard</strong>.</p>
+      <ul>
+        <li>Keep transmitters, amplifiers, and cables carrying RF <strong>well away from the vehicle wiring loom</strong> and any electronic control circuits</li>
+        <li>Comply with any <strong>manufacturer recommendations</strong> on maximum RF power level and antenna location for in-vehicle radio equipment</li>
+        <li>Installed radio equipment should be <strong>specified as suitable for in-vehicle use</strong> &mdash; using equipment not designed for vehicular installation may affect the driver&rsquo;s insurance and the vehicle&rsquo;s roadworthiness</li>
+        <li>For questions about how your radio installation affects your motor insurance: consult your insurance provider directly</li>
+      </ul>
+
+      <h3>Boats</h3>
+      <p>The same principles for secure mounting, earthing, wiring, and RF interference apply to marine installations. Additional <strong>marine safety knowledge</strong> is required &mdash; the marine environment introduces further hazards (corrosion, bilge, fuel vapour, VHF Channel 16 emergency monitoring obligations) that are beyond the scope of the amateur radio syllabus but must be addressed before operating from a vessel.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3D: OVERSEAS MAINS ══════════════════════ -->
+    <section class="chapter" id="ch-3D">
+      <div class="chapter-header">
+        <span class="chapter-num">3D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Overseas and Temporary Mains Supply</h2>
+
+      <p>When operating abroad or using equipment designed for a different mains standard:</p>
+      <ul>
+        <li>Mains voltages and frequencies <strong>differ between countries</strong> (e.g. North America 120 V 60 Hz; UK/EU 230 V 50 Hz); earthing practice also differs</li>
+        <li><strong>Transformers</strong> designed for 60 Hz will draw <strong>more magnetising current at 50 Hz</strong> and may overheat; check the specification before using a 60 Hz transformer on UK 50 Hz mains</li>
+        <li><strong>Switch-mode power supplies</strong> are more likely to be usable across different voltage/frequency combinations &mdash; check the label for the rated input range; most modern SMPS accept 100&ndash;240 V 50&ndash;60 Hz</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3E: RF EXPOSURE ═════════════════════════ -->
+    <section class="chapter" id="ch-3E">
+      <div class="chapter-header">
+        <span class="chapter-num">3E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Exposure to RF Energy (3C1)</h2>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Syllabus ref 3C1 <span class="verify-note">[VERIFY]</span>:</strong> ICNIRP RF exposure limits, biophysical mechanism (heating), Ofcom licence condition 9-1, relationship to EMF compliance assessment (<a href="section-1-licence-conditions.html#ch-1G" target="_blank">§1G (1G1)</a>). The compliance thresholds and calculation method are covered in detail at §1G.</div>
+      </div>
+
+      <h3>The ICNIRP Framework</h3>
+      <p>The biologically significant effect of RF energy on body tissue is <strong>heating</strong> &mdash; RF currents induced in tissue generate heat. This becomes a risk only when the heat load exceeds what the body&rsquo;s temperature regulation can remove.</p>
+      <p>The amateur licence requires compliance with exposure limits from <strong>ICNIRP</strong> (International Commission on Non-Ionising Radiation Protection) as a licence condition <strong>(Condition 9-1)</strong> &mdash; <span class="verify-note">[VERIFY]</span> whether current licence references the 1998 or 2020 ICNIRP guidelines. The limits vary with:</p>
+      <ul>
+        <li>RF frequency (different tissues absorb energy differently at different frequencies)</li>
+        <li>Period of exposure (short high-intensity exposure vs sustained lower-intensity exposure)</li>
+      </ul>
+      <p>The compliance thresholds, the Ofcom/RSGB calculator, and the record-keeping requirement are all covered in detail at <a href="section-1-licence-conditions.html#ch-1G" target="_blank">§1G (1G1)</a>. The key thresholds to know: <strong>below 10 W average EIRP per 6-minute period, OR below 100 W instantaneous peak EIRP, no exclusion zone calculation is required.</strong></p>
+
+      <h3>RF Exposure at Public Events</h3>
+      <p>At a Special Event Station, the public may approach closer to antennas than would normally occur at a home station, and higher powers may be in use. RF exposure calculations must be part of the risk assessment (§3B). If the compliance distance extends into the public area, either reduce power or enforce a physical exclusion zone.</p>
+
+      <!-- EMF Compliance Calculator placeholder — to be replaced with iframe once Frontend delivers -->
+      <div class="interactive-placeholder">
+        EMF Compliance Calculator &mdash; interactive coming soon<br>
+        <span style="opacity:0.6; font-size:0.75em;">Frontend task pending delivery</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3F: LIGHTNING ═══════════════════════════ -->
+    <section class="chapter" id="ch-3F">
+      <div class="chapter-header">
+        <span class="chapter-num">3F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Thunderstorms and Lightning Protection (3C1)</h2>
+
+      <p>Lightning poses two distinct risks to the amateur station:</p>
+      <ol>
+        <li><strong>Equipment damage:</strong> Static charge build-up before a storm, and the massive electromagnetic fields induced by a nearby strike, can cause irreparable damage to receivers and transceivers even without a direct strike</li>
+        <li><strong>Direct strike risk:</strong> A tall mast or an antenna connected to earth effectively raises the earth potential closer to the clouds. Once a stepped leader leaves the cloud, a well-earthed antenna structure may present the path of least resistance for the return stroke</li>
+      </ol>
+
+      <h3>Lightning Physics (Background)</h3>
+      <p>Electric charge accumulates in storm clouds, generating a massive potential difference with ground. This ionises a column of air along which a <strong>stepped leader</strong> propagates downward. The <strong>return stroke</strong> then carries megavolts in a fraction of a second up the ionised, low-resistance channel. Nothing short of a full <strong>BS EN/IEC 62305</strong> lightning protection installation will guard against a direct strike &mdash; fortunately, direct strikes to amateur antennas are relatively infrequent in the UK.</p>
+
+      <h3>Protection Method 1 &mdash; Disconnection</h3>
+      <ul>
+        <li><strong>Disconnect the antenna feeders</strong> from all equipment as soon as a storm approaches, and move the RF connector physically away from the equipment</li>
+        <li>Simple and effective, but relies on the operator being present; does not allow static charges to discharge gradually</li>
+      </ul>
+
+      <h3>Protection Method 2 &mdash; Static Discharge Devices</h3>
+      <p>Commercial static-discharge devices &mdash; typically sealed units filled with an inert gas &mdash; can be built into antenna feeders. Home-brew equivalents using motor car spark plugs are sometimes used.</p>
+      <p>These devices:</p>
+      <ul>
+        <li>Present <strong>high impedance to RF</strong> &mdash; they have negligible effect on normal transmission or reception</li>
+        <li>Provide a <strong>low-impedance path to earth for static charge build-up</strong>, allowing gradual discharge before it reaches a damaging level</li>
+        <li>Do <strong>not</strong> protect against a direct lightning strike &mdash; they handle the static precursor, not the return stroke itself</li>
+      </ul>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Static discharge devices reduce the risk of equipment damage from charge build-up but do not replace physical disconnection as protection against a nearby or direct strike. In a severe storm, disconnect the feeder regardless of whether a discharge device is fitted.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3G: PME ══════════════════════════════════ -->
+    <section class="chapter" id="ch-3G">
+      <div class="chapter-header">
+        <span class="chapter-num">3G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Protective Multiple Earthing (PME) (3C1)</h2>
+
+      <p>This is the most complex safety topic in the Full licence syllabus and the one most likely to produce exam questions. Read it carefully.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Syllabus ref 3C1 <span class="verify-note">[VERIFY]</span>:</strong> PME (TN-C-S) systems, RF earth bonding requirement, consequences of neutral conductor failure, Part P notification. <span class="verify-note">[VERIFY]</span> bonding requirements against current BS 7671 (18th Edition Amendment 2 at time of writing).</div>
+      </div>
+
+      <h3>What is PME?</h3>
+      <p><strong>PME</strong> (Protective Multiple Earthing, also called TN-C-S) is increasingly common in new-build UK properties and as existing street cabling is replaced.</p>
+      <p>In a PME supply:</p>
+      <ul>
+        <li>The <strong>District Network Operator (DNO)</strong> earths the neutral conductor at multiple points along the street cabling &mdash; but <strong>not</strong> at each individual property</li>
+        <li>At the point where the supply enters the property, the <strong>mains earth is bonded to the neutral conductor</strong> at the <strong>Main Earth Terminal (MET)</strong></li>
+        <li>All exposed metalwork inside the property &mdash; central heating pipes, water pipes, gas pipes &mdash; is bonded to the MET, creating an <strong>equipotential zone</strong>; all exposed metalwork is at the same potential relative to each other</li>
+        <li>Under normal conditions this is completely safe; a small potential difference between the mains earth and any RF earth is normal and is not itself a problem</li>
+      </ul>
+
+      <h3>The RF Earth Bonding Problem</h3>
+      <p>If you install an <strong>RF earth</strong> (copper rods driven into the ground, connected to your transmitters and antenna feeders), you now have <strong>two earths</strong> in your shack:</p>
+      <ul>
+        <li>The mains earth, which is part of the PME equipotential system bonded to neutral</li>
+        <li>Your RF earth, which is connected directly to the soil</li>
+      </ul>
+      <p>These two earths <strong>will be at slightly different potentials</strong>. This creates a potential difference across anything connected to both (for example, a transceiver whose chassis is connected to both the mains earth via its power supply and to the RF earth via its antenna connector).</p>
+      <p><strong>The solution is mandatory:</strong> the RF earth must be <strong>bonded to the MET</strong> to bring it into the same equipotential zone as the mains earth.</p>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">This bonding cable may need to carry <strong>substantial current</strong> &mdash; potentially the same order of magnitude as the main supply cable to the property &mdash; because it may be in the return path for all connected appliances. Size the bonding cable accordingly; do not use a light earth wire. <span class="verify-note">[VERIFY]</span> minimum cable size requirement against current BS 7671.</div>
+      </div>
+
+      <h3>Part P &mdash; Notifiable Work</h3>
+      <p>The bonding of an RF earth to the MET is <strong>notifiable work under Part P of the Building Regulations</strong> (England and Wales &mdash; <span class="verify-note">[VERIFY]</span> for Scotland and Northern Ireland equivalents):</p>
+      <ul>
+        <li>You must have a <strong>qualified electrician</strong> carry out and formally inspect the bonding</li>
+        <li>It is an offence to carry out notifiable electrical work without having it inspected</li>
+        <li>The RSGB leaflet <em>Earthing and the Radio Amateur</em> and guidance on Part P and the Radio Amateur provide further detail <span class="verify-note">[VERIFY current publication numbers and URLs]</span></li>
+      </ul>
+
+      <h3>The Neutral Failure Scenario</h3>
+      <p>This is the scenario that makes PME genuinely dangerous for the amateur:</p>
+
+      <div class="callout callout--danger">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">In the neutral failure scenario in a PME property: if the RF earth is not bonded to the MET, equipment in the shack may be at <strong>230 V</strong> relative to other mains-connected items. Touching both simultaneously would be potentially fatal. This is not a theoretical risk &mdash; neutral failures do occur. The mandatory bonding of the RF earth to the MET is not optional.</div>
+      </div>
+
+      <p><strong>What happens if the neutral conductor fails in the street cabling:</strong></p>
+      <ol>
+        <li>The neutral wire breaks or is disconnected upstream of your property</li>
+        <li>Your appliances still need a return current path &mdash; with neutral gone, return current attempts to flow back through whatever earth connections exist</li>
+        <li>If your RF earth provides a path to the substation (via the ground and the neutral earthing points in the street), <strong>return current from your entire house flows through your RF earth connection</strong> &mdash; potentially overheating it and causing a fire</li>
+        <li>The house earth (and neutral, since they are bonded at the MET) may rise to <strong>230 V</strong> relative to true earth</li>
+        <li>Your transceiver &mdash; connected to the RF earth via the antenna &mdash; is now at a different potential from other items in the shack connected to the mains earth: <strong>risk of fatal electric shock</strong></li>
+      </ol>
+
+      <p><strong>If the RF earth connection itself fails</strong> (in addition to the neutral failure):</p>
+      <ul>
+        <li>The entire house earth and neutral rise to 230 V</li>
+        <li>Every piece of mains-connected equipment with an exposed metal chassis is now at 230 V relative to true ground</li>
+        <li>The risk extends beyond the shack to the whole property</li>
+      </ul>
+
+      <h3>Plastic Service Pipes</h3>
+      <p>Where <strong>all services entering the property</strong> (water, gas) use <strong>plastic pipes</strong>:</p>
+      <ul>
+        <li>The metal pipework inside the house (taps, radiators, gas appliances) is <strong>not connected to earth</strong> via the service entry and is effectively floating</li>
+        <li>Building Regulations do not require bonding in this case</li>
+        <li>However: if <strong>any</strong> service entry is via metal pipe, a qualified electrician must assess whether bonding to the MET is required to maintain the equipotential zone</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>When in doubt about whether your property has PME:</strong> ask your DNO. They are obliged to tell you. Do not assume.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 3H: SELF-CHECK ═══════════════════════════ -->
+    <section class="chapter" id="ch-3H">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test yourself on Section 3</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. What is the purpose of earthing mains-powered equipment in the shack, and what happens if earthing is absent when a fault develops?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-1">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-1" hidden>
+            <p>Earthing provides a <strong>low-resistance path to earth</strong> so that if the mains live conductor contacts the equipment chassis, fault current flows to earth rather than through the operator. The sudden high current blows the fuse or trips the circuit breaker. <strong>Without earthing:</strong> fault current may flow through the operator instead &mdash; since the operator becomes the lowest-resistance path to earth &mdash; resulting in electric shock. The fuse or breaker may not trip because the current through a human body may not be high enough to blow a fuse, but is easily enough to be fatal.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. What is the difference between an RCD and an RCBO, and which is required outdoors?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-2">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-2" hidden>
+            <p>An <strong>RCD</strong> (Residual Current Device) detects earth fault current (imbalance between live and neutral) and disconnects the circuit. It does not provide overcurrent protection. An <strong>RCBO</strong> (Residual Current Circuit Breaker with Overcurrent protection) combines RCD earth-fault protection with MCB overcurrent protection in a single unit. <strong>Outdoors</strong>, an RCD or RCBO is mandatory &mdash; the better earth conductivity of wet ground increases fault current risk. The RCBO is preferable because it also protects against overload. The standard trip threshold is <strong>30 mA in 25&ndash;40 ms</strong>.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. You are measuring voltages inside a linear amplifier running at 2 kV HT with the power on. What precaution reduces the risk of a hand-to-hand current path through your chest?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-3">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-3" hidden>
+            <p>The <strong>one-hand rule:</strong> keep one hand in your pocket (or behind your back) while making the measurement with the other hand. If the probe inadvertently contacts a high-voltage point, current enters one hand but cannot travel across the chest to the other hand &mdash; instead it must find another path (typically to ground via the feet), which, while still dangerous, is less likely to cause cardiac arrest than a hand-to-heart-to-hand current path.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. You are operating a Special Event Station at a public outdoor event using a generator. List four generator-related safety requirements.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-4">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-4" hidden>
+            <p>Any four from:</p>
+            <ol>
+              <li>Store fuel in a safe, approved container away from the generator and away from the public</li>
+              <li>Fit physical barriers to close off the generator area from the public</li>
+              <li>Have fire extinguishers of the correct type for fuel fires (CO&sub2; or dry powder &mdash; not water) readily available</li>
+              <li>Follow the manufacturer&rsquo;s advice on safe refuelling &mdash; never refuel a running generator</li>
+              <li>Never operate the generator in an enclosed space (CO hazard)</li>
+              <li>Include the generator in the formal risk assessment with documented mitigations</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. When wiring a transceiver to a vehicle battery (FCS 1362), should the negative lead be fused? Explain why or why not.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-5">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-5" hidden>
+            <p><strong>No &mdash; the negative lead should not be fused.</strong> The negative lead connects directly to the vehicle chassis. Fusing the negative lead can leave the chassis at battery potential during a fault (the fuse blows, interrupting the return path, so the chassis and equipment rise to supply voltage relative to ground). The positive lead must be fused close to the battery to protect the cable in the event of a short circuit. <span class="verify-note">[VERIFY]</span> FCS 1362 against current vehicle wiring guidance.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. What are static discharge devices fitted in antenna feeders, and what do they protect against? What do they NOT protect against?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-6">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-6" hidden>
+            <p>Static discharge devices are sealed units (commercial versions filled with inert gas; DIY versions using spark plugs) connected into the antenna feeder. They present <strong>high impedance to RF</strong> signals, so they have negligible effect during normal transmission and reception. To slowly-accumulating static charge, they present a <strong>low-impedance path to earth</strong>, allowing gradual, safe discharge before a damaging build-up occurs. They protect against <strong>static charge build-up</strong> (the pre-storm precursor to equipment damage). They do <strong>not</strong> protect against a direct lightning strike &mdash; the energy of a return stroke far exceeds their capability. Physical disconnection of feeders remains the only reliable protection against a direct strike.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. Your property has a PME (TN-C-S) mains supply. You install a copper earth rod in the garden and connect it to your transceiver. Why is this potentially dangerous, and what must you do?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-7">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-7" hidden>
+            <p>In a PME system, the mains earth and neutral are bonded at the Main Earth Terminal (MET). Your RF earth (the copper rod) is at true soil potential, which differs from the PME mains earth potential. Any equipment connected to both earths (for example, your transceiver &mdash; connected to the mains earth via its power supply, and to the RF earth via the antenna connector) now bridges two different potentials: a shock risk exists. More critically, if the neutral conductor fails in the street, return current may flow through your RF earth, heating it and potentially causing a fire; additionally, the mains earth and neutral may rise to 230 V, creating a fatal shock hazard between mains-connected and RF-earth-connected items. <strong>You must bond the RF earth to the MET</strong> so all earths are at the same potential. This work is <strong>notifiable under Part P</strong> of the Building Regulations and must be carried out and inspected by a qualified electrician.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. A neutral conductor failure occurs in the street cabling serving your PME-supplied property. Your RF earth is correctly bonded to the MET. What risk remains, and what would happen if the RF earth bond itself were to fail?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="sc-3-8">Show answer</button>
+          <div class="self-check__reveal" id="sc-3-8" hidden>
+            <p>With correct bonding, the RF earth and mains earth are at the same potential &mdash; the main bonding cable may carry return current from appliances back to earth via the soil path, risking overheating and fire if it is undersized (the bonding cable must be substantial enough to handle this current). There is no differential voltage between the RF earth and the mains earth. <strong>If the bonding cable itself fails</strong> (breaks or corrodes through) while the neutral is also failed: the house earth and neutral can rise to <strong>230 V</strong> relative to true earth. All mains-connected equipment with metal chassis becomes live at 230 V relative to ground &mdash; potentially fatal for anyone touching it. This is why the bonding cable must be of adequate size, periodically inspected, and mechanically protected.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-2-operating-techniques.html" class="section-nav__link">&larr; Section 2</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=3"
+         class="section-nav__link section-nav__practice" target="_blank">Practice This Section</a>
+      <a href="section-4-transmitters-receivers.html" class="section-nav__link">Section 4 &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      if (!bar) return;
+      function update() {
+        var s = document.documentElement;
+        var pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+        bar.style.width = Math.min(pct, 100) + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+
+  <script src="/assets/js/nav-loader.js?v=20260913-1300" defer></script>
+  <script src="/assets/js/study-page.js?v=20260913-1300" defer></script>
+</body>
+</html>

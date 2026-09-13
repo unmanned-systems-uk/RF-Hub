@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 4: Basic Circuits — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260913-1300">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+
+    /* ToC */
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+
+    /* Chapter structure */
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* Formula blocks */
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .formula-block p { margin: 0; font-size: 0.95rem; }
+    .formula-block + .formula-block { margin-top: 0.35rem; }
+
+    /* Figures */
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img {
+      max-width: 100%; height: auto; display: block;
+    }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+
+    /* Callouts */
+    .callout--danger {
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.3);
+    }
+    .callout--danger .callout-icon { color: #ef4444; }
+
+    /* Self-checks */
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ol { margin: 0.3rem 0 0 1.1rem; color: var(--text-secondary); }
+    .self-check__reveal ol li { font-size: 0.9rem; margin-bottom: 0.25rem; }
+
+    /* Section nav */
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Full</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 4</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~8–10 / 46 questions &nbsp;·&nbsp; ~18–22% — largest theory chapter</span>
+      </div>
+      <h1>Basic Circuits</h1>
+      <p class="hero-subtitle">DC fundamentals, Kirchhoff's laws, capacitors, inductors, reactance, phasors, series and parallel resonance, Q factor, bandwidth, crystals, transformers and screening.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-4A">4A DC Fundamentals</a></li>
+        <li><a href="#ch-4B">4B Kirchhoff &amp; Resistors</a></li>
+        <li><a href="#ch-4C">4C Batteries &amp; Max Power</a></li>
+        <li><a href="#ch-4D">4D Capacitors</a></li>
+        <li><a href="#ch-4E">4E Inductors</a></li>
+        <li><a href="#ch-4F">4F AC: RMS &amp; Phase</a></li>
+        <li><a href="#ch-4G">4G Reactance &amp; Phasors</a></li>
+        <li><a href="#ch-4H">4H Resonance &amp; Q</a></li>
+        <li><a href="#ch-4I">4I Crystals</a></li>
+        <li><a href="#ch-4J">4J Transformers</a></li>
+        <li><a href="#ch-4K">4K Temperature &amp; Screening</a></li>
+        <li><a href="#ch-4L">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents — Section 4</p>
+      <ol>
+        <li><a href="#ch-4A"><span class="toc-code">4A</span>DC Fundamentals: Current, Voltage, Power, Charge</a></li>
+        <li><a href="#ch-4B"><span class="toc-code">4B</span>Kirchhoff's Laws, Resistors &amp; Potential Divider</a></li>
+        <li><a href="#ch-4C"><span class="toc-code">4C</span>Real Batteries &amp; Maximum Power Transfer</a></li>
+        <li><a href="#ch-4D"><span class="toc-code">4D</span>Capacitors: Construction, RC Circuits &amp; Types</a></li>
+        <li><a href="#ch-4E"><span class="toc-code">4E</span>Inductors: Back-EMF, LR Circuits &amp; Types</a></li>
+        <li><a href="#ch-4F"><span class="toc-code">4F</span>Alternating Current: RMS, Phase &amp; Harmonics</a></li>
+        <li><a href="#ch-4G"><span class="toc-code">4G</span>Reactance, Impedance &amp; Phasors</a></li>
+        <li><a href="#ch-4H"><span class="toc-code">4H</span>Resonance, Q Factor &amp; Bandwidth</a></li>
+        <li><a href="#ch-4I"><span class="toc-code">4I</span>Crystals as Resonators</a></li>
+        <li><a href="#ch-4J"><span class="toc-code">4J</span>Transformers &amp; Impedance Matching</a></li>
+        <li><a href="#ch-4K"><span class="toc-code">4K</span>Temperature Effects, Screening &amp; Decibels</a></li>
+        <li><a href="#ch-4L"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="font-size:0.93rem; color:var(--text-secondary); margin-bottom:2rem;">Chapter 4 is the largest theory chapter in the Full licence manual. It covers the fundamental circuit mathematics that underpins everything else — from the power equations you use every day to the resonance behaviour inside every filter, transmitter and receiver you will ever build or operate. A solid grasp of this chapter pays dividends across the rest of the syllabus.</p>
+    <p style="font-size:0.93rem; color:var(--text-secondary); margin-bottom:2rem;">The chapter builds from DC (current, voltage, Kirchhoff's laws, resistors) through reactive components (capacitors, inductors) into AC behaviour (RMS, reactance, impedance, phasors), resonance (series and parallel, Q factor), and then covers three practical topics: crystals, transformers and screening.</p>
+    <p style="font-size:0.87rem; color:var(--text-dim); margin-bottom:2.5rem;">Cross-reference: <a href="../intermediate/section-2-electronics.html" target="_blank" style="color:var(--accent-em);">Intermediate §2 — Electronics</a> covers Ohm's law, basic resistor circuits, and elementary capacitor/inductor behaviour — this section builds directly on top of that foundation.</p>
+
+    <!-- ═══════════════════════ 4A: DC FUNDAMENTALS ═══════════════════ -->
+    <section class="chapter" id="ch-4A">
+      <div class="chapter-header">
+        <span class="chapter-num">4A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>DC Fundamentals: Current, Voltage, Power and Charge</h2>
+
+      <h3>4A.1 — Current, Charge and Energy</h3>
+      <p><strong>Electric current</strong> is the rate of flow of charge. The unit of current is the <strong>ampere (A)</strong>: one ampere is one coulomb of charge flowing per second.</p>
+      <p><strong>Charge</strong> is measured in <strong>coulombs (C)</strong>. The charge on a single electron is 1.6 × 10⁻¹⁹ C; one coulomb therefore represents approximately 6.24 × 10¹⁸ electron charges.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">In practice, components often store charge in microcoulombs (μC). A 100 μF capacitor charged to 12 V stores Q = CV = 100 × 10⁻⁶ × 12 = 1.2 mC.</div>
+      </div>
+      <p><strong>Energy</strong> is measured in <strong>joules (J)</strong>. One joule is the energy transferred when a force of one newton acts through one metre. In electrical circuits: energy (joules) = charge (coulombs) × potential difference (volts).</p>
+      <p><strong>Potential difference (PD)</strong> — the voltage between two points — is measured in <strong>volts (V)</strong>. One volt is the PD that causes one joule of energy to be transferred per coulomb of charge.</p>
+
+      <h3>4A.2 — Power</h3>
+      <p>Power is the rate of energy transfer. The three forms of the power equation that you must know are:</p>
+      <table>
+        <thead><tr><th>Form</th><th>Formula</th><th>Use when you know</th></tr></thead>
+        <tbody>
+          <tr><td>Voltage and current</td><td><strong>P = V × I</strong></td><td>Both V and I</td></tr>
+          <tr><td>Current and resistance</td><td><strong>P = I² × R</strong></td><td>Current and resistance</td></tr>
+          <tr><td>Voltage and resistance</td><td><strong>P = V² / R</strong></td><td>Voltage and resistance</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Units:</strong> watts (W) = joules per second. For large dissipations: kilowatts (kW), megawatts (MW). For small: milliwatts (mW), microwatts (μW).</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4A1:</strong> These three forms of the power equation are derivable from P = VI combined with Ohm's law (V = IR). Know all three — exam questions pick whichever form is not directly calculable from the given values.</div>
+      </div>
+      <p><strong>Example:</strong> A 50 Ω dummy load is connected to a transmitter delivering 100 W. What current flows?<br>
+      P = I²R → 100 = I² × 50 → I² = 2 → I = √2 ≈ <strong>1.41 A</strong>.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-1.svg" alt="Voltage source connected to a resistive load with current arrow indicating direction of current flow">
+        </div>
+        <figcaption>Fig 4.1 — Voltage source with resistive load; current arrow indicates conventional current direction.</figcaption>
+      </figure>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4B: KIRCHHOFF & RESISTORS ════════════ -->
+    <section class="chapter" id="ch-4B">
+      <div class="chapter-header">
+        <span class="chapter-num">4B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Kirchhoff's Laws, Resistors and Circuit Combinations</h2>
+
+      <h3>4B.1 — Kirchhoff's Voltage Law (KVL)</h3>
+      <p><strong>KVL:</strong> The sum of all voltages around any closed loop equals zero, or equivalently: the sum of all voltage drops around a loop equals the supply voltage.</p>
+      <p>This is simply the conservation of energy — charge cannot gain or lose net energy travelling around a complete circuit.</p>
+      <p><strong>Practical use:</strong> If you know the supply voltage and all resistor values in a series circuit, KVL lets you write the equation: V_supply = V_R1 + V_R2 + V_R3 and solve for any unknown.</p>
+
+      <h3>4B.2 — Kirchhoff's Current Law (KCL)</h3>
+      <p><strong>KCL:</strong> The sum of currents flowing into any junction equals the sum of currents flowing out. Current is conserved at every node.</p>
+      <p><strong>Practical use:</strong> In a parallel circuit, the total current drawn from the supply equals the sum of the branch currents.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-2.svg" alt="Series resistor circuit (resistors end-to-end with common current) and parallel resistor circuit (resistors sharing common terminals, each carrying branch current)">
+        </div>
+        <figcaption>Fig 4.2 — Series resistors (left): same current through all, voltages add. Parallel resistors (right): same voltage across all, currents add.</figcaption>
+      </figure>
+
+      <h3>4B.3 — Resistors in Series and Parallel</h3>
+      <p><strong>Series:</strong> resistances add directly.</p>
+      <div class="formula-block"><p><strong>R_total = R1 + R2 + R3 + …</strong></p></div>
+      <p><strong>Parallel:</strong> the reciprocal of the total equals the sum of the reciprocals.</p>
+      <div class="formula-block"><p><strong>1/R_total = 1/R1 + 1/R2 + 1/R3 + …</strong></p></div>
+      <p>For <strong>two resistors only</strong>, the shortcut is:</p>
+      <div class="formula-block"><p><strong>R_total = (R1 × R2) / (R1 + R2)</strong></p></div>
+      <p>This product-over-sum formula is worth memorising for quick calculations.</p>
+      <p><strong>Strategy for complex combinations:</strong> First collapse the circuit to find the total current drawn from the supply. Then expand back through the network, using KVL and KCL at each stage to find individual currents and voltages.</p>
+      <p><strong>Resistor types and tolerance:</strong></p>
+      <ul>
+        <li><strong>Carbon film</strong> — general purpose, tolerance typically ±5%</li>
+        <li><strong>Metal film</strong> — lower noise, tighter tolerance (±1% or better)</li>
+        <li><strong>Wire-wound</strong> — power resistors; significant inductance at RF</li>
+      </ul>
+
+      <h3>4B.4 — The Potential Divider</h3>
+      <p>Two resistors R1 and R2 in series across a supply V_in produce an output voltage V_out across R2:</p>
+      <div class="formula-block"><p><strong>V_out = V_in × R2 / (R1 + R2)</strong></p></div>
+      <p>This is one of the most frequently used relationships in electronics — it appears in bias networks, attenuators, voltage references and sensor interfaces. Know it.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">The formula assumes no current is drawn from the output (unloaded divider). If a load is connected, it appears in parallel with R2 and reduces V_out. At RF, stray capacitance and lead inductance also affect the division ratio.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4C: BATTERIES & MAX POWER ═══════════ -->
+    <section class="chapter" id="ch-4C">
+      <div class="chapter-header">
+        <span class="chapter-num">4C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Real Batteries and Maximum Power Transfer</h2>
+
+      <h3>4C.1 — EMF, Internal Resistance and Terminal Voltage</h3>
+      <p>An ideal voltage source maintains constant terminal voltage regardless of current. Real batteries have an <strong>internal resistance r</strong> (typically a fraction of an ohm for a healthy cell) that causes the terminal voltage to drop as current increases.</p>
+      <div class="formula-block"><p><strong>V_terminal = EMF − (I × r)</strong></p></div>
+      <p><strong>EMF</strong> (electromotive force, symbol <strong>ε</strong> or V) is the open-circuit voltage. As current increases, the voltage drop across r grows and the terminal voltage falls.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-3.svg" alt="Circuit showing ideal EMF source in series with internal resistance r connected to external load R, with terminal voltage measured across the load terminals">
+        </div>
+        <figcaption>Fig 4.3 — Real battery equivalent circuit: EMF source in series with internal resistance r. Terminal voltage = EMF − (I × r).</figcaption>
+      </figure>
+
+      <p>This matters in practice: a battery tested on open circuit may read 12.6 V while under load it drops to 11.5 V. For a transmitter drawing high current, the supply voltage sag can cause frequency shift, ALC misbehaviour and reduced output power.</p>
+
+      <h3>4C.2 — Maximum Power Transfer</h3>
+      <p><strong>Question:</strong> For a fixed-EMF source with internal resistance r, what value of external load R_load extracts the maximum power?</p>
+      <p><strong>Answer:</strong> Maximum power is transferred when <strong>R_load = r</strong>.</p>
+      <p>At this point, exactly half the total power is dissipated in the source (in r) and half in the load. The efficiency is therefore 50% at maximum power transfer. This is not necessarily the operating point you want for power efficiency — battery systems are designed for high efficiency, which means R_load ≫ r — but it is the correct condition for maximum extracted power.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-4.svg" alt="Three-curve graph plotting power delivered to load, terminal voltage, and load current versus load resistance from 0 to 10 ohms. Power peaks at R_load equal to r (source impedance), while voltage rises and current falls monotonically.">
+        </div>
+        <figcaption>Fig 4.4 — Power, voltage and current versus load resistance R_load. Maximum power transfer occurs at R_load = r (source impedance).</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4C1:</strong> Maximum power transfer: R_load = r (source impedance = load impedance). This appears in RF system design as impedance matching — a 50 Ω source drives maximum power into a 50 Ω load. The underlying theorem is identical.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4D: CAPACITORS ═══════════════════════ -->
+    <section class="chapter" id="ch-4D">
+      <div class="chapter-header">
+        <span class="chapter-num">4D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Capacitors: Construction, RC Circuits and Types</h2>
+
+      <h3>4D.1 — Capacitance</h3>
+      <p>Capacitance is the ability to store electric charge. The unit is the <strong>farad (F)</strong>, but practical capacitors range from picofarads (pF, 10⁻¹² F) to farads.</p>
+      <div class="formula-block"><p><strong>C = Q / V</strong></p></div>
+      <p>Where C is capacitance (F), Q is charge stored (C), V is voltage across the capacitor (V).</p>
+      <p>For a parallel-plate capacitor:</p>
+      <div class="formula-block"><p><strong>C = K × A / d</strong></p></div>
+      <p>Where K is the permittivity of the dielectric (permittivity of free space × dielectric constant of the material), A is the plate area and d is the plate separation. Increasing A or decreasing d increases capacitance.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-5.svg" alt="Two parallel conducting plates separated by distance d, with plate area A labelled. Electric field lines shown between plates, representing stored charge.">
+        </div>
+        <figcaption>Fig 4.5 — Parallel-plate capacitor. Plate area A and separation d determine capacitance; the dielectric material between the plates multiplies capacitance by its relative permittivity.</figcaption>
+      </figure>
+
+      <h3>4D.2 — Dielectric Materials</h3>
+      <p>The dielectric constant (relative permittivity) determines both the capacitance and the losses:</p>
+      <table>
+        <thead><tr><th>Dielectric</th><th>Approx. constant</th><th>RF suitability</th></tr></thead>
+        <tbody>
+          <tr><td>Vacuum / air</td><td>1</td><td>Excellent (low-loss)</td></tr>
+          <tr><td>Polystyrene, PTFE</td><td>2.5–2.6</td><td>Excellent at HF/VHF</td></tr>
+          <tr><td>Paper, polyester</td><td>2–3</td><td>Moderate; some loss</td></tr>
+          <tr><td>Mica</td><td>5–6</td><td>Excellent for RF (low loss, stable)</td></tr>
+          <tr><td>Ceramics (low-K)</td><td>~10</td><td>Good for RF bypass and tuning</td></tr>
+          <tr><td>Ceramics (high-K)</td><td>up to 10,000</td><td>High capacitance/volume; lossy at RF</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">Polystyrene and PTFE capacitors have extremely low loss (high Q) and good stability, making them ideal for RF tuned circuits. High-K ceramics (often used in surface-mount bypass capacitors) have variable capacitance with DC bias and temperature, and are not suitable for precision RF circuits.</div>
+      </div>
+
+      <h3>4D.3 — Safe Working Voltage</h3>
+      <p>Every capacitor has a maximum safe working voltage (often marked on the body). Exceeding it breaks down the dielectric — this is a permanent failure. High-voltage valve PSUs can charge filter capacitors to over 2 kV; these must be <strong>permanently discharged</strong> before working on the equipment, as a charged capacitor retains lethal energy even with the mains disconnected.</p>
+      <div class="callout callout--danger">
+        <div class="callout-icon">⚡</div>
+        <div class="callout-text"><strong>DANGER:</strong> Always treat large filter capacitors as potentially charged. Use a bleeder resistor or a known-good shorting tool before touching HV circuits. A 100 μF capacitor charged to 2 kV stores 200 J — enough to cause fatal cardiac arrest.</div>
+      </div>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-6.svg" alt="Panel showing three capacitor types: a film capacitor (rectangular body with axial leads), a ceramic disc capacitor (small disc with radial leads), and an electrolytic capacitor (cylindrical body with polarity marking and radial leads)">
+        </div>
+        <figcaption>Fig 4.6 — Capacitor types. Left: film (polyester/polypropylene). Centre: ceramic disc. Right: electrolytic (polarity-sensitive; must not be reverse-biased).</figcaption>
+      </figure>
+
+      <h3>4D.4 — RC Charging and the Time Constant</h3>
+      <p>When a resistor R and capacitor C are connected in series to a DC supply, the capacitor charges exponentially. The <strong>time constant τ (tau)</strong>:</p>
+      <div class="formula-block"><p><strong>τ = C × R</strong> (seconds, when C in farads and R in ohms)</p></div>
+      <p>The voltage across the capacitor at time t after connection is: V_C = V_supply × (1 − e<sup>−t/τ</sup>)</p>
+      <table>
+        <thead><tr><th>Time elapsed</th><th>Approximate V_C as % of V_supply</th></tr></thead>
+        <tbody>
+          <tr><td>1τ</td><td>63.2%</td></tr>
+          <tr><td>2τ</td><td>86.5%</td></tr>
+          <tr><td>3τ</td><td>95.0%</td></tr>
+          <tr><td>5τ</td><td>99.3% ≈ "fully charged"</td></tr>
+        </tbody>
+      </table>
+      <p><strong>In discharge:</strong> starting voltage V, initial current I = V/R, falls exponentially with the same time constant τ.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-10.svg" alt="Two-panel diagram. Left: RC charging circuit schematic with switch, voltage source V, resistor R, and capacitor C. Right: V_C(t) charging curve rising from 0 to V with knee at 1τ (63%) and asymptote approaching V; I(t) curve falling exponentially from V/R toward zero.">
+        </div>
+        <figcaption>Fig 4.10 — RC charging. Circuit (left) and V_C(t) curve (right). At 1τ, V_C reaches 63.2% of supply. The capacitor is considered fully charged after 5τ.</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4D1:</strong> Know τ = CR and the rule-of-thumb that a capacitor is considered fully charged after 5τ. The exam may give you RC values and ask for the time to reach 63% or 99% of supply voltage.</div>
+      </div>
+
+      <h3>4D.5 — Capacitors in Series and Parallel</h3>
+      <p><strong>Parallel</strong> (same voltage, charges add):</p>
+      <div class="formula-block"><p><strong>C_total = C1 + C2 + C3 + …</strong></p></div>
+      <p><strong>Series</strong> (same charge, voltages divide):</p>
+      <div class="formula-block"><p><strong>1/C_total = 1/C1 + 1/C2 + …</strong></p></div>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">Capacitors combine the <em>opposite</em> way to resistors. Two capacitors in series have a smaller combined capacitance than either alone; the voltage across each is inversely proportional to its capacitance (the larger cap gets the smaller share of the voltage).</div>
+      </div>
+      <p><strong>Worked example:</strong> 2 μF and 4 μF in series on 30 V supply.<br>
+      C_total = (2 × 4)/(2 + 4) = 8/6 = <strong>1.33 μF</strong>.<br>
+      Q = C_total × V = 1.33 × 10⁻⁶ × 30 = <strong>40 μC</strong> (same charge on each).<br>
+      V₁ = Q/C1 = 40/2 = <strong>20 V</strong>; V₂ = Q/C2 = 40/4 = <strong>10 V</strong>. Total: 30 V ✓.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-7.svg" alt="Two capacitors C1 and C2 connected in parallel — both terminals connected together — with total capacitance C_total = C1 + C2 indicated.">
+        </div>
+        <figcaption>Fig 4.7 — Capacitors in parallel. Total capacitance is the sum of individual capacitances. Both capacitors share the same voltage.</figcaption>
+      </figure>
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-8.svg" alt="Two capacitors C1 and C2 connected in series — end-to-end — with total capacitance C_total given by the reciprocal-sum formula.">
+        </div>
+        <figcaption>Fig 4.8 — Capacitors in series. Reciprocal formula applies: 1/C_total = 1/C1 + 1/C2. Each capacitor carries the same charge; voltages divide inversely with capacitance.</figcaption>
+      </figure>
+
+      <h3>4D.6 — Variable Capacitors</h3>
+      <p>Air-dielectric variable capacitors use plates that interleave to change the effective plate area. Range is typically 20–500 pF. They require adequate plate spacing when used in high-voltage transmitter ATUs to prevent arcing.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4E: INDUCTORS ════════════════════════ -->
+    <section class="chapter" id="ch-4E">
+      <div class="chapter-header">
+        <span class="chapter-num">4E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Inductors: Back-EMF, LR Circuits and Types</h2>
+
+      <h3>4E.1 — Self-Inductance</h3>
+      <p>An inductor (a coil of wire) stores energy in a magnetic field. <strong>Self-inductance</strong> is the property by which a changing current induces a voltage (back-EMF) in the coil itself that opposes the change.</p>
+      <p><strong>Inductance L:</strong> if a current changing at 1 A per second induces a back-EMF of 1 V, the inductance is <strong>1 henry (H)</strong>.</p>
+      <p>More generally, induced voltage = L × (rate of change of current). A 2 H inductor with current changing at 1 A/s induces 2 V.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-12.svg" alt="A current-carrying straight wire viewed end-on, with concentric circles representing the magnetic field looping around it. Arrow shows current direction; right-hand rule diagram indicates field sense.">
+        </div>
+        <figcaption>Fig 4.12 — Magnetic field around a current-carrying wire. Right-hand rule: thumb points in current direction, fingers curl in the direction of the field lines.</figcaption>
+      </figure>
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-13.svg" alt="A solenoid coil with magnetic flux lines shown threading through the inside of the coil along its axis and looping back around the outside, forming a closed magnetic circuit similar to a bar magnet.">
+        </div>
+        <figcaption>Fig 4.13 — Magnetic flux in a solenoid inductor. Flux is concentrated inside the coil; external field resembles that of a bar magnet. Adding a ferrite core concentrates the flux further, increasing inductance.</figcaption>
+      </figure>
+
+      <h3>4E.2 — Types of Inductor</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Typical inductance</th><th>Typical application</th></tr></thead>
+        <tbody>
+          <tr><td>Air-core (single/multi-turn)</td><td>nH–μH</td><td>VHF/UHF tuned circuits</td></tr>
+          <tr><td>Ferrite bobbin (slug-tuned)</td><td>μH–mH</td><td>HF RF chokes, IF transformers</td></tr>
+          <tr><td>Pot-core</td><td>μH–mH</td><td>Audio frequency chokes, switched-mode</td></tr>
+          <tr><td>Toroid</td><td>μH–mH</td><td>HF low-leakage inductors, baluns</td></tr>
+          <tr><td>Iron-dust toroid</td><td>μH–mH</td><td>High-current chokes</td></tr>
+          <tr><td>Iron-laminated (audio)</td><td>mH–H</td><td>Audio transformers, low-frequency chokes</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Slug-tuning:</strong> a ferrite slug partially inserted into the coil form adjusts inductance. Withdrawing the slug reduces inductance; inserting increases it. This allows post-manufacture trimming of tuned circuits.</p>
+      <p><strong>Permeability:</strong> the ability of a core material to concentrate magnetic field. High permeability → higher inductance for the same coil geometry. All ferrite materials are slightly lossy at high frequencies; the correct grade of ferrite must be chosen for the operating frequency range.</p>
+      <p><strong>Toroids</strong> have almost no external field because the magnetic circuit is closed within the core. This makes them ideal for RF circuits where crosstalk between inductors must be minimised.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-14.svg" alt="RF inductor with a cylindrical coil form, wire wound around it, and a ferrite slug partially inserted from one end. A screw slot on the slug allows adjustment. Circuit symbol for inductor shown alongside.">
+        </div>
+        <figcaption>Fig 4.14 — Slug-tuned RF inductor. The ferrite slug adjusts inductance; inserting further increases inductance. Used in IF transformers and HF tuned circuits.</figcaption>
+      </figure>
+
+      <h3>4E.3 — Inductors in Series and Parallel</h3>
+      <p><strong>Series:</strong></p>
+      <div class="formula-block"><p><strong>L_total = L1 + L2 + L3 + …</strong> (provided coils are not magnetically coupled to each other)</p></div>
+      <p><strong>Parallel:</strong></p>
+      <div class="formula-block"><p><strong>1/L_total = 1/L1 + 1/L2 + …</strong> (same caveat)</p></div>
+
+      <h3>4E.4 — LR Time Constant</h3>
+      <p>When a resistor R and inductor L are connected in series to a DC supply, the current builds up exponentially with time constant:</p>
+      <div class="formula-block"><p><strong>τ = L / R</strong> (seconds, when L in henries and R in ohms)</p></div>
+      <p>At 1τ, the current has reached ≈63% of its final value; at 5τ it is effectively at its final value.</p>
+      <p>This is the dual of the RC circuit: in the LR case it is the <em>current</em> that builds up exponentially rather than the voltage.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4F: ALTERNATING CURRENT ═════════════ -->
+    <section class="chapter" id="ch-4F">
+      <div class="chapter-header">
+        <span class="chapter-num">4F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Alternating Current: RMS, Phase and Harmonics</h2>
+
+      <h3>4F.1 — AC Sinewave and RMS Values</h3>
+      <p>An AC sinewave is produced by a coil rotating in a uniform magnetic field. The voltage varies sinusoidally between peak positive and peak negative values.</p>
+      <p><strong>RMS (Root Mean Square):</strong> the equivalent DC voltage that would deliver the same power to a resistive load. For a pure sinewave:</p>
+      <div class="formula-block"><p><strong>V_rms = V_peak / √2 = 0.707 × V_peak</strong></p></div>
+      <p>The UK mains supply of 230 V is an RMS value; the peak voltage is 230 × √2 ≈ <strong>325 V</strong>.</p>
+      <p><strong>Peak-to-peak voltage</strong> = 2 × V_peak.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4F1:</strong> V_rms = 0.707 × V_peak. All AC voltage and current values quoted in everyday use (and in exam questions unless stated otherwise) are RMS values.</div>
+      </div>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-15.svg" alt="One full cycle of a sinewave plotted on voltage vs time axes. Three levels are marked with dashed lines: V_peak (positive crest), 0.707 × V_peak (RMS level), and −V_peak (negative trough). Peak-to-peak span is labelled 2 × V_peak.">
+        </div>
+        <figcaption>Fig 4.15 — AC sinewave showing peak, peak-to-peak and RMS voltage. V_rms = 0.707 × V_peak for a pure sinewave.</figcaption>
+      </figure>
+
+      <h3>4F.2 — Frequency and Phase</h3>
+      <p><strong>Frequency</strong> f is the number of complete cycles per second, measured in hertz (Hz). <strong>Period</strong> T = 1/f.</p>
+      <p><strong>Phase</strong> describes the time relationship between two sinewaves of the same frequency. If waveform B reaches its positive peak a quarter-cycle after waveform A, B <strong>lags</strong> A by <strong>90°</strong> (or equivalently A leads B by 90°).</p>
+      <p>Phase relationships are crucial when dealing with reactive components — a capacitor or inductor causes a 90° shift between voltage and current.</p>
+
+      <h3>4F.3 — Harmonics and Fourier Analysis</h3>
+      <p>Any periodic waveform can be decomposed into a <strong>fundamental frequency</strong> plus <strong>harmonics</strong> — sinewaves at integer multiples of the fundamental. A square wave, for example, contains the fundamental plus all odd harmonics (3rd, 5th, 7th…) with amplitudes that decrease as 1/n.</p>
+      <p>This is <strong>Fourier analysis</strong>, and it matters to the radio amateur because:</p>
+      <ul>
+        <li>A transmitter that clips or saturates produces harmonics that may fall in other services' allocations</li>
+        <li>The shape of a Morse keying waveform determines its harmonic content and hence its bandwidth</li>
+        <li>Filters are designed to pass the fundamental while attenuating harmonics</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4G: REACTANCE & PHASORS ════════════ -->
+    <section class="chapter" id="ch-4G">
+      <div class="chapter-header">
+        <span class="chapter-num">4G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Reactance, Impedance and Phasors</h2>
+
+      <h3>4G.1 — Why Ohm's Law Does Not Apply Directly to Reactive Components</h3>
+      <p>For a resistor, V/I = R (resistance) at all frequencies and the voltage and current are in phase.</p>
+      <p>For a capacitor or inductor, the voltage and current are 90° out of phase. Simply dividing the RMS voltage by the RMS current gives a ratio (the <strong>reactance</strong>) but this hides the phase relationship — and ignoring phase leads to errors when combining voltages or currents in AC circuits.</p>
+
+      <h3>4G.2 — Capacitive Reactance</h3>
+      <p><strong>Capacitive reactance X_C</strong> is the opposition a capacitor presents to AC. It falls with increasing frequency (a capacitor blocks DC but passes high frequencies):</p>
+      <div class="formula-block"><p><strong>X_C = 1 / (2πfC)</strong> (ohms, f in Hz, C in farads)</p></div>
+      <p>The current through the capacitor <strong>leads</strong> the voltage by 90°.</p>
+      <p><strong>Example:</strong> 2 μF capacitor on 240 V, 50 Hz mains.<br>
+      X_C = 1 / (2π × 50 × 2 × 10⁻⁶) ≈ <strong>1590 Ω</strong><br>
+      I = V / X_C = 240 / 1590 ≈ <strong>0.15 A (150 mA) RMS</strong></p>
+
+      <h3>4G.3 — Inductive Reactance</h3>
+      <p><strong>Inductive reactance X_L</strong> rises with frequency (an inductor passes DC freely but opposes high-frequency AC):</p>
+      <div class="formula-block"><p><strong>X_L = 2πfL</strong> (ohms, f in Hz, L in henries)</p></div>
+      <p>The voltage across the inductor <strong>leads</strong> the current by 90° — the opposite phase relationship to a capacitor.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-17.svg" alt="Graph of reactance in ohms versus frequency. X_L (inductive) rises as a straight line through the origin; X_C (capacitive) falls as a hyperbola. The two curves intersect at the resonant frequency f_r, where X_L = X_C.">
+        </div>
+        <figcaption>Fig 4.17 — Reactance versus frequency. X_L rises linearly; X_C falls as a hyperbola. They cross at the resonant frequency f_r where X_L = X_C.</figcaption>
+      </figure>
+
+      <h3>4G.4 — Coupling, Decoupling and Blocking</h3>
+      <p><strong>Coupling capacitors</strong> pass AC signals from one stage to the next while blocking the DC bias voltages. The coupling capacitor must have low reactance at the lowest signal frequency of interest. At audio frequencies, typical values are 0.1–50 μF; at RF, a few pF to 0.01 μF suffice.</p>
+      <p><strong>Decoupling capacitors</strong> remove AC or RF from a point in a circuit by connecting that point to the 0 V rail via a low-reactance capacitor. The capacitor must have lower reactance than the impedance of the circuit at the lowest frequency to be bypassed.</p>
+      <p><strong>RF chokes</strong> are inductors used to pass DC while presenting high impedance to RF, preventing RF from feeding back along supply or audio lines. A choke needs sufficiently high inductance to have a reactance much greater than the impedance of the circuit at the frequency of interest.</p>
+
+      <h3>4G.5 — Phasor Diagrams</h3>
+      <p>Since voltages and currents in reactive circuits are not in phase, they cannot be simply added as scalars. They must be added <strong>vectorially</strong>.</p>
+      <p><strong>Analogy:</strong> Walk 3 m east and a boat simultaneously carries you 4 m north. Your resultant displacement is not 7 m but √(3² + 4²) = 5 m at an angle.</p>
+      <p>For a phasor diagram, voltages (or currents) are drawn as arrows (vectors) with length proportional to magnitude and angle representing phase. The supply voltage is found by vector addition.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-18.svg" alt="Right-triangle diagram showing a 3 m eastward vector and a 4 m northward vector combining to give a 5 m hypotenuse. The angle θ between east and the hypotenuse illustrates the vector-addition principle used in phasor arithmetic.">
+        </div>
+        <figcaption>Fig 4.18 — Vector addition analogy. East (3 m) + North (4 m) = 5 m resultant at angle θ. The same Pythagoras relationship applies to phasors: V_supply = √(V_R² + V_X²).</figcaption>
+      </figure>
+
+      <h3>4G.6 — Resistor and Capacitor in Series</h3>
+      <p>In a series RC circuit:</p>
+      <ul>
+        <li>Voltage across R is in phase with the current (V_R = I × R)</li>
+        <li>Voltage across C lags the current by 90° (V_C = I × X_C)</li>
+        <li>These two voltages are at 90° to each other and must be added with Pythagoras:</li>
+      </ul>
+      <div class="formula-block"><p><strong>V_supply = √(V_R² + V_C²)</strong></p></div>
+      <p>The total opposition to current (the <strong>impedance Z</strong>):</p>
+      <div class="formula-block"><p><strong>Z = √(R² + X_C²)</strong> (ohms)</p></div>
+      <p>Current: <strong>I = V / Z</strong></p>
+      <p>The phase angle between supply voltage and current lies between 0° (purely resistive) and 90° (purely capacitive), with voltage lagging current.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-19.svg" alt="Phasor diagram for a series RC circuit. V_R is drawn horizontally (in phase with current). V_C is drawn vertically downward (lagging current by 90°). V_supply is the hypotenuse at angle θ below horizontal. Z = √(R² + X_C²) is indicated.">
+        </div>
+        <figcaption>Fig 4.19 — Phasor diagram: series RC circuit. V_R horizontal (in phase with I); V_C vertical downward (lagging I by 90°); V_supply is the vector sum. Impedance Z = √(R² + X_C²).</figcaption>
+      </figure>
+
+      <h3>4G.7 — Resistor and Inductor in Series</h3>
+      <p>Same geometry but the inductor's voltage leads the current by 90°:</p>
+      <div class="formula-block"><p><strong>Z = √(R² + X_L²)</strong> (ohms)</p></div>
+      <p>The supply voltage leads the current by an angle between 0° and 90°.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-20.svg" alt="Phasor diagram for a series RL circuit. V_R is drawn horizontally (in phase with current). V_L is drawn vertically upward (leading current by 90°). V_supply is the hypotenuse at angle θ above horizontal. Z = √(R² + X_L²) is indicated.">
+        </div>
+        <figcaption>Fig 4.20 — Phasor diagram: series RL circuit. V_R horizontal; V_L vertical upward (leading I by 90°); V_supply leads I by angle θ. Impedance Z = √(R² + X_L²).</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4G1:</strong>
+          <ul style="margin:0.4rem 0 0 1.1rem; color:inherit;">
+            <li><strong>Resistance:</strong> V and I in phase</li>
+            <li><strong>Reactance:</strong> V and I exactly 90° apart</li>
+            <li><strong>Impedance:</strong> V and I at an intermediate angle; Z = √(R² + X²)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4H: RESONANCE & Q ════════════════════ -->
+    <section class="chapter" id="ch-4H">
+      <div class="chapter-header">
+        <span class="chapter-num">4H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Resonance, Q Factor and Bandwidth</h2>
+
+      <h3>4H.1 — Series Resonance</h3>
+      <p>When L and C are connected in series with an AC source, the voltage across L leads the current by 90° and the voltage across C lags by 90°. These two voltages are therefore in <strong>anti-phase</strong> (180° apart). At any frequency where X_L ≠ X_C they partially cancel.</p>
+      <p>At the <strong>resonant frequency f_r</strong>, X_L = X_C exactly, so the voltages across L and C cancel completely. The series LC combination presents <strong>zero net reactance</strong> — the circuit impedance is just the winding resistance of the inductor. Series resonance is a <strong>minimum impedance</strong> condition.</p>
+      <p><strong>Resonant frequency:</strong></p>
+      <div class="formula-block"><p><strong>f_r = 1 / (2π√(LC))</strong> (Hz)</p></div>
+      <p>Rearranged:</p>
+      <div class="formula-block"><p><strong>L = 1 / (4π²f²C)</strong> &nbsp;&nbsp; and &nbsp;&nbsp; <strong>C = 1 / (4π²f²L)</strong></p></div>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-21.svg" alt="Circuit schematic showing an AC voltage source connected in series with an inductor L and capacitor C. Phasor diagram alongside shows V_L upward and V_C downward with equal magnitudes at resonance, cancelling to leave only resistive voltage.">
+        </div>
+        <figcaption>Fig 4.21 — Series resonant circuit. At resonance, V_L and V_C are equal and opposite; the net reactive voltage is zero and circuit impedance is minimum (= winding resistance only).</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">At series resonance, the voltages across the individual L and C components can be many times the supply voltage (voltage magnification = Q × V_supply). For a transmitter's series resonant output circuit, these voltages can reach hundreds or thousands of volts — a safety and component-rating concern.</div>
+      </div>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-23.svg" alt="Graph of series circuit impedance Z versus frequency. Z starts high at low frequencies, dips sharply to a minimum at f_r (the resonant frequency), then rises again at high frequencies. The minimum corresponds to the winding resistance R.">
+        </div>
+        <figcaption>Fig 4.23 — Series resonance: impedance dips to a minimum at f_r. Below f_r the circuit is capacitive (X_C &gt; X_L); above f_r it is inductive (X_L &gt; X_C).</figcaption>
+      </figure>
+
+      <h3>4H.2 — Parallel Resonance</h3>
+      <p>When L and C are connected in <strong>parallel</strong>, the current in C leads the voltage by 90° and the current in L lags the voltage by 90°. At resonance (X_L = X_C), these two branch currents are equal and opposite and cancel at the input terminals — the input current is theoretically zero, so the <strong>impedance is maximum</strong>.</p>
+      <p>In practice, the inductor has winding resistance R and the input current is V/R_D, where R_D is the <strong>dynamic resistance</strong> of the tuned circuit:</p>
+      <div class="formula-block"><p><strong>R_D = L / (C × R)</strong> (ohms)</p></div>
+      <p>At resonance the parallel tuned circuit looks like a high-value resistor R_D.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-24.svg" alt="Graph of parallel circuit impedance Z versus frequency. Z starts low at low frequencies, peaks sharply at f_r (dynamic resistance R_D), then falls at high frequencies. Inset circuit schematic shows L and C in parallel with the coil resistance R included.">
+        </div>
+        <figcaption>Fig 4.24 — Parallel resonance: impedance peaks at f_r to a maximum value R_D = L/(CR). Above and below f_r the impedance falls.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-25.svg" alt="Circuit schematic of a parallel tuned (tank) circuit: inductor L (with series resistance R representing coil losses) in parallel with capacitor C, connected to an AC source.">
+        </div>
+        <figcaption>Fig 4.25 — Parallel resonant (tank) circuit. Coil resistance R is included as a series element within the inductor branch.</figcaption>
+      </figure>
+
+      <h3>4H.3 — Q Factor</h3>
+      <p>The <strong>Q factor</strong> (Quality factor) is a dimensionless number expressing the sharpness or selectivity of a tuned circuit. It is defined as the ratio of reactance to resistance:</p>
+      <div class="formula-block"><p><strong>Q = X_C / R = 1 / (2πf_r CR)</strong> (using capacitive reactance)</p></div>
+      <p>or equivalently:</p>
+      <div class="formula-block"><p><strong>Q = X_L / R = 2πf_r L / R</strong> (using inductive reactance)</p></div>
+      <p>For a parallel tuned circuit with dynamic resistance R_D:</p>
+      <div class="formula-block"><p><strong>Q = 2πf_r C R_D</strong></p></div>
+      <p>Higher Q → sharper tuning → more selective (better at rejecting off-resonance frequencies).</p>
+      <p><strong>Practical Q values:</strong> up to ~70 readily achievable with discrete LC circuits; above 100 is difficult because the parallel resistance of the surrounding circuit reduces the effective R_D. Crystals can achieve Q &gt; 50,000.</p>
+
+      <h3>4H.4 — Bandwidth</h3>
+      <p>The <strong>half-power bandwidth</strong> (also called the −3 dB bandwidth) is the frequency range over which the circuit response is within 3 dB (a factor of √2 = 0.707 in voltage) of its peak value:</p>
+      <div class="formula-block"><p><strong>BW = f₂ − f₁</strong> (where f₁ and f₂ are the lower and upper −3 dB frequencies)</p></div>
+      <p>The relationship between Q, resonant frequency and bandwidth:</p>
+      <div class="formula-block"><p><strong>Q = f_r / (f₂ − f₁) = f_r / BW</strong> &nbsp;&nbsp;&nbsp; Rearranged: <strong>BW = f_r / Q</strong></p></div>
+      <p><strong>Example:</strong> A tuned circuit at 7.0 MHz with Q = 70 has bandwidth BW = 7,000,000 / 70 = <strong>100 kHz</strong>. An amateur SSB signal is ~3 kHz wide, so this circuit passes the whole band segment — a bandpass filter needs much higher Q or a more complex design.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-26.svg" alt="Resonance response curve: amplitude versus frequency. The peak is at f_r. Two dashed horizontal lines mark the −3 dB level (0.707 of peak). Vertical dashed lines drop from these intersections to the frequency axis, marking f_1 and f_2. The bandwidth BW = f_2 − f_1 is indicated.">
+        </div>
+        <figcaption>Fig 4.26 — Bandwidth: the −3 dB bandwidth BW = f₂ − f₁. Q = f_r / BW. Higher Q gives narrower bandwidth and sharper frequency selectivity.</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4H1:</strong> Q = f_r/BW is the key relationship. Know how to rearrange: if you know f_r and Q, calculate bandwidth; if you know f_r and bandwidth, calculate Q.</div>
+      </div>
+
+      <h3>4H.5 — Circulating Currents</h3>
+      <p>In a parallel tuned circuit at resonance, large circulating currents flow around the internal L–C loop even though the current entering from outside is very small. The circulating current can be much greater than the input current. This has two implications:</p>
+      <ol>
+        <li><strong>Component ratings:</strong> inductors and capacitors in the tank circuit of a transmitter must be rated for the full circulating current, which can greatly exceed the measured input current.</li>
+        <li><strong>High voltage:</strong> in a series resonant circuit, the voltage magnification factor equals Q — voltages across L and C individually can reach the kV range in a transmitter output stage.</li>
+      </ol>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-27.svg" alt="Parallel LC tank circuit schematic with current arrows showing a large circulating current looping between the inductor and capacitor internally. A smaller input current from the source is shown at the terminals. The ratio of circulating to input current equals Q.">
+        </div>
+        <figcaption>Fig 4.27 — Circulating currents in a parallel tuned circuit at resonance. The internal circulating current (Q × input current) flows around the L–C loop; components must be rated for this larger value.</figcaption>
+      </figure>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4I: CRYSTALS ═════════════════════════ -->
+    <section class="chapter" id="ch-4I">
+      <div class="chapter-header">
+        <span class="chapter-num">4I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Crystals as Resonators</h2>
+
+      <h3>4I.1 — Piezo-Electric Effect and Crystal Resonance</h3>
+      <p>A <strong>quartz crystal</strong> is a thin slice of quartz cut from a naturally occurring crystal. Quartz exhibits the <strong>piezo-electric effect</strong>: mechanical stress applied to the crystal faces generates a voltage between them, and conversely an applied voltage causes the crystal to flex. If an AC signal is applied at the crystal's mechanical resonant frequency, a large-amplitude mechanical oscillation builds up — an electrical resonance.</p>
+      <p>The resonant frequency depends on the physical dimensions of the quartz slice:</p>
+      <ul>
+        <li>Below 1 MHz: bar-shaped (about 70 mm long at 20 kHz)</li>
+        <li>Up to ~20 MHz: thin-slice fundamental mode</li>
+        <li>Above 20 MHz: harmonic or <strong>overtone</strong> mode (close to but not exactly an odd multiple of the fundamental)</li>
+      </ul>
+      <p><strong>Key advantage:</strong> the Q of a crystal is enormously higher than any discrete LC circuit — typically 10,000–100,000 — resulting in very precise, stable frequency control.</p>
+
+      <h3>4I.2 — Crystal Equivalent Circuit</h3>
+      <p>The electrical equivalent circuit of a crystal consists of:</p>
+      <ul>
+        <li>A <strong>series branch:</strong> L (motional inductance), C1 (motional capacitance) and R (motional resistance)</li>
+        <li>A <strong>parallel capacitance C2</strong> (the electrode capacitance)</li>
+      </ul>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-29.svg" alt="Crystal equivalent circuit: a series branch containing inductance L, capacitance C1, and resistance R connected in series, all in parallel with a second capacitor C2 (the electrode capacitance). Two connection terminals are shown.">
+        </div>
+        <figcaption>Fig 4.29 — Crystal equivalent circuit. Series branch (L, C1, R) in parallel with electrode capacitance C2. Two resonant frequencies exist: series resonance of the L-C1-R branch, and parallel resonance where C2 interacts with the motional branch.</figcaption>
+      </figure>
+
+      <p>This gives two resonant frequencies within about 0.1% of each other:</p>
+      <ul>
+        <li><strong>Series resonance</strong> (the L-C1-R branch resonates; C2 is in parallel but high-impedance at this frequency)</li>
+        <li><strong>Parallel resonance</strong> (C2 interacts with the motional branch)</li>
+      </ul>
+      <p>The crystal can be used in either mode, but the circuit must be designed for the intended mode — using a crystal in the wrong mode gives the wrong (incorrect) frequency.</p>
+      <p><strong>Frequency pulling:</strong> the crystal frequency can be shifted by a few kilohertz by varying an external capacitance (typically 20–30 pF) in series or parallel with the crystal. This is used in VXOs (Variable Crystal Oscillators) and in PLL systems to align the crystal to a precise frequency. Many crystals are specified for a particular external load capacitance.</p>
+
+      <h3>4I.3 — Temperature Effects on Crystals</h3>
+      <p>Crystal frequency varies with temperature. The temperature coefficient depends on the cut angle of the quartz slice. Different cuts (AT-cut, BT-cut etc.) optimise the temperature stability in different ranges. For critical applications:</p>
+      <ul>
+        <li><strong>TCXO</strong> (Temperature-Compensated Crystal Oscillator): a temperature-sensing network applies a correcting voltage to a varactor to offset the drift</li>
+        <li><strong>OCXO</strong> (Oven-Controlled Crystal Oscillator): the crystal is held in a thermostatically controlled oven at a stable elevated temperature</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4J: TRANSFORMERS ═════════════════════ -->
+    <section class="chapter" id="ch-4J">
+      <div class="chapter-header">
+        <span class="chapter-num">4J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Transformers and Impedance Matching</h2>
+
+      <h3>4J.1 — Transformer Basics</h3>
+      <p>A transformer consists of two (or more) coils — <strong>primary</strong> and <strong>secondary</strong> — sharing the same magnetic field, usually via a common core. An alternating current in the primary creates a changing magnetic field that induces a voltage in the secondary.</p>
+      <p><strong>Voltage ratio (turns ratio):</strong></p>
+      <div class="formula-block"><p><strong>V_S / V_P = N_S / N_P</strong></p></div>
+      <p>Where N_S and N_P are the number of turns on secondary and primary respectively. A step-down transformer with N_P = 2 × N_S halves the voltage.</p>
+      <p><strong>Current ratio</strong> (conservation of power, neglecting losses):</p>
+      <div class="formula-block"><p><strong>I_P / I_S = N_S / N_P</strong></p></div>
+      <p>If voltage is halved, current is doubled. Power in = power out.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-4/fig-4-28.svg" alt="Transformer schematic: primary winding (N_P turns) on left connected to AC voltage source V_P; secondary winding (N_S turns) on right connected to load Z_load. A shared core links both windings. V_S and current arrows I_P and I_S are labelled.">
+        </div>
+        <figcaption>Fig 4.28 — Transformer: primary (N_P turns), core, and secondary (N_S turns) with load. V_S/V_P = N_S/N_P; I_P/I_S = N_S/N_P.</figcaption>
+      </figure>
+
+      <h3>4J.2 — Impedance Transformation</h3>
+      <p>The impedance seen at the primary depends on the secondary load and the turns ratio:</p>
+      <div class="formula-block"><p><strong>Z_in = Z_load × (N_P / N_S)²</strong></p></div>
+      <p>The impedance transformation factor is the <strong>square of the turns ratio</strong>. This is fundamental to RF circuit design: an amplifier transistor might have a 5 Ω output impedance; a 1:√10 turns ratio transformer (impedance ratio 1:10) presents this as 50 Ω to the antenna feed line.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>4J1:</strong> Z_in = Z_out × (N_P/N_S)². The impedance ratio equals the <em>square</em> of the turns ratio — a 3:1 turns ratio gives a 9:1 impedance ratio. This formula appears in RF impedance matching, audio output stages, and ATU design.</div>
+      </div>
+
+      <h3>4J.3 — Core Materials and Eddy Currents</h3>
+      <p><strong>Mains/audio transformers:</strong> laminated iron cores. Iron laminations are insulated from each other to disrupt the paths of <strong>eddy currents</strong> — circulating currents induced by the changing flux that would otherwise cause large power losses and heating. Audio transformers use thinner laminations (for better high-frequency response) than mains power transformers.</p>
+      <p><strong>RF transformers:</strong> wound on <strong>ferrite</strong> cores. Ferrite is a non-conductive ceramic material made from iron oxides and other metals, so eddy currents cannot flow. The composition is varied to optimise performance at different frequency ranges. All ferrites are slightly lossy at very high frequencies — the correct grade must be chosen.</p>
+
+      <h3>4J.4 — Faraday Screening</h3>
+      <p>To prevent electrostatic (capacitive) coupling between primary and secondary — while maintaining magnetic (inductive) coupling — a <strong>Faraday screen</strong> is placed between the windings. This is a conductive layer (not a complete turn, to avoid acting as a shorted turn) connected to earth.</p>
+      <p>A Faraday-screened transformer prevents RF noise on the mains from coupling through to sensitive receive circuits, and prevents RF currents from the transmitter feeding back into the mains.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4K: TEMPERATURE & SCREENING ═════════ -->
+    <section class="chapter" id="ch-4K">
+      <div class="chapter-header">
+        <span class="chapter-num">4K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Temperature Effects, Screening and Decibels</h2>
+
+      <h3>4K.1 — Temperature Coefficients of Components</h3>
+      <p>All electronic components change their values with temperature. The <strong>temperature coefficient</strong> is expressed in <strong>ppm/°C</strong> (parts per million per degree Celsius).</p>
+      <p><strong>Capacitors:</strong> the dielectric material largely determines the temperature coefficient.</p>
+      <ul>
+        <li>Some capacitors have a <strong>positive TC</strong> (capacitance rises with temperature)</li>
+        <li>Some have a <strong>negative TC</strong> (capacitance falls with temperature)</li>
+        <li>Some are specified as <strong>NP0/C0G</strong> (nominally zero TC) — these are the stable types used in critical RF circuits</li>
+      </ul>
+      <p><strong>Example:</strong> A 200 pF capacitor with TC = +300 ppm/°C in a room that warms by 15°C:<br>
+      ΔC = 200 × 300 × 10⁻⁶ × 15 = <strong>0.9 pF</strong><br>
+      In a 3.5 MHz tuned circuit this shifts the resonant frequency by over 7 kHz — significant for a CW transceiver.</p>
+      <p><strong>Inductors:</strong> typically positive TC because the wire expands slightly as temperature rises, increasing the coil diameter and hence inductance. Ferrite-cored inductors may have a more complex TC because the ferrite permeability also changes with temperature.</p>
+      <p><strong>Compensation:</strong> tuned circuits for frequency-stable applications are built using combinations of positive-TC and negative-TC capacitors chosen so that the net drift is close to zero. Where this is not sufficient, a crystal oscillator or TCXO/OCXO must be used.</p>
+
+      <h3>4K.2 — Screening</h3>
+      <p>Inductors produce a magnetic field that can couple to nearby coils, causing unwanted signal transfer (mutual inductance). Two strategies:</p>
+      <ol>
+        <li><strong>Orientation:</strong> mount adjacent coils at right angles to each other to minimise mutual coupling</li>
+        <li><strong>Screening can:</strong> enclose the inductor in a metal can. The magnetic field induces surface currents in the can that oppose the external field. The can must be large enough — the walls must be at least <strong>1.5 times the coil diameter</strong> away from the coil, otherwise the circulating currents in the metal degrade the inductor's Q</li>
+      </ol>
+      <p><strong>Material choice:</strong></p>
+      <ul>
+        <li>At <strong>RF:</strong> thin aluminium or copper sheet (low resistivity, good at RF frequencies)</li>
+        <li>At <strong>audio frequencies:</strong> high-permeability metal such as Mu-metal, to screen low-frequency magnetic fields</li>
+      </ul>
+      <p><strong>RF circuit screening:</strong> an entire sensitive section of a receiver (e.g. the local oscillator) may be enclosed in a screened box with filtered leads, both to prevent the oscillator radiating and to prevent external signals reaching the sensitive circuitry.</p>
+
+      <h3>4K.3 — Decibels</h3>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">Chapter 4 introduces decibels in outline; the full treatment (10 log P, 20 log V, dBm, dBW, dBd, dBi) is covered in the Measurements chapter. Refer to that chapter for worked examples and the complete reference table.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 4L: SELF-CHECK ═══════════════════════ -->
+    <section class="chapter" id="ch-4L">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Ten questions — work through before checking answers</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">1. A transmitter delivers 400 W into a 50 Ω load. What current flows in the feeder?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-1" hidden>
+            <p>P = I²R → 400 = I² × 50 → I² = 400/50 = 8 → I = √8 = <strong>2.83 A</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">2. Three resistors of 10 Ω, 20 Ω and 30 Ω are connected in series across 120 V. What is the voltage across the 20 Ω resistor?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-2" hidden>
+            <p>R_total = 10 + 20 + 30 = 60 Ω</p>
+            <p>Total current I = V / R_total = 120 / 60 = 2 A</p>
+            <p>V across 20 Ω = I × R = 2 × 20 = <strong>40 V</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">3. A source has EMF 12 V and internal resistance 2 Ω. At what load resistance is maximum power transferred, and what is the maximum power delivered to the load?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-3" hidden>
+            <p>Maximum power transfer when R_load = r = <strong>2 Ω</strong></p>
+            <p>At this point: V_terminal = EMF / 2 = 12 / 2 = 6 V</p>
+            <p>P_load = V² / R_load = 36 / 2 = <strong>18 W</strong></p>
+            <p>(Or: P_max = EMF² / (4r) = 144 / 8 = 18 W)</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">4. A 100 nF capacitor is charged through a 47 kΩ resistor. Calculate the time constant and the time to reach 63% of supply voltage.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-4" hidden>
+            <p>τ = CR = 100 × 10⁻⁹ × 47 × 10³ = <strong>4.7 ms</strong></p>
+            <p>63% is reached at exactly <strong>1τ = 4.7 ms</strong> (by definition of the time constant)</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">5. What inductance has a reactance of 50 Ω at 7.0 MHz?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-5" hidden>
+            <p>X_L = 2πfL → rearrange: L = X_L / (2πf)</p>
+            <p>L = 50 / (2π × 7 × 10⁶) = 50 / (44 × 10⁶) ≈ <strong>1.14 μH</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">6. A mains supply is 230 V RMS. What is the peak voltage?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-6" hidden>
+            <p>V_peak = V_rms × √2 = 230 × 1.414 ≈ <strong>325 V</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">7. A series LC circuit has L = 10 μH and C = 100 pF. Calculate the resonant frequency.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-7">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-7" hidden>
+            <p>f_r = 1 / (2π√(LC))</p>
+            <p>LC = 10 × 10⁻⁶ × 100 × 10⁻¹² = 10⁻¹⁵</p>
+            <p>√(LC) = √(10⁻¹⁵) = 31.6 × 10⁻⁹</p>
+            <p>f_r = 1 / (2π × 31.6 × 10⁻⁹) ≈ <strong>5.03 MHz</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">8. A tuned circuit has a resonant frequency of 14 MHz and a Q of 50. What is the −3 dB bandwidth?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-8">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-8" hidden>
+            <p>BW = f_r / Q = 14 × 10⁶ / 50 = <strong>280 kHz</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">9. A transformer has 200 primary turns and 50 secondary turns. If the primary is connected to 240 V, what is the secondary voltage? If a 4 Ω load is connected to the secondary, what impedance does the source see at the primary?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-9">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-9" hidden>
+            <p>Turns ratio N_P/N_S = 200/50 = 4:1 (step-down)</p>
+            <p>V_S = V_P × (N_S/N_P) = 240 × (50/200) = 240 × 0.25 = <strong>60 V</strong></p>
+            <p>Z_in = Z_load × (N_P/N_S)² = 4 × (200/50)² = 4 × 16 = <strong>64 Ω</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">10. Why must the walls of an inductor screening can be at least 1.5 times the coil diameter away from the coil?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-4-10">Show answer</button>
+          <div class="self-check__reveal" id="ans-4-10" hidden>
+            <p>If the can walls are too close, the magnetic field from the coil induces strong circulating currents in the metal. These currents dissipate energy and act as a lossy parallel resistance in the circuit, <strong>reducing the Q</strong> of the inductor. The 1.5× rule ensures the induced surface currents are weak enough to have negligible effect on Q.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ══════════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-3-amateur-radio-safety.html" class="section-nav__link">← Section 3: Safety</a>
+      <a href="/pages/study/full/practice.html?section=4" class="section-nav__link section-nav__practice">Practice This Section</a>
+      <span class="section-nav__link section-nav__link--disabled">Section 5 →</span>
+    </nav>
+  </main>
+
+  <footer style="border-top:1px solid var(--border); padding:2rem 0; margin-top:0;">
+    <div class="container" style="font-size:0.8rem; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:1rem; justify-content:space-between; align-items:center;">
+      <span>Full Licence · Section 4: Basic Circuits · RF-Hub Study</span>
+      <span>Sources: RSGB Full Licence Manual, 3rd Ed., Chapter 4</span>
+      <a href="./" style="color:var(--text-dim); text-decoration:none;">← Back to Full Study</a>
+    </div>
+  </footer>
+
+  <script src="/assets/js/nav-loader.js?v=20260913-1300"></script>
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', function () {
+      var doc = document.documentElement;
+      var scrollTop = doc.scrollTop || document.body.scrollTop;
+      var scrollHeight = doc.scrollHeight - doc.clientHeight;
+      var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+    });
+
+    // Self-check reveal toggles
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+</body>
+</html>

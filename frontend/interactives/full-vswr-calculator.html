@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSWR Calculator — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.65rem;
+    }
+
+    /* ── Mode tabs ─────────────────────────────────────── */
+    .mode-tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .mode-tab {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+      background: #0d1321;
+      color: #64748b;
+      cursor: pointer;
+      transition: border-color 0.13s, color 0.13s, background 0.13s;
+    }
+
+    .mode-tab.active {
+      border-color: #a78bfa;
+      color: #a78bfa;
+      background: rgba(167,139,250,0.08);
+    }
+
+    /* ── Input grid ────────────────────────────────────── */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    input[type="number"] {
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.92rem;
+      padding: 0.45rem 0.65rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.13s;
+    }
+    input[type="number"]:focus { border-color: #a78bfa; }
+
+    .field-hint {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: #334155;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Result rows ───────────────────────────────────── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .result-cell {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+
+    .result-cell.span2 { grid-column: 1 / -1; }
+
+    .rc-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.25rem;
+    }
+
+    .rc-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1;
+    }
+
+    .rc-sub {
+      font-size: 0.77rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    /* quality colours */
+    .q-excellent { color: #4ade80; }
+    .q-good      { color: #86efac; }
+    .q-ok        { color: #fbbf24; }
+    .q-poor      { color: #f97316; }
+    .q-bad       { color: #ef4444; }
+
+    /* ── Power bar ─────────────────────────────────────── */
+    .power-bar-wrap {
+      margin-top: 0.75rem;
+    }
+
+    .power-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-bottom: 0.3rem;
+    }
+
+    .power-bar-track {
+      height: 8px;
+      background: #0d1321;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .power-bar-fwd {
+      background: #4ade80;
+      height: 100%;
+      transition: width 0.25s;
+    }
+
+    .power-bar-ref {
+      background: #ef4444;
+      height: 100%;
+      transition: width 0.25s;
+    }
+
+    .power-bar-legend {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: #64748b;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      margin-right: 0.3rem;
+    }
+
+    /* ── VSWR quality scale ────────────────────────────── */
+    .vswr-scale {
+      display: flex;
+      height: 6px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.4rem;
+    }
+
+    .vswr-scale > div { flex: 1; }
+
+    .vswr-marker-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: #475569;
+    }
+
+    /* ── Formula box ───────────────────────────────────── */
+    .formula-box {
+      background: #0d1321;
+      border-left: 2px solid #1e293b;
+      border-radius: 0 4px 4px 0;
+      padding: 0.6rem 0.85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: #64748b;
+      line-height: 1.75;
+    }
+
+    .formula-box .hi     { color: #e2e8f0; }
+    .formula-box .cyan   { color: #06b6d4; }
+    .formula-box .purple { color: #a78bfa; }
+    .formula-box .green  { color: #4ade80; }
+    .formula-box .red    { color: #ef4444; }
+
+    /* ── Placeholder ───────────────────────────────────── */
+    .placeholder-msg {
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: #1e293b;
+      padding: 1.5rem 0 0.5rem;
+    }
+
+    @media (max-width: 420px) {
+      .input-grid, .results-grid { grid-template-columns: 1fr; }
+      .result-cell.span2 { grid-column: 1; }
+      .rc-value { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>VSWR Calculator</h1>
+  <p class="subtitle">Forward/reflected power · voltage · impedance → SWR, return loss, mismatch loss</p>
+
+  <!-- Mode + inputs -->
+  <div class="card">
+    <div class="card-label">Input Mode</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="power">Power (W)</button>
+      <button class="mode-tab" data-mode="voltage">Voltage (V)</button>
+      <button class="mode-tab" data-mode="impedance">Impedance (Ω)</button>
+    </div>
+
+    <!-- Power mode -->
+    <div id="pane-power" class="input-grid">
+      <div class="field">
+        <label>Forward Power (W)</label>
+        <input type="number" id="p-fwd" min="0.001" step="any" value="100" inputmode="decimal">
+        <span class="field-hint">P_fwd</span>
+      </div>
+      <div class="field">
+        <label>Reflected Power (W)</label>
+        <input type="number" id="p-ref" min="0" step="any" value="11.1" inputmode="decimal">
+        <span class="field-hint">P_ref — must be &lt; P_fwd</span>
+      </div>
+    </div>
+
+    <!-- Voltage mode -->
+    <div id="pane-voltage" class="input-grid" style="display:none;">
+      <div class="field">
+        <label>V<sub>max</sub> (V)</label>
+        <input type="number" id="v-max" min="0.001" step="any" value="150" inputmode="decimal">
+        <span class="field-hint">Voltage maximum on the line</span>
+      </div>
+      <div class="field">
+        <label>V<sub>min</sub> (V)</label>
+        <input type="number" id="v-min" min="0" step="any" value="50" inputmode="decimal">
+        <span class="field-hint">Voltage minimum — must be &lt; V<sub>max</sub></span>
+      </div>
+    </div>
+
+    <!-- Impedance mode -->
+    <div id="pane-impedance" class="input-grid" style="display:none;">
+      <div class="field">
+        <label>System Z₀ (Ω)</label>
+        <input type="number" id="z-0" min="1" step="any" value="50" inputmode="decimal">
+        <span class="field-hint">Characteristic impedance (50 Ω typical)</span>
+      </div>
+      <div class="field">
+        <label>Load Z<sub>L</sub> (Ω)</label>
+        <input type="number" id="z-l" min="0.1" step="any" value="150" inputmode="decimal">
+        <span class="field-hint">Load impedance (real component)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-grid" id="resultsGrid" style="display:none;">
+
+    <div class="result-cell">
+      <div class="rc-label">VSWR</div>
+      <div class="rc-value" id="rVSWR">—</div>
+      <div class="rc-sub" id="rVSWRq"></div>
+    </div>
+
+    <div class="result-cell">
+      <div class="rc-label">Reflection Coeff (|Γ|)</div>
+      <div class="rc-value" id="rGamma">—</div>
+      <div class="rc-sub" id="rGammaP">— % power reflected</div>
+    </div>
+
+    <div class="result-cell">
+      <div class="rc-label">Return Loss</div>
+      <div class="rc-value" id="rRL">—</div>
+      <div class="rc-sub">dB — higher is better (∞ = perfect match)</div>
+    </div>
+
+    <div class="result-cell">
+      <div class="rc-label">Mismatch Loss</div>
+      <div class="rc-value" id="rML">—</div>
+      <div class="rc-sub" id="rMLp">— % power delivered to load</div>
+    </div>
+
+    <!-- Power bar -->
+    <div class="result-cell span2">
+      <div class="rc-label">Power Budget</div>
+      <div class="power-bar-wrap">
+        <div class="power-bar-labels">
+          <span id="pbFwdLabel">Forward</span>
+          <span id="pbRefLabel">Reflected</span>
+        </div>
+        <div class="power-bar-track">
+          <div class="power-bar-fwd" id="pbFwd" style="width:90%;"></div>
+          <div class="power-bar-ref" id="pbRef" style="width:10%;"></div>
+        </div>
+        <div class="power-bar-legend">
+          <span><span class="legend-dot" style="background:#4ade80;"></span>Delivered</span>
+          <span><span class="legend-dot" style="background:#ef4444;"></span>Reflected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VSWR quality scale -->
+    <div class="result-cell span2">
+      <div class="rc-label">VSWR Quality Scale</div>
+      <div class="vswr-scale" style="margin-top:0.5rem;">
+        <div style="background:#4ade80;"></div>
+        <div style="background:#86efac;"></div>
+        <div style="background:#fbbf24;"></div>
+        <div style="background:#f97316;"></div>
+        <div style="background:#ef4444;"></div>
+      </div>
+      <div class="vswr-marker-row">
+        <span>1.0</span><span>1.5</span><span>2.0</span><span>3.0</span><span>5.0</span><span>∞</span>
+      </div>
+      <div style="margin-top:0.6rem; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:#64748b; display:flex; flex-direction:column; gap:0.2rem;">
+        <span><span style="color:#4ade80;">■</span> 1.0–1.5 Excellent &nbsp; <span style="color:#86efac;">■</span> 1.5–2.0 Good &nbsp; <span style="color:#fbbf24;">■</span> 2.0–3.0 Acceptable &nbsp; <span style="color:#f97316;">■</span> 3.0–5.0 Poor &nbsp; <span style="color:#ef4444;">■</span> &gt;5.0 Very poor</span>
+      </div>
+      <div id="qualityMarker" style="margin-top:0.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.78rem;"></div>
+    </div>
+
+  </div>
+
+  <!-- Error -->
+  <div id="errMsg" style="display:none; font-family:'IBM Plex Mono',monospace; font-size:0.82rem; color:#ef4444; margin-bottom:0.9rem;"></div>
+
+  <!-- Formula reference -->
+  <div class="card">
+    <div class="card-label">Formulae</div>
+    <div class="formula-box">
+      <span class="purple">|Γ|</span> = √(<span class="red">P_ref</span> / <span class="green">P_fwd</span>)
+         = (<span class="hi">V_max</span> − <span class="hi">V_min</span>) / (<span class="hi">V_max</span> + <span class="hi">V_min</span>)
+         = |(<span class="hi">Z_L</span> − <span class="hi">Z_0</span>) / (<span class="hi">Z_L</span> + <span class="hi">Z_0</span>)|<br>
+      <span class="cyan">VSWR</span>   = (1 + <span class="purple">|Γ|</span>) / (1 − <span class="purple">|Γ|</span>)<br>
+      <span class="hi">RL</span>     = −20 log₁₀(<span class="purple">|Γ|</span>)  [dB]<br>
+      <span class="hi">ML</span>     = −10 log₁₀(1 − <span class="purple">|Γ|</span>²)  [dB]<br>
+      <span class="hi">P_del</span>  = <span class="green">P_fwd</span> × (1 − <span class="purple">|Γ|</span>²)
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var mode = 'power';
+
+    /* ── Mode tabs ─────────────────────────────────────────── */
+    document.querySelectorAll('.mode-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.mode-tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        mode = btn.dataset.mode;
+        ['power','voltage','impedance'].forEach(function (m) {
+          document.getElementById('pane-' + m).style.display = m === mode ? 'grid' : 'none';
+        });
+        calc();
+      });
+    });
+
+    /* ── Inputs ────────────────────────────────────────────── */
+    document.querySelectorAll('input[type="number"]').forEach(function (inp) {
+      inp.addEventListener('input', calc);
+    });
+
+    /* ── Core calculation ──────────────────────────────────── */
+    function calc() {
+      var gamma, valid = true, errText = '';
+
+      try {
+        if (mode === 'power') {
+          var pf = parseFloat(document.getElementById('p-fwd').value);
+          var pr = parseFloat(document.getElementById('p-ref').value);
+          if (isNaN(pf) || isNaN(pr) || pf <= 0) { valid = false; }
+          else if (pr < 0) { valid = false; errText = 'Reflected power cannot be negative.'; }
+          else if (pr >= pf) { valid = false; errText = 'Reflected power must be less than forward power.'; }
+          else { gamma = Math.sqrt(pr / pf); }
+
+        } else if (mode === 'voltage') {
+          var vmax = parseFloat(document.getElementById('v-max').value);
+          var vmin = parseFloat(document.getElementById('v-min').value);
+          if (isNaN(vmax) || isNaN(vmin) || vmax <= 0) { valid = false; }
+          else if (vmin < 0) { valid = false; errText = 'V_min cannot be negative.'; }
+          else if (vmin >= vmax) { valid = false; errText = 'V_min must be less than V_max.'; }
+          else { gamma = (vmax - vmin) / (vmax + vmin); }
+
+        } else { /* impedance */
+          var z0 = parseFloat(document.getElementById('z-0').value);
+          var zl = parseFloat(document.getElementById('z-l').value);
+          if (isNaN(z0) || isNaN(zl) || z0 <= 0 || zl <= 0) { valid = false; }
+          else { gamma = Math.abs((zl - z0) / (zl + z0)); }
+        }
+      } catch (e) { valid = false; }
+
+      var errEl = document.getElementById('errMsg');
+      var resEl = document.getElementById('resultsGrid');
+
+      if (!valid) {
+        resEl.style.display = 'none';
+        if (errText) { errEl.style.display = 'block'; errEl.textContent = errText; }
+        else { errEl.style.display = 'none'; }
+        return;
+      }
+
+      errEl.style.display = 'none';
+      resEl.style.display = 'grid';
+
+      var vswr = gamma >= 1 ? Infinity : (1 + gamma) / (1 - gamma);
+      var rl   = gamma > 0 ? -20 * Math.log10(gamma) : Infinity;
+      var ml   = -10 * Math.log10(1 - gamma * gamma);
+      var pRef = gamma * gamma * 100;
+      var pDel = (1 - gamma * gamma) * 100;
+
+      /* VSWR display */
+      var vswrStr = isFinite(vswr) ? vswr.toFixed(2) : '∞';
+      var qCls = vswr <= 1.5 ? 'q-excellent' : vswr <= 2 ? 'q-good' : vswr <= 3 ? 'q-ok' : vswr <= 5 ? 'q-poor' : 'q-bad';
+      var qLabel = vswr <= 1.5 ? 'Excellent' : vswr <= 2 ? 'Good' : vswr <= 3 ? 'Acceptable' : vswr <= 5 ? 'Poor' : 'Very poor';
+
+      setText('rVSWR',  vswrStr, qCls);
+      document.getElementById('rVSWRq').textContent = qLabel;
+
+      setText('rGamma', gamma.toFixed(4), '');
+      document.getElementById('rGammaP').textContent = pRef.toFixed(1) + ' % power reflected';
+
+      setText('rRL', isFinite(rl) ? rl.toFixed(1) + ' dB' : '∞ dB', rl >= 20 ? 'q-excellent' : rl >= 14 ? 'q-good' : rl >= 10 ? 'q-ok' : 'q-poor');
+      setText('rML', ml.toFixed(2) + ' dB', ml < 0.2 ? 'q-excellent' : ml < 0.5 ? 'q-good' : ml < 1 ? 'q-ok' : 'q-poor');
+      document.getElementById('rMLp').textContent = pDel.toFixed(1) + ' % power delivered to load';
+
+      /* Power bar */
+      document.getElementById('pbFwd').style.width = pDel.toFixed(1) + '%';
+      document.getElementById('pbRef').style.width = pRef.toFixed(1) + '%';
+
+      /* Compute actual power if in power mode */
+      if (mode === 'power') {
+        var pf2 = parseFloat(document.getElementById('p-fwd').value);
+        var pr2 = parseFloat(document.getElementById('p-ref').value);
+        document.getElementById('pbFwdLabel').textContent = (pf2 - pr2).toFixed(2) + ' W delivered';
+        document.getElementById('pbRefLabel').textContent = pr2.toFixed(2) + ' W reflected';
+      } else {
+        document.getElementById('pbFwdLabel').textContent = pDel.toFixed(1) + '% delivered';
+        document.getElementById('pbRefLabel').textContent = pRef.toFixed(1) + '% reflected';
+      }
+
+      /* Quality marker */
+      document.getElementById('qualityMarker').innerHTML =
+        'Your reading: <span class="' + qCls + '">VSWR ' + vswrStr + ' — ' + qLabel + '</span>';
+    }
+
+    function setText(id, text, cls) {
+      var el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'rc-value' + (cls ? ' ' + cls : '');
+    }
+
+    calc();
+  })();
+  </script>
+</body>
+</html>

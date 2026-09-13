@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Callsigns &amp; Regional Secondary Locators | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === ROOT VARIABLES === */
+    :root {
+      --bg-primary:    #0a0e1a;
+      --bg-secondary:  #111827;
+      --bg-tertiary:   #1f2937;
+      --text-primary:  #f9fafb;
+      --text-secondary:#9ca3af;
+      --text-muted:    #6b7280;
+      --amber:  #f59e0b;
+      --cyan:   #06b6d4;
+      --purple: #a78bfa;
+      --green:  #4ade80;
+      --border-subtle: rgba(255,255,255,0.08);
+      --border-accent: rgba(167,139,250,0.3);
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+      --radius:    8px;
+      --radius-lg: 12px;
+    }
+
+    /* === BASE === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+      color: var(--amber);
+    }
+
+    /* === PROGRESS BAR === */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      z-index: 1000; transition: width 0.1s linear;
+    }
+
+    /* === SITE NAV === */
+    .site-nav{background:rgba(10,14,26,0.95);border-bottom:1px solid var(--border-subtle);backdrop-filter:blur(8px);position:sticky;top:0;z-index:900}
+    .site-nav .container--wide{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:32px;height:52px}
+    .site-nav-brand{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--amber);letter-spacing:1px;text-decoration:none;flex-shrink:0}
+    .site-nav-links{list-style:none;display:flex;gap:4px;margin:0;padding:0}
+    .site-nav-links a{font-size:13px;color:var(--text-secondary);text-decoration:none;padding:6px 10px;border-radius:6px;transition:color .15s,background .15s}
+    .site-nav-links a:hover,.site-nav-links a.active{color:var(--text-primary);background:rgba(255,255,255,0.06)}
+
+    /* === HERO === */
+    .hero {
+      background: linear-gradient(160deg, #0a0e1a 0%, #130f1e 50%, #0a1018 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 4rem 1.5rem 3rem;
+    }
+    .hero__inner { max-width: 800px; margin: 0 auto; }
+    .breadcrumb {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);
+      margin-bottom: 1.5rem; display: flex; align-items: center;
+      gap: 0.5rem; flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--purple); }
+    .breadcrumb__sep { opacity: 0.4; }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400; line-height: 1.2;
+      margin-bottom: 0.5rem; color: var(--text-primary);
+    }
+    .hero__subtitle {
+      font-size: 1.05rem; color: var(--text-secondary);
+      margin-bottom: 1.5rem; font-weight: 300;
+    }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .tag-chip {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+      padding: 0.2rem 0.55rem; border-radius: 4px; letter-spacing: 0.03em;
+    }
+    .tag-chip--level { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+    .tag-chip--rsgb  { background: rgba(6,182,212,0.1);   color: var(--cyan);   border: 1px solid rgba(6,182,212,0.25); }
+    .hero__meta {
+      font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);
+      display: flex; flex-wrap: wrap; gap: 1rem 2rem;
+    }
+    .hero__meta a { color: var(--text-muted); text-decoration: none; }
+    .hero__meta a:hover { color: var(--purple); }
+
+    /* === LAYOUT === */
+    main { max-width: 800px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+
+    /* === CHAPTER === */
+    .chapter { margin-bottom: 3rem; }
+    .chapter h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 400; color: var(--text-primary);
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .chapter h3 {
+      font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
+      margin-top: 2rem; margin-bottom: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+    }
+    .chapter p { color: var(--text-secondary); margin-bottom: 1rem; }
+    .chapter p:last-child { margin-bottom: 0; }
+    .chapter p strong { color: var(--text-primary); font-weight: 600; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.5rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter-intro {
+      font-size: 1.05rem; color: var(--text-primary);
+      line-height: 1.75; margin-bottom: 1.25rem;
+    }
+
+    /* === TABLES === */
+    .table-wrap {
+      overflow-x: auto; margin-bottom: 1.25rem;
+      border-radius: var(--radius); border: 1px solid var(--border-subtle);
+    }
+    .data-table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    .data-table thead { background: var(--bg-tertiary); }
+    .data-table th {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted);
+      padding: 0.65rem 1rem; text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .data-table td {
+      padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top; color: var(--text-secondary);
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .data-table .mono-col {
+      font-family: var(--font-mono); font-weight: 500;
+      color: var(--amber); white-space: nowrap;
+    }
+    .data-table .primary-col { color: var(--text-primary); font-weight: 500; }
+    .data-table .purple-col { color: var(--purple); font-family: var(--font-mono); font-weight: 500; }
+
+    /* Quick-ref table (purple accent) */
+    .quickref-wrap {
+      overflow-x: auto; border-radius: var(--radius);
+      border: 1px solid rgba(167,139,250,0.25); margin-bottom: 1.25rem;
+    }
+    .quickref-table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    .quickref-table thead { background: rgba(167,139,250,0.08); }
+    .quickref-table th {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.07em; color: var(--purple);
+      padding: 0.7rem 1rem; text-align: left;
+      border-bottom: 1px solid rgba(167,139,250,0.2);
+    }
+    .quickref-table td {
+      padding: 0.65rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .quickref-table tbody tr:last-child td { border-bottom: none; }
+    .quickref-table tbody tr:hover { background: rgba(167,139,250,0.04); }
+    .quickref-table .suf-col {
+      font-family: var(--font-mono); font-size: 1rem; font-weight: 500;
+      color: var(--amber); white-space: nowrap; width: 5.5rem;
+    }
+    .quickref-table .spoken-col { color: var(--text-muted); font-size: 0.85rem; width: 10rem; }
+    .quickref-table .means-col { color: var(--text-primary); font-weight: 500; }
+    .quickref-table .when-col { color: var(--text-secondary); font-size: 0.875rem; }
+
+    /* Decode card (worked examples) */
+    .decode-card {
+      background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg); margin-bottom: 1.5rem; overflow: hidden;
+    }
+    .decode-card__header {
+      background: rgba(167,139,250,0.06); border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.25rem;
+      font-family: var(--font-mono); font-size: 1.15rem;
+      font-weight: 500; color: var(--amber);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .decode-card__header span {
+      font-size: 0.75rem; font-weight: 400; color: var(--text-muted);
+      font-family: var(--font-body);
+    }
+    .decode-card table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .decode-card td {
+      padding: 0.55rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .decode-card tr:last-child td { border-bottom: none; }
+    .decode-card .elem-col {
+      width: 8rem; font-family: var(--font-mono); font-size: 0.88rem;
+      font-weight: 500; color: var(--purple);
+    }
+    .decode-card .val-col { color: var(--text-secondary); }
+    .decode-card .val-col strong { color: var(--text-primary); }
+    .decode-card .full-row td {
+      background: rgba(167,139,250,0.04); color: var(--text-primary);
+      font-size: 0.9rem; border-bottom: none;
+    }
+    .decode-card .full-row .elem-col { color: var(--text-muted); font-size: 0.78rem; }
+
+    /* Code block */
+    .code-block {
+      background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem; overflow-x: auto;
+      font-family: var(--font-mono); font-size: 0.83rem; color: var(--text-secondary);
+      line-height: 1.8; margin-bottom: 1.25rem;
+    }
+
+    /* Callouts */
+    .callout {
+      border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.25rem 0;
+      border-left: 3px solid; font-size: 0.9rem; line-height: 1.65;
+    }
+    .callout strong { display: block; font-size: 0.78rem; font-family: var(--font-mono);
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.45rem; }
+    .callout p { margin-bottom: 0; }
+    .callout--amber { background: rgba(245,158,11,0.07); border-color: var(--amber); color: #ddb876; }
+    .callout--amber strong { color: var(--amber); }
+    .callout--cyan { background: rgba(6,182,212,0.07); border-color: var(--cyan); color: #7dd3e8; }
+    .callout--cyan strong { color: var(--cyan); }
+    .callout--purple { background: rgba(167,139,250,0.07); border-color: var(--purple); color: #c4b5f8; }
+    .callout--purple strong { color: var(--purple); }
+
+    /* Iframe / interactive slot */
+    .interactive-wrap { margin: 1.5rem 0; position: relative; }
+    .interactive-wrap iframe {
+      width: 100%; border: 1px solid #1e293b; border-radius: var(--radius);
+      display: block;
+    }
+    .frame-fallback {
+      position: absolute; inset: 0;
+      background: rgba(10,14,26,0.92);
+      border: 1px dashed rgba(167,139,250,0.25);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 0.5rem; pointer-events: none;
+    }
+    .frame-fallback p { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem; }
+
+    /* Divider */
+    .section-divider { border: none; border-top: 1px solid var(--border-subtle); margin: 2.5rem 0; }
+
+    /* Footer */
+    footer { background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); padding: 2rem 1.5rem; }
+    .footer__inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 1rem 2rem;
+      align-items: center; justify-content: space-between;
+    }
+    .footer__meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
+    .footer__meta span { display: block; margin-bottom: 0.2rem; }
+    .footer__links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .footer__links a {
+      font-size: 0.82rem; color: var(--text-muted); text-decoration: none;
+      font-family: var(--font-mono); padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border-subtle); border-radius: 4px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .footer__links a:hover { color: var(--purple); border-color: rgba(167,139,250,0.4); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { padding: 2.5rem 1rem 2rem; }
+      main  { padding: 2rem 1rem 3rem; }
+      .quickref-table .when-col { display: none; }
+    }
+    @media (max-width: 360px) {
+      .hero h1 { font-size: 1.55rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      #progress-bar { transition: none; }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/search.css?v=20260913-1300">
+  <meta name="site-nav-active" content="sidebands">
+</head>
+<body>
+
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/study/">Study</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="hero">
+  <div class="hero__inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">RF-Hub</a>
+      <span class="breadcrumb__sep">›</span>
+      <span>Sideband</span>
+      <span class="breadcrumb__sep">›</span>
+      <span>UK Callsigns &amp; RSLs</span>
+    </nav>
+
+    <h1>UK Callsigns &amp; Regional Secondary Locators</h1>
+    <p class="hero__subtitle">Complete reference for the UK amateur callsign system — prefix, digit, RSL, suffix, worked examples, and the interactive callsign parser</p>
+
+    <div class="tag-row" aria-label="Licence levels">
+      <span class="tag-chip tag-chip--level" title="Foundation level">F</span>
+      <span class="tag-chip tag-chip--level" title="Intermediate level">I</span>
+      <span class="tag-chip tag-chip--level" title="Full licence">FL</span>
+      <span class="tag-chip tag-chip--rsgb" title="RSGB syllabus reference">RSGB 1H1</span>
+      <span class="tag-chip tag-chip--rsgb">RSGB 1B</span>
+    </div>
+
+    <div class="hero__meta">
+      <span>Series: Sideband &mdash; Topic Snippets for RF-Hub</span>
+      <span>Cross-refs:
+        <a href="../study/full/section-1-licence-conditions.html" target="_blank">Full §1H &mdash; Callsigns &amp; Schedule 1</a> &middot;
+        <a href="../study/intermediate/section-1-licensing.html" target="_blank">Intermediate §1B &mdash; Callsign Structure</a> &middot;
+        <a href="phonetic-alphabet.html">NATO Phonetic Alphabet</a>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main>
+
+  <!-- INTRO -->
+  <section class="chapter">
+    <p class="chapter-intro">A UK amateur radio callsign tells you three things at a glance: <strong>which licence class</strong> the holder holds, <strong>which region</strong> of the UK they are in (or the legacy region their callsign was issued for), and <strong>how they are currently operating</strong> (via a suffix). Once you can decode the pattern, every callsign on the band tells a story.</p>
+    <p>This sideband is a complete reference for the current UK callsign system, including the post-2024 Ofcom licence update. Enter any UK callsign in the interactive parser below to decode it in real time.</p>
+
+    <!-- Interactive: UK callsign parser (companion to this article) -->
+    <div class="interactive-wrap" id="parser-wrap">
+      <iframe id="parser-frame" src="/interactives/uk-callsign-parser.html"
+              style="height:750px;" loading="lazy"
+              title="UK Callsign Parser — enter a callsign to decode it"
+              onload="document.getElementById('parser-ff').style.display='none'">
+      </iframe>
+      <div class="frame-fallback" id="parser-ff">
+        <p>UK Callsign Parser</p>
+        <p style="opacity:0.6; font-size:0.72em;">Interactive loading&hellip;</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CALLSIGN STRUCTURE -->
+  <section class="chapter">
+    <h2>Callsign Structure</h2>
+    <p>All UK amateur callsigns follow the same pattern:</p>
+    <pre class="code-block">[PREFIX] [DIGIT] [LETTERS] / [OP-SUFFIX]
+  │        │        │            │
+  │        │        │            └─ /M /P /A /MM /AM /T (optional)
+  │        │        └─ 2–3 personal letters
+  │        └─ encodes licence class (see table below)
+  └─ encodes region (M=England, MM=Scotland, MW=Wales, etc.)</pre>
+
+    <p><strong>Example: <code>MM7ABC/P</code></strong></p>
+    <ul>
+      <li><code>MM</code> = Scotland (modern M-series, Scottish prefix)</li>
+      <li><code>7</code> = Foundation licence</li>
+      <li><code>ABC</code> = personal suffix</li>
+      <li><code>/P</code> = operating portable (e.g. SOTA summit)</li>
+    </ul>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- PREFIX AND DIGIT -->
+  <section class="chapter">
+    <h2>Prefix and Digit &mdash; Licence Class</h2>
+    <p>The digit in the callsign encodes the licence class. In the modern M-series:</p>
+
+    <h3>Modern M-series</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:5rem">Digit</th>
+            <th>Class</th>
+            <th>Prefix examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono-col">0</td>
+            <td class="primary-col">Full</td>
+            <td>M0, MM0, MW0, MI0, MD0, MJ0, MU0</td>
+          </tr>
+          <tr>
+            <td class="mono-col">1</td>
+            <td class="primary-col">Full</td>
+            <td>M1 <em style="color:var(--text-muted); font-size:0.85em;">[VERIFY — less commonly assigned]</em></td>
+          </tr>
+          <tr>
+            <td class="mono-col">5</td>
+            <td class="primary-col">Full</td>
+            <td>M5 <em style="color:var(--text-muted); font-size:0.85em;">[VERIFY — modern Full allocation]</em></td>
+          </tr>
+          <tr>
+            <td class="mono-col">3</td>
+            <td class="primary-col">Foundation</td>
+            <td>M3, MM3, MW3, MI3, MD3, MJ3, MU3</td>
+          </tr>
+          <tr>
+            <td class="mono-col">6</td>
+            <td class="primary-col">Foundation</td>
+            <td>M6, MM6, MW6, MI6, MD6, MJ6, MU6</td>
+          </tr>
+          <tr>
+            <td class="mono-col">7</td>
+            <td class="primary-col">Foundation</td>
+            <td>M7, MM7, MW7, MI7, MD7, MJ7, MU7</td>
+          </tr>
+          <tr>
+            <td class="mono-col">8</td>
+            <td class="primary-col">Intermediate</td>
+            <td>M8 (England &mdash; new 2023 series) <em style="color:var(--text-muted); font-size:0.85em;">[VERIFY regional variants]</em></td>
+          </tr>
+          <tr>
+            <td class="mono-col">9</td>
+            <td class="primary-col">Intermediate</td>
+            <td>M9 (England &mdash; new 2023 series) <em style="color:var(--text-muted); font-size:0.85em;">[VERIFY regional variants]</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--cyan">
+      <strong>Note</strong>
+      Digits 2 and 4 are not allocated in the current M-series. <em style="font-size:0.9em;">[VERIFY]</em>
+    </div>
+
+    <h3>Legacy G-series (still valid)</h3>
+    <p>These callsigns were issued before the M-series and remain fully valid. The holder may have sat the exam decades ago.</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Legacy prefix</th>
+            <th>Class</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono-col">G0, G3, G4</td>
+            <td class="primary-col">Full &mdash; England</td>
+            <td>Pre-M-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">G6, G7</td>
+            <td class="primary-col">Full &mdash; England</td>
+            <td>Later G-series allocations <em style="color:var(--text-muted); font-size:0.85em;">[VERIFY digit/class mapping]</em></td>
+          </tr>
+          <tr>
+            <td class="mono-col">GM0, GM3, GM4</td>
+            <td class="primary-col">Full &mdash; Scotland</td>
+            <td>Legacy G-series, Scottish prefix</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GW0, GW3, GW4</td>
+            <td class="primary-col">Full &mdash; Wales</td>
+            <td>Legacy G-series, Welsh prefix</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GI0, GI3, GI4</td>
+            <td class="primary-col">Full &mdash; N. Ireland</td>
+            <td>Legacy G-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GD0, GD3, GD4</td>
+            <td class="primary-col">Full &mdash; Isle of Man</td>
+            <td>Legacy G-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GJ0, GJ3, GJ4</td>
+            <td class="primary-col">Full &mdash; Jersey</td>
+            <td>Legacy G-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GU0, GU3, GU4</td>
+            <td class="primary-col">Full &mdash; Guernsey</td>
+            <td>Legacy G-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2E0, 2E1</td>
+            <td class="primary-col">Intermediate &mdash; England</td>
+            <td>Legacy intermediate series, still in widespread use</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2M0, 2M1</td>
+            <td class="primary-col">Intermediate &mdash; Scotland</td>
+            <td>Legacy 2-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2W0, 2W1</td>
+            <td class="primary-col">Intermediate &mdash; Wales</td>
+            <td>Legacy 2-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2I0, 2I1</td>
+            <td class="primary-col">Intermediate &mdash; N. Ireland</td>
+            <td>Legacy 2-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2D0</td>
+            <td class="primary-col">Intermediate &mdash; Isle of Man</td>
+            <td>Legacy 2-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2J0</td>
+            <td class="primary-col">Intermediate &mdash; Jersey</td>
+            <td>Legacy 2-series</td>
+          </tr>
+          <tr>
+            <td class="mono-col">2U0</td>
+            <td class="primary-col">Intermediate &mdash; Guernsey</td>
+            <td>Legacy 2-series</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-muted);">[VERIFY] the complete digit-to-class mapping for legacy G-series (G0 vs G3 vs G6 vs G7) against current Ofcom records &mdash; the mapping has evolved over decades of callsign assignments.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- RSLs -->
+  <section class="chapter">
+    <h2>Regional Secondary Locators (RSLs)</h2>
+    <p>The <strong>Regional Secondary Locator</strong> is the letter (or letters) in the prefix that identifies the region. In the modern M-series the RSL is built into the prefix letter:</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Region</th>
+            <th>Modern prefix</th>
+            <th>Legacy RSL (G-series)</th>
+            <th>RSL letter(s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="primary-col">England</td>
+            <td class="mono-col">M</td>
+            <td>G</td>
+            <td>G (none added)</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Scotland</td>
+            <td class="mono-col">MM</td>
+            <td>GM</td>
+            <td>M</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Wales</td>
+            <td class="mono-col">MW</td>
+            <td>GW</td>
+            <td>W</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Northern Ireland</td>
+            <td class="mono-col">MI</td>
+            <td>GI</td>
+            <td>I</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Isle of Man</td>
+            <td class="mono-col">MD</td>
+            <td>GD</td>
+            <td>D</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Jersey</td>
+            <td class="mono-col">MJ</td>
+            <td>GJ</td>
+            <td>J</td>
+          </tr>
+          <tr>
+            <td class="primary-col">Guernsey</td>
+            <td class="mono-col">MU</td>
+            <td>GU</td>
+            <td>U</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The RSL indicates where the <strong>callsign was issued</strong> (for G-series) or where the <strong>operator is licensed</strong> (for M-series). For the modern M-series, the prefix letter already encodes the region &mdash; a Scotland-licensed Foundation holder is MM7, not M7.</p>
+
+    <div class="callout callout--amber">
+      <strong>Licence Condition</strong>
+      RSL accuracy is a licence condition. When the RSL is used, it must be correct for the location of the transmission (licence clause 6-23). Using an incorrect RSL (e.g. claiming MM when you are actually in England) is a breach of licence conditions.
+    </div>
+
+    <h3>RSL Reference Table</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>RSL</th>
+            <th>Region</th>
+            <th>Modern equivalent</th>
+            <th>Example (legacy)</th>
+            <th>Example (modern)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono-col">G</td>
+            <td class="primary-col">England</td>
+            <td>M</td>
+            <td>G4ABC</td>
+            <td>M0ABC</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GM</td>
+            <td class="primary-col">Scotland</td>
+            <td>MM</td>
+            <td>GM0XYZ</td>
+            <td>MM0XYZ</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GW</td>
+            <td class="primary-col">Wales</td>
+            <td>MW</td>
+            <td>GW4DEF</td>
+            <td>MW0DEF</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GI</td>
+            <td class="primary-col">Northern Ireland</td>
+            <td>MI</td>
+            <td>GI4JKL</td>
+            <td>MI0JKL</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GD</td>
+            <td class="primary-col">Isle of Man</td>
+            <td>MD</td>
+            <td>GD3MNO</td>
+            <td>MD3MNO</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GJ</td>
+            <td class="primary-col">Jersey</td>
+            <td>MJ</td>
+            <td>GJ3PQR</td>
+            <td>MJ3PQR</td>
+          </tr>
+          <tr>
+            <td class="mono-col">GU</td>
+            <td class="primary-col">Guernsey</td>
+            <td>MU</td>
+            <td>GU3STU</td>
+            <td>MU3STU</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SUFFIXES -->
+  <section class="chapter">
+    <h2>Callsign Suffixes &mdash; Operating Location Modifiers</h2>
+    <p>A suffix after a forward-slash indicates <strong>how or where</strong> you are currently operating. Under the 2024 licence update, formal suffix definitions were removed from the licence document &mdash; but the following suffixes remain in established use and are tested in exams <em style="font-size:0.88em; color:var(--text-muted);">[VERIFY current licence document status]</em>.</p>
+
+    <div class="quickref-wrap">
+      <table class="quickref-table">
+        <thead>
+          <tr>
+            <th class="suf-col">Suffix</th>
+            <th class="spoken-col">Spoken as</th>
+            <th class="means-col">Meaning</th>
+            <th class="when-col">When to use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="suf-col">/M</td>
+            <td class="spoken-col">"stroke Mobile"</td>
+            <td class="means-col">Mobile</td>
+            <td class="when-col">Moving or stopped vehicle, or on foot</td>
+          </tr>
+          <tr>
+            <td class="suf-col">/P</td>
+            <td class="spoken-col">"stroke Portable"</td>
+            <td class="means-col">Portable &mdash; temporary location</td>
+            <td class="when-col">SOTA summit, POTA park, contest field, hilltop with postcode</td>
+          </tr>
+          <tr>
+            <td class="suf-col">/A</td>
+            <td class="spoken-col">"stroke Alpha" or "stroke Alternative"</td>
+            <td class="means-col">Alternative premises</td>
+            <td class="when-col">Friend's house, hotel, holiday cottage, club shack</td>
+          </tr>
+          <tr>
+            <td class="suf-col">/MM</td>
+            <td class="spoken-col">"stroke Maritime Mobile"</td>
+            <td class="means-col">Maritime mobile &mdash; vessel at sea</td>
+            <td class="when-col">Yacht, cargo vessel, ferry in open water</td>
+          </tr>
+          <tr>
+            <td class="suf-col">/AM</td>
+            <td class="spoken-col">"stroke Aeronautical Mobile"</td>
+            <td class="means-col">Aeronautical mobile &mdash; airborne</td>
+            <td class="when-col">Aircraft; <strong>max 500 mW EIRP; primary amateur bands only</strong> <em style="font-size:0.85em;">[VERIFY]</em></td>
+          </tr>
+          <tr>
+            <td class="suf-col">/T</td>
+            <td class="spoken-col">"stroke Temporary"</td>
+            <td class="means-col">Temporary location</td>
+            <td class="when-col"><em style="color:var(--text-muted);">[VERIFY &mdash; may overlap with /P or /A; check current guidance]</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Situation Guide</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Where you are operating</th>
+            <th style="width:7rem">Suffix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Your licence address (home)</td><td class="mono-col">None</td></tr>
+          <tr><td>Garden or shed at same address</td><td class="mono-col">None</td></tr>
+          <tr><td>Parked car</td><td class="mono-col">/M</td></tr>
+          <tr><td>Car in motion</td><td class="mono-col">/M</td></tr>
+          <tr><td>Walking with a handheld</td><td class="mono-col">/M</td></tr>
+          <tr><td>SOTA or POTA activation (named summit/park)</td><td class="mono-col">/P</td></tr>
+          <tr><td>Contest from a field with a postcode</td><td class="mono-col">/P</td></tr>
+          <tr><td>Friend&rsquo;s house or holiday cottage</td><td class="mono-col">/A</td></tr>
+          <tr><td>Hotel or temporary accommodation</td><td class="mono-col">/A</td></tr>
+          <tr><td>Canal boat (inland waterway)</td><td class="mono-col">/M</td></tr>
+          <tr><td>Yacht in open sea (international waters)</td><td class="mono-col">/MM</td></tr>
+          <tr><td>Commercial aircraft</td><td class="mono-col">/AM</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--purple">
+      <strong>CW separator</strong>
+      On CW, the &ldquo;/&rdquo; is sent as <code>&minus;&middot;&middot;&minus;&middot;</code> (dah-dit-dit-dah-dit), the internationally recognised fraction bar prosign. Spoken on voice as &ldquo;stroke&rdquo; (UK convention) or &ldquo;slash&rdquo; (informal).
+    </div>
+
+    <div class="callout callout--amber">
+      <strong>2024 Update Note</strong>
+      The 2024 Ofcom licence revision removed formal suffix definitions from the licence document itself. The standard suffixes above are still used in practice and are tested in exams. [VERIFY] against the current licence document for any changes to how they are described or required.
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- WORKED EXAMPLES -->
+  <section class="chapter">
+    <h2>Worked Examples &mdash; Decoding Real Callsigns</h2>
+
+    <div class="decode-card">
+      <div class="decode-card__header">G0HIQ <span>Full-class England, legacy G-series</span></div>
+      <table>
+        <tr><td class="elem-col">G</td><td class="val-col">England (legacy G-series, no RSL letter inserted)</td></tr>
+        <tr><td class="elem-col">0</td><td class="val-col">Full licence</td></tr>
+        <tr><td class="elem-col">HIQ</td><td class="val-col">Personal suffix</td></tr>
+        <tr class="full-row"><td class="elem-col">Full read:</td><td class="val-col">Full-licence holder in England; callsign issued in the pre-M-series era</td></tr>
+      </table>
+    </div>
+
+    <div class="decode-card">
+      <div class="decode-card__header">2E0ABC <span>Intermediate England, legacy 2-series</span></div>
+      <table>
+        <tr><td class="elem-col">2</td><td class="val-col">Intermediate licence (legacy 2-series)</td></tr>
+        <tr><td class="elem-col">E</td><td class="val-col">England (RSL)</td></tr>
+        <tr><td class="elem-col">0</td><td class="val-col">Issued from the first Intermediate block</td></tr>
+        <tr><td class="elem-col">ABC</td><td class="val-col">Personal suffix</td></tr>
+        <tr class="full-row"><td class="elem-col">Full read:</td><td class="val-col">Intermediate-licence holder in England; callsign predates the M8/M9 series introduced in 2023</td></tr>
+      </table>
+    </div>
+
+    <div class="decode-card">
+      <div class="decode-card__header">MM7XYZ/P <span>Foundation Scotland, portable activation</span></div>
+      <table>
+        <tr><td class="elem-col">MM</td><td class="val-col">Scotland (modern M-series)</td></tr>
+        <tr><td class="elem-col">7</td><td class="val-col">Foundation licence</td></tr>
+        <tr><td class="elem-col">XYZ</td><td class="val-col">Personal suffix</td></tr>
+        <tr><td class="elem-col">/P</td><td class="val-col">Currently operating portable</td></tr>
+        <tr class="full-row"><td class="elem-col">Full read:</td><td class="val-col">Scotland-licensed Foundation holder, on a portable activation (e.g. SOTA Munro summit)</td></tr>
+      </table>
+    </div>
+
+    <div class="decode-card">
+      <div class="decode-card__header">M6ABC/MM <span>Foundation England, maritime mobile</span></div>
+      <table>
+        <tr><td class="elem-col">M</td><td class="val-col">England (modern M-series)</td></tr>
+        <tr><td class="elem-col">6</td><td class="val-col">Foundation licence</td></tr>
+        <tr><td class="elem-col">ABC</td><td class="val-col">Personal suffix</td></tr>
+        <tr><td class="elem-col">/MM</td><td class="val-col">Currently at sea (maritime mobile)</td></tr>
+        <tr class="full-row"><td class="elem-col">Full read:</td><td class="val-col">England-licensed Foundation holder operating from a vessel in open sea; must comply with maritime operating conditions</td></tr>
+      </table>
+    </div>
+
+    <div class="decode-card">
+      <div class="decode-card__header">GB100RSGB <span>Commemorative special event callsign</span></div>
+      <table>
+        <tr><td class="elem-col">GB</td><td class="val-col">Special event / commemorative prefix</td></tr>
+        <tr><td class="elem-col">100</td><td class="val-col">Numeric element (centenary indicator)</td></tr>
+        <tr><td class="elem-col">RSGB</td><td class="val-col">Event identifier</td></tr>
+        <tr class="full-row"><td class="elem-col">Full read:</td><td class="val-col">Commemorative special event callsign marking the RSGB centenary; issued via NoV; operated by a licensed amateur who retains their own callsign for normal operation</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- SPECIAL AND CLUB CALLSIGNS -->
+  <section class="chapter">
+    <h2>Special and Club Callsigns</h2>
+
+    <h3>GB &mdash; Special Event and Commemorative Callsigns</h3>
+    <p>The <strong>GB prefix</strong> is reserved for special event stations and commemorative operations, issued by Ofcom via a <strong>Notice of Variation (NoV)</strong>. Examples:</p>
+    <ul>
+      <li><code>GB0xxx</code> &mdash; special event station (e.g. airshow, heritage railway, museum)</li>
+      <li><code>GB2xxx</code>, <code>GB4xxx</code> &mdash; club or commemorative</li>
+      <li><code>GB100RSGB</code> &mdash; RSGB centenary (extended numeric element permitted for commemorative calls)</li>
+    </ul>
+    <p>The Full licence holder who applies for the NoV is legally responsible for the station. They continue to use their own callsign for normal operation &mdash; the GB callsign is used only during the special event.</p>
+
+    <h3>Licence Class Progression</h3>
+    <p>When you pass a higher-class exam:</p>
+    <ul>
+      <li>You <strong>keep your existing callsign</strong> &mdash; it doesn&rsquo;t automatically change</li>
+      <li>Your licence is re-issued at the higher class under your existing callsign</li>
+      <li>If you want a new callsign matching your new class (e.g. an M0 callsign when you upgrade from M7), you can apply to Ofcom for a new one &mdash; this is optional</li>
+      <li>Your existing callsign remains valid until you request a change</li>
+    </ul>
+    <p>Example: M7ABC passes the Full exam. They now operate as M7ABC at Full power with Full privileges. If they later request a new callsign, they might be assigned M0DEF. <em style="color:var(--text-muted); font-size:0.88em;">[VERIFY current Ofcom process for callsign change on upgrade.]</em></p>
+
+    <h3>Club and Other Prefixes</h3>
+    <p>Some club stations use <code>GX</code> or <code>GZ</code> prefixes for assigned club callsigns. <code>MX</code> and <code>MZ</code> prefixes appear in some Ofcom documentation. <em style="color:var(--text-muted); font-size:0.88em;">[VERIFY current Ofcom allocation and purpose for GX/GZ and MX/MZ &mdash; may be reserved for specific uses.]</em></p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- QUICK REFERENCE -->
+  <section class="chapter">
+    <h2>Quick Reference</h2>
+    <pre class="code-block">LICENCE CLASS (modern M-series):
+  Full:         M0, M1, M5  (England)
+                MM0 (Scotland), MW0 (Wales), MI0 (N.Ire),
+                MD0 (IoM), MJ0 (Jersey), MU0 (Guernsey)
+  Intermediate: M8, M9      (England, new 2023 series)
+                2E0, 2E1    (England, legacy)
+                2M0 (Scot), 2W0 (Wales), 2I0 (N.Ire)
+  Foundation:   M3, M6, M7  (England)
+                MM3/6/7 (Scot), MW3/6/7 (Wales), MI3/6/7 (N.Ire)
+
+LEGACY G-SERIES (still valid):
+  England:      G + digit (G0, G3, G4, G6, G7...)
+  Scotland:     GM + digit
+  Wales:        GW + digit
+  N. Ireland:   GI + digit
+  Isle of Man:  GD + digit
+  Jersey:       GJ + digit
+  Guernsey:     GU + digit
+
+REGIONAL SECONDARY LOCATORS:
+  G=England  GM=Scotland  GW=Wales  GI=N.Ireland
+  GD=Isle of Man  GJ=Jersey  GU=Guernsey
+
+OPERATING SUFFIXES:
+  /M   Mobile (vehicle, on foot)
+  /P   Portable (temporary location)
+  /A   Alternative address
+  /MM  Maritime mobile (at sea)
+  /AM  Aeronautical mobile (500 mW EIRP) [VERIFY]
+  /T   Temporary [VERIFY current licence status]</pre>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="footer__inner">
+    <div class="footer__meta">
+      <span>Sideband &mdash; Topic Snippets for RF-Hub</span>
+      <span>Tags: [F] [I] [FL] &middot; RSGB 1H1, 1B</span>
+    </div>
+    <nav class="footer__links" aria-label="Related pages">
+      <a href="../study/full/section-1-licence-conditions.html">Full §1H</a>
+      <a href="../study/intermediate/section-1-licensing.html">Intermediate §1B</a>
+      <a href="phonetic-alphabet.html">Phonetic Alphabet</a>
+      <a href="../../index.html">&larr; RF-Hub Home</a>
+    </nav>
+  </div>
+  <p style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center; margin-top:0.75rem; margin-bottom:0;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
+</footer>
+
+<script>
+  (function () {
+    var bar = document.getElementById('progress-bar');
+    function update() {
+      var scrolled = window.scrollY;
+      var total    = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+</script>
+
+<script src="/assets/js/search.js?v=20260913-1300" defer></script>
+<script src="/assets/js/nav-loader.js?v=20260913-1300" defer></script>
+</body>
+</html>
