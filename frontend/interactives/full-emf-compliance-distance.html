@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMF Compliance Distance — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Grid layout */
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+    @media (max-width: 480px) {
+      .inputs-grid { grid-template-columns: 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    select, input[type="number"] {
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.88rem;
+      padding: 0.45rem 0.65rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    select:focus, input[type="number"]:focus {
+      border-color: #a78bfa;
+    }
+
+    /* Mode presets */
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .preset-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+      background: #0d1321;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .preset-btn:hover, .preset-btn.active {
+      border-color: #a78bfa;
+      color: #a78bfa;
+    }
+
+    /* Result display */
+    .result-card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .result-distance {
+      font-family: 'DM Serif Display', serif;
+      font-size: 3rem;
+      line-height: 1;
+      transition: color 0.25s;
+    }
+
+    .result-unit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .result-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .status-green  { color: #22c55e; background: rgba(34,197,94,0.1);  border: 1px solid rgba(34,197,94,0.25); }
+    .status-amber  { color: #f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
+    .status-red    { color: #ef4444; background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25); }
+    .status-none   { color: #64748b; background: rgba(100,116,139,0.1); border: 1px solid #1e293b; }
+
+    .result-meta { flex: 1; }
+
+    .result-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Detail rows */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #1e293b;
+      font-size: 0.82rem;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key { font-family: 'IBM Plex Mono', monospace; color: #64748b; }
+    .detail-val { font-family: 'IBM Plex Mono', monospace; color: #e2e8f0; }
+
+    /* Warnings */
+    .warning-box {
+      background: rgba(245,158,11,0.07);
+      border-left: 3px solid #f59e0b;
+      border-radius: 0 4px 4px 0;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.82rem;
+      color: #fbbf24;
+      line-height: 1.5;
+      display: none;
+    }
+
+    /* Formula */
+    .formula-box {
+      background: #0d1321;
+      border-radius: 4px;
+      border-left: 2px solid #1e293b;
+      padding: 0.6rem 0.8rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: #64748b;
+      line-height: 1.7;
+    }
+    .formula-box .hi { color: #e2e8f0; }
+    .formula-box .cyan { color: #06b6d4; }
+    .formula-box .purple { color: #a78bfa; }
+    .formula-box .green { color: #22c55e; }
+
+    .footnote {
+      font-size: 0.72rem;
+      color: #475569;
+      line-height: 1.55;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>EMF Compliance Distance</h1>
+  <p class="subtitle">ICNIRP far-field · general-public reference levels · simplified Ofcom approach</p>
+
+  <!-- Inputs -->
+  <div class="card">
+    <div class="card-label">Parameters</div>
+    <div class="inputs-grid">
+
+      <div class="field" style="grid-column: 1 / -1;">
+        <label>Band / Frequency</label>
+        <select id="bandSelect">
+          <optgroup label="LF / MF">
+            <option value="0.472">472 kHz — 630 m (0.472 MHz)</option>
+            <option value="1.8">1.8 MHz — 160 m</option>
+          </optgroup>
+          <optgroup label="HF">
+            <option value="3.5">3.5 MHz — 80 m</option>
+            <option value="5.35">5.35 MHz — 60 m</option>
+            <option value="7.1">7.1 MHz — 40 m</option>
+            <option value="10.125">10.125 MHz — 30 m</option>
+            <option value="14.1">14.1 MHz — 20 m</option>
+            <option value="18.1">18.1 MHz — 17 m</option>
+            <option value="21.1">21.1 MHz — 15 m</option>
+            <option value="24.9">24.9 MHz — 12 m</option>
+            <option value="28.5" selected>28.5 MHz — 10 m</option>
+          </optgroup>
+          <optgroup label="VHF / UHF">
+            <option value="50">50 MHz — 6 m</option>
+            <option value="70">70 MHz — 4 m</option>
+            <option value="144">144 MHz — 2 m</option>
+            <option value="430">430 MHz — 70 cm</option>
+          </optgroup>
+          <optgroup label="Microwave">
+            <option value="1296">1296 MHz — 23 cm</option>
+            <option value="2400">2400 MHz — 13 cm</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>TX Power (W)</label>
+        <input type="number" id="powerInput" min="0.1" max="1000" step="1" value="100">
+      </div>
+
+      <div class="field">
+        <label>Antenna Gain (dBi)</label>
+        <input type="number" id="gainInput" min="-3" max="30" step="0.5" value="2.15">
+      </div>
+
+      <div class="field" style="grid-column: 1 / -1;">
+        <label>Duty Cycle — Mode Preset</label>
+        <div class="presets">
+          <button class="preset-btn" data-dc="100">FM / AM · 100 %</button>
+          <button class="preset-btn" data-dc="50">FT8 / Data · 50 %</button>
+          <button class="preset-btn active" data-dc="40">CW · 40 %</button>
+          <button class="preset-btn" data-dc="20">SSB · 20 %</button>
+        </div>
+      </div>
+
+      <div class="field" style="grid-column: 1 / -1;">
+        <label>Duty Cycle (%)</label>
+        <input type="number" id="dcInput" min="1" max="100" step="1" value="40">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Near-field warning -->
+  <div class="warning-box" id="nfWarning">
+    <strong>Near-field caution:</strong> Below 30 MHz the reactive near-field region extends to λ/(2π) — up to ~1.7 m at 28 MHz and ~100 m at 472 kHz. This calculator uses far-field plane-wave maths only. Measured distances close to the antenna may be substantially higher than shown.
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+    <div>
+      <div class="result-label">Compliance distance</div>
+      <div class="result-distance" id="resultDist">—</div>
+      <div class="result-unit">metres</div>
+    </div>
+    <div class="result-meta">
+      <div style="margin-bottom: 0.5rem;">
+        <span class="result-status status-none" id="resultBadge">—</span>
+      </div>
+      <div id="detailRows"></div>
+    </div>
+  </div>
+
+  <!-- Methodology -->
+  <div class="card">
+    <div class="card-label">Formula</div>
+    <div class="formula-box">
+      <span class="purple">d</span> = √( <span class="cyan">P</span> × (<span class="hi">DC</span>/100) × <span class="green">G</span> / (4π × <span class="hi">S<sub>ref</sub></span>) )<br>
+      <span class="green">G</span> = 10^(<span class="hi">dBi</span> / 10)  &nbsp;·&nbsp; linear gain<br><br>
+      <span class="hi">S<sub>ref</sub></span> per ICNIRP 1998 Table 8 — general public:<br>
+      &nbsp;&nbsp;f &lt; 1 MHz → 20.08 W/m²<br>
+      &nbsp;&nbsp;1–10 MHz → 20.08/f W/m²<br>
+      &nbsp;&nbsp;10–400 MHz → 2 W/m²<br>
+      &nbsp;&nbsp;400–2000 MHz → f/200 W/m²<br>
+      &nbsp;&nbsp;&gt; 2 GHz → 10 W/m²
+    </div>
+    <p class="footnote">
+      Sources: ICNIRP 1998 guidelines; Ofcom EMF Calculator guidance note (2021). S<sub>ref</sub> values are power density reference levels for general public (not occupational). This tool is for educational illustration — always consult the official Ofcom EMF self-assessment tool and your licence conditions.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      var bandSel  = document.getElementById('bandSelect');
+      var powerIn  = document.getElementById('powerInput');
+      var gainIn   = document.getElementById('gainInput');
+      var dcIn     = document.getElementById('dcInput');
+      var distEl   = document.getElementById('resultDist');
+      var badgeEl  = document.getElementById('resultBadge');
+      var detailEl = document.getElementById('detailRows');
+      var nfWarn   = document.getElementById('nfWarning');
+
+      function sRef(fMHz) {
+        if (fMHz < 1)    return 20.08;
+        if (fMHz < 10)   return 20.08 / fMHz;
+        if (fMHz < 400)  return 2;
+        if (fMHz < 2000) return fMHz / 200;
+        return 10;
+      }
+
+      function calc() {
+        var f  = parseFloat(bandSel.value);
+        var P  = parseFloat(powerIn.value);
+        var dBi = parseFloat(gainIn.value);
+        var dc = parseFloat(dcIn.value);
+
+        if (isNaN(f) || isNaN(P) || isNaN(dBi) || isNaN(dc) || P <= 0 || dc <= 0) {
+          distEl.textContent = '—';
+          badgeEl.textContent = '—';
+          badgeEl.className = 'result-status status-none';
+          detailEl.innerHTML = '';
+          nfWarn.style.display = 'none';
+          return;
+        }
+
+        var G    = Math.pow(10, dBi / 10);
+        var S    = sRef(f);
+        var d    = Math.sqrt((P * (dc / 100) * G) / (4 * Math.PI * S));
+
+        var eirpAvg = P * (dc / 100) * G;
+
+        var dStr, badge, cls;
+        if (d < 1) {
+          dStr  = d.toFixed(2);
+          badge = '< 1 m  ·  Review';
+          cls   = 'status-red';
+        } else if (d < 3) {
+          dStr  = d.toFixed(2);
+          badge = '1 – 3 m  ·  Check siting';
+          cls   = 'status-amber';
+        } else {
+          dStr  = d.toFixed(2);
+          badge = '≥ 3 m  ·  Typical compliance';
+          cls   = 'status-green';
+        }
+
+        distEl.textContent = dStr;
+        distEl.style.color = cls === 'status-green' ? '#22c55e' : cls === 'status-amber' ? '#f59e0b' : '#ef4444';
+        badgeEl.textContent = badge;
+        badgeEl.className = 'result-status ' + cls;
+
+        detailEl.innerHTML = [
+          row('Avg EIRP',  eirpAvg.toFixed(2) + ' W'),
+          row('S_ref',     S.toFixed(3) + ' W/m²'),
+          row('Frequency', f < 1000 ? f + ' MHz' : (f/1000).toFixed(3) + ' GHz'),
+          row('Gain',      dBi + ' dBi → ×' + G.toFixed(2)),
+        ].join('');
+
+        nfWarn.style.display = f < 30 ? 'block' : 'none';
+      }
+
+      function row(k, v) {
+        return '<div class="detail-row"><span class="detail-key">' + k + '</span><span class="detail-val">' + v + '</span></div>';
+      }
+
+      /* Preset buttons */
+      document.querySelectorAll('.preset-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          dcIn.value = btn.dataset.dc;
+          calc();
+        });
+      });
+
+      /* Sync duty-cycle input back to preset highlight */
+      dcIn.addEventListener('input', function () {
+        var v = dcIn.value;
+        document.querySelectorAll('.preset-btn').forEach(function (b) {
+          b.classList.toggle('active', b.dataset.dc === v);
+        });
+        calc();
+      });
+
+      bandSel.addEventListener('change', calc);
+      powerIn.addEventListener('input', calc);
+      gainIn.addEventListener('input', calc);
+
+      calc();
+    })();
+  </script>
+</body>
+</html>
