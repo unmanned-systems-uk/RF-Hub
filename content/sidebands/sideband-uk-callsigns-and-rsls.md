@@ -13,15 +13,7 @@ This sideband is a complete reference for the current UK callsign system, includ
 
 ---
 
-<!-- INTERACTIVE: uk-callsign-parser
-Widget: /interactives/uk-callsign-parser.html
-Input: text field for any UK callsign (with optional suffix e.g. M0ABC/P)
-Output: licence class (Foundation/Intermediate/Full), region, RSL decoded, suffix meaning, validity check
-UI: inline result panel below input, no page navigation
-Note: Frontend building this widget in parallel. Embed via iframe when ready.
--->
-
-<iframe src="/interactives/uk-callsign-parser.html" style="width:100%; height:260px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="UK Callsign Parser"></iframe>
+<iframe src='/interactives/uk-callsign-parser.html' style='width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='UK Callsign Parser'></iframe>
 
 ---
 
