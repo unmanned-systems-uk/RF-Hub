@@ -252,6 +252,8 @@ The **Regional Secondary Locator (RSL)** is optional in the sense that it need n
 
 > [INFO] **1H1:** At Full level you must know: Schedule note content (examinable); Primary/Secondary allocation meanings; 5 MHz channel conditions and EIRP/height limits; callsign prefixes by licence class (M0/M1/M5 = Full; M8/M9 = Intermediate; M3/M6/M7 = Foundation); RSL must be correct when used; ID every 15 minutes on nets; telephone registered with Ofcom.
 
+> **See also:** <a href="../../sidebands/uk-callsigns-and-rsls.html" target="_blank">Sideband — UK Callsigns & Regional Secondary Locators</a> — complete prefix/RSL/suffix reference including worked examples and the legacy G-series map.
+
 ### Unattended Operation Types
 
 The licence permits unattended operation beyond the basic remote control discussed in §1D. Permitted types **(all are examples of unattended operation)**:

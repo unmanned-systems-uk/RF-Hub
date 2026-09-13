@@ -197,6 +197,8 @@ Examples:
 > [INFO] **1B (D2F-M1-Q02):** A callsign like **MM7ABC/M** indicates a **Foundation
 > licence holder walking (mobile) in Scotland.** MM7 = Foundation Scotland; /M = mobile.
 
+> **See also:** <a href="../../sidebands/uk-callsigns-and-rsls.html" target="_blank">Sideband — UK Callsigns & Regional Secondary Locators</a> — complete prefix table (M-series and legacy G-series), RSL reference, operating suffixes, and worked examples.
+
 **Mobile and portable suffixes:**
 
 | Suffix | Meaning |
