@@ -215,6 +215,10 @@ The compliance thresholds, the Ofcom/RSGB calculator, and the record-keeping req
 
 At a Special Event Station, the public may approach closer to antennas than would normally occur at a home station, and higher powers may be in use. RF exposure calculations must be part of the risk assessment (§3B). If the compliance distance extends into the public area, either reduce power or enforce a physical exclusion zone.
 
+**Interactive — EMF Compliance Distance Calculator:**
+
+<iframe src='/interactives/full-emf-compliance-distance.html' style='width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='EMF Compliance Distance Calculator'></iframe>
+
 ---
 
 ## 3F — Thunderstorms and Lightning Protection (3C1)
