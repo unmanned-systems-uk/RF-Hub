@@ -78,11 +78,22 @@
 
 ## Ch 5: Semiconductors (pp 31–38)
 
-*TBD — populate when `05-semiconductors.pdf` is read. Chapter covers: diodes, rectifiers, BJTs (CE/CB/CC configs), class A/AB/B/C, FETs, op-amps, ICs, SMPS (~20 subsections).*
+*Populated 2026-09-13. Section file: `section-5-semiconductors.md`. (~12–16% exam weight).*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 5A1 | TBD | — |
+| 5A1 | 31 | P-N junction; n-type/p-type doping; depletion layer; forward bias (~0.6 V drop); reverse bias; I-V curve; PIV rating [VERIFY] |
+| 5B1 | 31–32 | Half-wave rectifier; reservoir capacitor; ripple; full-wave (centre-tap); bridge rectifier (D1–D4); PIV = 2×V_peak (HW/FW) or V_peak (bridge) [VERIFY] |
+| 5C1 | 32 | Zener (reverse breakdown, P=V×I, voltage reference); varactor (reverse-biased capacitance, V_GS → C, used in VFOs/PLLs); Schottky/LED/PIN brief [VERIFY] |
+| 5D1 | 33–34 | NPN BJT; I_C = β×I_B; Ic-Vce family curves; simple bias instability; potential-divider + emitter-resistor stable bias; emitter bypass capacitor; coupling capacitors [VERIFY] |
+| 5E1 | 35 | CE: Z_in ~1kΩ, Z_out ~5kΩ, phase inversion, current+voltage gain; CB: Z_in ~50Ω, Z_out ~50kΩ, no inversion, no current gain; CC (EF): Z_in 50k–2MΩ, Z_out 10–500Ω, no inversion, current gain [VERIFY] |
+| 5F1 | 35–36 | Class A (360° conduction, low distortion, low efficiency); Class B (180°, push-pull); Class AB (>180°, eliminates crossover distortion); Class C (<180°, tuned output, high efficiency, RF PA) [VERIFY] |
+| 5G1 | 36–37 | JFET (n-channel, reverse-biased gate, voltage-controlled, pinch-off); IGFET/MOSFET (oxide gate, GΩ impedance, ESD 5–10V); dual-gate MOSFET (Gate 2 for AGC or mixing); transconductance g_m [VERIFY] |
+| 5H1 | 37–38 | ESD precautions: antistatic bag/mat/wristband (series R few MΩ, NOT on live equipment); Zener simple stabiliser; series-pass transistor regulator with feedback; IC 78xx regulator (3 terminals, suppression caps mandatory) [VERIFY] |
+| 5I1 | 38 | SMPS block: filter→rectify→chop(30–60kHz)→ferrite Tx→rectify→output filter; PWM feedback via optical isolator; high efficiency; RF switching noise raises noise floor; smaller smoothing cap at HF [VERIFY] |
+| 5J1 | — | Op-amps: differential input (±), virtual earth, inverting gain = −R_f/R_in, non-inverting gain = 1+R_f/R_in; negative feedback stabilises gain [VERIFY] |
+
+**Populate status: ✅ Ch5 — section file written 2026-09-13**
 
 ---
 
