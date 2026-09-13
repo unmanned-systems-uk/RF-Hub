@@ -9,7 +9,9 @@
 
 **Populate status:**
 - ✅ Ch 1 — confirmed from PDF
-- ⬜ Ch 2–14 — TBD: populate when each chapter PDF is read
+- ⚠️ Ch 2 — populated from PDF read; exact ref numbers [VERIFY] against official syllabus v1.6
+- ⚠️ Ch 3 — populated from PDF read; exact ref numbers [VERIFY] against official syllabus v1.6
+- ⬜ Ch 4–14 — TBD: populate when each chapter PDF is read
 
 ---
 
@@ -29,26 +31,26 @@
 
 ## Ch 2: Operating Techniques (pp 11–12)
 
-*TBD — populate when `02-operating-techniques.pdf` is read.*
+*Populated from `02-operating-techniques.pdf` (2 pages). Chapter is anomalously thin — study page supplements from RSGB Operating Manual tradition. Ref numbers [VERIFY] against official syllabus v1.6 (the PDF does not reproduce the syllabus ref table).*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 2A1 | TBD | — |
-| 2B1 | TBD | — |
-| 2C1 | TBD | — |
-| 2D1 | TBD | — |
+| 2A1 [VERIFY] | 11 | 472 kHz and 5 MHz bands — 472–479 kHz secondary to maritime mobile; 5W EIRP (1W within 800km of certain countries); 5 MHz MoD primary; narrow channel slots 5.2585–5.4065 MHz; Band Plan CW 200 Hz / digital 500 Hz max; 200W EIRP / 100W PEP / ≤20m antenna; all carriers/tones must be in-slot |
+| 2B1 [VERIFY] | 11 | Pileups and split operation — DX TX on published freq, listens 5–10 kHz up; "listening 5 up"; don't call on DX TX frequency; patient listening; two-rig 5 kHz apart caution |
+| 2C1 [VERIFY] | 11–12 | Band plans in other countries — IARU harmonisation; host country rules are a licence requirement; tiered licences limit band access; UK station may listen outside schedule but reply only on UK schedule frequency |
+| 2D1 [VERIFY] | 12 | Callsign suffixes (/A /M /P /MM /AM); special event stations (NoV GB0xxx); supervising unlicensed operators (Full licensee's callsign used; Full licensee legally responsible) |
 
 ---
 
 ## Ch 3: Amateur Radio Safety (pp 13–18)
 
-*TBD — populate when `03-amateur-radio-safety.pdf` is read.*
+*Populated from `03-amateur-radio-safety.pdf` (6 pages). Ref numbers [VERIFY] against official syllabus v1.6.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 3A1 | TBD | — |
-| 3B1 | TBD | — |
-| 3C1 | TBD | — |
+| 3A1 [VERIFY] | 13 | Electrical safety — earthing (low-resistance path to earth); RCBO/RCD (30 mA / 25–40 ms); double-pole switch; one-hand rule for live HV work; indicator lamps; insulated test probes; remove jewellery; no defined "safe" voltage (30V can kill in poor conditions) |
+| 3B1 [VERIFY] | 14–15 | Safety at temporary locations and public events — site survey; overhead power line avoidance; risk assessment (likelihood × severity, documented); Special Event Stations; tripping hazards; outdoor weatherproof cables; RCD/RCBO mandatory outdoors; generators (fuel storage, fire extinguishers, barriers); RF exposure in risk assessment |
+| 3C1 [VERIFY] | 15–18 | Vehicle safety (secure fastening, FCS 1362 wiring, hands-free, RF/ECU separation); RF exposure (ICNIRP — heating only biologically significant; Condition 9-1; links to 1G1); thunderstorms (two risks: equipment damage + direct strike; disconnect method; static discharge devices); PME/TN-C-S (bonded neutral; RF earth must bond to MET via qualified electrician; neutral failure → house rises to 230V; Part P notifiable change) |
 
 ---
 
