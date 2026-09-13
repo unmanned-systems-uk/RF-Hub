@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUF / LUF Diurnal Predictor — RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0e1a; color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; padding: 1.5rem;
+    }
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.78rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-bottom: 1.25rem; }
+    .card { background: #111827; border: 1px solid #1e293b; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.9rem; }
+    .card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.65rem; }
+
+    /* Controls */
+    .ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .ctrl-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    label { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: #94a3b8; }
+    input[type="range"] {
+      -webkit-appearance: none; width: 100%; height: 4px;
+      background: #1e293b; border-radius: 2px; outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px;
+      border-radius: 50%; background: #a78bfa; cursor: pointer;
+    }
+    .ctrl-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #e2e8f0; margin-top: 0.1rem; }
+
+    /* Canvas */
+    #mufCanvas { display: block; width: 100%; border-radius: 4px; background: #070d1a; }
+
+    /* Readout strip */
+    .rstrip { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .rout {
+      background: #0d1321; border: 1px solid #1e293b; border-radius: 4px;
+      padding: 0.35rem 0.65rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+      flex: 1; min-width: 100px;
+    }
+    .rl { color: #475569; font-size: 0.62rem; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .rv { color: #e2e8f0; }
+    .rv.purple { color: #a78bfa; }
+    .rv.cyan   { color: #06b6d4; }
+    .rv.amber  { color: #fbbf24; }
+
+    /* Band legend */
+    .band-legend {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+    }
+    .band-chip {
+      padding: 0.18rem 0.45rem; border-radius: 3px;
+      background: rgba(255,255,255,0.04); border: 1px solid #1e293b;
+      color: #64748b; white-space: nowrap;
+    }
+    .band-chip.open { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
+    .band-chip.partial { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: #fbbf24; }
+
+    /* Formula */
+    .formula-box {
+      background: #0d1321; border-left: 2px solid #1e293b; border-radius: 0 4px 4px 0;
+      padding: 0.6rem 0.85rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.76rem; color: #64748b; line-height: 1.8;
+    }
+    .formula-box .purple { color: #a78bfa; }
+    .formula-box .cyan   { color: #06b6d4; }
+    .formula-box .hi     { color: #e2e8f0; }
+    .formula-box .amber  { color: #fbbf24; }
+
+    @media (max-width: 420px) { .ctrl-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <h1>MUF / LUF Diurnal Predictor</h1>
+  <p class="subtitle">F2-layer diurnal model · simplified educational estimate · not a real-time propagation tool</p>
+
+  <!-- Controls -->
+  <div class="card">
+    <div class="card-label">Parameters</div>
+    <div class="ctrl-grid">
+      <div class="ctrl-field">
+        <label>Path Length (km): <span class="ctrl-val" id="pathLabel">3000</span></label>
+        <input type="range" id="slPath" min="500" max="10000" step="100" value="3000">
+      </div>
+      <div class="ctrl-field">
+        <label>Solar Flux Index (SFI): <span class="ctrl-val" id="sfiLabel">120</span></label>
+        <input type="range" id="slSFI" min="65" max="300" step="5" value="120">
+      </div>
+      <div class="ctrl-field">
+        <label>Current Hour (local): <span class="ctrl-val" id="hourLabel">14:00</span></label>
+        <input type="range" id="slHour" min="0" max="23.9" step="0.25" value="14">
+      </div>
+      <div class="ctrl-field">
+        <label>Latitude: <span class="ctrl-val" id="latLabel">Mid (50°N)</span></label>
+        <input type="range" id="slLat" min="0" max="2" step="1" value="1">
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="card-label">24-Hour MUF / LUF</div>
+    <canvas id="mufCanvas" height="220"></canvas>
+
+    <!-- Readouts at cursor time -->
+    <div class="rstrip">
+      <div class="rout"><div class="rl">MUF at cursor</div><div class="rv purple" id="rMUF">—</div></div>
+      <div class="rout"><div class="rl">LUF at cursor</div><div class="rv cyan" id="rLUF">—</div></div>
+      <div class="rout"><div class="rl">Usable window</div><div class="rv amber" id="rWindow">—</div></div>
+      <div class="rout"><div class="rl">foF2 at cursor</div><div class="rv" id="rFoF2">—</div></div>
+    </div>
+
+    <!-- Band status -->
+    <div class="card-label" style="margin-top:0.85rem;">Band status at cursor time</div>
+    <div class="band-legend" id="bandLegend"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="card">
+    <div class="card-label">Model Notes</div>
+    <div class="formula-box">
+      <span class="purple">MUF</span> = <span class="hi">foF2</span> × sec(θ)  =  foF2 × √(1 + (d / 2h_F2)²)<br>
+      <span class="hi">foF2</span> varies diurnally: peaks ~14:00 local (F2 layer electron density max)<br>
+      <span class="amber">SFI</span> ∝ solar UV/X-ray flux → drives ionisation; higher SFI → higher foF2 → higher MUF<br>
+      <span class="cyan">LUF</span>: D-layer absorption sets lower limit; D layer exists only in daylight, dissolves after sunset<br>
+      Night: LUF drops to ~1–2 MHz; MUF reduced but F2 layer persists<br><br>
+      This is a simplified mid-latitude model for educational illustration.<br>
+      Real propagation: VOACAP, DX Toolbox, or the Ofcom propagation model.
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var canvas = document.getElementById('mufCanvas');
+    var ctx    = canvas.getContext('2d');
+
+    /* ── Sliders ──────────────────────────────────────────── */
+    var pathKm = 3000, sfi = 120, curHour = 14, latIdx = 1;
+    var LAT_LABELS = ['Equatorial (10°N)', 'Mid-latitude (50°N)', 'High (65°N)'];
+
+    function wireSlider(id, label, get, set, fmt) {
+      var sl = document.getElementById(id), lbl = document.getElementById(label);
+      sl.addEventListener('input', function () { set(parseFloat(sl.value)); lbl.textContent = fmt(parseFloat(sl.value)); draw(); });
+      lbl.textContent = fmt(get());
+    }
+
+    wireSlider('slPath',  'pathLabel',  function() { return pathKm; }, function(v) { pathKm = v; }, function(v) { return Math.round(v) + ' km'; });
+    wireSlider('slSFI',   'sfiLabel',   function() { return sfi; },    function(v) { sfi = v; },    function(v) { return Math.round(v); });
+    wireSlider('slHour',  'hourLabel',  function() { return curHour; },function(v) { curHour = v; },function(v) { var h=Math.floor(v),m=Math.round((v-h)*60); return pad(h)+':'+pad(m); });
+    wireSlider('slLat',   'latLabel',   function() { return latIdx; }, function(v) { latIdx = Math.round(v); }, function(v) { return LAT_LABELS[Math.round(v)]; });
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    /* ── Physics model ────────────────────────────────────── */
+    var BANDS = [
+      { name:'160m', f:1.8 }, { name:'80m', f:3.5 }, { name:'60m', f:5.35 },
+      { name:'40m', f:7.0 }, { name:'30m', f:10.1 }, { name:'20m', f:14.0 },
+      { name:'17m', f:18.1 }, { name:'15m', f:21.0 }, { name:'12m', f:24.9 },
+      { name:'10m', f:28.0 }
+    ];
+
+    /* foF2 critical frequency at given local hour */
+    function foF2(hour, sfiv, lat) {
+      /* SFI → proxy for ionisation level */
+      var sfn = (sfiv - 65) / 235; /* 0-1 */
+      /* Day peak and night floor */
+      var dayPeak  = [10, 8, 6][lat]  + sfn * [8, 10, 7][lat];
+      var nightFlr = [5, 3.5, 2.5][lat] + sfn * [3, 3.5, 2][lat];
+
+      /* Sunrise/sunset (simplified by latitude) */
+      var rise = [5.5, 6.5, 8][lat], set = [18.5, 17.5, 16][lat];
+
+      var lit = hour >= rise && hour <= set;
+      if (!lit) {
+        /* Night — smooth with short transition */
+        var t = Math.min(Math.abs(hour - rise), Math.abs(hour - set));
+        t = Math.min(t, 1.5) / 1.5; /* 0=night 1=day edge */
+        return nightFlr + (dayPeak * 0.6 - nightFlr) * Math.max(0, t - 1 + t);
+      }
+      /* Day: Gaussian peak at 14:00 */
+      var x = (hour - 14) / 5;
+      var dayShape = Math.exp(-x * x);
+      /* Dawn/dusk factor */
+      var dawnDusk = Math.min((hour - rise) / 1.5, 1) * Math.min((set - hour) / 1.5, 1);
+      return nightFlr + (dayPeak - nightFlr) * dayShape * Math.max(0.2, dawnDusk);
+    }
+
+    /* MUF for path */
+    function muf(hour, sfiv, lat, path) {
+      var f2 = foF2(hour, sfiv, lat);
+      var h_km = hour >= 6 && hour <= 19 ? 280 : 320; /* F2 height day/night */
+      var sec = Math.sqrt(1 + Math.pow(path / (2 * h_km), 2));
+      return f2 * sec;
+    }
+
+    /* LUF (D-layer absorption model) */
+    function luf(hour, sfiv, lat) {
+      var sfn = (sfiv - 65) / 235;
+      var rise = [5.5, 6.5, 8][lat], set = [18.5, 17.5, 16][lat];
+      var luf_day  = 5 + sfn * 3;
+      var luf_night = 1.2 + sfn * 0.5;
+      if (hour < rise || hour > set) return luf_night;
+      var dawnDusk = Math.min((hour - rise) / 2, 1) * Math.min((set - hour) / 2, 1);
+      return luf_night + (luf_day - luf_night) * dawnDusk;
+    }
+
+    /* ── Canvas ───────────────────────────────────────────── */
+    function resize() {
+      var w = canvas.parentElement.getBoundingClientRect().width - 40;
+      canvas.width = Math.max(240, Math.floor(w));
+    }
+    resize();
+    window.addEventListener('resize', function () { resize(); draw(); });
+
+    var FMIN = 1, FMAX = 32; /* MHz y-axis range */
+
+    function toY(f, H, pad) { return H - pad - (f - FMIN) / (FMAX - FMIN) * (H - 2 * pad); }
+    function toX(h, W, pad) { return pad + h / 24 * (W - 2 * pad); }
+
+    function draw() {
+      var W = canvas.width, H = canvas.height;
+      var padL = 40, padR = 10, padT = 12, padB = 24;
+      var plotW = W - padL - padR, plotH = H - padT - padB;
+
+      ctx.clearRect(0, 0, W, H);
+
+      /* Grid / background */
+      ctx.fillStyle = '#070d1a';
+      ctx.fillRect(padL, padT, plotW, plotH);
+
+      /* Night shading (approximate: before 06:00 and after 18:00) */
+      var rise = [5.5, 6.5, 8][latIdx], set2 = [18.5, 17.5, 16][latIdx];
+      ctx.fillStyle = 'rgba(0,0,40,0.35)';
+      ctx.fillRect(padL, padT, toX(rise, W, padL) - padL, plotH);
+      ctx.fillRect(toX(set2, W, padL), padT, padL + plotW - toX(set2, W, padL), plotH);
+
+      /* Band lines */
+      BANDS.forEach(function (b) {
+        if (b.f < FMIN || b.f > FMAX) return;
+        var y = toY(b.f, H, padB);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.setLineDash([2, 4]);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#1e293b'; ctx.font = '8px IBM Plex Mono, monospace'; ctx.textAlign = 'left';
+        ctx.fillText(b.name, padL + 2, y - 2);
+      });
+
+      /* Hour grid */
+      for (var h = 0; h <= 24; h += 3) {
+        var x = toX(h, W, padL);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.setLineDash([2, 4]);
+        ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
+        ctx.setLineDash([]);
+        if (h < 24) {
+          ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+          ctx.fillText(pad(h) + ':00', x, H - 6);
+        }
+      }
+
+      /* Y-axis labels */
+      ctx.textAlign = 'right'; ctx.fillStyle = '#334155'; ctx.font = '9px IBM Plex Mono, monospace';
+      [2, 5, 10, 15, 20, 28].forEach(function (f) {
+        var y = toY(f, H, padB);
+        ctx.fillText(f + ' MHz', padL - 4, y + 3);
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1; ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(padL - 2, y); ctx.lineTo(padL, y); ctx.stroke();
+      });
+
+      /* Build curves at 96 points (every 15 min) */
+      var STEPS = 96;
+      var mufPts = [], lufPts = [];
+      for (var i = 0; i <= STEPS; i++) {
+        var hh = i / STEPS * 24;
+        mufPts.push({ x: toX(hh, W, padL), y: toY(muf(hh, sfi, latIdx, pathKm), H, padB), f: muf(hh, sfi, latIdx, pathKm) });
+        lufPts.push({ x: toX(hh, W, padL), y: toY(luf(hh, sfi, latIdx), H, padB), f: luf(hh, sfi, latIdx) });
+      }
+
+      /* Usable window fill */
+      ctx.fillStyle = 'rgba(74,222,128,0.07)';
+      ctx.beginPath();
+      mufPts.forEach(function (p, i) { if (i === 0) ctx.moveTo(p.x, Math.max(padT, Math.min(padT+plotH, p.y))); else ctx.lineTo(p.x, Math.max(padT, Math.min(padT+plotH, p.y))); });
+      for (var i = lufPts.length - 1; i >= 0; i--) {
+        var p = lufPts[i]; ctx.lineTo(p.x, Math.max(padT, Math.min(padT+plotH, p.y)));
+      }
+      ctx.closePath(); ctx.fill();
+
+      /* Clip to plot area */
+      ctx.save();
+      ctx.beginPath(); ctx.rect(padL, padT, plotW, plotH); ctx.clip();
+
+      /* MUF curve (purple) */
+      ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2; ctx.setLineDash([]);
+      ctx.beginPath();
+      mufPts.forEach(function (p, i) { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+      ctx.stroke();
+
+      /* LUF curve (cyan) */
+      ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      lufPts.forEach(function (p, i) { if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+      ctx.stroke();
+
+      ctx.restore();
+
+      /* Current time cursor */
+      var cx = toX(curHour, W, padL);
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(cx, padT); ctx.lineTo(cx, padT + plotH); ctx.stroke();
+      ctx.setLineDash([]);
+
+      /* MUF / LUF dots at cursor */
+      var mufV = muf(curHour, sfi, latIdx, pathKm);
+      var lufV = luf(curHour, sfi, latIdx);
+      function dot(x, y, col) {
+        ctx.fillStyle = col; ctx.beginPath();
+        ctx.arc(x, Math.max(padT + 4, Math.min(padT + plotH - 4, y)), 4, 0, 2 * Math.PI); ctx.fill();
+      }
+      dot(cx, toY(mufV, H, padB), '#a78bfa');
+      dot(cx, toY(lufV, H, padB), '#06b6d4');
+
+      /* Legend */
+      ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'left';
+      ctx.fillStyle = '#a78bfa'; ctx.fillText('MUF', padL + 4, padT + 12);
+      ctx.fillStyle = '#06b6d4'; ctx.fillText('LUF', padL + 4, padT + 22);
+
+      /* Night label */
+      ctx.fillStyle = '#334155'; ctx.textAlign = 'center'; ctx.font = '8px IBM Plex Mono, monospace';
+      ctx.fillText('NIGHT', padL + (toX(rise, W, padL) - padL) / 2, padT + 10);
+      ctx.fillText('NIGHT', toX(set2, W, padL) + (padL + plotW - toX(set2, W, padL)) / 2, padT + 10);
+
+      /* Update readouts */
+      document.getElementById('rMUF').textContent    = mufV.toFixed(1) + ' MHz';
+      document.getElementById('rLUF').textContent    = lufV.toFixed(1) + ' MHz';
+      var win = mufV - lufV;
+      document.getElementById('rWindow').textContent = win > 0 ? lufV.toFixed(1) + '–' + mufV.toFixed(1) + ' MHz' : 'No usable window';
+      document.getElementById('rFoF2').textContent   = foF2(curHour, sfi, latIdx).toFixed(1) + ' MHz';
+
+      /* Band chips */
+      var lbl = document.getElementById('bandLegend');
+      lbl.innerHTML = BANDS.map(function (b) {
+        var open = b.f >= lufV && b.f <= mufV;
+        var aboveLuf = b.f >= lufV && b.f < mufV * 0.85;
+        var cls = open ? (aboveLuf ? 'band-chip open' : 'band-chip partial') : 'band-chip';
+        return '<span class="' + cls + '">' + b.name + ' ' + b.f + ' MHz</span>';
+      }).join('');
+    }
+
+    draw();
+  })();
+  </script>
+</body>
+</html>
