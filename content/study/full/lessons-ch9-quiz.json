@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "chapter": 9,
+    "title": "The Receiver",
+    "level": "full",
+    "syllabus_refs": ["9A1", "9B1", "9C1", "9D1", "9E1", "9F1", "9G1", "9H1", "9I1", "9J1", "9K1"],
+    "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 57–66",
+    "question_count": 30,
+    "generated": "2026-09-14"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "9A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9A",
+      "section_name": "Receiver Sensitivity and Noise Figure",
+      "question": "What is the thermal noise power density available from any resistive source at room temperature (290 K)?",
+      "options": [
+        "−120 dBm per Hz of bandwidth",
+        "−150 dBm per Hz of bandwidth",
+        "−174 dBm per Hz of bandwidth",
+        "−200 dBm per Hz of bandwidth"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Thermal noise power density = k × T = 1.38 × 10⁻²³ × 290 ≈ 4 × 10⁻²¹ W/Hz = −174 dBm/Hz at 290 K. This is the absolute noise floor — no receiver can have a noise floor better than this without cryogenic cooling.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 57",
+      "tags": ["noise-figure", "thermal-noise", "sensitivity", "MDS", "-174dBm"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9A",
+      "section_name": "Receiver Sensitivity and Noise Figure",
+      "question": "Why does reducing the receiver IF filter bandwidth improve sensitivity?",
+      "options": [
+        "A narrower filter has higher gain at its centre frequency, amplifying the wanted signal more",
+        "A narrower filter admits less noise power into the demodulator, reducing the noise floor in proportion to the bandwidth reduction (10 × log₁₀ of the ratio)",
+        "Narrower filters have higher Q, which rejects the image frequency more effectively",
+        "Reducing bandwidth prevents adjacent-channel signals from reaching the mixer stage"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Noise power is proportional to bandwidth (P = kTB). Halving the bandwidth halves the noise power (−3 dB), improving the signal-to-noise ratio by 3 dB if the signal is narrow enough to fit. This is why CW operators use 500 Hz filters — the noise floor is ~7 dB lower than with a 2.4 kHz SSB filter, making weak signals audible.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 57",
+      "tags": ["noise-figure", "bandwidth", "sensitivity", "filter", "SNR"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9A1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9A",
+      "section_name": "Receiver Sensitivity and Noise Figure",
+      "question": "A receiver has a noise figure of 10 dB and an SSB filter bandwidth of 2.4 kHz. What is the approximate effective noise floor?",
+      "options": [
+        "−174 dBm",
+        "−150 dBm",
+        "−140 dBm",
+        "−130 dBm"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "Thermal noise floor at 2.4 kHz: −174 + 10 × log₁₀(2400) = −174 + 33.8 ≈ −140 dBm. Adding the receiver's 10 dB noise figure: −140 + 10 = −130 dBm. The MDS (Minimum Discernible Signal) is approximately 3 dB above this at ≈ −127 dBm.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 57–58",
+      "tags": ["noise-figure", "MDS", "sensitivity", "bandwidth", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9B",
+      "section_name": "Dynamic Range and Third-Order Intercept",
+      "question": "What does the third-order intercept point (IP3) measure in a receiver?",
+      "options": [
+        "The frequency at which the IF amplifier becomes unstable due to positive feedback",
+        "The extrapolated signal level at which 3rd-order IMD products from two strong input signals would theoretically equal the fundamental — a higher IP3 indicates better linearity and stronger-signal handling",
+        "The AGC threshold at which the receiver reduces gain by 3 dB",
+        "The output power level at which the transmitter PA begins generating 3rd-order harmonic products"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "IP3 is a figure of merit for linearity. It is found by extrapolating the fundamental output (slope 1 dB/dB) and the 3rd-order IMD output (slope 3 dB/dB) on a log-log plot until they intersect. The intersection power is the IP3. No real device operates there — it is beyond the compression point — but a higher IP3 directly predicts better handling of strong off-channel signals.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 58",
+      "tags": ["IP3", "dynamic-range", "IMD", "linearity", "third-order-intercept"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9B",
+      "section_name": "Dynamic Range and Third-Order Intercept",
+      "question": "Two strong signals at frequencies f₁ and f₂ enter a non-linear receiver front end. At which frequencies do the significant 3rd-order intermodulation products appear?",
+      "options": [
+        "At 2f₁ + f₂ and 2f₂ + f₁",
+        "At 2f₁ − f₂ and 2f₂ − f₁",
+        "At f₁ + f₂ and |f₁ − f₂|",
+        "At 3f₁ and 3f₂"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "3rd-order IMD products appear at 2f₁ − f₂ and 2f₂ − f₁. If f₁ and f₂ are close together, these products fall very close to f₁ and f₂ — just outside the pair — and land within or adjacent to the receiver passband. This is why 3rd-order products are the most troublesome: they cannot be filtered away without also removing the signals of interest.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 58–59",
+      "tags": ["IMD", "3rd-order", "two-tone", "IP3", "dynamic-range"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9B",
+      "section_name": "Dynamic Range and Third-Order Intercept",
+      "question": "What two receiver parameters jointly determine the spurious-free dynamic range (SFDR), and which should be optimised to improve it?",
+      "options": [
+        "Antenna gain and feeder loss — maximise antenna gain and minimise feeder loss",
+        "Noise figure (NF) and third-order intercept point (IP3) — lower NF raises the floor ceiling, higher IP3 raises the ceiling; SFDR ≈ 2/3 × (IP3 − noise floor)",
+        "IF bandwidth and AGC attack time — narrower bandwidth and faster attack improve SFDR",
+        "Crystal filter shape factor and roofing filter bandwidth — a flatter passband and wider roofing filter improve SFDR"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "SFDR ≈ 2/3 × (OIP3 − noise floor). The noise floor (set by NF and bandwidth) is the lower limit; IP3 is the upper limit. To maximise SFDR: minimise NF (better sensitivity) and maximise IP3 (better linearity). Narrowing the bandwidth also reduces the noise floor and improves SFDR, which is why CW and digital mode operators benefit from narrow filters.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 59",
+      "tags": ["SFDR", "dynamic-range", "IP3", "noise-figure", "linearity"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9C",
+      "section_name": "The Superheterodyne Receiver",
+      "question": "What is the main advantage of using a fixed intermediate frequency (IF) in a superheterodyne receiver?",
+      "options": [
+        "A fixed IF allows the receiver to cover multiple amateur bands simultaneously",
+        "A fixed IF enables the use of a high-Q crystal or ceramic filter for sharp, consistent selectivity regardless of the tuned frequency",
+        "A fixed IF means the local oscillator does not need to be variable",
+        "A fixed IF prevents the image frequency from appearing within the amateur band"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A crystal filter operates at a fixed, precise frequency and achieves Q values that would be impossible to maintain in a tunable filter. Because the mixer always converts the received signal to the same IF, this fixed-frequency filter provides identical selectivity at any tuned frequency — a key advantage of the superhet over direct-conversion designs.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 59–60",
+      "tags": ["superhet", "IF", "crystal-filter", "selectivity", "mixer"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9C",
+      "section_name": "The Superheterodyne Receiver",
+      "question": "A superhet receiver has its local oscillator at 14.655 MHz and an IF of 455 kHz, with the LO set above the received signal. What frequency is being received?",
+      "options": [
+        "15.110 MHz",
+        "14.200 MHz",
+        "14.455 MHz",
+        "15.200 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "With the LO above the signal: f_signal = f_LO − f_IF = 14.655 − 0.455 = 14.200 MHz. This falls in the 20 m amateur band (14.000–14.350 MHz).",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 59",
+      "tags": ["superhet", "IF", "LO", "frequency-calculation", "20m-band"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9C",
+      "section_name": "The Superheterodyne Receiver",
+      "question": "Why cannot a variable (tunable) bandpass filter tracking the received frequency provide the same selectivity as the fixed IF crystal filter in a superhet?",
+      "options": [
+        "Variable filters cannot be constructed to operate at frequencies above 1 MHz",
+        "Variable filters always introduce more noise than a fixed-frequency crystal filter",
+        "The very high Q and precise shape factor required for SSB selectivity is only achievable with a fixed-frequency resonator such as a quartz crystal; maintaining this performance while tuning across a frequency range is not practically achievable",
+        "A tunable filter would cause the receiver to become sensitive to the image frequency"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A crystal filter achieves Q values of tens of thousands, giving shape factors approaching 1 at a fixed frequency. Any mechanically or electrically tunable filter suffers from much lower Q and changes its characteristics as it tunes. The superhet's genius is to bring all received signals to one fixed frequency where optimal filtering can be applied.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 60",
+      "tags": ["superhet", "crystal-filter", "selectivity", "Q-factor", "IF"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9D",
+      "section_name": "Image Frequency and Rejection",
+      "question": "What is the image frequency in a superheterodyne receiver?",
+      "options": [
+        "The second harmonic of the local oscillator frequency",
+        "A second RF frequency, separated from the wanted signal by twice the IF, that also mixes with the LO to produce an output at the IF — appearing as interference if not rejected before the mixer",
+        "The frequency produced when the received signal mixes with its own second harmonic",
+        "The frequency at which the IF amplifier self-oscillates"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The mixer produces sum and difference products from any RF signal present and the LO. The image is the RF frequency that is as far above the LO as the wanted signal is below it (or vice versa), so it also produces an output at the IF. The image must be rejected before the mixer — a preselector or front-end bandpass filter is used for this purpose.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 60",
+      "tags": ["image-frequency", "superhet", "IF", "preselector", "mixer"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9D",
+      "section_name": "Image Frequency and Rejection",
+      "question": "A receiver is tuned to 7.100 MHz using an IF of 455 kHz with the LO set above the wanted signal. What is the image frequency?",
+      "options": [
+        "6.645 MHz",
+        "7.555 MHz",
+        "8.010 MHz",
+        "14.200 MHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "LO = f_signal + f_IF = 7.100 + 0.455 = 7.555 MHz. Image = f_LO + f_IF = 7.555 + 0.455 = 8.010 MHz. The image is 2 × 0.455 = 0.910 MHz above the wanted signal. The preselector must reject 8.010 MHz while passing 7.100 MHz.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 60",
+      "tags": ["image-frequency", "superhet", "frequency-calculation", "IF", "preselector"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9D",
+      "section_name": "Image Frequency and Rejection",
+      "question": "Two receivers are both tuned to 14 MHz. Receiver A uses a 455 kHz IF; Receiver B uses a 9 MHz IF. Which has better image rejection and why?",
+      "options": [
+        "Receiver A, because the lower IF produces a lower image frequency that is easier to reject with a simple HF bandpass filter",
+        "Both receivers have identical image rejection because they are tuned to the same wanted frequency",
+        "Receiver B, because the 9 MHz IF places the image at 14 + 2×9 = 32 MHz — 18 MHz away — where a simple RF bandpass filter provides many dB of attenuation, compared to Receiver A's image at 14 + 2×0.455 = 14.91 MHz, only 910 kHz away and almost impossible to reject with a broadband RF filter",
+        "Receiver A, because the 455 kHz crystal filter provides sharper roll-off, which also improves image rejection"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Image rejection depends on the front-end filter's ability to attenuate the image. Receiver A's image at 14.91 MHz is only 910 kHz from the wanted 14 MHz signal — a broadband HF filter covering 14–14.35 MHz will provide little rejection at 14.91 MHz. Receiver B's image at 32 MHz is 18 MHz away and easily rejected by any HF band filter. This is the fundamental advantage of a high IF for image rejection.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 60–61",
+      "tags": ["image-frequency", "image-rejection", "IF", "preselector", "double-superhet"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9E",
+      "section_name": "The Double Superhet",
+      "question": "In a double-superheterodyne receiver, why is the first IF set to a high frequency such as 45–70 MHz?",
+      "options": [
+        "High first IFs allow the use of ceramic filters, which have better selectivity than crystal filters at HF",
+        "A high first IF places the image frequency far from the wanted signal — often 90–140 MHz away — where it is readily rejected by a simple front-end bandpass filter",
+        "A high first IF reduces the noise figure of the first mixer stage",
+        "A high first IF means the second conversion stage is only needed for VHF operation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The image of the first conversion is at f_signal + 2 × f_IF1. With a 45 MHz first IF, this image is 90 MHz from the wanted signal. Any amateur band bandpass filter provides many dB of attenuation 90 MHz away, giving excellent image rejection without needing a highly selective tunable filter.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 61",
+      "tags": ["double-superhet", "first-IF", "image-rejection", "architecture"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9E",
+      "section_name": "The Double Superhet",
+      "question": "What is the function of the roofing filter in a double-superhet receiver, and at which IF is it fitted?",
+      "options": [
+        "It provides the final narrow-band SSB selectivity; it is fitted at the second IF",
+        "It acts as an anti-aliasing filter before the ADC in a digital-IF receiver",
+        "Fitted at the first IF, it limits the bandwidth of signals reaching the second mixer — preventing very strong out-of-band signals from overloading the second IF stages while being wide enough to pass signals across the tuning range",
+        "It prevents the first LO signal from reaching the antenna terminal via reverse leakage through the mixer"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The roofing filter sits at the first IF. It is typically 10–50 kHz wide (wide enough to let any signal within the passband through without channel selection, but narrow enough to reject very strong signals more than ±25 kHz away). Its key role is to protect the second mixer and IF stages from being overloaded by a strong nearby signal, which would cause blocking or IMD.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 61",
+      "tags": ["roofing-filter", "double-superhet", "first-IF", "blocking", "dynamic-range"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9F",
+      "section_name": "Product Detector and BFO",
+      "question": "Why does SSB reception require a product detector and BFO, whereas a simple envelope detector works for AM?",
+      "options": [
+        "An envelope detector is too noisy for SSB reception at weak signal levels",
+        "In SSB the carrier has been suppressed at the transmitter; the BFO re-inserts a carrier reference at the IF so the product detector can recover the original audio as difference frequency products",
+        "The product detector provides better AGC control for SSB than an envelope detector can",
+        "SSB carries audio in both sidebands simultaneously, requiring two separate detector circuits"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An envelope detector demodulates AM by following the amplitude envelope — this works because the AM carrier provides a stable reference phase. An SSB signal has no carrier; without a local reference, the envelope detector produces a badly distorted output. The BFO supplies a coherent carrier and the product detector multiplies IF × BFO to recover the audio as difference frequencies.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 61–62",
+      "tags": ["product-detector", "BFO", "SSB", "AM", "demodulation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9F",
+      "section_name": "Product Detector and BFO",
+      "question": "A receiver's BFO is set just below the centre of the IF passband. Which sideband is it receiving, and what change selects the other sideband?",
+      "options": [
+        "It is receiving LSB; to select USB, move the BFO above the IF centre frequency",
+        "It is receiving USB; to select LSB, move the BFO above the IF centre frequency",
+        "Sideband selection depends only on the IF filter, not the BFO position",
+        "It is in AM mode; SSB cannot be received with a BFO below the IF centre"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "With the BFO just below the IF centre, frequencies in the upper portion of the IF passband produce audible difference frequencies in the normal speech range — this is USB reception. Moving the BFO above the IF centre makes frequencies in the lower portion of the passband audible in the correct pitch range, selecting LSB. In some receivers this is done by switching the BFO frequency; in others by switching which IF filter sideband is used.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 62",
+      "tags": ["BFO", "USB", "LSB", "product-detector", "sideband-selection"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9F",
+      "section_name": "Product Detector and BFO",
+      "question": "An operator tunes to a USB SSB station but leaves the receiver in AM (envelope detector) mode without activating the BFO. What does the received audio sound like, and why?",
+      "options": [
+        "The audio sounds normal but with very high background noise",
+        "A very loud single tone is heard equal to the suppressed carrier frequency",
+        "The audio is garbled and unintelligible — commonly described as 'duck speech' — because without a carrier reference the envelope detector follows only the varying amplitude of the sideband, which does not correspond to the original audio waveform",
+        "No audio is heard because the suppressed carrier prevents the squelch from opening"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "An SSB signal is the product of the audio and a suppressed carrier. The envelope of this signal varies at the sum and difference frequencies of the audio components, not at the audio frequencies themselves. An envelope detector recovers this envelope — which sounds like a severely distorted, pitch-shifted version of the original speech. A BFO re-inserts the carrier phase reference so the correct demodulation can occur.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 62",
+      "tags": ["SSB", "BFO", "product-detector", "duck-speech", "envelope-detector"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9G1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9G",
+      "section_name": "Automatic Gain Control (AGC)",
+      "question": "What is the purpose of Automatic Gain Control (AGC) in a receiver?",
+      "options": [
+        "To automatically tune the receiver to the strongest signal present on the band",
+        "To maintain a roughly constant audio output level as received signal strength varies, by automatically adjusting the gain of the IF and optionally the RF stages",
+        "To prevent the receiver from picking up signals outside the licensed amateur bands",
+        "To adjust the IF filter bandwidth automatically according to signal strength"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Signal strengths on the amateur bands can vary by 80 dB or more. Without AGC, the operator would need to constantly adjust the volume control and the receiver would saturate on strong signals. AGC derives a control voltage from the IF signal level and uses it to reduce amplifier gain when a strong signal is received, keeping audio output roughly constant.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 62",
+      "tags": ["AGC", "gain-control", "dynamic-range", "IF-amplifier"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9G",
+      "section_name": "Automatic Gain Control (AGC)",
+      "question": "For SSB reception, which combination of AGC attack and decay time constants is most appropriate, and why?",
+      "options": [
+        "Slow attack (50 ms) and fast decay (10 ms) — so the AGC releases rapidly between syllables, giving full gain on quiet passages",
+        "Fast attack (a few milliseconds) and slow decay (0.5–2 s) — so the AGC responds quickly to a loud speech peak but does not release between syllables, avoiding audible gain-pumping",
+        "Equal attack and decay of about 100 ms each — for a balanced response to speech",
+        "AGC should be disabled entirely for SSB — it degrades audio quality"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Fast attack prevents the first syllable of a loud speech peak from clipping the IF. Slow decay prevents the AGC from releasing between syllables (which would cause the background noise to surge audibly in inter-syllable gaps — the 'pumping' or 'breathing' effect). The slow decay holds the gain reduction steady across a word or sentence, giving natural-sounding audio.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 63",
+      "tags": ["AGC", "attack-time", "decay-time", "SSB", "pumping"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9G1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9G",
+      "section_name": "Automatic Gain Control (AGC)",
+      "question": "What is hang AGC, and what listening problem does it address in SSB operation?",
+      "options": [
+        "Hang AGC prevents the AGC from activating on brief noise bursts; it addresses the problem of the receiver going deaf during impulse interference",
+        "Hang AGC holds the gain-reduced state for a set period (the hang time) after a speech peak before beginning the slow decay; this prevents the background noise from suddenly surging loud in the silence between syllables — the 'noise breathing' effect",
+        "Hang AGC is another name for fast-attack AGC; it addresses clipping of loud speech peaks",
+        "Hang AGC activates only when SWR exceeds 1.5:1, protecting the receiver front end from reflected transmitter power"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "With simple slow-decay AGC, the gain starts recovering as soon as a speech peak ends. On a fast talker, the gain may start rising significantly between syllables, making the inter-syllable noise audible. Hang AGC adds a fixed hold period (typically 0.5–1 s) before the decay begins, keeping the gain pinned down across the whole utterance and only releasing after a genuine pause.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 63",
+      "tags": ["AGC", "hang-AGC", "SSB", "noise-breathing", "decay-time"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9H1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9H",
+      "section_name": "FM Demodulation",
+      "question": "Why is a limiter stage fitted before the FM discriminator?",
+      "options": [
+        "The limiter amplifies the IF signal to the level required for the discriminator to operate",
+        "FM carries information only in frequency variations; the limiter removes amplitude variations (AM noise and impulse noise) from the IF signal before demodulation, improving audio quality",
+        "The limiter prevents the discriminator from responding to SSB signals on adjacent channels",
+        "The limiter sets the channel bandwidth to match the 12.5 kHz channel spacing"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An ideal FM discriminator converts instantaneous frequency to audio. Any amplitude variation on its input would appear as spurious audio (AM interference). The limiter clips the IF signal to a constant amplitude, removing all AM components. This gives FM its characteristic resistance to impulse noise and its 'capture effect' — the ability to suppress weaker co-channel signals.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 63",
+      "tags": ["FM", "limiter", "discriminator", "capture-effect", "AM-rejection"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9H",
+      "section_name": "FM Demodulation",
+      "question": "What is SINAD, and how is the 12 dB SINAD figure used to characterise FM receiver sensitivity?",
+      "options": [
+        "SINAD (Signal-to-Interference-Noise-And-Distortion) measures AM receiver sensitivity; FM uses SNR instead",
+        "SINAD = (Signal + Noise + Distortion) / (Noise + Distortion); the 12 dB SINAD sensitivity is the minimum received signal level at which the receiver achieves a 12 dB SINAD ratio — a lower signal level for 12 dB SINAD indicates a more sensitive receiver",
+        "SINAD is the ratio of wanted audio to the CTCSS sub-tone level; 12 dB ensures the tone does not mask the audio",
+        "SINAD is the output SNR at the discriminator; 12 dB means the signal is 4 times the noise voltage"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "SINAD is the standard sensitivity measurement for FM receivers. A receiver is rated by the RF input level (in μV or dBm) that produces 12 dB SINAD at the audio output. SINAD = 10 × log₁₀[(S+N+D)/(N+D)]. At 12 dB, the total audio power with signal is 4× the noise+distortion power alone. A receiver requiring −118 dBm for 12 dB SINAD is more sensitive than one requiring −112 dBm.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 63",
+      "tags": ["SINAD", "FM", "sensitivity", "12dB", "receiver-measurement"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9I1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9I",
+      "section_name": "Receiver Filters",
+      "question": "How do crystal filters and ceramic filters compare in terms of Q factor and typical application in a superhet receiver?",
+      "options": [
+        "Crystal filters have higher Q (typically > 10,000) and are used at HF IF frequencies (6–12 MHz) for SSB/CW selectivity; ceramic filters have lower Q and are used at 455 kHz or 10.7 MHz for AM and NBFM applications",
+        "Ceramic filters have higher Q than crystal filters and are preferred for narrow SSB filtering; crystal filters are used only in oscillators",
+        "Crystal and ceramic filters have equivalent Q; the choice depends solely on cost and size",
+        "Crystal filters are used only at audio frequencies; ceramic filters provide all RF selectivity in a superhet"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Quartz crystal resonators achieve Q factors of 10,000–100,000+, enabling very narrow, steep-sided bandpass filters at fixed HF frequencies. Ceramic resonators have Q values of hundreds to a few thousand, suitable for 455 kHz AM/NBFM and 10.7 MHz FM IF filtering where extreme selectivity is not needed. Modern DSP receivers may replace the second IF crystal filter with digital filtering, but the first IF roofing filter is often still a crystal or ceramic type.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 63–64",
+      "tags": ["crystal-filter", "ceramic-filter", "Q-factor", "selectivity", "IF"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9I",
+      "section_name": "Receiver Filters",
+      "question": "A software-defined receiver performs all filtering digitally after the ADC. Why does it still require a hardware roofing filter before the ADC?",
+      "options": [
+        "The DSP filter needs a precisely known input signal level to set the word length; the roofing filter provides a reference level",
+        "A very strong signal outside the wanted channel can overload the ADC or the preceding RF/mixer stages before the DSP can act; the roofing filter limits the signal power reaching the ADC, preserving its dynamic range for the wanted signal",
+        "ADCs cannot process signals at radio frequencies, so the roofing filter converts the signal to audio before conversion",
+        "DSP filters only operate below 20 kHz; the roofing filter handles all RF selectivity above this frequency"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "DSP filtering is applied after the ADC, but ADC overload occurs before any digital processing can act. If a strong off-channel signal reaches the ADC at a level near or above its full-scale range, the ADC clips, generating massive intermodulation products across the whole digital spectrum — no amount of DSP filtering can remove this. The roofing filter prevents such signals from reaching the ADC in the first place.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 64",
+      "tags": ["roofing-filter", "DSP", "ADC", "dynamic-range", "SDR"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9J1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9J",
+      "section_name": "Blocking, Cross-Modulation, and Reciprocal Mixing",
+      "question": "What is the observable symptom of receiver blocking (desensitisation)?",
+      "options": [
+        "The receiver automatically resets to its default frequency",
+        "A wanted signal on a nearby frequency apparently disappears or becomes much weaker while a strong off-channel signal is present, and returns to normal strength when the strong signal is removed",
+        "The audio output level increases suddenly and then falls over a few seconds",
+        "The S-meter drops to zero and the receiver produces a loud buzzing noise"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Blocking occurs when a strong off-channel signal drives the RF amplifier or first mixer into compression, reducing the gain for all signals including the wanted one. The effect appears as the wanted station fading or disappearing. Blocking is temporary and fully reversible — it disappears as soon as the strong signal is removed, distinguishing it from a hardware fault.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 64",
+      "tags": ["blocking", "desensitisation", "dynamic-range", "strong-signal", "receiver"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9J",
+      "section_name": "Blocking, Cross-Modulation, and Reciprocal Mixing",
+      "question": "What causes cross-modulation in a receiver, and what does the affected operator hear?",
+      "options": [
+        "Cross-modulation is caused by LO leakage reaching the antenna; the operator hears a whistle on nearby frequencies",
+        "Cross-modulation occurs when a strong amplitude-modulated signal drives the RF or mixer stage non-linearly, causing its modulation to transfer onto the wanted received signal; the operator hears the strong station's audio mixed underneath their wanted signal",
+        "Cross-modulation is another name for reciprocal mixing; it is caused by LO phase noise",
+        "Cross-modulation occurs when two identical signals arrive from different directions, causing phase cancellation at the receiver"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Non-linearity in the RF amplifier or mixer causes gain modulation: the instantaneous gain varies at the modulation rate of any strong signal present. If a strong AM broadcast transmitter nearby has 80% modulation, the receiver's front-end gain is modulated at the audio rate of that broadcast, imposing it on the wanted received signal. Improved IP3 and front-end filtering reduce cross-modulation susceptibility.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 64–65",
+      "tags": ["cross-modulation", "non-linearity", "IP3", "AM", "strong-signal"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9J",
+      "section_name": "Blocking, Cross-Modulation, and Reciprocal Mixing",
+      "question": "What causes reciprocal mixing in a receiver?",
+      "options": [
+        "A strong in-channel signal mixes with the IF carrier reference, producing an audio product at an unwanted frequency",
+        "A strong off-channel signal mixes with the phase noise sidebands of the local oscillator, producing a noise output at the IF that masks weak wanted signals on the tuned frequency",
+        "High antenna SWR reflects the LO signal back into the mixer, causing it to mix with itself and produce IF noise",
+        "Two antennas pointed at different signals mix their outputs in the feedline, producing intermodulation at the receiver input"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Every LO has phase noise — a low-level noise skirt extending either side of the LO frequency. When a strong off-channel signal mixes with these noise sidebands, it produces a noise output at the IF that is indistinguishable from receiver noise. If the strong signal is 60 kHz away and the LO phase noise at 60 kHz offset is −120 dBc/Hz, a strong signal can raise the IF noise floor significantly, masking weak stations on the tuned frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 65",
+      "tags": ["reciprocal-mixing", "phase-noise", "LO", "dynamic-range", "IF-noise"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9J1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "9J",
+      "section_name": "Blocking, Cross-Modulation, and Reciprocal Mixing",
+      "question": "Explain the key difference between blocking and reciprocal mixing as receiver impairments, and state what must be improved to reduce reciprocal mixing specifically.",
+      "options": [
+        "Blocking increases receiver gain on the wanted channel; reciprocal mixing reduces it; improving the roofing filter bandwidth cures both",
+        "Both are caused by ADC overload; increasing the ADC bit depth cures both equally",
+        "Blocking desensitises the receiver by compressing the RF/mixer stage via direct signal overload (an IP3 / linearity problem); reciprocal mixing raises the IF noise floor via strong-signal × LO phase noise (a phase noise problem); both worsen with a strong nearby signal but have different root causes — reducing LO phase noise (better PLL reference, OCXO, or high-Q VFO) specifically addresses reciprocal mixing",
+        "They are the same phenomenon; reciprocal mixing is simply the technical term for what operators call blocking, and a roofing filter eliminates both"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Blocking: a non-linear mechanism where the strong signal itself compresses the RF/IF gain — improving IP3 helps. Reciprocal mixing: a linear mechanism where strong signal × LO phase noise appears as IF noise — no amount of IP3 improvement helps; only lower LO phase noise reduces it. Understanding the distinction allows the correct hardware upgrade to be specified for a given interference scenario.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 65",
+      "tags": ["blocking", "reciprocal-mixing", "phase-noise", "IP3", "LO", "dynamic-range"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9K1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "9K",
+      "section_name": "Masthead Preamplifiers",
+      "question": "What does the Friis noise formula tell us about the overall noise figure of a cascaded chain of amplifiers and lossy components?",
+      "options": [
+        "The last stage in the chain dominates the noise figure; a high-gain PA should therefore be the final element",
+        "All stages contribute equally to the noise figure, so each stage must individually achieve the target NF",
+        "The first stage in the chain dominates the overall noise figure if it has sufficient gain; later stages contribute noise divided by the cumulative gain of all preceding stages — so a low-NF, high-gain first stage makes later stage noise negligible",
+        "Noise is generated only in resistive components; transistor amplifiers add no noise and need not be included in the cascade calculation"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Friis: F_total = F₁ + (F₂ − 1)/G₁ + (F₃ − 1)/(G₁G₂) + … Each subsequent stage's noise is attenuated by the gain of all preceding stages. With G₁ = 15 dB (×32 linear), the second stage noise contribution is reduced by a factor of 32. This is why the first stage (or in a receive system, anything before the first active stage) determines most of the system NF.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, pp. 65–66",
+      "tags": ["Friis-formula", "noise-figure", "cascaded-stages", "masthead-LNA", "NF"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "9K1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "9K",
+      "section_name": "Masthead Preamplifiers",
+      "question": "Why is a masthead low-noise preamplifier (LNA) more beneficial at VHF/UHF than at HF?",
+      "options": [
+        "VHF/UHF antennas have intrinsically lower gain than HF antennas, so extra amplification is always needed",
+        "At HF, the external noise received via the antenna (atmospheric, galactic, man-made) already far exceeds the thermal noise floor, so the receiver's own noise figure is not the limiting factor; at VHF/UHF the external noise environment is much quieter, making receiver NF and cable losses the dominant constraint — a masthead LNA directly improves system SNR",
+        "Coaxial cable introduces no significant losses at HF frequencies, making a masthead LNA unnecessary below 30 MHz",
+        "Masthead LNAs can only be powered by the DC supply from a VHF/UHF radio; HF transceivers do not provide a bias-T supply voltage"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At HF, the sky noise temperature is thousands of kelvin above the thermal noise floor — even a noisy receiver will see the external noise dominating. Adding a low-NF LNA does not improve the SNR because the noise arrives at the antenna, not in the receiver. At VHF/UHF, galactic and atmospheric noise are far lower, so the receiver NF and coaxial cable losses genuinely set the noise floor — a masthead LNA ahead of the cable loss directly improves sensitivity.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 9, p. 66",
+      "tags": ["masthead-LNA", "VHF", "HF", "noise-figure", "external-noise", "Friis-formula"],
+      "active": true
+    }
+  ]
+}

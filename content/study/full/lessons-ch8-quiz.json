@@ -1,0 +1,488 @@
+{
+  "meta": {
+    "chapter": 8,
+    "title": "Transmitter Interference",
+    "level": "full",
+    "syllabus_refs": ["8A1", "8B1", "8C1", "8D1", "8E1", "8F1"],
+    "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, pp. 51–56",
+    "question_count": 25,
+    "generated": "2026-09-14"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "8A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8A",
+      "section_name": "Frequency Stability and Drift",
+      "question": "Why does a free-running LC VFO drift more than a crystal oscillator?",
+      "options": [
+        "LC VFOs operate at higher frequencies where thermal noise causes greater drift",
+        "LC VFOs use components whose values change with temperature, supply voltage, and vibration, and their Q (a few hundred) is far lower than a crystal (up to 50,000)",
+        "LC VFOs require more power, causing self-heating that shifts the frequency",
+        "Crystal oscillators are phase-locked to an atomic frequency reference"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A crystal's high Q (up to 50,000) and the mechanical stability of the quartz element make it highly resistant to environmental perturbations. An LC VFO relies on inductors and capacitors that change value with temperature and supply voltage, and its low Q means small component changes produce noticeable frequency shifts.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 51",
+      "tags": ["frequency-drift", "VFO", "crystal-oscillator", "stability", "Q-factor"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8A",
+      "section_name": "Frequency Stability and Drift",
+      "question": "What is a TCXO, and when would it be used in preference to a standard crystal oscillator?",
+      "options": [
+        "A Temperature-Compensated Crystal Oscillator; used when better stability than a standard crystal is needed without the power consumption and bulk of an oven-controlled oscillator",
+        "A Tunable Crystal eXternal Oscillator; used in PLLs where the crystal frequency must be varied continuously",
+        "A Triple-Crystal Xtal Oscillator; used when frequency redundancy is required in a synthesiser",
+        "A Timing Crystal Cross-Over; used in double-superhet receivers to switch between IF stages"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "A TCXO (Temperature-Compensated Crystal Oscillator) uses a network of temperature-sensitive components to apply a compensating correction voltage to the crystal, reducing frequency drift with temperature. It sits between a plain crystal (cheapest, least stable) and an OCXO (oven-controlled, highest stability, most power). TCXOs are used in portable and battery equipment where an oven would be impractical.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 51",
+      "tags": ["TCXO", "OCXO", "crystal-oscillator", "temperature-compensation", "frequency-stability"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8A",
+      "section_name": "Frequency Stability and Drift",
+      "question": "Which TWO of the following are recognised causes of frequency drift in a transmitter oscillator?",
+      "options": [
+        "Temperature change in oscillator components and variation in the DC supply voltage",
+        "Increasing the antenna height and changing the feeder SWR",
+        "Increasing the microphone audio drive level and adjusting the mic gain setting",
+        "Switching between upper and lower sideband and changing the IF filter bandwidth"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Temperature alters the values of inductors and capacitors (and crystal frequency); supply voltage changes alter transistor junction capacitance, which loads the oscillator tank circuit. Both shift the oscillator frequency. Antenna height, SWR, audio level, and sideband selection do not directly affect a well-isolated oscillator.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, pp. 51–52",
+      "tags": ["frequency-drift", "temperature", "supply-voltage", "oscillator"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8A1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8A",
+      "section_name": "Frequency Stability and Drift",
+      "question": "A crystal oscillator has a temperature coefficient of 2 ppm/°C. The operating temperature rises by 20°C while the transmitter is on 14.250 MHz. By how much does the output frequency change?",
+      "options": [
+        "5.7 Hz",
+        "57 Hz",
+        "285 Hz",
+        "570 Hz"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "Frequency change = f × TC × ΔT = 14,250,000 × (2 / 1,000,000) × 20 = 14.25 × 2 × 20 = 570 Hz. At 2 ppm/°C and a 20°C rise, the crystal drifts by 40 ppm = 570 Hz on 14.25 MHz.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 51",
+      "tags": ["ppm", "frequency-drift", "crystal-oscillator", "temperature-coefficient", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "What is the 3rd harmonic of a transmitter operating on 7.050 MHz?",
+      "options": [
+        "14.100 MHz",
+        "21.150 MHz",
+        "28.200 MHz",
+        "35.250 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "3rd harmonic = 3 × 7.050 MHz = 21.150 MHz. This falls within the 15 m amateur band (21.000–21.450 MHz), illustrating how harmonics from one band can cause interference on another.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 52",
+      "tags": ["harmonics", "3rd-harmonic", "frequency-calculation", "spurious-emissions"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "What is the most effective method of reducing harmonic radiation from a transmitter PA?",
+      "options": [
+        "Increase the PA supply voltage to reduce peak clipping",
+        "Switch the PA to class A operation for all modes",
+        "Fit a low-pass filter between the PA output and the antenna connector",
+        "Increase the IF filter bandwidth to absorb the harmonic energy"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A low-pass filter (LPF) at the transmitter output passes the fundamental frequency while attenuating all harmonics above it. This is the standard and most effective harmonic suppression measure. For multi-band operation, a bank of switched LPFs (one per band group) is typically used.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 53",
+      "tags": ["harmonics", "LPF", "harmonic-suppression", "PA-output"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "What is the maximum permitted level of spurious emissions (including harmonics) from a UK amateur transmitter operating above 25 W output?",
+      "options": [
+        "−20 dBc (20 dB below the carrier power)",
+        "−30 dBc (30 dB below the carrier power)",
+        "−43 dBc (43 dB below the carrier power)",
+        "−60 dBc (60 dB below the carrier power)"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "UK licence terms require spurious emissions to be at least −43 dBc below the carrier for transmitters above 25 W. Some modes and frequency ranges require −50 dBc. A 100 W transmitter must therefore keep all harmonics below 100 × 10^(−43/10) ≈ 5 mW.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 52",
+      "tags": ["spurious-emissions", "harmonics", "dBc", "licence-limit", "UK-licence"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "Why does a class C PA produce stronger harmonics than a class A PA operating at the same output power?",
+      "options": [
+        "Class C PAs operate at higher supply voltages where harmonic generation is proportionally greater",
+        "Class C PAs have a larger power supply decoupling capacitor, which stores harmonic energy",
+        "Class C PAs are highly non-linear (transistor conducts for less than 180° per cycle), producing a rich harmonic spectrum from the truncated collector current pulses",
+        "Class C PAs use tuned output circuits that preferentially amplify harmonic frequencies"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A class C stage conducts for less than half the RF cycle, producing short, high-amplitude current pulses rich in harmonic content. The tuned output circuit reconstructs the fundamental from these pulses and provides some harmonic rejection, but additional LPF filtering is still essential. Class A conducts for the full cycle and is therefore much more linear with far lower harmonic content.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 52",
+      "tags": ["class-C", "harmonics", "PA", "non-linearity", "conduction-angle"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "A transmitter produces 100 W output. A harmonic is measured at −43 dBc. What is the power of that harmonic?",
+      "options": [
+        "50 mW",
+        "5 mW",
+        "0.5 mW",
+        "50 μW"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "P_harmonic = P_carrier × 10^(dBc/10) = 100 × 10^(−43/10) = 100 × 10^(−4.3) ≈ 100 × 5.01 × 10^−5 = 5.01 × 10^−3 W ≈ 5 mW. This is the boundary — a harmonic at exactly −43 dBc from a 100 W transmitter is at 5 mW.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 52",
+      "tags": ["harmonics", "dBc", "power-calculation", "spurious-emissions"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8B",
+      "section_name": "Harmonics and Spurious Emissions",
+      "question": "What is a parasitic oscillation in an RF power amplifier, and how is it typically cured?",
+      "options": [
+        "Oscillation at the fundamental frequency caused by insufficient drive; cured by increasing the PA drive level",
+        "Self-oscillation at an unintended frequency caused by stray feedback through supply leads or PCB layout; cured by fitting ferrite beads on supply leads and improving stage decoupling",
+        "Oscillation caused by the output matching network resonating at audio frequencies; cured by adding a DC-blocking capacitor",
+        "Oscillation at the second harmonic caused by class C operation; cured by switching to class A"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A parasitic oscillation occurs when a PA stage finds a feedback path at an unintended frequency — often VHF — via the inductance of supply leads, stray capacitance on the PCB, or input/output coupling. Ferrite beads on supply and gate/base leads present high impedance at VHF while being low-loss at the intended HF operating frequency. Good PCB layout and decoupling capacitors close to the device are also essential.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 53",
+      "tags": ["parasitic-oscillation", "PA", "ferrite-bead", "decoupling", "spurious-emissions"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8C",
+      "section_name": "PLL and DDS Spurious Outputs",
+      "question": "What is a PLL reference spur?",
+      "options": [
+        "A harmonic produced by the VCO operating non-linearly at high output levels",
+        "A spurious signal appearing at offsets of ±f_reference (and harmonics thereof) from the PLL output, caused by incomplete filtering of the reference frequency in the loop filter",
+        "A spurious output at twice the crystal frequency, caused by crystal ageing",
+        "A broadband noise floor at 1 kHz offset produced by the PLL phase comparator"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a PLL synthesiser, the phase comparator operates at the reference frequency. Some of this reference frequency leaks through the loop filter and modulates the VCO, creating sidebands at ±f_ref (and multiples) from the output. These reference spurs can fall within adjacent SSB or narrowband FM channels.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 53",
+      "tags": ["PLL", "reference-spur", "synthesiser", "spurious-emissions"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8C",
+      "section_name": "PLL and DDS Spurious Outputs",
+      "question": "A PLL synthesiser uses a 5 kHz reference frequency. At what offset frequencies from the carrier would reference spurs appear?",
+      "options": [
+        "±500 Hz",
+        "±2.5 kHz",
+        "±5 kHz",
+        "±10 kHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Reference spurs appear at ±f_ref and harmonics: ±5 kHz, ±10 kHz, ±15 kHz, etc. On an SSB channel, a spur 5 kHz away falls in the next SSB channel (channels are typically 3 kHz wide). For tightly channelled operation, a lower reference frequency (and smaller loop bandwidth) helps — at the cost of slower lock and smaller step size.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 53",
+      "tags": ["PLL", "reference-spur", "synthesiser", "frequency-offset"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8C",
+      "section_name": "PLL and DDS Spurious Outputs",
+      "question": "Why may DDS phase truncation spurs not always be removable by the output low-pass reconstruction filter?",
+      "options": [
+        "The LPF only removes harmonics above the clock frequency, which are always above all DDS output frequencies",
+        "Phase truncation spurs can fall within the LPF passband at certain output frequency ratios, indistinguishable from the wanted signal and inseparable from it by filtering",
+        "The LPF acts on amplitude, not phase, so any phase-derived spur passes through unchanged",
+        "Phase truncation spurs only appear below 100 Hz, where practical filters cannot provide sufficient attenuation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "DDS phase truncation spurs arise because the phase accumulator has more bits than the look-up table address, causing a periodic phase error. These spurs appear at predictable offsets that depend on the ratio of the output frequency to the clock. Some fall very close to the wanted output or within the LPF passband, making them impossible to remove by simple low-pass filtering.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["DDS", "phase-truncation", "spurious-emissions", "LPF"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8C",
+      "section_name": "PLL and DDS Spurious Outputs",
+      "question": "A PLL synthesiser has a phase noise specification of −110 dBc/Hz at 10 kHz offset. What is the significance of this for the transmitted signal?",
+      "options": [
+        "The synthesiser produces a discrete harmonic 110 dB below the carrier at exactly 10 kHz above the output",
+        "The specification confirms the synthesiser meets all amateur band regulatory requirements with margin to spare",
+        "The phase noise creates a low-level noise skirt close to the carrier; at −110 dBc/Hz at 10 kHz offset, the noise in a 3 kHz SSB channel at that offset is approximately −110 + 35 = −75 dBc — acceptable for most amateur use, but high phase noise synthesisers can cause reciprocal mixing problems in nearby receivers",
+        "The phase noise figure applies only to the reference crystal oscillator and does not affect the RF output frequency"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Phase noise is specified as a power spectral density relative to the carrier (dBc/Hz). To find the noise power in a bandwidth B, add 10 × log₁₀(B): for a 3 kHz bandwidth at −110 dBc/Hz → −110 + 35 = −75 dBc. This integrated phase noise appears as a noise sideband close to the carrier, affecting both transmitted signal quality and (via reciprocal mixing) the receiver's ability to hear weak nearby signals.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["phase-noise", "PLL", "synthesiser", "dBc", "reciprocal-mixing"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8D",
+      "section_name": "Key Clicks",
+      "question": "What causes key clicks in a CW transmission?",
+      "options": [
+        "The carrier oscillator drifting slightly with each keying transition",
+        "RF energy entering the audio circuitry and producing interference at audio frequencies",
+        "A fast rise and fall time on the CW keying envelope, which creates wide sidebands extending many kilohertz either side of the carrier",
+        "Insufficient power supply decoupling causing modulation by the mains frequency"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Key clicks are a direct consequence of the Fourier relationship between rise time and bandwidth. A fast (nearly square-wave) keying envelope has wide spectral sidebands; slowing the rise and fall time narrows the sidebands and eliminates the clicks heard on nearby frequencies.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["key-clicks", "CW", "rise-time", "spurious-emissions", "envelope-shaping"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8D",
+      "section_name": "Key Clicks",
+      "question": "What is the recommended envelope rise time for a shaped CW signal to avoid key clicks while maintaining readable Morse?",
+      "options": [
+        "0.1 ms",
+        "1 ms",
+        "5 ms",
+        "50 ms"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A rise time of approximately 5 ms (raised-cosine or Gaussian shaping) limits the click sidebands to roughly ±200 Hz, well within a single CW channel. Shorter rise times (< 1 ms) produce audible clicks extending several kHz; longer times (> 15 ms) cause Morse dots to become soft and mushy, and can result in a 'chirp' effect.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["key-clicks", "CW", "rise-time", "envelope-shaping", "5ms"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8D",
+      "section_name": "Key Clicks",
+      "question": "What happens if the CW keying envelope rise time is set too long — for example, 20 ms?",
+      "options": [
+        "Key clicks worsen because the longer rise creates stronger spectral sidebands",
+        "Morse dots become soft and difficult to distinguish from dashes; at very slow rise times the signal may sound like a chirp rather than crisp CW",
+        "The transmitted power increases because the PA has more time to reach full output",
+        "Rise time has no audible effect on the quality of received CW"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A 20 ms rise time applied to a standard 25 wpm Morse element (dot length ≈ 48 ms) means nearly half the dot is spent on the rising edge. The dot sounds rounded and faint. At high speeds, dits may not reach full amplitude at all. The operator on the other end hears an indistinct, mushy signal that is hard to read at speed.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["key-clicks", "CW", "rise-time", "morse", "shaping"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8D",
+      "section_name": "Key Clicks",
+      "question": "A CW transmitter has a keying envelope rise time of approximately 0.3 ms. What spectral effect does this produce, and what is the correct remedy?",
+      "options": [
+        "Key clicks extending approximately 3 kHz either side of the carrier; the cure is to slow the rise and fall time to approximately 5 ms using an envelope shaping circuit",
+        "Key clicks extending approximately 300 Hz either side; no shaping is needed at this rise time",
+        "No key clicks occur at 0.3 ms; clicks only arise above 10 ms rise time",
+        "Key clicks extending to ±50 kHz; the only cure is to reduce the transmitter power"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "The approximate bandwidth of a keying edge is ≈ 1 / t_rise = 1 / 0.0003 ≈ 3.3 kHz. Sidebands of this magnitude extend several kHz either side of the carrier, causing interference to adjacent CW and SSB operators. Slowing the rise time to ≈ 5 ms reduces the bandwidth to ≈ 200 Hz — confined within the CW channel.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 54",
+      "tags": ["key-clicks", "CW", "rise-time", "bandwidth", "shaping"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8E",
+      "section_name": "FM Over-deviation",
+      "question": "What is the main interference consequence of FM over-deviation?",
+      "options": [
+        "The transmitter output power increases, risking damage to the PA transistor",
+        "The carrier frequency shifts permanently upward in proportion to the deviation",
+        "The signal's instantaneous frequency swings beyond the channel edges, causing interference to stations operating on adjacent channels",
+        "The audio quality within the transmitting station's own channel deteriorates severely"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "When a transmitter over-deviates, its carrier swings beyond the permitted channel boundaries into adjacent channels. Stations on those adjacent channels hear the over-deviating transmitter as a buzzing interference. The operator causing the over-deviation may hear their own audio as perfectly clear — the problem is only apparent to adjacent-channel users.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, pp. 54–55",
+      "tags": ["FM", "over-deviation", "adjacent-channel", "interference"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8E",
+      "section_name": "FM Over-deviation",
+      "question": "What is the maximum permitted peak frequency deviation for NBFM voice operation on VHF with 12.5 kHz channel spacing?",
+      "options": [
+        "±1.5 kHz",
+        "±2.5 kHz",
+        "±5.0 kHz",
+        "±75 kHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For 12.5 kHz channelled NBFM, the peak deviation is limited to ±2.5 kHz. Combined with a maximum audio frequency of 3 kHz, Carson's Rule gives BW = 2 × (2.5 + 3) = 11 kHz — just within the 12.5 kHz channel. ±75 kHz is the deviation used for wideband broadcast FM (200 kHz channels).",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 55",
+      "tags": ["FM", "over-deviation", "NBFM", "channel-spacing", "deviation-limit"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8E",
+      "section_name": "FM Over-deviation",
+      "question": "An FM operator on a 12.5 kHz channelled repeater receives complaints of adjacent-channel interference. Investigation shows the CTCSS sub-tone is being transmitted at a high level. What is the most likely cause of the over-deviation?",
+      "options": [
+        "The CTCSS tone is being transmitted on the wrong frequency, corrupting the adjacent channel's access system",
+        "The high-level CTCSS sub-tone adds to the audio signal voltage, raising the total modulation level and causing the total peak deviation to exceed ±2.5 kHz",
+        "The repeater is cross-mode — it receives FM but retransmits AM, doubling the apparent deviation",
+        "Adjacent-channel interference from CTCSS only occurs when the audio level is too low, not too high"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The total modulation fed to the FM modulator is the sum of the audio signal and any sub-tones (CTCSS, DCS). If the CTCSS tone is set too high, the combined peak voltage exceeds the threshold that produces ±2.5 kHz deviation, causing over-deviation even if the speech audio alone is correctly levelled. The fix is to reduce the CTCSS injection level.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 55",
+      "tags": ["FM", "over-deviation", "CTCSS", "sub-tone", "adjacent-channel"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "8F",
+      "section_name": "Intermodulation Distortion (IMD) and SSB Splatter",
+      "question": "SSB splatter caused by IMD affects which emission modes, and why are FM and CW unaffected?",
+      "options": [
+        "Only FM is affected; SSB and CW are constant-amplitude modes immune to IMD",
+        "SSB and AM are affected because they carry amplitude-varying signals; a non-linear PA generates audio IMD products that appear as sidebands; FM and CW are constant-amplitude modes so PA non-linearity does not produce audio IMD",
+        "All modes are equally affected by IMD; output filtering removes it in each case",
+        "Only CW is affected because sharp keying transitions create IMD with adjacent signals"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "IMD arises when multiple audio frequency components mix in a non-linear PA stage, producing sum and difference products. SSB and AM carry real amplitude variations in the envelope, so this non-linearity generates spurious products. FM and CW are constant-amplitude modes — the PA stage processes a fixed-amplitude RF signal and non-linearity does not produce audio IMD, though it can add harmonics.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 55",
+      "tags": ["IMD", "SSB", "AM", "FM", "CW", "splatter", "constant-amplitude"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8F",
+      "section_name": "Intermodulation Distortion (IMD) and SSB Splatter",
+      "question": "An SSB transmitter PA is fed with two audio test tones at 700 Hz and 1,900 Hz. At what audio frequencies do the significant 3rd-order IMD products appear?",
+      "options": [
+        "1,200 Hz and 2,600 Hz",
+        "2,100 Hz and 5,700 Hz",
+        "Approximately −500 Hz (below audio range, not reproduced) and 3,100 Hz",
+        "2,800 Hz and 3,800 Hz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "3rd-order products: 2f₁ − f₂ = 2(700) − 1900 = −500 Hz (below audio range); 2f₂ − f₁ = 2(1900) − 700 = 3,100 Hz. The product at −500 Hz is not reproduced but appears as an RF sideband below the lower audio edge. The 3,100 Hz product lies just outside the normal 300–3,000 Hz voice band and appears in the transmitted spectrum as splatter on an adjacent channel.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, pp. 55–56",
+      "tags": ["IMD", "3rd-order", "two-tone-test", "SSB", "splatter", "frequency-calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "8F",
+      "section_name": "Intermodulation Distortion (IMD) and SSB Splatter",
+      "question": "A linear PA is operated without an ALC feedback connection. The operator increases the microphone gain until the PA output is just clipping on a scope. What effect does this have on adjacent-channel stations?",
+      "options": [
+        "No effect — PA clipping occurs internally and cannot create energy on other frequencies",
+        "The transmitted power increases but only on the wanted frequency, improving the signal-to-noise ratio",
+        "3rd-order IMD products appear in the transmitted spectrum adjacent to the wanted signal, causing splatter that is heard as distorted audio on nearby frequencies",
+        "The ALC automatically activates and prevents any out-of-band energy regardless of the ALC connection"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "PA clipping is precisely the condition that generates 3rd-order IMD in an SSB transmitter. The non-linear compression of the peak creates intermodulation products that spread across a bandwidth many times wider than the SSB signal. Without ALC to prevent this, the operator must manually reduce drive until the PA remains in its linear region.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 56",
+      "tags": ["IMD", "ALC", "PA", "splatter", "SSB", "overdrive"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "8F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "8F",
+      "section_name": "Intermodulation Distortion (IMD) and SSB Splatter",
+      "question": "A 400 W PEP SSB transmitter has 3rd-order IMD products measured at −30 dBc. What is the power in the IMD products, and what corrective actions should the operator take to reach the generally accepted limit of −43 dBc?",
+      "options": [
+        "IMD products at 4 W; increase PA supply voltage to move it out of saturation",
+        "IMD products at 0.4 W; reduce the audio drive level, verify the ALC is connected and functioning, and check that the antenna SWR is low",
+        "IMD products at 40 mW; fit a bandpass filter at the output to attenuate the IMD products",
+        "IMD products at 0.4 W; increase the transmitter power to 1 kW so the IMD products are a smaller percentage"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "P_IMD = 400 W × 10^(−30/10) = 400 × 0.001 = 0.4 W. IMD at −30 dBc is significantly above the −43 dBc limit. The root cause is PA non-linearity — typically from over-driving. The fixes are: reduce audio/RF drive (most important), verify ALC feedback is reducing drive before saturation, and check SWR (high SWR shifts the PA load impedance, pushing it into compression). Filtering cannot remove IMD products that fall within the passband.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 8, p. 56",
+      "tags": ["IMD", "dBc", "power-calculation", "ALC", "SWR", "PA-overdrive"],
+      "active": true
+    }
+  ]
+}
