@@ -257,6 +257,8 @@ Range ≈ 3.57 × (√10 + √10) = 3.57 × 6.32 + 3.57 × 3.16...
 
 > [INFO] **5B5:** VHF/UHF is primarily line-of-sight above ~30 MHz. The radio horizon is slightly further than the visual horizon due to atmospheric refraction. Antenna height is the primary factor in extending range.
 
+**See also:** [Station Survey 01 — The Six-Degree Skyline](/pages/blog/station-survey-01-six-degree-skyline.html){:target="_blank"} — a real case study applying these concepts: terrain profiling with Copernicus data and LiDAR reveals how hills, trees, and buildings cap the effective radio horizon at a UK station, and models the improvement from raising the antenna.
+
 ### Tropospheric Ducting (5C3)
 
 The **troposphere** is the lowest layer of the atmosphere (0–12 km) — the layer where weather happens.

@@ -338,6 +338,8 @@ Results are displayed as a plot vs frequency. This gives far more information th
 
 *See §4B and §4E for how to interpret SWR and impedance plots.*
 
+**See also:** [Understanding S11 — return loss, Smith chart, and VNA interpretation](/pages/blog/understanding-s11.html){:target="_blank"} — a deep dive with measured data from a Rigol RSA5065N, walking through Log Magnitude, SWR, and Smith Chart formats for real LTE antenna measurements. Directly applicable to interpreting output from a Nano VNA or any antenna analyser.
+
 ---
 
 ## 9H — Test Setups and Procedures (9E1–9E4)
