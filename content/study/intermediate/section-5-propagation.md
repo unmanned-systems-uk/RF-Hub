@@ -304,6 +304,8 @@ Es is best monitored on the DX cluster and on dedicated propagation websites (PS
 
 **Fading** (or QSB — Q-code for signal variation) is the variation in received signal strength over time, caused by **multipath propagation**: multiple slightly different paths from transmitter to receiver, each arriving with a slightly different delay. As the ionosphere moves and changes, these paths vary in length by metres — enough to put the signals from each path in and out of phase.
 
+> [NOTE] Some RSGB publications — including older editions of the Intermediate and Full Licence manuals — use the term **multi-wave propagation** for the same phenomenon. Multipath and multi-wave are interchangeable: both describe signals arriving at the receiver via more than one path and adding or cancelling depending on relative phase.
+
 When signals from two paths add in phase → signal is strong. When they partially cancel → signal is weak. The receiver sees the combined effect of all paths, with strength varying from second to second.
 
 **Fading rates:**
@@ -312,7 +314,39 @@ When signals from two paths add in phase → signal is strong. When they partial
 
 **Selective fading** is when different frequencies within the same signal band fade at different rates — the multipath delay varies with frequency. This is particularly destructive to SSB (a wideband mode) because parts of the voice spectrum fade while others don't, making the received audio garbled even when the signal appears to be present.
 
-> [INFO] **5B2:** Fading (QSB) is caused by multipath propagation — multiple slightly different path lengths cause signals to add and cancel as the ionosphere changes. Selective fading garbles SSB because different parts of the audio spectrum fade at different rates.
+### VHF/UHF Multipath
+
+On VHF and UHF, the ionosphere plays little role — but multipath is still a major practical concern, caused by reflections from objects on the ground rather than the sky.
+
+**Reflections from substantial structures**
+
+At 144 MHz and above, wavelengths are short enough (2 m and below) that buildings, hillsides, and open water all act as effective reflectors. A signal from a repeater may reach a mobile station via two routes: a direct path and a reflected path off a tower block or hillside. The reflected path is slightly longer, introducing a phase difference. Depending on the exact difference:
+- If paths arrive nearly in phase → signal is stronger than either path alone
+- If paths arrive nearly out of phase → deep null — the signal may drop 20–30 dB or disappear entirely
+
+Moving just half a wavelength (~1 m at 2 m band, ~35 cm at 70 cm) can shift the phase relationship enough to move from a null to a peak. This is why a mobile station sometimes improves dramatically by moving forward or back a metre.
+
+**Aircraft flutter**
+
+When an aircraft crosses the path between a transmitter and receiver, it acts as a moving reflector. The reflected signal's path length changes continuously as the aircraft moves, causing the two paths to cycle rapidly in and out of phase. The result is a rapid amplitude modulation of the received signal — typically a rapid flutter or buzz audible on the received audio.
+
+Aircraft flutter is particularly noticeable:
+- On FM repeater signals, where it appears as rapid signal chopping
+- At lower VHF (50 MHz, 70 MHz) where aircraft are electrically large reflectors
+- During approach corridors to airports — signals on affected paths flutter whenever aircraft are overhead
+
+The flutter rate depends on the aircraft's speed relative to the signal path and the frequency in use. At 144 MHz with a fast-moving aircraft, flutter can reach 10–20 Hz.
+
+**Urban multipath and dropouts**
+
+In dense urban environments, signals arrive from many different reflected paths simultaneously — off glass-fronted buildings, parked vehicles, road surfaces, and metal structures. The result is:
+- Rapid, unpredictable fading as the mobile antenna moves through the interference pattern
+- Complete signal dropouts in street canyons where direct-path signals are blocked and reflected signals cancel
+- The **urban canyon effect**: tall buildings on both sides of a street guide signals along the street but block perpendicular paths, producing strong signals along one axis and deep nulls 90° to it
+
+Digital modes and FM are both vulnerable to deep nulls, though FM's capture effect means that as long as the desired signal dominates the noise floor it sounds clean — but a deep null can cause the signal to drop below capture threshold abruptly, resulting in a sudden squelch close rather than a gradual fade.
+
+> [INFO] **5B2 (VHF/UHF):** Multipath on VHF/UHF is caused by reflections from buildings, hills, and water — not the ionosphere. Effects include signal nulls that move with the mobile (cured by moving a wavelength or two), aircraft flutter (rapid buzz from a moving aerial reflector), and urban canyon dropouts. The underlying physics — paths adding or cancelling by phase — is identical to ionospheric multipath fading on HF.
 
 ### Short Path and Long Path
 
