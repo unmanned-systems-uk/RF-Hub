@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "chapter": 7,
+    "title": "The Transmitter",
+    "level": "full",
+    "syllabus_refs": ["7A1", "7B1", "7C1", "7D1", "7E1", "7F1", "7G1", "7H1"],
+    "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 41–50",
+    "question_count": 30,
+    "generated": "2026-09-14"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "7A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7A",
+      "section_name": "Transmitter Architecture",
+      "question": "Why is modulation applied at a low intermediate frequency (IF) rather than directly at the final transmit frequency in an SSB transmitter?",
+      "options": [
+        "The modulation process introduces less noise at higher frequencies",
+        "Crystal filters with the sharp sideband selectivity needed for SSB are only practical at a low, fixed frequency",
+        "The power amplifier requires a fixed-frequency input to operate efficiently",
+        "Mixing is not possible at VHF and above"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "SSB generation requires a very narrow crystal filter to remove the unwanted sideband cleanly. Crystal filters are only practical at a fixed low frequency (typically 6–10 MHz). The SSB signal is then mixed up to the final transmit frequency using a VFO or PLL synthesiser.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 41",
+      "tags": ["SSB", "IF", "crystal-filter", "transmitter-architecture"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7A",
+      "section_name": "Transmitter Architecture",
+      "question": "What is the function of the frequency synthesiser in a modern SSB transmitter?",
+      "options": [
+        "To generate the audio tones used in SSB speech processing",
+        "To provide a stable, variable-frequency output for mixing the fixed-IF SSB signal to the desired transmit frequency",
+        "To multiply the IF signal directly to the transmit frequency without mixing",
+        "To filter the unwanted sideband produced by the balanced modulator"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The synthesiser (PLL or DDS) generates a clean, stable signal whose frequency can be varied across the amateur band. When this is mixed with the fixed-IF SSB signal, the sum or difference produces the transmit frequency. Changing the synthesiser output changes the transmit frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 41",
+      "tags": ["synthesiser", "PLL", "transmitter-architecture", "SSB"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7B",
+      "section_name": "SSB Generation — Filter Method",
+      "question": "What signal does a balanced modulator produce when driven by a carrier and an audio signal?",
+      "options": [
+        "A single-sideband signal with the carrier present",
+        "A double-sideband suppressed-carrier (DSB-SC) signal",
+        "A full AM signal with carrier and both sidebands",
+        "A frequency-modulated output at the carrier frequency"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A balanced modulator (such as a diode ring modulator) suppresses the carrier while producing both upper and lower sidebands — a double-sideband suppressed-carrier (DSB-SC) signal. The crystal filter stage then removes one sideband to produce SSB.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 41–42",
+      "tags": ["balanced-modulator", "DSB-SC", "SSB", "diode-ring"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7B",
+      "section_name": "SSB Generation — Filter Method",
+      "question": "Why must SSB generation using the filter method be performed at a low, fixed intermediate frequency?",
+      "options": [
+        "PA efficiency is higher at lower intermediate frequencies",
+        "Crystal filters require a fixed centre frequency and can only achieve the sharp sideband rejection needed for SSB at such frequencies",
+        "Balanced modulators only function correctly at audio frequencies",
+        "SSB cannot be generated above 1 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A crystal filter has a fixed centre frequency determined by the crystals used. The very high Q (selectivity) needed to reject one sideband while cleanly passing the other is only achievable at a fixed, low frequency. The SSB signal is subsequently mixed up to the required transmit frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 41–42",
+      "tags": ["crystal-filter", "SSB", "IF", "selectivity"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7B",
+      "section_name": "SSB Generation — Filter Method",
+      "question": "An SSB transmitter generates its signal at a 6 MHz IF and mixes it with a VFO output of 8.175 MHz, selecting the sum product. On which amateur band is the transmitter operating, and what is the transmit frequency?",
+      "options": [
+        "40 m band, 14.175 MHz",
+        "20 m band, 14.175 MHz",
+        "20 m band, 2.175 MHz",
+        "40 m band, 8.175 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Sum frequency = 6 MHz + 8.175 MHz = 14.175 MHz. The 20 m amateur band covers approximately 14.000–14.350 MHz, so 14.175 MHz falls in the 20 m USB phone portion.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 42",
+      "tags": ["mixer", "SSB", "20m-band", "frequency-conversion"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7B",
+      "section_name": "SSB Generation — Filter Method",
+      "question": "Why can an SSB signal NOT be moved from a low IF to the final transmit frequency by frequency multiplication?",
+      "options": [
+        "Frequency multipliers only operate efficiently below 10 MHz",
+        "Multiplication also multiplies the audio sideband frequencies, widening the bandwidth proportionally and making the recovered audio unintelligible",
+        "SSB signals cannot pass through the non-linear device required for frequency multiplication",
+        "Frequency multipliers introduce excessive phase noise that degrades SSB audio quality"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A frequency multiplier scales all frequencies present by the factor N — including the audio sidebands. A 300–3,000 Hz audio range multiplied by 18 would become 5.4–54 kHz, which is completely outside the audio range. The signal would be unintelligible. Mixing shifts all components by a fixed offset, preserving audio pitch.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 42",
+      "tags": ["SSB", "frequency-multiplication", "mixing", "audio-bandwidth"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7B",
+      "section_name": "SSB Generation — Filter Method",
+      "question": "Why is SSB more power-efficient than full-carrier AM for a given transmitter power rating?",
+      "options": [
+        "SSB occupies a wider bandwidth so more information is transmitted per watt",
+        "In AM, the majority of transmitted power is consumed by the carrier, whereas SSB suppresses the carrier and concentrates all power in the intelligence-carrying sideband",
+        "SSB requires a class C PA which is inherently more efficient than the class A PA used for AM",
+        "SSB signals experience less ionospheric fading on the HF bands"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a 100 W AM transmitter at 100% modulation, approximately two-thirds of the power is in the carrier and one-third is shared between two sidebands — around 17 W per sideband. An SSB transmitter puts all 100 W PEP into the single sideband carrying all the intelligence, giving a significant effective power advantage at the receiver.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 42",
+      "tags": ["SSB", "AM", "power-efficiency", "carrier", "sideband"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7C",
+      "section_name": "Frequency Modulation",
+      "question": "How does an FM modulator carry audio information on the carrier?",
+      "options": [
+        "By varying the amplitude of the carrier in proportion to the audio signal level",
+        "By switching the carrier on and off in time with the audio waveform",
+        "By varying the frequency of the carrier in proportion to the audio signal amplitude",
+        "By varying the phase of the carrier in proportion to the audio signal frequency"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "In frequency modulation, the instantaneous frequency of the carrier deviates above and below its centre frequency in proportion to the audio amplitude. The amount of deviation is proportional to audio voltage; the rate of deviation equals the audio frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 42–43",
+      "tags": ["FM", "frequency-modulation", "deviation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7C",
+      "section_name": "Frequency Modulation",
+      "question": "An FM transmitter has a maximum audio frequency of 3 kHz and a peak frequency deviation of 2.5 kHz. Using Carson's Rule, what is the approximate occupied bandwidth?",
+      "options": [
+        "5 kHz",
+        "6 kHz",
+        "11 kHz",
+        "16 kHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Carson's Rule: BW = 2 × (maximum audio frequency + peak deviation) = 2 × (3 + 2.5) = 2 × 5.5 = 11 kHz.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 43",
+      "tags": ["FM", "Carsons-Rule", "bandwidth", "deviation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7C",
+      "section_name": "Frequency Modulation",
+      "question": "A VHF FM transmitter has a peak frequency deviation of 2.5 kHz and a maximum audio frequency of 3 kHz. What is the modulation index?",
+      "options": [
+        "1.2",
+        "0.83",
+        "5.5",
+        "7.5"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Modulation index = peak deviation / maximum audio frequency = 2.5 kHz / 3 kHz ≈ 0.83. A modulation index of 1 or less classifies this as NBFM (narrow-band FM), as used on VHF/UHF amateur repeaters.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 43",
+      "tags": ["FM", "modulation-index", "NBFM", "deviation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7C",
+      "section_name": "Frequency Modulation",
+      "question": "What is the principal consequence of over-deviation in an FM transmitter?",
+      "options": [
+        "The transmitter output power increases, potentially damaging the PA transistor",
+        "The transmitted audio becomes distorted within the transmitting station's own channel only",
+        "The signal occupies excessive bandwidth, causing interference to stations on adjacent channels",
+        "The carrier frequency drifts upward with increasing modulation depth"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Over-deviation causes the instantaneous carrier frequency to swing further than the permitted channel width, trespassing into adjacent channel frequencies. Stations operating on adjacent channels will experience interference. The audio in the transmitting station's own channel may sound acceptable to the operator.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 43",
+      "tags": ["FM", "over-deviation", "adjacent-channel", "interference"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7C",
+      "section_name": "Frequency Modulation",
+      "question": "In a varicap-diode FM modulator, why are large-value DC blocking capacitors used in series with the audio feed to the varicap diode?",
+      "options": [
+        "To limit the audio frequency response to the permitted modulation bandwidth",
+        "To prevent the DC reverse-bias voltage on the varicap from being short-circuited through the low impedance of the audio source",
+        "To increase the capacitance swing of the varicap and therefore maximise the deviation range",
+        "To ensure the modulation index remains below 1 at all audio amplitudes"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The varicap diode requires a DC reverse-bias voltage to set its capacitance and therefore the carrier frequency. A typical audio source has a low output impedance that would short this bias to ground if connected directly, removing the reverse bias and causing the varicap to forward-conduct. The DC blocking capacitor isolates the bias circuit while passing the AC audio modulation signal.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 43",
+      "tags": ["FM", "varicap", "DC-blocking", "bias", "modulator"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "Why is a crystal oscillator preferred over a free-running LC VFO as the reference in a PLL synthesiser?",
+      "options": [
+        "A crystal oscillator can be tuned over a wider frequency range than an LC VFO",
+        "A crystal oscillator achieves a Q of up to 50,000, giving far superior frequency stability compared to an LC VFO",
+        "A crystal oscillator produces a lower output voltage, reducing harmonic radiation",
+        "A crystal oscillator does not require a power supply"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A crystal oscillator achieves Q factors up to 50,000 or more, compared to a few hundred for a practical LC circuit. This gives outstanding frequency stability against temperature, supply voltage changes, and vibration, making it an ideal, stable reference for a PLL synthesiser.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 44–45",
+      "tags": ["crystal-oscillator", "Q-factor", "frequency-stability", "VFO", "PLL"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "A PLL synthesiser uses a 10 kHz reference frequency. The programmable divider ratio N is set to 1,425. What is the VCO output frequency?",
+      "options": [
+        "1.425 MHz",
+        "14.25 MHz",
+        "142.5 MHz",
+        "10 kHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a basic PLL: f_out = N × f_reference = 1,425 × 10 kHz = 14,250 kHz = 14.25 MHz. The PLL locks the VCO so that its output divided by N equals the reference frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 44–45",
+      "tags": ["PLL", "synthesiser", "VCO", "divider", "frequency-calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "In a PLL synthesiser, what determines the minimum frequency step (channel spacing) between adjacent tuning positions?",
+      "options": [
+        "The VCO free-running frequency",
+        "The division ratio N of the programmable divider",
+        "The reference frequency applied to the phase comparator",
+        "The loop filter bandwidth"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Each increment of N by 1 changes the output frequency by exactly one reference frequency step. If the reference is 1 kHz, tuning steps are 1 kHz apart. To achieve 100 Hz steps the reference must be 100 Hz. The minimum step always equals the reference frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 44–45",
+      "tags": ["PLL", "channel-spacing", "reference-frequency", "step-size"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "What happens to a PLL synthesiser's output if the phase-lock loop loses lock?",
+      "options": [
+        "The output frequency drops to the crystal reference frequency",
+        "The VCO sweeps uncontrollably across its tuning range, and the transmitter must be inhibited to prevent out-of-band emissions",
+        "The synthesiser automatically resets to the lowest frequency in its range",
+        "The PA is automatically protected by the ALC circuit"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "When a PLL loses lock, the error voltage from the phase comparator no longer correctly steers the VCO, which drifts freely across its full tuning voltage range. The transmitter could emit on any frequency. A loss-of-lock detector must inhibit the transmitter to prevent illegal out-of-band operation.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 45",
+      "tags": ["PLL", "loss-of-lock", "VCO", "inhibit", "out-of-band"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "Why cannot the phase noise sidebands produced by a DDS synthesiser be removed by the low-pass reconstruction filter on the DAC output?",
+      "options": [
+        "The reconstruction LPF only operates at audio frequencies and has no effect on RF signals",
+        "DDS phase noise sidebands occur at the same frequencies as the DAC staircase harmonics removed by the LPF",
+        "DDS phase noise sidebands fall very close to the wanted output frequency and cannot be filtered without also attenuating the carrier",
+        "The LPF removes only amplitude quantisation errors; phase accumulator timing jitter passes through unaffected"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The DAC reconstruction LPF removes harmonic products far from the carrier at multiples of the clock frequency. DDS phase noise — arising from phase accumulator truncation and DAC non-linearity — appears as sidebands very close to the carrier. Filtering them would require a passband so narrow it would also remove the wanted signal. This is an inherent limitation of DDS.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 46",
+      "tags": ["DDS", "phase-noise", "DAC", "LPF", "synthesiser"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7D",
+      "section_name": "Frequency Generation",
+      "question": "Which set of design precautions is most important for maintaining the frequency stability of an LC Colpitts VFO?",
+      "options": [
+        "High PA drive level, direct connection to the antenna, and operation at maximum frequency",
+        "Mounting close to the PA stage, use of a ferrite-core inductor, and high supply voltage",
+        "Well-regulated power supply, rigid and thermally stable mechanical construction, and isolation from heat sources",
+        "Connecting a varicap diode directly across the tank circuit and operating at high collector current"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "VFO frequency depends on the inductance and capacitance of the tank circuit. Temperature changes alter component values; mechanical vibration changes capacitance; supply voltage variations affect transistor junction capacitance. A regulated supply, rigid (non-flexing) construction, and thermal isolation address all three main instability causes.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 44",
+      "tags": ["VFO", "Colpitts", "frequency-stability", "temperature", "supply-regulation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7E",
+      "section_name": "Frequency Multiplication and Mixing",
+      "question": "Why cannot an SSB signal be moved from a low IF to the final transmit frequency by frequency multiplication?",
+      "options": [
+        "Frequency multipliers only operate efficiently below 10 MHz",
+        "Multiplying an SSB signal also multiplies all audio sideband frequencies, destroying the original audio pitch and making the signal unintelligible",
+        "The low IF is already within a licensed amateur band and needs no frequency change",
+        "SSB signals carry phase information that is destroyed by the non-linear multiplication process"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Frequency multiplication scales all frequency components by the same factor N. For an 8 MHz SSB signal multiplied by 18 to reach 144 MHz, the 300–3,000 Hz audio sidebands would become 5.4–54 kHz — completely outside the audio range and unintelligible. Mixing shifts all components by a fixed offset, preserving audio pitch.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 46",
+      "tags": ["SSB", "frequency-multiplication", "audio-pitch", "mixing"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7E",
+      "section_name": "Frequency Multiplication and Mixing",
+      "question": "A transmitter generates an FM signal at 8 MHz with a frequency deviation of ±138 Hz. This signal passes through a ×18 frequency multiplier. What are the output frequency and output deviation?",
+      "options": [
+        "144 MHz and ±138 Hz",
+        "144 MHz and ±2,484 Hz",
+        "8 MHz and ±2,484 Hz",
+        "72 MHz and ±2,484 Hz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A frequency multiplier scales all frequencies by N, including the deviation. Output frequency = 8 MHz × 18 = 144 MHz. Output deviation = 138 Hz × 18 = 2,484 Hz ≈ ±2.5 kHz. Unlike SSB, FM can validly use multiplication because the deviation scales usefully alongside the carrier frequency.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 46",
+      "tags": ["frequency-multiplier", "FM", "deviation", "144MHz"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7E",
+      "section_name": "Frequency Multiplication and Mixing",
+      "question": "A mixer has input signals at 6 MHz and 8.175 MHz. The output bandpass filter selects the sum frequency. What is the output frequency, and which amateur band does it fall in?",
+      "options": [
+        "2.175 MHz, 160 m band",
+        "14.175 MHz, 20 m band",
+        "14.175 MHz, 17 m band",
+        "2.175 MHz, 80 m band"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Mixer produces sum = 6 + 8.175 = 14.175 MHz and difference = 8.175 − 6 = 2.175 MHz. The filter selects the sum at 14.175 MHz. The 20 m band runs from 14.000 to 14.350 MHz, so 14.175 MHz is in the 20 m USB phone portion. The 2.175 MHz difference product is filtered out.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 46",
+      "tags": ["mixer", "sum-frequency", "20m-band", "frequency-conversion"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7F",
+      "section_name": "Power Amplifiers",
+      "question": "Why must an SSB transmitter use a linear power amplifier?",
+      "options": [
+        "Class C amplifiers produce too much output power for HF operation",
+        "SSB carries information in amplitude variations; a non-linear PA distorts the envelope, generating intermodulation products that cause wide-band splatter on adjacent frequencies",
+        "Linear amplifiers are physically smaller than class C stages at HF power levels",
+        "Class C amplifiers cannot be tuned to operate in the HF bands"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "SSB encodes speech as amplitude and frequency variations in the sideband. A class C PA clips signal peaks, introducing intermodulation distortion (IMD) that generates spurious products across a bandwidth many times that of the original. A linear (class A or class AB) PA preserves the amplitude envelope, avoiding IMD and adjacent-channel splatter.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 46–47",
+      "tags": ["SSB", "linear-PA", "class-A", "IMD", "splatter"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7F",
+      "section_name": "Power Amplifiers",
+      "question": "A PA transistor has its base biased so that collector current flows for less than half of each RF cycle. Which class of operation is this, and for which emission modes is it appropriate?",
+      "options": [
+        "Class A — appropriate for SSB",
+        "Class B — appropriate for AM",
+        "Class C — appropriate for FM or CW",
+        "Class AB — appropriate for digital data modes"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Class C biases the transistor into cut-off so conduction occurs for less than 180° per cycle. A tuned output circuit reconstructs the full sine wave from the short current pulses. Class C is very efficient (~67%) but non-linear, so it is only suitable for constant-amplitude modes such as FM, CW, or FSK where amplitude distortion does not matter.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 46–47",
+      "tags": ["class-C", "PA", "FM", "CW", "conduction-angle"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7F",
+      "section_name": "Power Amplifiers",
+      "question": "What are the two functions of the LC matching network connected between the PA transistor's collector and the 50 Ω antenna feeder?",
+      "options": [
+        "To provide ALC feedback to the drive stage and to prevent RF from reaching the bias circuitry",
+        "To transform the transistor's low collector impedance up to 50 Ω AND to filter harmonic products from the output",
+        "To set the PA class of operation and to stabilise the quiescent bias current",
+        "To limit the output power to the licence maximum and to detect the output SWR"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A PA transistor presents a very low collector impedance (typically a few ohms at high power). The matching network transforms this to the standard 50 Ω load. Simultaneously, the LC network acts as a bandpass or low-pass filter suppressing harmonic products. Both functions — impedance transformation and harmonic filtering — are essential for legal, efficient operation.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 47",
+      "tags": ["PA", "matching-network", "impedance-matching", "harmonic-filter", "50-ohm"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7F",
+      "section_name": "Power Amplifiers",
+      "question": "Approximately what are the DC-to-RF power efficiency figures for class A, class B, and class C PA stages respectively?",
+      "options": [
+        "65%, 50%, 35%",
+        "35%, 50%, 67%",
+        "50%, 67%, 85%",
+        "35%, 70%, 95%"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Class A: transistor conducts for the full 360° cycle — maximum linearity but low efficiency (~35%). Class B push-pull: each transistor conducts for 180° — better efficiency (~50%). Class C: conduction for less than 180° with tuned output — highest efficiency (~67%) but non-linear. Higher efficiency means less heat dissipated in the transistor for a given output power.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 47",
+      "tags": ["PA", "class-A", "class-B", "class-C", "efficiency"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7G1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7G",
+      "section_name": "Power, PEP, and Speech Processing",
+      "question": "What is Peak Envelope Power (PEP)?",
+      "options": [
+        "The average RF power measured over the entire duration of a transmission",
+        "The average RF power measured over one complete RF cycle at the crest of the modulation envelope",
+        "The maximum instantaneous power at the positive tip of a single RF cycle",
+        "The power delivered when the transmitter operates at 100% duty cycle with no modulation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "PEP is defined as the average power (RMS voltage squared divided by the load resistance) measured over one complete RF cycle taken at the highest point (crest) of the modulation envelope. It is the standard measure of SSB transmitter output power.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 48",
+      "tags": ["PEP", "peak-envelope-power", "SSB", "power-measurement"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7G",
+      "section_name": "Power, PEP, and Speech Processing",
+      "question": "Without a speech processor, an SSB transmitter produces a PEP of 100 W with an average speech power of only 5 W (a peak-to-average ratio of 20:1). What is the effect of adding a speech processor?",
+      "options": [
+        "The PEP doubles to 200 W while the average power remains 5 W",
+        "Both PEP and average power increase proportionally",
+        "Speech peaks are compressed to roughly half their previous level, reducing PEP to approximately 50 W and approximately doubling the average talk power to around 10 W",
+        "The average power is reduced to prevent clipping distortion in the PA"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A speech processor clips or compresses peaks, reducing the peak-to-average ratio. With peaks halved, the PEP roughly halves but the average power rises — approximately doubling. This means more consistent average power reaching the other station without exceeding the licence PEP limit, effectively doubling talk power.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 48",
+      "tags": ["speech-processor", "PEP", "average-power", "SSB", "talk-power"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7G1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "7G",
+      "section_name": "Power, PEP, and Speech Processing",
+      "question": "A PA is driven to full output without an ALC feedback connection. What is the likely consequence when a strong speech peak drives the PA into saturation?",
+      "options": [
+        "The PA will switch to class C operation, increasing efficiency on peaks",
+        "Intermodulation distortion products will be generated, appearing as wide-band splatter on adjacent frequencies",
+        "ALC is only necessary for FM transmitters; SSB PAs are immune to overdrive",
+        "The SWR protection circuit will automatically reduce the drive level to prevent distortion"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "When a linear PA is over-driven into saturation it begins to clip the signal. Clipping an SSB signal generates intermodulation distortion (IMD) products spread across a bandwidth many times that of the original signal — this 'splatter' causes interference to stations on adjacent frequencies. The ALC circuit senses the PA output level and reduces the drive before saturation occurs.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 48",
+      "tags": ["ALC", "IMD", "splatter", "PA", "overdrive"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "7H",
+      "section_name": "Protection, Transceivers, and Modes",
+      "question": "What risk does a high SWR on the antenna feeder present to a solid-state PA transistor?",
+      "options": [
+        "High SWR increases the effective operating frequency, pushing the transistor beyond its gain-bandwidth product",
+        "Reflected power causes the transistor to work into a reactive or high-impedance load outside its safe operating area, risking thermal runaway or instant destruction",
+        "High SWR reduces the efficiency of the output matching network, increasing dissipation in the LC components rather than the transistor",
+        "High SWR causes the PA bias to shift, inadvertently changing the class of operation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A solid-state PA transistor is designed to operate into a specific load impedance. High SWR means a large reflected voltage wave returns from the antenna, presenting a reactive or high-impedance load at the collector. This causes voltage or current swings beyond the transistor's Safe Operating Area (SOA), which can destroy the device instantly. SWR fold-back protection reduces the drive current when high SWR is detected.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, pp. 48–49",
+      "tags": ["SWR", "PA", "SOA", "fold-back", "impedance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7H1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "7H",
+      "section_name": "Protection, Transceivers, and Modes",
+      "question": "What is the function of the transmit/receive (T/R) relay in a transceiver?",
+      "options": [
+        "To switch the PA between class A and class C depending on the emission mode selected",
+        "To connect the antenna to either the PA output during transmit or the receiver RF input during receive, preventing transmitter power from entering and damaging the receiver",
+        "To control the ALC feedback voltage between the PA output and the drive stage",
+        "To switch the IF filter between transmit and receive bandwidth settings"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A transceiver shares one antenna for both transmit and receive. The T/R relay (or PIN diode switch) connects the antenna to the PA during transmission and to the receiver input on receive. Without it, the high-power PA output would be applied directly to the sensitive receiver front end, destroying it instantly.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 7, p. 49",
+      "tags": ["T-R-relay", "transceiver", "antenna-switching", "receiver-protection"],
+      "active": true
+    }
+  ]
+}

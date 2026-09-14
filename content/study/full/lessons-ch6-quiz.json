@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "chapter": 6,
+    "title": "Analogue and Digital Signals",
+    "level": "full",
+    "syllabus_refs": ["6A1", "6B1", "6C1", "6D1", "6E1"],
+    "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, pp. 39–40",
+    "question_count": 15,
+    "generated": "2026-09-14"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "6A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "6A",
+      "section_name": "Analogue and Digital Signals",
+      "question": "Why is a digital signal more resistant to noise than an analogue signal?",
+      "options": [
+        "Digital signals use less power than analogue signals",
+        "Digital signals use only discrete levels, so noise must exceed a threshold margin before it can change the stored value",
+        "Digital signals are transmitted at higher frequencies where noise is lower",
+        "Digital signals are always encrypted before transmission"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A digital signal operates at discrete levels (typically just two: logic 0 and logic 1). Noise must be large enough to push the signal past the decision threshold before it corrupts the data. An analogue signal carries any noise directly as distortion of the wanted waveform, with no such immunity.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 39",
+      "tags": ["analogue", "digital", "noise", "noise-immunity", "threshold"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6B",
+      "section_name": "Binary Numbers",
+      "question": "What is the binary representation of the decimal number 11?",
+      "options": [
+        "1010",
+        "1100",
+        "1011",
+        "0111"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "11 = 8 + 2 + 1 = 2³ + 2¹ + 2⁰, giving binary 1011. Working from right to left: bit 0 (value 1), bit 1 (value 2), bit 2 (value 0), bit 3 (value 8). Sum = 11.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 39",
+      "tags": ["binary", "decimal-conversion", "binary-numbers"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6B",
+      "section_name": "Binary Numbers",
+      "question": "What is the decimal value of the binary number 1101?",
+      "options": [
+        "11",
+        "13",
+        "14",
+        "9"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "1101 in binary = 2³ + 2² + 0 + 2⁰ = 8 + 4 + 0 + 1 = 13. Each bit position doubles in value from right to left.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 39",
+      "tags": ["binary", "decimal-conversion", "binary-numbers"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "6C",
+      "section_name": "Analogue to Digital Conversion (ADC)",
+      "question": "What is quantisation noise in an analogue-to-digital converter?",
+      "options": [
+        "Noise picked up by the antenna before the ADC input",
+        "Noise introduced by sampling the signal at too low a rate",
+        "The error caused by rounding each sample to the nearest available digital level",
+        "Distortion caused by an overloaded ADC input stage"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "An ADC can only represent a finite number of amplitude levels. Each sample is rounded to the nearest available level, introducing a small error called quantisation noise. Increasing the number of bits (levels) reduces this error.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 39",
+      "tags": ["ADC", "quantisation", "quantisation-noise", "digital-conversion"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6C",
+      "section_name": "Analogue to Digital Conversion (ADC)",
+      "question": "How many discrete amplitude levels can an 8-bit ADC represent?",
+      "options": [
+        "8",
+        "64",
+        "128",
+        "256"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "An n-bit ADC provides 2ⁿ discrete levels. For 8 bits: 2⁸ = 256 levels, covering values from 0 to 255.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 39",
+      "tags": ["ADC", "bit-depth", "quantisation", "levels"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "6C",
+      "section_name": "Analogue to Digital Conversion (ADC)",
+      "question": "A 14-bit ADC has a maximum signal-to-quantisation-noise ratio of 80 dB when the input fully uses the ADC range. A wanted signal arrives 60 dB below the ADC's maximum input level. What is the effective SNR for that signal?",
+      "options": [
+        "80 dB",
+        "140 dB",
+        "60 dB",
+        "20 dB"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "The quantisation noise floor is fixed at 80 dB below full scale. If the wanted signal is only 60 dB below full scale, it sits just 80 − 60 = 20 dB above the noise floor. The ADC designer must ensure this quantisation noise remains below the RF noise floor so the converter is not the limiting factor.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, pp. 39–40",
+      "tags": ["ADC", "SNR", "quantisation-noise", "dynamic-range", "14-bit"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "6D",
+      "section_name": "Sampling Rate and the Nyquist Theorem",
+      "question": "State the Nyquist sampling theorem.",
+      "options": [
+        "A signal must be sampled at least twice the highest frequency present to be faithfully reproduced",
+        "A signal must be sampled at least ten times the highest frequency present",
+        "The sampling rate must equal the highest frequency present in the signal",
+        "Sample rate determines only amplitude resolution, not frequency range"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "The Nyquist theorem states that a signal must be sampled at a rate of at least twice its highest frequency component. Below this rate, aliasing occurs and the signal cannot be accurately reconstructed from the samples.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["Nyquist", "sampling", "sample-rate", "ADC"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6D",
+      "section_name": "Sampling Rate and the Nyquist Theorem",
+      "question": "An audio signal contains frequencies up to 4 kHz. What is the minimum sample rate required to reproduce it accurately?",
+      "options": [
+        "4 ksamples/s",
+        "8 ksamples/s",
+        "16 ksamples/s",
+        "2 ksamples/s"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "By the Nyquist theorem, the minimum sample rate is twice the highest frequency: 2 × 4 kHz = 8 ksamples/s. In practice, sample rates are set higher to allow for imperfect anti-aliasing filter roll-off.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["Nyquist", "sampling", "sample-rate", "audio"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "6D",
+      "section_name": "Sampling Rate and the Nyquist Theorem",
+      "question": "A system samples at 8 ksamples/s. A 4.5 kHz signal reaches the ADC without an anti-aliasing filter. At what frequency will the alias appear in the output?",
+      "options": [
+        "4.5 kHz",
+        "3.5 kHz",
+        "0.5 kHz",
+        "12.5 kHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The Nyquist limit is 8,000 / 2 = 4 kHz. The 4.5 kHz signal is 0.5 kHz above the limit, so it folds back to 4 kHz − 0.5 kHz = 3.5 kHz (equivalently: 8 kHz − 4.5 kHz = 3.5 kHz). This alias is indistinguishable from a genuine 3.5 kHz signal.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["aliasing", "Nyquist", "sampling", "alias-frequency"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6D",
+      "section_name": "Sampling Rate and the Nyquist Theorem",
+      "question": "What is the purpose of the anti-aliasing filter fitted before an ADC?",
+      "options": [
+        "To amplify weak signals to the correct input level before conversion",
+        "To remove any frequencies above the Nyquist limit before sampling, preventing them from aliasing to lower frequencies",
+        "To reduce quantisation noise after the analogue-to-digital conversion is complete",
+        "To synchronise the ADC sample clock with the incoming signal"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An anti-aliasing filter is a low-pass filter placed before the ADC input. It removes signal components above half the sample rate (the Nyquist limit) before they reach the sampler, preventing them from folding back as alias frequencies in the digital output. It is an essential part of every practical ADC system.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["anti-aliasing", "low-pass-filter", "ADC", "Nyquist", "aliasing"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "6E",
+      "section_name": "Fourier Transforms and the Frequency Domain",
+      "question": "What does the Fourier transform do to time-domain sample data?",
+      "options": [
+        "It converts a frequency-domain representation back into a time-domain waveform",
+        "It converts time-domain sample data into a frequency-domain representation showing which frequencies are present and at what level",
+        "It amplifies weak frequency components to make them visible on a spectrum analyser",
+        "It removes harmonic distortion products from the sampled waveform"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The Fourier transform converts time-domain samples (amplitude vs time, as seen on an oscilloscope) into the frequency domain (amplitude vs frequency, as seen on a spectrum analyser). The Fast Fourier Transform (FFT) is a computationally efficient version that enables near-real-time analysis in SDR software.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["Fourier", "FFT", "frequency-domain", "time-domain"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6E",
+      "section_name": "Fourier Transforms and the Frequency Domain",
+      "question": "Which instruments display a signal in the time domain and the frequency domain respectively?",
+      "options": [
+        "Spectrum analyser (time domain) and oscilloscope (frequency domain)",
+        "Oscilloscope (time domain) and spectrum analyser (frequency domain)",
+        "Multimeter (time domain) and network analyser (frequency domain)",
+        "Power meter (time domain) and noise figure meter (frequency domain)"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An oscilloscope displays amplitude versus time — the time domain. A spectrum analyser (or SDR waterfall display) shows amplitude versus frequency — the frequency domain. The same signal appears differently in each view, each revealing information the other obscures.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["oscilloscope", "spectrum-analyser", "time-domain", "frequency-domain"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "6E",
+      "section_name": "Fourier Transforms and the Frequency Domain",
+      "question": "Why does SDR software use a Fast Fourier Transform (FFT)?",
+      "options": [
+        "To reduce the sample rate required from the ADC",
+        "To encrypt the received signal before display",
+        "To provide near-real-time conversion from time-domain samples to a frequency-domain waterfall display",
+        "To remove quantisation noise from the digitised samples"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The FFT is a computationally efficient algorithm for computing the Fourier transform. It converts blocks of time-domain ADC samples into frequency-domain data quickly enough for near-real-time display as a waterfall or spectrum plot — the basis of every SDR receiver display.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["FFT", "SDR", "waterfall", "frequency-domain", "real-time"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "6F",
+      "section_name": "Digital to Analogue Conversion (DAC)",
+      "question": "A DDS synthesiser has a sinewave look-up table with 1,024 entries and a clock frequency of 20 MHz. The phase accumulator advances by 10 table entries per clock cycle. What is the output frequency?",
+      "options": [
+        "20 kHz",
+        "195 kHz",
+        "2 MHz",
+        "51 kHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "DDS output frequency = (step size × clock frequency) / table length = (10 × 20,000,000) / 1,024 ≈ 195,313 Hz ≈ 195 kHz. The step size determines how quickly the DDS cycles through its look-up table.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["DDS", "DAC", "look-up-table", "phase-accumulator", "frequency-synthesis"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "6E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "6F",
+      "section_name": "Digital to Analogue Conversion (DAC)",
+      "question": "Why cannot the phase noise sidebands produced by a DDS synthesiser be removed by the low-pass reconstruction filter on the DAC output?",
+      "options": [
+        "The reconstruction filter operates at audio frequencies and cannot affect RF signals",
+        "Phase noise sidebands occur at the same frequencies as the DAC staircase harmonics removed by the LPF",
+        "Phase noise sidebands appear very close to the wanted carrier frequency and cannot be filtered without removing the carrier itself",
+        "The LPF removes only amplitude errors; timing-derived phase errors pass through unaffected"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The DAC reconstruction LPF removes staircase harmonics that are far from the carrier at multiples of the clock frequency. DDS phase noise — arising from phase accumulator truncation and DAC non-linearity — appears as sidebands very close to the carrier. Filtering close enough to remove them would also remove the wanted signal. This is a fundamental limitation of DDS.",
+      "source_content": "RSGB Full Licence Manual 3rd Edition (G0HIQ), Chapter 6, p. 40",
+      "tags": ["DDS", "phase-noise", "DAC", "LPF", "frequency-synthesis"],
+      "active": true
+    }
+  ]
+}
