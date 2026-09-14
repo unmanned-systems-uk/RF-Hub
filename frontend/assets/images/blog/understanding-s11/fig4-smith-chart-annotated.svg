@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 560" role="img" aria-label="Smith Chart with key reference points annotated">
+  <defs>
+    <style>text { font-family: 'IBM Plex Mono', 'Courier New', monospace; }</style>
+    <!-- Clip everything to the outer chart circle -->
+    <clipPath id="smith-clip">
+      <circle cx="350" cy="285" r="200"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="560" fill="#111827"/>
+
+  <!-- Outer chart circle fill -->
+  <circle cx="350" cy="285" r="200" fill="#0a0e1a"/>
+
+  <!-- ─── GRID ELEMENTS (clipped to outer circle) ─── -->
+
+  <!-- Resistance circles (constant R, normalized) -->
+  <!-- R=0 is the outer boundary itself, drawn later -->
+  <!-- R=0.5: center=(350+66.7, 285)=(416.7, 285), r=133.3 -->
+  <circle cx="416.7" cy="285" r="133.3" fill="none" stroke="#1e293b" stroke-width="1" clip-path="url(#smith-clip)"/>
+  <!-- R=1: center=(350+100, 285)=(450, 285), r=100 -->
+  <circle cx="450" cy="285" r="100" fill="none" stroke="#1e293b" stroke-width="1" clip-path="url(#smith-clip)"/>
+  <!-- R=2: center=(483.3, 285), r=66.7 -->
+  <circle cx="483.3" cy="285" r="66.7" fill="none" stroke="#1e293b" stroke-width="0.8" clip-path="url(#smith-clip)"/>
+  <!-- R=5: center=(516.7, 285), r=33.3 -->
+  <circle cx="516.7" cy="285" r="33.3" fill="none" stroke="#1e293b" stroke-width="0.6" clip-path="url(#smith-clip)"/>
+
+  <!-- Reactance arcs (constant X, circles clipped to chart) -->
+  <!-- X=+1:  center=(550, 85),  r=200 — upper arc -->
+  <circle cx="550" cy="85"  r="200" fill="none" stroke="#1e293b" stroke-width="1" clip-path="url(#smith-clip)"/>
+  <!-- X=+2:  center=(550, 185), r=100 -->
+  <circle cx="550" cy="185" r="100" fill="none" stroke="#1e293b" stroke-width="0.8" clip-path="url(#smith-clip)"/>
+  <!-- X=+0.5: center=(550, -115), r=400 -->
+  <circle cx="550" cy="-115" r="400" fill="none" stroke="#1e293b" stroke-width="0.8" clip-path="url(#smith-clip)"/>
+  <!-- X=-1:  center=(550, 485), r=200 -->
+  <circle cx="550" cy="485" r="200" fill="none" stroke="#1e293b" stroke-width="1" clip-path="url(#smith-clip)"/>
+  <!-- X=-2:  center=(550, 385), r=100 -->
+  <circle cx="550" cy="385" r="100" fill="none" stroke="#1e293b" stroke-width="0.8" clip-path="url(#smith-clip)"/>
+  <!-- X=-0.5: center=(550, 685), r=400 -->
+  <circle cx="550" cy="685" r="400" fill="none" stroke="#1e293b" stroke-width="0.8" clip-path="url(#smith-clip)"/>
+
+  <!-- Centre horizontal axis (real impedance axis) -->
+  <line x1="150" y1="285" x2="550" y2="285" stroke="#1e293b" stroke-width="1.2" clip-path="url(#smith-clip)"/>
+
+  <!-- SWR circles (dashed, centred on chart centre) -->
+  <!-- SWR=1.5: |Γ|=0.2, r=40 -->
+  <circle cx="350" cy="285" r="40"  fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.5"/>
+  <!-- SWR=2:   |Γ|=0.333, r=66.7 -->
+  <circle cx="350" cy="285" r="66.7" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.4"/>
+  <!-- SWR=3:   |Γ|=0.5, r=100 -->
+  <circle cx="350" cy="285" r="100" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.3"/>
+
+  <!-- Outer chart boundary -->
+  <circle cx="350" cy="285" r="200" fill="none" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- ─── KEY REFERENCE POINTS ─── -->
+
+  <!-- Centre — 50Ω perfect match -->
+  <circle cx="350" cy="285" r="5" fill="#22c55e" stroke="#22c55e" stroke-width="1"/>
+
+  <!-- Far right — open circuit (Γ = +1) -->
+  <circle cx="550" cy="285" r="5" fill="#ef4444" stroke="#ef4444" stroke-width="1"/>
+
+  <!-- Far left — short circuit (Γ = −1) -->
+  <circle cx="150" cy="285" r="5" fill="#06b6d4" stroke="#06b6d4" stroke-width="1"/>
+
+  <!-- ─── ZONE LABELS (inductive / capacitive) ─── -->
+  <text x="350" y="170" text-anchor="middle" font-size="13" fill="#f59e0b" opacity="0.7">Inductive (+jX)</text>
+  <text x="350" y="405" text-anchor="middle" font-size="13" fill="#60a5fa" opacity="0.7">Capacitive (−jX)</text>
+
+  <!-- Reactance axis labels (right-hand edge) -->
+  <text x="556" y="89"  font-size="10" fill="#64748b">X=+1</text>
+  <text x="556" y="182" font-size="10" fill="#64748b">X=+2</text>
+  <text x="556" y="393" font-size="10" fill="#64748b">X=−2</text>
+  <text x="556" y="486" font-size="10" fill="#64748b">X=−1</text>
+
+  <!-- Resistance labels on horizontal axis -->
+  <text x="416.7" y="300" text-anchor="middle" font-size="10" fill="#64748b">0.5</text>
+  <text x="450"   y="300" text-anchor="middle" font-size="10" fill="#64748b">1</text>
+  <text x="483"   y="300" text-anchor="middle" font-size="10" fill="#64748b">2</text>
+  <text x="158"   y="300" text-anchor="middle" font-size="10" fill="#64748b">0</text>
+
+  <!-- SWR circle labels -->
+  <text x="357" y="247" font-size="9" fill="#a78bfa" opacity="0.6">1.5</text>
+  <text x="357" y="221" font-size="9" fill="#a78bfa" opacity="0.55">2.0</text>
+  <text x="357" y="188" font-size="9" fill="#a78bfa" opacity="0.45">3.0</text>
+  <text x="295" y="252" font-size="9" fill="#a78bfa" opacity="0.5">SWR</text>
+
+  <!-- ─── CALLOUT ANNOTATIONS ─── -->
+
+  <!-- Centre annotation -->
+  <line x1="350" y1="280" x2="300" y2="235" stroke="#22c55e" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+  <rect x="195" y="205" width="102" height="34" rx="4" fill="#111827" stroke="#22c55e" stroke-width="1" opacity="0.9"/>
+  <text x="246" y="220" text-anchor="middle" font-size="11" fill="#22c55e" font-weight="bold">50 Ω</text>
+  <text x="246" y="234" text-anchor="middle" font-size="10" fill="#94a3b8">Perfect match</text>
+
+  <!-- Open circuit annotation -->
+  <line x1="550" y1="280" x2="590" y2="240" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+  <rect x="582" y="212" width="106" height="34" rx="4" fill="#111827" stroke="#ef4444" stroke-width="1" opacity="0.9"/>
+  <text x="635" y="227" text-anchor="middle" font-size="11" fill="#ef4444" font-weight="bold">Open circuit</text>
+  <text x="635" y="241" text-anchor="middle" font-size="10" fill="#94a3b8">Γ = +1, Z = ∞</text>
+
+  <!-- Short circuit annotation -->
+  <line x1="150" y1="280" x2="110" y2="240" stroke="#06b6d4" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>
+  <rect x="6" y="212" width="106" height="34" rx="4" fill="#111827" stroke="#06b6d4" stroke-width="1" opacity="0.9"/>
+  <text x="59" y="227" text-anchor="middle" font-size="11" fill="#06b6d4" font-weight="bold">Short circuit</text>
+  <text x="59" y="241" text-anchor="middle" font-size="10" fill="#94a3b8">Γ = −1, Z = 0</text>
+
+  <!-- ─── TITLE ─── -->
+  <text x="350" y="516" text-anchor="middle" font-size="12" fill="#94a3b8">Smith Chart — normalised to 50 Ω system impedance</text>
+  <text x="350" y="535" text-anchor="middle" font-size="10" fill="#64748b">Dashed circles = constant SWR contours (1.5, 2.0, 3.0)</text>
+</svg>

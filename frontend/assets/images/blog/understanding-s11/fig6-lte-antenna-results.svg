@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-label="LTE antenna test results — Log Magnitude and SWR across five UK LTE bands">
+  <defs>
+    <style>text { font-family: 'IBM Plex Mono', 'Courier New', monospace; }</style>
+    <clipPath id="left-clip">
+      <rect x="60" y="38" width="310" height="262"/>
+    </clipPath>
+    <clipPath id="right-clip">
+      <rect x="450" y="38" width="310" height="262"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="400" fill="#111827"/>
+
+  <!-- ═══════════════════════════════════════════════════
+       LEFT PANEL — Log Magnitude
+       Plot area: x=60–370, y=38–300 (h=262, w=310)
+       Y scale: 0 dB at y=38, −30 dB at y=300 (8.73 px/dB)
+       −5dB=82, −8dB=108, −10dB=125, −12dB=143, −14dB=160,
+       −16dB=177, −20dB=212, −30dB=300
+       ═══════════════════════════════════════════════════ -->
+
+  <rect x="60" y="38" width="310" height="262" fill="#0a0e1a"/>
+
+  <!-- Horizontal grid (Log Mag) -->
+  <line x1="60" y1="38"  x2="370" y2="38"  stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="82"  x2="370" y2="82"  stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="125" x2="370" y2="125" stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="168" x2="370" y2="168" stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="212" x2="370" y2="212" stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="255" x2="370" y2="255" stroke="#1e293b" stroke-width="1"/>
+  <line x1="60" y1="300" x2="370" y2="300" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- -10 dB threshold (left panel) -->
+  <line x1="60" y1="125" x2="370" y2="125" stroke="#22c55e" stroke-width="1" stroke-dasharray="5,3" opacity="0.3" clip-path="url(#left-clip)"/>
+
+  <!-- Border -->
+  <rect x="60" y="38" width="310" height="262" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Y axis labels (Log Mag) -->
+  <text x="54" y="42"  text-anchor="end" font-size="10" fill="#64748b">0</text>
+  <text x="54" y="86"  text-anchor="end" font-size="10" fill="#64748b">−5</text>
+  <text x="54" y="129" text-anchor="end" font-size="10" fill="#64748b">−10</text>
+  <text x="54" y="172" text-anchor="end" font-size="10" fill="#64748b">−15</text>
+  <text x="54" y="216" text-anchor="end" font-size="10" fill="#64748b">−20</text>
+  <text x="54" y="259" text-anchor="end" font-size="10" fill="#64748b">−25</text>
+  <text x="54" y="304" text-anchor="end" font-size="10" fill="#64748b">−30</text>
+
+  <!-- Y axis title (Log Mag) -->
+  <text transform="translate(16,168) rotate(-90)" text-anchor="middle" font-size="11" fill="#94a3b8">Return Loss (dB)</text>
+
+  <!-- Panel title -->
+  <text x="215" y="26" text-anchor="middle" font-size="12" fill="#e2e8f0">Log Magnitude (S11)</text>
+
+  <!-- X axis label (Log Mag) -->
+  <text x="215" y="324" text-anchor="middle" font-size="10" fill="#64748b">Frequency (MHz)</text>
+
+  <!--
+    Band frequency positions (approximate proportional, log scale):
+    X mapped linearly from 700 to 3800 MHz across 310 px
+    x(f) = 60 + (f-700)/(3800-700)*310
+
+    B20:  791–862 MHz  → x=70–78    use range x=70–90   (≈800 MHz)
+    B3:  1710–1880 MHz → x=110–126  use range x=110–135  (≈1800 MHz)
+    B1:  1920–2170 MHz → x=131–153  use range x=143–168  (≈2100 MHz)
+    B40: 2300–2400 MHz → x=165–175  use range x=173–193  (≈2350 MHz)
+    n78: 3300–3800 MHz → x=263–370  use range x=255–358  (≈3500 MHz)
+
+    Y values (dB):
+    B20  −8 dB  → y = 38 + 8*8.73 = 108
+    B3   −12 dB → y = 38 + 12*8.73 = 143
+    B1   −14 dB → y = 38 + 14*8.73 = 160
+    B40  −16 dB → y = 38 + 16*8.73 = 177
+    n78  −20 dB → y = 38 + 20*8.73 = 213
+  -->
+
+  <!-- Band traces — Log Magnitude -->
+  <!-- B20 (800 MHz) — poor, ~−8 dB — red -->
+  <line x1="70"  y1="108" x2="90"  y2="108" stroke="#ef4444" stroke-width="3" clip-path="url(#left-clip)"/>
+  <!-- B3 (1800 MHz) — ~−12 dB — amber -->
+  <line x1="112" y1="143" x2="135" y2="143" stroke="#f59e0b" stroke-width="3" clip-path="url(#left-clip)"/>
+  <!-- B1 (2100 MHz) — ~−14 dB — yellow-green -->
+  <line x1="145" y1="160" x2="170" y2="160" stroke="#84cc16" stroke-width="3" clip-path="url(#left-clip)"/>
+  <!-- B40 (2350 MHz) — ~−16 dB — green -->
+  <line x1="174" y1="177" x2="196" y2="177" stroke="#22c55e" stroke-width="3" clip-path="url(#left-clip)"/>
+  <!-- n78 (3500 MHz) — ~−20 dB — cyan -->
+  <line x1="257" y1="212" x2="358" y2="212" stroke="#06b6d4" stroke-width="3" clip-path="url(#left-clip)"/>
+
+  <!-- Band frequency labels (below x axis) -->
+  <text x="80"  y="316" text-anchor="middle" font-size="9" fill="#ef4444">B20</text>
+  <text x="80"  y="328" text-anchor="middle" font-size="9" fill="#ef4444">800</text>
+  <text x="123" y="316" text-anchor="middle" font-size="9" fill="#f59e0b">B3</text>
+  <text x="123" y="328" text-anchor="middle" font-size="9" fill="#f59e0b">1800</text>
+  <text x="157" y="316" text-anchor="middle" font-size="9" fill="#84cc16">B1</text>
+  <text x="157" y="328" text-anchor="middle" font-size="9" fill="#84cc16">2100</text>
+  <text x="185" y="316" text-anchor="middle" font-size="9" fill="#22c55e">B40</text>
+  <text x="185" y="328" text-anchor="middle" font-size="9" fill="#22c55e">2350</text>
+  <text x="307" y="316" text-anchor="middle" font-size="9" fill="#06b6d4">n78</text>
+  <text x="307" y="328" text-anchor="middle" font-size="9" fill="#06b6d4">3500</text>
+
+  <!-- dB value labels on traces -->
+  <text x="93"  y="112" font-size="9" fill="#ef4444">−8 dB</text>
+  <text x="138" y="147" font-size="9" fill="#f59e0b">−12</text>
+  <text x="173" y="164" font-size="9" fill="#84cc16">−14</text>
+  <text x="199" y="181" font-size="9" fill="#22c55e">−16</text>
+  <text x="216" y="208" font-size="9" fill="#06b6d4" text-anchor="middle">−20 dB</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       RIGHT PANEL — SWR
+       Plot area: x=450–760, y=38–300 (h=262, w=310)
+       Y scale: SWR 1.0 at y=300, SWR 4.0 at y=38
+       (4.0−1.0 = 3.0 over 262 px → 87.3 px per unit)
+       SWR 1.0=300, 1.5=257, 2.0=213, 2.5=170, 3.0=126, 4.0=38
+       ═══════════════════════════════════════════════════ -->
+
+  <rect x="450" y="38" width="310" height="262" fill="#0a0e1a"/>
+
+  <!-- Horizontal grid (SWR) -->
+  <line x1="450" y1="38"  x2="760" y2="38"  stroke="#1e293b" stroke-width="1"/>
+  <line x1="450" y1="126" x2="760" y2="126" stroke="#1e293b" stroke-width="1"/>
+  <line x1="450" y1="213" x2="760" y2="213" stroke="#1e293b" stroke-width="1"/>
+  <line x1="450" y1="257" x2="760" y2="257" stroke="#1e293b" stroke-width="1"/>
+  <line x1="450" y1="300" x2="760" y2="300" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- SWR=2 reference line -->
+  <line x1="450" y1="213" x2="760" y2="213" stroke="#22c55e" stroke-width="1" stroke-dasharray="5,3" opacity="0.3" clip-path="url(#right-clip)"/>
+
+  <!-- Border -->
+  <rect x="450" y="38" width="310" height="262" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Y axis labels (SWR) -->
+  <text x="444" y="42"  text-anchor="end" font-size="10" fill="#64748b">4.0</text>
+  <text x="444" y="130" text-anchor="end" font-size="10" fill="#64748b">3.0</text>
+  <text x="444" y="217" text-anchor="end" font-size="10" fill="#64748b">2.0</text>
+  <text x="444" y="261" text-anchor="end" font-size="10" fill="#64748b">1.5</text>
+  <text x="444" y="304" text-anchor="end" font-size="10" fill="#64748b">1.0</text>
+
+  <!-- Y axis title (SWR) -->
+  <text transform="translate(406,168) rotate(-90)" text-anchor="middle" font-size="11" fill="#94a3b8">SWR</text>
+
+  <!-- Panel title -->
+  <text x="605" y="26" text-anchor="middle" font-size="12" fill="#e2e8f0">SWR</text>
+
+  <!-- X axis label (SWR) -->
+  <text x="605" y="324" text-anchor="middle" font-size="10" fill="#64748b">Frequency (MHz)</text>
+
+  <!--
+    Y values for SWR:
+    y = 300 − (SWR−1.0) / 3.0 * 262
+    B20 SWR=2.5 → y=300−(1.5/3)*262 = 300−131=169
+    B3  SWR=1.7 → y=300−(0.7/3)*262 = 300−61=239
+    B1  SWR=1.5 → y=300−(0.5/3)*262 = 300−44=256
+    B40 SWR=1.3 → y=300−(0.3/3)*262 = 300−26=274
+    n78 SWR=1.1 → y=300−(0.1/3)*262 = 300−9=291
+
+    x positions same as left panel shifted by +390
+  -->
+
+  <!-- Band traces — SWR -->
+  <!-- B20 SWR≈2.5 — red -->
+  <line x1="460"  y1="169" x2="480"  y2="169" stroke="#ef4444" stroke-width="3" clip-path="url(#right-clip)"/>
+  <!-- B3  SWR≈1.7 — amber -->
+  <line x1="502" y1="239" x2="525" y2="239" stroke="#f59e0b" stroke-width="3" clip-path="url(#right-clip)"/>
+  <!-- B1  SWR≈1.5 — yellow-green -->
+  <line x1="535" y1="256" x2="560" y2="256" stroke="#84cc16" stroke-width="3" clip-path="url(#right-clip)"/>
+  <!-- B40 SWR≈1.3 — green -->
+  <line x1="564" y1="274" x2="586" y2="274" stroke="#22c55e" stroke-width="3" clip-path="url(#right-clip)"/>
+  <!-- n78 SWR≈1.1 — cyan -->
+  <line x1="647" y1="291" x2="748" y2="291" stroke="#06b6d4" stroke-width="3" clip-path="url(#right-clip)"/>
+
+  <!-- SWR value labels -->
+  <text x="483" y="173" font-size="9" fill="#ef4444">2.5</text>
+  <text x="528" y="243" font-size="9" fill="#f59e0b">1.7</text>
+  <text x="563" y="260" font-size="9" fill="#84cc16">1.5</text>
+  <text x="589" y="278" font-size="9" fill="#22c55e">1.3</text>
+  <text x="700" y="287" font-size="9" fill="#06b6d4" text-anchor="middle">1.1</text>
+
+  <!-- Band frequency labels (right panel) -->
+  <text x="470"  y="316" text-anchor="middle" font-size="9" fill="#ef4444">B20</text>
+  <text x="470"  y="328" text-anchor="middle" font-size="9" fill="#ef4444">800</text>
+  <text x="513" y="316" text-anchor="middle" font-size="9" fill="#f59e0b">B3</text>
+  <text x="513" y="328" text-anchor="middle" font-size="9" fill="#f59e0b">1800</text>
+  <text x="547" y="316" text-anchor="middle" font-size="9" fill="#84cc16">B1</text>
+  <text x="547" y="328" text-anchor="middle" font-size="9" fill="#84cc16">2100</text>
+  <text x="575" y="316" text-anchor="middle" font-size="9" fill="#22c55e">B40</text>
+  <text x="575" y="328" text-anchor="middle" font-size="9" fill="#22c55e">2350</text>
+  <text x="697" y="316" text-anchor="middle" font-size="9" fill="#06b6d4">n78</text>
+  <text x="697" y="328" text-anchor="middle" font-size="9" fill="#06b6d4">3500</text>
+
+  <!-- SWR=2 annotation -->
+  <text x="762" y="217" font-size="9" fill="#22c55e" opacity="0.5">SWR 2</text>
+
+  <!-- ─── BOTTOM CAPTION LINE ─── -->
+  <text x="410" y="370" text-anchor="middle" font-size="10" fill="#64748b">All measurements through 15 m RG213, calibrated at the instrument port. Bands measured individually.</text>
+</svg>
