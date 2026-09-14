@@ -134,21 +134,40 @@
 
 ## Ch 8: Transmitter Interference (pp 51–56)
 
-*TBD — populate when `08-transmitter-interference.pdf` is read. Chapter covers: frequency stability, spurious emissions, harmonics, key clicks, FM over-deviation, IMD, direct radiation (~16 subsections).*
+*Populated 2026-09-14. Section file: `section-8-transmitter-interference.md`. (~5–8% weight).*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 8A1 | TBD | — |
+| 8A1 [VERIFY] | 51–52 | Frequency drift causes (temperature, supply voltage, mechanical stress, crystal ageing); crystal oscillators vs LC VFO; TCXO/OCXO; licence frequency tolerance; warm-up time |
+| 8B1 [VERIFY] | 52–53 | Harmonics: integer multiples of f_carrier from PA non-linearity; class C worst; 3rd harmonic of 14 MHz = 42 MHz (near 6 m); UK limit −43 dBc; low-pass filter primary cure; parasitic oscillations (ferrite beads, bypassing) |
+| 8C1 [VERIFY] | 53–54 | PLL reference spurs at ±f_ref from carrier; DDS phase truncation spurs; phase noise: broadband skirt close to carrier; degrades adjacent-channel quality; improved by OCXO reference |
+| 8D1 [VERIFY] | 54 | Key clicks: fast rise/fall time on CW envelope → sidebands many kHz wide; cure: shaped envelope ~5 ms rise time (raised-cosine/Gaussian); too slow → mushy dots |
+| 8E1 [VERIFY] | 54–55 | FM over-deviation: excessive audio → carrier swings beyond channel edges → adjacent-channel interference; limit ±2.5 kHz for 12.5 kHz channels; cured by audio limiter |
+| 8F1 [VERIFY] | 55–56 | IMD: PA non-linearity mixes audio tones → 3rd-order products 2f1−f2 and 2f2−f1 outside passband = SSB splatter; causes: overdrive, faulty ALC, high SWR; −30 dBc acceptable; FM/CW unaffected |
+
+**Populate status: ✅ Ch8 — section file written 2026-09-14**
 
 ---
 
 ## Ch 9: The Receiver (pp 57–66)
 
-*TBD — populate when `09-receiver.pdf` is read. Chapter covers: sensitivity, selectivity, dynamic range, superhet, image frequency, double superhet, product detector, AGC, FM discriminator, reciprocal mixing, IP3 (~21 subsections).*
+*Populated 2026-09-14. Section file: `section-9-receiver.md`. (~10–12% weight); heavily tested at Full.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 9A1 | TBD | — |
+| 9A1 [VERIFY] | 57–58 | Sensitivity/NF: thermal noise −174 dBm/Hz; P=kTB; NF = SNR_in − SNR_out; MDS ~3 dB above noise floor; narrower BW improves sensitivity |
+| 9B1 [VERIFY] | 58–59 | Dynamic range: noise floor (bottom) and IP3 (top); 3rd-order IMD products at 2f1−f2 / 2f2−f1; SFDR ≈ 2/3×(OIP3 − NF); higher IP3 = better strong-signal handling |
+| 9C1 [VERIFY] | 59–60 | Superhet: RF filter → mixer → IF filter → IF amp → detector; f_IF = f_LO − f_signal; fixed IF allows sharp crystal/ceramic filter; typical IF: 455 kHz (AM), 8–10 MHz (HF SSB), 10.7 MHz (VHF FM) |
+| 9D1 [VERIFY] | 60–61 | Image frequency: f_image = f_LO + f_IF; image is 2×f_IF away; rejected by preselector before mixer; higher IF = image further = easier rejection |
+| 9E1 [VERIFY] | 61 | Double superhet: high first IF (45–70 MHz, image rejection) + low second IF (455 kHz/9 MHz, selectivity); roofing filter at first IF limits strong signals; standard in modern HF transceivers |
+| 9F1 [VERIFY] | 61–62 | Product detector + BFO: for SSB/CW (carrier suppressed); BFO re-inserts carrier; USB/LSB/CW selected by BFO offset; audio = difference product; without BFO = duck speech |
+| 9G1 [VERIFY] | 62–63 | AGC: rectified IF → controls IF/RF gain → constant audio; attack 1–10 ms; decay 0.5–5 s; fast attack / slow decay for SSB; hang AGC; threshold stops noise boost between QSOs |
+| 9H1 [VERIFY] | 63 | FM discriminator: Foster-Seeley, ratio detector, quadrature (IC); limiter before discriminator removes AM noise (capture effect); SINAD 12 dB sensitivity; NBFM ±2.5 kHz / WBFM ±75 kHz |
+| 9I1 [VERIFY] | 63–64 | Filters: crystal (high Q, HF IF, SSB BW 2–2.8 kHz); ceramic (455 kHz/10.7 MHz); mechanical (455 kHz, legacy); DSP (adjustable, notch, ideal shape; still needs roofing filter before ADC) |
+| 9J1 [VERIFY] | 64–65 | Blocking: strong signal compresses RF/mixer → wanted disappears; improved by IP3, roofing filter. Cross-mod: AM signal transfers modulation via non-linearity. Reciprocal mixing: strong signal × LO phase noise → IF noise; improved by low-phase-noise LO |
+| 9K1 [VERIFY] | 65–66 | Friis noise: F_total = F1 + (F2−1)/G1 + …; first stage dominates; cable loss before Rx raises NF; masthead LNA (NF 0.5–1 dB, gain 15 dB) negates cable NF; risk: LNA overloads on strong signals; benefit mainly VHF+ (HF external noise dominates) |
+
+**Populate status: ✅ Ch9 — section file written 2026-09-14**
 
 ---
 
