@@ -351,6 +351,152 @@ Yes. Contact with military personnel and military cadets is explicitly permitted
 
 ---
 
+## 2F — Dive Deeper: Beacons, Mode Selection, and Repeater Etiquette
+
+*Non-examinable at Full licence level. This section covers practical operating knowledge that makes the required content immediately useful on air.*
+
+<details>
+<summary><strong>Expand — Beacon networks, mode and band-plan choice, repeater operating discipline</strong></summary>
+
+### Beacon Operation
+
+**What amateur beacons are:**
+Amateur beacons are automatically-operated transmitting stations that send a continuous or repeated signal on a known frequency for the purpose of propagation research and monitoring. Unlike DX contacts, there is no two-way exchange — you listen to a beacon and use what you hear to infer the state of the propagation path.
+
+**The NCDXF/IARU International Beacon Project:**
+The most widely-used HF beacon network is operated jointly by the Northern California DX Foundation (NCDXF) and the IARU. It consists of 18 beacons sited around the world, each transmitting in rotation on five frequencies:
+
+| Frequency | Band | Notes |
+|---|---|---|
+| 14.100 MHz | 20 m | Most reliable path; heaviest usage |
+| 18.110 MHz | 17 m | |
+| 21.150 MHz | 15 m | |
+| 24.930 MHz | 12 m | |
+| 28.200 MHz | 10 m | Best for short-skip/Es; worst for long-path |
+
+Each beacon transmits for **10 seconds on each band**, cycling through all five bands in 50 seconds. The 18 beacons are staggered so that only one transmits on each frequency at any time — the complete sequence repeats every **3 minutes**. The transmission pattern within those 10 seconds is: callsign at full power (100 W), then carrier at **10 W**, **1 W**, and **100 mW** in successive steps.
+
+**Interpreting what you hear:**
+- You hear **100 mW** step: the path is excellent — signals much weaker than contest stations would get through
+- You hear the **1 W** step but not the 100 mW: the path is good — comfortable DX operation likely
+- You hear **10 W** but not 1 W: the path is marginal — big stations will make it, QRP will struggle
+- You hear only the **100 W** step or nothing: the band is effectively closed to that beacon's region
+- You hear the callsign but the steps are inaudible: deep in the noise — check again in 15 minutes
+
+A software schedule tool (beaconspot.eu, or built into logging software such as DX4Win) shows which beacon is on which frequency at any given UTC second, so you know exactly which country and path you are evaluating.
+
+**VHF/UHF beacons:**
+UK VHF/UHF beacons (e.g. GB3VHF on 144.430 MHz, GB3SCO on 50.420 MHz) transmit continuously and are used to check whether short-path tropospheric ducting or Sporadic-E openings exist between locations. Unlike the HF NCDXF network, VHF beacons are individual stations; the RSGB website lists active UK beacons and their locations.
+
+**WSPR as a propagation beacon network:**
+WSPR (Weak Signal Propagation Reporter) is a digital mode designed for very low power propagation testing. Stations transmit a WSPR signal at low power (typically 200 mW to 5 W), and other stations receiving the signal upload decode reports to wsprnet.org. The result is a real-time map of propagation paths across the world. WSPR essentially turns every amateur station running WSPR software into a distributed beacon network. Before a contest, checking wsprnet.org for your band of interest shows you which regions are connected to the UK at that moment.
+
+---
+
+### Modulation Types — Operating Perspective
+
+Choosing the right mode for a given band, path, and contact type significantly affects success. The choice is partly governed by band plans (which sub-bands are designated for which modes) and partly by practical propagation physics.
+
+**SSB (Single Sideband):**
+SSB is the default voice mode on all HF amateur bands. Key operating-perspective points:
+- **LSB (Lower Sideband) is conventional below 10 MHz** — 160 m, 80 m, 40 m. USB on these bands is incorrect practice
+- **USB (Upper Sideband) is conventional above 10 MHz** — 20 m, 17 m, 15 m, 12 m, 10 m
+- **VHF/UHF SSB** (weak-signal work on 2 m, 70 cm) uses USB by convention for EME, meteor scatter, and tropospheric DX
+- SSB is not appropriate for local VHF/UHF contacts where repeaters or FM simplex are available — the lower power efficiency of a linear PA is wasteful over short distances
+- The occupied bandwidth (~2.4 kHz) means SSB is only suited to the voice sub-bands of each HF band; operating SSB in a CW sub-band is a band-plan violation
+
+**CW (Morse code):**
+- Occupies approximately 200 Hz of bandwidth — a 500 Hz CW filter admits one-twelfth the noise of a 2.4 kHz SSB filter, improving SNR by ~7 dB
+- The narrow bandwidth is why QRP (low power) CW contacts across oceans are routine: effective SNR improvement means less power is needed
+- CW sub-bands are at the lower edge of each HF band allocation; avoid calling CQ in SSB sub-bands in CW
+- The IARU Region 1 band plan specifies a CW-exclusive segment and a CW/data segment on most bands
+
+**FM:**
+- FM has a wider bandwidth (11 kHz for NBFM) than SSB and is therefore suitable only for local contacts where the path loss is low
+- FM is not viable on HF for voice (too wide, too much noise on long paths, no advantage) — with one exception: the 10 m band (28–29.7 MHz) has a recognised FM sub-band above 29.0 MHz, and commercial-style FM repeaters operate on 10 m during band openings
+- FM on 2 m and 70 cm is the standard access mode for repeaters and local simplex
+- FM's capture effect means only the strongest signal is demodulated — useful in a local QSO, but means FM is not useful for weak-signal DX work where multiple signals arrive at similar strengths
+
+**Digital modes — choosing the right one:**
+
+| Mode | Bandwidth | Use case | Notes |
+|---|---|---|---|
+| FT8 | ~50 Hz | Long-distance DX at low power | 15 s cycles; 12.5 dB SNR gain over CW; automated sequence |
+| FT4 | ~90 Hz | Contest digital exchanges | Faster than FT8 (7.5 s cycles); good for pile-ups |
+| WSPR | ~6 Hz | Propagation beaconing | Not a contact mode; one-way beacon; ultra-low power |
+| PSK31 | 31 Hz | Keyboard-to-keyboard chat | Excellent for ragchewing at low bandwidth |
+| RTTY | ~300 Hz | HF contests | Traditional, widely accepted in major contests |
+| JS8Call | ~50 Hz | Store-and-forward messaging | Designed for resilient comms without internet |
+| Olivia 8/500 | 500 Hz | Difficult paths | Very robust; readable well below noise floor |
+
+**Band plan positions — check before transmitting:**
+- FT8 on 20 m: 14.074 MHz dial; on 40 m: 7.074 MHz
+- RTTY on 20 m: 14.080–14.099 MHz
+- PSK31 on 20 m: around 14.070 MHz
+- SSTV on 20 m: 14.230 MHz
+- CW-exclusive on 20 m: 14.000–14.025 MHz
+
+Operating SSB in the FT8 segment, or RTTY in the PSK segment, causes interference. Check the current IARU Region 1 band plan (available from the RSGB and IARU websites) before operating any mode outside the main SSB voice segments.
+
+---
+
+### Repeater Etiquette
+
+UK VHF/UHF FM repeaters are shared community resources, typically operated by local radio clubs and amateur groups. Unlike HF where you can QSY freely, a repeater owner invests in infrastructure and site access — and that infrastructure serves many users simultaneously.
+
+**CTCSS (Continuous Tone-Coded Squelch System):**
+Most UK repeaters require a sub-audible CTCSS tone to open the repeater's squelch. This prevents the repeater from being triggered by interference, distant co-channel signals, or noise on the input frequency.
+- CTCSS tones are below the voice audio range (typically 67.0–254.1 Hz from a standard set)
+- The repeater's tone is listed in the RSGB repeater directory at rsgb.org
+- Your radio must be programmed with the correct CTCSS encode tone on the transmit channel
+- If your radio is not transmitting CTCSS (or has the wrong tone), the repeater will not open — you transmit but receive nothing in reply. Check CTCSS programming first if a repeater is not responding
+- RSGB allocates CTCSS tones to UK repeaters systematically by region to reduce adjacent-channel interference from distant repeaters
+
+**Timeout timers:**
+Repeaters enforce a maximum transmission time (typically 2–5 minutes, often 3 minutes for a UK machine). If your transmission exceeds this limit:
+- The repeater stops relaying your audio and may send a warning tone or drop carrier
+- You must key up again after a short pause to re-access the repeater
+- Timeout timers exist to prevent a single user from monopolising the repeater and to detect a stuck microphone (PTT jammed on)
+- A best practice is to limit each transmission to 60–90 seconds maximum in normal conversation — much shorter than the timeout, allowing the other station to reply and confirming you have not forgotten to release PTT
+
+**Calling procedure on a repeater:**
+1. Listen for at least 30 seconds before transmitting — the repeater may already be in use even if it sounds quiet (users may be in a pause between transmissions)
+2. Key up and give **your callsign only**: "M0ABC listening" or just "M0ABC" — not "CQ CQ CQ M0ABC calling CQ on the two-six-two repeater"
+3. Wait 10–15 seconds for a response
+4. If no response, try once more before concluding the repeater is clear of other users and you may call CQ
+5. When you hear the **courtesy tone** (a brief beep emitted by the repeater after each transmission drops), that is your signal to transmit — it confirms the previous transmission has ended and the repeater's timer has reset
+
+**DTMF discipline:**
+Many modern repeaters respond to DTMF (Dual-Tone Multi-Frequency, i.e. telephone-style push-button tones) for control functions:
+- EchoLink node connection: enter the EchoLink node number to link to a remote station or conference
+- IRLP node access: similar to EchoLink but a different protocol
+- Autopatch (where fitted): dials a telephone number through the repeater
+- Repeater link enable/disable commands: may activate a link to another repeater
+
+Never transmit DTMF tones on a repeater unless you intend the specific action those tones trigger. Some radios can accidentally send DTMF tones if the channel scan function or memory navigation is operated during transmission. Know your radio. If you inadvertently trigger an EchoLink connection, send the disconnect DTMF command (usually `#` or a specific disconnect code listed in the repeater's documentation) to restore normal operation.
+
+**Scheduled nets and tests:**
+Many UK repeaters host weekly club nets, RAYNET coordination nets, or other scheduled activities at fixed times. These are listed in local repeater group newsletters, the club's website, or the RSGB repeater directory.
+
+- If you hear a net in progress, either **join the net** through the net control station or **wait** until the net closes before making unrelated calls
+- Do not call CQ over an ongoing net — this is poor operating practice and will not endear you to the local repeater community
+- Repeater monthly tests (where the repeater keeper tests the machine's output power, CTCSS, and other parameters) often happen at a publicised time — check before booking the repeater for a lengthy contact
+
+**Finding UK repeaters:**
+The RSGB repeater directory (rsgb.org/repeaters) is the authoritative source for UK repeater details. For each repeater you will find:
+- Output frequency (what you listen on)
+- Input offset (+600 kHz for 2 m, −1.6 MHz for 70 cm)
+- CTCSS access tone
+- Keeper callsign and contact details
+- Any special features (EchoLink, IRLP, internet-linked)
+- Operational status (active, suspended, under repair)
+
+Always programme the **output** frequency into your radio's memory — your radio receives on the output and transmits on the input (which it calculates automatically from the offset). Getting input and output reversed is a common programming error and will result in your radio transmitting on the frequency everyone else is listening on.
+
+</details>
+
+---
+
 ## Suggested Interactives for RFH-Interactives
 
 1. **Split VFO pileup simulator** — User is presented with a waterfall showing a DX station on a fixed frequency plus simulated callers in the 5–10 kHz listening range. Task: identify where the DX is picking up callers and call in the correct range. Randomised listening range and caller positions. Directly maps to 2B1 pileup discipline content.
