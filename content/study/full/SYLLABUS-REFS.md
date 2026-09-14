@@ -99,21 +99,36 @@
 
 ## Ch 6: Analogue and Digital Signals (pp 39–40)
 
-*TBD — populate when `06-analogue-digital-signals.pdf` is read. Chapter covers: binary numbers, sampling, Nyquist theorem, Fourier transforms, DAC (~6 subsections).*
+*Populated 2026-09-14. Section file: `section-6-analogue-digital-signals.md`. Short chapter (~5–8% weight); all new at Full.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 6A1 | TBD | — |
+| 6A1 [VERIFY] | 39 | Analogue vs digital signals; noise immunity; binary numbers (Table 6A, 0–15 in 4 bits); byte = 8 bits (0–255) |
+| 6B1 [VERIFY] | 39 | ADC: sampling, quantisation noise, bit depth; SNR = ~80 dB at 14 bits full-scale; SNR degrades if signal is below ADC max (80−60=20 dB) |
+| 6C1 [VERIFY] | 39–40 | Nyquist theorem: sample rate ≥ 2× highest frequency; aliasing: frequency above Nyquist → alias at lower freq; anti-aliasing low-pass filter before ADC |
+| 6D1 [VERIFY] | 40 | Fourier transform: converts time-domain samples to frequency domain; FFT = fast algorithm; time domain (oscilloscope) vs frequency domain (spectrum analyser); same signal, different view |
+| 6E1 [VERIFY] | 40 | DAC: sinewave look-up table → DAC → LPF → output; phase noise and harmonics from discrete steps; LPF removes harmonics; DDS (see §7D) uses DAC for RF synthesis |
+
+**Populate status: ✅ Ch6 — section file written 2026-09-14**
 
 ---
 
 ## Ch 7: The Transmitter (pp 41–50)
 
-*TBD — populate when `07-transmitter.pdf` is read. Chapter covers: SSB filter method, FM TX, oscillators, PLL, DDS, mixers, PA classes, PEP, ALC, T/R switching (~18 subsections).*
+*Populated 2026-09-14. Section file: `section-7-transmitter.md`. Largest examined chapter (~15–20% weight); heavily tested at Full.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 7A1 | TBD | — |
+| 7A1 [VERIFY] | 41 | Transmitter architecture (Fig 7.1): audio amp → modulator/filter → mixer → RF driver → PA → output filter; crystal osc → synthesiser; modulation at low IF for practical filtering |
+| 7B1 [VERIFY] | 41, 46–47 | SSB: balanced modulator (diode ring, Fig 7.13) → DSB-SC; crystal filter (Fig 7.14) removes one sideband; SSB cannot be frequency-multiplied; mix to final freq via VFO/synthesiser (Fig 7.17); half BW and power advantage over AM |
+| 7C1 [VERIFY] | 41–43, 46 | FM: varicap on Colpitts oscillator (Fig 7.12); modulation index = peak dev / max audio freq; NBFM index ≤1; WBFM index >1; Carson's Rule BW = 2×(max audio + peak dev); at 145MHz ±2.5kHz dev → 10.6kHz BW; over-deviation → adjacent channel interference; phase mod alternative (applied to oscillator output) |
+| 7D1 [VERIFY] | 42–45 | LC Colpitts VFO (Fig 7.3): emitter-follower, C1/C2 capacitor divider feedback, variable C+L sets freq; Crystal oscillator (Fig 7.4): Q≤50000, series/parallel resonance, VXO trimmer pulling; PLL synthesiser (Fig 7.6): f_out = f_crystal×N/A, step = ref freq, out-of-lock inhibit; DDS (Fig 7.8): sinewave table → DAC → LPF, fine resolution, phase noise limitation |
+| 7E1 [VERIFY] | 45–46, 48 | Buffer amplifier (Fig 7.9): isolates VFO from load, class A; Frequency multiplier (Fig 7.10): class C transistor → harmonics → tuned circuit selects nth harmonic; SSB cannot be multiplied; Mixer: f_out = f_in ± f_LO, filter selects sum or difference; VFO range selects band (Fig 7.17) |
+| 7F1 [VERIFY] | 48–49 | PA: class A (linear, 35% eff.) for SSB/AM; class C (67%) for FM/CW with tuned output; push-pull class B 50%; output matching L/C network transforms transistor impedance to 50Ω AND filters harmonics (Fig 7.19/7.20); SWR sensing → fold-back protects transistors |
+| 7G1 [VERIFY] | 49–50 | PEP = avg RF power over 1 cycle at modulation envelope crest; speech peak:average ≈20:1 (13dB); no cycle >400W (or 1kW Primary); ALC monitors PA output, reduces drive if overdrive → IMD/splatter on adjacent freqs; speech processor limits peaks → raises average power; data modes (RTTY/SSTV) = 100% average duty — check heatsink |
+| 7H1 [VERIFY] | 50 | SWR protection: detects reflected power → progressive fold-back; wrong load impedance risks transistor damage; CW: oscillator runs continuously, key shapes envelope; key clicks from fast rise time; Transceivers: shared osc/IF/filter stages; T/R relay on PTT; RIT for fine receive offset without changing TX frequency |
+
+**Populate status: ✅ Ch7 — section file written 2026-09-14**
 
 ---
 
