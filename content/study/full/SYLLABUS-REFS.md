@@ -173,21 +173,43 @@
 
 ## Ch 10: Software Defined Radio (pp 67–68)
 
-*TBD — populate when `10-sdr.pdf` is read. Chapter covers: SDR architecture, direct-sampling ADC, software demodulation, waterfall displays (~5 subsections).*
+*Populated 2026-09-15. Section file: `section-10-sdr.md`. Short chapter (~3–5% weight); introduces SDR architecture at Full level.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 10A1 | TBD | — |
+| 10A1 [VERIFY] | 67 | SDR concept: hardware-defined → software-defined; mode flexibility, wide instantaneous bandwidth, post-capture analysis |
+| 10B1 [VERIFY] | 67 | Down-conversion SDR: mixer → low IF → ADC; I/Q quadrature sampling eliminates image ambiguity; RTL-SDR/SDRplay examples |
+| 10C1 [VERIFY] | 67–68 | Direct sampling: ADC at antenna; no mixer; 100+ Msps for HF coverage; high-end transceivers (Flex, ANAN) |
+| 10D1 [VERIFY] | 68 | Sample rate → instantaneous bandwidth (Nyquist: BW = f_sample/2); bit depth → dynamic range (~6 dB/bit; 14-bit = 80 dB; 8-bit = 48 dB) |
+| 10E1 [VERIFY] | 68 | FFT waterfall/panadapter: frequency vs power (panadapter); time axis added (waterfall, scrolling); bin width = f_sample/FFT_size; signal identification by spectral signature |
+
+**Populate status: ✅ Ch10 — section file written 2026-09-15**
 
 ---
 
 ## Ch 11: Feeders and Antennas (pp 69–77)
 
-*TBD — populate when `11-feeders-antennas.pdf` is read. Chapter covers: velocity factor, baluns, VSWR, Yagi, log-periodic, 5/8 whip, folded dipole, EFHW, loading coils, ATU networks (~17 subsections, letter-indexed §11.A–11.Q).*
+*Populated 2026-09-15. Section file: `section-11-feeders-antennas.md`. Heavy chapter (~12–15% weight, 9 pages); most antenna types are new at Full level.*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 11A1 | TBD | — |
+| 11A1 [VERIFY] | 69 | Free space impedance 377 Ω; antenna as interface between 50 Ω feeder and 377 Ω free space; radiation resistance (73 Ω dipole; 35 Ω λ/4 vertical; short dipole < 5 Ω); efficiency = R_rad/(R_rad+R_loss) |
+| 11B1 [VERIFY] | 69–70 | Coaxial feeder: Z₀ = 138/√ε_r × log(D/d); 50 Ω vs 75 Ω; loss increases with frequency and VSWR; RG58/RG213/LMR-400 comparison table |
+| 11C1 [VERIFY] | 70 | Open-wire feeder: 300/450/600 Ω balanced; lower loss at HF due to high Z and external fields; velocity factors; must use balun at ATU; cannot route through buildings |
+| 11D1 [VERIFY] | 70–71 | Velocity factor VF = v/c; λ_cable = (300/f_MHz)×VF; electrical length used in stubs, phasing harnesses, λ/4 transformers (Z_in = Z₀²/Z_load) |
+| 11E1 [VERIFY] | 71 | Baluns: 1:1 choke balun (common-mode suppression only, no impedance transform); 4:1 voltage balun (200 Ω balanced → 50 Ω); Guanella vs Ruthroff; ununs (9:1 for EFHW, 4:1 for random wire) |
+| 11F1 [VERIFY] | 71–72 | VSWR: Γ = (ZL−Z₀)/(ZL+Z₀); VSWR=(1+|Γ|)/(1−|Γ|); P_reflected=|Γ|²; VSWR 2:1 = 11% reflected; high VSWR multiplies feeder loss; voltage peaks risk |
+| 11G1 [VERIFY] | 72 | Ground plane: λ/4 vertical over perfect ground = 35 Ω; elevated radials (4 at 45°) → ~50 Ω; buried radials; counterpoise for elevated antennas; mobile body as ground plane |
+| 11H1 [VERIFY] | 72–73 | Yagi: reflector (longer)/driven/directors (shorter); each director adds gain; 3-el ~7 dBd, 5-el ~9 dBd; F/B ratio 15–25 dB; split-dipole Z ~25 Ω (λ/4 match); folded dipole driven element ~280 Ω (4:1 balun) |
+| 11I1 [VERIFY] | 73–74 | LPDA: active region shifts with frequency; 6–8 dBd constant across decade range; wide BW vs Yagi high gain; used for HF multiband beams, EMC test, TV aerials |
+| 11J1 [VERIFY] | 74 | 5/8-wave vertical: R_rad ~60 Ω; +3 dBd gain; lower radiation angle; capacitive reactance cancelled by series base inductor; standard VHF/UHF mobile whip |
+| 11K1 [VERIFY] | 74 | Folded dipole: two parallel conductors; Z ≈ 4×73 = 280 Ω; slightly wider BW; standard Yagi driven element; 4:1 balun to 75 Ω or 6:1 to 50 Ω |
+| 11L1 [VERIFY] | 75 | EFHW: high Z at end (~2,450 Ω); 49:1 unun (7:1 turns ratio); multiband on harmonics (40/20/15/10 m); common-mode issue: separate choke balun needed on coax |
+| 11M1 [VERIFY] | 75 | Slot antenna: complement of dipole (Babinet's principle); Z_slot = η²/(4×Z_dipole) ≈ 486 Ω; flush-mounted (aircraft, mobile phone frame, marine); active region is the gap |
+| 11N1 [VERIFY] | 76 | Loading coils: base/centre/top loading; centre loading better efficiency; Q determines efficiency (efficiency = R_rad/(R_rad+R_loss)); trap antennas (L/C at upper band freq = open circuit; inductive below = loading for lower band) |
+| 11O1 [VERIFY] | 76–77 | ATU networks: L (series+shunt, simple, one-direction); T high-pass (2 series caps + shunt L, wide range, adjustable Q, common in commercial ATUs); Pi low-pass (series L + 2 shunt C, harmonic suppression, PA output); ATU does NOT reduce feeder VSWR |
+
+**Populate status: ✅ Ch11 — section file written 2026-09-15**
 
 ---
 
