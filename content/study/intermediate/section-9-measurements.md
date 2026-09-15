@@ -87,15 +87,7 @@ Probe leads must be well insulated and have flexible leads. Good probes expose o
 
 Voltage is always measured **across** (in parallel with) the component or circuit element of interest:
 
-```
-      ┌────[R1]────┬────[R2]────┐
-      │            │            │
-     Vb          [V]           Vb
-      │            │            │
-      └────────────┴────────────┘
-      
-  Voltmeter placed IN PARALLEL with R2
-```
+<img src="/assets/images/study/section-9/voltmeter-parallel.svg" alt="Voltmeter connected in parallel with R2: battery Vb drives current through R1 and R2 in series; voltmeter V is connected across R2 at the junction nodes" style="max-width:100%; display:block; margin:1rem 0;">
 
 Voltmeters are designed to have **very high input resistance** (typically 10 MΩ on a DMM). This means only a tiny current flows through the meter — the circuit under test is barely disturbed by the measurement.
 
@@ -105,15 +97,7 @@ Voltmeters are designed to have **very high input resistance** (typically 10 MΩ
 
 Current is measured by placing the meter **in series** in the circuit — the current to be measured must flow *through* the meter:
 
-```
-      ┌────[R1]────[A]────[R2]────┐
-      │                           │
-     Vb                          Vb
-      │                           │
-      └───────────────────────────┘
-      
-  Ammeter placed IN SERIES — the circuit is broken and the meter inserted
-```
+<img src="/assets/images/study/section-9/ammeter-series.svg" alt="Ammeter inserted in series: battery Vb drives current through R1, then ammeter A (circuit broken and meter inserted), then R2 back to battery" style="max-width:100%; display:block; margin:1rem 0;">
 
 In current mode, the ammeter has **very low internal resistance** — it acts like a piece of wire. The current is the same at every point in a series circuit (Fig 14.2 in RSGB Ch.14 — both ammeters A₁ and A₂ read identically).
 

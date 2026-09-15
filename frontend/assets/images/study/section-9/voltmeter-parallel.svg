@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280" style="font-family:'IBM Plex Mono',monospace;">
+  <defs>
+    <style>
+      text { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+      .label { font-size: 12px; fill: #e2e8f0; }
+      .caption { font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif; font-size: 13px; fill: #64748b; }
+      .caption-em { font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif; font-size: 13px; fill: #06b6d4; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Circuit wires: top rail -->
+  <!-- Left top → R1 left -->
+  <line x1="60" y1="80" x2="140" y2="80" stroke="#94a3b8" stroke-width="2"/>
+  <!-- R1 right → junction T1 -->
+  <line x1="200" y1="80" x2="290" y2="80" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Junction T1 → R2 left -->
+  <line x1="290" y1="80" x2="360" y2="80" stroke="#94a3b8" stroke-width="2"/>
+  <!-- R2 right → right top -->
+  <line x1="420" y1="80" x2="540" y2="80" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Bottom rail -->
+  <line x1="60" y1="200" x2="540" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Left vertical (battery) -->
+  <line x1="60" y1="80" x2="60" y2="145" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="60" y1="175" x2="60" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Right vertical (closing loop) -->
+  <line x1="540" y1="80" x2="540" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Voltmeter branch: T1 down to meter, meter down to bottom -->
+  <line x1="290" y1="80" x2="290" y2="120" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="290" y1="162" x2="290" y2="200" stroke="#06b6d4" stroke-width="2"/>
+
+  <!-- Battery symbol at x=60, y=145–175 -->
+  <!-- Long line (positive) -->
+  <line x1="42" y1="148" x2="78" y2="148" stroke="#e2e8f0" stroke-width="2.5"/>
+  <!-- Short line (negative) -->
+  <line x1="50" y1="158" x2="70" y2="158" stroke="#e2e8f0" stroke-width="1.5"/>
+  <!-- Long line 2 -->
+  <line x1="42" y1="165" x2="78" y2="165" stroke="#e2e8f0" stroke-width="2.5"/>
+  <!-- Short line 2 -->
+  <line x1="50" y1="172" x2="70" y2="172" stroke="#e2e8f0" stroke-width="1.5"/>
+  <!-- Battery label -->
+  <text x="84" y="164" class="label">Vb</text>
+
+  <!-- R1 resistor (IEC: rectangle) at x=140–200, y=80 -->
+  <rect x="140" y="68" width="60" height="24" rx="3" fill="#0d1321" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="162" y="84" class="label">R1</text>
+
+  <!-- R2 resistor at x=360–420, y=80 -->
+  <rect x="360" y="68" width="60" height="24" rx="3" fill="#0d1321" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="382" y="84" class="label">R2</text>
+
+  <!-- Voltmeter circle at x=290, y=141 (centre), r=21 — CYAN highlighted -->
+  <circle cx="290" cy="141" r="21" fill="#0d1321" stroke="#06b6d4" stroke-width="2.5"/>
+  <text x="284" y="146" class="label" fill="#06b6d4">V</text>
+
+  <!-- Junction dots at T1 (290,80) and T2 (290,200) -->
+  <circle cx="290" cy="80" r="4" fill="#06b6d4"/>
+  <circle cx="290" cy="200" r="4" fill="#06b6d4"/>
+
+  <!-- R2 parallel bracket hint: subtle dashed box -->
+  <rect x="280" y="65" width="150" height="145" rx="4" fill="none" stroke="#1e293b" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- Caption -->
+  <text x="300" y="248" text-anchor="middle" class="caption">Voltmeter (</text>
+  <text x="300" y="248" text-anchor="middle">
+    <tspan class="caption">Voltmeter (</tspan><tspan class="caption-em">V</tspan><tspan class="caption">) connected </tspan><tspan class="caption-em">IN PARALLEL</tspan><tspan class="caption"> with R2</tspan>
+  </text>
+  <text x="300" y="265" text-anchor="middle" class="caption">High input impedance — negligible current drawn from circuit</text>
+</svg>
