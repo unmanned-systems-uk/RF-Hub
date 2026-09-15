@@ -92,6 +92,52 @@ Before transmitting on any frequency:
 
 ## 7B — Making Contact
 
+### 7B1a — Pre-CQ Checklist
+
+> **Prerequisite:** Foundation and Intermediate courses cover the basics of making a call. The following is a reminder of the full procedure, with the nuance expected at Full licence level. If any step is unclear, review §7A (Band Plans and Frequency Etiquette) for calling-frequency conventions.
+
+Before you press PTT, run through these steps in order. Skipping them is how amateurs cause the kind of interference they complain about in others.
+
+**Step 1 — Listen first**
+
+Even if the frequency sounds completely clear, do not assume it is free. You may be hearing only one side of a long-distance contact: the station nearby is listening to a distant DX station whose signal is too weak for your location. If you transmit, you will crash their contact without ever knowing it.
+
+Listen for at least 30–60 seconds. If nothing heard, proceed.
+
+**Step 2 — Check the band plan**
+
+Confirm the frequency is in the correct segment for your mode. Calling CQ on a beacon segment or a repeater output is unacceptable regardless of how clear it sounds.
+
+Key calling frequencies you should know:
+
+| Band | Freq | Mode | Note |
+|---|---|---|---|
+| 20 m (14 MHz) | 14.225 MHz | SSB | SSB calling frequency |
+| 20 m (14 MHz) | 14.070 MHz | PSK31 | Digital calling/activity centre |
+| 20 m (14 MHz) | 14.074 MHz | FT8 | FT8 dial frequency |
+| 6 m (50 MHz) | 50.125 MHz | SSB | SSB calling frequency (Region 1) |
+| 2 m (144 MHz) | 144.300 MHz | SSB | SSB calling frequency |
+| 2 m (144 MHz) | 145.500 MHz | FM | FM simplex calling channel |
+
+> **Cross-reference:** §7A has the full 2 m and 20 m band plan tables. The convention is to **call CQ on the calling frequency, then QSY** to a nearby working frequency for any QSO longer than a brief exchange — this leaves the calling frequency clear for others.
+
+**Step 3 — Ask QRL?**
+
+Transmit "QRL?" (or, if you prefer plain language: "Is this frequency in use?") and pause for 2–3 seconds. QRL? means "is this frequency busy?" If someone replies "QRL" or "yes" or gives their callsign — the frequency is in use. Find another.
+
+If you hear nothing after two asks separated by a few seconds, the frequency is likely clear. Some stations may be briefly off-air between transmissions; a second ask protects against that.
+
+**Step 4 — Optional: send a brief test transmission**
+
+Before a CQ run, some operators send their callsign once followed by "listening" or "testing". This checks:
+- Your transmitter is actually on air (you can hear the sidetone, but is it transmitting?)
+- Your audio/keying path is working
+- Any local stations monitoring that frequency know someone is about to call CQ
+
+This is especially useful when setting up on a new band or after changing antennas.
+
+Only after all four steps do you proceed to the CQ call.
+
 ### The CQ Call (7B1)
 
 A CQ call is an open invitation for any station to reply. The standard form:
@@ -160,6 +206,48 @@ The closing convention is **"73 and clear"** or just **"73"**. The word 73 comes
 ### Joining an Existing QSO
 
 If you want to join a QSO already in progress, wait for a pause then transmit your callsign once: "M0XYZ". The operators will acknowledge you and invite you in. Do not transmit your call repeatedly or talk over the current operators.
+
+### 7B1b — Post-Response: Move to a Working Frequency
+
+When a station replies to your CQ, the exchange on the calling frequency should be brief. If you intend to have a longer QSO, move off the calling frequency so it remains available for others to make first contact.
+
+**Acknowledge and exchange essentials**
+
+Reply with the caller's callsign, your callsign, and a signal report:
+
+```
+[Their callsign], this is [your callsign], you are 59, over.
+```
+
+They will confirm your report and give theirs. At this point you have enough information to QSY.
+
+**Request a QSY**
+
+Propose a nearby clear frequency:
+
+```
+Thank you for the report — can we QSY to 14.205? I'll call you there.
+```
+
+Move to that frequency (having checked it is clear with a brief QRL? first), call the other station, and continue the QSO there. The calling frequency is now free again.
+
+**Agreeing the QSY frequency**
+
+- Choose a frequency **in the correct mode segment** — do not QSY an SSB contact into the digital sub-band
+- Stay close to the calling frequency (within 30–100 kHz on HF) so propagation conditions are likely to be similar
+- If the other station cannot hear your suggested frequency, they will say so — try another
+
+**Repeater contacts and the break to simplex**
+
+On an FM repeater, if a longer conversation is expected, consider announcing a move to a simplex channel:
+
+```
+M0XYZ, this is M0ABC — shall we try simplex on S20 (145.500)?
+```
+
+This frees the repeater for other users and removes the dependency on the repeater's availability and coverage. Not always appropriate (some contacts benefit from repeater range), but good practice when both stations are clearly close enough to work simplex.
+
+> [INFO] **7B1 summary:** Listen → QRL? → CQ → respond briefly on calling frequency → QSY to a working frequency for the actual QSO. The calling frequency is a rendezvous point, not a QSO frequency.
 
 ---
 
