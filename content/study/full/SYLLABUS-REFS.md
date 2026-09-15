@@ -215,11 +215,23 @@
 
 ## Ch 12: Propagation (pp 78–82)
 
-*TBD — populate when `12-propagation.pdf` is read. Chapter covers: PFD, ionosphere layers, MUF formula, LUF, fading, Es, tropo, meteor scatter, EME (~18 subsections, letter-indexed §12.A–12.R).*
+*Populated 2026-09-15. Section file: `section-12-propagation.md`. (~8–12% weight, 5 pages; cross-refs Intermediate §5B/§5D/§5E/§5F).*
 
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 12A1 | TBD | — |
+| 12A1 [VERIFY] | 78 | Ionospheric layers: D (60–90 km, daylight only, absorbs low HF ∝ 1/f²); E (90–130 km, short hops, Es host); F1 (130–210 km, day only); F2 (210–400 km, primary DX layer, persists at night); night: D gone, F1+F2 merge |
+| 12B1 [VERIFY] | 78–79 | Solar activity: 11-year sunspot cycle; SFI/F10.7 (solar flux at 2800 MHz / 10.7 cm, Penticton); high SFI → higher foF2 → higher MUF; SFI ~65 (min) to >200 (max); SID (X-ray flare → D-layer blackout); CME → geomagnetic storm; Kp index (0–9) |
+| 12C1 [VERIFY] | 79 | Critical frequency foF2: highest frequency reflected vertically by F2; fc = √(N/81) MHz; measured by ionosonde (swept radar, 1–20 MHz); ionogram shows virtual height vs frequency; foF2 varies 3–14 MHz with solar activity and time of day |
+| 12D1 [VERIFY] | 79–80 | MUF = fc × sec(θ); sec(θ) = √(1+(d/2h)²); typical factor 3–5 for amateur paths; LUF set by D-layer absorption (∝ 1/f²); OWF = 0.85 × MUF; worked example: fc=9 MHz, d=2000 km, h=300 km → MUF ≈ 31 MHz |
+| 12E1 [VERIFY] | 80 | Skip distance: minimum ground range for sky-wave return; dead zone between ground-wave limit and skip distance (no signal); skip distance increases with frequency (28 MHz: 2000–4000 km; 7 MHz: 200–800 km) |
+| 12F1 [VERIFY] | 80–81 | Fading (QSB): multipath (D/E/F2 simultaneously, multiple hops); fast fading near MUF; slow fading on stable paths; selective fading: different audio frequencies fade at different rates → SSB "Donald Duck" distortion; CW/digital modes less vulnerable |
+| 12G1 [VERIFY] | 81 | Troposcatter: always-present weak scatter from turbulence; up to ~800 km VHF/UHF. Ducting: temperature inversion traps VHF/UHF; anticyclones/coastal boundaries; 144 MHz paths to 1000–2000+ km; FM co-channel interference as indicator |
+| 12H1 [VERIFY] | 81 | Sporadic-E: unpredictable dense E-layer patches; peaks summer (May–Aug NH); single hop 1000–2200 km; most active 50 MHz, occasional 144 MHz; double-hop Es ~4000 km (EU–NA on 6 m); HF Es brings strong near-skip signals on 21/28 MHz |
+| 12I1 [VERIFY] | 81–82 | Auroral propagation: VHF (50–144 MHz); north–south paths only; characteristic buzz/rasp on received signal; CW best mode; SSB/FM unusable; Kp ≥ 5 for UK northern stations, Kp ≥ 7 for southern UK |
+| 12J1 [VERIFY] | 82 | Meteor scatter: ionised trails at 80–120 km; 28–144 MHz; paths 1000–2200 km; MSK144 (15s periods, fast modulation) for 144 MHz; FSK441 for 50 MHz; major showers (Perseids Aug, Geminids Dec); sporadic background year-round |
+| 12K1 [VERIFY] | 82 | EME: ~250–260 dB path loss at 144 MHz; JT65B/QRA64 enable modest-station contacts (100W + small Yagi); Doppler ±300 Hz compensated by WSJT-X; antenna pointing updates needed; propagation-independent (immune to ionospheric storms) |
+
+**Populate status: ✅ Ch12 — section file written 2026-09-15**
 
 ---
 
