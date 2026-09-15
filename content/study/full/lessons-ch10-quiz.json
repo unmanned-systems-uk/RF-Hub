@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "chapter": 10,
+    "title": "Software Defined Radio",
+    "level": "full",
+    "syllabus_refs": ["10A1", "10B1", "10C1", "10D1", "10E1"],
+    "source_content": "section-10-sdr.md",
+    "question_count": 15,
+    "generated": "2026-09-15"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "10A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "10A",
+      "section_name": "What SDR Is",
+      "question": "What does a Software Defined Radio (SDR) primarily replace compared to a conventional hardware-defined transceiver?",
+      "options": [
+        "Dedicated hardware circuits for filtering, demodulation, and frequency selection, replaced by software running on a processor",
+        "The antenna and feedline system, replaced by a direct RF connection to a computer",
+        "The power supply and cooling, replaced by more efficient digital switching",
+        "The microcontroller firmware, replaced by open-source software"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "In SDR, the hardware stages of a conventional radio — bandpass filters, IF filters, demodulators, mode-specific circuits — are replaced by a general-purpose processor running software algorithms. The only hardware remaining is a minimal analogue front-end (LNA, filter) and an ADC.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "architecture", "hardware-vs-software"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "10E",
+      "section_name": "FFT Waterfall and Panadapter",
+      "question": "On a waterfall display, what does the vertical axis represent?",
+      "options": [
+        "Signal strength (power) at each frequency",
+        "Frequency span of the receiver",
+        "Time — older signals appear lower, with the most recent spectrum at the top",
+        "Phase angle of the received signal"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A waterfall display adds time as the vertical axis to the panadapter's frequency-vs-power display. Each new spectrum sweep is added at the top and scrolls downward, so the vertical axis is time. Signal strength is shown as colour (e.g., black → blue → yellow → red for increasing power).",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "waterfall", "panadapter", "fft"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "10D",
+      "section_name": "Sample Rate and Bit Depth",
+      "question": "A consumer SDR dongle uses an 8-bit ADC. What is its approximate theoretical dynamic range?",
+      "options": [
+        "8 dB",
+        "24 dB",
+        "48 dB",
+        "80 dB"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Each bit of ADC resolution contributes approximately 6 dB of dynamic range. An 8-bit ADC therefore has 8 × 6 = 48 dB of theoretical dynamic range. This is relatively modest — a strong nearby signal can fill the ADC range and produce visible IMD products on weaker signals.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "dynamic-range", "adc", "bit-depth"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "10B",
+      "section_name": "Direct Sampling vs Down-Conversion",
+      "question": "In an I/Q (quadrature) sampling system, by what phase angle are the two ADC channels offset from each other?",
+      "options": [
+        "45°",
+        "90°",
+        "180°",
+        "270°"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In I/Q sampling the In-phase (I) and Quadrature (Q) channels are offset by 90°. This 90° phase difference is what allows the complex sample pair to encode both amplitude and phase, giving a two-sided spectrum that can distinguish signals above and below the centre frequency.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "iq", "quadrature", "down-conversion"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "10A",
+      "section_name": "What SDR Is",
+      "question": "Which of the following is a key operational advantage of SDR over a conventional hardware-defined radio?",
+      "options": [
+        "Lower transmitter power consumption due to digital signal processing",
+        "Mode changes (SSB, FM, CW, FT8) require only a software update — no hardware changes",
+        "Better intermodulation distortion performance because no analogue mixer is used",
+        "No bandpass filter is needed before the ADC"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Because demodulation, filtering, and mode selection are all performed in software, changing mode requires only loading a different algorithm — no hardware modification. This is the defining practical advantage of SDR. An analogue front-end (and its filters) is still required; and intermodulation is limited by the ADC and front-end, not eliminated.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "mode-flexibility", "advantage"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10B",
+      "section_name": "Direct Sampling vs Down-Conversion",
+      "question": "In a down-conversion SDR, what is the combined function of the mixer and local oscillator?",
+      "options": [
+        "To amplify the received signal to a level suitable for the ADC",
+        "To convert the RF signal to a lower intermediate frequency that the ADC can sample at a practical sample rate",
+        "To separate I and Q channels before the ADC digitises them",
+        "To apply automatic gain control and prevent ADC overload"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The mixer multiplies the incoming RF with the local oscillator signal, producing sum and difference frequencies. The difference frequency (IF) is much lower than the original RF — for example, a 14 MHz signal mixed with a 12 MHz LO produces a 2 MHz IF. The ADC then only needs to sample at ~4 Msps rather than ~28 Msps, making the design practical with modest hardware.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "down-conversion", "mixer", "if"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10C",
+      "section_name": "I/Q Signals and Quadrature Sampling",
+      "question": "A direct-sampling SDR uses a 120 Msps ADC. What is the maximum RF frequency that can be digitised in the first Nyquist zone without aliasing?",
+      "options": [
+        "30 MHz",
+        "60 MHz",
+        "120 MHz",
+        "240 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "By the Nyquist theorem, the maximum frequency that can be represented without aliasing is half the sample rate: 120 / 2 = 60 MHz. Signals above 60 MHz would alias into the 0–60 MHz range. A bandpass filter before the ADC must remove all content above 60 MHz to prevent this.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "nyquist", "direct-sampling", "aliasing"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10D",
+      "section_name": "Sample Rate and Bit Depth",
+      "question": "An SDR receiver has a sample rate of 2.048 Msps. What is its instantaneous bandwidth — the total frequency span visible simultaneously on the panadapter?",
+      "options": [
+        "512 kHz",
+        "1.024 MHz",
+        "2.048 MHz",
+        "4.096 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "By Nyquist, the maximum useful bandwidth from an I/Q sampled signal is half the sample rate: 2,048,000 / 2 = 1,024,000 Hz = 1.024 MHz. The full 2.048 Msps sample rate represents the two-sided complex spectrum; the useful (displayable) bandwidth is half that.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "sample-rate", "bandwidth", "nyquist"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10E",
+      "section_name": "FFT Waterfall and Panadapter",
+      "question": "An SDR processes I/Q samples at 2.048 Msps with an FFT size of 4096. What is the frequency width of each bin in the waterfall display?",
+      "options": [
+        "100 Hz",
+        "250 Hz",
+        "500 Hz",
+        "1 kHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Frequency bin width = sample_rate / FFT_size = 2,048,000 / 4096 = 500 Hz. Each pixel column in the waterfall represents a 500 Hz slice of spectrum. To halve the bin width to 250 Hz, you would need to double the FFT size to 8192 (at the cost of higher compute load and slightly slower update rate).",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "fft", "waterfall", "frequency-resolution"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10B",
+      "section_name": "Direct Sampling vs Down-Conversion",
+      "question": "Why does an I/Q system represent a two-sided spectrum (−f_s/2 to +f_s/2) while a single real-valued ADC channel only produces a one-sided spectrum (0 to f_s/2)?",
+      "options": [
+        "I/Q uses twice the sample rate, so it covers twice the frequency range",
+        "The complex I/Q sample pair encodes both amplitude and phase, allowing software to distinguish signals above and below the centre frequency — a real-only sample cannot make this distinction",
+        "The Q channel filters out all negative-frequency components, keeping only the upper half",
+        "I/Q uses two separate ADCs each covering a different half of the spectrum"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A real-valued signal is symmetrical in the frequency domain — any signal at +f appears mirrored at −f, making them indistinguishable. The I/Q pair is a complex signal; its spectrum is not symmetrical, so +50 kHz and −50 kHz offsets from centre can be told apart. This is why software tuning in an SDR works: the digital NCO shifts the centre of the complex spectrum, not the hardware.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "iq", "complex-spectrum", "image"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "10C",
+      "section_name": "I/Q Signals and Quadrature Sampling",
+      "question": "Why does a direct-sampling SDR require a significantly faster ADC than a down-conversion SDR covering the same HF frequency range?",
+      "options": [
+        "Direct-sampling ADCs must have a lower noise figure to maintain sensitivity",
+        "The ADC must digitise the full RF frequency directly — no mixer shifts it to a lower IF first, so the sample rate must satisfy Nyquist for the highest desired RF frequency",
+        "Direct sampling requires higher bit depth to compensate for the absence of a mixer",
+        "The ADC must process both I and Q channels at twice the normal rate"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a down-conversion SDR, the mixer translates a small segment of spectrum (e.g. 14–16 MHz) down to 0–2 MHz, so the ADC only needs to sample at ~4 Msps. In direct sampling, the full HF range (e.g. 0–30 MHz) must be digitised, requiring at least 60 Msps (Nyquist). In practice 100–200 Msps ADCs are used for margin.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "direct-sampling", "adc-speed", "nyquist"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "10D",
+      "section_name": "Sample Rate and Bit Depth",
+      "question": "A high-performance SDR uses a 14-bit ADC at a sample rate of 2.048 Msps. Using the 6 dB/bit approximation, what are the theoretical dynamic range and instantaneous bandwidth?",
+      "options": [
+        "~72 dB dynamic range; 1.024 MHz bandwidth",
+        "~84 dB dynamic range; 1.024 MHz bandwidth",
+        "~84 dB dynamic range; 2.048 MHz bandwidth",
+        "~48 dB dynamic range; 2.048 MHz bandwidth"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Dynamic range: 14 bits × 6 dB/bit = 84 dB. Instantaneous bandwidth: Nyquist gives BW = sample_rate / 2 = 2,048,000 / 2 = 1.024 MHz. The sample rate defines the span; the bit depth defines the dynamic range — these are independent parameters. (Note: the precise formula 6.02N + 1.76 gives ~86 dB; 84 dB is the 6 dB/bit approximation.)",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "dynamic-range", "bandwidth", "bit-depth", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "10E",
+      "section_name": "FFT Waterfall and Panadapter",
+      "question": "An operator increases the FFT size in their SDR software from 1024 to 8192, keeping the sample rate at 2.048 Msps. What changes?",
+      "options": [
+        "Frequency bin width improves from ~2 kHz to ~250 Hz, providing finer resolution, but each FFT block takes longer to compute so display latency increases",
+        "Frequency bin width worsens from ~2 kHz to ~250 Hz, and the display updates faster",
+        "The instantaneous bandwidth doubles from 1.024 to 2.048 MHz",
+        "Dynamic range improves by 3 dB per doubling of FFT size"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Bin width = sample_rate / FFT_size. At 1024: 2,048,000 / 1024 = 2,000 Hz per bin. At 8192: 2,048,000 / 8192 = 250 Hz per bin — eight times finer resolution. However, each FFT block now requires 8192 samples; at 2.048 Msps this takes 4 ms to accumulate (vs 0.5 ms), increasing display latency. Instantaneous bandwidth is set by sample rate, not FFT size.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "fft", "resolution", "latency", "trade-off"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "10B",
+      "section_name": "Direct Sampling vs Down-Conversion",
+      "question": "A signal appears at the same frequency offset both above and below the tuned centre frequency on a display driven by a single real-valued ADC channel (no I/Q). What causes this mirror image?",
+      "options": [
+        "The ADC is aliasing the signal due to undersampling",
+        "The signal is being received on the image frequency via the mixer",
+        "Real-valued (non-I/Q) sampling produces a symmetrical spectrum — positive and negative frequency components cannot be distinguished, so a signal at +50 kHz is indistinguishably mirrored at −50 kHz",
+        "The signal is in FM mode and the deviation appears on both sides"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A real-valued ADC produces a spectrum that is Hermitian symmetric: the power at +f equals the power at −f. A signal at +50 kHz offset genuinely cannot be distinguished from one at −50 kHz. This is the fundamental reason I/Q (complex) sampling is used in SDR — the complex representation breaks this symmetry and allows unambiguous placement of signals on both sides of the centre frequency.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "real-sampling", "image", "iq", "spectrum"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "10A1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "10A",
+      "section_name": "What SDR Is",
+      "question": "An 8-bit SDR dongle shows visible IMD products in the waterfall when a strong broadcast FM station is on the air, even though the amateur band being monitored is at a completely different frequency. A 16-bit SDR connected to the same antenna does not show these products. What is the primary reason for the difference?",
+      "options": [
+        "The 16-bit SDR has a better LNA with lower noise figure",
+        "The 16-bit SDR's ~96 dB dynamic range keeps IMD products well below the noise floor; the 8-bit SDR's ~48 dB range means the strong FM station consumes most of the ADC's headroom, and non-linearity produces visible IMD across the band",
+        "The 16-bit SDR uses direct sampling so there is no mixer to produce intermodulation",
+        "The 16-bit SDR's superior demodulation software filters out the FM station"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Dynamic range is the key. An 8-bit ADC has ~48 dB of range. When a strong signal occupies a large fraction of the ADC full-scale range, quantisation non-linearity produces intermodulation products that land across the entire displayed spectrum. A 16-bit ADC has ~96 dB of range, so the same strong signal represents a much smaller fraction of full-scale — IMD products are far smaller and stay below the noise floor. This is the fundamental reason high-performance SDRs use 14–16 bit ADCs.",
+      "source_content": "section-10-sdr.md",
+      "tags": ["sdr", "dynamic-range", "imd", "adc", "bit-depth"],
+      "active": true
+    }
+  ]
+}

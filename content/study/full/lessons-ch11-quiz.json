@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "chapter": 11,
+    "title": "Feeders and Antennas",
+    "level": "full",
+    "syllabus_refs": ["11A1", "11B1", "11C1", "11D1", "11E1", "11F1", "11G1", "11H1", "11I1", "11J1", "11K1", "11L1", "11M1", "11N1", "11O1"],
+    "source_content": "section-11-feeders-antennas.md",
+    "question_count": 30,
+    "generated": "2026-09-15"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "11A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11A",
+      "section_name": "The Antenna as an Impedance Interface",
+      "question": "What is the intrinsic impedance of free space, and what is its significance for antenna design?",
+      "options": [
+        "50 Ω — the universal standard for RF transmission lines",
+        "73 Ω — the radiation resistance of a half-wave dipole",
+        "377 Ω — the ratio of electric to magnetic field strength in a plane wave; antennas must bridge this to the transmission line impedance",
+        "600 Ω — the impedance of balanced open-wire feeder"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Free space has an intrinsic impedance of 377 Ω, set by the fundamental physical constants μ₀ and ε₀. An antenna's job is to couple energy between the transmission line (typically 50 Ω) and the radiating wave in free space. The antenna's geometry — its size, shape, and feed arrangement — determines how efficiently it makes this transition.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["antenna", "free-space-impedance", "radiation-resistance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11B",
+      "section_name": "Coaxial Feeder",
+      "question": "What characteristic impedance is standard for coaxial cable in amateur radio applications?",
+      "options": [
+        "25 Ω",
+        "50 Ω",
+        "75 Ω",
+        "300 Ω"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "50 Ω is the standard for amateur radio and professional RF systems. It is a practical compromise between the impedance for minimum loss (~77 Ω) and the impedance for maximum power handling (~30 Ω). 75 Ω coax is used for TV and satellite systems but is not the amateur radio standard.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["coax", "characteristic-impedance", "feeder"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11F1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11F",
+      "section_name": "VSWR and Standing Waves",
+      "question": "What does a VSWR of 1:1 indicate about a transmission line and its load?",
+      "options": [
+        "The antenna is resonant at the operating frequency",
+        "The load impedance exactly equals the feeder's characteristic impedance; no power is reflected and no standing waves exist",
+        "Exactly 50% of the incident power is being reflected",
+        "The feeder is short-circuited at the antenna end"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "VSWR = 1:1 means the reflection coefficient |Γ| = 0, which occurs only when Z_L = Z₀ exactly. In this condition, all incident power is absorbed by the load and none is reflected. The voltage and current are uniform along the line — no standing wave pattern exists. Note that antenna resonance alone does not guarantee a match; a resonant antenna may still present a non-50 Ω impedance.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["vswr", "standing-wave", "reflection", "matched"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11H1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11H",
+      "section_name": "The Yagi–Uda Antenna",
+      "question": "In a Yagi antenna, what is the purpose of the director elements?",
+      "options": [
+        "They reflect energy rearward to increase forward gain",
+        "They are fed directly by the transmitter alongside the driven element",
+        "Being slightly shorter than λ/2, they are capacitively reactive and focus radiated energy in the forward direction",
+        "They broaden the bandwidth of the antenna by lowering its Q"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Directors are slightly shorter than a half-wavelength, making them capacitively reactive. When the driven element's field induces current in a director, the director re-radiates in a way that adds constructively in the forward direction and destructively rearward. More directors increase forward gain and narrow the main lobe. (The reflector, behind the driven element, is slightly longer and inductively reactive.)",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["yagi", "director", "parasitic", "gain"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11E",
+      "section_name": "Baluns and Ununs",
+      "question": "Why is a balun required when connecting coaxial cable to a dipole antenna?",
+      "options": [
+        "To transform the dipole's 73 Ω to 50 Ω",
+        "To prevent common-mode current flowing back down the outer surface of the coax braid, which would cause the feeder to radiate and distort the antenna pattern",
+        "To protect the antenna from static build-up on the coax",
+        "To prevent harmonics from the transmitter reaching the antenna"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A dipole is a balanced antenna; coax is unbalanced. Without a balun, RF current can flow along the outside of the coax braid as common-mode current, making the entire feedline a radiating element. This distorts the antenna's radiation pattern, causes RF in the shack, and changes the measured feed-point impedance. A 1:1 choke balun suppresses this common-mode current.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["balun", "common-mode", "dipole", "coax"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11D1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11D",
+      "section_name": "Velocity Factor and Electrical Length",
+      "question": "What does velocity factor describe for a transmission line?",
+      "options": [
+        "The ratio of the signal's propagation speed in the cable to the speed of light in free space",
+        "The ratio of transmitted power to reflected power at the antenna terminal",
+        "The rate at which cable attenuation increases with frequency",
+        "The percentage of the signal's bandwidth that the cable can carry without distortion"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Velocity factor (VF) is the ratio v/c, where v is the signal's propagation speed in the cable and c is the speed of light. A solid polyethylene dielectric gives VF ≈ 0.66, meaning the signal travels at 66% of c. This is crucial when cutting stubs, phasing harnesses, or λ/4 transformers — the physical length must be shorter than the free-space wavelength by the velocity factor.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["velocity-factor", "coax", "electrical-length"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11L1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11L",
+      "section_name": "End-Fed Half-Wave (EFHW)",
+      "question": "An end-fed half-wave (EFHW) antenna has a very high feed-point impedance. What turns ratio and matching transformer type are typically used to match this to 50 Ω coax?",
+      "options": [
+        "4:1 voltage balun",
+        "9:1 unun",
+        "49:1 unun (7:1 turns ratio)",
+        "100:1 auto-transformer"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The end of a half-wave antenna is a voltage antinode with an impedance of approximately 2,450–5,000 Ω. To match to 50 Ω, a 49:1 impedance ratio is needed (√49 = 7:1 turns ratio). An unun (unbalanced-to-unbalanced) is used because both the antenna feed and the coax are unbalanced. The transformer is typically wound on a ferrite toroid (e.g. FT-240-43).",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["efhw", "unun", "impedance-matching", "49-to-1"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11J1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "11J",
+      "section_name": "The 5/8 Wave Antenna",
+      "question": "A 5/8-wave vertical antenna requires a series inductor at its base. What is the purpose of this inductor?",
+      "options": [
+        "To increase the radiation resistance from ~35 Ω to ~50 Ω",
+        "To cancel the capacitive reactance present at the feed point of a 5/8-wave element, achieving a near-resistive 50–60 Ω match to coax",
+        "To act as a harmonic filter, preventing harmonics from the transmitter reaching the antenna",
+        "To load the antenna electrically shorter so it resonates at the correct frequency"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A 5/8-wave element is longer than λ/4, which means at its feed point the antenna presents a capacitive reactance (as well as a resistive radiation resistance of ~60 Ω). The series inductor cancels this reactance to give a near-resistive feed point impedance suitable for direct connection to 50 Ω coax. Without the inductor, the reactive mismatch would cause high VSWR.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["5-8-wave", "matching", "series-inductance", "vswr"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11F",
+      "section_name": "VSWR and Standing Waves",
+      "question": "A transmission line has a VSWR of 2.5:1. What is the magnitude of the reflection coefficient |Γ|, and what percentage of incident power is reflected?",
+      "options": [
+        "|Γ| = 0.25; 6.25% reflected",
+        "|Γ| = 0.43; approximately 18% reflected",
+        "|Γ| = 0.50; 25% reflected",
+        "|Γ| = 0.60; 36% reflected"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "|Γ| = (VSWR − 1) / (VSWR + 1) = (2.5 − 1) / (2.5 + 1) = 1.5 / 3.5 ≈ 0.429. Power reflected = |Γ|² = 0.429² ≈ 0.184 = ~18%. So about 82% of the incident power still reaches the load, but the reflected power travels back through the feeder, increasing effective feeder loss.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["vswr", "reflection-coefficient", "power-reflected", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11D",
+      "section_name": "Velocity Factor and Electrical Length",
+      "question": "What is the physical length of a quarter-wave matching section for 144 MHz using RG-58 coax with a velocity factor of 0.66?",
+      "options": [
+        "52 cm",
+        "43 cm",
+        "34 cm",
+        "26 cm"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "λ_free_space / 4 = 300 / (144 × 4) = 0.521 m = 52 cm in air. Multiplied by VF: 52 × 0.66 = 34.4 cm ≈ 34 cm. This is the physical cut length of the matching stub. Without accounting for VF, the stub would be ~50% too long and the matching would fail.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["velocity-factor", "quarter-wave", "matching", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11E",
+      "section_name": "Baluns and Ununs",
+      "question": "What is the key operational difference between a 1:1 choke balun and a 4:1 voltage balun?",
+      "options": [
+        "A 1:1 balun transforms impedance; a 4:1 balun only suppresses common-mode current",
+        "A 1:1 choke balun suppresses common-mode current without transforming impedance; a 4:1 voltage balun transforms impedance by a factor of four while also providing balance",
+        "A 4:1 balun is used only on HF frequencies; a 1:1 choke balun is used only on VHF and above",
+        "A 1:1 balun must be wound on ferrite; a 4:1 balun is wound on an air core"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A 1:1 choke balun (common-mode choke) presents high impedance to common-mode current, preventing the feeder from radiating. It does not transform impedance — a 50 Ω dipole stays at 50 Ω. A 4:1 voltage balun (e.g. Guanella) transforms 200 Ω balanced to 50 Ω unbalanced, as well as providing balance. A folded dipole (~280 Ω) needs a 4:1 balun to match to 75 Ω coax, whereas a simple dipole (~73 Ω) needs only a 1:1 choke.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["balun", "choke-balun", "voltage-balun", "impedance-transform"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11H",
+      "section_name": "The Yagi–Uda Antenna",
+      "question": "The driven element of a 3-element Yagi typically presents an impedance of about 25 Ω, not the 73 Ω of a free-space dipole. Why is it lower?",
+      "options": [
+        "The directors absorb power directly from the driven element, reducing its apparent radiation resistance",
+        "Mutual coupling between the driven element and the parasitic elements modifies the current distribution, reducing the driven element's radiation resistance",
+        "The metallic boom of the Yagi creates ground-plane effects that lower the impedance",
+        "The coaxial feedline capacitively loads the driven element, pulling the impedance down"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Mutual electromagnetic coupling between the driven element and the nearby parasitic elements alters the current distribution and effective radiation resistance of the driven element. The combined effect of the reflector and directors lowers the feed-point impedance from ~73 Ω to typically 20–30 Ω in a 3-element design. This is why matching networks (λ/4 sections, gamma matches, or folded dipoles) are often needed at the Yagi feed point.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["yagi", "driven-element", "mutual-coupling", "impedance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11N1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11N",
+      "section_name": "Loading Coils and Trap Antennas",
+      "question": "Why is centre loading more efficient than base loading for a shortened mobile HF whip antenna?",
+      "options": [
+        "Centre loading raises the antenna feed-point impedance closer to 50 Ω, reducing VSWR",
+        "A centre-loaded coil sees less RF current than a base-loaded coil, so I²R losses in the coil are lower",
+        "Centre loading preserves the current distribution along the antenna better, resulting in higher radiation resistance and greater effective aperture",
+        "Centre loading requires a smaller inductance value, so coil resistance is lower"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "In a base-loaded antenna, the loading coil is at the bottom where current is highest, and the current distribution in the antenna above the coil is triangular (falling to zero at the tip) — the average current and therefore the radiation resistance are low. Centre loading places the coil partway up the element, so both the lower and upper sections carry current, preserving more of the full-length dipole's current distribution. The result is higher radiation resistance and better efficiency for the same physical height.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["loading-coil", "centre-loading", "efficiency", "mobile-antenna"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11O1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11O",
+      "section_name": "ATU Networks: L, T, and Pi",
+      "question": "An ATU is inserted between a transceiver and an antenna via 20 m of coaxial feeder. The ATU is tuned for 1:1 VSWR at the transmitter. Which statement is true?",
+      "options": [
+        "The VSWR on the coax between the ATU and the antenna is now also 1:1",
+        "The ATU has reduced the SWR on the feeder section, reducing feeder losses",
+        "The transceiver sees a matched 50 Ω load, but the feeder between ATU and antenna still has its original elevated VSWR with correspondingly higher loss",
+        "The ATU eliminates all reflected power between itself and the antenna"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "An ATU only transforms the impedance presented to the transmitter — it matches the transmitter's output to 50 Ω. It does nothing to the impedance relationship between the feeder and antenna. The VSWR on the coax remains unchanged, and feeder losses due to the standing wave pattern continue. An ATU protects the PA and allows full power output, but for efficiency the feeder loss at high VSWR must be managed separately (by using low-loss open-wire feeder, improving antenna resonance, or shortening the feeder run).",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["atu", "vswr", "feeder-loss", "matching"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11K1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11K",
+      "section_name": "Folded Dipole",
+      "question": "A folded dipole has a feed-point impedance of approximately 280 Ω — about four times that of a simple half-wave dipole. Which explanation is correct?",
+      "options": [
+        "The folded dipole is twice as long as a simple dipole, so its impedance is squared",
+        "The two parallel conductors act like a 1:2 current transformer; the source drives both conductors but only sees the feed current through one, raising the impedance by a factor of (N_total/N_driven)² = 4",
+        "The folded structure creates a high-Q resonance that multiplies impedance by 4",
+        "The second (shorted) conductor acts as a reflector, halving the current at the feed point"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a folded dipole, both conductors carry current (they are connected at both ends). The total current flowing in the antenna structure is twice the current that flows in just the driven conductor. From a circuit standpoint, the feed point sees twice the voltage for the same radiated power as a simple dipole — or equivalently, the same voltage drives twice the radiating current, raising the apparent impedance by 2² = 4. This transformer action gives Z ≈ 4 × 73 = 292 Ω.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["folded-dipole", "impedance", "transformer-action"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11G",
+      "section_name": "Ground Plane and Counterpoise",
+      "question": "A quarter-wave vertical is mounted on a mast with four elevated radials at 45° below horizontal. What feed-point impedance would you expect, and why does this differ from the ~35 Ω over an ideal ground plane?",
+      "options": [
+        "~35 Ω — the radials create an equivalent of a perfect ground plane",
+        "~50 Ω — the 45° droop of the elevated radials tilts the effective ground plane, raising the radiation resistance from ~35 Ω toward ~50 Ω",
+        "~73 Ω — the elevated ground plane makes the vertical behave as a complete dipole in free space",
+        "~25 Ω — the limited number of radials reduces the effective radiation resistance"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Over a perfect ground plane, a quarter-wave vertical has radiation resistance ~35 Ω. When elevated radials are drooped at 45°, they modify the current distribution near the base and effectively tilt the impedance transformation, raising the feed-point resistance toward ~50 Ω. Four radials at 45° is a well-known practical arrangement that gives a near-direct match to 50 Ω coax without any additional matching network.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["ground-plane", "radials", "vertical", "impedance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11I1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11I",
+      "section_name": "Log-Periodic Dipole Array (LPDA)",
+      "question": "In a log-periodic dipole array (LPDA), what determines which elements are 'active' at any given operating frequency?",
+      "options": [
+        "The front-most (shortest) element is always the only active element regardless of frequency",
+        "Elements are switched in and out of circuit by a relay network controlled by the receiver's frequency readout",
+        "The subset of elements whose natural resonant frequency is nearest to the operating frequency forms the active region; shorter forward elements act as directors, longer rearward elements act as reflectors",
+        "All elements are active simultaneously; a phase-shifting network behind the boom selects the operating frequency"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The LPDA is self-phasing by geometry. At any given frequency, the elements near that frequency's resonant length carry most of the current — this is the active region. Elements in front (shorter, higher resonant frequency) act as directors; elements behind (longer, lower resonant frequency) act as reflectors. As frequency changes, this active region shifts along the boom — longer elements become active at lower frequencies, shorter elements at higher frequencies.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["log-periodic", "lpda", "active-region", "bandwidth"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11C",
+      "section_name": "Open-Wire Feeder",
+      "question": "Why is open-wire (ladder line) feeder preferred over coaxial cable when feeding a multiband antenna at high VSWR through an ATU?",
+      "options": [
+        "Open-wire feeder automatically matches the impedance of most multiband dipoles without requiring an ATU",
+        "Open-wire feeder loss is very low even at high VSWR because the fields are concentrated between the conductors, keeping skin-effect and dielectric losses minimal even when high standing currents are present",
+        "Coaxial cable cannot be connected to an ATU without a matching transformer",
+        "Open-wire feeder is immune to common-mode current and therefore requires no balun"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The key property of open-wire feeder is low loss per unit length at HF — typically 10× lower than equivalent coaxial cable. With high VSWR the standing-wave currents are elevated above the matched case, increasing I²R losses in any cable; but because open-wire starts with such low matched-load loss, even with VSWR 10:1 the total loss may be only 1–2 dB where coax would be 8–10 dB. Open-wire does still require a balun at the ATU input.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["open-wire", "ladder-line", "atu", "feeder-loss", "vswr"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11M1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11M",
+      "section_name": "Slot Antenna",
+      "question": "By Babinet's principle, what is the approximate impedance of a resonant slot antenna cut in an infinite conducting plane, given that the complementary dipole has an impedance of ~73 Ω?",
+      "options": [
+        "73 Ω — the same as its complementary dipole",
+        "~486 Ω — derived from Z_slot = η² / (4 × Z_dipole) = 377² / (4 × 73)",
+        "377 Ω — the same as free space",
+        "50 Ω — set by the slot dimensions to match a coaxial feed"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Babinet's principle states that the slot is the electromagnetic complement of the dipole, with E and H fields swapped. The impedance relationship is Z_slot = η² / (4 × Z_dipole), where η = 377 Ω. This gives 377² / (4 × 73) = 142,129 / 292 ≈ 487 Ω. In practice, a slot cut in a finite conducting panel presents a lower impedance, but ~486 Ω is the theoretical value for an infinite ground plane.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["slot-antenna", "babinet", "impedance", "complementary"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11B",
+      "section_name": "Coaxial Feeder",
+      "question": "RG-58 coaxial cable has a loss of approximately 2 dB per 10 m at 144 MHz. A station uses a 30 m run of RG-58 to feed a 2 m antenna. If the transmitter outputs 50 W into a matched load, approximately how much power reaches the antenna?",
+      "options": [
+        "50 W",
+        "25 W",
+        "12.5 W",
+        "6.25 W"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Total cable loss = (30 m / 10 m) × 2 dB = 6 dB. A 6 dB power loss corresponds to a factor of 10^(6/10) = 3.98 ≈ 4. Power at antenna = 50 / 4 = 12.5 W — 37.5 W is dissipated as heat in the cable. This illustrates why feeder choice is critical at VHF: using LMR-400 (loss ≈ 0.4 dB/10 m) would reduce the loss to 1.2 dB, delivering about 38 W.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["coax", "feeder-loss", "calculation", "vhf"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11A",
+      "section_name": "The Antenna as an Impedance Interface",
+      "question": "A short antenna for 80 m has a radiation resistance of 4 Ω and a loading coil with a loss resistance of 12 Ω. What is the antenna's efficiency?",
+      "options": [
+        "25% — R_rad / (R_rad + R_loss) = 4 / 16",
+        "33% — R_rad / R_loss = 4 / 12",
+        "75% — R_loss / (R_rad + R_loss) = 12 / 16",
+        "50% — equal weighting between radiation and loss"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Antenna efficiency = R_rad / (R_rad + R_loss) = 4 / (4 + 12) = 4/16 = 0.25 = 25%. Three-quarters of the transmitter power is dissipated as heat in the loading coil; only one quarter is radiated. This highlights the importance of high-Q coils for electrically short antennas — if the coil Q could be tripled (R_loss reduced to 4 Ω), efficiency would rise to 4/8 = 50%.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["radiation-resistance", "efficiency", "loading-coil", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11L1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "11L",
+      "section_name": "End-Fed Half-Wave (EFHW)",
+      "question": "An EFHW antenna is cut as a half-wave for the 40 m band (7 MHz). On which other amateur bands does it also operate as a resonant antenna?",
+      "options": [
+        "80 m, 40 m, and 30 m only — adjacent bands on the HF spectrum",
+        "20 m (14 MHz), 15 m (21 MHz), and 10 m (28 MHz) — harmonically related bands at ×2, ×3, and ×4 of 7 MHz",
+        "15 m and 10 m only — the third and fourth harmonics, the second being unusable",
+        "All HF amateur bands from 3.5 to 28 MHz without retuning"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A half-wave antenna resonates at its fundamental frequency and at all harmonics: 7 MHz (40 m, λ/2), 14 MHz (20 m, 1λ), 21 MHz (15 m, 3λ/2), 28 MHz (10 m, 2λ). On each of these bands the antenna is an integer number of half-waves long and presents a high impedance at the end — the 49:1 unun provides an acceptable match on all four bands. The 80 m band at 3.5 MHz (λ/4 only) is not resonant.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["efhw", "multiband", "harmonics", "resonance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11F",
+      "section_name": "VSWR and Standing Waves",
+      "question": "A feeder has a VSWR of 4:1 (|Γ| = 0.6). What percentage of incident power is reflected, and what is the practical consequence for feeder loss compared to a matched feeder?",
+      "options": [
+        "36% reflected; both forward and reflected waves circulate in the feeder, increasing standing currents and I²R losses significantly above the matched case",
+        "60% reflected; feeder loss approximately doubles",
+        "36% reflected; no additional feeder loss because the transmitter compensates via ALC",
+        "16% reflected; feeder loss increases by exactly 16%"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "P_reflected = |Γ|² = 0.6² = 0.36 = 36%. Sixty-four percent of power reaches the load, but the reflected 36% travels back through the feeder, experiencing cable loss a second time. More critically, the standing wave means that at voltage maxima the current is higher than in a matched feeder, increasing I²R loss throughout the cable. The effective loss of a real feeder at high VSWR can be several times the matched loss, particularly at VHF where cable loss is already significant.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["vswr", "feeder-loss", "reflected-power", "standing-wave"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11D",
+      "section_name": "Velocity Factor and Electrical Length",
+      "question": "A quarter-wave coaxial transformer is needed to match a 25 Ω antenna to a 50 Ω feeder. What characteristic impedance should the matching section have?",
+      "options": [
+        "37.5 Ω — the arithmetic average of 25 and 50",
+        "35.4 Ω — the geometric mean √(25 × 50)",
+        "50 Ω — the same as the main feeder",
+        "25 Ω — the same as the antenna impedance"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For a quarter-wave transformer, Z₀_match = √(Z_source × Z_load) = √(25 × 50) = √1250 ≈ 35.4 Ω. This is the geometric mean, not the arithmetic mean. No standard coax is exactly 35.4 Ω, but two λ/4 sections of 75 Ω in parallel give 37.5 Ω (close), or the Yagi can be re-designed with a folded dipole element. The physical length of the section must account for the cable's velocity factor.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["quarter-wave-transformer", "impedance-matching", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11H1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11H",
+      "section_name": "The Yagi–Uda Antenna",
+      "question": "A 5-element Yagi achieves 9 dBd gain. An operator adds five more directors, hoping to reach 18 dBd. Why is this not achievable?",
+      "options": [
+        "The mechanical structure cannot support more than 5 elements without resonating at audio frequencies",
+        "Antenna gain increases logarithmically (dB scale); each successive director adds diminishing incremental gain as the effective aperture grows and mutual coupling limits further improvement — five more directors might add only 3–4 dBd, not 9",
+        "Adding more than 5 directors causes the radiation pattern to split into multiple lobes, reducing forward gain",
+        "The feeder cannot supply enough drive current to a 10-element array"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Yagi gain in dBd grows roughly as 10 × log(N) with number of elements (heavily simplified), meaning each doubling of elements adds ~3 dBd. Going from 5 to 10 elements might add 3–4 dBd, reaching perhaps 12–13 dBd. To reach 18 dBd (×63 linear gain over a dipole) would require an impractically long boom. The law of diminishing returns applies to all parasitic arrays: the first few elements give the biggest gain increment per element.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["yagi", "gain", "diminishing-returns", "directors"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11N1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11N",
+      "section_name": "Loading Coils and Trap Antennas",
+      "question": "A mobile HF whip for 80 m has a radiation resistance of 2 Ω and a base-loading coil with a loss resistance of 8 Ω. (a) What is the antenna efficiency? (b) If the coil Q is doubled — halving its loss resistance to 4 Ω — what does efficiency become?",
+      "options": [
+        "(a) 20%; (b) 33%",
+        "(a) 25%; (b) 50%",
+        "(a) 33%; (b) 50%",
+        "(a) 20%; (b) 40%"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "(a) Efficiency = R_rad / (R_rad + R_loss) = 2 / (2 + 8) = 2/10 = 20%. (b) With R_loss halved to 4 Ω: 2 / (2 + 4) = 2/6 = 33%. Doubling Q improves efficiency from 20% to 33% — significant, but the antenna is still only one-third efficient. This demonstrates how critical high-Q coils are: even doubling Q leaves two-thirds of the power as heat. For acceptable performance, R_rad should be at least comparable to R_loss.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["loading-coil", "efficiency", "coil-q", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11O1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11O",
+      "section_name": "ATU Networks: L, T, and Pi",
+      "question": "Why is a Pi-network preferred over a T-network for the output of a high-power linear amplifier?",
+      "options": [
+        "A Pi-network achieves higher Q, providing better selectivity on the fundamental frequency",
+        "A Pi-network is inherently low-pass, attenuating harmonics at the amplifier output; a high-pass T-network can pass harmonics and may require a separate low-pass filter",
+        "A Pi-network has lower insertion loss at HF than a T-network when both are set to the same Q",
+        "A Pi-network can be tuned with a single variable capacitor, simplifying operation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The topology determines the filter characteristic. A Pi-network (shunt cap — series inductor — shunt cap) is a low-pass filter: it attenuates frequencies above the fundamental, providing built-in harmonic suppression. A high-pass T-network (series cap — shunt inductor — series cap) passes harmonics and may actually enhance them if the Q is low. For an amplifier whose PA stage generates significant harmonics, a Pi output network is therefore preferred — harmonic filtering is inherent, not an afterthought.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["atu", "pi-network", "t-network", "harmonic-suppression", "amplifier"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11E",
+      "section_name": "Baluns and Ununs",
+      "question": "An EFHW antenna is installed using a 49:1 unun but no additional common-mode choke on the coax. What problem is likely, and what is the correct cure?",
+      "options": [
+        "The unun will fail at high VSWR; replace with a 64:1 unun rated for higher power",
+        "Common-mode RF current will flow back down the outer surface of the coax braid, causing the feeder to radiate and bringing RF into the shack; cure: add a 1:1 choke balun (common-mode choke) on the coax immediately at the unun output",
+        "The 49:1 impedance ratio is too high; use a 25:1 unun and accept a slight VSWR mismatch",
+        "The EFHW will not be resonant on all harmonic bands without a series capacitor at the unun"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A 49:1 unun performs the impedance transformation but provides no common-mode suppression — it is unbalanced-to-unbalanced. RF current will flow on the outer surface of the coax braid because the braid is part of the antenna system without choking. The cure is a separate 1:1 common-mode choke (e.g. 8–10 turns of coax on an FT-240-31 toroid) placed at the unun output. This suppresses common-mode current without affecting the differential (signal) current that properly flows inside the coax.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["efhw", "common-mode", "unun", "choke-balun"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11K1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11K",
+      "section_name": "Folded Dipole",
+      "question": "A Yagi uses a folded dipole driven element with an unloaded impedance of ~280 Ω. After coupling to the parasitic elements, the effective driven element impedance drops to approximately 150 Ω. What is the most practical way to match this to 50 Ω coax?",
+      "options": [
+        "A 4:1 balun transforms 150 Ω to ~37.5 Ω — giving VSWR ~1.33:1 at 50 Ω; acceptable in practice with small residual mismatch",
+        "A 3:1 balun must be used for exact matching to 50 Ω",
+        "A λ/4 section of 50 Ω coax acting as an impedance transformer",
+        "A gamma match to avoid the need for any balun"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "A 4:1 balun gives Z_in = 150 / 4 = 37.5 Ω. The VSWR at 50 Ω is 50 / 37.5 = 1.33:1, reflecting only (0.143)² ≈ 2% of power — negligible. A 3:1 balun (Z_in = 50 Ω exactly) would be ideal but is not a standard product. A λ/4 section of coax with Z₀ = √(150 × 50) ≈ 86 Ω is theoretically better but requires non-standard cable and still needs a balun. The 4:1 balun solution is standard practice in Yagi construction.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["folded-dipole", "yagi", "matching", "balun", "vswr"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "11A1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "11A",
+      "section_name": "The Antenna as an Impedance Interface",
+      "question": "A station has 30% power loss in their coaxial feeder at a high VSWR. An advisor suggests fitting a better ATU to improve system efficiency. Is this advice correct, and what would actually help?",
+      "options": [
+        "Yes — a lower-loss ATU with higher-Q reactive components will reduce feeder heating",
+        "No — the ATU matches the transmitter output but does not affect the VSWR on the feeder section; to reduce feeder loss, the feeder must be improved (lower-loss cable, shorter run, or the antenna resonance improved to reduce VSWR at source)",
+        "Yes — tuning the ATU reduces reflected power, which directly reduces feeder standing-wave losses",
+        "No — feeder loss is a fixed property of the cable type and cannot be reduced by any means other than replacement"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The ATU terminates the feeder in 50 Ω from the transmitter's perspective — it presents a matched load to the PA. But the ATU does not alter the impedance mismatch between the feeder and the antenna; the VSWR on that section of coax is unchanged, and so are its losses. To genuinely improve efficiency: use lower-loss cable (e.g. LMR-400 instead of RG-58), shorten the feeder run, use open-wire feeder (inherently lower loss at HF), or adjust the antenna to reduce the fundamental mismatch.",
+      "source_content": "section-11-feeders-antennas.md",
+      "tags": ["atu", "feeder-loss", "vswr", "efficiency", "misconception"],
+      "active": true
+    }
+  ]
+}
