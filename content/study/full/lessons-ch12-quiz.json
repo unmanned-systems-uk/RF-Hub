@@ -1,0 +1,488 @@
+{
+  "meta": {
+    "chapter": 12,
+    "title": "Propagation",
+    "level": "full",
+    "syllabus_refs": ["12A1", "12B1", "12C1", "12D1", "12E1", "12F1", "12G1", "12H1", "12I1", "12J1", "12K1"],
+    "source_content": "section-12-propagation.md",
+    "question_count": 25,
+    "generated": "2026-09-15"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "12A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12A",
+      "section_name": "Ionospheric Layers",
+      "question": "Which ionospheric layer is primarily responsible for absorbing HF signals at low frequencies (below ~10 MHz) during daylight hours?",
+      "options": [
+        "F2 layer, because it is the highest and most energetic layer",
+        "E layer, because it reflects rather than absorbs at those frequencies",
+        "D layer, which exists only in daylight and absorbs HF signals with absorption proportional to 1/f²",
+        "F1 layer, which merges with the D layer at noon"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The D layer (60–90 km altitude) is created by solar UV (Lyman-α) and exists only during daylight. It does not reflect HF but absorbs it, with absorption ∝ 1/f² — so lower frequencies are absorbed more strongly. This is why 80 m and 40 m are noisy or closed for DX during the day: signals attempting to reach the F2 layer are absorbed before they arrive. The D layer disappears quickly after sunset.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["ionosphere", "d-layer", "absorption", "hf"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12B",
+      "section_name": "Solar Activity and Solar Flux Index",
+      "question": "What does the Solar Flux Index (SFI / F10.7) measure, and why is it useful to amateur radio operators?",
+      "options": [
+        "The number of visible sunspots; used to predict geomagnetic storm risk",
+        "Solar radio flux at 10.7 cm (2800 MHz), measured daily; it correlates with F2-layer ionisation and therefore with HF propagation conditions",
+        "The total ultraviolet output of the sun across all wavelengths",
+        "The solar wind speed near Earth; used to predict aurora onset time"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The SFI is measured daily at Penticton, Canada, at 10.7 cm wavelength (2800 MHz). It correlates closely with the solar EUV that ionises the F2 layer. High SFI → high F2 electron density → high foF2 → high MUF → more HF bands open for DX. It is used directly in propagation prediction software (VOACAP, WSPR-based tools, etc.) and is displayed as a headline number in most logging software.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["sfi", "solar-flux-index", "f10.7", "propagation-prediction"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12E1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12E",
+      "section_name": "Skip Distance and the Dead Zone",
+      "question": "What is the 'dead zone' (or skip zone) in HF propagation?",
+      "options": [
+        "The frequency range between the LUF and MUF where propagation is unreliable",
+        "The annular region around a transmitter where neither ground wave nor sky wave delivers a usable signal",
+        "The time each day when ionospheric propagation is absent due to solar minimum",
+        "The geographic area directly below the ionospheric reflection point where signals are weakest"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The dead zone is the gap between two propagation modes: the ground wave (which attenuates within a few hundred km at HF) and the sky wave (which returns to Earth no closer than the skip distance). In between lies the dead zone — a station in this region hears nothing despite the transmitter radiating at full power. Its extent depends on frequency and ionospheric conditions; on 14 MHz it can be several hundred to over 1000 km wide.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["dead-zone", "skip-zone", "ground-wave", "sky-wave"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12H1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12H",
+      "section_name": "Sporadic-E",
+      "question": "Which frequency range does sporadic-E (Es) most commonly support for amateur DX contacts, and what is a typical single-hop path length?",
+      "options": [
+        "HF bands (3.5–14 MHz); path lengths of 200–500 km",
+        "50 MHz (6 m) and occasionally 144 MHz (2 m); typical single-hop 1000–2200 km",
+        "VHF/UHF above 300 MHz; path lengths of 500–1000 km",
+        "MF (1.8 MHz); worldwide paths when active"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Sporadic-E patches in the E layer (90–130 km) are dense enough to reflect frequencies well above the normal E-layer limit. At 50 MHz (6 m), Es is the dominant long-distance mode, with paths of 1000–2200 km. At 144 MHz (2 m), Es openings occur but are rarer. At HF, Es also occurs and can produce strong signals on 21 or 28 MHz even in solar minimum, but over shorter, less useful paths. Es peaks in summer (May–August in the Northern Hemisphere).",
+      "source_content": "section-12-propagation.md",
+      "tags": ["sporadic-e", "50mhz", "144mhz", "vhf-propagation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12C",
+      "section_name": "Critical Frequency and the Ionosonde",
+      "question": "What is the critical frequency (foF2), and what happens to a radio wave transmitted at a frequency just above it?",
+      "options": [
+        "The lowest frequency that the F2 layer reflects; waves below it are absorbed",
+        "The highest frequency at which a vertically-incident wave is reflected by the F2 layer; a wave just above foF2 passes through the ionosphere and is lost to space",
+        "The frequency at which D-layer absorption is maximum",
+        "The frequency of the F2 layer's own radio emission, used to measure its height"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "foF2 is the critical frequency — the highest frequency that a vertically-directed wave can be reflected by the F2 layer. Below it, any wave going straight up is reflected. Above it, the wave's phase velocity exceeds the plasma frequency and it passes through without reflection. For oblique paths, the MUF is higher than foF2 (by the secant factor), allowing useful propagation on frequencies well above foF2.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["critical-frequency", "fof2", "ionosphere", "vertical-incidence"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12I1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12I",
+      "section_name": "Auroral Propagation",
+      "question": "What is the characteristic distortion of amateur signals received via auroral propagation?",
+      "options": [
+        "Selective fading causing parts of the audio spectrum to sound attenuated — similar to SSB on HF",
+        "A distinct buzz or rasping tone caused by rapid, irregular amplitude and frequency modulation from the moving ionised auroral curtain",
+        "A pure, stable tone because aurora reflects like a smooth mirror",
+        "Complete silence — aurora absorbs VHF signals rather than reflecting them"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The auroral ionisation is constantly moving and highly irregular. Signals reflected from aurora undergo rapid, random modulation in amplitude and phase, producing a characteristic harsh buzzing or rasping sound quite unlike a normal SSB or FM signal. CW is the most practical mode for aurora contacts because the tone is identifiable even through the distortion. SSB is badly degraded; FM is completely unusable.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["aurora", "auroral-propagation", "distortion", "cw"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12K1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "12K",
+      "section_name": "Earth-Moon-Earth (EME)",
+      "question": "Why is the digital mode JT65B preferred over SSB for EME (moonbounce) contacts at 144 MHz?",
+      "options": [
+        "JT65B occupies less bandwidth than SSB, reducing regulatory licence restrictions",
+        "The ~250 dB round-trip path loss means received signals are far below SSB intelligibility threshold; JT65B operates approximately 28 dB below the minimum SSB threshold, enabling contacts that are completely inaudible",
+        "The moon introduces Doppler shift that JT65B corrects automatically but SSB cannot",
+        "JT65B is required by IARU for all EME contacts above 50 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Path loss for a 144 MHz EME contact is approximately 250–260 dB — enormous. With 100 W and a modest Yagi, the received signal might be −160 dBm or less. SSB requires roughly −120 dBm for intelligibility; the EME signal is therefore ~40 dB below that threshold. JT65B's forward error correction and integration over a 47-second symbol period allows decoding at around −148 dBm — about 28 dB more sensitive than SSB — making contacts possible with stations that previously needed large antenna arrays.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["eme", "moonbounce", "jt65b", "path-loss", "digital-modes"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12A",
+      "section_name": "Ionospheric Layers",
+      "question": "Why does the F2 layer persist through the night while the D and F1 layers disappear after sunset?",
+      "options": [
+        "The F2 layer is maintained by the Earth's own radiation belt, independent of solar input",
+        "At F2 altitudes (~250–400 km), air density is very low, so the recombination rate is slow — the free electrons created during the day persist for hours; D and F1 at lower altitudes have denser air and much faster recombination",
+        "The F2 layer is heated from below by the E layer, keeping it active overnight",
+        "Cosmic radiation at night replaces solar UV, maintaining F2 ionisation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Ionospheric recombination (the process by which free electrons and ions re-combine into neutral molecules) is faster at lower altitudes where the air is denser and collision rates are higher. The D layer (60–90 km) recombines within minutes of sunset. The F1 layer recombines within an hour. The F2 layer (210–400 km), where air density is extremely low, recombines very slowly — free electrons from daytime ionisation persist for hours. This is why the F2 layer continues to support HF propagation overnight, and why 40 m and 80 m DX is possible after dark.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["f2-layer", "recombination", "night-propagation", "ionosphere"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12B",
+      "section_name": "Solar Activity and Solar Flux Index",
+      "question": "The SFI is reported as 165 on a given day. What HF propagation conditions would you expect for a UK station?",
+      "options": [
+        "Only 40 m and 80 m will be open; higher bands will be dead due to high solar absorption",
+        "All HF bands are completely open day and night due to maximum ionisation",
+        "Good to excellent conditions on 10 m (28 MHz) and 12 m (24 MHz) for DX; 15 m reliable worldwide; 17–20 m excellent — this represents high solar activity conditions near solar maximum",
+        "SFI 165 indicates a geomagnetic storm is underway; all HF is degraded"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "SFI 165 is a high value, indicating strong F2-layer ionisation. At these levels, foF2 is elevated, MUF is high, and the upper HF bands (10 m, 12 m, 15 m) support DX propagation. 10 m (28 MHz) will support trans-equatorial and global paths, often with very strong signal levels. SFI does not indicate a geomagnetic storm — that is measured by the Kp or A-index. High SFI can accompany quiet geomagnetic conditions.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["sfi", "solar-maximum", "band-conditions", "10m", "propagation-prediction"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12C",
+      "section_name": "Critical Frequency and the Ionosonde",
+      "question": "How does an ionosonde measure the critical frequency foF2, and what does an ionogram show?",
+      "options": [
+        "It transmits a single frequency and measures the Doppler shift; foF2 is derived from the shift rate",
+        "It sweeps across the HF range (typically 1–20 MHz), transmitting short pulses and measuring echo time; the ionogram plots virtual height vs frequency; foF2 is read as the highest frequency that produces a measurable F2 echo",
+        "It passively receives solar radio noise and derives foF2 from the absorption profile",
+        "It measures the total electron content (TEC) using GPS satellite signals and calculates foF2 from the TEC value"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An ionosonde is essentially a swept-frequency radar. It transmits short pulses at successively higher frequencies across 1–20 MHz and records the two-way travel time to any reflecting layer. The resulting ionogram shows virtual height vs frequency for each layer. When the frequency approaches foF2 from below, the echo height climbs steeply (the wave is near the plasma frequency and travels slowly at the top of its arc). The highest frequency still producing a measurable echo is foF2. Above it, no echo returns.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["ionosonde", "ionogram", "fof2", "measurement"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12D",
+      "section_name": "MUF and LUF",
+      "question": "The critical frequency foF2 is 10 MHz. A path has a secant factor of 3.0. What is the MUF for this path?",
+      "options": [
+        "10 MHz",
+        "13 MHz",
+        "30 MHz",
+        "100 MHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "MUF = fc × sec(θ) = 10 × 3.0 = 30 MHz. The secant factor (here given as 3.0) accounts for the oblique angle at which the wave strikes the ionosphere. A factor of 3.0 is typical for paths of approximately 1500–2000 km at F2 layer heights of 300 km. The 10 m band (28 MHz) would be open on this path, as 28 MHz < 30 MHz = MUF.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["muf", "secant-factor", "calculation", "hf-bands"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12D",
+      "section_name": "MUF and LUF",
+      "question": "What determines the Lowest Usable Frequency (LUF), and why is the LUF higher by day than at night?",
+      "options": [
+        "The LUF is set by the minimum frequency the F2 layer can reflect; it rises at night as the F2 layer weakens",
+        "The LUF is set by D-layer absorption (∝ 1/f²); by day the D layer is present and strongly absorbs lower frequencies; at night the D layer disappears, so absorption falls and the LUF drops to 2–5 MHz",
+        "The LUF is fixed at 7 MHz for all paths regardless of time of day",
+        "The LUF is determined by receiver sensitivity — it is a station property, not a propagation property"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The LUF is fundamentally a D-layer absorption problem. D-layer absorption is proportional to 1/f², so lower frequencies are absorbed more. By day, with the D layer fully formed, frequencies below about 8–12 MHz on long paths may be absorbed before reaching the F layer. At night, the D layer recombines quickly and disappears — absorption falls to near zero, and the LUF drops to 2–5 MHz (limited mainly by receiver noise and the ambient noise environment). The LUF window also narrows dramatically during solar flares (SID), which enhance D-layer ionisation.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["luf", "d-layer", "absorption", "day-night"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12D",
+      "section_name": "MUF and LUF",
+      "question": "The MUF for a path is calculated as 28 MHz. What is the optimal working frequency (OWF), and why is it used rather than the MUF itself?",
+      "options": [
+        "OWF = 28 MHz; you should always operate at the MUF for maximum signal strength",
+        "OWF = 0.85 × 28 = 23.8 MHz; the 15% margin accounts for day-to-day variation in foF2 (±20–30% of monthly median), preventing sudden path closure if the ionosphere weakens slightly",
+        "OWF = 28 − 3.5 = 24.5 MHz; the 3.5 MHz offset is a fixed guard band",
+        "OWF = 0.5 × 28 = 14 MHz; the OWF is always the mid-point between LUF and MUF"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "OWF = 0.85 × MUF = 0.85 × 28 = 23.8 MHz. The MUF is the maximum frequency for the monthly median foF2. The actual foF2 varies day-to-day by ±20–30%, meaning the real MUF on any given day may be below the predicted value. Operating at 85% of the predicted MUF gives a safety margin: if foF2 drops by 15%, the path is still open. Closer to MUF, a small ionospheric fluctuation causes sudden signal loss.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["owf", "muf", "operating-frequency", "propagation-margin"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12F",
+      "section_name": "Fading: Multipath and Selective",
+      "question": "What causes 'selective fading' on an SSB signal, and what is its audible effect?",
+      "options": [
+        "The AGC in the receiver selectively attenuates louder audio components; heard as pumping or breathing",
+        "Different frequency components within the SSB signal's bandwidth travel on paths of slightly different electrical lengths, causing them to fade at different rates; the result is 'Donald Duck' distortion where some parts of the voice spectrum are present and others are not",
+        "The FM discriminator in the receiver misinterprets the SSB signal; the effect is eliminated by using a narrower IF filter",
+        "Selective fading occurs only on digital modes; SSB is immune because it occupies a continuous spectrum"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An SSB signal spans approximately 2.4 kHz. Different frequency components within this band arrive via paths of slightly different electrical lengths (because the ionosphere is dispersive — different frequencies travel at slightly different phase velocities). These components fade at different rates. At any given moment, 300 Hz audio may be strong while 2 kHz audio fades, giving the characteristic garbled, 'watery' or 'Donald Duck' sound. CW (very narrow bandwidth) suffers much less because all its energy is at a single frequency. FT8 uses error correction to recover from fading that would destroy SSB intelligibility.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["selective-fading", "ssb", "multipath", "qsb"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12G",
+      "section_name": "Tropospheric Propagation",
+      "question": "What meteorological conditions most favour tropospheric ducting, and what is a practical amateur indicator that ducting may be occurring?",
+      "options": [
+        "Low pressure systems (depressions) with heavy rain; FM interference from nearby stations is the indicator",
+        "High pressure (anticyclonic) weather, temperature inversions — especially over sea or coastal boundaries in summer; co-channel FM broadcast interference from stations 500+ km away is a reliable indicator",
+        "Cold fronts and thunderstorm activity in summer; TV picture break-up from nearby stations is the indicator",
+        "Ionospheric storm activity at F-layer heights; the indicator is simultaneous HF band opening"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Tropospheric ducting requires a temperature inversion — warm air above cool air — which changes the refractive index gradient and traps VHF/UHF signals in a horizontal waveguide. Anticyclones (high pressure) produce stable, sinking air with inversions, often over sea. Coastal boundaries (cooler sea surface under warmer air) are especially prone. When ducting occurs at 88–108 MHz, FM broadcast stations 500–2000 km away can be received on car radios — co-channel interference from distant stations is the clearest everyday indicator for the amateur to check the DX cluster for VHF openings.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["tropospheric-ducting", "temperature-inversion", "anticyclone", "vhf"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12H",
+      "section_name": "Sporadic-E",
+      "question": "What is double-hop sporadic-E, and why is it particularly significant for 50 MHz (6 m) operation?",
+      "options": [
+        "Double-hop Es uses the F2 layer for a second reflection after the first Es hop, doubling range to ~5000 km",
+        "Two sporadic-E patches in sequence provide two reflections; the combined path reaches ~3000–4000 km, making transatlantic (EU to North America) contacts possible on 50 MHz despite the single-hop limit of ~2200 km",
+        "Double-hop Es is the simultaneous use of both E and F2 layers, occurring only in spring",
+        "It describes Es occurring on two separate days, producing consistent openings on the same path"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A single Es hop covers approximately 1000–2200 km. The EU–NA distance is ~5500–6000 km — far beyond single-hop Es range. However, when two sporadic-E clouds are positioned in sequence (one over the mid-Atlantic or near the Azores, another over Europe or North America), a two-hop path of ~3000–4000 km is possible. This is why transatlantic 50 MHz openings occur occasionally — they require the rare alignment of two Es patches with compatible geometry.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["sporadic-e", "double-hop", "50mhz", "transatlantic"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12J",
+      "section_name": "Meteor Scatter",
+      "question": "Why is MSK144 the preferred mode for 144 MHz meteor scatter contacts, rather than SSB or even earlier digital modes like FSK441?",
+      "options": [
+        "MSK144 uses a narrower bandwidth, causing less interference to adjacent users",
+        "Underdense meteor trails at 144 MHz last only milliseconds; MSK144's ultra-fast modulation (high symbol rate within a 15-second Tx/Rx period) captures brief trail reflections that slower modes — including SSB and FSK441 — would miss entirely",
+        "MSK144 incorporates ALE (automatic link establishment) so stations can find each other without prior coordination",
+        "MSK144 requires less transmitter power than SSB because it uses spread-spectrum techniques"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At 144 MHz, most meteor trail reflections last only a few milliseconds (underdense trails from small meteors). FSK441 has a symbol rate sufficient to capture trails lasting ~10 ms; SSB requires seconds of reflection. MSK144 uses minimum-shift keying at a much higher symbol rate, fitting a complete exchange into 15-second periods while capturing reflections as brief as 1–2 ms. It replaced FSK441 as the standard on 2 m precisely because it exploits the brief, frequent underdense trail reflections that dominate at 144 MHz.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["meteor-scatter", "msk144", "144mhz", "digital-modes"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12I1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "12I",
+      "section_name": "Auroral Propagation",
+      "question": "What Kp index level is typically needed before aurora-assisted 144 MHz propagation becomes possible for stations in southern England (~51°N)?",
+      "options": [
+        "Kp ≥ 2 — any mild geomagnetic disturbance enables aurora at UK latitudes",
+        "Kp ≥ 4 — aurora becomes visible from northern Scotland at this level",
+        "Kp ≥ 7 — the auroral oval expands sufficiently to reach southern UK latitudes only in quite strong geomagnetic storms",
+        "Kp ≥ 9 — only the most extreme storms reach southern England"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The auroral oval (where aurora regularly occurs) lies at geomagnetic latitudes around 65–75°N. Under quiet conditions (Kp ≤ 3), it stays far north, above Scandinavia. As Kp rises, the oval expands equatorward: Kp 4–5 reaches northern Scotland; Kp 6 reaches northern England; Kp ≥ 7 is needed before the aurora is reliably positioned to produce usable 144 MHz reflections for stations in southern England at ~51°N. Kp ≥ 8 produces strong aurora visible from France and Germany.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["aurora", "kp-index", "144mhz", "geomagnetic"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12D",
+      "section_name": "MUF and LUF",
+      "question": "The critical frequency foF2 is 8 MHz. A path has a total length of 3000 km, with F2 reflection at 300 km altitude. Calculate the secant factor and MUF for this path.",
+      "options": [
+        "sec ≈ 2.5; MUF ≈ 20 MHz",
+        "sec ≈ 3.5; MUF ≈ 28 MHz",
+        "sec ≈ 5.1; MUF ≈ 41 MHz",
+        "sec ≈ 6.7; MUF ≈ 54 MHz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "sec(θ) = √(1 + (d/2h)²) = √(1 + (3000 / (2 × 300))²) = √(1 + (3000/600)²) = √(1 + 5²) = √(1 + 25) = √26 ≈ 5.1. MUF = fc × sec(θ) = 8 × 5.1 ≈ 41 MHz. This long path (3000 km, roughly UK to near the Sahara) has a high secant factor — the wave strikes the ionosphere at a very oblique angle, allowing reflection well above foF2. The OWF for this path is 0.85 × 41 ≈ 35 MHz.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["muf", "secant-factor", "calculation", "path-geometry"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12D",
+      "section_name": "MUF and LUF",
+      "question": "Why is it unreliable to operate a long HF path at exactly the predicted MUF, and what determines the optimal working frequency?",
+      "options": [
+        "Operating at MUF causes excessive D-layer absorption; the OWF is set to avoid this",
+        "The predicted MUF is based on monthly median foF2; day-to-day ionospheric variation means the real MUF on any given day can be 20–30% below the median, so operating at MUF risks abrupt signal loss when the ionosphere falls below expectation; OWF = 0.85 × MUF provides a 15% margin",
+        "At exactly the MUF, the reflection angle is vertical so signals cannot reach a distant station",
+        "MUF is a legal limit; operating above 85% of MUF requires a special NoV from Ofcom"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The predicted MUF is typically derived from median foF2 values — the middle of the distribution of observed values over a month. The actual foF2 on any single day may be 20–30% below or above this median. When the real foF2 falls 15% below the median, a station operating at 100% of predicted MUF is now above the real MUF — the wave passes through the ionosphere and the path closes instantly. Operating at 0.85 × MUF (the OWF) means the path stays open unless foF2 falls more than 15% below the median, which is a much less frequent occurrence.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["muf", "owf", "ionospheric-variability", "path-reliability"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12F",
+      "section_name": "Fading: Multipath and Selective",
+      "question": "Why is selective fading particularly severe when operating near the MUF of a path, compared to operation well below the MUF?",
+      "options": [
+        "Near MUF, the D layer absorbs the lower-frequency edge of the SSB signal, leaving only the higher-frequency components",
+        "Near MUF, multiple propagation paths (different elevation angles, ordinary and extraordinary waves, E and F2 layers) converge in path length; small ionospheric fluctuations cause large differential phase changes across the signal bandwidth, maximising frequency-dependent fading",
+        "Near MUF, the transmitter power automatically increases, causing the ionosphere to become non-linear",
+        "Selective fading is not related to proximity to MUF; it depends only on path length"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Near the MUF, several things combine to worsen selective fading: multiple ray paths (at different elevation angles or via different layers) have similar total path lengths, so they arrive with small but frequency-dependent phase differences. The ionosphere's dispersion (different group velocities at different frequencies) is also most pronounced close to the plasma frequency. A small change in ionospheric electron density simultaneously shifts the group delay of each frequency component by a slightly different amount, producing rapid, frequency-selective phase variations across the 2.4 kHz SSB bandwidth.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["selective-fading", "muf", "multipath", "dispersion"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12B",
+      "section_name": "Solar Activity and Solar Flux Index",
+      "question": "An X-ray solar flare causes a Sudden Ionospheric Disturbance (SID) on the sunlit hemisphere. What happens to the LUF and MUF during the event, and what is the likely effect on an HF path from UK to Australia?",
+      "options": [
+        "LUF falls sharply (D layer weakened by the flare); MUF rises; UK–Australia propagation improves during the flare",
+        "LUF rises sharply (D layer suddenly intensified by X-ray ionisation → greatly increased absorption); MUF may briefly rise slightly but HF paths are blacked out because increased D-layer absorption overwhelms any benefit; UK–Australia contact is lost for the flare duration",
+        "Both LUF and MUF fall simultaneously; propagation on all bands ceases",
+        "Only the MUF is affected; the LUF is a receiver property and does not change with solar events"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "X-rays from a solar flare travel at the speed of light and reach Earth in ~8 minutes. They dramatically enhance D-layer ionisation (especially at 60–90 km). This sharply increases absorption at all HF frequencies — the LUF rises, potentially to 20–30 MHz, wiping out all HF bands simultaneously on the sunlit hemisphere. While the foF2 (and hence MUF) may increase slightly from enhanced E-layer ionisation, the net effect is a blackout: every HF path crossing the sunlit hemisphere fails. The effect lasts from minutes to hours depending on flare intensity.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["sid", "solar-flare", "luf", "muf", "hf-blackout"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12J1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12J",
+      "section_name": "Meteor Scatter",
+      "question": "Why must both stations in a meteor scatter contact be active simultaneously, and why does the 15-second period structure of MSK144 make contacts possible?",
+      "options": [
+        "Both stations must be on simultaneously because meteors reflect signals in both directions at once; the 15-second period allows time for radio waves to reach the moon and return",
+        "A meteor trail exists for milliseconds to seconds — there is no store-and-forward: if only one station is transmitting when a trail appears, the other misses the reflection. MSK144's 15-second Tx/Rx alternation means both stations know exactly which half-minute slot to listen in; their software captures reflections automatically within that window",
+        "Simultaneous operation is a legal requirement under ITU Radio Regulations for transient propagation modes",
+        "Meteor trails only form when two radio signals from opposite directions collide in the ionosphere"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A meteor trail is a transient, passive reflector — unlike a repeater or relay, it cannot store a signal and retransmit later. Both stations must have a trail between them at a time when one is transmitting and the other is listening. MSK144 achieves this through precise 15-second alternating Tx/Rx periods (e.g. Station A transmits :00–:15, Station B :15–:30, etc.), synchronised to GPS time. When a trail appears during a Tx period, the fast modulation of MSK144 completes enough of the message in the brief reflection window. The software integrates multiple reflections over the period. Without simultaneous operation and precise timing, the trail period would pass undetected by at least one station.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["meteor-scatter", "msk144", "simultaneous", "trail-duration"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12I",
+      "section_name": "Auroral Propagation",
+      "question": "During a severe geomagnetic storm (Kp = 8), which propagation modes would you expect to be working, which would be degraded, and which would be unaffected?",
+      "options": [
+        "All propagation fails during a severe geomagnetic storm; the only communication possible is satellite",
+        "HF sky-wave degrades severely (F layer disturbed); aurora enhances VHF N–S paths (50–144 MHz); EME is completely unaffected; troposcatter and ducting are unaffected; ground wave continues normally",
+        "HF improves during geomagnetic storms because the auroral oval generates extra ionisation that increases MUF",
+        "Only 50 MHz is affected; all other bands — HF and UHF — operate normally during a Kp 8 event"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A Kp 8 geomagnetic storm has distinct effects on each mode: HF sky-wave is severely degraded (the F layer becomes disturbed and irregular, MUF falls, absorption rises — particularly at high latitudes where the storm effect is strongest). Aurora is enhanced (Kp 8 brings auroral ionisation to southern England, enabling strong 50/144 MHz N–S paths with characteristic buzzing CW signals). EME is entirely above the atmosphere and completely unaffected. Tropospheric modes (scatter, ducting) depend on weather not space weather — unaffected. Ground wave (below horizon, no ionosphere involved) continues normally.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["geomagnetic-storm", "kp-index", "aurora", "eme", "hf-propagation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "12C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "12C",
+      "section_name": "Critical Frequency and the Ionosonde",
+      "question": "An ionosonde shows foF2 = 6 MHz. A station plans to work on 18 MHz (17 m band) via a path of 1800 km with F2 reflection height 300 km. Calculate the MUF for this path, and determine whether the 17 m band is open.",
+      "options": [
+        "sec ≈ 2.5; MUF ≈ 15 MHz; 17 m is closed",
+        "sec ≈ 3.16; MUF ≈ 19 MHz; 17 m is open since 18 MHz < MUF",
+        "sec ≈ 4.0; MUF ≈ 24 MHz; 17 m is well within the usable window",
+        "sec ≈ 5.0; MUF ≈ 30 MHz; 17 m is open but below the OWF"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "sec(θ) = √(1 + (d/2h)²) = √(1 + (1800/(2 × 300))²) = √(1 + (900/300)²) = √(1 + 9) = √10 ≈ 3.16. MUF = 6 × 3.16 ≈ 19 MHz. Since 18 MHz < 19 MHz = MUF, the path is technically open on 17 m. However, 18 MHz is very close to MUF (18/19 = 95%), so reliability is marginal — well above the OWF of 0.85 × 19 = 16.2 MHz. The contact may succeed but signal quality could be poor and the path could close if foF2 drops slightly.",
+      "source_content": "section-12-propagation.md",
+      "tags": ["muf", "fof2", "calculation", "path-open", "17m"],
+      "active": true
+    }
+  ]
+}
