@@ -1,0 +1,488 @@
+{
+  "meta": {
+    "chapter": 14,
+    "title": "Measurements",
+    "level": "full",
+    "syllabus_refs": ["14A1", "14B1", "14C1", "14D1", "14E1", "14F1", "14G1", "14H1", "14I1", "14J1", "14K1", "14L1", "14M1", "14N1"],
+    "source_content": "section-14-measurements.md",
+    "question_count": 25,
+    "generated": "2026-09-16"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "14A1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14A",
+      "section_name": "Voltmeter Loading and Ammeter Error",
+      "question": "A voltmeter with an input impedance of 10 MΩ is used to measure the voltage at a node in a circuit where the Thevenin resistance is 1 MΩ. What is the approximate percentage loading error?",
+      "options": [
+        "Approximately 0.01% — the loading error is negligible at these impedances",
+        "Approximately 9.1% — the voltmeter resistance and circuit resistance are in a 10:1 ratio, causing a significant reduction in measured voltage",
+        "Approximately 50% — the voltmeter draws half the available current at this impedance ratio",
+        "Approximately 1% — the rule of 100:1 impedance ratio is satisfied"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Loading error fraction = R_c / (R_m + R_c) = 1,000,000 / (10,000,000 + 1,000,000) = 1/11 ≈ 9.1%. The measured voltage will be V_true × 10/11 ≈ 0.909 × V_true. Although a 10 MΩ input impedance sounds high, it is only 10× the circuit impedance — just at the boundary of acceptable (10:1 ratio gives 9.1% error). For <1% error, the meter impedance must be >100× the circuit impedance. On high-impedance circuits (valve or FET grids, oscillator tuned circuits), a 1 GΩ electrometer or a 10:1 ×10 MΩ oscilloscope probe is needed.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["voltmeter-loading", "loading-error", "input-impedance", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14A1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14A",
+      "section_name": "Voltmeter Loading and Ammeter Error",
+      "question": "A standard DMM set to AC voltage mode reads 8.5 V when measuring the output of an audio amplifier driving a square wave. A true-RMS DMM on the same signal reads 10.0 V. Why do the readings differ, and which is correct?",
+      "options": [
+        "The standard DMM is correct — true-RMS meters introduce a systematic 15% offset on all waveforms",
+        "The standard DMM is calibrated for sine waves only: it measures the mean-rectified value and scales by 1.111 (the sine wave form factor). A square wave has a form factor of 1.0, so the standard DMM reads 10% low. The true-RMS meter is correct at 10.0 V",
+        "The true-RMS meter is correct only for DC signals; for AC both meters should agree on a square wave",
+        "The 15% difference is due to the square wave's harmonic content exceeding the DMM's bandwidth; reduce the frequency to reconcile the readings"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A standard average-responding AC DMM measures the mean rectified value (V_mean = 2×V_pk/π for a sine wave) and multiplies by the sine wave form factor π/(2√2) ≈ 1.111 to display an RMS-calibrated reading. This calibration is exact only for sine waves. A square wave of amplitude V_pk has V_rms = V_pk and V_mean = V_pk (it is constant in magnitude), so its form factor = V_rms/V_mean = 1.000 — not 1.111. The standard DMM reads 10.0 × (1.000/1.111) ≈ 9.0 V, close to the 8.5 V observed. The true-RMS meter computes RMS directly from the waveform shape and reads the correct 10.0 V regardless of form factor.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["true-rms", "form-factor", "dmm", "square-wave", "waveform-error"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14B1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "14B",
+      "section_name": "AC Waveforms: RMS, Peak, and PEP",
+      "question": "An RF carrier has a peak voltage of 200 V across a 50 Ω load. What is the RMS voltage and the average power delivered to the load?",
+      "options": [
+        "V_rms = 200 V; P = 800 W",
+        "V_rms = 141.4 V; P = 400 W",
+        "V_rms = 100 V; P = 200 W",
+        "V_rms = 141.4 V; P = 200 W"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For a sine wave: V_rms = V_pk / √2 = 200 / 1.414 = 141.4 V. Average power: P = V_rms² / R = 141.4² / 50 = 20,000 / 50 = 400 W. Alternatively: P = V_pk² / (2R) = 200² / (2 × 50) = 40,000 / 100 = 400 W. Common error: using P = V_pk² / R = 800 W — this omits the factor of 2 in the denominator that accounts for the RMS-to-peak relationship. The factor of 2 comes from: P = V_rms² / R and V_rms = V_pk / √2, so P = V_pk² / (2R).",
+      "source_content": "section-14-measurements.md",
+      "tags": ["rms-voltage", "average-power", "sine-wave", "peak-to-rms"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14B",
+      "section_name": "AC Waveforms: RMS, Peak, and PEP",
+      "question": "An SSB transmitter is connected to a 50 Ω dummy load. An oscilloscope shows a peak RF voltage at the loudest speech syllable of 282 V. What is the PEP, and why is the average power significantly lower than this figure?",
+      "options": [
+        "PEP = 3,168 W; average power equals PEP because SSB has no modulation envelope variation",
+        "PEP = 796 W; average power ≈ 199–400 W because the speech envelope is rarely at full peak amplitude — during pauses the output is zero and during speech the RMS is 4–6 dB below PEP",
+        "PEP = 796 W; average power equals PEP for voice because the transmitter ALC keeps output constant",
+        "PEP = 1,592 W; average power is PEP divided by the crest factor of 2"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "PEP = V_pk(envelope)² / (2R) = 282² / (2 × 50) = 79,524 / 100 ≈ 796 W. This is the peak power in the single RF cycle at the crest of the loudest syllable — the figure that determines licence compliance. Average power is lower because SSB has no carrier during silences (output is zero) and during speech the envelope amplitude varies continuously. The typical speech waveform has a crest factor of ~4:1 in voltage (16:1 in power), meaning average power ≈ PEP/16 to PEP/4 depending on programme material — approximately 4 to 6 dB below PEP. The ALC (automatic level control) limits the maximum peak but does not make average power equal to PEP.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["pep", "ssb-power", "crest-factor", "average-power", "alc"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14B",
+      "section_name": "AC Waveforms: RMS, Peak, and PEP",
+      "question": "An AM transmitter with an unmodulated carrier power of 100 W is modulated to 100% depth (m = 1). What is the PEP and the total average power (carrier + sidebands)?",
+      "options": [
+        "PEP = 200 W; P_avg = 150 W",
+        "PEP = 400 W; P_avg = 150 W",
+        "PEP = 400 W; P_avg = 200 W",
+        "PEP = 200 W; P_avg = 100 W"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At 100% AM modulation (m = 1): PEP = P_carrier × (1 + m)² = 100 × (1 + 1)² = 100 × 4 = 400 W. This is the instantaneous power at the positive modulation peak, where the envelope is twice the carrier amplitude (carrier amplitude ×2, power ×4). Average total power: P_avg = P_carrier × (1 + m²/2) = 100 × (1 + 0.5) = 150 W. The additional 50 W goes into the two sidebands (25 W each). So the PA must be rated for 400 W PEP (the peak output) but the average is only 150 W. This is why AM is spectrally and power-inefficient compared to SSB: 100 W of average power in SSB carries the same information as 50 W sideband power in a 150 W AM transmission.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["am-power", "pep-am", "modulation-depth", "carrier-sideband-power"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14C",
+      "section_name": "SWR, Reflection Coefficient, and Return Loss",
+      "question": "A 50 Ω transmission line is terminated by a 150 Ω resistive load. Calculate |Γ|, the SWR, and the percentage of incident power that is reflected.",
+      "options": [
+        "|Γ| = 0.25; SWR = 1.67:1; 6.25% reflected",
+        "|Γ| = 0.5; SWR = 3:1; 25% reflected",
+        "|Γ| = 0.333; SWR = 2:1; 11.1% reflected",
+        "|Γ| = 0.5; SWR = 3:1; 50% reflected"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Γ = (Z_L − Z₀) / (Z_L + Z₀) = (150 − 50) / (150 + 50) = 100/200 = 0.5. SWR = (1 + |Γ|) / (1 − |Γ|) = (1 + 0.5) / (1 − 0.5) = 1.5 / 0.5 = 3:1. Reflected power fraction = |Γ|² = 0.5² = 0.25 = 25%. So 25% of incident power returns to the transmitter. At SWR 3:1, the reflected power penalty is significant but not catastrophic — the PA sees varying impedance as the standing wave sweeps the load impedance it experiences. Return loss = −20 × log₁₀(0.5) = 6 dB.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["gamma", "swr-calculation", "reflected-power", "150-ohm-load"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14C",
+      "section_name": "SWR, Reflection Coefficient, and Return Loss",
+      "question": "A VNA measures a return loss of 20 dB at an antenna's feedpoint. What is |Γ|, the SWR, and the reflected power as a percentage of incident power?",
+      "options": [
+        "|Γ| = 0.01; SWR = 1.02:1; 0.01% reflected",
+        "|Γ| = 0.1; SWR = 1.22:1; 1% reflected",
+        "|Γ| = 0.2; SWR = 1.5:1; 4% reflected",
+        "|Γ| = 0.316; SWR = 1.93:1; 10% reflected"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Return loss (dB) = −20 × log₁₀|Γ|, so |Γ| = 10^(−RL/20) = 10^(−20/20) = 10^(−1) = 0.1. SWR = (1 + 0.1) / (1 − 0.1) = 1.1/0.9 = 1.22:1. Reflected power = |Γ|² = 0.1² = 0.01 = 1%. A 20 dB return loss (SWR ≈ 1.22:1) is excellent — only 1% of power is reflected. This is well within the acceptable range for most amateur antennas. Note the inverse relationship: higher return loss in dB = better match = smaller |Γ| = less reflected power. A 6 dB return loss (|Γ| = 0.5, SWR 3:1) is poor; 20 dB (|Γ| = 0.1, SWR 1.22:1) is very good.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["return-loss", "gamma-from-rl", "swr-from-return-loss", "vna"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14C",
+      "section_name": "SWR, Reflection Coefficient, and Return Loss",
+      "question": "A transmitter delivers 100 W into a feeder with an antenna at the far end presenting SWR = 4:1 at the antenna feedpoint. Ignoring feeder loss, how much power is actually absorbed by the antenna (not reflected back toward the transmitter)?",
+      "options": [
+        "64 W — the remaining 36% is reflected",
+        "75 W — the remaining 25% is reflected",
+        "90 W — the remaining 10% is reflected",
+        "80 W — the remaining 20% is reflected"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For SWR = 4:1: |Γ| = (SWR − 1)/(SWR + 1) = (4 − 1)/(4 + 1) = 3/5 = 0.6. Reflected power fraction = |Γ|² = 0.6² = 0.36 = 36%. Power reflected = 100 × 0.36 = 36 W. Power absorbed by antenna = 100 − 36 = 64 W. So with SWR 4:1, you lose 36% of your power to reflections — significant. However, in a real system the reflected power does not simply vanish: if the transmitter PA has a good output impedance, the reflected power re-reflects forward at the PA and adds (or subtracts) from the forward wave depending on the feeder length (electrical length). This is why a matched PA produces maximum power transfer; a mismatched PA may be partially protected by the reflected power re-adding constructively.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["reflected-power-calculation", "swr-4:1", "absorbed-power", "mismatch-loss"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14D",
+      "section_name": "The Bruene Directional Coupler",
+      "question": "In a Bruene directional coupler, what two signals are sampled from the main transmission line, and how are they combined to produce the forward-only and reflected-only output ports?",
+      "options": [
+        "Forward power and reflected power are sampled directly using two separate detector diodes pointing in opposite directions along the line",
+        "A current transformer samples current (I) and a resistive tap samples voltage (V). Adding V and I×Z₀ gives the forward port; subtracting gives the reflected port — because forward wave has V = +I×Z₀ and reflected wave has V = −I×Z₀",
+        "Two ferrite cores are wound in opposite directions; each responds only to current flowing in one direction through the line",
+        "A 3 dB hybrid coupler splits the signal; phase comparison between the two outputs gives forward and reflected power"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The Bruene coupler uses two sensor types. (1) A current transformer: a small toroid with a one-turn primary (the centre conductor of the coax) and a multi-turn secondary, producing a voltage proportional to line current I. (2) A voltage tap: a resistive or capacitive divider producing a voltage proportional to line voltage V. In the main line, the forward travelling wave has V_fwd = I_fwd × Z₀ (voltage and current in phase, with I_fwd positive for forward flow). The reflected wave has V_ref = I_ref × Z₀ but the reflected current flows in the opposite direction (I_ref is negative). By adding V + I×Z₀: forward waves add constructively, reflected waves cancel. By computing V − I×Z₀: reflected waves add constructively, forward waves cancel. Diode detectors on each port then convert the RF amplitude to a DC reading.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["bruene-coupler", "current-transformer", "voltage-tap", "directional-separation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14D",
+      "section_name": "The Bruene Directional Coupler",
+      "question": "A Bruene coupler has a specified directivity of only 15 dB. The transmitter delivers 100 W (50 dBm) forward. What is the worst-case spurious reading on the reflected power port when a perfectly matched 50 Ω load is connected?",
+      "options": [
+        "0 W — a perfect load produces zero reflected signal regardless of directivity",
+        "Approximately 3.2 mW — the forward signal leaks into the reflected port 15 dB below the forward sample level",
+        "Approximately 0.32 W — 15 dB below 100 W",
+        "Approximately 10 W — 10 dB below forward, because 15 dB directivity only applies to CW signals"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Directivity specifies how much of the 'wrong direction' signal appears at each port. With 15 dB directivity, the forward signal appearing at the reflected port is 15 dB below the forward sample level. If the coupler samples forward power at, say, −20 dBm (from 100 W = 50 dBm forward), the forward leakage into the reflected port is at −20 − 15 = −35 dBm. Converting −35 dBm: P = 10^(−35/10) mW = 0.316 mW ≈ 0.32 mW. This leakage appears as a false reflected power reading of ~0.32 mW, which for a forward power of 100 W represents a false SWR reading (the coupler 'sees' a reflected signal even though the load is perfectly matched). Good couplers specify 30–40 dB directivity; the ARRL handbook suggests minimum 30 dB for accurate SWR measurement below SWR 1.1:1.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["directivity", "bruene-coupler", "false-reflected-reading", "coupler-accuracy"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14E",
+      "section_name": "The CRT Oscilloscope",
+      "question": "The trigger circuit is a critical part of a CRT oscilloscope. What is its function, and what happens to the waveform display if triggering fails?",
+      "options": [
+        "The trigger circuit amplifies the Y input to drive the deflection plates; without it the display is too dim to read",
+        "The trigger circuit synchronises the start of the timebase sweep to a fixed phase of the input waveform — typically a zero-crossing or threshold crossing. Without stable triggering, each sweep starts at a random phase and the waveform appears to scroll horizontally, making amplitude or period measurements impossible",
+        "The trigger circuit sets the Z-axis (beam intensity) to produce a bright spot at the waveform's peak amplitude, making it easier to read V_pk",
+        "The trigger circuit controls the input attenuator to prevent overload; without it the beam would deflect off-screen on strong signals"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The timebase generator produces a linear voltage ramp (sawtooth) that sweeps the beam from left to right across the screen, then snaps back and repeats. For the waveform to appear stable (stationary), each successive sweep must start at the same phase of the input signal. The trigger circuit monitors the input and produces a 'start' pulse each time the signal crosses a set threshold in a set direction (rising or falling edge). This ensures the timebase ramp always begins at the same point in the waveform cycle. If triggering is lost or unstable, successive sweeps start at different phases and the waveform appears to drift or scroll horizontally — you cannot read period, frequency, or phase angle from an unstable display.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["trigger-circuit", "timebase", "stable-display", "crt-oscilloscope"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14F",
+      "section_name": "The Digital Storage Oscilloscope",
+      "question": "A narrow voltage glitch lasting approximately 50 ns occurs occasionally in a digital circuit. The DSO is set to Normal acquisition mode at a 1 μs/div timebase but the glitch is never captured. Which acquisition mode should be selected, and why?",
+      "options": [
+        "Average mode — averaging many acquisitions increases the probability of capturing any single event",
+        "Peak-detect mode — this captures the highest and lowest sample value in each display pixel time interval, ensuring that a narrow glitch that falls between sample points is still recorded and displayed as a pixel-height spike",
+        "High-res mode — the increased effective resolution reduces noise and makes the glitch more visible",
+        "Roll mode — continuous scrolling without a trigger ensures no event is missed"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In Normal acquisition mode, the DSO takes one sample per pixel column at the selected sample rate. A 50 ns glitch at a slow timebase (1 μs/div = 10 μs full screen) may fall entirely between two sample points and be completely invisible. Peak-detect mode captures the maximum and minimum sample value within each pixel time bucket — even if the glitch falls between regular sample intervals, the ADC's continuous monitoring will capture it as the maximum within that bucket, and it will appear as a spike on screen. This is specifically the mode designed for catching intermittent narrow transients. Average mode would make the glitch smaller (it averages it away). Roll mode requires a very slow timebase and still risks missing the event.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["peak-detect", "dso-acquisition", "glitch-capture", "acquisition-modes"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14F",
+      "section_name": "The Digital Storage Oscilloscope",
+      "question": "A DSO has a maximum sample rate of 1 GS/s. What is the highest frequency sinewave that can be faithfully displayed, and what happens to the waveform at frequencies beyond this limit?",
+      "options": [
+        "Maximum faithful display: 1 GHz (sample rate = signal frequency gives exactly one sample per cycle). Beyond this, the display is blank",
+        "Maximum faithful display: approximately 200 MHz (5 samples per cycle gives good waveform reconstruction). Beyond this, the Nyquist limit (500 MHz) causes aliasing — a lower 'alias' frequency appears on screen that is not present in the actual signal",
+        "Maximum faithful display: 500 MHz (Nyquist: 2 samples per cycle is the theoretical minimum). Beyond this, amplitude is attenuated but the frequency reading remains correct",
+        "Maximum faithful display: 100 MHz (10 samples per cycle is always required). Beyond this, the display shows a distorted but correct-frequency waveform"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The Nyquist theorem states that a signal must be sampled at more than twice its frequency to be unambiguously reconstructed. At exactly 2 samples per cycle (500 MHz for a 1 GS/s DSO), reconstruction is theoretically possible but requires ideal sinc interpolation — in practice, 4–5 samples per cycle is the minimum for a faithful waveform shape. At ≥5 samples/cycle (200 MHz for 1 GS/s), the displayed waveform closely resembles the actual signal. Above the Nyquist frequency (500 MHz), aliasing occurs: the signal is under-sampled and a lower-frequency alias appears on screen. For example, a 700 MHz signal sampled at 1 GS/s appears as a 300 MHz alias (1000 − 700 = 300). The alias is real-looking but completely wrong in frequency.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["nyquist", "aliasing", "sample-rate", "dso-bandwidth"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14G",
+      "section_name": "Viewing RF Signals: SSB, AM, and FM Envelopes",
+      "question": "An oscilloscope connected to an AM transmitter output shows an envelope with V_max = 80 V and V_min = 16 V. What is the modulation depth m, and does this represent over-modulation?",
+      "options": [
+        "m = 1.33 (133%); over-modulation is occurring",
+        "m = 0.67 (67%); this is within acceptable limits and represents a well-modulated signal",
+        "m = 0.80 (80%); this is within limits",
+        "m = 0.50 (50%); under-modulated"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Modulation depth m = (V_max − V_min) / (V_max + V_min) = (80 − 16) / (80 + 16) = 64 / 96 = 0.667 ≈ 67%. This is within the 100% limit — the signal is well modulated. Over-modulation (m > 1) would be visible as the envelope reaching zero (V_min = 0) and the waveform developing a flat bottom — indicating the carrier is being cut off during the negative modulation peaks. At 100% modulation (m = 1), V_min = 0 and V_max = 2 × V_carrier. In this example V_min = 16 V (not zero), confirming no over-modulation. PEP at 100% modulation is 4× the unmodulated carrier power; at 67% it is (1 + 0.667)² = 2.78× carrier power.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["am-modulation-depth", "envelope-measurement", "oscilloscope-am", "over-modulation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14G1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14G",
+      "section_name": "Viewing RF Signals: SSB, AM, and FM Envelopes",
+      "question": "A technician connects an oscilloscope to the output of an FM transmitter and a separate AM transmitter, both carrying the same audio tone at the same frequency. What would distinguish the two waveforms on the oscilloscope?",
+      "options": [
+        "The FM signal would show a constant-amplitude carrier with no visible envelope variation; the AM signal would show an amplitude-modulated envelope varying at the audio tone frequency. The FM signal cannot be assessed for deviation from the oscilloscope display",
+        "The FM signal would show a broader waveform (more cycles per screen) because FM increases the carrier frequency during modulation; the AM signal would show a narrower envelope",
+        "Both waveforms would look identical on an oscilloscope because both are narrowband modulated carriers at the same RF frequency",
+        "The FM signal would show clipping on the positive cycles while AM clips on both positive and negative cycles at 100% modulation"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "FM conveys information in carrier frequency variation, not amplitude. The instantaneous amplitude of an FM carrier is constant — the envelope does not vary with modulation. On an oscilloscope set to show the RF waveform, an FM signal looks like an unmodulated carrier (constant amplitude); the only visible effect of modulation is a slight apparent change in the number of cycles visible as the carrier frequency sweeps around the centre frequency, but this is a subtle effect at small deviation ratios. An AM signal, by contrast, shows a clearly amplitude-modulated envelope — the waveform swells and contracts at the audio frequency. To measure FM deviation, you need a spectrum analyser (looking at the sideband structure), a discriminator/deviation meter, or a modulation analyser.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["fm-envelope", "am-envelope", "oscilloscope-rf", "fm-vs-am-scope"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14H",
+      "section_name": "The Frequency Counter: Reciprocal Counting",
+      "question": "A simple gate-counting frequency counter uses a 1-second gate time. What is its resolution when measuring a 100 Hz signal, and how does this compare to measuring a 100 MHz signal?",
+      "options": [
+        "1 Hz resolution at both frequencies — the gate time determines resolution, not the input frequency",
+        "1 Hz resolution at both frequencies in absolute terms, but as a percentage: at 100 Hz this is 1% resolution (poor); at 100 MHz this is 0.000001% resolution (excellent). Simple counting gives constant Hz resolution, meaning poor percentage resolution at low frequencies",
+        "0.001 Hz resolution at 100 Hz because low-frequency measurements use longer averaging; 1 Hz at 100 MHz",
+        "100 Hz resolution at 100 Hz; 1 Hz at 100 MHz — resolution scales with input frequency in gate counters"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A 1-second gate counter counts input cycles for exactly 1 second. Resolution = 1 count = 1/1s = 1 Hz, regardless of input frequency. At 100 Hz: 1 Hz resolution means ±1% uncertainty — you might read 99 Hz or 101 Hz; completely unacceptable for frequency measurement. At 100 MHz: 1 Hz resolution means ±0.000001% — excellent. This asymmetry is the fundamental limitation of simple gate counting. Reciprocal counters solve this by measuring the period (time between edges, using a high-frequency timebase clock) and computing 1/T, which gives constant percentage resolution at all input frequencies. For a 10 MHz timebase, the period of a 100 Hz signal (10 ms) is measured to ±100 ns → frequency resolution ≈ 100 ns × (100 Hz)² = 0.001 Hz, far better than 1 Hz.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["gate-counting", "resolution", "frequency-counter", "low-frequency-limitation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14H1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14H",
+      "section_name": "The Frequency Counter: Reciprocal Counting",
+      "question": "A reciprocal counter uses a 100 MHz internal timebase. It measures the period of an unknown signal by counting 500,000 timebase clock pulses between successive rising edges. What is the signal frequency?",
+      "options": [
+        "500 MHz",
+        "200 Hz",
+        "5,000 Hz",
+        "0.2 Hz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Period T = (number of timebase pulses) / (timebase frequency) = 500,000 / (100 × 10⁶) = 5 × 10⁻³ s = 5 ms. Frequency f = 1/T = 1 / 0.005 = 200 Hz. The resolution: each timebase clock pulse = 1/(100 MHz) = 10 ns. A ±1 clock pulse uncertainty means ΔT = ±10 ns, giving Δf = ΔT/T² = 10 × 10⁻⁹ / (5 × 10⁻³)² = 10 × 10⁻⁹ / 25 × 10⁻⁶ = 0.0004 Hz — excellent resolution at 200 Hz. This demonstrates the power of reciprocal counting: the same 100 MHz timebase that gives 1 Hz gate-counting resolution at 100 MHz gives 0.0004 Hz resolution at 200 Hz.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["reciprocal-counting", "period-measurement", "frequency-calculation", "timebase"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14I1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14I",
+      "section_name": "Frequency Reference Oscillators: TCXO and OCXO",
+      "question": "A portable field-day station uses a handheld transceiver with a TCXO frequency reference (stability ±2 ppm). A second station uses a bench transceiver with an OCXO (stability ±0.01 ppm). Both are set to 14.200 MHz. What is the maximum frequency offset between them in Hz?",
+      "options": [
+        "TCXO offset: ±0.142 Hz; OCXO offset: ±0.00014 Hz; maximum separation between the two stations: up to ±0.142 Hz",
+        "TCXO offset: ±28.4 Hz; OCXO offset: ±0.142 Hz; maximum separation: up to ±28.54 Hz",
+        "TCXO offset: ±28.4 Hz; OCXO offset: ±0.142 Hz; maximum separation: since both can be offset in opposite directions, up to ±28.54 Hz",
+        "TCXO offset: ±14.2 Hz; OCXO offset: ±0.142 Hz; maximum separation: up to ±14.342 Hz"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "TCXO offset at 14.200 MHz: ±2 ppm = ±2 × 10⁻⁶ × 14.200 × 10⁶ = ±28.4 Hz. OCXO offset: ±0.01 ppm = ±0.01 × 10⁻⁶ × 14.200 × 10⁶ = ±0.142 Hz. In the worst case, the TCXO is +28.4 Hz high and the OCXO is −0.142 Hz low (or vice versa), so the maximum frequency separation between the two stations is 28.4 + 0.142 ≈ ±28.54 Hz. In practice for SSB, a few tens of Hz difference is noticeable as pitch change but not operationally significant. For narrow-mode digital modes (FT8 occupies only 50 Hz), frequency errors of ±28 Hz would take the signal outside the mode's operating band — a GPSDO or OCXO is needed for digital mode operation.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["tcxo-accuracy", "ocxo-accuracy", "ppm-frequency-error", "digital-modes-accuracy"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14I",
+      "section_name": "Frequency Reference Oscillators: TCXO and OCXO",
+      "question": "An operator switches on an OCXO-based frequency counter and begins making measurements immediately. The OCXO datasheet specifies ±0.01 ppm stability after a 5-minute warm-up, but ±5 ppm in the first 30 seconds. What is the practical consequence, and how should the operator manage this?",
+      "options": [
+        "There is no consequence — OCXO frequency is stable from the moment power is applied because the oven is pre-heated",
+        "Measurements made before the oven reaches its set temperature may be in error by up to ±5 ppm. At 10 MHz this is ±50 Hz — sufficient to give an incorrect reading. The operator should wait the specified warm-up time (typically 3–5 minutes for a standard OCXO) before making calibrated measurements",
+        "The ±5 ppm initial error only affects the first measurement; subsequent measurements in the same session are unaffected",
+        "An OCXO warm-up period applies only when ambient temperature is below 0 °C; at room temperature the oven equilibrates instantly"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "An OCXO maintains crystal temperature by heating the oven to a fixed set point (typically 70–85 °C). From a cold start, the oven heater must raise the crystal from ambient temperature (say 20 °C) to 70–85 °C — this takes 3–5 minutes of warm-up time. During this transition, the crystal temperature (and therefore its frequency) is changing. Early in the warm-up, the crystal may be 50 °C below its operating point, and the frequency error may be several ppm — far outside the specified ±0.01 ppm. The practical rule is simple: wait for the warm-up indicator (many OCXOs have a 'lock' LED) or simply wait 5 minutes before trusting the reading. A TCXO has no warm-up requirement because it operates at ambient temperature with real-time compensation rather than a heated enclosure.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["ocxo-warmup", "frequency-accuracy", "oven-oscillator", "measurement-error"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14J",
+      "section_name": "The Dip Meter",
+      "question": "An amateur wants to check the resonant frequency of a finished antenna before connecting it to the transceiver. They hold a dip meter near the antenna feedpoint and slowly tune through the HF bands, finding a dip at 14.3 MHz. The target resonant frequency is 14.175 MHz. What does this measurement indicate, and what adjustment is needed?",
+      "options": [
+        "The dip at 14.3 MHz indicates the antenna is resonant above the target frequency — it is too short. Lengthening the antenna will lower the resonant frequency toward 14.175 MHz",
+        "The dip at 14.3 MHz indicates the antenna is resonant above the target frequency — it is too long. Shortening the antenna will raise the resonant frequency",
+        "A dip at 14.3 MHz means the antenna is resonant above target — the correct adjustment is to retune the ATU to compensate, not change the antenna length",
+        "The dip reading is valid only for vertical antennas; for horizontal dipoles a different technique is required"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "A dip at 14.3 MHz means the antenna is resonant at 14.3 MHz — higher than the target 14.175 MHz. For a dipole or monopole, resonant frequency f₀ ∝ 1/length. If f₀ is too high, the antenna is too short (higher frequency = shorter wavelength = shorter antenna). The adjustment is to lengthen the antenna — add wire to each element — which lowers f₀ toward 14.175 MHz. Conversely, if the dip was below target (say 14.1 MHz), the antenna would be too long and should be shortened. This measurement is done with the antenna disconnected from the transceiver, coupling the dip meter inductively to the feedpoint. The dip reading is then entirely due to the antenna's own resonance, not the transceiver or matching network.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["dip-meter", "antenna-resonance", "dipole-adjustment", "too-short"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14K1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14K",
+      "section_name": "The Spectrum Analyser: Span, RBW, VBW, and Markers",
+      "question": "A spectrum analyser is set to RBW = 10 kHz for a measurement. Reducing the RBW to 1 kHz while keeping all other settings constant will have what effect on the display?",
+      "options": [
+        "The noise floor will rise by 10 dB and the sweep time will shorten by a factor of 100",
+        "The noise floor will fall by 10 dB, the sweep time will lengthen (by approximately 100×), and two previously unresolved signals separated by less than 10 kHz may now appear as separate peaks",
+        "The noise floor is unaffected by RBW changes — only VBW affects the noise floor",
+        "The noise floor will fall by 3 dB because halving the RBW bandwidth halves the noise power"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The analyser noise floor is proportional to the noise power in the IF filter bandwidth: Noise ∝ kTB (Boltzmann's constant × temperature × bandwidth). Reducing RBW from 10 kHz to 1 kHz reduces noise bandwidth by 10×, lowering the noise floor by 10 × log₁₀(10) = 10 dB. The noise floor formula: floor (dBm) = −174 + NF + 10 × log₁₀(RBW_Hz). With RBW = 10 kHz: floor = −174 + NF + 40; with RBW = 1 kHz: floor = −174 + NF + 30 — 10 dB lower. Sweep time increases approximately as (span/RBW²) — reducing RBW by 10× increases sweep time by 100×. Better frequency resolution and lower noise floor are both advantages of narrow RBW, traded against slower sweep speed.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["rbw", "noise-floor", "sweep-time", "frequency-resolution"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14K1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14K",
+      "section_name": "The Spectrum Analyser: Span, RBW, VBW, and Markers",
+      "question": "A spectrum analyser with a noise figure of 20 dB is set to 3 kHz RBW. A signal is measured at −110 dBm. Is this measurement reliable, and what is the approximate noise floor?",
+      "options": [
+        "Noise floor ≈ −119 dBm; the −110 dBm signal is 9 dB above the noise floor — marginally readable but the measurement is influenced by the noise",
+        "Noise floor ≈ −154 dBm; the signal is well above the floor and highly reliable",
+        "Noise floor ≈ −124 dBm; the −110 dBm signal is 14 dB above the noise floor — reliable measurement",
+        "Noise floor ≈ −144 dBm; the signal is 34 dB above the floor — excellent reliability"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "Noise floor = −174 + NF + 10 × log₁₀(RBW_Hz) = −174 + 20 + 10 × log₁₀(3000) = −174 + 20 + 34.8 = −119.2 dBm ≈ −119 dBm. The signal at −110 dBm is 9 dB above the noise floor — readable but marginal. Wait — let me recalculate: −174 + 20 + 34.8 = −119.2 dBm. The signal is −110 dBm, which is −110 − (−119.2) = 9.2 dB above the floor. This is option (a). The correct answer should be (a). However, reviewing: option (c) states floor ≈ −124 dBm which would require NF = 15 dB (not 20 dB). The correct calculation gives −119 dBm, making (a) correct: signal is 9 dB above floor. Note: the RBW formula: 10×log₁₀(3000) = 10 × 3.477 = 34.77 dB. So floor = −174 + 20 + 34.8 = −119.2 dBm. Option (a) with −119 dBm floor is correct.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["noise-floor-calculation", "rbw", "noise-figure", "signal-to-noise"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14L1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "14L",
+      "section_name": "The Dummy Load",
+      "question": "A Full-licence operator tests their 1000 W PEP SSB transmitter into a 50 Ω dummy load using a sustained audio tone (producing a constant-amplitude sine wave output, equivalent to full PEP continuously). Calculate the peak RF voltage and peak RF current at the dummy load terminals.",
+      "options": [
+        "V_pk = 100 V; I_pk = 2 A",
+        "V_pk = 316 V; I_pk = 6.32 A",
+        "V_pk = 200 V; I_pk = 4 A",
+        "V_pk = 447 V; I_pk = 8.94 A"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For a constant sine wave (P = PEP at 1000 W): V_pk = √(2 × P × R) = √(2 × 1000 × 50) = √100,000 = 316.2 V. I_pk = V_pk / R = 316.2 / 50 = 6.32 A (or: I_pk = √(2P/R) = √(2000/50) = √40 = 6.32 A). These are peak values. RMS values: V_rms = 316.2/√2 = 223.6 V; I_rms = 6.32/√2 = 4.47 A. The dummy load must be rated for 316 V peak RF voltage and continuous dissipation at 1000 W RMS. Wirewound resistors will fail at VHF due to inductance; a proper high-power dummy load uses parallel non-inductive film resistors in an oil-cooled enclosure. A 1000 W rated oil-cooled dummy can sustain continuous operation for approximately 30–60 seconds before the oil temperature requires a rest period.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["dummy-load-calculation", "peak-voltage", "peak-current", "1kw-load"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14M1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14M",
+      "section_name": "The SWR Meter in Practice",
+      "question": "An operator places an SWR meter between their transceiver output and the antenna tuner (ATU) input. After adjusting the ATU, the SWR meter reads 1.1:1. A second SWR meter is then placed between the ATU output and the feeder, and reads 3.5:1. Which reading is correct, and what does each tell the operator?",
+      "options": [
+        "The 3.5:1 reading is an instrument error — the SWR cannot be higher after the ATU than before it",
+        "Both readings are correct: the 1.1:1 reading at the TX-to-ATU port shows the PA is well-protected (the ATU has transformed the load to near 50 Ω as seen by the PA). The 3.5:1 reading at the ATU-to-feeder port shows the true antenna system SWR — the ATU is hiding a significant antenna mismatch from the PA",
+        "The 1.1:1 reading is the only meaningful figure; the ATU output SWR reading is irrelevant because the ATU corrects the mismatch",
+        "The 3.5:1 reading means the feeder has excessive loss and should be replaced regardless of the ATU tuning"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Both readings are real and meaningful — they just measure different things. The ATU transforms the antenna system impedance (as reflected by the feeder's SWR of 3.5:1) into a near-50 Ω match for the PA. The SWR meter on the TX side of the ATU sees this transformed impedance (1.1:1) and confirms the PA is working into a good match and is protected. The SWR meter on the antenna side of the ATU sees the actual antenna system impedance through the feeder (3.5:1) and reveals what the ATU is really managing. An operator who only has the TX-side meter believes the antenna system is well matched; an operator with the ATU-side meter knows the antenna itself has a significant mismatch that the ATU is compensating. For diagnosis, always use the ATU-side meter.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["swr-meter-placement", "atu-hides-mismatch", "two-meter-technique", "antenna-diagnosis"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "14N1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "14N",
+      "section_name": "The Field Strength Meter",
+      "question": "An amateur uses a simple diode-and-dipole field strength meter to compare two antenna configurations. The meter reading (deflection) doubles when switching from antenna A to antenna B. What does this tell the operator about the relative field strengths and relative powers?",
+      "options": [
+        "Antenna B radiates twice the field strength and twice the power of antenna A in the measured direction",
+        "The meter output is proportional to E², so doubling the meter deflection represents a √2 increase in field strength — approximately 41% more field strength and 2× the power (3 dB)",
+        "The meter output is proportional to E (linear diode detector), so doubling the deflection means 2× the field strength and 4× the power density (6 dB) in the direction of the measurement",
+        "The meter reading is dimensionless and cannot be used to compare antenna performance"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A simple diode-detector field strength meter produces a DC output proportional to the rectified RF voltage, which is proportional to E (field strength). Doubling the meter deflection means 2× the voltage into the detector, which means 2× the antenna element voltage, which means 2× E (field strength). Since power density (PFD) ∝ E², doubling E means 4× PFD — a 6 dB increase in the direction of the measurement. So: 2× meter deflection → 2× E → 4× power in the direction of the meter → 6 dB. This is a straightforward A/B comparison: antenna B radiates 6 dB more effectively toward the measurement point. To confirm the improvement is real and not just gain in one direction with loss in another, measurements should be made at multiple azimuths.",
+      "source_content": "section-14-measurements.md",
+      "tags": ["field-strength-meter", "relative-measurement", "e-squared", "antenna-comparison"],
+      "active": true
+    }
+  ]
+}
