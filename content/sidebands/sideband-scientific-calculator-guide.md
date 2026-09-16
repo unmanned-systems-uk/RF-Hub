@@ -232,6 +232,82 @@ Key reference values to memorise:
 
 ---
 
+### 2.4 — Absolute Power: dBW and dBm
+
+Sections 2.1–2.3 express **relative** change (how much has the signal grown or shrunk). dBW and dBm are **absolute** power levels — they tell you the actual power in watts using a fixed reference.
+
+> **dBW = 10 × log₁₀(P / 1 W) = 10 × log₁₀(P)**
+
+> **dBm = 10 × log₁₀(P / 1 mW) = 10 × log₁₀(P / 0.001)**
+
+The 1 W and 1 mW references are baked in. dBm is always 30 dB higher than dBW for the same power:
+
+> **dBm = dBW + 30**
+
+**Windows Calculator key sequences:**
+
+**dBW** (reference: 1 watt):
+
+1. Type `P` in watts
+2. `log`
+3. `×` `10` `=` → **dBW**
+
+**dBm** (reference: 1 milliwatt) — two methods:
+
+*Method A (from dBW):* add 30 to the dBW result → `+` `30` `=`
+
+*Method B (direct):* type `P` (watts) `÷` `0.001` `=` → `log` → `×` `10` `=`
+
+**Converting dBm back to watts:**
+
+1. Type dBm value `−` `30` `=` → (gives dBW)
+2. `÷` `10` `=`
+3. `10ˣ` → **power in watts**
+
+**Worked examples — UK licence power levels:**
+
+| Licence class | Power | dBW | dBm | Notes |
+|---|---|---|---|---|
+| Foundation | 5 W | **7.0 dBW** | 37.0 dBm | Some bands, e.g. VHF simplex |
+| Foundation | 10 W | **10.0 dBW** | 40.0 dBm | Standard Foundation maximum |
+| Intermediate | 50 W | **17.0 dBW** | 47.0 dBm | Intermediate maximum PEP |
+| Full | 100 W | **20.0 dBW** | 50.0 dBm | Common Full operating power |
+| Full (pre-2024) | 400 W | **26.0 dBW** | 56.0 dBm | Previous Full licence maximum |
+| Full (post-2024) | 1000 W | **30.0 dBW** | 60.0 dBm | Current Full licence maximum |
+
+Calculator verification for each:
+
+- 5 W: `5` `log` → 0.699 → `×` `10` `=` → **7.0 dBW** → `+` `30` `=` → **37.0 dBm**
+- 10 W: `10` `log` → 1.0 → `×` `10` `=` → **10.0 dBW** → `+` `30` `=` → **40.0 dBm**
+- 50 W: `50` `log` → 1.699 → `×` `10` `=` → **16.99 ≈ 17.0 dBW** → `+` `30` `=` → **47.0 dBm**
+- 100 W: `100` `log` → 2.0 → `×` `10` `=` → **20.0 dBW** → `+` `30` `=` → **50.0 dBm**
+- 400 W: `400` `log` → 2.602 → `×` `10` `=` → **26.02 dBW** → `+` `30` `=` → **56.02 dBm**
+- 1000 W: `1000` `log` → 3.0 → `×` `10` `=` → **30.0 dBW** → `+` `30` `=` → **60.0 dBm**
+
+**dBm in context — useful reference points:**
+
+| dBm | Watts | What it represents |
+|-----|-------|--------------------|
+| +60 | 1000 W | Post-2024 Full licence maximum |
+| +56 | 400 W | Pre-2024 Full licence maximum |
+| +50 | 100 W | Typical Full HF station |
+| +47 | 50 W | Intermediate maximum |
+| +40 | 10 W | Foundation maximum |
+| +37 | 5 W | Foundation (restricted bands) |
+| +30 | 1 W | 1 watt = 0 dBW = +30 dBm |
+| 0 | 1 mW | Reference: 0 dBm = 1 milliwatt |
+| −30 | 1 μW | 1 microwatt |
+| −73 | 50 nW | S9 signal in a 50 Ω system (IARU definition) |
+| −100 | 0.1 pW | Typical HF receiver minimum signal |
+| −120 | 1 fW | Noise floor of a good LNA |
+| −174 | — | Thermal noise floor at room temperature (per 1 Hz bandwidth) |
+
+**EIRP note:** On some amateur bands, the licence specifies **EIRP** (Equivalent Isotropically Radiated Power) rather than transmitter output power. EIRP (dBW) = P_tx (dBW) + antenna gain (dBi) − feeder loss (dB). A 50 W transmitter (17 dBW) with a 6 dBi Yagi and 2 dB feeder loss gives EIRP = 17 + 6 − 2 = **21 dBW = 125 W EIRP**. Check your licence for whether the power limit is at the transmitter output or EIRP.
+
+> **Gotcha:** dBW and dBm look similar and are easily confused. A quick check: 1 W is exactly 0 dBW and exactly +30 dBm. If your dBW answer is less than zero for powers below 1 W (e.g. 0.5 W = −3.0 dBW), that's correct. If your dBm answer is negative for any transmitter power above 1 mW, you've used the wrong reference.
+
+---
+
 ## Group 3: Reactance and Impedance
 
 > **Unit reminder before every calculation:** f in **Hz** (not MHz), C in **farads** (not pF), L in **henries** (not μH).
@@ -868,6 +944,8 @@ N_FFT is the number of FFT points (must be a power of 2). Result is the frequenc
 | 2.1 | dB = 10 × log(P_out/P_in) | two power levels | dB |
 | 2.2 | P_out = P_in × 10^(dB/10) | dB, P_in (W) | W |
 | 2.3 | dB = 20 × log(V_out/V_in) | two voltage levels | dB |
+| 2.4a | dBW = 10 × log(P) | P (W) | dBW |
+| 2.4b | dBm = dBW + 30 | dBW or P (W) | dBm |
 | 3.1 | X_C = 1/(2πfC) | f (Hz), C (F) | Ω |
 | 3.2 | X_L = 2πfL | f (Hz), L (H) | Ω |
 | 3.3 | Z = √(R² + X²) | R (Ω), X (Ω) | Ω |
