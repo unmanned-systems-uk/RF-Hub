@@ -237,11 +237,28 @@
 
 ## Ch 13: EMC (pp 83–95)
 
-*TBD — populate when `13-emc.pdf` is read. Chapter covers: CM/DM current, field strength, coupling mechanisms, Pi/T filters, mains filters, equipment-specific interference, complaint procedure (~19 subsections, letter-indexed §13.A–13.S).*
-
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 13A1 | TBD | — |
+| 13A1 | 83 | Amateur dual role: source of interference (TX power levels in residential areas) AND victim (SMPS, PLT, LED drivers). Licence acknowledges both; neither party has absolute right — reasonable balance required |
+| 13B1 | 83–84 | Post-Brexit UK law: EMC Regulations 2016 (SI 2016/1091) replaces EMC Directive 2014/30/EU; Radio Equipment Regulations 2017 (SI 2017/1206) replaces RED 2014/53/EU. Equipment must bear UKCA mark (new UK-market goods) or CE mark (transitional). Modifying CE-marked equipment invalidates conformity; operator liable under Wireless Telegraphy Act 2006 |
+| 13C1 | 84–85 | CM/DM currents: I_DM = (I_A − I_B)/2 (opposite directions, fields cancel); I_CM = (I_A + I_B)/2 (same direction, fields add, cable radiates). CM on coax flows on braid outer surface. Small CM (milliamps) radiates more than large DM signal |
+| 13D1 | 85–86 | Field strength formula: E (V/m) = √(30 × P × G) / r. Derived from PFD = PG/(4πr²) and PFD = E²/(120π). E falls as 1/r; PFD as 1/r². Worked examples: 100 W + G=1 at 10 m → 5.5 V/m; rearranged for distance: r = √(30PG)/E |
+| 13E1 | 86–87 | Near/far-field boundary: r ≈ λ/(2π) ≈ 0.159λ. At HF, neighbours may be in the near field (40 m band: boundary 6.7 m; 80 m: 13.6 m; 20 m: 3.4 m). Formula E=√(30PG)/r valid only in far field; use Ofcom EMF spreadsheet for compliance at close range |
+| 13F1 | 87–88 | Four coupling mechanisms: (1) Radiated — EM wave through space, E∝1/r; remedy: distance, shielding. (2) Conducted — shared mains/cables; remedy: mains filter. (3) Inductive — H field, H∝1/r³ near field; remedy: separation, twisted pair. (4) Capacitive — E field, ∝1/r² near field; remedy: shielding, CM choke |
+| 13G1 | 88–89 | CM ferrite choke: coax or cable wound through toroid; DM flux cancels (zero core impedance); CM flux adds (high impedance). Mix 31 (1–300 MHz) broadband HF; Mix 43 (25–300 MHz) HF/VHF; Mix 61 (200 MHz–1 GHz) VHF/UHF; Mix 75 (MF/low HF). Z ∝ N². FT240-31 with 8 turns ≈ 1500–3000 Ω CM at 3–30 MHz |
+| 13H1 | 89–90 | Filter placement: LPF at TX output (suppresses harmonics before antenna, benefits all victims). HPF at victim input (blocks HF while passing VHF/UHF). BPF for specific-band receivers. BSF/notch for single-interferer rejection. Both LPF+HPF together maximises effectiveness |
+| 13I1 | 90–91 | Pi/T filter design: L = Z₀/(2πfc); C = 1/(2πfc × Z₀). Pi: shunt–series–shunt (suits high-Z source). T: series–shunt–series (suits low-Z). HP: swap element types (series C, shunt L). Worked: fc=30 MHz, Z₀=50 Ω → L=265 nH, C=106 pF. HP: fc=40 MHz, Z₀=75 Ω → C=53 pF, L=300 nH |
+| 13J1 | 91 | Cascading: attenuations add in dB. Two identical Pi sections → 2× dB attenuation. Practical limit ~80–100 dB due to component parasitics (inductor SRF, capacitor series L). Merging shunt capacitors at junction reduces component count |
+| 13K1 | 91–92 | Coax shielding: characterised by transfer impedance Z_T (Ω/m). RG-58 ~40 dB; RG-213 ~45 dB; double-screened (foil+braid) 80–100+ dB. Double-screened 40–50 dB better at VHF than single braid. Use when routing past SMPS/PLT/noise sources |
+| 13L1 | 92–93 | Mains filter: X caps across L-N (DM suppression, fail-open); Y caps from each line to earth (CM suppression); CM choke in series both conductors. Max Y cap: 4.7 nF per line (leakage: 230 V / 677 kΩ ≈ 0.34 mA; total ≤ 3.5 mA per IEC 60950). DANGER: larger Y caps → excess earth leakage, shock hazard in PME |
+| 13M1 | 93 | Notch (band-stop) filter: parallel LC shunt trap → high impedance at resonance, diverts one frequency to ground. Depth limited by inductor Q. Use for single strong interferer (FM station overloading HF RX, specific amateur band). Series LC in signal path also works (short at resonance) |
+| 13N1 | 93–94 | Equipment-specific: BC AM radio — RF rectification at semiconductor junctions, remedy ferrite + bypass cap. DVB-T — aerial amplifier LNA overload → pixelation, remedy HPF at aerial input. DECT — conducted via mains, remedy CM choke on mains. Hi-fi — rectification at audio input junctions, remedy ferrite on interconnects + bypass caps. PLT — 1–30 MHz broadband data on mains, RSGB/Ofcom complaint path. Alarms — RF immunity failure, contact manufacturer |
+| 13O1 | 94 | Telephone RFI: RF couples onto telephone pair (radiated/inductive/conducted), rectified at handset junctions → voice in phone. Remedy: ferrite CM choke on telephone cable at entry to equipment, 100 pF–1 nF bypass capacitors from each conductor to screen. ADSL noise floor rise: keep feeder ≥0.5 m from telephone cables |
+| 13P1 | 94–95 | SMPS noise: switching at 20 kHz–500 kHz produces harmonic comb across entire HF spectrum. Identify by switching devices off one at a time (comb spacing = fundamental frequency). Remedy: mains filter + CM choke on DC output leads; replace uncertified grey-market chargers (CE-marked units must meet EN 55032) |
+| 13Q1 | 95 | Complaint procedure: (1) dummy load test — verify own equipment first; (2) keep log (date/time/freq/mode/power/symptoms); (3) approach neighbour non-confrontationally, offer filter; (4) RSGB EMC Advisory Service (free to members); (5) Ofcom Spectrum Management if equipment non-compliant. Most cases resolved at step 3 or 4 |
+| 13R1 | 95 | Shack EMC: single-point star earthing eliminates earth loops. RF in audio/USB = CM current on interconnect — ferrite choke on cable cures it without affecting signal. Galvanic isolator (audio transformer or USB isolator) breaks DC/RF ground loop completely. Earth loop path: TX chassis → audio cable → PC → mains → TX |
+
+**Populate status: ✅ Ch13 — section file written 2026-09-16 (section-13-emc.md, commit 7da95a8)**
 
 ---
 

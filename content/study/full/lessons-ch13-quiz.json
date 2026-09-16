@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "chapter": 13,
+    "title": "Electromagnetic Compatibility (EMC)",
+    "level": "full",
+    "syllabus_refs": ["13A1", "13B1", "13C1", "13D1", "13E1", "13F1", "13G1", "13H1", "13I1", "13J1", "13K1", "13L1", "13M1", "13N1", "13O1", "13P1", "13Q1", "13R1"],
+    "source_content": "section-13-emc.md",
+    "question_count": 30,
+    "generated": "2026-09-16"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "13A1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "13A",
+      "section_name": "Introduction: The Amateur's Dual Role",
+      "question": "Which statement best describes the amateur radio operator's 'dual role' in the electromagnetic environment?",
+      "options": [
+        "Amateurs are exclusively potential victims of interference from domestic electronics and have no legal obligation to control their own emissions",
+        "Amateurs are both potential sources of interference (due to significant transmitter power) and potential victims of interference (from SMPS, PLT, and other domestic electronics)",
+        "Amateurs are immune from interference complaints provided they operate within their licence conditions",
+        "Amateurs are only obliged to control interference if operating above 100 W"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The amateur's dual role is explicitly acknowledged in the licence and in the RSGB Full Manual (§13A). We transmit at significant power (up to 1000 W for Full post-2024) in or near residential areas, making us potential sources of interference to neighbours. At the same time, the modern home is saturated with SMPS, PLT adapters, LED drivers, and other unintentional emitters that raise the amateur noise floor. Neither role is exclusive — the amateur must take reasonable steps to avoid causing interference while also working to mitigate the noise from the environment.",
+      "source_content": "section-13-emc.md",
+      "tags": ["dual-role", "amateur-licence", "emc-definition"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13B1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13B",
+      "section_name": "Legal Framework",
+      "question": "After the UK's departure from the EU, which two pieces of legislation replaced the EMC Directive 2014/30/EU and the Radio Equipment Directive 2014/53/EU in UK law?",
+      "options": [
+        "The Wireless Telegraphy Act 2006 and the Communications Act 2003",
+        "The Electromagnetic Compatibility Regulations 2016 (SI 2016/1091) and the Radio Equipment Regulations 2017 (SI 2017/1206)",
+        "The Product Safety Regulations 1994 and the Electrical Equipment (Safety) Regulations 2016",
+        "The Broadcasting Act 1990 and the Communications (Amendment) Regulations 2021"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The EMC Directive 2014/30/EU was transposed into UK domestic law as the Electromagnetic Compatibility Regulations 2016 (SI 2016/1091), which governs equipment that generates or is susceptible to electromagnetic disturbance. The Radio Equipment Directive (RED) 2014/53/EU was transposed as the Radio Equipment Regulations 2017 (SI 2017/1206), which governs transmitting and receiving apparatus. Both instruments remain in force post-Brexit via the European Union (Withdrawal) Act 2018.",
+      "source_content": "section-13-emc.md",
+      "tags": ["legal-framework", "emc-regulations-2016", "re-regulations-2017", "ukca"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13B1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13B",
+      "section_name": "Legal Framework",
+      "question": "An amateur modifies a CE-marked commercial transceiver by adding an external amplifier and bypassing the internal harmonic filter. The modified combination then causes interference to a neighbour's TV. What is the amateur's legal position?",
+      "options": [
+        "The CE mark on the transceiver covers the amateur from all interference claims because the base unit was compliant",
+        "The amateur is protected because the amateur licence authorises transmission, which overrides EMC law",
+        "The modification invalidates the transceiver's conformity assessment; the amateur may be personally liable under the Wireless Telegraphy Act 2006 for operating a station that causes undue interference",
+        "Responsibility lies entirely with the TV manufacturer to ensure immunity to HF signals"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Modifying equipment — adding an amplifier, removing filters, bypassing protection circuitry — invalidates the equipment's conformity assessment under the EMC Regulations 2016. The CE or UKCA mark no longer applies to the modified configuration. The amateur licence authorises transmission within its conditions; it does not override EMC law or the amateur's duty under the Wireless Telegraphy Act 2006 not to cause undue interference. If the modified station causes interference, the operator bears personal legal responsibility under WT Act 2006.",
+      "source_content": "section-13-emc.md",
+      "tags": ["legal-liability", "ce-mark", "wta-2006", "modification"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13C1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "13C",
+      "section_name": "Common Mode and Differential Mode Currents",
+      "question": "What is the key difference between differential mode (DM) and common mode (CM) current in a cable pair?",
+      "options": [
+        "DM current flows only in AC circuits; CM current flows only in DC circuits",
+        "DM current flows in opposite directions in the two conductors (fields cancel); CM current flows in the same direction in both (fields add and radiate)",
+        "DM current is carried by the inner conductor of coax; CM current is carried by the braid inner surface only",
+        "DM current is the wanted signal above 30 MHz; CM current is the wanted signal below 30 MHz"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Differential mode current flows in opposite directions in the two conductors of a pair — down one conductor and back on the other. The magnetic fields produced are opposite and nearly equal, so they cancel at a distance. This is the wanted signal current. Common mode current flows in the same direction in both conductors simultaneously, driven by parasitic paths to ground. The fields add constructively, making the cable act as a single-conductor antenna. Even small CM currents (milliamps) can produce field strengths that exceed regulatory limits.",
+      "source_content": "section-13-emc.md",
+      "tags": ["common-mode", "differential-mode", "cable-radiation", "emc-fundamentals"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13C1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13C",
+      "section_name": "Common Mode and Differential Mode Currents",
+      "question": "If the currents in conductor A and conductor B of a cable are I_A = 120 mA and I_B = 100 mA (both flowing in the same direction), what is the common-mode current I_CM?",
+      "options": [
+        "I_CM = 10 mA",
+        "I_CM = 110 mA",
+        "I_CM = 20 mA",
+        "I_CM = 220 mA"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "I_CM = (I_A + I_B) / 2 = (120 + 100) / 2 = 220 / 2 = 110 mA. The complementary differential-mode component is I_DM = (I_A − I_B) / 2 = (120 − 100) / 2 = 10 mA. In an ideal balanced cable I_A = −I_B, giving I_CM = 0. Any asymmetry in conductor currents produces a non-zero I_CM that radiates. In this example, a relatively small current asymmetry (20 mA DM component) is riding on a large CM current of 110 mA — the DM signal is almost entirely common mode in this case.",
+      "source_content": "section-13-emc.md",
+      "tags": ["cm-formula", "i-cm", "i-dm", "calculation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13C1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13C",
+      "section_name": "Common Mode and Differential Mode Currents",
+      "question": "A coaxial feeder carries a DM signal of 500 mA and a CM current of 5 mA on the braid outer surface. Why is the CM current the dominant EMC concern despite being 100 times smaller?",
+      "options": [
+        "Because CM current flows at a different frequency to the DM signal and creates intermodulation products",
+        "Because the DM currents flow in opposite directions on inner conductor and braid inner surface and their fields cancel at distance; the CM current on the braid outer surface flows uncompensated and radiates from the whole feeder length as an antenna",
+        "Because CM current causes resistive heating in the ferrite choke, which creates secondary harmonics",
+        "Because the CM current oscillates at twice the DM frequency and coincides with second-harmonic emission limits"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In coaxial cable, the DM return current flows on the inner surface of the braid. The inner conductor and the braid inner surface form the DM pair — their fields cancel in the far field. The braid outer surface is a separate conductor as far as CM is concerned. Any CM current on the outer braid surface has no opposing path — it radiates from the entire length of the feeder as if the feeder were a monopole antenna. Even at 5 mA (100× less than the 500 mA DM current), the CM current radiating from a 10 m feeder at 14 MHz can produce field strengths at 10 m distance exceeding 1 V/m. This is why braid-breaker chokes are placed at the antenna feedpoint.",
+      "source_content": "section-13-emc.md",
+      "tags": ["coax-cm", "braid-outer", "radiation", "cm-dominance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13D1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13D",
+      "section_name": "Transmitted Field Strength",
+      "question": "Which formula gives the RMS electric field strength E (V/m) at distance r (metres) from an antenna fed with power P (watts) and having numeric gain G?",
+      "options": [
+        "E = (30 × P × G) / r²",
+        "E = √(30 × P × G) / r",
+        "E = √(120π × P × G) / r",
+        "E = (P × G) / (4π × r²)"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The formula E = √(30PG)/r is derived in two steps. Starting from Power Flux Density PFD = PG/(4πr²) in the far field, and using the free-space relationship PFD = E²/(120π), combining gives E² = 120π × PG/(4πr²) = 30PG/r², hence E = √(30PG)/r. Note: E falls as 1/r (not 1/r²) — it is PFD (watts per square metre) that falls as 1/r². Option (d) is the PFD formula, not E. G is the numeric gain ratio, not in dBi.",
+      "source_content": "section-13-emc.md",
+      "tags": ["field-strength-formula", "pfd", "e-field", "derivation"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13D",
+      "section_name": "Transmitted Field Strength",
+      "question": "A Full-licence operator transmits 400 W into a unity-gain antenna (G = 1). What is the approximate electric field strength at 20 m distance?",
+      "options": [
+        "approximately 2.7 V/m",
+        "approximately 5.5 V/m",
+        "approximately 11 V/m",
+        "approximately 55 V/m"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "E = √(30 × P × G) / r = √(30 × 400 × 1) / 20 = √12,000 / 20 = 109.5 / 20 ≈ 5.5 V/m. Common errors: option (c) 11 V/m would result from using r = 10 m instead of 20 m — halving the distance doubles E. Option (d) 55 V/m results from omitting the square root (computing 30PG/r instead of √(30PG)/r). Option (a) 2.7 V/m would correspond to r ≈ 40 m. The calculation confirms that 400 W at 20 m produces a field strength of 5.5 V/m — above most consumer electronics susceptibility levels of 1–3 V/m.",
+      "source_content": "section-13-emc.md",
+      "tags": ["field-strength-calculation", "numerical", "400w", "full-power"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13D1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13D",
+      "section_name": "Transmitted Field Strength",
+      "question": "A piece of consumer electronics becomes susceptible to interference above a field strength of 3 V/m. Your transmitter produces 100 W into a unity-gain antenna (G = 1). What is the minimum distance at which this equipment can safely be placed?",
+      "options": [
+        "approximately 5.5 m",
+        "approximately 10 m",
+        "approximately 18.3 m",
+        "approximately 30 m"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Rearranging E = √(30PG)/r for r: r = √(30PG)/E = √(30 × 100 × 1) / 3 = √3000 / 3 = 54.77 / 3 ≈ 18.3 m. The equipment needs to be over 18 m away for the field strength to fall below 3 V/m. Note that at r = 10 m (option b), E = √3000/10 = 5.5 V/m, which is above the 3 V/m threshold. This calculation confirms that high-power HF transmitters can produce interference-level field strengths at normal domestic distances.",
+      "source_content": "section-13-emc.md",
+      "tags": ["field-strength-rearranged", "distance-calculation", "susceptibility-threshold"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13E1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13E",
+      "section_name": "Near Field vs Far Field",
+      "question": "What is the approximate distance marking the boundary between the near field and the far field for an antenna, expressed in terms of wavelength?",
+      "options": [
+        "r ≈ λ (one full wavelength)",
+        "r ≈ λ / (2π) ≈ 0.159 λ",
+        "r ≈ 2λ² / D (Fraunhofer distance)",
+        "r ≈ λ / 4 (quarter wavelength)"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "For a simple wire antenna, the near-field/far-field boundary occurs at r ≈ λ/(2π) ≈ 0.159λ, the distance at which stored reactive energy equals radiated energy. (The Fraunhofer distance 2D²/λ applies to aperture antennas with large physical dimension D, such as dish reflectors — not relevant here.) At this boundary the field impedance equals 120π (377 Ω, the free-space wave impedance) and the fields transition to a propagating plane wave. Inside this boundary, E and H do not have the 120π ratio, and the formula E = √(30PG)/r does not apply.",
+      "source_content": "section-13-emc.md",
+      "tags": ["near-field", "far-field", "boundary", "wavelength"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13E1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13E",
+      "section_name": "Near Field vs Far Field",
+      "question": "A Full-licence operator in a typical UK semi-detached house transmits on the 20 m band (14.2 MHz). A neighbour's house is approximately 8 m away. What is the near-field boundary at 14.2 MHz, and what implication does this have for the field-strength formula?",
+      "options": [
+        "Boundary ≈ 33 m — the neighbour is well inside the near field; the formula E = √(30PG)/r significantly overestimates the field at that distance",
+        "Boundary ≈ 3.4 m — the neighbour is in the far field; E = √(30PG)/r applies directly and gives a reliable compliance figure",
+        "Boundary ≈ 3.4 m — the neighbour at 8 m is in the far field, but the formula still overestimates because it assumes free-space conditions without accounting for building attenuation",
+        "Boundary ≈ 0.33 m — the neighbour is always in the far field for HF bands"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At 14.2 MHz, λ = 300/14.2 ≈ 21.1 m. Near-field boundary = λ/(2π) = 21.1/6.28 ≈ 3.4 m. At 8 m the neighbour is in the far field (8 m > 3.4 m), so E = √(30PG)/r does give a valid approximation. However, the formula assumes free-space propagation and isotropic conditions — in practice, building materials provide some attenuation and ground effects alter the field pattern. For formal EMF compliance at distances beyond the near-field boundary, the formula is the accepted first-order estimate. (Compare with 40 m band at 7 MHz where the near-field boundary is ~6.7 m and typical neighbours may be inside it.)",
+      "source_content": "section-13-emc.md",
+      "tags": ["near-field-boundary", "20m-band", "calculation", "far-field-formula-validity"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13F1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13F",
+      "section_name": "Coupling Mechanisms",
+      "question": "Which of the four EMC coupling mechanisms is characterised by interference travelling along shared mains wiring, with the symptom that the victim equipment is affected wherever it is plugged in on the same circuit?",
+      "options": [
+        "Radiated coupling — the mains cable acts as a receiving antenna",
+        "Inductive coupling — the mains cable picks up the transmitter's near-field magnetic flux",
+        "Conducted coupling — RF from the transmitter's SMPS conducts along the shared mains and reaches the victim via the mains conductors",
+        "Capacitive coupling — stray capacitance between the transmitter enclosure and the mains cable"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Conducted coupling travels along a shared conductor — most commonly the mains wiring. The transmitter's power supply (SMPS or linear) can couple RF back onto the mains. This conducted RF then reaches any equipment sharing the same mains circuit. The diagnostic characteristic is that interference follows the victim to every socket on the circuit — moving the victim to a different room on the same ring main makes no difference. Moving it to a different circuit (e.g. fed from a separate consumer unit) removes the interference. Remedy: a mains filter (CM choke + X/Y capacitors) at the transmitter output, or at the victim mains entry.",
+      "source_content": "section-13-emc.md",
+      "tags": ["conducted-coupling", "mains-interference", "coupling-mechanisms"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13F1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13F",
+      "section_name": "Coupling Mechanisms",
+      "question": "A neighbour reports that their DECT phone loses audio quality only when you are transmitting on 80 m (3.5 MHz), but only when the phone is within about 1 m of its base station. Moving the base station to a different room (on a different mains circuit) has no effect. Which coupling mechanism is most likely, and what remedy is appropriate?",
+      "options": [
+        "Conducted mains coupling — fit a mains filter at the transmitter; the different circuit test was inconclusive because both circuits share the same earth",
+        "Capacitive coupling — the electric field from the transmitter couples directly onto the DECT aerial lead; fit a shielded cable to the DECT base",
+        "Radiated coupling via the DECT power lead or telephone cable acting as an antenna at 80 m wavelengths; a ferrite CM choke on the DECT power lead and telephone cable is the appropriate remedy",
+        "Inductive coupling — the 80 m antenna's near-field magnetic flux is inducing a voltage in the DECT circuit board loops; mu-metal shielding around the DECT base is required"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "The clue is that moving to a different mains circuit has no effect (eliminating conducted coupling as the primary path). The 80 m wavelength is 85 m, so λ/2π ≈ 13.6 m — the DECT base within 1 m is deep in the near field where fields are extremely strong. However, the most likely entry point is still the connecting cable (power lead or telephone cable) acting as an antenna, since DECT operates at 1880–1900 MHz and the base station has no designed immunity for 3.5 MHz. A ferrite CM choke wound on the DECT power lead and on the telephone cable prevents 80 m RF from entering the base station's circuitry. This targets the most likely path (radiated coupling onto cables) before attempting more complex remedies.",
+      "source_content": "section-13-emc.md",
+      "tags": ["radiated-coupling", "dect", "80m", "cm-choke-remedy", "coupling-diagnosis"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13G1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13G",
+      "section_name": "Common-Mode Ferrite Chokes",
+      "question": "When coaxial cable is wound through a ferrite toroid to form a CM choke, what happens to the DM signal on the inner conductor, and why?",
+      "options": [
+        "The DM signal is attenuated because the inductor's impedance Z = 2πfL affects both CM and DM currents equally",
+        "The DM signal is unaffected because the DM return current on the braid inner surface creates flux that opposes the flux from the inner conductor, giving zero net flux and zero core impedance to the DM path",
+        "The DM signal is slightly attenuated by the ferrite's resistive loss at high frequencies, but this is within acceptable limits",
+        "The DM signal is enhanced because the ferrite concentrates the magnetic field around the cable, reducing radiation loss"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "In a coaxial cable, the DM signal current flows on the inner conductor and the return current flows on the inner surface of the braid. When the coax is wound through a ferrite toroid, these two DM currents produce magnetic flux in the core that is equal and opposite — they cancel, producing zero net flux. With zero net flux change, the toroid presents zero inductance (and therefore zero impedance) to the DM path. Only CM current — which flows in the same direction on both conductors (outer braid surface) — produces a net flux in the core and sees high impedance. This selectivity is the key property of a properly wound CM choke.",
+      "source_content": "section-13-emc.md",
+      "tags": ["ferrite-choke", "dm-signal", "flux-cancellation", "coax-choke"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13G1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13G",
+      "section_name": "Common-Mode Ferrite Chokes",
+      "question": "You need to fit a CM ferrite choke to suppress interference entering a 144 MHz masthead preamplifier via the feeder braid outer surface. Which ferrite mix is most appropriate, and why?",
+      "options": [
+        "Mix 31 — it covers 1–300 MHz and is the standard first choice for all amateur HF and VHF applications",
+        "Mix 75 — it has very high permeability and provides maximum impedance at all frequencies",
+        "Mix 61 — its effective frequency range is 200 MHz–1 GHz, placing 144 MHz near the high end of its optimum range and providing more impedance at VHF than Mix 31",
+        "Mix 43 — optimised for 25–300 MHz, centred on 144 MHz and providing the highest impedance at that frequency compared to any other mix"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "Mix 31 (Fair-Rite) is optimised for 1–300 MHz and is the best general HF choice. At 144 MHz it still provides useful impedance, but Mix 61 (optimised for 200 MHz–1 GHz) provides significantly higher impedance in the VHF range. Mix 43 is optimised for 25–300 MHz and peaks around 100–200 MHz — it also gives good results at 144 MHz, often higher than Mix 31. Mix 75 is optimised for MF/low HF (0.5–30 MHz) and has very low impedance at 144 MHz. For a 2 m masthead application, Mix 61 is the correct choice; Mix 43 is an acceptable alternative. Mix 31 is widely available and better than nothing, but not optimal at VHF.",
+      "source_content": "section-13-emc.md",
+      "tags": ["ferrite-mix", "mix-61", "vhf-choke", "144mhz", "material-selection"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13H1",
+      "level": "full",
+      "difficulty": "easy",
+      "section_code": "13H",
+      "section_name": "Filter Types and Placement",
+      "question": "Where should a low-pass filter (LPF) be placed to suppress harmonics from an HF transmitter, and why is this position preferred?",
+      "options": [
+        "At the victim equipment input — this blocks harmonics only from reaching that specific piece of equipment",
+        "Between the PA and the antenna tuner — so that both the tuner and the antenna also benefit",
+        "At the transmitter RF output, between the transceiver and the feeder — this suppresses harmonics before they reach the antenna and therefore reduces interference to all potential victims simultaneously",
+        "At the mains input to the transceiver — a mains filter acts as both a low-pass filter and an LPF for RF"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A LPF at the transmitter output suppresses all harmonics before they enter the feeder and antenna system. Since the filter acts before the antenna, it benefits all potential victims simultaneously — the suppressed harmonic never reaches the antenna and cannot radiate to anyone. A filter at the victim's input only protects that one piece of equipment and provides no benefit to other victims. Fitting the filter after the antenna tuner (if present) is acceptable since the tuner passes the fundamental and the LPF then rejects harmonics. A mains filter is for conducted RF on the mains, not for harmonic suppression on the RF output.",
+      "source_content": "section-13-emc.md",
+      "tags": ["lpf-placement", "harmonic-suppression", "tx-output", "filter-position"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13H1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13H",
+      "section_name": "Filter Types and Placement",
+      "question": "A neighbour's Freeview (DVB-T) receiver shows pixelation and loses multiple channels simultaneously when you transmit on 14 MHz. A low-pass filter is already fitted at your transmitter output and is confirmed functional. What additional filter would you recommend fitting, and where?",
+      "options": [
+        "A band-stop notch filter at the transmitter output, tuned to reject 14 MHz before it reaches the antenna",
+        "A high-pass filter at the TV aerial input to the distribution amplifier, with cut-off frequency around 450 MHz — blocking HF and VHF while passing the Freeview UHF channels",
+        "A band-pass filter centred on 14 MHz at the TV input, to further attenuate the 14 MHz signal",
+        "A second low-pass filter at the transmitter output in cascade — the total attenuation should then be sufficient"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The symptom — multiple channels lost simultaneously, correlating with transmitter activity — points to overload of the aerial distribution amplifier's LNA. The LNA is being driven into non-linearity by the 14 MHz signal, producing intermodulation products across many UHF channels. Since the LPF at the transmitter is already fitted and functional, the remaining interference path is radiated (your antenna is transmitting the fundamental at 14 MHz, which is legitimate). The remedy at the victim end is a high-pass filter at the TV aerial input with fc around 450 MHz — this blocks all HF and VHF from reaching the LNA while passing the Freeview UHF channels (470–790 MHz) with negligible loss. This is the textbook remedy for TV-aerial overload.",
+      "source_content": "section-13-emc.md",
+      "tags": ["hpf-tv", "aerial-amplifier-overload", "dvb-t", "filter-placement"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13I",
+      "section_name": "Pi and T Filter Design",
+      "question": "Calculate the component values for a single-section Pi low-pass filter with a cut-off frequency of 35 MHz and a system impedance of 50 Ω. Which values are correct?",
+      "options": [
+        "L = 455 nH, C = 182 pF",
+        "L = 227 nH, C = 91 pF",
+        "L = 91 nH, C = 227 pF",
+        "L = 182 nH, C = 45 pF"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Using the standard formulas: L = Z₀ / (2π × fc) = 50 / (2π × 35 × 10⁶) = 50 / 219,911,486 ≈ 227 nH. C = 1 / (2π × fc × Z₀) = 1 / (2π × 35 × 10⁶ × 50) = 1 / 10,995,574,288 ≈ 91 pF. Pi topology: one 91 pF shunt capacitor at the input, one 227 nH series inductor, one 91 pF shunt capacitor at the output. This filter passes 10/15/20/10m amateur bands and attenuates harmonics at 70 MHz and above. Nearest standard values would be C = 82 pF or 100 pF, L = 220 nH or 270 nH.",
+      "source_content": "section-13-emc.md",
+      "tags": ["pi-filter-design", "lp-filter-calculation", "35mhz", "component-values"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13I1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13I",
+      "section_name": "Pi and T Filter Design",
+      "question": "How do the component formulas change when converting a single-section LP Pi filter to a single-section HP Pi filter at the same cut-off frequency and system impedance?",
+      "options": [
+        "The formulas are the same; only the component physical size changes because HP inductors carry higher peak current",
+        "The L formula and C formula are swapped in their roles: the shunt capacitors become shunt inductors, the series inductor becomes a series capacitor, using L = Z₀/(2πfc) for the shunt inductor and C = 1/(2πfc × Z₀) for the series capacitor",
+        "The L formula is doubled and the C formula is halved to account for the reversed frequency response",
+        "HP Pi filters cannot be designed from LP formulas — a completely different derivation using transmission line theory is needed"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Converting LP to HP is a direct element-type swap: wherever LP has a shunt capacitor, HP has a shunt inductor; wherever LP has a series inductor, HP has a series capacitor. The component value formulas remain: L = Z₀/(2πfc) and C = 1/(2πfc × Z₀) — but now L is the shunt element and C is the series element. For example, a HP Pi filter for fc = 40 MHz, Z₀ = 75 Ω: C_series = 1/(2π × 40×10⁶ × 75) ≈ 53 pF; L_shunt = 75/(2π × 40×10⁶) ≈ 298 nH. Same numerical procedure, swapped element assignments. This is the standard LP-to-HP frequency transformation.",
+      "source_content": "section-13-emc.md",
+      "tags": ["hp-filter", "lp-to-hp-conversion", "pi-filter", "element-swap"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13J1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13J",
+      "section_name": "Cascading Filters",
+      "question": "A single 3-element Pi LP filter provides 36 dB of attenuation at a frequency two octaves above its cut-off. If two identical sections are cascaded, what attenuation is expected at the same frequency, and what practical factor limits the benefit of adding more sections?",
+      "options": [
+        "72 dB; the limit is increased insertion loss in the passband reducing signal strength",
+        "108 dB; cascading always triples the attenuation",
+        "72 dB; physical parasitic effects (inductor self-resonance, capacitor series inductance) limit practical attenuation to approximately 80–100 dB regardless of how many sections are added",
+        "36 dB; cascaded filters do not add attenuation because impedance mismatches cancel the benefit"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "When filter sections are cascaded their attenuations add in dB. Two identical sections each providing 36 dB give 72 dB total. Three sections give 108 dB — but only in theory. In practice, real inductors have a self-resonant frequency (SRF) above which they behave as capacitors rather than inductors; real capacitors have series inductance creating a series resonance. At VHF and above, these parasitics degrade filter performance significantly. The practical limit of useful attenuation is approximately 80–100 dB regardless of how many ideal-value sections are added, because the parasitic element resonances bypass the filtering action at high frequencies. This is why PCB layout and component selection matter as much as the circuit topology for VHF-stop filters.",
+      "source_content": "section-13-emc.md",
+      "tags": ["cascading-filters", "attenuation-addition", "parasitics", "self-resonance"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13K1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13K",
+      "section_name": "Coaxial Cable Choice",
+      "question": "A shack installation routes the feeder from a 2 m mast-mounted preamplifier through a loft space containing several switch-mode power supplies. Why should double-screened coaxial cable be specified for this run, and what shielding advantage does it provide?",
+      "options": [
+        "Double-screened coax has lower loss, which compensates for the additional cable length in the loft route",
+        "Double-screened coax (foil inner shield + outer braid) provides 40–50 dB more shielding at VHF than single-braid coax, preventing SMPS-generated noise from coupling onto the inner conductor and desensitising the preamplifier",
+        "Double-screened coax is required by the RE Regulations 2017 whenever cable passes within 1 m of an SMPS",
+        "Double-screened coax reduces the velocity factor, shortening the effective electrical length and reducing intermodulation"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "Standard single-braid coax (e.g. RG-58 ~95% braid coverage, ~40 dB shielding) has small gaps in the braid that allow RF to couple through. At VHF (144 MHz), the coupling through these gaps is more effective than at HF because a millimetre-scale gap is a non-negligible fraction of the wavelength. Double-screened coax (e.g. RG-214, Ecoflex, Aircom) uses a continuous foil layer under the outer braid — the foil eliminates the gaps, providing 100+ dB shielding effectiveness. Running this through a noisy SMPS-filled loft space prevents the preamp noise floor from being raised by conducted/radiated SMPS noise coupling onto the feeder inner conductor.",
+      "source_content": "section-13-emc.md",
+      "tags": ["double-screened-coax", "shielding-effectiveness", "vhf-feeder", "smps-noise"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13L1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13L",
+      "section_name": "Mains Interference Filters",
+      "question": "In a mains EMC filter, what is the function of X capacitors and how do they differ from Y capacitors?",
+      "options": [
+        "X capacitors connect from Live to Neutral and suppress differential-mode mains noise; Y capacitors connect from each line to Earth and suppress common-mode noise",
+        "X capacitors connect from each line to Earth (CM suppression); Y capacitors connect across Live to Neutral (DM suppression)",
+        "X capacitors are in series with the mains supply to block RF; Y capacitors are in parallel with the load to provide a low-impedance RF path",
+        "X and Y capacitors both connect across the mains but are rated for different voltage classes: X for 240 V AC, Y for 415 V three-phase"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "X capacitors are connected directly across the mains conductors (Live to Neutral). They present low impedance at RF to differential-mode noise appearing as a voltage between L and N. They are designed to fail open-circuit safely. Y capacitors are connected from each line conductor to the protective earth (L to E and N to E). They divert CM noise currents to earth, where they are safely dissipated. Y capacitors must fail open-circuit and are limited in value to prevent dangerous earth leakage currents (maximum 4.7 nF per line). The CM choke in series with both conductors completes the filter.",
+      "source_content": "section-13-emc.md",
+      "tags": ["x-capacitor", "y-capacitor", "mains-filter", "dm-cm"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13L1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13L",
+      "section_name": "Mains Interference Filters",
+      "question": "An amateur constructs a mains RF filter using Y capacitors of 47 nF (10× the maximum Y2 class value) from each mains line to earth, reasoning that larger capacitors will provide better CM suppression. Why is this dangerous, and what is the maximum safe Y capacitor value?",
+      "options": [
+        "47 nF Y capacitors will resonate with the mains wiring inductance and can produce overvoltages; the maximum is 10 nF",
+        "47 nF Y capacitors increase earth leakage current to dangerous levels. At 50 Hz, 47 nF presents 67.7 kΩ; 230 V drives 3.4 mA per capacitor — with two capacitors that is 6.8 mA, exceeding the 3.5 mA IEC 60950 limit and the ELCB trip threshold. Maximum Y capacitor value is 4.7 nF per line",
+        "47 nF is unsafe because it exceeds the voltage rating of standard Y capacitors, causing dielectric breakdown under normal 230 V AC",
+        "The maximum Y capacitor value is 100 nF; 47 nF is safe but simply less effective than the maximum"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At 50 Hz, the reactance of 47 nF is X_C = 1/(2π × 50 × 47×10⁻⁹) = 1/(14,765) ≈ 67.7 kΩ. Earth leakage current per capacitor = 230 V / 67.7 kΩ ≈ 3.4 mA. With Y caps on both L and N, total earth leakage ≈ 6.8 mA — nearly double the IEC 60950 safe limit of 3.5 mA total and likely to trip an ELCB (Earth Leakage Circuit Breaker, 30 mA RCD) under transient conditions. In a PME installation, elevated earth potential during a supply fault can drive lethal current through this path. The maximum safe Y2 capacitor is 4.7 nF per line, giving ≈ 0.34 mA each, 0.68 mA total — well within the 3.5 mA limit.",
+      "source_content": "section-13-emc.md",
+      "tags": ["y-capacitor-safety", "earth-leakage", "4.7nf", "iec60950", "mains-filter-safety"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13M1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13M",
+      "section_name": "Notch Filters",
+      "question": "What type of filter is most appropriate to suppress a single strong FM broadcast station that is overloading your HF receiver's front end, and what is the operating principle?",
+      "options": [
+        "A low-pass filter with fc below the FM broadcast band (87.5–108 MHz) — this blocks the entire FM band while passing HF",
+        "A high-pass filter with fc below the FM band — this would pass FM but block HF, making the problem worse",
+        "A band-stop (notch) filter tuned to the specific FM station frequency — a parallel LC resonant circuit placed across the signal path presents very high impedance at resonance, diverting the interfering frequency to ground with minimal effect on adjacent frequencies",
+        "A band-pass filter centred on the desired amateur frequency — this passes only the wanted signal"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A notch (band-stop) filter rejects a specific narrow frequency band while passing all others with minimal loss. For an FM station at (for example) 97.6 MHz overloading an HF receiver, a notch at that frequency removes it from the signal path without affecting HF. A parallel LC resonant circuit (shunt trap) placed across the signal line presents very high impedance at the resonant frequency, diverting that frequency to ground. The notch depth is determined by inductor Q — high-Q air-wound inductors give deep, narrow notches. Note: a low-pass filter with fc below 87.5 MHz (option a) would also work but would remove all FM, which may not be desired and adds passband insertion loss; a notch is more surgical.",
+      "source_content": "section-13-emc.md",
+      "tags": ["notch-filter", "band-stop", "fm-overload", "parallel-lc", "front-end-protection"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13N1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13N",
+      "section_name": "Equipment-Specific Interference",
+      "question": "A neighbour's medium-wave AM radio produces voice audio when you transmit SSB on 14 MHz, despite the radio being tuned to a broadcast station at 1 MHz. What is the mechanism, and what remedy is appropriate?",
+      "options": [
+        "The radio's IF filter is too wide and passes 14 MHz as a second IF signal; the remedy is to fit an external IF filter",
+        "RF rectification: the 14 MHz SSB signal couples onto the radio's antenna or speaker leads and is rectified by semiconductor junctions in the audio circuit, producing SSB demodulation at audio frequencies. Remedy: ferrite choke on the radio antenna lead plus a small bypass capacitor to ground at the audio input",
+        "The 14 MHz signal is harmonically related to 1 MHz (14th harmonic) and beats with the broadcast carrier; the remedy is to reduce transmitter power to below 50 W",
+        "Intermodulation between 14 MHz and the 1 MHz broadcast creates a beat at 13 MHz which is within the radio's IF passband; a mains filter at the transmitter resolves this"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "This is the classic RF rectification scenario. The 14 MHz SSB signal at significant field strength couples onto the radio's connecting leads (antenna wire, speaker leads) and enters the audio amplifier stage. Transistor and diode junctions in the audio path act as non-linear detectors — they rectify (demodulate) the amplitude-modulated envelope of the SSB signal, producing audio output at baseband frequencies. The effect occurs at the semiconductor junction level, below the radio's IF stage, so no amount of selectivity at the RF or IF stage will stop it. The remedy is to prevent the RF from reaching the junctions: a ferrite CM choke on the antenna lead blocks RF entry there; a small capacitor (100 pF) from the audio input to the circuit screen provides an RF bypass that diverts RF before it reaches the junction.",
+      "source_content": "section-13-emc.md",
+      "tags": ["rf-rectification", "mw-radio", "ssb", "semiconductor-junction", "ferrite-remedy"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13N1",
+      "level": "full",
+      "difficulty": "hard",
+      "section_code": "13N",
+      "section_name": "Equipment-Specific Interference",
+      "question": "Which statement correctly describes PLT (Powerline Telecommunications) as an interference source for amateur HF, and what regulatory position does PLT occupy in the UK?",
+      "options": [
+        "PLT operates above 300 MHz using the mains as a waveguide; it is fully licensed by Ofcom and amateurs have no regulatory basis to complain",
+        "PLT uses 1–30 MHz to carry broadband data over mains wiring, directly overlapping HF amateur bands. It is not banned in the UK; Ofcom has issued guidance but enforcement is limited. Complaints are handled by RSGB EMC Advisory Service escalating to Ofcom Spectrum Management",
+        "PLT is regulated under the RE Regulations 2017 and must meet strict emission limits below 1 V/m at 10 m; amateurs who demonstrate a PLT violates this limit can require Ofcom to act immediately",
+        "PLT adapters operate on 1–30 MHz but are exempt from EMC regulations because they use an existing licensed infrastructure (the mains)"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "PLT (also known as powerline networking or HomePlug) uses the mains wiring as a transmission medium, operating at frequencies from approximately 1–30 MHz — the entire HF amateur spectrum. The mains wiring then radiates this as an unintentional antenna throughout the building and neighbourhood. PLT is the single most significant source of HF noise in many UK urban areas. Despite extensive RSGB campaigning, Ofcom has not banned PLT — it issues guidance on compliance with the RE Regulations 2017 but enforcement is complex. Amateurs who suffer PLT interference should log evidence, contact the RSGB EMC Advisory Service, and if the PLT can be shown to exceed emission limits, report to Ofcom Spectrum Management. The RSGB continues to campaign for tighter enforcement.",
+      "source_content": "section-13-emc.md",
+      "tags": ["plt", "powerline-telecoms", "hf-interference", "ofcom", "rsgb-emc"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13O1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13O",
+      "section_name": "Telephone Line RFI",
+      "question": "A neighbour reports hearing voice from your SSB transmission in their telephone handset when you are on 7 MHz. The telephone is a PSTN corded phone. What is the most likely entry path and primary remedy?",
+      "options": [
+        "RF enters via the telephone exchange as a conducted path; the remedy is to contact BT to install a filter at the exchange",
+        "RF couples onto the telephone line (which acts as an antenna at 40 m wavelengths) and is rectified by semiconductor junctions in the handset microphone or earpiece circuit. Primary remedy: ferrite CM choke wound on the telephone cable at the point where it enters the telephone, plus a small bypass capacitor (100 pF–1 nF) from each conductor to the handset screen",
+        "The telephone carrier frequency of 300–3400 Hz audio bandwidth mixes with 7 MHz to produce audible beats; a narrowband filter at the telephone junction box will remove this",
+        "RF enters through the mains supply to the phone's ringer circuit; a mains filter at the phone socket resolves this"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "At 7 MHz (λ ≈ 43 m), a typical telephone cord (1–5 m) is a significant fraction of a wavelength and acts as an antenna. RF couples onto the unbalanced telephone line and reaches the handset's internal circuitry. The carbon or electret microphone element, or the earpiece's ferrite magnetic circuit, contains semiconductor-like junctions that rectify the RF — demodulating the SSB audio envelope and producing audible voice. (This is the same rectification mechanism as in BC radios.) The remedy is to prevent the RF entering: a ferrite CM choke wound from 4–6 turns of the telephone cable through an FT82-31 or FT50-31 toroid presents high CM impedance at 7 MHz without affecting audio frequencies. A 100 pF–1 nF bypass from each conductor to earth/screen at the handset entry provides additional RF decoupling.",
+      "source_content": "section-13-emc.md",
+      "tags": ["telephone-rfi", "40m-band", "rf-rectification", "cm-choke-telephone"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13P1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13P",
+      "section_name": "Computer and SMPS RFI",
+      "question": "On your SDR receiver's waterfall display you observe a regular comb of narrowband signals spaced approximately 200 kHz apart across the entire HF spectrum. When you switch off a laptop charger connected to a nearby socket, the comb disappears. What type of interference is this, and what is the appropriate remedy?",
+      "options": [
+        "An intermodulation product generated within the SDR dongle itself — the remedy is to fit an attenuator at the SDR input",
+        "SMPS switching noise: the laptop charger switches at approximately 200 kHz, producing harmonics at 200, 400, 600 kHz ... across HF as conducted emissions on the mains and radiated emissions from the charger leads. Remedy: fit a CE-marked quality charger with adequate internal filtering, or add an IEC inlet mains filter module in series with the charger supply",
+        "PLT interference from a neighbour — the regular 200 kHz spacing is the PLT carrier spacing. Remedy: contact RSGB EMC Advisory Service",
+        "Clock harmonics from the laptop processor — the 200 MHz clock aliases into HF via the SDR's ADC. Remedy: replace the SDR with a higher-quality unit"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A comb of regularly spaced narrowband signals across HF that disappears when the charger is removed is the classic signature of SMPS switching harmonics. The charger switches transistors at (in this example) 200 kHz to regulate the output voltage. The rich harmonic content of the switching waveform produces noise at 200, 400, 600 kHz, 1 MHz, 1.2 MHz, ... up through HF. These conduct back onto the mains and radiate from the charger and its leads. Cheap grey-market chargers often have no internal filtering. The remedy is either to replace with a CE-marked quality charger (which must meet EN 55032 conducted emission limits) or to add an external IEC mains filter in series with the charger input. A CM choke on the DC output leads of the charger addresses conducted noise on the DC side.",
+      "source_content": "section-13-emc.md",
+      "tags": ["smps-noise", "laptop-charger", "hf-comb", "switching-harmonics", "en55032"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13Q1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13Q",
+      "section_name": "The Complaint Procedure",
+      "question": "A neighbour contacts you to say your amateur radio transmissions are interfering with their television. In the correct complaint procedure, what should be your very first action before approaching the neighbour or contacting any authority?",
+      "options": [
+        "Contact the RSGB EMC Advisory Service immediately so they can advise on the likely cause before you speak to the neighbour",
+        "Ask the neighbour to demonstrate the interference with you present, so you can identify the coupling mechanism",
+        "Replace your antenna with a lower-gain type to reduce field strength at the neighbour's address",
+        "Test on a dummy load — connect a dummy load in place of the antenna and observe whether the reported interference disappears, to establish whether the source is your transmitted signal (harmonics, splatter) or an unrelated radiated interference path"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "Step 1 of the complaint procedure is to verify your own equipment first — specifically by substituting a dummy load for the antenna. If the neighbour's interference disappears when you transmit into the dummy load, the problem is in your transmitted signal (harmonics reaching the antenna and radiating). If it does not disappear, the problem exists regardless of your antenna and the interference is likely not from your transmissions (or is conducted via the mains rather than radiated). Knowing this before approaching the neighbour or any authority ensures you approach the conversation honestly and avoids falsely admitting fault before you know if it is your fault. Check spurious emissions and ensure your LPF is functional before any further steps.",
+      "source_content": "section-13-emc.md",
+      "tags": ["complaint-procedure", "dummy-load-test", "self-verification", "first-step"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "13R1",
+      "level": "full",
+      "difficulty": "medium",
+      "section_code": "13R",
+      "section_name": "Shack EMC: Earth Loops and RF in Equipment",
+      "question": "You are experiencing RF in your logging PC's audio card output when you transmit. The interference appears as your own transmitted audio overlaid on the receiver audio. Disconnecting the audio cable between the transceiver and PC removes the problem. What is the most likely cause, and what are the two appropriate remedies?",
+      "options": [
+        "The audio card's ADC is overloaded by the transmitter's RF; fit a attenuator pad in the audio cable and set a lower input gain",
+        "A ground loop exists: the audio cable connects the transceiver audio ground to the PC audio ground, and the transmitter's RF drives CM current in this loop. Remedy 1: fit a ferrite CM choke on the audio cable. Remedy 2: fit an audio galvanic isolator (1:1 audio transformer) in the audio cable to break the DC/RF ground connection completely",
+        "The Windows driver is not suppressing interference correctly; updating the audio driver will resolve the issue",
+        "The PC's audio card is generating RF intermodulation with the received signal; shielding the PC case with aluminium foil will reduce this"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "The ground loop is formed by: transceiver chassis → audio cable screen → PC audio card → PC mains earth → mains distribution board → transceiver mains → transceiver chassis. This loop encloses significant area in a shack environment. The transmitter's RF induces (or drives CM current into) this loop, and the resulting current produces RF on the PC audio card's input as the voltage drop across the ground impedance. Two remedies: (1) a ferrite CM choke on the audio cable (typically at the transceiver end) adds CM impedance, suppressing the CM current without affecting the differential audio signal; (2) a galvanic audio isolator (a 1:1 audio transformer) physically breaks the DC and RF ground path between transceiver and PC, eliminating the loop entirely. Option 2 is more complete but adds slight audio bandwidth reduction.",
+      "source_content": "section-13-emc.md",
+      "tags": ["earth-loop", "audio-rf", "ground-loop", "galvanic-isolator", "shack-emc"],
+      "active": true
+    }
+  ]
+}
