@@ -264,11 +264,24 @@
 
 ## Ch 14: Measurements (pp 96–103)
 
-*TBD — populate when `14-measurements.pdf` is read. Chapter covers: voltmeter loading, RMS/peak/PEP, SWR meter, Bruene coupler, oscilloscope, frequency counter, dip meter, spectrum analyser, dummy loads, field strength meter (~16 subsections, letter-indexed §14.A–14.P).*
-
 | Ref | Pages | Topic summary |
 |-----|-------|---------------|
-| 14A1 | TBD | — |
+| 14A1 | 96 | Voltmeter loading error: V_meas = V_true × R_m/(R_m + R_c); error fraction = R_c/(R_m+R_c). Need R_m ≥ 10×R_c for <10% error. Ammeter insertion error: R_a adds to circuit resistance. True-RMS DMM required for non-sinusoidal waveforms |
+| 14B1 | 96–97 | AC waveforms: V_rms = V_pk/√2 (sine); crest factor = V_pk/V_rms = √2 (sine), higher for audio/SSB. PEP = V_pk(envelope)²/(2R) — peak power in single RF cycle at modulation crest. UK licence power limits in PEP for SSB. AM PEP = 4×P_carrier at 100% modulation. FM: constant amplitude, P_avg = PEP |
+| 14C1 | 97 | Γ = (Z_L−Z₀)/(Z_L+Z₀). SWR = (1+|Γ|)/(1−|Γ|). Return loss = −20log|Γ| dB (higher = better match). Reflected power = |Γ|²×P_incident. Worked: Z_L=100Ω, Z₀=50Ω → Γ=0.333, SWR=2:1, RL=9.5 dB, 11.1% reflected |
+| 14D1 | 97–98 | Bruene directional coupler: current transformer (in series with line) + voltage tap (across line) → adding/subtracting gives forward-only and reflected-only ports. Diode peak detectors → DC for meter. Directivity (dB) = separation between forward and reflected ports; poor directivity gives false reflected reading with matched load |
+| 14E1 | 98 | CRT oscilloscope: electron gun (heated cathode + accelerating anode) → Y deflection plates (vertical, proportional to signal) → X deflection plates (driven by timebase sawtooth) → phosphor screen. Wehnelt cylinder = brightness control. Trigger synchronises timebase to input phase. Bandwidth = −3 dB frequency of Y amplifier |
+| 14F1 | 98–99 | DSO: attenuator → ADC → acquisition memory → LCD display. Sample rate ≥5× signal frequency. Acquisition modes: Normal (standard), Peak-detect (catches glitches), Average (noise reduction), High-res (ADC resolution on slow signals), Roll (slow signals no trigger). Digital persistence reveals amplitude variation over time |
+| 14G1 | 99 | RF viewing: SSB — variable envelope tracking audio (zero in silence); speech crest factor ~4:1. AM — envelope swings 0 to 2×carrier at 100% mod; m = (V_max−V_min)/(V_max+V_min); over-mod causes flat-top distortion. FM — constant amplitude carrier; frequency variation not visible on oscilloscope; use spectrum analyser or deviation meter |
+| 14H1 | 99–100 | Frequency counter: simple gate = N/T_gate (constant Hz resolution). Reciprocal counting: counts timebase clock pulses per input cycle, takes 1/T → constant percentage resolution at all frequencies. Modern counters use reciprocal technique; same digits of resolution at 100 Hz or 100 MHz |
+| 14I1 | 100 | TCXO: thermistor + varicap compensates crystal temp coefficient → ±0.5–2.5 ppm, no warm-up. OCXO: crystal in heated oven at fixed temperature → ±0.001–0.01 ppm, 3–5 min warm-up, constant heater power. Ageing: 1–5 ppm/year (TCXO), 0.01–0.1 ppm/year (OCXO). GPSDO: GPS-disciplines OCXO, eliminates drift and ageing |
+| 14J1 | 100 | Dip meter: tuneable LC oscillator with exposed coil; meter reads oscillator amplitude. Energy coupling to external resonant circuit causes dip at matching frequency. Uses: antenna resonant frequency, coil L (with known C via f₀=1/(2π√LC)), filter resonance, stub tuning. Keep coupling loose; do not connect directly; power circuit off |
+| 14K1 | 100–101 | Spectrum analyser: RBW = IF filter width (resolution); VBW = video smoothing filter; noise floor = −174+NF+10log(RBW_Hz) dBm. Swept superhet vs FFT. Marker modes: normal/peak/delta/noise/band-power. Harmonic distortion: TX into dummy via attenuator; delta marker fundamental to harmonic. Licence: harmonics ≥40 dB below fundamental |
+| 14L1 | 101–102 | Dummy load: 50Ω non-inductive, absorbs RF as heat. P = V_pk²/(2R). I_pk = √(2P/R); V_pk = I_pk×R. Example: 400 W → I_pk=4A, V_pk=200V. Wirewound resistors inductive at VHF — use non-inductive film resistors. Oil-cooled for high continuous power. Verify SWR < 1.1:1 across operating range |
+| 14M1 | 102 | SWR meter placement: TX→ATU = protects PA (ATU hides antenna mismatch); ATU→feeder = reveals true antenna SWR. Cross-pointer meter: forward and reflected power both in watts. Ensure meter Z₀ = system Z₀ (50Ω mismatch on 75Ω system gives wrong readings) |
+| 14N1 | 102–103 | Field strength meter: dipole + diode + meter; output ∝ E². E(V/m) = V_antenna/h_eff for calibrated instrument. Uses: antenna pattern, EMF proximity (vs ICNIRP 28 V/m public at HF), relative TX output, feeder CM current detection. Uncalibrated → relative only; use Ofcom EMF spreadsheet for compliance |
+
+**Populate status: ✅ Ch14 — section file written 2026-09-16 (section-14-measurements.md)**
 
 ---
 
