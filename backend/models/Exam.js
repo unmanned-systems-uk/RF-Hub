@@ -394,7 +394,8 @@ class Exam {
       `SELECT id, level, mode, section_filter, total_questions, correct_answers,
               score_percent, passed, time_taken_seconds, created_at,
               d2f_part1_correct, d2f_part1_total, d2f_part1_passed,
-              d2f_part2_correct, d2f_part2_total, d2f_part2_passed
+              d2f_part2_correct, d2f_part2_total, d2f_part2_passed,
+              section_scores
        FROM exam_attempts ${where}
        ORDER BY created_at DESC LIMIT 20`,
       params
