@@ -12,7 +12,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#06b6d4">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260913-1600">
+<link rel="stylesheet" href="../assets/css/rf-hub-v2.css?v=20260916-2330">
 <style>
 .stats-grid {
   display: grid;
@@ -197,6 +197,23 @@
   text-align: center; padding: 1.5rem 0;
 }
 .exam-cta p { color: var(--text-dim); margin: 0 0 1rem; }
+.exam-trend {
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+  padding: 0.12rem 0.42rem; border-radius: 4px; white-space: nowrap;
+}
+.exam-trend.up   { background: rgba(74,222,128,0.12); border: 1px solid #4ade80; color: #4ade80; }
+.exam-trend.down { background: rgba(248,113,113,0.12); border: 1px solid #f87171; color: #f87171; }
+.exam-trend.flat { background: rgba(100,116,139,0.12); border: 1px solid #475569; color: #94a3b8; }
+.section-avg-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.72rem; margin-bottom: 0.5rem; }
+.section-avg-table th { color: var(--text-dim); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0 0 0.4rem; font-weight: 400; }
+.section-avg-table th:first-child { text-align: left; }
+.section-avg-table th:last-child  { text-align: right; }
+.section-avg-table td { padding: 0.28rem 0; border-top: 1px solid rgba(30,41,59,0.6); vertical-align: middle; }
+.section-avg-table td:first-child { color: var(--text-secondary); padding-right: 0.75rem; }
+.section-avg-table td:last-child  { text-align: right; font-weight: 600; }
+.section-avg-bar-wrap { flex: 1; background: rgba(30,41,59,0.8); border-radius: 3px; height: 5px; min-width: 60px; overflow: hidden; display: inline-block; vertical-align: middle; }
+.section-avg-bar { height: 5px; border-radius: 3px; }
+.exam-coaching { font-size: 0.85rem; color: var(--text-secondary); padding: 0.65rem 0.85rem; background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.15); border-radius: var(--radius-sm); margin-bottom: 1rem; line-height: 1.5; }
 
 /* ── Licence Study card ── */
 .licence-study-card { border-left: 3px solid var(--accent-h, #06b6d4); }
@@ -218,7 +235,7 @@
   .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
 }
 </style>
-<link rel="stylesheet" href="/assets/css/search.css?v=20260913-1600">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260916-2330">
   <meta name="site-nav-active" content="">
 </head>
 <body>
@@ -422,9 +439,9 @@
   </footer>
 </div>
 
-<script src="../assets/js/api.js?v=20260913-1600"></script>
-<script src="../assets/js/storage.js?v=20260913-1600"></script>
-<script src="../assets/js/main.js?v=20260913-1600"></script>
+<script src="../assets/js/api.js?v=20260916-2330"></script>
+<script src="../assets/js/storage.js?v=20260916-2330"></script>
+<script src="../assets/js/main.js?v=20260916-2330"></script>
 <script>
 (function () {
   // ── Auth guard ────────────────────────────────────────────────────────────
@@ -638,13 +655,43 @@
       results.forEach(function (res) {
         if (res.status === 'fulfilled') {
           var hist = (res.value && (res.value.attempts || res.value)) || [];
-          if (Array.isArray(hist)) {
-            allAttempts = allAttempts.concat(hist);
-          }
+          if (Array.isArray(hist)) allAttempts = allAttempts.concat(hist);
         }
       });
 
       card.style.display = '';
+
+      // Section number → label map (intermediate + full share same numbering)
+      var SEC_LABELS = {
+        '1':'Licence Conditions','2':'Electronics','3':'Transmitters',
+        '4':'Feeders & Antennas','5':'Propagation','6':'EMC',
+        '7':'Operating Practices','8':'Safety','9':'Measurements'
+      };
+
+      // Normalise field names — API returns score_percent / created_at / section_scores
+      // section_scores shape: {"1":{"total":N,"correct":M}, ...}
+      allAttempts = allAttempts.map(function (a) {
+        var _raw = a.score_percent != null ? a.score_percent
+                 : a.percentage   != null ? a.percentage
+                 : a.score        != null ? a.score
+                 : null;
+        var pct = _raw != null ? parseFloat(_raw) : null;
+        if (pct !== null && isNaN(pct)) pct = null;
+        var ts = a.created_at || a.completed_at || a.date || null;
+        var secs = [];
+        if (a.section_scores && typeof a.section_scores === 'object' && !Array.isArray(a.section_scores)) {
+          secs = Object.keys(a.section_scores).map(function (key) {
+            var sd = a.section_scores[key];
+            var spct = (sd && sd.total > 0) ? (sd.correct / sd.total) * 100 : 0;
+            return { section_name: SEC_LABELS[key] || ('Section ' + key), section_key: key,
+                     percentage: spct, correct: sd ? sd.correct : 0, total: sd ? sd.total : 0 };
+          });
+        } else if (Array.isArray(a.sections) && a.sections.length) {
+          secs = a.sections;
+        }
+        var passed = a.passed != null ? a.passed : (pct != null ? pct >= 65 : false);
+        return Object.assign({}, a, { percentage: pct, completed_at: ts, sections: secs, passed: passed });
+      });
 
       if (allAttempts.length === 0) {
         content.innerHTML =
@@ -655,50 +702,146 @@
         return;
       }
 
-      // Sort by date descending
+      // Sort by date descending (completed_at is normalised above)
       allAttempts.sort(function (a, b) {
-        return new Date(b.completed_at || b.date || 0) - new Date(a.completed_at || a.date || 0);
+        return new Date(b.completed_at || 0) - new Date(a.completed_at || 0);
       });
 
       var totalAttempts = allAttempts.length;
-      var bestPct = Math.max.apply(null, allAttempts.map(function (a) { return a.percentage || 0; }));
+      var _pcts = allAttempts.map(function (a) { return parseFloat(a.percentage) || 0; });
+      var bestPct = _pcts.length ? Math.max.apply(null, _pcts) : 0;
 
-      // Find weakest section across all attempts (use last attempt's section breakdown)
-      var weakSection = '—';
-      var weakPct = null;
-      var lastWithSections = allAttempts.find(function (a) { return a.sections && a.sections.length; });
-      if (lastWithSections) {
-        var worst = lastWithSections.sections.reduce(function (w, s) {
-          return (s.percentage != null && (w === null || s.percentage < w.percentage)) ? s : w;
-        }, null);
-        if (worst) {
-          weakSection = worst.section_name || worst.section_code || '—';
-          weakPct = worst.percentage;
-        }
-      }
+      // ── Per-section aggregates across ALL attempts ────────────────────────
+      // Sum correct+total across attempts per section key for accurate pooled %
+      var secAcc = {};
+      allAttempts.forEach(function (a) {
+        if (!a.sections || !a.sections.length) return;
+        a.sections.forEach(function (s) {
+          var key  = s.section_key || s.section_name || s.section_code || s.name || '?';
+          var name = s.section_name || s.section_code || s.name || key;
+          if (!secAcc[key]) secAcc[key] = { name: name, correct: 0, total: 0 };
+          if (s.total > 0) {
+            secAcc[key].correct += s.correct || 0;
+            secAcc[key].total   += s.total;
+          } else if (s.percentage != null) {
+            // Fallback for legacy shape without total/correct
+            secAcc[key].correct += s.percentage;
+            secAcc[key].total   += 100;
+          }
+        });
+      });
+      var sectionAvgs = Object.keys(secAcc).map(function (key) {
+        var d = secAcc[key];
+        return { name: d.name, avg: d.total > 0 ? (d.correct / d.total) * 100 : 0 };
+      }).sort(function (a, b) { return a.avg - b.avg; }); // weakest first
 
-      // Stats row
+      // Weakest section = average across all attempts
+      var weakSection = sectionAvgs.length ? sectionAvgs[0].name : '—';
+      var weakPct     = sectionAvgs.length ? sectionAvgs[0].avg  : null;
+
+      // ── Stats row ─────────────────────────────────────────────────────────
       var statsHtml =
         '<div class="stats-grid" style="margin-bottom:1.25rem;">' +
           '<div class="stat-box"><div class="stat-value">' + totalAttempts + '</div><div class="stat-label">Total Attempts</div></div>' +
           '<div class="stat-box"><div class="stat-value">' + bestPct.toFixed(1) + '%</div><div class="stat-label">Best Score</div></div>' +
-          '<div class="stat-box"><div class="stat-value" style="font-size:1rem;line-height:1.3;">' +
-            escHtml(weakSection) + (weakPct !== null ? ' <small style="font-size:0.7em;color:var(--text-dim);">' + weakPct + '%</small>' : '') +
-          '</div><div class="stat-label">Weakest Section</div></div>' +
+          '<div class="stat-box"><div class="stat-value" style="font-size:0.95rem;line-height:1.3;-webkit-text-fill-color:inherit;background:none;color:#f87171;">' +
+            escHtml(weakSection) +
+            (weakPct !== null ? '<br><small style="font-size:0.68rem;color:var(--text-dim);">' + weakPct.toFixed(0) + '% avg</small>' : '') +
+          '</div><div class="stat-label">Weakest (avg)</div></div>' +
         '</div>';
 
-      // Recent 3 attempts
-      var recentHtml = '<p style="font-family:var(--font-mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin:0 0 0.5rem;">Recent Attempts</p>';
+      // ── Coaching narrative ─────────────────────────────────────────────────
+      var coachHtml = '';
+      if (sectionAvgs.length) {
+        var weak    = sectionAvgs[0];
+        var strong  = sectionAvgs[sectionAvgs.length - 1];
+
+        // Trajectory: compare most-recent 2 attempts that have weak section data
+        var attemptsWithWeak = allAttempts.filter(function (a) {
+          return a.sections && a.sections.some(function (s) {
+            return (s.section_name || s.section_code || s.name || '') === weak.name;
+          });
+        });
+        var trend = null;
+        if (attemptsWithWeak.length >= 2) {
+          var getWkPct = function (a) {
+            var s = a.sections.find(function (s) {
+              return (s.section_name || s.section_code || s.name || '') === weak.name;
+            });
+            return s ? s.percentage : null;
+          };
+          var p0 = getWkPct(attemptsWithWeak[0]);
+          var p1 = getWkPct(attemptsWithWeak[1]);
+          if (p0 != null && p1 != null) trend = p0 - p1;
+        }
+
+        var narrative = 'Your weakest area is <strong>' + escHtml(weak.name) + '</strong> (' + weak.avg.toFixed(0) + '% avg)';
+        if (trend !== null && Math.abs(trend) >= 1) {
+          if (trend > 0) narrative += ', improving by ' + trend.toFixed(0) + '% from last attempt — keep going!';
+          else           narrative += ', down ' + Math.abs(trend).toFixed(0) + '% from last attempt — focus here next.';
+        } else {
+          narrative += '. Focus here to boost your overall score.';
+        }
+        if (strong.avg >= 80 && strong.name !== weak.name) {
+          narrative += ' Best: <strong>' + escHtml(strong.name) + '</strong> (' + strong.avg.toFixed(0) + '%) — strong!';
+        }
+        coachHtml = '<div class="exam-coaching">' + narrative + '</div>';
+      }
+
+      // ── Per-section averages table (top 8, weakest first) ─────────────────
+      var sectionHtml = '';
+      if (sectionAvgs.length) {
+        var topSecs = sectionAvgs.slice(0, 8);
+        var maxAvg  = Math.max.apply(null, sectionAvgs.map(function (s) { return s.avg; }));
+        sectionHtml =
+          '<p style="font-family:var(--font-mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin:0 0 0.5rem;">Section Averages (all attempts · weakest first)</p>' +
+          '<table class="section-avg-table"><thead><tr><th>Section</th><th></th><th>Avg</th></tr></thead><tbody>';
+        topSecs.forEach(function (s) {
+          var pct  = s.avg;
+          var barW = maxAvg > 0 ? Math.round((pct / maxAvg) * 100) : 0;
+          var col  = pct >= 75 ? '#4ade80' : pct >= 55 ? '#f59e0b' : '#f87171';
+          sectionHtml +=
+            '<tr>' +
+              '<td>' + escHtml(s.name) + '</td>' +
+              '<td style="width:40%;padding:0 0.5rem;">' +
+                '<span class="section-avg-bar-wrap">' +
+                  '<span class="section-avg-bar" style="width:' + barW + '%;background:' + col + ';"></span>' +
+                '</span>' +
+              '</td>' +
+              '<td style="color:' + col + ';">' + pct.toFixed(0) + '%</td>' +
+            '</tr>';
+        });
+        sectionHtml += '</tbody></table>';
+      }
+
+      // ── Recent 3 attempts with trend delta ────────────────────────────────
+      var recentHtml = '<p style="font-family:var(--font-mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-dim);margin:1rem 0 0.5rem;">Recent Attempts</p>';
       var recent = allAttempts.slice(0, 3);
       recent.forEach(function (a) {
-        var levelLabel = { foundation: 'Foundation', intermediate: 'Intermediate', full: 'Full (D2F)' }[a.level] || (a.level || '—');
+        var levelLabel = { foundation: 'Foundation', intermediate: 'Intermediate', full: 'Full Licence' }[a.level] || (a.level || '—');
         var pct    = a.percentage != null ? a.percentage.toFixed(1) + '%' : '—';
-        var passed = a.passed != null ? a.passed : (a.percentage >= 65);
+        var passed = a.passed;
         var dateStr = '';
-        if (a.completed_at || a.date) {
-          var d = new Date(a.completed_at || a.date);
+        if (a.completed_at) {
+          var d = new Date(a.completed_at);
           dateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         }
+
+        // Trend delta vs previous attempt of same level
+        var trendHtml = '';
+        var aIdx = allAttempts.indexOf(a);
+        var prev = allAttempts.slice(aIdx + 1).find(function (x) { return x.level === a.level; });
+        if (prev && a.percentage != null && prev.percentage != null) {
+          var delta = a.percentage - prev.percentage;
+          if (Math.abs(delta) >= 0.5) {
+            var cls   = delta > 0 ? 'up' : 'down';
+            var arrow = delta > 0 ? '↑ +' : '↓ ';
+            trendHtml = '<span class="exam-trend ' + cls + '">' + arrow + delta.toFixed(0) + '%</span>';
+          } else {
+            trendHtml = '<span class="exam-trend flat">→ 0%</span>';
+          }
+        }
+
         var reviewLink = (a.id || a.attempt_id)
           ? '<a href="exam-practice/exam.html" class="exam-review-link">Review →</a>'
           : '';
@@ -707,14 +850,16 @@
             '<span class="level-pill">' + escHtml(levelLabel) + '</span>' +
             '<span class="exam-score">' + escHtml(pct) + '</span>' +
             '<span class="exam-pass-pill ' + (passed ? 'pass' : 'fail') + '">' + (passed ? 'PASS' : 'FAIL') + '</span>' +
+            trendHtml +
             (dateStr ? '<span class="exam-date">' + escHtml(dateStr) + '</span>' : '') +
             reviewLink +
           '</div>';
       });
 
-      content.innerHTML = statsHtml + recentHtml;
-    }).catch(function () {
-      // Silently hide exam section if API fails
+      content.innerHTML = statsHtml + coachHtml + sectionHtml + recentHtml;
+    }).catch(function (err) {
+      console.error('[examCard]', err);
+      content.innerHTML = '<p class="text-dim">Exam data unavailable — see console for detail</p>';
     });
   }
 
@@ -896,7 +1041,7 @@
   });
 })();
 </script>
-<script src="/assets/js/search.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
+<script src="/assets/js/search.js?v=20260916-2330" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260916-2330" defer></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* RF-Hub Search Index — update when new pages are added */
+/* RF-Hub Search Index — update when new pages are added — v20260916 */
 window.SEARCH_INDEX = [
   {
     title: "Dashboard",
@@ -312,5 +312,201 @@ window.SEARCH_INDEX = [
                "beamwidth", "front-to-back ratio", "polarisation", "feedpoint impedance",
                "antenna traps", "EIRP", "4A", "4B", "4C", "4D", "4E", "4F", "intermediate section 4"],
     sections: ["Antenna Fundamentals", "Standing Waves & SWR", "Feeders", "Baluns", "Antenna Matching", "Antenna Concepts"]
+  },
+
+  /* ── Sidebands (added pages) ─────────────────────────────────────────── */
+  {
+    title: "Scientific Calculator Guide — Every RSGB Formula, Step by Step",
+    url: "/pages/sidebands/scientific-calculator-guide.html",
+    description: "Windows Calculator key sequences for every RSGB syllabus formula — decibels, Ohm's law, resonance, SWR, field strength, and more",
+    keywords: ["calculator", "scientific calculator", "formula", "RSGB", "Windows Calculator",
+               "decibels", "dB", "Ohm's law", "resonance", "SWR", "field strength",
+               "power", "voltage", "current", "reactance", "impedance", "wavelength",
+               "frequency", "worked example", "exam", "maths", "calculation",
+               "log", "logarithm", "square root", "EXP", "button", "keypress",
+               "foundation", "intermediate", "full", "syllabus"],
+    sections: ["Setting Up", "Decibels", "Ohm's Law", "Reactance & Impedance", "Resonance", "SWR & Return Loss", "Field Strength"]
+  },
+  {
+    title: "UK Callsigns & Regional Secondary Locators",
+    url: "/pages/sidebands/uk-callsigns-and-rsls.html",
+    description: "UK amateur radio callsign structure — licence class, regional secondary locators, operating suffixes, post-2024 Ofcom update",
+    keywords: ["callsign", "UK callsign", "M0", "M1", "M3", "M5", "M6", "M7", "G", "G0", "G3", "G4",
+               "2E0", "2E1", "2M0", "ME", "MW", "MM", "GW", "GI", "GD", "GJ", "GU", "GH",
+               "regional secondary locator", "RSL", "prefix", "suffix", "licence class",
+               "Full", "Intermediate", "Foundation", "Ofcom", "/P", "/M", "/MM", "/A", "/AM",
+               "callsign format", "callsign structure", "schedule 1", "CEPT", "1H1", "1B",
+               "callsign parser", "decode", "region"],
+    sections: ["Callsign Structure", "Regional Secondary Locators", "Licence Classes", "Operating Suffixes", "CEPT Callsigns"]
+  },
+
+  /* ── Full Licence Study ──────────────────────────────────────────────── */
+  {
+    title: "Full Licence Study — All Sections",
+    url: "/pages/study/full/index.html",
+    description: "14-section study guide for the RSGB Full amateur radio licence exam — 62 questions, 105 minutes, 74% pass mark",
+    keywords: ["full licence", "full license", "study", "sections", "RSGB", "syllabus",
+               "62 questions", "105 minutes", "74 percent", "pass mark", "M0", "G0",
+               "Full Licence Manual", "D2F", "full amateur radio"],
+    sections: ["Licence Conditions", "Operating Techniques", "Safety", "Basic Circuits",
+               "Semiconductors", "Analogue & Digital", "Transmitter", "Transmitter Interference",
+               "Receiver", "SDR", "Feeders & Antennas", "Propagation", "EMC", "Measurements"]
+  },
+  {
+    title: "Full §1: Licence Conditions",
+    url: "/pages/study/full/section-1-licence-conditions.html",
+    description: "Full licence study: CEPT T/R 61-01, EMF compliance, emission designators, Schedule 1, primary/secondary allocations, unattended operation, callsigns",
+    keywords: ["licence conditions", "CEPT", "HAREC", "T/R 61-01", "EMF compliance", "Ofcom",
+               "emission designator", "Schedule 1", "primary allocation", "secondary allocation",
+               "unattended operation", "callsign", "RSL", "5 MHz", "NoV",
+               "1A", "1B", "1C", "1D", "1E", "1F", "1G", "1H", "1I", "full section 1"],
+    sections: ["CEPT International Operating", "EMF Compliance", "Emission Designators", "Schedule 1", "Callsigns"]
+  },
+  {
+    title: "Full §2: Operating Techniques",
+    url: "/pages/study/full/section-2-operating-techniques.html",
+    description: "Full licence study: 472 kHz and 5 MHz conditions, pileup and split operating, international band plans, DX clusters, contest operating",
+    keywords: ["operating techniques", "472 kHz", "5 MHz", "pileup", "split", "DX cluster",
+               "band plan", "IARU", "ITU Region 1", "WARC", "contest", "CQ WW",
+               "DX operating", "operating split", "international", "country prefix",
+               "2A", "2B", "2C", "2D", "2E", "full section 2"],
+    sections: ["LF/MF Operating", "Pileup Operating", "International Band Plans", "DX Clusters", "Contest Operating"]
+  },
+  {
+    title: "Full §3: Amateur Radio Safety",
+    url: "/pages/study/full/section-3-amateur-radio-safety.html",
+    description: "Full licence study: shack electrical safety, temporary locations, public events, vehicle safety, mast and tower safety, RF exposure at Full power",
+    keywords: ["safety", "shack safety", "temporary location", "public event", "vehicle",
+               "mast", "tower", "RF exposure", "ICNIRP", "EMF", "full power",
+               "400W", "electrical safety", "lightning", "earthing", "bonding",
+               "3A", "3B", "3C", "3D", "full section 3"],
+    sections: ["Shack Electrical Safety", "Temporary Locations", "Vehicle Safety", "Mast & Tower Safety", "RF Exposure"]
+  },
+  {
+    title: "Full §4: Basic Circuits",
+    url: "/pages/study/full/section-4-basic-circuits.html",
+    description: "Full licence study: DC fundamentals, Kirchhoff's laws, AC circuits, resonance, filters, transformers, power supplies, decibels",
+    keywords: ["basic circuits", "DC", "Kirchhoff", "KVL", "KCL", "AC circuits", "resonance",
+               "Q factor", "bandwidth", "filter", "transformer", "power supply", "rectifier",
+               "smoothing", "regulation", "Zener", "decibels", "dB", "power", "voltage",
+               "current", "impedance", "reactance", "parallel resonance", "series resonance",
+               "4A", "4B", "4C", "4D", "4E", "4F", "full section 4"],
+    sections: ["DC Fundamentals", "Kirchhoff's Laws", "AC Circuits", "Resonance", "Filters", "Power Supplies", "Decibels"]
+  },
+  {
+    title: "Full §5: Semiconductors",
+    url: "/pages/study/full/section-5-semiconductors.html",
+    description: "Full licence study: diodes, transistors, FETs, op-amps, oscillators, Class A/B/C/D amplifiers, bias, feedback",
+    keywords: ["semiconductors", "diode", "P-N junction", "transistor", "BJT", "FET", "MOSFET",
+               "JFET", "op-amp", "operational amplifier", "oscillator", "Colpitts", "Hartley",
+               "crystal", "Class A", "Class B", "Class C", "Class D", "amplifier",
+               "bias", "feedback", "gain", "rectifier", "Zener", "varactor", "varicap",
+               "5A", "5B", "5C", "5D", "5E", "5F", "full section 5"],
+    sections: ["P-N Junction", "Rectifier Circuits", "Special Diodes", "Transistors", "FETs", "Op-Amps", "Oscillators", "RF Amplifiers"]
+  },
+  {
+    title: "Full §6: Analogue and Digital Signals",
+    url: "/pages/study/full/section-6-analogue-digital-signals.html",
+    description: "Full licence study: analogue vs digital, binary numbers, ADC, sampling, Nyquist theorem, aliasing, Fourier analysis, FFT, DAC, DDS",
+    keywords: ["analogue", "digital", "binary", "ADC", "DAC", "sampling", "Nyquist",
+               "aliasing", "alias", "sample rate", "quantisation", "bit depth",
+               "Fourier", "FFT", "DDS", "direct digital synthesis", "resolution",
+               "signal processing", "DSP", "oversampling", "anti-alias filter",
+               "6A", "6B", "6C", "6D", "6E", "6F", "full section 6"],
+    sections: ["Analogue vs Digital", "Binary Numbers", "ADC & Quantisation", "Sampling & Nyquist", "Fourier & FFT", "DAC & DDS"]
+  },
+  {
+    title: "Full §7: The Transmitter",
+    url: "/pages/study/full/section-7-transmitter.html",
+    description: "Full licence study: transmitter architecture, SSB generation, FM generation, AM, PLL, DDS, RF amplifier stages, PA efficiency, ALC",
+    keywords: ["transmitter", "SSB", "single sideband", "FM", "frequency modulation", "AM",
+               "amplitude modulation", "PLL", "phase locked loop", "DDS", "RF amplifier",
+               "PA", "power amplifier", "efficiency", "Class C", "ALC", "automatic level control",
+               "balanced modulator", "filter method", "phasing method", "deviation",
+               "7A", "7B", "7C", "7D", "7E", "full section 7"],
+    sections: ["Transmitter Architecture", "SSB Generation", "FM Generation", "PLL & DDS", "RF Amplifier Stages", "ALC & Power Control"]
+  },
+  {
+    title: "Full §8: Transmitter Interference",
+    url: "/pages/study/full/section-8-transmitter-interference.html",
+    description: "Full licence study: frequency stability, drift, harmonics, spurious emissions, PLL spurious, intermodulation, splatter, key shaping, bandwidth",
+    keywords: ["transmitter interference", "frequency stability", "drift", "harmonics",
+               "spurious emissions", "PLL spurious", "intermodulation", "IMD",
+               "splatter", "key shaping", "bandwidth", "occupied bandwidth", "spurious",
+               "low-pass filter", "harmonic filter", "TVI", "BCI", "SMPS noise",
+               "8A", "8B", "8C", "8D", "8E", "full section 8"],
+    sections: ["Frequency Stability", "Harmonics & Spurious", "PLL & DDS Spurious", "Intermodulation", "Bandwidth & Key Shaping"]
+  },
+  {
+    title: "Full §9: The Receiver",
+    url: "/pages/study/full/section-9-receiver.html",
+    description: "Full licence study: receiver sensitivity, noise figure, dynamic range, IP3, superheterodyne, image rejection, reciprocal mixing, phase noise",
+    keywords: ["receiver", "sensitivity", "noise figure", "NF", "dynamic range", "IP3",
+               "third order intercept", "superheterodyne", "image rejection", "image frequency",
+               "reciprocal mixing", "phase noise", "LO", "local oscillator", "IF",
+               "intermediate frequency", "roofing filter", "desensitisation", "blocking",
+               "AGC", "squelch", "BFO", "product detector", "SDR receiver",
+               "9A", "9B", "9C", "9D", "9E", "9F", "full section 9"],
+    sections: ["Sensitivity & Noise Figure", "Dynamic Range & IP3", "Superheterodyne", "Image Rejection", "Reciprocal Mixing", "AGC & Squelch"]
+  },
+  {
+    title: "Full §10: Software Defined Radio",
+    url: "/pages/study/full/section-10-sdr.html",
+    description: "Full licence study: SDR architecture, direct sampling, down-conversion, I/Q signals, quadrature sampling, RTL-SDR, HackRF, Airspy",
+    keywords: ["SDR", "software defined radio", "direct sampling", "down-conversion", "IQ",
+               "I/Q signals", "quadrature", "RTL-SDR", "HackRF", "Airspy", "KiwiSDR",
+               "GNU Radio", "GQRX", "SDR#", "SDRplay", "RSP1", "ADC", "baseband",
+               "sample rate", "bandwidth", "decimation", "waterfall", "spectrum",
+               "10A", "10B", "10C", "10D", "full section 10"],
+    sections: ["What is SDR", "Direct Sampling vs Down-Conversion", "I/Q Signals", "SDR Hardware", "SDR Software"]
+  },
+  {
+    title: "Full §11: Feeders and Antennas",
+    url: "/pages/study/full/section-11-feeders-antennas.html",
+    description: "Full licence study: antenna impedance, coaxial feeder, open-wire feeder, baluns, matching networks, antenna types, gain, radiation patterns, EMF compliance",
+    keywords: ["feeders", "antennas", "impedance", "coaxial", "coax", "open-wire", "ladder line",
+               "balanced feeder", "balun", "unun", "matching", "L-network", "Pi-network",
+               "ATU", "antenna tuning", "dipole", "Yagi", "beam", "vertical", "EFHW",
+               "gain", "dBi", "radiation pattern", "beamwidth", "polarisation",
+               "EMF compliance", "EIRP", "far field", "near field",
+               "11A", "11B", "11C", "11D", "11E", "11F", "full section 11"],
+    sections: ["Antenna Impedance", "Coaxial Feeder", "Open-Wire Feeder", "Baluns", "Matching Networks", "Antenna Types", "EMF Compliance"]
+  },
+  {
+    title: "Full §12: Propagation",
+    url: "/pages/study/full/section-12-propagation.html",
+    description: "Full licence study: ionospheric layers, solar activity, solar flux index, critical frequency, ionosonde, MUF, LUF, grey line, aurora, EME, meteor scatter",
+    keywords: ["propagation", "ionosphere", "D layer", "E layer", "F1", "F2", "F layer",
+               "solar flux", "SFI", "sunspot", "solar cycle", "critical frequency",
+               "foF2", "ionosonde", "MUF", "maximum usable frequency", "LUF",
+               "grey line", "aurora", "auroral propagation", "EME", "moonbounce",
+               "meteor scatter", "tropospheric ducting", "Sporadic-E", "transequatorial",
+               "TEP", "geomagnetic storm", "K-index", "A-index",
+               "12A", "12B", "12C", "12D", "12E", "12F", "full section 12"],
+    sections: ["Ionospheric Layers", "Solar Activity & Solar Flux", "Critical Frequency & MUF", "Grey Line & Aurora", "EME & Meteor Scatter", "Tropospheric & Sporadic-E"]
+  },
+  {
+    title: "Full §13: Electromagnetic Compatibility (EMC)",
+    url: "/pages/study/full/section-13-emc.html",
+    description: "Full licence study: EMC regulations, common mode and differential mode currents, shielding, bonding, ferrite chokes, harmonic filters, EMF compliance distance",
+    keywords: ["EMC", "electromagnetic compatibility", "common mode", "differential mode",
+               "shielding", "bonding", "ferrite", "ferrite choke", "harmonic filter",
+               "low-pass filter", "EMF compliance", "ICNIRP", "distance calculation",
+               "UK EMC regulations", "Radio Equipment Regulations", "CE marking", "UKCA",
+               "SMPS", "inverter", "interference", "radiated", "conducted",
+               "13A", "13B", "13C", "13D", "13E", "full section 13"],
+    sections: ["EMC Principles", "Legal Framework", "Common Mode Currents", "Shielding & Bonding", "Filters & Chokes", "EMF Compliance"]
+  },
+  {
+    title: "Full §14: Measurements",
+    url: "/pages/study/full/section-14-measurements.html",
+    description: "Full licence study: voltmeter loading, AC waveforms, RMS, PEP, SWR, return loss, spectrum analyser, noise floor, power measurement, calibration",
+    keywords: ["measurements", "voltmeter loading", "ammeter error", "AC waveform", "RMS",
+               "peak voltage", "PEP", "peak envelope power", "SWR", "return loss",
+               "reflection coefficient", "spectrum analyser", "noise floor", "dBm",
+               "power measurement", "dummy load", "calibration", "attenuator",
+               "two-tone test", "IMD", "oscilloscope", "frequency counter",
+               "14A", "14B", "14C", "14D", "14E", "full section 14"],
+    sections: ["Voltmeter & Ammeter", "AC Waveforms & PEP", "SWR & Return Loss", "Spectrum Analysis", "Power Measurement", "Calibration"]
   }
 ];
