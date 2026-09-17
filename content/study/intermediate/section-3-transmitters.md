@@ -30,11 +30,7 @@ different RF frequencies.
 
 The superhet receive chain in order:
 
-```
-Antenna → [RF Amplifier] → [Mixer] → [IF Amplifier] → [Detector] → [AF Amplifier] → Speaker
-                               ↑
-                         [Local Oscillator]
-```
+<img src="/assets/images/study/section-3/fig-3-1-superhet-rx-block.svg" alt="Superheterodyne receiver block diagram showing signal chain from antenna through RF Amp, Mixer, IF Amp, Detector and AF Amp to speaker, with Local Oscillator feeding the Mixer" width="700" height="220" loading="lazy">
 
 **Each stage explained:**
 
@@ -299,11 +295,7 @@ This gives:
 
 **SSB transmitter block diagram:**
 
-```
-Microphone → [AF Amplifier] → [Balanced Modulator] → [SSB Filter] → [Mixer] → [PA] → Antenna
-                                                                         ↑
-                                                               [VFO / PLL Oscillator]
-```
+<img src="/assets/images/study/section-3/fig-3-2-ssb-tx-block.svg" alt="SSB transmitter block diagram showing signal chain from microphone through AF Amp, Balanced Modulator, SSB Filter, Mixer and PA to antenna, with VFO/PLL Oscillator feeding the Mixer" width="700" height="220" loading="lazy">
 
 **Balanced modulator:** produces a double-sideband suppressed-carrier (DSB-SC) signal.
 Both sidebands are present, but the carrier is suppressed (cancelled by the balanced
