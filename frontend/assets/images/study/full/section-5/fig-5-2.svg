@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Diode I-V curve -->
+  <!-- Chart area: x=90-540, y=20-240 -->
+  <!-- Origin at (300,200) — V axis spans from x=90 (reverse) to x=540 (forward) -->
+  <!-- I axis from y=240 (zero/negative) to y=20 (positive forward current) -->
+
+  <!-- Axes -->
+  <line x1="90" y1="200" x2="543" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="300" y1="240" x2="300" y2="18" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="540,197 540,203 548,200" fill="#94a3b8"/>
+  <polygon points="297,18 303,18 300,10" fill="#94a3b8"/>
+
+  <!-- Axis labels -->
+  <text x="555" y="204" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">V</text>
+  <text x="293" y="14" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">I</text>
+  <text x="295" y="214" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b" text-anchor="end">0</text>
+  <!-- Axis direction labels -->
+  <text x="190" y="218" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Reverse</text>
+  <text x="440" y="218" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Forward</text>
+  <text x="320" y="235" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">+0.6V</text>
+
+  <!-- Forward bias curve: barely any current until ~0.6V knee, then sharp rise -->
+  <!-- 0.6V corresponds to x = 300 + 0.6/1.5 * 240 = 300 + 96 = 396 (if 1.5V full scale right) -->
+  <!-- Let x=300 at V=0, x=540 at V=+1V (so 240px = 1V). V_knee = 0.6V at x=444 -->
+  <!-- Forward current: near zero until x=444, then exponential rise -->
+  <!-- Points: (300,200), (396,200), (420,198), (444,195), (460,180), (480,140), (500,80), (520,40), (540,20) -->
+  <polyline points="300,200 396,200 420,199 444,196 460,183 480,148 500,95 520,52 540,22"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Reverse bias curve: small leakage until breakdown -->
+  <!-- x=300 at V=0, x=90 at V=-3V (so 210px = -3V, 70px = -1V) -->
+  <!-- Reverse leakage: tiny negative current (I flows reversed) -->
+  <!-- Breakdown: at x=120 (V ≈ -2.5V), current suddenly increases downward -->
+  <!-- Near zero leakage: (300,201), (200,202), (160,202), (130,202), (120,204) -->
+  <!-- Breakdown at x=120: drops to (115,220), (110,235), (100,248), (90,260) — but chart only goes to y=240 -->
+  <polyline points="300,200 200,201 160,201.5 130,202 120,205 112,215 104,228 96,240 90,250"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- V_knee marker at ~0.6V -->
+  <line x1="444" y1="195" x2="444" y2="215" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="444" y="226" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="middle">V_F≈0.6V</text>
+  <text x="444" y="238" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">(silicon knee)</text>
+
+  <!-- Breakdown annotation -->
+  <line x1="120" y1="220" x2="70" y2="220" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="65" y="224" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="end">V_BR</text>
+  <text x="65" y="238" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="end">breakdown</text>
+
+  <!-- Forward region shading label -->
+  <text x="490" y="155" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="end">Forward</text>
+  <text x="490" y="169" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="end">conducting</text>
+
+  <!-- Leakage region label -->
+  <text x="200" y="185" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Reverse leakage</text>
+  <text x="200" y="199" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">(µA range)</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-2 — Diode I-V curve: near-zero forward current until V_F ≈ 0.6 V (silicon); reverse breakdown at V_BR</text>
+</svg>

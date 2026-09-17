@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Simple transistor voltage stabiliser: Zener holds base, transistor passes current -->
+  <!-- Topology: V_in → R_S (current limiter) → junction: Zener to GND, base to NPN -->
+  <!-- NPN emitter = V_out = V_Z - 0.6V. Collector to V_in (via decoupling) -->
+
+  <!-- V_in supply (top left) -->
+  <line x1="60" y1="50" x2="60" y2="100" stroke="#94a3b8" stroke-width="2"/>
+  <text x="60" y="46" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4" text-anchor="middle">V_in</text>
+
+  <!-- Top rail -->
+  <line x1="60" y1="70" x2="350" y2="70" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- R_S series resistor on top wire -->
+  <rect x="90" y="60" width="60" height="20" fill="#0d1321" stroke="#94a3b8" stroke-width="2" rx="2"/>
+  <text x="120" y="52" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="middle">R_S</text>
+  <line x1="150" y1="70" x2="220" y2="70" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Junction node at (220,70) -->
+  <circle cx="220" cy="70" r="3.5" fill="#94a3b8"/>
+
+  <!-- Zener from junction to GND (vertical, reverse biased) -->
+  <line x1="220" y1="70" x2="220" y2="100" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Zener symbol (vertical, cathode at top = connected to higher potential) -->
+  <polygon points="208,120 232,120 220,148" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="208" y1="120" x2="232" y2="120" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="208" y1="120" x2="200" y2="112" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="232" y1="120" x2="240" y2="128" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="220" y1="100" x2="220" y2="120" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="220" y1="148" x2="220" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <text x="250" y="132" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b">DZ</text>
+  <text x="250" y="148" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">V_z</text>
+
+  <!-- GND from Zener anode -->
+  <line x1="220" y1="195" x2="350" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="350" y1="175" x2="350" y2="215" stroke="#94a3b8" stroke-width="2"/>
+  <!-- GND symbol -->
+  <line x1="330" y1="215" x2="370" y2="215" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="336" y1="221" x2="364" y2="221" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="342" y1="227" x2="358" y2="227" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- NPN transistor: base at (220,70) junction, collector to top rail, emitter = V_out -->
+  <!-- Transistor circle centred at (350,110) -->
+  <circle cx="350" cy="110" r="26" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Base lead from junction (220,70) to transistor base (324,110) -->
+  <line x1="220" y1="70" x2="324" y2="110" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Base junction inside transistor -->
+  <line x1="324" y1="90" x2="324" y2="130" stroke="#94a3b8" stroke-width="2.5"/>
+  <!-- Collector (up to top rail) -->
+  <line x1="324" y1="95" x2="350" y2="84" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="350" y1="84" x2="350" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Emitter (down = V_out) -->
+  <line x1="324" y1="125" x2="347" y2="136" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="342,138 347,128 355,140" fill="#94a3b8"/>
+  <line x1="347" y1="136" x2="347" y2="175" stroke="#94a3b8" stroke-width="2"/>
+  <!-- V_out label on emitter -->
+  <text x="380" y="157" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4">V_out</text>
+  <text x="380" y="173" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">= V_z − 0.6V</text>
+
+  <!-- V_out output tap (right) -->
+  <line x1="347" y1="155" x2="460" y2="155" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <circle cx="460" cy="155" r="3.5" fill="#06b6d4"/>
+
+  <!-- Load R_L across V_out to GND -->
+  <line x1="460" y1="155" x2="460" y2="175" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="448" y="175" width="24" height="38" fill="#0d1321" stroke="#94a3b8" stroke-width="2" rx="2"/>
+  <text x="495" y="197" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0">R_L</text>
+  <line x1="460" y1="213" x2="460" y2="230" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="460" y1="230" x2="350" y2="230" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="350" y1="215" x2="350" y2="230" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- B, C, E labels -->
+  <text x="304" y="108" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="end">B</text>
+  <text x="360" y="80" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0">C</text>
+  <text x="360" y="148" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0">E</text>
+
+  <!-- Caption -->
+  <text x="300" y="260" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-29 — Simple transistor stabiliser: Zener fixes V_B; transistor acts as emitter follower, V_out = V_z − 0.6 V</text>
+</svg>

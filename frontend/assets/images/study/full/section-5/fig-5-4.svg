@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Half-wave rectifier with reservoir (smoothing) capacitor -->
+  <!-- Circuit top half, waveform comparison bottom half -->
+  <line x1="20" y1="148" x2="580" y2="148" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- === CIRCUIT (top) === -->
+  <!-- AC source circle -->
+  <circle cx="80" cy="84" r="28" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="80" y="88" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="middle">AC</text>
+
+  <!-- Top wire: source → diode -->
+  <line x1="80" y1="56" x2="80" y2="35" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="80" y1="35" x2="195" y2="35" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode D1 -->
+  <polygon points="195,23 195,47 227,35" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="227" y1="23" x2="227" y2="47" stroke="#e2e8f0" stroke-width="2.5"/>
+  <text x="211" y="20" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="middle">D</text>
+  <!-- Wire from diode to output junction -->
+  <line x1="227" y1="35" x2="340" y2="35" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Junction dot -->
+  <circle cx="340" cy="35" r="3.5" fill="#94a3b8"/>
+  <!-- Wire continues right to output -->
+  <line x1="340" y1="35" x2="490" y2="35" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Load R_L (rightmost vertical) -->
+  <line x1="490" y1="35" x2="490" y2="55" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="478" y="55" width="24" height="44" fill="#0d1321" stroke="#94a3b8" stroke-width="2" rx="2"/>
+  <text x="522" y="80" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">R_L</text>
+  <line x1="490" y1="99" x2="490" y2="133" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Smoothing capacitor C (vertical, left of R_L) -->
+  <line x1="340" y1="35" x2="340" y2="58" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="314" y1="58" x2="366" y2="58" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="314" y1="70" x2="366" y2="70" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="340" y1="70" x2="340" y2="133" stroke="#94a3b8" stroke-width="2"/>
+  <text x="375" y="66" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">C</text>
+
+  <!-- Bottom return wire -->
+  <line x1="490" y1="133" x2="80" y2="133" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="80" y1="133" x2="80" y2="112" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- V_out label -->
+  <text x="535" y="84" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4">V_out</text>
+
+  <!-- === WAVEFORMS (bottom) === -->
+  <!-- Without C: bumpy half-wave pulses -->
+  <text x="155" y="168" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Without C</text>
+  <text x="440" y="168" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">With C (smoothed)</text>
+
+  <!-- Without C: half-wave pulses at x=55-255 -->
+  <line x1="55" y1="235" x2="265" y2="235" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+  <path d="M 55,235 C 68,235 74,207 84,207 C 94,207 100,235 113,235"
+    fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="113" y1="235" x2="160" y2="235" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 160,235 C 173,235 179,207 189,207 C 199,207 205,235 218,235"
+    fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="218" y1="235" x2="265" y2="235" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- With C: smooth raised DC with slight ripple at x=310-555 -->
+  <!-- Starts rising fast then small ripple triangle waves -->
+  <path d="M 310,235 C 318,235 322,195 335,193 C 342,192 350,200 365,202 C 370,202.5 375,199 390,198 C 397,197.5 403,201 418,202 C 423,202.5 428,199 443,198 C 450,197.5 456,201 471,202 C 476,202.5 481,199 496,198 C 503,197.5 510,201 525,202 C 530,202.5 535,199 550,198"
+    fill="none" stroke="#06b6d4" stroke-width="2.5"/>
+
+  <!-- Ripple label -->
+  <text x="430" y="215" font-family="IBM Plex Mono, monospace" font-size="10" fill="#06b6d4" text-anchor="middle">small ripple</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-4 — Reservoir capacitor C charges on each peak and smooths the output between pulses</text>
+</svg>

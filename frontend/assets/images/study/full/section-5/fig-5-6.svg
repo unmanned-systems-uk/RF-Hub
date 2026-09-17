@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Full-wave rectifier with centre-tapped transformer -->
+  <!-- Layout: transformer left, diodes centre, load right -->
+
+  <!-- Transformer (centre-tapped) -->
+  <!-- Primary (left): 2 bumps arching left -->
+  <line x1="60" y1="60" x2="60" y2="220" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 110,70 Q 92,82 110,94 Q 92,106 110,118"
+    fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="110" y1="70" x2="60" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="110" y1="118" x2="60" y2="118" stroke="#94a3b8" stroke-width="2"/>
+  <!-- AC source label on primary -->
+  <text x="35" y="98" font-family="IBM Plex Mono, monospace" font-size="13" fill="#94a3b8" text-anchor="middle">~</text>
+  <text x="35" y="113" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">AC</text>
+
+  <!-- Core lines -->
+  <line x1="115" y1="55" x2="115" y2="215" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="123" y1="55" x2="123" y2="215" stroke="#94a3b8" stroke-width="3"/>
+
+  <!-- Secondary (right): two halves, centre tap at middle -->
+  <!-- Upper half: bumps from y=70 to y=140 arching right -->
+  <path d="M 128,70 Q 146,82 128,94 Q 146,106 128,118 Q 146,130 128,140"
+    fill="none" stroke="#06b6d4" stroke-width="2"/>
+  <!-- Lower half: bumps from y=140 to y=210 arching right -->
+  <path d="M 128,140 Q 146,152 128,164 Q 146,176 128,188 Q 146,200 128,210"
+    fill="none" stroke="#f59e0b" stroke-width="2"/>
+
+  <!-- Centre tap wire -->
+  <line x1="128" y1="140" x2="410" y2="140" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="260" y="155" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">0V (centre tap)</text>
+
+  <!-- Top secondary wire → D1 -->
+  <line x1="128" y1="70" x2="200" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <!-- D1 -->
+  <polygon points="200,58 200,82 232,70" fill="#0d1321" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="232" y1="58" x2="232" y2="82" stroke="#e2e8f0" stroke-width="2.5"/>
+  <text x="216" y="52" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="middle">D1</text>
+  <line x1="232" y1="70" x2="300" y2="70" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Bottom secondary wire → D2 -->
+  <line x1="128" y1="210" x2="200" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <!-- D2 -->
+  <polygon points="200,198 200,222 232,210" fill="#0d1321" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="232" y1="198" x2="232" y2="222" stroke="#e2e8f0" stroke-width="2.5"/>
+  <text x="216" y="235" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="middle">D2</text>
+  <line x1="232" y1="210" x2="300" y2="210" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Junction at x=300 connecting D1 and D2 outputs to load -->
+  <line x1="300" y1="70" x2="300" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="300" cy="70" r="3" fill="#94a3b8"/>
+  <circle cx="300" cy="210" r="3" fill="#94a3b8"/>
+  <line x1="300" y1="105" x2="380" y2="105" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Load R_L -->
+  <rect x="380" y="88" width="24" height="50" fill="#0d1321" stroke="#94a3b8" stroke-width="2" rx="2"/>
+  <line x1="380" y1="105" x2="392" y2="105" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="392" y1="88" x2="392" y2="138" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="392" y1="138" x2="410" y2="138" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="410" y1="138" x2="410" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="410" y1="88" x2="380" y2="88" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="380" y1="105" x2="380" y2="88" stroke="#94a3b8" stroke-width="2"/>
+  <text x="425" y="115" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">R_L</text>
+  <!-- V_out label -->
+  <text x="462" y="115" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4">V_out</text>
+
+  <!-- Output waveform annotation -->
+  <text x="300" y="248" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="middle">Output: both half-cycles rectified (100 Hz ripple on 50 Hz supply)</text>
+
+  <!-- Caption -->
+  <text x="300" y="268" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-6 — Full-wave rectifier: D1 conducts on positive half-cycle, D2 on negative; centre-tap is 0V reference</text>
+</svg>

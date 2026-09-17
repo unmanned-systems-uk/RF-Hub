@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Zener diode I-V curve with reverse breakdown at V_z -->
+  <!-- Chart area: x=90-540, y=20-240, origin at (320,200) -->
+
+  <line x1="90" y1="200" x2="543" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="320" y1="240" x2="320" y2="18" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="540,197 540,203 548,200" fill="#94a3b8"/>
+  <polygon points="317,18 323,18 320,10" fill="#94a3b8"/>
+
+  <text x="555" y="204" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">V</text>
+  <text x="313" y="14" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">I</text>
+  <text x="315" y="214" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b" text-anchor="end">0</text>
+
+  <text x="200" y="218" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Reverse</text>
+  <text x="440" y="218" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Forward</text>
+
+  <!-- Forward bias curve (same as regular diode, knee at ~0.6V) -->
+  <!-- 0.6V = x=320+0.6/1.2*220 = 320+110 = 430. Use 1V full scale right = x=540, 0.6V at x=452 -->
+  <!-- x range: 320 to 540 for 0 to +1V forward -->
+  <polyline points="320,200 400,200 420,200 452,197 468,185 490,155 515,105 535,60 540,40"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Reverse region: small leakage until V_z, then sharp reverse breakdown -->
+  <!-- x range: 90 to 320 for 0 to about −5V reverse. V_z at x=145 (V_z = −4V) -->
+  <!-- Let V_z = 4V → x = 320 - 4/5*230 = 320-184 = 136 -->
+  <!-- Near-zero leakage: (320,201), (200,201.5), (150,203) -->
+  <!-- Sharp breakdown at x=136: current flows sharply (downward) -->
+  <polyline points="320,200 200,201 160,202 145,204 136,210 128,222 120,235 110,248 100,260"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- V_z marker -->
+  <line x1="136" y1="205" x2="136" y2="200" stroke="#f59e0b" stroke-width="1.5"/>
+  <line x1="136" y1="200" x2="136" y2="215" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="136" y="230" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b" text-anchor="middle">V_z</text>
+  <text x="136" y="244" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">reverse breakdown</text>
+
+  <!-- Operating region annotation -->
+  <rect x="90" y="208" width="50" height="45" fill="none" stroke="#f59e0b" stroke-width="1.5" rx="3" stroke-dasharray="3,2"/>
+  <text x="65" y="225" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="end">Zener</text>
+  <text x="65" y="239" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="end">region</text>
+
+  <!-- V_z nearly constant annotation (vertical line at V_z) -->
+  <!-- V held constant while current varies -->
+  <text x="95" y="198" font-family="IBM Plex Mono, monospace" font-size="10" fill="#f59e0b">V ≈ const</text>
+
+  <!-- Zener symbol in corner -->
+  <text x="300" y="35" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Zener symbol: bar has bent ends</text>
+  <!-- Zener diode symbol: triangle + bent cathode bar -->
+  <line x1="370" y1="40" x2="400" y2="40" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="400,28 400,52 432,40" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="432" y1="28" x2="432" y2="52" stroke="#e2e8f0" stroke-width="2.5"/>
+  <!-- Bent ends on cathode bar (Zener specific) -->
+  <line x1="432" y1="28" x2="440" y2="20" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="432" y1="52" x2="424" y2="60" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="432" y1="40" x2="462" y2="40" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-8 — Zener diode I-V curve: normal forward conduction; reverse breakdown at V_z is sharp and stable</text>
+</svg>

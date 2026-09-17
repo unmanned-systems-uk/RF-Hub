@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Bridge rectifier: 4 diodes in diamond configuration -->
+  <!-- AC input at left and right corners; DC+ at top, DC− (GND) at bottom -->
+  <!-- Diamond vertices: Top(300,50), Right(480,140), Bottom(300,230), Left(120,140) -->
+
+  <!-- Diamond wires -->
+  <line x1="120" y1="140" x2="300" y2="50" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="300" y1="50" x2="480" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="480" y1="140" x2="300" y2="230" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="300" y1="230" x2="120" y2="140" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- D1: top-left side (left to top), conducts when left is +: arrow points from left corner to top -->
+  <!-- Diode at midpoint of left-to-top wire, midpoint=(210,95) -->
+  <!-- D1 arrow direction: toward top vertex (up-right) = pointing toward (300,50) -->
+  <!-- Place diode at midpoint of the wire from (120,140) to (300,50) = (210,95) -->
+  <polygon points="194,110 218,80 232,103" fill="#0d1321" stroke="#06b6d4" stroke-width="1.5"/>
+  <line x1="232" y1="103" x2="220" y2="122" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="175" y="100" font-family="IBM Plex Mono, monospace" font-size="12" fill="#06b6d4">D1</text>
+
+  <!-- D2: top-right side (right to top), conducts when right is +: arrow points from right to top -->
+  <!-- Midpoint of right-to-top: (390,95) -->
+  <polygon points="406,110 382,80 368,103" fill="#0d1321" stroke="#06b6d4" stroke-width="1.5"/>
+  <line x1="368" y1="103" x2="380" y2="122" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="415" y="100" font-family="IBM Plex Mono, monospace" font-size="12" fill="#06b6d4">D2</text>
+
+  <!-- D3: bottom-left side (bottom to left), arrow toward left: midpoint=(210,185) -->
+  <polygon points="194,170 218,200 232,177" fill="#0d1321" stroke="#f59e0b" stroke-width="1.5"/>
+  <line x1="232" y1="177" x2="220" y2="158" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="175" y="200" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b">D3</text>
+
+  <!-- D4: bottom-right side (bottom to right), arrow toward right: midpoint=(390,185) -->
+  <polygon points="406,170 382,200 368,177" fill="#0d1321" stroke="#f59e0b" stroke-width="1.5"/>
+  <line x1="368" y1="177" x2="380" y2="158" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="415" y="200" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b">D4</text>
+
+  <!-- AC input connections (left and right vertices) -->
+  <line x1="50" y1="140" x2="120" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="480" y1="140" x2="550" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <text x="35" y="144" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">~</text>
+  <text x="560" y="144" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">~</text>
+  <text x="35" y="160" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="end">AC in</text>
+
+  <!-- DC+ output at top vertex -->
+  <line x1="300" y1="50" x2="300" y2="18" stroke="#94a3b8" stroke-width="2"/>
+  <text x="315" y="35" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4">DC+</text>
+  <text x="315" y="50" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b">V_out</text>
+
+  <!-- GND (DC−) at bottom vertex -->
+  <line x1="300" y1="230" x2="300" y2="250" stroke="#94a3b8" stroke-width="2"/>
+  <!-- GND symbol -->
+  <line x1="282" y1="250" x2="318" y2="250" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="288" y1="256" x2="312" y2="256" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="294" y1="262" x2="306" y2="262" stroke="#94a3b8" stroke-width="1"/>
+  <text x="328" y="255" font-family="IBM Plex Mono, monospace" font-size="13" fill="#94a3b8">GND</text>
+
+  <!-- Circuit operation note -->
+  <text x="300" y="275" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-7 — Bridge rectifier (D1–D4): both half-cycles routed to same output polarity; no centre-tap needed</text>
+</svg>

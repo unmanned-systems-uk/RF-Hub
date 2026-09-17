@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Ripple comparison: large C (small ripple) vs small C (large ripple) -->
+  <!-- Two waveform panels side by side -->
+  <!-- Divider -->
+  <line x1="300" y1="20" x2="300" y2="258" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Panel A: Large C → small ripple (left) -->
+  <text x="150" y="35" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#06b6d4" text-anchor="middle">Large C (small ripple)</text>
+  <!-- x-axis at y=225, peak at y=65 -->
+  <line x1="30" y1="225" x2="280" y2="225" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+  <!-- DC level line at y=75 (approx peak) -->
+  <line x1="30" y1="75" x2="280" y2="75" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="20" y="79" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="end">V_pk</text>
+
+  <!-- Large C waveform: rapid charge to near-peak, very slow discharge, small ripple -->
+  <path d="M 30,225 C 40,225 45,72 65,71 C 100,70 130,73 160,72 C 190,71 220,73 250,72 C 265,72 275,72 280,72"
+    fill="none" stroke="#06b6d4" stroke-width="2.5"/>
+
+  <!-- Ripple double-arrow annotation (small) -->
+  <defs>
+    <marker id="r1" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+      <polygon points="0 0, 5 2, 0 4" fill="#06b6d4"/>
+    </marker>
+    <marker id="r2" markerWidth="5" markerHeight="4" refX="1" refY="2" orient="auto-start-reverse">
+      <polygon points="0 0, 5 2, 0 4" fill="#06b6d4"/>
+    </marker>
+    <marker id="r3" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+      <polygon points="0 0, 5 2, 0 4" fill="#f59e0b"/>
+    </marker>
+    <marker id="r4" markerWidth="5" markerHeight="4" refX="1" refY="2" orient="auto-start-reverse">
+      <polygon points="0 0, 5 2, 0 4" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <line x1="255" y1="71" x2="255" y2="73" stroke="#06b6d4" stroke-width="2" marker-end="url(#r1)" marker-start="url(#r2)"/>
+  <text x="265" y="76" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">ΔV small</text>
+
+  <!-- Charge/discharge labels -->
+  <text x="50" y="130" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b">Charges fast</text>
+  <text x="130" y="145" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">τ = R_L × C large</text>
+  <text x="130" y="160" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">→ slow discharge</text>
+
+  <!-- Panel B: Small C → large ripple (right) -->
+  <text x="450" y="35" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#f59e0b" text-anchor="middle">Small C (large ripple)</text>
+  <line x1="320" y1="225" x2="575" y2="225" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="320" y1="75" x2="575" y2="75" stroke="#334155" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="318" y="79" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="end">V_pk</text>
+
+  <!-- Small C waveform: rapid charge, rapid discharge, large ripple (sawtooth-like) -->
+  <!-- Uses half-wave peaks with exponential decay in between -->
+  <path d="M 320,225 C 330,225 335,70 350,70 C 355,70 360,95 375,180 C 382,210 388,225 400,225
+           C 410,225 415,70 430,70 C 435,70 440,95 455,180 C 462,210 468,225 480,225
+           C 490,225 495,70 510,70 C 515,70 520,95 535,180 C 542,210 548,225 560,225"
+    fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Ripple double-arrow (large) -->
+  <line x1="400" y1="70" x2="400" y2="222" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#r3)" marker-start="url(#r4)"/>
+  <text x="415" y="148" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">ΔV</text>
+  <text x="415" y="162" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">large</text>
+
+  <!-- Labels -->
+  <text x="450" y="145" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">τ = R_L × C small</text>
+  <text x="450" y="160" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">→ fast discharge</text>
+
+  <!-- Caption -->
+  <text x="300" y="270" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 5-5 — Larger reservoir capacitor gives smaller ripple; ripple ≈ I_load / (f × C)</text>
+</svg>
