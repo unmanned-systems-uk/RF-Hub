@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <defs>
+    <marker id="arrvec" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#06b6d4"/>
+    </marker>
+    <marker id="arrvec2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrvec3" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#e2e8f0"/>
+    </marker>
+  </defs>
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Vector right-angle analogy: 3m East + 4m North = 5m resultant -->
+  <!-- Origin at (200, 210) -->
+
+  <!-- Right-angle marker at origin -->
+  <path d="M 220,210 L 220,190 L 200,190" fill="none" stroke="#64748b" stroke-width="1.5"/>
+
+  <!-- East vector (horizontal, 3 units = 180px) -->
+  <line x1="200" y1="210" x2="375" y2="210" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrvec)"/>
+  <text x="285" y="228" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4" text-anchor="middle">3 m East</text>
+
+  <!-- North vector (vertical, 4 units = 240px → scale 60px/unit so 4×60=240, but 3×60=180) -->
+  <!-- From end of East vector (375,210) up 240px to (375,-30) — too tall. Let me scale differently. -->
+  <!-- Use 45px per unit: 3u=135, 4u=180, 5u=225. -->
+  <!-- East: (200,210) to (335,210) = 135px -->
+  <!-- North: (335,210) to (335,30) = 180px -->
+  <!-- Resultant: (200,210) to (335,30) = sqrt(135²+180²) = sqrt(18225+32400) = sqrt(50625) = 225px ✓ -->
+
+  <!-- Redraw with these coordinates -->
+  <!-- East vector: (200,210) to (335,210) -->
+  <line x1="200" y1="210" x2="328" y2="210" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrvec)"/>
+  <text x="265" y="230" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4" text-anchor="middle">3 m East</text>
+
+  <!-- Right-angle marker at (335,210) -->
+  <path d="M 315,210 L 315,190 L 335,190" fill="none" stroke="#64748b" stroke-width="1.5"/>
+
+  <!-- North vector: (335,210) up to (335,30) -->
+  <line x1="335" y1="210" x2="335" y2="36" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrvec2)"/>
+  <text x="360" y="122" font-family="IBM Plex Mono, monospace" font-size="14" fill="#f59e0b">4 m North</text>
+
+  <!-- Resultant vector: (200,210) to (335,30) = 225px = 5 units -->
+  <line x1="200" y1="210" x2="328" y2="36" stroke="#e2e8f0" stroke-width="3" marker-end="url(#arrvec3)" stroke-dasharray="8,4"/>
+  <!-- Label along resultant -->
+  <text x="240" y="120" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle" transform="rotate(-53,240,120)">5 m</text>
+  <text x="130" y="113" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">Resultant</text>
+  <line x1="160" y1="116" x2="200" y2="140" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Origin dot -->
+  <circle cx="200" cy="210" r="4" fill="#94a3b8"/>
+
+  <!-- Pythagoras formula annotation -->
+  <text x="480" y="100" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">|Z|² =</text>
+  <text x="480" y="118" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">R² + X²</text>
+  <text x="480" y="146" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">3² + 4²</text>
+  <text x="480" y="164" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">= 25</text>
+  <text x="480" y="182" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">∴ |Z| = 5</text>
+
+  <!-- Analogy label -->
+  <text x="480" y="210" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Same rule applies</text>
+  <text x="480" y="224" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">to impedance vectors</text>
+
+  <!-- Caption -->
+  <text x="300" y="268" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-18 — Vector addition analogy: 3 m East + 4 m North gives 5 m resultant (Pythagoras)</text>
+</svg>

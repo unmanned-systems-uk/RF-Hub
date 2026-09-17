@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- RC charge/discharge exponential curves -->
+  <!-- Chart area: x=75-545, y=25-210 -->
+  <!-- x-axis: time (0 to 5τ), y-axis: voltage (0 to V_S) -->
+
+  <!-- Axes -->
+  <line x1="75" y1="210" x2="548" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="75" y1="210" x2="75" y2="22" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Axis arrowheads -->
+  <polygon points="548,207 548,213 556,210" fill="#94a3b8"/>
+  <polygon points="72,22 78,22 75,14" fill="#94a3b8"/>
+
+  <!-- Axis labels -->
+  <text x="560" y="214" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0">t</text>
+  <text x="68" y="18" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="end">V</text>
+
+  <!-- x-axis τ ticks: chart width=470, 5τ spans full width, so τ=94px -->
+  <!-- τ marks at x=75+94=169, 263, 357, 451, 545 -->
+  <line x1="169" y1="210" x2="169" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="263" y1="210" x2="263" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="357" y1="210" x2="357" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="451" y1="210" x2="451" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="545" y1="210" x2="545" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="169" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">τ</text>
+  <text x="263" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">2τ</text>
+  <text x="357" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">3τ</text>
+  <text x="451" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">4τ</text>
+  <text x="545" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">5τ</text>
+  <text x="357" y="244" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">τ = RC</text>
+
+  <!-- y-axis: V_S at y=30, 0 at y=210, range=180px -->
+  <line x1="68" y1="30" x2="75" y2="30" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="65" y="34" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="end">V_S</text>
+  <line x1="68" y1="210" x2="75" y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="65" y="214" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="end">0</text>
+
+  <!-- Charging curve: V = V_S(1-e^{-t/τ}), start at (75,210), rise to (545,32) -->
+  <!-- Key points (x = 75 + t/τ * 94, y = 210 - V/V_S * 180): -->
+  <!-- t=0: (75,210), t=0.5τ: (122,158), t=τ: (169,96), t=1.5τ: (216,67) -->
+  <!-- t=2τ: (263,51), t=3τ: (357,39), t=4τ: (451,34), t=5τ: (545,32) -->
+  <polyline points="75,210 99,181 122,158 145,138 169,96 192,77 216,67 263,51 357,39 451,34 545,32"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="400" y="55" font-family="IBM Plex Mono, monospace" font-size="12" fill="#06b6d4">Charging</text>
+
+  <!-- Discharging curve: V = V_S e^{-t/τ}, start at (75,30), fall to (545,178) -->
+  <!-- t=0: (75,30), t=τ: (169,144), t=2τ: (263,175), t=3τ: (357,187), t=5τ: (545,178) -->
+  <!-- t=0.5τ: (122,82), t=1.5τ: (216,162) -->
+  <polyline points="75,30 99,52 122,82 145,114 169,144 192,158 216,162 263,175 357,187 451,191 545,178"
+    fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="400" y="170" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b">Discharging</text>
+
+  <!-- 63.2% dashed marker (at t=τ on charging curve, y=96) -->
+  <line x1="75" y1="96" x2="169" y2="96" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="169" y1="96" x2="169" y2="210" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="70" y="100" font-family="IBM Plex Mono, monospace" font-size="10" fill="#06b6d4" text-anchor="end">63%</text>
+
+  <!-- 36.8% dashed marker (at t=τ on discharging curve, y=144) -->
+  <line x1="75" y1="144" x2="169" y2="144" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="70" y="148" font-family="IBM Plex Mono, monospace" font-size="10" fill="#f59e0b" text-anchor="end">37%</text>
+
+  <!-- V_S line -->
+  <line x1="75" y1="30" x2="545" y2="30" stroke="#334155" stroke-width="1" stroke-dasharray="3,4"/>
+
+  <!-- Caption -->
+  <text x="300" y="270" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-10 — RC exponential charging and discharging; at t=τ capacitor is 63% charged / 37% remaining</text>
+</svg>

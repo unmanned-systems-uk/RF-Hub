@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- X_L and X_C vs frequency graph -->
+  <!-- Chart area: x=70-555, y=20-220, origin at (70,220) -->
+
+  <!-- Axes -->
+  <line x1="70" y1="220" x2="558" y2="220" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="70" y1="220" x2="70" y2="18" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="555,217 555,223 563,220" fill="#94a3b8"/>
+  <polygon points="67,18 73,18 70,10" fill="#94a3b8"/>
+
+  <!-- Axis labels -->
+  <text x="572" y="224" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">f</text>
+  <text x="63" y="14" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">X (Ω)</text>
+  <text x="63" y="224" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b" text-anchor="end">0</text>
+
+  <!-- X_L line: rises linearly. X_L = 2πfL. At f=fmax x=555, X_L = max -->
+  <!-- Map f: x=70 at f=0, x=555 at f=fmax. Chart width=485px -->
+  <!-- X_L rises from (70,220) to (555,30). Straight line. -->
+  <line x1="70" y1="220" x2="555" y2="30" stroke="#06b6d4" stroke-width="2.5"/>
+  <text x="562" y="30" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4">X_L</text>
+  <text x="400" y="85" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">X_L = 2πfL</text>
+  <text x="400" y="99" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">↑ with freq</text>
+
+  <!-- X_C hyperbola: X_C = 1/(2πfC), infinite at f=0, decreases to near 0 at high f -->
+  <!-- Approximate hyperbola: from (90,200) curving down to (555,30) where it crosses X_L -->
+  <!-- Wait, let me think: they cross at f_r. Let f_r correspond to x=312 (midpoint). -->
+  <!-- At f_r: X_L = X_C. The cross point: I'll place it at x=312, y=125 (mid of chart) -->
+  <!-- X_C starts high at low f and decreases. Let me use: -->
+  <!-- At x=90,y=210; x=150,y=185; x=200,y=162; x=250,y=140; x=312,y=125; x=400,y=95; x=500,y=50; x=555,y=30 -->
+  <!-- These should be on the curve X_C ∝ 1/f where at x=312 it equals X_L -->
+  <!-- X_L at x=312: y = 220 - (312-70)/(555-70) * 190 = 220 - 242/485 * 190 = 220-95=125 ✓ -->
+  <!-- X_C at x=100: y should be very high, approaching y=220 at x=70 -->
+  <!-- Let's use X_C values: at x=90(f=0.04fr): X_C = X_L(fr)/0.04 = 125/0.04 = ..high, map to y=30 -->
+  <!-- Hmm let me simplify: just make a smooth decreasing curve that starts high and meets X_L -->
+  <path d="M 82,215 C 90,195 110,175 140,155 C 170,135 230,128 312,125 C 395,122 460,80 555,30"
+    fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <text x="100" y="148" font-family="IBM Plex Mono, monospace" font-size="13" fill="#f59e0b">X_C</text>
+  <text x="105" y="162" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">X_C = 1/(2πfC)</text>
+  <text x="105" y="176" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">↓ with freq</text>
+
+  <!-- Crossing point = resonant frequency f_r -->
+  <circle cx="312" cy="125" r="5" fill="#e2e8f0"/>
+  <line x1="312" y1="125" x2="312" y2="220" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="312" y="238" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="middle">f_r</text>
+  <text x="312" y="254" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">X_L = X_C at resonance</text>
+  <!-- f_r formula -->
+  <text x="430" y="180" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="middle">f_r = 1/(2π√LC)</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-17 — Inductive reactance X_L rises with frequency; X_C falls; they are equal at resonance f_r</text>
+</svg>

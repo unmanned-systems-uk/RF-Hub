@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <defs>
+    <marker id="pR" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#06b6d4"/>
+    </marker>
+    <marker id="pC" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="pS" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#e2e8f0"/>
+    </marker>
+  </defs>
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- RC series phasor diagram -->
+  <!-- Origin at (180, 190) -->
+  <!-- V_R: horizontal, pointing right (in phase with I) -->
+  <!-- V_C: vertical, pointing downward (lags I by 90°) -->
+  <!-- V_S: diagonal resultant -->
+
+  <!-- Reference axes (faint) -->
+  <line x1="100" y1="190" x2="420" y2="190" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <line x1="180" y1="250" x2="180" y2="80" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- V_R: horizontal right, length=180px (from origin to x=360) -->
+  <line x1="180" y1="190" x2="353" y2="190" stroke="#06b6d4" stroke-width="3" marker-end="url(#pR)"/>
+  <text x="270" y="180" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4" text-anchor="middle">V_R</text>
+  <text x="270" y="205" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">(in phase with I)</text>
+
+  <!-- V_C: downward, length=120px (from origin to y=310 — but canvas ends at 280) -->
+  <!-- Use length=90px: from (360,190) down to (360,280) — attach to tip of V_R -->
+  <!-- V_C hangs from the tip of V_R -->
+  <line x1="360" y1="190" x2="360" y2="273" stroke="#f59e0b" stroke-width="3" marker-end="url(#pC)"/>
+  <text x="400" y="235" font-family="IBM Plex Mono, monospace" font-size="14" fill="#f59e0b">V_C</text>
+  <text x="400" y="252" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b">−90° (lags)</text>
+
+  <!-- Right angle marker at (360,190) -->
+  <path d="M 345,190 L 345,205 L 360,205" fill="none" stroke="#64748b" stroke-width="1.5"/>
+
+  <!-- V_S: resultant, from origin (180,190) to tip of V_C (360,278) -->
+  <line x1="180" y1="190" x2="353" y2="271" stroke="#e2e8f0" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#pS)"/>
+  <text x="250" y="245" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" text-anchor="middle">V_S</text>
+
+  <!-- Phase angle φ arc -->
+  <path d="M 230,190 A 50,50 0 0,1 212,218" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="248" y="218" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">φ</text>
+
+  <!-- Formula panel on the right -->
+  <rect x="440" y="55" width="145" height="145" fill="#0d1321" stroke="#334155" stroke-width="1" rx="6"/>
+  <text x="512" y="76" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="middle">RC Series</text>
+  <line x1="450" y1="82" x2="575" y2="82" stroke="#334155" stroke-width="1"/>
+  <text x="512" y="98" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="middle">|Z| = √(R²+X_C²)</text>
+  <text x="512" y="116" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="middle">|V_S| = √(V_R²+V_C²)</text>
+  <text x="512" y="134" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="middle">tan φ = V_C / V_R</text>
+  <text x="512" y="152" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">V_C lags V_R</text>
+  <text x="512" y="168" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">by 90°</text>
+  <text x="512" y="186" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Current leads V_S</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-19 — RC series phasor: V_R in phase with I (horizontal), V_C lags 90° (downward), V_S is resultant</text>
+</svg>

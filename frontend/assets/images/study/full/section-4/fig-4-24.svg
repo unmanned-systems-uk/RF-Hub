@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Parallel resonance: impedance |Z| vs frequency — peaks at f_r -->
+  <!-- Chart: x=70-545, y=25-220 -->
+
+  <line x1="70" y1="220" x2="548" y2="220" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="70" y1="220" x2="70" y2="22" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="545,217 545,223 553,220" fill="#94a3b8"/>
+  <polygon points="67,22 73,22 70,14" fill="#94a3b8"/>
+
+  <text x="556" y="224" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">f</text>
+  <text x="63" y="18" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">|Z|</text>
+
+  <!-- Parallel resonance Z curve: inverted compared to series — peaks at f_r -->
+  <!-- Low at low f (inductive admittance of L low, but X_L = 2πfL is low → Z is low) -->
+  <!-- Actually: at low f, inductor has low reactance (acts like short) → Z is low -->
+  <!-- At high f, capacitor has low reactance (acts like short) → Z is low -->
+  <!-- At f_r: both cancel each other's susceptance → Z peaks (= R_p, very high for high Q) -->
+  <!-- So the curve is an inverted-U (bell shape) -->
+
+  <polyline points="70,215 94,215 118,213 141,210 165,204 189,195 212,180 236,160 260,132 283,100 295,75 307,35 320,75 332,100 355,132 379,160 402,180 426,195 450,204 475,210 500,213 525,215 545,215"
+    fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Peak marker at f_r (x=307, y=35) -->
+  <circle cx="307" cy="35" r="4.5" fill="#f59e0b"/>
+  <line x1="307" y1="35" x2="307" y2="220" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="307" y="238" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="middle">f_r</text>
+
+  <!-- Z_max label -->
+  <line x1="70" y1="35" x2="307" y2="35" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="65" y="39" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="end">Z_max</text>
+  <text x="65" y="52" font-family="IBM Plex Mono, monospace" font-size="10" fill="#64748b" text-anchor="end">= Q²R</text>
+
+  <!-- Annotations -->
+  <text x="150" y="170" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Low Z</text>
+  <text x="150" y="185" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">L dominates</text>
+  <text x="455" y="170" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">Low Z</text>
+  <text x="455" y="185" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">C dominates</text>
+
+  <!-- Label at peak -->
+  <text x="355" y="48" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="start">High Z (current minimum)</text>
+
+  <!-- f_r formula -->
+  <text x="307" y="255" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">f_r = 1/(2π√LC)</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-24 — Parallel resonance: |Z| peaks at f_r (dynamic resistance); total line current is minimum</text>
+</svg>

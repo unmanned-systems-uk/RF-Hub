@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- AC sinewave with V_peak, V_pp, RMS annotations -->
+  <!-- Chart area: x=55-570, y=20-245, centre at y=132 -->
+  <!-- Amplitude = 95px (V_peak), so V_peak at y=37, zero at y=132, negative peak at y=227 -->
+
+  <!-- Axes -->
+  <line x1="55" y1="132" x2="570" y2="132" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="55" y1="240" x2="55" y2="22" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Arrow tips -->
+  <polygon points="567,129 567,135 575,132" fill="#94a3b8"/>
+  <polygon points="52,22 58,22 55,14" fill="#94a3b8"/>
+  <!-- Axis labels -->
+  <text x="576" y="136" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0">t</text>
+  <text x="48" y="18" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="end">V</text>
+  <!-- Zero label -->
+  <text x="48" y="136" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b" text-anchor="end">0</text>
+
+  <!-- Sinewave: 2 full cycles, T=240px, from x=55 to x=535 -->
+  <!-- Amplitude = 95px. Key points per cycle (T=240px): -->
+  <!-- 0°:x=55,y=132; 90°:x=115,y=37; 180°:x=175,y=132; 270°:x=235,y=227; 360°:x=295,y=132 -->
+  <!-- Then 2nd cycle: 90°:x=355,y=37; 180°:x=415,y=132; 270°:x=475,y=227; 360°:x=535,y=132 -->
+  <path d="M55,132 C72,132 95,37 115,37 C135,37 158,132 175,132 C192,132 215,227 235,227 C255,227 278,132 295,132
+           C312,132 335,37 355,37 C375,37 398,132 415,132 C432,132 455,227 475,227 C495,227 518,132 535,132"
+    fill="none" stroke="#06b6d4" stroke-width="2.5"/>
+
+  <!-- V_peak annotation (upward to positive peak of cycle 1) -->
+  <line x1="115" y1="37" x2="115" y2="132" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="55" y1="37" x2="115" y2="37" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="48" y1="33" x2="48" y2="37" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="44" y="40" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4" text-anchor="end">V_pk</text>
+
+  <!-- Negative peak annotation -->
+  <line x1="235" y1="227" x2="55" y2="227" stroke="#475569" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="44" y="231" font-family="IBM Plex Mono, monospace" font-size="11" fill="#475569" text-anchor="end">−V_pk</text>
+
+  <!-- V_pp double-arrow (vertical, on right side of cycle 1) -->
+  <defs>
+    <marker id="dbl" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#e2e8f0"/>
+    </marker>
+    <marker id="dbl2" markerWidth="6" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#e2e8f0"/>
+    </marker>
+  </defs>
+  <line x1="560" y1="37" x2="560" y2="227" stroke="#e2e8f0" stroke-width="1.5" marker-end="url(#dbl)" marker-start="url(#dbl2)"/>
+  <text x="570" y="136" font-family="IBM Plex Mono, monospace" font-size="11" fill="#e2e8f0" text-anchor="start"> V_pp</text>
+  <text x="570" y="148" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="start">=2V_pk</text>
+
+  <!-- RMS level: V_RMS = 0.707 × V_pk, y = 132 - 0.707×95 = 132-67 = 65 -->
+  <line x1="55" y1="65" x2="535" y2="65" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="44" y="69" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b" text-anchor="end">V_rms</text>
+  <text x="44" y="82" font-family="IBM Plex Mono, monospace" font-size="10" fill="#f59e0b" text-anchor="end">0.707 V_pk</text>
+
+  <!-- Period label -->
+  <line x1="55" y1="250" x2="295" y2="250" stroke="#334155" stroke-width="1.5" marker-end="url(#dbl)" marker-start="url(#dbl2)"/>
+  <text x="175" y="264" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">T (one period = 1/f)</text>
+
+  <!-- Caption -->
+  <text x="300" y="276" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-15 — AC sinewave: peak (V_pk), peak-to-peak (V_pp = 2V_pk), and RMS value (V_rms = 0.707 V_pk)</text>
+</svg>

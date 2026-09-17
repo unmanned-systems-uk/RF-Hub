@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <defs>
+    <marker id="circ" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#06b6d4"/>
+    </marker>
+    <marker id="isrc" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+  </defs>
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Parallel tuned circuit with large circulating current I_c and small line current I_s -->
+  <!-- Tank circuit: L and C in parallel, top bus y=70, bottom bus y=200 -->
+  <!-- Left of tank: source with I_s (line current). Right: open (load) -->
+
+  <!-- External circuit (left side: source) -->
+  <line x1="60" y1="70" x2="130" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="60" y1="200" x2="130" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Current source symbol (circle with arrow) -->
+  <circle cx="60" cy="135" r="22" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="60" y1="70" x2="60" y2="113" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="60" y1="157" x2="60" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="60" y1="120" x2="60" y2="148" stroke="#f59e0b" stroke-width="2" marker-end="url(#isrc)"/>
+  <text x="35" y="138" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b" text-anchor="end">I_s</text>
+  <text x="35" y="155" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="end">(small)</text>
+
+  <!-- Tank circuit bus lines -->
+  <line x1="130" y1="70" x2="440" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="130" y1="200" x2="440" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Inductor branch (centre-left of tank): vertical inductor bumps -->
+  <line x1="230" y1="70" x2="230" y2="105" stroke="#94a3b8" stroke-width="2"/>
+  <!-- 4 bumps arching right from y=105 to y=165 -->
+  <path d="M 230,105 Q 248,112 230,119 Q 248,126 230,133 Q 248,140 230,147 Q 248,154 230,161"
+    fill="none" stroke="#06b6d4" stroke-width="2.5"/>
+  <line x1="230" y1="161" x2="230" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <text x="258" y="135" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4" font-style="italic">L</text>
+
+  <!-- Capacitor branch (right of tank) -->
+  <line x1="360" y1="70" x2="360" y2="120" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="336" y1="120" x2="384" y2="120" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="336" y1="132" x2="384" y2="132" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="360" y1="132" x2="360" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <text x="392" y="130" font-family="IBM Plex Mono, monospace" font-size="14" fill="#e2e8f0" font-style="italic">C</text>
+
+  <!-- Circulating current I_c: large oval arrow around the L-C loop interior -->
+  <!-- Arrow going clockwise around the interior of the tank -->
+  <!-- Draw an elliptical arrow path in the tank interior -->
+  <path d="M 295,100 C 340,95 370,105 375,120 C 380,140 375,165 330,175 C 290,183 245,170 243,145 C 241,120 260,100 295,100"
+    fill="none" stroke="#06b6d4" stroke-width="2" stroke-dasharray="none"/>
+  <!-- Arrow at the top of the circulating current loop -->
+  <line x1="295" y1="100" x2="315" y2="97" stroke="#06b6d4" stroke-width="2" marker-end="url(#circ)"/>
+
+  <!-- I_c label (large, prominent) -->
+  <text x="305" y="142" font-family="IBM Plex Mono, monospace" font-size="20" fill="#06b6d4" text-anchor="middle">I_c</text>
+  <text x="305" y="162" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">(circulating)</text>
+
+  <!-- Load on right side (optional – show as open or high R) -->
+  <line x1="440" y1="70" x2="470" y2="70" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="440" y1="200" x2="470" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="470" cy="70" r="3" fill="#94a3b8"/>
+  <circle cx="470" cy="200" r="3" fill="#94a3b8"/>
+  <text x="475" y="140" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b">R_L</text>
+
+  <!-- Key comparison annotation -->
+  <text x="300" y="228" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="middle">I_c = Q × I_s  (circulating &gt;&gt; line current)</text>
+
+  <!-- Caption -->
+  <text x="300" y="270" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-27 — Parallel tuned circuit at resonance: large circulating current I_c = Q × line current I_s</text>
+</svg>

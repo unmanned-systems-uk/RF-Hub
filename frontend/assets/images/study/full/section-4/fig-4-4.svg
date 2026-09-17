@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Power vs load resistance graph -->
+  <!-- Chart area: x=75-545, y=25-215 -->
+  <!-- x-axis = R_load (0 → ∞), y-axis = Power P -->
+
+  <!-- Axes -->
+  <line x1="75" y1="215" x2="548" y2="215" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="75" y1="215" x2="75" y2="22" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Axis labels -->
+  <text x="555" y="219" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0">R_L</text>
+  <text x="68" y="18" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="end">P</text>
+
+  <!-- Power curve: P = E²·R / (R+r)²  peaks at R=r -->
+  <!-- Normalise: let r=1 (unit), E²=4 so P_max = E²/4r = 1 at R=r -->
+  <!-- Chart width = 470px for R from 0 to ~5r; chart height = 190px -->
+  <!-- Map R→x: x = 75 + R/5 * 470 = 75 + 94·R -->
+  <!-- Map P→y: P_max=1 at y=35, P=0 at y=215 → y = 215 - P*180 -->
+  <!-- P(R) = 4R/(R+1)^2  [with r=1, E²=4] -->
+  <!-- R=0: P=0       x=75,  y=215 -->
+  <!-- R=0.2: P=0.556 x=94,  y=115 -->
+  <!-- R=0.4: P=0.793 x=113, y=72 -->
+  <!-- R=0.6: P=0.922 x=131, y=49 -->
+  <!-- R=0.8: P=0.988 x=150, y=37 -->
+  <!-- R=1.0: P=1.000 x=169, y=35 --> (peak at R=r)
+  <!-- R=1.2: P=0.992 x=188, y=36 -->
+  <!-- R=1.5: P=0.960 x=216, y=42 -->
+  <!-- R=2.0: P=0.889 x=263, y=55 -->
+  <!-- R=3.0: P=0.750 x=357, y=80 -->
+  <!-- R=5.0: P=0.556 x=545, y=115 -->
+
+  <polyline points="75,215 94,115 113,72 131,49 150,37 169,35 188,36 216,42 263,55 357,80 545,115"
+    fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Peak marker at R=r (x=169, y=35) -->
+  <line x1="169" y1="35" x2="169" y2="215" stroke="#06b6d4" stroke-width="1" stroke-dasharray="5,3"/>
+  <circle cx="169" cy="35" r="4" fill="#06b6d4"/>
+
+  <!-- P_max horizontal dashed line -->
+  <line x1="75" y1="35" x2="169" y2="35" stroke="#06b6d4" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- Axis tick and label at R=r -->
+  <line x1="169" y1="215" x2="169" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <text x="169" y="235" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e2e8f0" text-anchor="middle">r</text>
+  <text x="169" y="248" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">(= source impedance)</text>
+
+  <!-- P_max label on y-axis -->
+  <text x="70" y="39" font-family="IBM Plex Mono, monospace" font-size="12" fill="#06b6d4" text-anchor="end">P_max</text>
+
+  <!-- Annotation text -->
+  <text x="300" y="100" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4" text-anchor="middle">Max power transfer</text>
+  <text x="300" y="118" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4" text-anchor="middle">when R_L = r</text>
+  <!-- Arrow from annotation to peak -->
+  <line x1="220" y1="105" x2="180" y2="55" stroke="#06b6d4" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Origin label -->
+  <text x="68" y="228" font-family="IBM Plex Mono, monospace" font-size="12" fill="#64748b" text-anchor="middle">0</text>
+
+  <!-- Caption -->
+  <text x="300" y="270" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 4-4 — Power transferred to load R_L peaks when R_L = source resistance r (maximum power transfer theorem)</text>
+</svg>
