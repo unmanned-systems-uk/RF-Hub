@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Zener voltage regulator: V_in → R_series → junction → Zener(to GND) → V_out -->
+
+  <!-- V_in (left) -->
+  <text x="38" y="100" font-family="IBM Plex Mono, monospace" font-size="14" fill="#94a3b8" text-anchor="middle">+Vin</text>
+  <line x1="38" y1="104" x2="38" y2="118" stroke="#94a3b8" stroke-width="2"/>
+  <text x="38" y="132" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">(unreg)</text>
+
+  <!-- Top rail: Vin → R_series → junction -->
+  <line x1="38" y1="118" x2="80" y2="118" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- R_series (horizontal IEC rectangle) -->
+  <rect x="80" y="98" width="80" height="40" fill="#0d1321" stroke="#94a3b8" stroke-width="2" rx="2"/>
+  <text x="120" y="113" font-family="IBM Plex Mono, monospace" font-size="12" fill="#e2e8f0" text-anchor="middle">R_series</text>
+  <text x="120" y="128" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#64748b" text-anchor="middle">limits current</text>
+  <line x1="160" y1="118" x2="240" y2="118" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Junction node -->
+  <circle cx="240" cy="118" r="4" fill="#f59e0b"/>
+
+  <!-- V_out rail continues right -->
+  <line x1="240" y1="118" x2="500" y2="118" stroke="#94a3b8" stroke-width="2"/>
+  <text x="510" y="114" font-family="IBM Plex Mono, monospace" font-size="14" fill="#06b6d4">Vout</text>
+  <text x="510" y="130" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#06b6d4">(regulated)</text>
+
+  <!-- Optional load R_L -->
+  <line x1="480" y1="118" x2="480" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="466" y="140" width="28" height="50" fill="#0d1321" stroke="#94a3b8" stroke-width="1.5" rx="2"/>
+  <text x="504" y="168" font-family="IBM Plex Mono, monospace" font-size="11" fill="#64748b">R_L</text>
+  <text x="504" y="180" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#64748b">load</text>
+  <line x1="480" y1="190" x2="480" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="480" y1="210" x2="240" y2="210" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Zener diode: vertical from junction down to GND rail -->
+  <line x1="240" y1="118" x2="240" y2="148" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Zener symbol: horizontal line (cathode bar with bent ends), triangle below -->
+  <!-- Cathode bar at top (y=148), anode at bottom, reversed biased (current flows up through Zener) -->
+  <!-- IEC Zener: triangle pointing up, bar at top with bent ends -->
+  <polygon points="228,168 252,168 240,148" fill="#0d1321" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Zener cathode bar with bent ends -->
+  <line x1="228" y1="148" x2="252" y2="148" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="228" y1="148" x2="220" y2="140" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="252" y1="148" x2="260" y2="156" stroke="#e2e8f0" stroke-width="2.5"/>
+  <line x1="240" y1="168" x2="240" y2="210" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- GND rail -->
+  <line x1="38" y1="210" x2="500" y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Left GND connection -->
+  <line x1="38" y1="118" x2="38" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <!-- GND symbol at bottom right -->
+  <line x1="460" y1="210" x2="500" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="466" y1="216" x2="494" y2="216" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="472" y1="222" x2="488" y2="222" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- Zener label -->
+  <text x="272" y="160" font-family="IBM Plex Mono, monospace" font-size="12" fill="#f59e0b">DZ</text>
+  <text x="272" y="175" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">V_z</text>
+
+  <!-- Operation annotation -->
+  <text x="120" y="240" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Excess V_in dropped</text>
+  <text x="120" y="253" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">across R_series</text>
+  <text x="340" y="240" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Zener clamps output:</text>
+  <text x="340" y="253" font-family="IBM Plex Mono, monospace" font-size="10" fill="#06b6d4" text-anchor="middle">Vout = V_z (constant)</text>
+
+  <!-- Caption -->
+  <text x="300" y="272" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 2-3 — Zener voltage regulator: R_series limits current; Zener clamps V_out to V_z regardless of load</text>
+</svg>

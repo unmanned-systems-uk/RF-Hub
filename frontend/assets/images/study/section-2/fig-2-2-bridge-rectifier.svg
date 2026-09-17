@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280" width="600" height="280">
+  <rect width="600" height="280" fill="#0a0e1a" rx="8"/>
+
+  <!-- Full-wave bridge rectifier: 4 diodes, 2 AC inputs, DC+ and DC- outputs -->
+  <!-- Diamond topology: top=DC+, bottom=GND, left=AC1, right=AC2 -->
+  <!-- Diode convention: triangle points in direction of conventional current flow -->
+
+  <!-- Central diamond nodes -->
+  <!-- Top: DC+ (x=300, y=60) -->
+  <!-- Bottom: GND (x=300, y=220) -->
+  <!-- Left: AC input 1 (x=140, y=140) -->
+  <!-- Right: AC input 2 (x=460, y=140) -->
+
+  <!-- AC input labels -->
+  <text x="60" y="108" font-family="IBM Plex Mono, monospace" font-size="13" fill="#94a3b8" text-anchor="middle">AC</text>
+  <text x="60" y="124" font-family="IBM Plex Mono, monospace" font-size="13" fill="#94a3b8" text-anchor="middle">in</text>
+  <line x1="60" y1="100" x2="60" y2="180" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="56" y1="96" x2="64" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="56" y1="184" x2="64" y2="184" stroke="#94a3b8" stroke-width="2"/>
+  <!-- AC sine symbol -->
+  <path d="M 40,140 Q 50,120 60,140 Q 70,160 80,140" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Wire from AC top (y=96) to left node -->
+  <line x1="80" y1="96" x2="140" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="140" y1="96" x2="140" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Wire from AC bottom (y=184) to left node bottom -->
+  <line x1="80" y1="184" x2="140" y2="184" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="140" y1="184" x2="140" y2="140" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Left node circle -->
+  <circle cx="140" cy="140" r="4" fill="#94a3b8"/>
+
+  <!-- D1: left → top (AC input to DC+) -->
+  <!-- Line from left (140,140) toward top (300,60) — diode midway -->
+  <line x1="140" y1="140" x2="195" y2="109" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode at midpoint ~(220,95): pointing up-right (current flows left→top) -->
+  <polygon points="210,104 230,104 220,86" fill="#0d1321" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="210" y1="86" x2="230" y2="86" stroke="#06b6d4" stroke-width="2.5"/>
+  <line x1="220" y1="86" x2="300" y2="60" stroke="#94a3b8" stroke-width="2"/>
+  <text x="200" y="80" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">D1</text>
+
+  <!-- D3: bottom → left (GND toward left AC input — reverse path) -->
+  <!-- From bottom (300,220) to left (140,140) — diode points right (current → left) -->
+  <line x1="300" y1="220" x2="220" y2="185" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode at ~(200,175): pointing toward left node -->
+  <polygon points="215,182 215,200 197,191" fill="#0d1321" stroke="#06b6d4" stroke-width="2"/>
+  <line x1="215" y1="191" x2="197" y2="191" stroke="#06b6d4" stroke-width="2.5"/>
+  <line x1="197" y1="191" x2="140" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <text x="172" y="208" font-family="IBM Plex Mono, monospace" font-size="11" fill="#06b6d4">D3</text>
+
+  <!-- D2: top → right (DC+ to right AC) -->
+  <line x1="300" y1="60" x2="365" y2="91" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode at ~(380,98): pointing right-down (current top→right) -->
+  <polygon points="372,86 390,86 381,104" fill="#0d1321" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="372" y1="104" x2="390" y2="104" stroke="#f59e0b" stroke-width="2.5"/>
+  <line x1="390" y1="104" x2="460" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <text x="395" y="80" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">D2</text>
+
+  <!-- D4: right → bottom (right AC to GND) -->
+  <line x1="460" y1="140" x2="400" y2="176" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode at ~(385,182): pointing down-left (current right→GND) -->
+  <polygon points="393,172 393,190 375,181" fill="#0d1321" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="375" y1="181" x2="393" y2="181" stroke="#f59e0b" stroke-width="2.5"/>
+  <line x1="375" y1="181" x2="300" y2="220" stroke="#94a3b8" stroke-width="2"/>
+  <text x="400" y="208" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f59e0b">D4</text>
+
+  <!-- DC+ output (top) -->
+  <line x1="300" y1="60" x2="300" y2="35" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="300" y1="35" x2="540" y2="35" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="300" cy="60" r="4" fill="#06b6d4"/>
+  <text x="545" y="32" font-family="IBM Plex Mono, monospace" font-size="13" fill="#06b6d4">DC+</text>
+
+  <!-- GND (bottom) -->
+  <line x1="300" y1="220" x2="300" y2="245" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="300" y1="245" x2="540" y2="245" stroke="#94a3b8" stroke-width="2"/>
+  <circle cx="300" cy="220" r="4" fill="#94a3b8"/>
+  <text x="545" y="242" font-family="IBM Plex Mono, monospace" font-size="13" fill="#94a3b8">GND</text>
+
+  <!-- Right AC node (mirrored transformer tap) -->
+  <circle cx="460" cy="140" r="4" fill="#94a3b8"/>
+
+  <!-- Output annotations -->
+  <text x="490" y="100" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b">+ve half: D1+D4</text>
+  <text x="490" y="115" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b">−ve half: D2+D3</text>
+  <text x="490" y="140" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748b">Both cycles →</text>
+  <text x="490" y="155" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#06b6d4">pulsating DC+</text>
+
+  <!-- Caption -->
+  <text x="300" y="270" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Fig 2-2 — Full-wave bridge rectifier: 4 diodes pass both half-cycles, giving pulsating DC output</text>
+</svg>

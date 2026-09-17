@@ -123,17 +123,7 @@ R = 1 / 0.001229 = 813 Ω
 A **potential divider** (voltage divider) uses two or more resistors in series to tap off a
 fraction of the supply voltage.
 
-```
-         +Vs
-          |
-         [R1]
-          |
-          +--- V_out
-          |
-         [R2]
-          |
-         GND
-```
+<img src="/assets/images/study/section-2/fig-2-1-potential-divider.svg" alt="Potential divider circuit: +Vs connects to R1 (top), junction at middle taps V_out, R2 (bottom) connects to GND. V_out = Vs × R2 / (R1 + R2)" width="600" height="280" loading="lazy">
 
 The output voltage is:
 ```
@@ -1244,13 +1234,7 @@ Four diodes arranged in a bridge pass both half-cycles.
 - Output has twice the ripple frequency of half-wave
 - More efficient
 
-```
-    AC in ─┬──→|──┬─── DC+ out
-           │      │
-          →|     |←
-           │      │
-    AC in ─┴──|←──┴─── DC− out (GND)
-```
+<img src="/assets/images/study/section-2/fig-2-2-bridge-rectifier.svg" alt="Full-wave bridge rectifier circuit: four diodes D1–D4 in a diamond arrangement. Both AC half-cycles are steered to produce pulsating DC+ output. Positive half: D1 and D4 conduct. Negative half: D2 and D3 conduct." width="600" height="280" loading="lazy">
 
 > [INFO] **2I1:** A diode changes AC to DC. A full-wave bridge uses four diodes and is
 > more efficient than a half-wave rectifier.
@@ -1281,13 +1265,7 @@ keeps the output at a fixed voltage regardless of load.
 A **zener diode** is designed to break down at a specific reverse voltage (the zener voltage).
 It maintains a constant voltage across itself as long as some minimum current flows.
 
-```
-        +Vin ─── [R_series] ─┬─── Vout (regulated)
-                             |
-                          [Zener]
-                             |
-         GND ────────────────┴─── GND
-```
+<img src="/assets/images/study/section-2/fig-2-3-zener-regulator.svg" alt="Zener voltage regulator: +Vin feeds through R_series resistor to the output junction. A Zener diode from junction to GND clamps Vout to the Zener voltage V_z. R_series drops any excess input voltage." width="600" height="280" loading="lazy">
 
 **How it works:** excess input voltage is dropped across R_series. The zener clamps Vout.
 
