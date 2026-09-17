@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+  <rect width="600" height="300" rx="8" fill="#0a0e1a"/>
+
+  <!-- Title -->
+  <text x="300" y="18" font-family="IBM Plex Mono" font-size="10" fill="#e2e8f0" text-anchor="middle">Transmitter outputs 14MHz AND 4MHz — most likely cause?</text>
+
+  <!-- ═══ MAIN TX CHAIN ═══ -->
+
+  <!-- Crystal Osc block -->
+  <rect x="28" y="75" width="88" height="42" rx="3" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="72" y="93" font-family="IBM Plex Mono" font-size="8" fill="#e2e8f0" text-anchor="middle">Crystal</text>
+  <text x="72" y="106" font-family="IBM Plex Mono" font-size="8" fill="#e2e8f0" text-anchor="middle">Osc 7MHz</text>
+
+  <!-- Arrow Osc → Doubler -->
+  <line x1="116" y1="96" x2="150" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="150,91 150,101 158,96" fill="#94a3b8"/>
+
+  <!-- Doubler block -->
+  <rect x="158" y="75" width="74" height="42" rx="3" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="195" y="93" font-family="IBM Plex Mono" font-size="9" fill="#e2e8f0" text-anchor="middle">Doubler</text>
+  <text x="195" y="107" font-family="IBM Plex Mono" font-size="9" fill="#e2e8f0" text-anchor="middle">×2</text>
+
+  <!-- Arrow Doubler → PA -->
+  <line x1="232" y1="96" x2="266" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="266,91 266,101 274,96" fill="#94a3b8"/>
+
+  <!-- PA block -->
+  <rect x="274" y="75" width="62" height="42" rx="3" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="305" y="93" font-family="IBM Plex Mono" font-size="9" fill="#e2e8f0" text-anchor="middle">PA</text>
+  <text x="305" y="107" font-family="IBM Plex Mono" font-size="7" fill="#94a3b8" text-anchor="middle">Power Amp</text>
+
+  <!-- Arrow PA → LPF -->
+  <line x1="336" y1="96" x2="372" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="372,91 372,101 380,96" fill="#94a3b8"/>
+
+  <!-- LPF block -->
+  <rect x="380" y="75" width="62" height="42" rx="3" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="411" y="93" font-family="IBM Plex Mono" font-size="9" fill="#e2e8f0" text-anchor="middle">LPF</text>
+  <text x="411" y="107" font-family="IBM Plex Mono" font-size="7" fill="#94a3b8" text-anchor="middle">Low Pass</text>
+
+  <!-- Arrow LPF → Antenna -->
+  <line x1="442" y1="96" x2="478" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="478,91 478,101 486,96" fill="#94a3b8"/>
+
+  <!-- Antenna symbol -->
+  <line x1="486" y1="96" x2="522" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="522" y1="96" x2="522" y2="65" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="522" y1="65" x2="510" y2="52" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="522" y1="65" x2="534" y2="52" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="522" y1="65" x2="522" y2="48" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="522" y="112" font-family="IBM Plex Mono" font-size="8" fill="#e2e8f0" text-anchor="middle">14MHz</text>
+  <text x="522" y="123" font-family="IBM Plex Mono" font-size="7" fill="#94a3b8" text-anchor="middle">intended output</text>
+
+  <!-- ═══ SPURIOUS LEAKAGE PATH (dashed, amber) ═══ -->
+  <!-- Dashed curved path from Osc bottom, below chain, to PA (bypassing doubler) -->
+  <path d="M 72,117 C 72,155 305,155 305,117" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <polygon points="301,117 309,117 305,112" fill="#f59e0b"/>
+  <text x="190" y="168" font-family="IBM Plex Mono" font-size="8" fill="#f59e0b" text-anchor="middle">⚠ 7MHz fundamental leaks past doubler</text>
+  <text x="190" y="180" font-family="IBM Plex Mono" font-size="7" fill="#f59e0b" text-anchor="middle">→ mixing products include ~4MHz spurious</text>
+
+  <!-- ═══ ANSWER OPTIONS ═══ -->
+  <rect x="10" y="195" width="580" height="75" rx="4" fill="#0d1321" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- A correct — highlighted -->
+  <text x="22" y="212" font-family="IBM Plex Mono" font-size="9" fill="#06b6d4" font-weight="bold">A</text>
+  <text x="34" y="212" font-family="IBM Plex Mono" font-size="9" fill="#06b6d4">Oscillator harmonic / fundamental leaking past filter  ← correct</text>
+
+  <text x="22" y="230" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8" font-weight="bold">B</text>
+  <text x="34" y="230" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8">PA self-oscillating at 4MHz</text>
+
+  <text x="22" y="248" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8" font-weight="bold">C</text>
+  <text x="34" y="248" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8">Antenna resonance at 4MHz</text>
+
+  <text x="22" y="266" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8" font-weight="bold">D</text>
+  <text x="34" y="266" font-family="IBM Plex Mono" font-size="9" fill="#94a3b8">Mixer spurious product</text>
+
+  <!-- Caption -->
+  <text x="300" y="292" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Full 3C (D2F-M1-Q30) — Spurious emissions: 14MHz transmitter also radiating 4MHz</text>
+</svg>

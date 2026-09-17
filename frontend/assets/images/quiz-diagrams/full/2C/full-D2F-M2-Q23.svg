@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+  <defs>
+    <style>
+      text { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+      .caption { font-family: 'IBM Plex Sans', 'Arial', sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="300" rx="8" fill="#0a0e1a"/>
+
+  <!-- ===== CIRCUIT: horizontal loop =====
+       Layout: battery at left (x=45–80), top rail y=100, bottom rail y=200
+       Battery (long-short vertical lines, horizontal layout)
+       Then 4kΩ IEC rect, then 6kΩ IEC rect, loop closes bottom
+  -->
+
+  <!-- Top wire: x=45 to x=340, y=100 -->
+  <line x1="45" y1="100" x2="340" y2="100" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Bottom wire: x=45 to x=340, y=200 -->
+  <line x1="45" y1="200" x2="340" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Left vertical wire (battery side) -->
+  <line x1="45" y1="100" x2="45" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="45" y1="165" x2="45" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Battery: long-short horizontal lines at x=45, between y=140 and y=165 -->
+  <!-- Long line (+) at y=140 -->
+  <line x1="32" y1="140" x2="58" y2="140" stroke="#e2e8f0" stroke-width="3"/>
+  <!-- Short line (−) at y=155 -->
+  <line x1="37" y1="155" x2="53" y2="155" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Second long line (full cell) -->
+  <line x1="32" y1="165" x2="58" y2="165" stroke="#e2e8f0" stroke-width="3"/>
+  <!-- +/- labels -->
+  <text x="18" y="144" fill="#e2e8f0" font-size="10">+</text>
+  <text x="18" y="170" fill="#e2e8f0" font-size="10">−</text>
+  <!-- Battery value label -->
+  <text x="45" y="195" fill="#e2e8f0" font-size="11" text-anchor="middle">10V</text>
+
+  <!-- Right vertical wire (closes loop) -->
+  <line x1="340" y1="100" x2="340" y2="200" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- 4kΩ IEC rect: on top rail, centred x=140, y=100 -->
+  <rect x="110" y="88" width="60" height="24" rx="2" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="140" y="103" fill="#e2e8f0" font-size="10" text-anchor="middle">4kΩ</text>
+  <!-- Gap in top wire for rect: already covered by rect overdraw, wire goes underneath -->
+
+  <!-- 6kΩ IEC rect: on top rail, centred x=260, y=100 -->
+  <rect x="230" y="88" width="60" height="24" rx="2" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="260" y="103" fill="#e2e8f0" font-size="10" text-anchor="middle">6kΩ</text>
+
+  <!-- Labels below components -->
+  <text x="140" y="125" fill="#64748b" font-size="9" text-anchor="middle">4 kΩ</text>
+  <text x="260" y="125" fill="#64748b" font-size="9" text-anchor="middle">6 kΩ</text>
+
+  <!-- GND symbol at bottom right -->
+  <line x1="328" y1="202" x2="352" y2="202" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="331" y1="207" x2="349" y2="207" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="334" y1="212" x2="346" y2="212" stroke="#94a3b8" stroke-width="1"/>
+  <text x="340" y="225" fill="#94a3b8" font-size="10" text-anchor="middle">GND</text>
+
+  <!-- Current direction arrow on top wire -->
+  <defs>
+    <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <line x1="75" y1="100" x2="105" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-gray)"/>
+  <text x="90" y="93" fill="#64748b" font-size="9" text-anchor="middle">I →</text>
+
+  <!-- ===== QUESTION TEXT ===== -->
+  <text x="380" y="30" fill="#e2e8f0" font-size="11" text-anchor="start">Battery = 10V</text>
+  <text x="380" y="48" fill="#e2e8f0" font-size="11" text-anchor="start">Series: 4kΩ and 6kΩ</text>
+  <text x="380" y="66" fill="#94a3b8" font-size="10" text-anchor="start">Power dissipated in 4kΩ = ?</text>
+  <text x="380" y="84" fill="#64748b" font-size="9" text-anchor="start">I = 10V/10kΩ = 1mA</text>
+
+  <!-- ===== ANSWER OPTIONS PANEL ===== -->
+  <rect x="370" y="95" width="210" height="165" rx="6" fill="#0d1321" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="475" y="115" fill="#64748b" font-size="10" text-anchor="middle" font-family="'IBM Plex Sans', Arial, sans-serif">SELECT ANSWER</text>
+
+  <!-- A -->
+  <rect x="382" y="122" width="88" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="394" y="143" fill="#94a3b8" font-size="13" font-weight="bold">A</text>
+  <text x="410" y="143" fill="#e2e8f0" font-size="12">4 mW</text>
+
+  <!-- B -->
+  <rect x="480" y="122" width="88" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="492" y="143" fill="#94a3b8" font-size="13" font-weight="bold">B</text>
+  <text x="508" y="143" fill="#e2e8f0" font-size="12">25 mW</text>
+
+  <!-- C -->
+  <rect x="382" y="167" width="88" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="394" y="188" fill="#94a3b8" font-size="13" font-weight="bold">C</text>
+  <text x="410" y="188" fill="#e2e8f0" font-size="12">2.5 mW</text>
+
+  <!-- D -->
+  <rect x="480" y="167" width="88" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="492" y="188" fill="#94a3b8" font-size="13" font-weight="bold">D</text>
+  <text x="508" y="188" fill="#e2e8f0" font-size="12">10 mW</text>
+
+  <!-- ===== CAPTION ===== -->
+  <text x="300" y="282" fill="#64748b" font-size="10" text-anchor="middle" class="caption" font-family="'IBM Plex Sans', Arial, sans-serif">Full 2C (D2F-M2-Q23) — Series resistor circuit: find power in 4kΩ</text>
+</svg>

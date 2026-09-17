@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+  <defs>
+    <style>
+      text { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+      .caption { font-family: 'IBM Plex Sans', 'Arial', sans-serif; }
+    </style>
+    <marker id="arrow-gray2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="300" rx="8" fill="#0a0e1a"/>
+
+  <!-- ===== CIRCUIT: horizontal series loop =====
+       Top rail y=110, bottom rail y=210
+       Battery (left), 820Ω resistor (middle-left), Diode (middle-right), loop closes right
+  -->
+
+  <!-- Top rail -->
+  <line x1="40" y1="110" x2="340" y2="110" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Bottom rail -->
+  <line x1="40" y1="210" x2="340" y2="210" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Left vertical wire (battery) -->
+  <line x1="40" y1="110" x2="40" y2="145" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="40" y1="175" x2="40" y2="210" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Battery: long-short lines at x=40, y=145–175 -->
+  <!-- Long plate (+) -->
+  <line x1="27" y1="145" x2="53" y2="145" stroke="#e2e8f0" stroke-width="3"/>
+  <!-- Short plate (−) -->
+  <line x1="32" y1="158" x2="48" y2="158" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Second pair for full cell look -->
+  <line x1="27" y1="170" x2="53" y2="170" stroke="#e2e8f0" stroke-width="3"/>
+  <line x1="32" y1="175" x2="48" y2="175" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Battery label -->
+  <text x="40" y="200" fill="#e2e8f0" font-size="11" text-anchor="middle">9V</text>
+  <text x="18" y="149" fill="#e2e8f0" font-size="10">+</text>
+  <text x="18" y="178" fill="#e2e8f0" font-size="10">−</text>
+
+  <!-- Right vertical wire (closes loop) -->
+  <line x1="340" y1="110" x2="340" y2="210" stroke="#94a3b8" stroke-width="2"/>
+  <!-- GND symbol -->
+  <line x1="328" y1="212" x2="352" y2="212" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="331" y1="217" x2="349" y2="217" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="334" y1="222" x2="346" y2="222" stroke="#94a3b8" stroke-width="1"/>
+
+  <!-- 820Ω IEC rect on top rail: centred x=145, y=110 -->
+  <rect x="115" y="98" width="60" height="24" rx="2" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <text x="145" y="113" fill="#e2e8f0" font-size="10" text-anchor="middle">820Ω</text>
+  <text x="145" y="132" fill="#64748b" font-size="9" text-anchor="middle">820 Ω</text>
+
+  <!-- Current arrow on top rail between battery and resistor -->
+  <line x1="60" y1="110" x2="110" y2="110" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-gray2)"/>
+
+  <!-- Diode symbol on top rail: centred x=250, y=110 -->
+  <!-- Anode at x=222, Cathode at x=278 -->
+  <!-- Triangle (anode→cathode direction, current flows left to right) -->
+  <polygon points="222,100 222,120 248,110" fill="#0d1321" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Cathode bar -->
+  <line x1="248" y1="100" x2="248" y2="120" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Wire connections to diode -->
+  <line x1="178" y1="110" x2="222" y2="110" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="248" y1="110" x2="340" y2="110" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Diode label -->
+  <text x="235" y="135" fill="#64748b" font-size="9" text-anchor="middle">D1 (Si)</text>
+  <text x="235" y="146" fill="#64748b" font-size="9" text-anchor="middle">V_f=0.6V</text>
+
+  <!-- Anode / Cathode labels -->
+  <text x="216" y="97" fill="#94a3b8" font-size="8" text-anchor="middle">A</text>
+  <text x="252" y="97" fill="#94a3b8" font-size="8" text-anchor="middle">K</text>
+
+  <!-- ===== QUESTION TEXT ===== -->
+  <text x="375" y="30" fill="#e2e8f0" font-size="11" text-anchor="start">9V supply</text>
+  <text x="375" y="48" fill="#e2e8f0" font-size="11" text-anchor="start">Series: 820Ω + Si diode</text>
+  <text x="375" y="66" fill="#e2e8f0" font-size="11" text-anchor="start">V_forward = 0.6V</text>
+  <text x="375" y="84" fill="#94a3b8" font-size="10" text-anchor="start">What current flows through</text>
+  <text x="375" y="98" fill="#94a3b8" font-size="10" text-anchor="start">the diode?</text>
+
+  <!-- ===== ANSWER OPTIONS PANEL ===== -->
+  <rect x="365" y="110" width="220" height="160" rx="6" fill="#0d1321" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="475" y="130" fill="#64748b" font-size="10" text-anchor="middle" font-family="'IBM Plex Sans', Arial, sans-serif">SELECT ANSWER</text>
+
+  <!-- A -->
+  <rect x="377" y="137" width="92" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="389" y="158" fill="#94a3b8" font-size="13" font-weight="bold">A</text>
+  <text x="406" y="158" fill="#e2e8f0" font-size="12">10 mA</text>
+
+  <!-- B -->
+  <rect x="479" y="137" width="92" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="491" y="158" fill="#94a3b8" font-size="13" font-weight="bold">B</text>
+  <text x="508" y="158" fill="#e2e8f0" font-size="12">11 mA</text>
+
+  <!-- C -->
+  <rect x="377" y="182" width="92" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="389" y="203" fill="#94a3b8" font-size="13" font-weight="bold">C</text>
+  <text x="406" y="203" fill="#e2e8f0" font-size="12">9 mA</text>
+
+  <!-- D -->
+  <rect x="479" y="182" width="92" height="34" rx="4" fill="#0a0e1a" stroke="#334155" stroke-width="1.5"/>
+  <text x="491" y="203" fill="#94a3b8" font-size="13" font-weight="bold">D</text>
+  <text x="508" y="203" fill="#e2e8f0" font-size="12">1 mA</text>
+
+  <!-- ===== CAPTION ===== -->
+  <text x="300" y="282" fill="#64748b" font-size="10" text-anchor="middle" class="caption" font-family="'IBM Plex Sans', Arial, sans-serif">Full 2H (D2F-M1-Q26) — Diode circuit: find forward current</text>
+</svg>
