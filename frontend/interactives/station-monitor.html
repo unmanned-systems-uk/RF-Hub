@@ -153,6 +153,34 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   header .hlinks{display:none}
 }
 
+/* ── time-of-day / grey-line ────────────────────────────────────────────── */
+#tod-bands-wrap{display:flex;flex-wrap:wrap;border-top:1px solid var(--border);
+  flex-shrink:0;background:var(--bg-card)}
+#tod-ctrl{flex:1;min-width:260px;padding:10px 14px;display:flex;flex-direction:column;gap:7px}
+#tod-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#tod-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;
+  background:var(--bg-in);outline:none;cursor:pointer;margin:2px 0}
+#tod-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;
+  border-radius:50%;background:var(--amber);cursor:pointer}
+#tod-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+  background:var(--amber);border:none}
+#tod-play-btn{background:var(--bg-in);border:1px solid var(--border);border-radius:4px;
+  color:var(--txt2);font-family:'IBM Plex Mono',monospace;font-size:.70rem;
+  padding:4px 11px;white-space:nowrap;transition:border-color .15s,color .15s}
+#tod-play-btn:hover{border-color:var(--amber);color:var(--amber)}
+#tod-play-btn.playing{border-color:var(--cyan);color:var(--cyan)}
+#tod-utc-lbl{font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--amber);min-width:5.5rem}
+#tod-local-lbl{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--dim);min-width:5rem}
+#tod-sr-info{font-size:.62rem;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+#bands-panel{width:310px;flex-shrink:0;border-left:1px solid var(--border);
+  overflow-y:auto;max-height:200px;padding:8px 12px}
+@media(max-width:640px){#bands-panel{width:100%;border-left:none;border-top:1px solid var(--border);max-height:160px}}
+.bp-row{display:flex;align-items:flex-start;gap:6px;padding:3px 0;
+  border-bottom:1px solid #0d1320;font-size:.63rem}
+.bp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.bp-band{font-family:'IBM Plex Mono',monospace;min-width:30px;flex-shrink:0;font-size:.67rem}
+.bp-why{flex:1;color:var(--dim);line-height:1.35}
+
 </style>
 </head>
 <body>
@@ -225,6 +253,21 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   <div class="panel active" id="panel-map">
     <div id="map-wrap">
       <div id="leaflet-map"></div>
+    </div>
+    <div id="tod-bands-wrap">
+      <div id="tod-ctrl">
+        <div id="tod-row">
+          <span id="tod-utc-lbl">00:00 UTC</span>
+          <span id="tod-local-lbl">GMT</span>
+          <button id="tod-play-btn" aria-label="Play/pause time animation">&#9654; Play</button>
+        </div>
+        <input type="range" id="tod-slider" min="0" max="1439" step="1" value="0" aria-label="Time of day (UTC minutes)">
+        <div id="tod-sr-info">SR: &#8212; &nbsp; SS: &#8212;</div>
+      </div>
+      <div id="bands-panel">
+        <div style="font-size:.62rem;color:var(--dim);margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em">HF propagation</div>
+        <div id="bands-rows"></div>
+      </div>
     </div>
   </div>
 
@@ -1090,12 +1133,174 @@ function redrawAll() {
   buildMapMarkers();
 }
 
+// ─── GREY-LINE / TIME-OF-DAY ─────────────────────────────────────────────────
+let terminatorLayer=null, subsolarMarker=null, todTimer=null;
+
+function isBST(utcMs) {
+  const d=new Date(utcMs);
+  const y=d.getUTCFullYear();
+  function lastSun(y,mo) {
+    const last=new Date(Date.UTC(y,mo+1,0));
+    return new Date(Date.UTC(y,mo,last.getUTCDate()-last.getUTCDay()));
+  }
+  const bstStart=lastSun(y,2).getTime()+3600000;
+  const bstEnd=lastSun(y,9).getTime()+3600000;
+  return utcMs>=bstStart&&utcMs<bstEnd;
+}
+
+function solarDeclination(utcMs) {
+  const d=new Date(utcMs);
+  const doy=Math.floor((utcMs-Date.UTC(d.getUTCFullYear(),0,1))/86400000)+1;
+  return -23.45*Math.cos(2*Math.PI*(doy+10)/365)*Math.PI/180;
+}
+
+function subsolarPoint(utcMs) {
+  const utcH=(utcMs%86400000)/3600000;
+  let lon=((12-utcH)*15+180)%360-180;
+  return [solarDeclination(utcMs)*180/Math.PI, lon];
+}
+
+function buildTerminatorPoly(utcMs) {
+  const decl=solarDeclination(utcMs);
+  const utcH=(utcMs%86400000)/3600000;
+  const subsolarLon=((12-utcH)*15+180)%360-180;
+  const dSafe=Math.abs(decl)<1e-6?1e-6:decl;
+  const pts=[];
+  for (let lon=-180;lon<=180;lon+=2) {
+    const H=(lon-subsolarLon)*Math.PI/180;
+    const lat=Math.atan(-Math.cos(H)/Math.tan(dSafe))*180/Math.PI;
+    pts.push([lat,lon]);
+  }
+  if (decl>0) { pts.push([-90,180]); pts.push([-90,-180]); }
+  else        { pts.push([90,180]);  pts.push([90,-180]);  }
+  return pts;
+}
+
+function sunriseSetUTC(utcMs) {
+  const [slat,slon]=STATE.stationLatLon;
+  const decl=solarDeclination(utcMs);
+  const lat=slat*Math.PI/180;
+  const cosH0=-Math.tan(lat)*Math.tan(decl);
+  if (cosH0>=1||cosH0<=-1) return null;
+  const H0=Math.acos(cosH0)*180/Math.PI;
+  const noon=12-slon/15;
+  const sr=((noon-H0/15)%24+24)%24;
+  const ss=((noon+H0/15)%24+24)%24;
+  return {sr,ss};
+}
+
+const BANDS_INFO=[
+  {band:'160m',fMHz:1.84,  descDay:'D-layer absorption — closed',descNight:'Regional groundwave/skywave'},
+  {band:'80m', fMHz:3.573, descDay:'Short skip, some absorption', descNight:'Good regional/EU'},
+  {band:'40m', fMHz:7.040, descDay:'Good daytime skip',           descNight:'Long skip / DX likely'},
+  {band:'30m', fMHz:10.14, descDay:'Moderate, check solar flux',  descNight:'Good DX'},
+  {band:'20m', fMHz:14.097,descDay:'Good DX all day',             descNight:'Fades near sunset'},
+  {band:'17m', fMHz:18.106,descDay:'Good DX — F2/Es',             descNight:'Closes after dark'},
+  {band:'15m', fMHz:21.096,descDay:'F2/Es when solar flux high',  descNight:'Closes early'},
+  {band:'12m', fMHz:24.926,descDay:'F2/Es — flux dependent',      descNight:'Generally closed'},
+  {band:'10m', fMHz:28.126,descDay:'Sporadic-E/F2',               descNight:'Generally closed'},
+];
+
+function bandStatus(utcMs) {
+  const srss=sunriseSetUTC(utcMs);
+  const utcH=(utcMs%86400000)/3600000;
+  const isDay=srss?(utcH>=srss.sr&&utcH<srss.ss):false;
+  return BANDS_INFO.map(b=>{
+    const f=b.fMHz;
+    const open=(f<=2)?!isDay:(f<=10)?true:isDay;
+    return {band:b.band,color:(BAND_META[b.band]||{color:'#94a3b8'}).color,open,why:isDay?b.descDay:b.descNight};
+  });
+}
+
+function updateBandsPanel(utcMs) {
+  const cont=document.getElementById('bands-rows');
+  if (!cont) return;
+  cont.innerHTML=bandStatus(utcMs).map(s=>`
+    <div class="bp-row">
+      <div class="bp-dot" style="background:${s.open?s.color:'#1e293b'};${s.open?'':'border:1px solid '+s.color}"></div>
+      <span class="bp-band" style="color:${s.open?s.color:'var(--dim)'}">${s.band}</span>
+      <span class="bp-why">${s.why}</span>
+    </div>`).join('');
+}
+
+function updateTodLabels(utcMs) {
+  const h=Math.floor((utcMs%86400000)/3600000);
+  const m=Math.floor(((utcMs%86400000)%3600000)/60000);
+  const pad=n=>String(n).padStart(2,'0');
+  document.getElementById('tod-utc-lbl').textContent=pad(h)+':'+pad(m)+' UTC';
+  const bst=isBST(utcMs);
+  const lh=((h+(bst?1:0))%24+24)%24;
+  document.getElementById('tod-local-lbl').textContent=pad(lh)+':'+pad(m)+(bst?' BST':' GMT');
+  const srss=sunriseSetUTC(utcMs);
+  const el=document.getElementById('tod-sr-info');
+  if (srss) {
+    const fmt=t=>{const hh=Math.floor(t),mm=Math.round((t-hh)*60);return pad(hh)+':'+pad(mm)};
+    el.textContent='☀ SR '+fmt(srss.sr)+' UTC · SS '+fmt(srss.ss)+' UTC';
+  } else {
+    el.textContent='☀ Polar day/night';
+  }
+}
+
+function redrawTerminator(utcMs) {
+  if (!terminatorLayer) return;
+  terminatorLayer.setLatLngs(buildTerminatorPoly(utcMs));
+  subsolarMarker.setLatLng(subsolarPoint(utcMs));
+}
+
+function onTodChange(minVal) {
+  const d=new Date(); const dayStart=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate());
+  const utcMs=dayStart+minVal*60000;
+  redrawTerminator(utcMs);
+  updateTodLabels(utcMs);
+  updateBandsPanel(utcMs);
+}
+
+function initTerminator() {
+  const now=Date.now();
+  const d=new Date(now); const dayStart=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate());
+  const currentMin=Math.floor((now-dayStart)/60000);
+
+  terminatorLayer=L.polygon(buildTerminatorPoly(now),{
+    fillColor:'#0a1220',fillOpacity:0.38,stroke:false,interactive:false
+  }).addTo(map);
+
+  const [slat,slon]=subsolarPoint(now);
+  subsolarMarker=L.marker([slat,slon],{
+    icon:L.divIcon({
+      html:'<span style="font-size:18px;line-height:1;filter:drop-shadow(0 0 4px #fbbf24)">☀</span>',
+      iconSize:[22,22],iconAnchor:[11,11],className:''
+    }),
+    interactive:false
+  }).addTo(map);
+
+  const slider=document.getElementById('tod-slider');
+  slider.value=currentMin;
+  onTodChange(currentMin);
+
+  slider.addEventListener('input',()=>onTodChange(parseInt(slider.value)));
+
+  const playBtn=document.getElementById('tod-play-btn');
+  playBtn.addEventListener('click',()=>{
+    if (todTimer) {
+      clearInterval(todTimer); todTimer=null;
+      playBtn.innerHTML='&#9654; Play'; playBtn.classList.remove('playing');
+    } else {
+      playBtn.innerHTML='&#9646;&#9646; Pause'; playBtn.classList.add('playing');
+      todTimer=setInterval(()=>{
+        let v=(parseInt(slider.value)+1)%1440;
+        slider.value=v; onTodChange(v);
+      },20);
+    }
+  });
+}
+
 (function init(){
   setupTabs();
   setupFilters();
   buildTableHead();
   buildLegend();
   initMap();
+  initTerminator();
   pollManifest();
   setInterval(pollManifest,POLL_MS);
 })();
