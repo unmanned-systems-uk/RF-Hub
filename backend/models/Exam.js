@@ -57,7 +57,7 @@ class Exam {
    */
   static async getLevels() {
     const counts = await pool.query(
-      `SELECT level, COUNT(*) AS question_count FROM exam_questions WHERE has_diagram = false GROUP BY level`
+      `SELECT level, COUNT(*) AS question_count FROM exam_questions GROUP BY level`
     );
     const countMap = {};
     counts.rows.forEach(r => { countMap[r.level] = parseInt(r.question_count); });
@@ -91,7 +91,7 @@ class Exam {
 
     const dbRows = await pool.query(
       `SELECT section_code, section_name, COUNT(*) AS question_count
-       FROM exam_questions WHERE level = $1 AND has_diagram = false
+       FROM exam_questions WHERE level = $1
        GROUP BY section_code, section_name ORDER BY section_code`,
       [level]
     );
@@ -125,7 +125,7 @@ class Exam {
   static async getQuestions(level, mode, section, userId) {
     const cfg = EXAM_CONFIG[level];
     const safeFields = `id, level, section_code, section_name, syllabus_ref,
-                        question_text, options, has_diagram, tags`;
+                        question_text, options, has_diagram, diagram_url, tags`;
     let questions = [];
 
     if (mode === 'mock') {
@@ -136,7 +136,7 @@ class Exam {
           const sec = cfg.sections[sectionKey];
           const result = await pool.query(
             `SELECT ${safeFields} FROM exam_questions
-             WHERE level = $1 AND section_code LIKE $2 AND has_diagram = false
+             WHERE level = $1 AND section_code LIKE $2
              ORDER BY RANDOM() LIMIT $3`,
             [level, sectionKey + '%', sec.questions]
           );
@@ -146,7 +146,7 @@ class Exam {
         // No section structure yet — random from full pool
         const result = await pool.query(
           `SELECT ${safeFields} FROM exam_questions
-           WHERE level = $1 AND has_diagram = false ORDER BY RANDOM() LIMIT $2`,
+           WHERE level = $1 ORDER BY RANDOM() LIMIT $2`,
           [level, cfg.total_questions]
         );
         questions = result.rows;
@@ -156,7 +156,7 @@ class Exam {
       const filter = section ? section + '%' : '%';
       const result = await pool.query(
         `SELECT ${safeFields} FROM exam_questions
-         WHERE level = $1 AND section_code LIKE $2 AND has_diagram = false ORDER BY RANDOM()`,
+         WHERE level = $1 AND section_code LIKE $2 ORDER BY RANDOM()`,
         [level, filter]
       );
       questions = result.rows;
@@ -165,17 +165,17 @@ class Exam {
       if (!userId) return [];
       const result = await pool.query(
         `SELECT q.id, q.level, q.section_code, q.section_name, q.syllabus_ref,
-                q.question_text, q.options, q.has_diagram, q.tags,
+                q.question_text, q.options, q.has_diagram, q.diagram_url, q.tags,
                 COUNT(CASE WHEN h.is_correct = false THEN 1 END) AS wrong_count
          FROM exam_questions q
          JOIN exam_question_history h ON h.question_id = q.id
-         WHERE h.user_id = $1 AND q.level = $2 AND h.is_correct = false AND q.has_diagram = false
+         WHERE h.user_id = $1 AND q.level = $2 AND h.is_correct = false
            AND q.id NOT IN (
              SELECT question_id FROM exam_question_history
              WHERE user_id = $1 AND is_correct = true
            )
          GROUP BY q.id, q.level, q.section_code, q.section_name, q.syllabus_ref,
-                  q.question_text, q.options, q.has_diagram, q.tags
+                  q.question_text, q.options, q.has_diagram, q.diagram_url, q.tags
          ORDER BY wrong_count DESC`,
         [userId, level]
       );
