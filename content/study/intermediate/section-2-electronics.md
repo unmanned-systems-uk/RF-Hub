@@ -1234,7 +1234,9 @@ Four diodes arranged in a bridge pass both half-cycles.
 - Output has twice the ripple frequency of half-wave
 - More efficient
 
-<img src="/assets/images/study/section-2/fig-2-2-bridge-rectifier.svg" alt="Full-wave bridge rectifier circuit: four diodes D1–D4 in a diamond arrangement. Both AC half-cycles are steered to produce pulsating DC+ output. Positive half: D1 and D4 conduct. Negative half: D2 and D3 conduct." width="600" height="280" loading="lazy">
+<img src="/assets/images/study/section-2/fig-2-2-bridge-rectifier.gif" alt="Animated bridge rectifier: four diodes in a diamond arrangement; green diodes are non-conducting, red shows current flow — direction reverses each half-cycle but DC output polarity stays constant." width="600" height="420" loading="lazy">
+
+<p style="font-size:0.75em; color:#64748b; margin-top:0.25em;">Fig 2-2 — Bridge rectifier: green diodes are non-conducting; red shows current flow on each half-cycle. Animation by Zureks, CC BY-SA 3.0, via Wikimedia Commons.</p>
 
 > [INFO] **2I1:** A diode changes AC to DC. A full-wave bridge uses four diodes and is
 > more efficient than a half-wave rectifier.
