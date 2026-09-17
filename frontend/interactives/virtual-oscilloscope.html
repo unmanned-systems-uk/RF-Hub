@@ -504,18 +504,38 @@ function update() {
   ctx.beginPath(); ctx.moveTo(0, trigY); ctx.lineTo(cssW, trigY); ctx.stroke();
   ctx.setLineDash([]);
 
-  // Trace
+  // Trace — peak-detection rendering (how real DSOs handle compressed waveforms)
   ctx.strokeStyle = '#06b6d4';
   ctx.lineWidth = 1.5;
   ctx.shadowColor = 'rgba(6,182,212,0.4)';
   ctx.shadowBlur = 4;
   ctx.beginPath();
-  for (let px = 0; px < screenPx; px++) {
-    const si = startIdx + Math.round(px * samplesPerPx);
-    const v = (si < coupled.length) ? coupled[si] : 0;
-    const x = px;
-    const y = midY - (v / vdiv) * DIV_PX;
-    if (px === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  if (samplesPerPx >= 2) {
+    // Peak-detect mode: scan ALL samples in each pixel's time window, draw vertical bar.
+    // Correctly renders sine bands, AM envelopes, FM deviation at slow timebases.
+    for (let px = 0; px < screenPx; px++) {
+      const s0 = startIdx + Math.floor(px * samplesPerPx);
+      const s1 = Math.min(startIdx + Math.floor((px + 1) * samplesPerPx), coupled.length - 1);
+      let pMin = Infinity, pMax = -Infinity;
+      for (let s = s0; s <= s1; s++) {
+        const v = coupled[s];
+        if (v < pMin) pMin = v;
+        if (v > pMax) pMax = v;
+      }
+      if (pMin === Infinity) continue;   // no samples for this pixel (buffer edge)
+      const yTop = midY - (pMax / vdiv) * DIV_PX;
+      const yBot = midY - (pMin / vdiv) * DIV_PX;
+      ctx.moveTo(px + 0.5, yTop);
+      ctx.lineTo(px + 0.5, yBot);
+    }
+  } else {
+    // Point-to-point mode: low-freq / long-timebase — classic scope trace
+    for (let px = 0; px < screenPx; px++) {
+      const si = startIdx + Math.round(px * samplesPerPx);
+      const v = (si >= 0 && si < coupled.length) ? coupled[si] : 0;
+      const y = midY - (v / vdiv) * DIV_PX;
+      if (px === 0) ctx.moveTo(px, y); else ctx.lineTo(px, y);
+    }
   }
   ctx.stroke();
   ctx.shadowBlur = 0;
@@ -524,11 +544,13 @@ function update() {
   document.getElementById('badge-clip').style.display = clipped ? 'inline' : 'none';
   document.getElementById('badge-trig').style.display = (!triggered && trigMode === 'auto') ? 'inline' : 'none';
 
-  // Readouts — Vpp and period from measured trace
+  // Readouts — Vpp from full display-window peak scan (same min/max as render loop)
   let vMin = Infinity, vMax = -Infinity;
-  for (let i = 0; i < displaySamples; i++) {
-    const v = coupled[startIdx + i] || 0;
-    if (v < vMin) vMin = v; if (v > vMax) vMax = v;
+  const scanEnd = Math.min(startIdx + displaySamples, coupled.length);
+  for (let i = startIdx; i < scanEnd; i++) {
+    const v = coupled[i];
+    if (v < vMin) vMin = v;
+    if (v > vMax) vMax = v;
   }
   const vpp = vMax - vMin;
   const measDivs = vpp / vdiv;
