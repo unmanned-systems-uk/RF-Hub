@@ -12,6 +12,7 @@
   <meta name="theme-color" content="#06b6d4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -307,12 +308,12 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   Contains public sector information licensed under the Open Government Licence v3.0.
   Scottish Public Sector LiDAR Phase 3, Scottish Government.
   Copernicus GLO-30 DSM © ESA / Sinergise, produced from WorldDEM © Airbus Defence and Space.
-  Map imagery © Google. Map data terms apply.
+  Map tiles © <a href="https://carto.com/attributions" target="_blank" rel="noopener" style="color:inherit">CARTO</a> · Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit">OpenStreetMap</a> contributors.
 
   <p style="font-size:0.78rem; color:rgba(255,255,255,0.30); text-align:center; margin-top:0.75rem; margin-bottom:0;">Not affiliated with the Radio Society of Great Britain or Ofcom. <a href="/pages/about.html" style="color:rgba(255,255,255,0.40);">About page.</a></p>
 </footer>
 
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqzvfCdGMhLHKFP0eUph6cyfD0OBXXr2s&callback=initMap"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 'use strict';
 // ─── EMBEDDED HORIZON DATA ───────────────────────────────────────────────────
@@ -428,6 +429,7 @@ const STATE = {
     redrawScatter();
     redrawHeatmap();
     applyTableFilter();
+    buildMapMarkers();
   }
 };
 
@@ -524,51 +526,26 @@ async function fetchSpots() {
 }
 
 // ─── MAP ─────────────────────────────────────────────────────────────────────
-let map, gMarkers=[], gInfoWindow=null, gcLine=null;
+let map, gMarkers=[], gcLine=null;
 
-const DARK_MAP_STYLE=[
-  {elementType:'geometry',stylers:[{color:'#0d1220'}]},
-  {elementType:'labels.text.fill',stylers:[{color:'#6b7280'}]},
-  {elementType:'labels.text.stroke',stylers:[{color:'#0a0e1a'}]},
-  {featureType:'administrative',elementType:'geometry.stroke',stylers:[{color:'#1e293b'}]},
-  {featureType:'administrative.country',elementType:'labels.text.fill',stylers:[{color:'#9ca3af'}]},
-  {featureType:'administrative.locality',elementType:'labels.text.fill',stylers:[{color:'#6b7280'}]},
-  {featureType:'road',elementType:'geometry',stylers:[{color:'#151f30'}]},
-  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#374151'}]},
-  {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#1e2d45'}]},
-  {featureType:'transit',elementType:'geometry',stylers:[{color:'#111827'}]},
-  {featureType:'water',elementType:'geometry',stylers:[{color:'#060a14'}]},
-  {featureType:'water',elementType:'labels.text.fill',stylers:[{color:'#1e293b'}]},
-  {featureType:'poi',stylers:[{visibility:'off'}]},
-  {featureType:'landscape',elementType:'geometry',stylers:[{color:'#0d1525'}]}
-];
-
-window.initMap=function() {
+function initMap() {
   const [lat,lon]=STATE.stationLatLon;
-  map=new google.maps.Map(document.getElementById('leaflet-map'),{
-    center:{lat,lng:lon}, zoom:3,
-    styles:DARK_MAP_STYLE,
-    mapTypeControl:true,
-    mapTypeControlOptions:{position:google.maps.ControlPosition.TOP_RIGHT},
-    fullscreenControl:false,
-    streetViewControl:false,
-  });
-  gInfoWindow=new google.maps.InfoWindow();
+  map=L.map('leaflet-map',{zoomControl:true,attributionControl:true}).setView([lat,lon],3);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd', maxZoom:19
+  }).addTo(map);
   // Station marker
-  new google.maps.Marker({
-    position:{lat,lng:lon}, map,
-    title:'IO85LO — receive site',
-    icon:{path:google.maps.SymbolPath.CIRCLE,scale:7,fillColor:'#a78bfa',
-          fillOpacity:1,strokeColor:'#7c3aed',strokeWeight:1.5}
-  });
-  // Draw any spots already fetched before map was ready
+  L.circleMarker([lat,lon],{radius:7,fillColor:'#a78bfa',fillOpacity:1,
+    color:'#7c3aed',weight:1.5}).addTo(map)
+    .bindTooltip('IO85LO — receive site',{permanent:false});
   buildMapMarkers();
-};
+}
 
 function buildMapMarkers() {
   if (!map) return;
   // Clear existing spot markers
-  gMarkers.forEach(m=>m.setMap(null));
+  gMarkers.forEach(m=>m.remove());
   gMarkers=[];
   // Aggregate by callsign+grid
   const tx=new Map();
@@ -585,7 +562,7 @@ function buildMapMarkers() {
   for (const t of tx.values()) {
     const dom=Object.entries(t.bands).sort((a,b)=>b[1]-a[1])[0][0];
     const meta=BAND_META[dom]||{color:'#94a3b8'};
-    const scale=Math.max(4,Math.min(11,3+Math.log2(t.count+1)));
+    const radius=Math.max(4,Math.min(11,3+Math.log2(t.count+1)));
     const bands=Object.entries(t.bands).sort((a,b)=>b[1]-a[1])
       .map(([b,c])=>`<span style="color:${(BAND_META[b]||{}).color||'#fff'}">${b}×${c}</span>`).join(' ');
     const typeNote=t.type3?'<br><small style="color:#f59e0b">⚠ type-3: hashed call, position uncertain</small>':'';
@@ -594,20 +571,13 @@ function buildMapMarkers() {
       <b>${t.callsign}</b> ${t.grid}<br>
       ${t.count} decode${t.count>1?'s':''} · max SNR ${t.maxSnr} dB<br>
       ${bands}${typeNote}${susNote}</div>`;
-    const marker=new google.maps.Marker({
-      position:{lat:t.lat,lng:t.lon}, map,
-      title:t.callsign,
-      icon:{path:google.maps.SymbolPath.CIRCLE,scale,
-            fillColor:meta.color,fillOpacity:0.75,
-            strokeColor:t.suspect?'#f59e0b':meta.color,strokeWeight:t.suspect?2:1}
-    });
-    marker.addListener('click',()=>{
-      gInfoWindow.setContent(content);
-      gInfoWindow.open(map,marker);
-      showGCPath(t.lat,t.lon);
-    });
-    marker.addListener('mouseover',()=>showGCPath(t.lat,t.lon));
-    marker.addListener('mouseout',()=>clearGCPath());
+    const marker=L.circleMarker([t.lat,t.lon],{
+      radius, fillColor:meta.color, fillOpacity:0.75,
+      color:t.suspect?'#f59e0b':meta.color, weight:t.suspect?2:1
+    }).addTo(map).bindPopup(content);
+    marker.on('click',()=>{ marker.openPopup(); showGCPath(t.lat,t.lon); });
+    marker.on('mouseover',()=>showGCPath(t.lat,t.lon));
+    marker.on('mouseout',()=>clearGCPath());
     gMarkers.push(marker);
   }
 }
@@ -615,13 +585,10 @@ function buildMapMarkers() {
 function showGCPath(lat2,lon2) {
   clearGCPath();
   const [lat1,lon1]=STATE.stationLatLon;
-  const pts=gcPoints(lat1,lon1,lat2,lon2).map(([lat,lng])=>({lat,lng}));
-  gcLine=new google.maps.Polyline({
-    path:pts,map,strokeColor:'#a78bfa',strokeWeight:1.5,strokeOpacity:0.7,
-    icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:1,scale:3},offset:'0',repeat:'12px'}]
-  });
+  const pts=gcPoints(lat1,lon1,lat2,lon2);
+  gcLine=L.polyline(pts,{color:'#a78bfa',weight:1.5,opacity:0.7,dashArray:'6,4'}).addTo(map);
 }
-function clearGCPath() { if (gcLine){gcLine.setMap(null);gcLine=null;} }
+function clearGCPath() { if (gcLine){gcLine.remove();gcLine=null;} }
 
 // ─── ROSE ─────────────────────────────────────────────────────────────────────
 const roseCanvas=document.getElementById('rose-canvas');
@@ -1092,7 +1059,7 @@ function setupTabs() {
       if (tab.dataset.panel==='rose') redrawRose();
       if (tab.dataset.panel==='scatter') redrawScatter();
       if (tab.dataset.panel==='heatmap') redrawHeatmap();
-      if (tab.dataset.panel==='map') { setTimeout(()=>map&&google.maps.event.trigger(map,'resize'),50); }
+      if (tab.dataset.panel==='map') { setTimeout(()=>map&&map.invalidateSize(),50); }
     });
   });
 }
@@ -1108,7 +1075,7 @@ window.addEventListener('resize',()=>{
     if (panel==='rose') redrawRose();
     if (panel==='scatter') redrawScatter();
     if (panel==='heatmap') redrawHeatmap();
-    if (panel==='map') map&&google.maps.event.trigger(map,'resize');
+    if (panel==='map') map&&map.invalidateSize();
   },120);
 });
 
@@ -1128,6 +1095,7 @@ function redrawAll() {
   setupFilters();
   buildTableHead();
   buildLegend();
+  initMap();
   pollManifest();
   setInterval(pollManifest,POLL_MS);
 })();
