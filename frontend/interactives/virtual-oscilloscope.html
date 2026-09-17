@@ -171,7 +171,7 @@ select {
         <div style="flex:1">
           <div class="ctrl-label">Frequency</div>
           <div class="slider-wrap">
-            <input type="range" id="sl-freq" min="0" max="40" step="1" value="15" oninput="update()">
+            <input type="range" id="sl-freq" min="0" max="40" step="1" value="6" oninput="update()">
             <span class="slider-val" id="lbl-freq">—</span>
           </div>
         </div>
@@ -461,14 +461,16 @@ function update() {
   const screenPx = Math.min(cssW, HDIVS * DIV_PX);
   const totalTime = HDIVS * tdiv;
 
-  // Decouple sample rate from display density: always ≥20× signal frequency (Nyquist fix)
-  const sampleRate = Math.max(freq * 20, screenPx * 5 / totalTime);
+  // Clamp sampleRate BEFORE buffer allocation so the full screen always fits in MAX_SAMPLES.
+  // Peak-detect is robust to lower oversample ratios, so trading Nyquist headroom for a
+  // complete trace (no right-half truncation at slow timebases) is the right call.
+  const MAX_SAMPLES = 500000;
+  const HEADROOM = 1.1;                                   // 10% buffer for trigger search
+  const maxSampleRate = MAX_SAMPLES / (totalTime * HEADROOM);
+  const targetRate = Math.max(freq * 20, screenPx * 5 / totalTime);
+  const sampleRate = Math.min(targetRate, maxSampleRate);
   const samplesPerPx = sampleRate * totalTime / screenPx;
-  // Headroom: display samples + 2 full periods for trigger search, capped at 500 k
-  const nSamples = Math.min(
-    Math.ceil(screenPx * samplesPerPx) + Math.max(200, Math.ceil(sampleRate / Math.max(freq, 1) * 2)),
-    500000
-  );
+  const nSamples = Math.ceil(screenPx * samplesPerPx) + Math.max(200, Math.ceil(sampleRate / Math.max(freq, 1) * 2));
 
   const raw = genSamples(freq, amp, offset, wave, sampleRate, nSamples);
   const coupled = applyCoupling(raw, coupling);
