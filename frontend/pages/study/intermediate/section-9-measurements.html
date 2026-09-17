@@ -305,13 +305,7 @@
       <h3>Measuring Voltage (9A1)</h3>
       <p>Voltage is always measured <strong>across</strong> (in parallel with) the component or circuit element:</p>
 
-<pre>      ┌────[R1]────┬────[R2]────┐
-      │            │            │
-     Vb          [V]           Vb
-      │            │            │
-      └────────────┴────────────┘
-
-  Voltmeter placed IN PARALLEL with R2</pre>
+      <img src="/assets/images/study/section-9/voltmeter-parallel.svg" alt="Voltmeter connected in parallel with R2: battery Vb drives current through R1 and R2 in series; voltmeter V is connected across R2 at the junction nodes" style="max-width:100%; display:block; margin:1rem 0;">
 
       <p>Voltmeters are designed to have <strong>very high input resistance</strong> (typically 10 MΩ on a DMM). Only a tiny current flows through the meter.</p>
 
@@ -323,13 +317,7 @@
       <h3>Measuring Current (9A1)</h3>
       <p>Current is measured by placing the meter <strong>in series</strong> in the circuit:</p>
 
-<pre>      ┌────[R1]────[A]────[R2]────┐
-      │                           │
-     Vb                          Vb
-      │                           │
-      └───────────────────────────┘
-
-  Ammeter placed IN SERIES — circuit broken and meter inserted</pre>
+      <img src="/assets/images/study/section-9/ammeter-series.svg" alt="Ammeter inserted in series: battery Vb drives current through R1, then ammeter A (circuit broken and meter inserted), then R2 back to battery" style="max-width:100%; display:block; margin:1rem 0;">
 
       <p>In current mode, the ammeter has <strong>very low internal resistance</strong> — it acts like a piece of wire. The current is the same at every point in a series circuit.</p>
 
@@ -446,8 +434,8 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       </ul>
 
       <div style="margin: 1rem 0;">
-        <iframe src="/interactives/virtual-oscilloscope.html"
-          style="width:100%; height:760px; border:1px solid #1e293b; border-radius:8px; display:block;"
+        <iframe src="/interactives/virtual-oscilloscope.html?v=2"
+          style="width:100%; height:820px; border:1px solid #1e293b; border-radius:8px; display:block;"
           loading="lazy" title="Virtual Oscilloscope"></iframe>
       </div>
 
@@ -706,6 +694,11 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       </ul>
       <p>Results are displayed as a plot vs frequency — far more information than a dip meter. Cross-ref: see <a href="section-4-feeders-antennas.html#ch-4b">§4B</a> and <a href="section-4-feeders-antennas.html#ch-4e">§4E</a> for how to interpret SWR and impedance plots.</p>
 
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text"><a href="/pages/blog/understanding-s11.html" target="_blank">Understanding S11 &mdash; return loss, Smith chart, and VNA interpretation</a> &mdash; a deep dive with measured data from a Rigol RSA5065N, walking through Log Magnitude, SWR, and Smith Chart formats for real antenna measurements. Directly applicable to interpreting output from a Nano VNA or any antenna analyser.</div>
+      </div>
+
     </section>
 
     <hr class="divider">
@@ -721,9 +714,9 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       <h3>Transmitter Test Setup</h3>
       <p>The basic transmitter test uses a <strong>dummy load</strong> — a 50 Ω non-inductive resistive load that absorbs all RF power as heat. The dummy load prevents radiation during testing and provides a stable, known load impedance.</p>
 
-<pre>TX → [SWR meter] → [Dummy load]
-         │
-    [Directional coupler] → [Spectrum analyser or power meter]</pre>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-9/fig-9-1-tx-test-setup.svg" alt="TX test setup block diagram: transmitter feeds SWR meter and dummy load; directional coupler taps a sample to the spectrum analyser or power meter" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
 
       <p>Key points:</p>
       <ul>
@@ -733,7 +726,9 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       </ul>
 
       <h3>Receiver Test Setup</h3>
-<pre>[RF signal generator] → [Attenuator(s)] → [Receiver antenna input]</pre>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-9/fig-9-2-rx-sensitivity-test.svg" alt="Receiver sensitivity test setup: RF signal generator feeds through calibrated attenuators to the receiver antenna input, providing a known signal level" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
 
       <ul>
         <li>The attenuator pads down the generator output to the very low levels a receiver input expects</li>
@@ -890,7 +885,8 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
     <!-- ═══════════════════ SECTION NAV ═══════════════════ -->
     <nav class="section-nav" aria-label="Section navigation">
       <a href="section-8-safety.html" class="section-nav__link">&larr; Section 8: Safety</a>
-      <a href="#" class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="../../exam-practice/exam.html?level=intermediate&amp;mode=topic&amp;section=9"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
       <a href="./" class="section-nav__link">Back to Intermediate &rarr;</a>
     </nav>
 
@@ -934,7 +930,7 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       });
     });
   </script>
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1100" defer></script>
+  <script src="/assets/js/study-page.js?v=20260917-1100" defer></script>
 </body>
 </html>
