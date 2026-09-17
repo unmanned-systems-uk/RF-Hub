@@ -100,11 +100,7 @@ The **superheterodyne** (superhet) is the standard architecture for virtually al
 
 ### Basic Architecture
 
-```
-Antenna → RF filter → Mixer → IF filter → IF amp → Demodulator → Audio
-                          ↑
-                         LO
-```
+<img src="/assets/images/study/full/section-9/fig-9-1-superhet-rx-chain.svg" alt="Superhet receiver block diagram: antenna feeds RF filter, mixer (with local oscillator below), IF filter, IF amplifier, demodulator and AF amplifier to audio output; IF = RF minus LO" width="700" height="220" loading="lazy">
 
 The **mixer** combines the incoming RF signal (f_signal) with the Local Oscillator (f_LO) to produce the **Intermediate Frequency (IF)**:
 
@@ -167,11 +163,7 @@ Key principle: **a higher IF separates the image frequency further from the want
 
 A **double superhet** uses two successive frequency conversions to get the best of both worlds:
 
-```
-Antenna → RF filter → 1st Mixer → 1st IF (high) → 2nd Mixer → 2nd IF (low) → Demodulator
-                           ↑                              ↑
-                          1st LO                        2nd LO (fixed)
-```
+<img src="/assets/images/study/full/section-9/fig-9-2-double-conversion-superhet.svg" alt="Double-conversion superhet block diagram: two mixers with separate local oscillators convert RF to a high first IF (for image rejection) then to a low second IF (for selectivity) before demodulation" width="800" height="220" loading="lazy">
 
 ### Why Two Conversions?
 

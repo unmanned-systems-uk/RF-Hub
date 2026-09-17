@@ -332,11 +332,7 @@ Results are displayed as a plot vs frequency. This gives far more information th
 
 The basic transmitter test uses a **dummy load** — a 50 Ω non-inductive resistive load that absorbs all RF power as heat. The dummy load prevents radiation during testing and provides a stable, known load impedance:
 
-```
-TX → [SWR meter] → [Dummy load]
-         │
-    [Directional coupler] → [Spectrum analyser or power meter]
-```
+<img src="/assets/images/study/section-9/fig-9-1-tx-test-setup.svg" alt="TX test setup block diagram: transmitter feeds SWR meter and dummy load; directional coupler taps a sample to the spectrum analyser or power meter" width="600" height="280" loading="lazy">
 
 Key points:
 - The dummy load must be **rated for the full transmit power** (plus headroom) — a 100 W TX needs at least a 100 W rated load
@@ -345,9 +341,7 @@ Key points:
 
 ### Receiver Test Setup
 
-```
-[RF signal generator] → [Attenuator(s)] → [Receiver antenna input]
-```
+<img src="/assets/images/study/section-9/fig-9-2-rx-sensitivity-test.svg" alt="Receiver sensitivity test setup: RF signal generator feeds through calibrated attenuators to the receiver antenna input, providing a known signal level" width="600" height="180" loading="lazy">
 
 - The **attenuator** pads down the generator output to the very low levels a receiver input expects (typically µV or dBm range)
 - The attenuator also presents a stable 50 Ω source impedance to the receiver

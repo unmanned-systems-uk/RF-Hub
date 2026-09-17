@@ -20,9 +20,7 @@ In a conventional transceiver, each function (filter, demodulation, frequency se
 
 A **Software Defined Radio** replaces those hardware stages with a general-purpose processor running algorithms:
 
-```
-Antenna → [analogue front-end] → ADC → [digital samples] → software DSP → audio / decoded data
-```
+<img src="/assets/images/study/full/section-10/fig-10-1-sdr-block-diagram.svg" alt="SDR overview block diagram: antenna feeds analogue front-end and ADC (analogue domain), then digital samples flow through software DSP to produce audio or decoded data (digital domain)" width="700" height="190" loading="lazy">
 
 The front-end is minimal — typically only a bandpass filter and low-noise amplifier. Everything from filtering to demodulation runs in software (a PC, FPGA, or embedded DSP).
 
@@ -42,11 +40,7 @@ Two architectures dominate amateur SDR.
 
 The incoming RF is mixed to a low intermediate frequency (IF) or to baseband before the ADC. This is the most common approach.
 
-```
-Antenna → BPF → LNA → Mixer → low-IF/baseband filter → ADC
-                  ↑
-               Local oscillator (software-controlled)
-```
+<img src="/assets/images/study/full/section-10/fig-10-2-sdr-hardware-frontend.svg" alt="SDR hardware front-end block diagram: antenna feeds bandpass filter, LNA, mixer (with software-controlled local oscillator below), baseband filter and ADC before software processing" width="700" height="220" loading="lazy">
 
 The ADC only needs to sample at twice the bandwidth of interest — a 2 MHz bandwidth radio needs only a ~2 Msps ADC. Most consumer SDR dongles (RTL-SDR, SDRplay, Airspy) use this approach with a TV tuner chip as the RF front-end.
 

@@ -91,11 +91,7 @@ Any cable carrying signal or power current carries **two types of current simult
 
 The magnetic fields produced by DM currents in the two conductors are **opposite and approximately equal** — they cancel at distance. DM current produces little external radiation. This is the current the circuit is designed to carry.
 
-```
-Conductor A:  →→→→→→→→  I_DM
-Conductor B:  ←←←←←←←←  I_DM
-External field: ≈ 0 (cancels)
-```
+<img src="/assets/images/study/full/section-13/fig-13-1-dm-vs-cm-currents.svg" alt="Differential mode versus common mode current comparison: left panel shows DM with opposite-direction currents whose fields cancel; right panel shows CM with same-direction currents whose fields add and radiate" width="600" height="280" loading="lazy">
 
 ### Common Mode (CM) — the Interference Current
 
@@ -103,11 +99,7 @@ External field: ≈ 0 (cancels)
 
 The magnetic fields produced by CM currents **add** rather than cancel. The cable behaves like a single-conductor antenna radiating at the CM current level.
 
-```
-Conductor A:  →→→→→→→→  I_CM
-Conductor B:  →→→→→→→→  I_CM
-External field: large (adds)
-```
+*(See Fig 13-1 above for a side-by-side comparison of DM and CM current flow.)*
 
 ### The Relationship Between CM and DM (13C1)
 

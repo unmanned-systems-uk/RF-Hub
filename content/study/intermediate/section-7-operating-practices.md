@@ -481,12 +481,7 @@ All these tools export to **ADIF** (Amateur Data Interchange Format), the standa
 
 A well-laid-out shack runs better and causes less interference. The RSGB Fig 8.2 diagram shows the recommended signal path:
 
-```
-Mains → Power supply → Transmitter/receiver → SWR meter → ATU → Feeder → Antenna
-                ↑                    ↑
-         Ferrite ring          Screened microphone cable
-         on mains lead         Screened audio cable
-```
+<img src="/assets/images/study/section-7/fig-7-1-station-rf-chain.svg" alt="Station RF chain block diagram showing signal path from mains through power supply, transceiver, SWR meter, ATU and feeder to antenna, with annotations showing ferrite ring on mains lead and screened microphone and audio cables at the transceiver" width="700" height="220" loading="lazy">
 
 Key principles:
 - Keep RF cables (coax) away from audio cables (microphone, headphone, speaker leads). Running them parallel for long distances creates coupling that puts RF into the audio chain.

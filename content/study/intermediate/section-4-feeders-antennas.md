@@ -74,7 +74,7 @@ The **polarisation** of a radio wave is defined by the orientation of its electr
 - A **vertically mounted** wire produces **vertically polarised** waves
 - A **circularly polarised** wave rotates as it travels — useful for satellite and EME work
 
-<!-- SVG: polarisation-diagram-E-H-field-orientation -->
+<img src="/assets/images/study/section-4/fig-4-1-polarisation-diagram.svg" alt="Vertical polarisation diagram: left panel shows cross-section with E-field vertical and H-field horizontal; right panel shows E-field sinusoidal wave travelling horizontally" width="600" height="280" loading="lazy">
 
 **On HF:** the ionosphere scrambles polarisation continuously, so cross-polarisation loss is not usually a problem. You can receive horizontally from a vertical and vice versa with little penalty.
 
@@ -96,7 +96,7 @@ If the antenna impedance **does not match** the feeder impedance, the antenna ca
 
 Two waves travelling in opposite directions on the same conductor **superimpose**. Where their peaks add, you get a voltage maximum (antinode). Where a peak of one meets a trough of the other, they cancel to form a voltage minimum (node). Because both waves travel at the same speed but in opposite directions, the pattern of peaks and troughs is **fixed in space** — a standing wave.
 
-<!-- SVG: standing-wave-envelope-visual — show incident wave (right-moving), reflected wave (left-moving), and their sum (standing pattern with nodes every λ/2) -->
+<img src="/assets/images/study/section-4/fig-4-2-standing-wave-envelope.svg" alt="Standing wave diagram: incident wave moving right plus reflected wave moving left produces a standing pattern with fixed nodes (N) every half-wavelength and antinodes (A) between them" width="600" height="280" loading="lazy">
 
 Key facts about standing waves:
 - The pattern **repeats every half wavelength** (λ/2)
@@ -336,7 +336,9 @@ You are unlikely to see waveguide in an Intermediate exam question, but you shou
 
 > [INFO] **4A1:** Waveguide is a hollow conductive pipe used as a feeder at microwave frequencies. The cross-section must be > λ/2. Not practical at HF or VHF.
 
-<!-- INTERACTIVE REQUEST: Feeder loss vs frequency plotter — select cable type (RG-58/RG-213/LMR-400/ladder line), enter feeder length, plot loss (dB) from 1 MHz to 450 MHz. Show how high SWR multiplies feeder losses for coax vs ladder line. -->
+**Interactive — Feeder Loss vs Frequency:**
+
+<iframe src="/interactives/feeder-loss.html" style="width:100%; height:775px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="Feeder Loss vs Frequency Plotter"></iframe>
 
 ---
 
@@ -403,7 +405,9 @@ This is the same transformer impedance transformation covered in Section 2 (tran
 
 **See also:** [Antenna Curriculum Lesson 15: Impedance Matching — including baluns and matching networks](/pages/antenna-curriculum/unit-3-design-and-construction/lesson-15-impedance-matching.html)
 
-<!-- INTERACTIVE REQUEST: Balun designer — select type (choke / 1:1 / 4:1 / 9:1), show animated diagram of current paths (common mode blocked, differential passed), and impedance transformation calculator. -->
+**Interactive — Balun Current-Flow Animator:**
+
+<iframe src="/interactives/balun-currents.html" style="width:100%; height:880px; border:1px solid #1e293b; border-radius:8px; display:block;" loading="lazy" title="Balun Current-Flow Animator"></iframe>
 
 ---
 
@@ -461,7 +465,7 @@ How a trap works:
 - Below the trap's resonant frequency: the trap's reactance is low and RF current flows straight through it — the whole wire length is active
 - At the trap's resonant frequency: the trap presents **very high impedance** — RF current cannot pass through it. The antenna is effectively shortened to the section between the feedpoint and the trap
 
-<!-- SVG: trapped-dipole-diagram — show 40m dipole with 20m traps inserted, label sections -->
+<img src="/assets/images/study/section-4/fig-4-3-trapped-dipole-diagram.svg" alt="Trapped dipole schematic showing centre feedpoint, inner 20m sections leading to parallel LC traps, and outer extensions making up the full 40m span" width="600" height="220" loading="lazy">
 
 ![40 m / 20 m trap dipole — parallel LC traps at ~14 MHz isolate the outer sections on 20 m and pass current through on 40 m. Single antenna, two bands.](/assets/images/study/section-4/trap-dipole-40m-20m.png)
 
@@ -486,7 +490,7 @@ Traps are used in commercial multi-band antennas such as the Cushcraft MA5B and 
 
 An antenna does not radiate equally in all directions. Its **radiation pattern** shows how much power it radiates in each direction, plotted as a polar diagram.
 
-<!-- SVG: dipole-radiation-pattern-polar — figure-of-eight pattern, broadside maximum, null off the ends -->
+<img src="/assets/images/study/section-4/fig-4-4-dipole-radiation-pattern.svg" alt="Half-wave dipole radiation pattern polar diagram showing figure-of-eight shape with maximum radiation broadside to the dipole and nulls off the ends" width="600" height="280" loading="lazy">
 
 A **half-wave dipole** mounted horizontally produces a characteristic **figure-of-eight** radiation pattern in the azimuth plane:
 - Maximum radiation is **broadside** — at right angles to the wire
