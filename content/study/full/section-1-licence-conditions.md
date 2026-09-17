@@ -273,6 +273,16 @@ Requirements for each can be complex, particularly regarding transmit power and 
 
 *This section expands beyond the RSGB Chapter 1 text, covering material required at Full licence level. Emission designator codes are defined in ITU Radio Regulations Appendix 1 — [VERIFY] specific codes against current ITU RR before citing in any regulatory context.*
 
+### Where Does the System Come From?
+
+Emission designators were born from an early 20th-century need to classify the rapidly expanding variety of radio signals crossing national borders. When the International Telecommunication Union codified its Radio Regulations in the 1920s and 1930s, it became clear that each country needed a common vocabulary for signal types — one that a Japanese regulator and a Chilean regulator could both apply to the same signal and reach the same classification. The result was Appendix 1 of the ITU Radio Regulations: a compact, machine-readable three-character code that describes any emission unambiguously.
+
+The system was designed to be **universal and legally precise**. Informal mode names like "SSB", "CW", or "FT8" are conversational shorthand — useful between operators who share context, but imprecise in legal documents. "SSB" does not specify whether the carrier is suppressed or reduced, or whether the signal carries voice, data, or something else. The emission designator **J3E** leaves no room for ambiguity: single sideband, suppressed carrier, single analogue channel, telephony.
+
+The ITU system is used today by everyone who works at the boundary between radio operation and regulation. National regulators including Ofcom and the US FCC cite designators in licence documents and enforcement actions. IARU regional band planners use them to define which signal types belong in which segment of a band. Exam boards test whether candidates understand what they are actually licensed to emit. Spectrum monitoring services record designators when logging interference sources. Amateurs encounter them directly in NoV applications and in the fine print of Schedule 1.
+
+Understanding the system also helps decode your own logbook. The ADIF logging format's MODE field loosely follows the designator taxonomy — FT8 is logged as "FT8" because that is the commonly understood name, but the underlying signal is classified **J2D** (SSB-type carrier, single digital channel with audio sub-carrier, data). Knowing the system makes the decode table below something you can actually use, not just memorise.
+
 ### The ITU Emission Designator System
 
 The ITU uses a standardised system to describe the type of emission produced by a station. An **emission designator** has three mandatory characters (sometimes preceded by an optional bandwidth figure in kHz/MHz/GHz):
@@ -325,6 +335,36 @@ Character 3 — Type of information transmitted:
 > [INFO] Key designators: **A1A** = CW, **F3E** = FM voice, **J3E** = SSB voice, **A3E** = AM voice, **F1D** = RTTY/FSK. The first letter gives the modulation type; the second the nature of the signal; the third the information type. [VERIFY] against ITU RR Appendix 1.
 
 > [INFO] **Interactive candidate:** An emission designator decoder widget (`full-emission-designator-decoder.html`) — user enters a designator, widget decodes each character and states the amateur mode. This would directly reinforce 1I exam questions.
+
+### Where You Will Actually Encounter These Designators
+
+Knowing how to decode a designator is one thing; knowing where you will actually see one is another. Here are the most common practical touch-points:
+
+**Ofcom Schedule 1 conditions.** The frequency allocation table attached to your licence specifies which modes are permitted or restricted on particular bands. Some entries reference emission designators directly — for example, restricting a shared allocation to specific signal types to protect the primary user.
+
+**IARU Region 1 band plan.** The IARU band plan divides amateur HF and VHF bands into usage segments by designator. A segment described as "narrow-band modes: A1A, F1B, G1D, J2D" is telling you which coded signal types are expected there — and implicitly, that F3E (wideband FM voice) does not belong.
+
+**Full licence exam questions.** The syllabus specifically tests decoding — expect questions such as "What does J3E mean?" or "Which designator describes FM voice?" A candidate who has internalised the three-character structure can answer without rote memorisation.
+
+**Interference complaints and enforcement.** When Ofcom or a spectrum monitoring service documents interference, it records the emission type by designator. An enforcement notice stating "spurious emission F3E on [frequency]" is unambiguous in a way that "someone was using FM" is not.
+
+**NoV applications.** Applications for a Notice of Variation — for example, to operate a special-event station with a unique callsign, or to request permissions outside standard licence conditions — may require you to list the emission types you intend to use.
+
+> [INFO] **Worked scenario:** If Ofcom's conditions for 5 MHz state "permitted emissions: A1A, J3E, J2D" — you now know that authorises CW, SSB voice, and audio-subcarrier digital, but excludes FM voice (F3E) and direct-FM data (F1D). You can read the licence condition directly rather than waiting for someone to translate it for you.
+
+### Why Bandwidth Terminology Matters in Practice
+
+Three separate bandwidth definitions appear in the ITU Radio Regulations and in UK licence documentation. They often appear together in exam questions, which tempts candidates to treat them as similar-but-slightly-different things to memorise. They are not — each measures something genuinely different, and the practical difference matters when transmitters misbehave.
+
+**Necessary bandwidth** is a design specification. It is the minimum bandwidth sufficient to carry the information at the required rate and quality. It is a theoretical floor, calculated from the signal type, not measured at the antenna. You encounter it in engineering documents and band-planning calculations.
+
+**Occupied bandwidth** is a measurement. It is what your transmitter actually radiates — specifically, the frequency range containing 99% of the total radiated power. A spectrum analyser can measure it directly. When a regulator checks your signal, occupied bandwidth is what they observe.
+
+**Assigned bandwidth** is a legal permission. It is the frequency range your licence authorises you to use, set wider than typical occupied bandwidth to accommodate practical transmitter imperfections.
+
+> [INFO] A well-behaved transmitter: necessary bandwidth = 2.4 kHz (SSB voice, theoretical); occupied bandwidth = 2.8 kHz (what the antenna actually radiates, measured); assigned bandwidth = 3.0 kHz (what the licence authorises). Three different numbers describing the same signal.
+
+The difference becomes critical when something goes wrong. If ALC (Automatic Level Control) is misadjusted on an SSB transmitter, intermodulation products splatter far outside the intended passband. The necessary bandwidth of the signal type has not changed. The assigned bandwidth in the licence has not changed. But the occupied bandwidth has grown — and if it exceeds the assigned bandwidth, the transmission is non-compliant regardless of how small the theoretical signal should be. Regulators measure occupied bandwidth. Your licence constrains you to assigned bandwidth. Keeping occupied bandwidth comfortably inside assigned bandwidth is both good practice and a legal obligation.
 
 ### Bandwidth Terminology
 
