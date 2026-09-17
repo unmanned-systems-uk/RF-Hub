@@ -19,6 +19,7 @@ const videoRoutes = require('./routes/videos');
 const lessonRoutes = require('./routes/lessons');
 const examRoutes   = require('./routes/exams');
 const studyProgressRoutes = require('./routes/studyProgress');
+const adminExamRoutes    = require('./routes/adminExamQuestions');
 
 const app = express();
 
@@ -132,6 +133,7 @@ app.use('/api/videos', videoRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/exams',   examRoutes);
 app.use('/api/v1/study/progress', studyProgressRoutes);
+app.use('/api/v1/admin/exam-questions', adminExamRoutes);
 
 // 404 handler
 app.use((req, res) => {
