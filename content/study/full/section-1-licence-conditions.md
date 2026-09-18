@@ -366,17 +366,12 @@ Three separate bandwidth definitions appear in the ITU Radio Regulations and in 
 
 The difference becomes critical when something goes wrong. If ALC (Automatic Level Control) is misadjusted on an SSB transmitter, intermodulation products splatter far outside the intended passband. The necessary bandwidth of the signal type has not changed. The assigned bandwidth in the licence has not changed. But the occupied bandwidth has grown — and if it exceeds the assigned bandwidth, the transmission is non-compliant regardless of how small the theoretical signal should be. Regulators measure occupied bandwidth. Your licence constrains you to assigned bandwidth. Keeping occupied bandwidth comfortably inside assigned bandwidth is both good practice and a legal obligation.
 
-### Bandwidth Terminology
-
-The ITU distinguishes three bandwidth definitions that appear in licence conditions and exam questions:
-
-**Necessary bandwidth** — the minimum bandwidth sufficient to ensure the transmission of information at the required rate and quality under the specified conditions. This is a theoretical minimum — what the signal theoretically occupies.
-
-**Occupied bandwidth** — the frequency range within which 99% of the total mean power is radiated. Measured on a spectrum analyser: find the frequencies below which 0.5% of power lies and above which 0.5% lies; the range between them is the occupied bandwidth.
-
-**Assigned bandwidth** — the frequency band within which the emission is authorised. Slightly wider than the occupied bandwidth to allow for practical imperfections in the transmitter.
-
-> [INFO] In exam questions: **necessary bandwidth** = minimum theoretically needed; **occupied bandwidth** = 99% of power within; **assigned bandwidth** = what the licence authorises (widest of the three). [VERIFY] exact wording against ITU RR — these definitions may be restated in the current Ofcom licensing framework.
+> [INFO] **Exam crib — bandwidth terms (ITU RR definitions):**
+> - **Necessary bandwidth** — minimum bandwidth sufficient to carry the information at the required rate and quality. Theoretical; calculated from signal type.
+> - **Occupied bandwidth** — range containing 99% of total mean power (0.5% excluded at each end). Measured; what a spectrum analyser shows.
+> - **Assigned bandwidth** — the range the licence authorises. Widest of the three; set to accommodate real-world transmitter imperfections.
+>
+> [VERIFY] exact wording against ITU RR Appendix 1 before citing in any regulatory context.
 
 ---
 
