@@ -665,7 +665,7 @@
   </div>
   <h2>UK Repeater Map</h2>
 
-  <p>The map below shows a sample set of well-known UK repeaters. Markers are colour-coded by type. Click any marker for full details. Use the filters to narrow by band or mode, or search by callsign or location.</p>
+  <p>The map below shows a sample set of UK repeaters across six bands: 10m, 6m, 4m, 2m, 70cm, and 23cm. Markers are colour-coded by band. Click any marker for full details. Use the filters to narrow by band or mode, or search by callsign or location.</p>
 
   <!-- VISUAL 1: LEAFLET REPEATER MAP -->
   <div id="repeater-map-section">
@@ -675,11 +675,23 @@
         <div class="map-filters" id="map-filters">
           <span class="filter-group__label">Band:</span>
           <div class="filter-group" id="band-filters">
+            <label class="filter-cb checked" data-band="10m">
+              <input type="checkbox" checked> <span class="filter-dot" style="background:#ffd93d;"></span> 10m
+            </label>
+            <label class="filter-cb checked" data-band="6m">
+              <input type="checkbox" checked> <span class="filter-dot" style="background:#ff6b9d;"></span> 6m
+            </label>
+            <label class="filter-cb checked" data-band="4m">
+              <input type="checkbox" checked> <span class="filter-dot" style="background:#6bcf7f;"></span> 4m
+            </label>
             <label class="filter-cb checked" data-band="2m">
               <input type="checkbox" checked> <span class="filter-dot" style="background:#4a9eff;"></span> 2m
             </label>
             <label class="filter-cb checked" data-band="70cm">
               <input type="checkbox" checked> <span class="filter-dot" style="background:#ff8c42;"></span> 70cm
+            </label>
+            <label class="filter-cb checked" data-band="23cm">
+              <input type="checkbox" checked> <span class="filter-dot" style="background:#c084fc;"></span> 23cm
             </label>
           </div>
           <span class="filter-group__label" style="margin-left:0.5rem;">Mode:</span>
@@ -710,14 +722,14 @@
         <p style="font-size:0.65rem;">Check console for Maps API errors. Visit <a href="https://ukrepeater.net" target="_blank" rel="noopener">ukrepeater.net</a> for the full directory.</p>
       </div>
       <div class="marker-legend">
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#4a9eff;"></span> 2m FM</div>
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#ff8c42;"></span> 70cm FM</div>
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#4ade80;"></span> D-STAR</div>
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#f87171;"></span> DMR</div>
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#c084fc;"></span> Fusion</div>
-        <div class="marker-legend-item"><span class="marker-swatch" style="background:#9ca3af;"></span> Other</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#ffd93d;"></span> 10m</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#ff6b9d;"></span> 6m</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#6bcf7f;"></span> 4m</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#4a9eff;"></span> 2m</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#ff8c42;"></span> 70cm</div>
+        <div class="marker-legend-item"><span class="marker-swatch" style="background:#c084fc;"></span> 23cm</div>
       </div>
-      <div class="map-statusbar">Showing <span id="map-count">—</span> repeaters · Data: sample set · Source: <a href="https://ukrepeater.net" target="_blank" rel="noopener">ukrepeater.net</a></div>
+      <div class="map-statusbar">Showing <span id="map-count">—</span> repeaters · Data: sample set across 10m / 6m / 4m / 2m / 70cm / 23cm · See <a href="https://ukrepeater.net" target="_blank" rel="noopener">ukrepeater.net</a> for the full directory</div>
     </div>
   </div>
 </div>
@@ -1407,25 +1419,21 @@
 
   /* ── LEAFLET REPEATER MAP ── */
   const MARKER_COLOURS = {
-    'FM-2m':    '#4a9eff',
-    'FM-70cm':  '#ff8c42',
-    'D-STAR':   '#4ade80',
-    'DMR':      '#f87171',
-    'Fusion':   '#c084fc',
-    'other':    '#9ca3af'
+    '10m':   '#ffd93d',
+    '6m':    '#ff6b9d',
+    '4m':    '#6bcf7f',
+    '2m':    '#4a9eff',
+    '70cm':  '#ff8c42',
+    '23cm':  '#c084fc',
+    'other': '#9ca3af'
   };
 
   function getMarkerColour(rep) {
-    if (rep.mode === 'D-STAR') return MARKER_COLOURS['D-STAR'];
-    if (rep.mode === 'DMR')    return MARKER_COLOURS['DMR'];
-    if (rep.mode === 'Fusion') return MARKER_COLOURS['Fusion'];
-    if (rep.mode === 'FM' && rep.band === '2m')   return MARKER_COLOURS['FM-2m'];
-    if (rep.mode === 'FM' && rep.band === '70cm') return MARKER_COLOURS['FM-70cm'];
-    return MARKER_COLOURS['other'];
+    return MARKER_COLOURS[rep.band] || MARKER_COLOURS['other'];
   }
 
   let map, markers = [], allRepeaterData = [];
-  let activeBands = new Set(['2m', '70cm']);
+  let activeBands = new Set(['10m', '6m', '4m', '2m', '70cm', '23cm']);
   let activeModes = new Set(['FM', 'D-STAR', 'DMR', 'Fusion']);
   let searchQuery = '';
 
