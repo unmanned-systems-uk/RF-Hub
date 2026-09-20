@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
     /* ── PAGE-SPECIFIC OVERRIDES & ADDITIONS ── */
@@ -111,7 +112,7 @@
     }
     ol.steps li strong { color: var(--text-primary); }
 
-    /* ── GOOGLE MAPS WIDGET ── */
+    /* ── LEAFLET MAP WIDGET ── */
     #repeater-map-section {
       margin: 2rem 0;
     }
@@ -655,7 +656,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════ -->
-<!-- CHAPTER 4: UK REPEATER MAP (Google Maps)                    -->
+<!-- CHAPTER 4: UK REPEATER MAP (Leaflet)                         -->
 <!-- ═══════════════════════════════════════════════════════════ -->
 <div class="chapter" id="repeater-map">
   <div class="chapter-header">
@@ -666,7 +667,7 @@
 
   <p>The map below shows a sample set of well-known UK repeaters. Markers are colour-coded by type. Click any marker for full details. Use the filters to narrow by band or mode, or search by callsign or location.</p>
 
-  <!-- VISUAL 1: GOOGLE MAPS REPEATER MAP -->
+  <!-- VISUAL 1: LEAFLET REPEATER MAP -->
   <div id="repeater-map-section">
     <div class="map-card">
       <div class="map-card__header">
@@ -1311,19 +1312,7 @@
   </footer>
 </div>
 
-<!-- ── GOOGLE MAPS API ── -->
-<script>
-  // Maps callback — defined before the API loads
-  window.mapsApiLoaded = false;
-  window.initMap = function() {
-    window.mapsApiLoaded = true;
-    buildRepeaterMap();
-  };
-</script>
-<script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDd27DL81g1609NLEkG1vHHrX3G39RElio&callback=initMap&libraries=marker"
-  onerror="document.getElementById('map').style.display='none'; document.getElementById('map-fallback').classList.add('visible');">
-</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 (function() {
@@ -1416,7 +1405,7 @@
     }
   }
 
-  /* ── GOOGLE MAPS REPEATER MAP ── */
+  /* ── LEAFLET REPEATER MAP ── */
   const MARKER_COLOURS = {
     'FM-2m':    '#4a9eff',
     'FM-70cm':  '#ff8c42',
@@ -1435,103 +1424,65 @@
     return MARKER_COLOURS['other'];
   }
 
-  const DARK_MAP_STYLE = [
-    { elementType: 'geometry', stylers: [{ color: '#0d1220' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#0a0e1a' }] },
-    { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#1e293b' }] },
-    { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#9ca3af' }] },
-    { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#6b7280' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#151f30' }] },
-    { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#374151' }] },
-    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#1e2d45' }] },
-    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#111827' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#060a14' }] },
-    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#1e293b' }] },
-    { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-    { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#0d1525' }] }
-  ];
-
-  let map, markers = [], infoWindow, allRepeaterData = [];
+  let map, markers = [], allRepeaterData = [];
   let activeBands = new Set(['2m', '70cm']);
   let activeModes = new Set(['FM', 'D-STAR', 'DMR', 'Fusion']);
   let searchQuery = '';
 
   function buildRepeaterMap() {
-    const mapEl = document.getElementById('map');
-    map = new google.maps.Map(mapEl, {
-      center: { lat: 54.5, lng: -2.5 },
-      zoom: 6,
-      styles: DARK_MAP_STYLE,
-      disableDefaultUI: false,
-      mapTypeControl: false,
-      fullscreenControl: true,
-      streetViewControl: false,
-      zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP }
-    });
-
-    infoWindow = new google.maps.InfoWindow();
+    map = L.map('map', { zoomControl: true }).setView([54.5, -2.5], 6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3oqg_1_25dc74f75f1414bbcf570a49', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd', maxZoom: 19
+    }).addTo(map);
 
     fetch('../../assets/data/uk-repeaters.json')
       .then(r => r.json())
       .then(data => {
         allRepeaterData = data;
-        repeaterData = data; // share with CTCSS widget
+        repeaterData = data;
         createMarkers();
         updateMapCount();
       })
       .catch(() => {
-        // fallback: use embedded minimal dataset
         allRepeaterData = [];
         updateMapCount();
       });
   }
 
   function createMarkers() {
-    // Clear existing
-    markers.forEach(m => m.setMap(null));
+    markers.forEach(m => m.remove());
     markers = [];
 
     allRepeaterData.forEach(rep => {
       const colour = getMarkerColour(rep);
-      const marker = new google.maps.Marker({
-        position: { lat: rep.lat, lng: rep.lng },
-        map: map,
-        title: rep.callsign,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 7,
-          fillColor: colour,
-          fillOpacity: 0.9,
-          strokeColor: 'rgba(0,0,0,0.5)',
-          strokeWeight: 1.5
-        },
-        _rep: rep
-      });
+      const r = rep;
+      const ctcssStr = r.ctcss_letter ? r.ctcss_letter + ' (' + r.ctcss_tone + ' Hz)' : 'None';
+      const offsetStr = (r.offset_dir === 'neg' ? '−' : '+') +
+        (Math.abs(r.offset) >= 1 ? Math.abs(r.offset) + ' MHz' : (Math.abs(r.offset) * 1000) + ' kHz');
 
-      marker.addListener('click', function() {
-        const r = this._rep;
-        const ctcssStr = r.ctcss_letter
-          ? r.ctcss_letter + ' (' + r.ctcss_tone + ' Hz)'
-          : 'None';
-        const offsetStr = (r.offset_dir === 'neg' ? '−' : '+') +
-          (Math.abs(r.offset) >= 1 ? Math.abs(r.offset) + ' MHz' : (Math.abs(r.offset) * 1000) + ' kHz');
-
-        infoWindow.setContent(
-          '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#0d1a2a;line-height:1.6;max-width:220px;">' +
-          '<strong style="font-size:14px;color:#0a0e1a;">' + r.callsign + '</strong>' +
-          '<div style="margin-top:6px;">' +
-          '<div>📻 <strong>Out:</strong> ' + r.output_freq.toFixed(4) + ' MHz</div>' +
-          '<div>📡 <strong>Offset:</strong> ' + offsetStr + '</div>' +
-          '<div>🔔 <strong>CTCSS:</strong> ' + ctcssStr + '</div>' +
-          '<div>📶 <strong>Mode:</strong> ' + r.mode + ' (' + r.band + ')</div>' +
-          '<div>📍 ' + r.location_name + '</div>' +
-          '<div style="margin-top:4px;color:' + (r.status === 'on-air' ? '#16a34a' : '#dc2626') + ';">' +
-          (r.status === 'on-air' ? '● On Air' : '○ Off Air') + '</div>' +
-          '</div></div>'
-        );
-        infoWindow.open(map, this);
+      const marker = L.circleMarker([rep.lat, rep.lng], {
+        radius: 7,
+        fillColor: colour,
+        fillOpacity: 0.9,
+        color: 'rgba(0,0,0,0.5)',
+        weight: 1.5
       });
+      marker._rep = rep;
+
+      marker.bindPopup(
+        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#0d1a2a;line-height:1.6;max-width:220px;">' +
+        '<strong style="font-size:14px;color:#0a0e1a;">' + r.callsign + '</strong>' +
+        '<div style="margin-top:6px;">' +
+        '<div>📻 <strong>Out:</strong> ' + r.output_freq.toFixed(4) + ' MHz</div>' +
+        '<div>📡 <strong>Offset:</strong> ' + offsetStr + '</div>' +
+        '<div>🔔 <strong>CTCSS:</strong> ' + ctcssStr + '</div>' +
+        '<div>📶 <strong>Mode:</strong> ' + r.mode + ' (' + r.band + ')</div>' +
+        '<div>📍 ' + r.location_name + '</div>' +
+        '<div style="margin-top:4px;color:' + (r.status === 'on-air' ? '#16a34a' : '#dc2626') + ';">' +
+        (r.status === 'on-air' ? '● On Air' : '○ Off Air') + '</div>' +
+        '</div></div>'
+      );
 
       markers.push(marker);
     });
@@ -1549,8 +1500,8 @@
         r.callsign.toLowerCase().includes(searchQuery) ||
         r.location_name.toLowerCase().includes(searchQuery);
       const show = bandOk && modeOk && searchOk;
-      m.setVisible(show);
-      if (show) visible++;
+      if (show) { if (!map.hasLayer(m)) m.addTo(map); visible++; }
+      else       { if (map.hasLayer(m)) m.remove(); }
     });
     document.getElementById('map-count').textContent = visible;
   }
@@ -1560,7 +1511,6 @@
   }
 
   /* ── FILTER CHECKBOXES ── */
-  // Use change event on the hidden checkbox (label click triggers it naturally)
   document.querySelectorAll('#band-filters .filter-cb input').forEach(cb => {
     cb.addEventListener('change', function() {
       const label = this.closest('.filter-cb');
@@ -1568,7 +1518,7 @@
       label.classList.toggle('checked', this.checked);
       if (this.checked) activeBands.add(band);
       else activeBands.delete(band);
-      if (window.mapsApiLoaded) applyFilters();
+      if (map) applyFilters();
     });
   });
 
@@ -1579,14 +1529,14 @@
       label.classList.toggle('checked', this.checked);
       if (this.checked) activeModes.add(mode);
       else activeModes.delete(mode);
-      if (window.mapsApiLoaded) applyFilters();
+      if (map) applyFilters();
     });
   });
 
   /* ── MAP TEXT SEARCH ── */
   document.getElementById('map-search').addEventListener('input', function() {
     searchQuery = this.value.toLowerCase().trim();
-    if (window.mapsApiLoaded) applyFilters();
+    if (map) applyFilters();
   });
 
   /* ── NEAR ME ── */
@@ -1600,11 +1550,10 @@
     navigator.geolocation.getCurrentPosition(
       function(pos) {
         btn.textContent = '📍 Near Me';
-        if (!window.mapsApiLoaded) return;
+        if (!map) return;
         const myLat = pos.coords.latitude;
         const myLng = pos.coords.longitude;
-        map.setCenter({ lat: myLat, lng: myLng });
-        map.setZoom(9);
+        map.setView([myLat, myLng], 9);
 
         // Highlight nearest 5
         const dists = allRepeaterData.map(r => ({
@@ -1615,13 +1564,12 @@
         const nearCallsigns = new Set(dists.slice(0, 5).map(d => d.rep.callsign));
         markers.forEach(m => {
           if (nearCallsigns.has(m._rep.callsign)) {
-            m.setIcon({
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 10,
+            m.setStyle({
+              radius: 10,
               fillColor: getMarkerColour(m._rep),
               fillOpacity: 1,
-              strokeColor: '#ffffff',
-              strokeWeight: 2
+              color: '#ffffff',
+              weight: 2
             });
           }
         });
@@ -1632,6 +1580,8 @@
       }
     );
   });
+
+  buildRepeaterMap();
 
 })();
 </script>
