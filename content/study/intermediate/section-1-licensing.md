@@ -248,12 +248,16 @@ An Intermediate or Full licensee can supervise an unlicensed or lower-class oper
   under their authority).
 - The operator must comply with the terms of **the supervising licensee's licence.**
 
-**Example:** An Intermediate (2E1CYL) is in your shack. Your friend GW1ZTZ (Full Welsh)
-is visiting. GW1ZTZ can operate at Full power in England using their callsign without the
-regional prefix → **G1ZTZ** (Full licence, England, using the home nation call without prefix
-correction — actually: operating from England, they would use GW1ZTZ if calling from Scotland/
-Wales, or may announce their callsign normally. The exam answer shows using G1ZTZ when
-operating from England under the Full licence call without regional indicator).
+**Example:** 2E1CYL (Intermediate, English callsign) is in their shack. GW1ZTZ (Full, Welsh callsign) is visiting and will supervise.
+
+Callsigns are **assigned to persons, not locations.** GW1ZTZ cannot strip the "W" to produce **G1ZTZ** — G1ZTZ is a completely different callsign, potentially belonging to a different licensee entirely. Doing so would be transmitting under someone else's call sign.
+
+To indicate cross-nation operation, GW1ZTZ uses one of two correct forms:
+
+- **G/GW1ZTZ** — stroke-prefix with the visited nation's Regional Secondary Locator (G = England). This is the standard form for visiting another UK home nation.
+- **GW1ZTZ/A** — alternate-address suffix, used only if 2E1CYL's English address is registered as an alternate address for GW1ZTZ.
+
+Because 2E1CYL is operating under supervision, the supervisor's correctly location-marked callsign is used for all transmissions. The supervisor (GW1ZTZ) holds the Full licence and bears legal responsibility — so the station may operate at up to Full licence power under this arrangement.
 
 > [INFO] **1B1 (1B1-2025-Int'd-2121):** When a Full licensee from another region is
 > supervising and you wish to operate at Full power under their guidance, use their
