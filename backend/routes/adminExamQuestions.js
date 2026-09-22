@@ -63,12 +63,20 @@ router.get('/:id', async (req, res, next) => {
  */
 router.patch('/:id', async (req, res, next) => {
   try {
-    const { has_diagram, diagram_url, admin_notes, needs_review } = req.body;
+    const { has_diagram, diagram_url, admin_notes, needs_review,
+            correct_answer, explanation } = req.body;
     const updates = {};
-    if (has_diagram !== undefined) updates.has_diagram = Boolean(has_diagram);
-    if ('diagram_url' in req.body)  updates.diagram_url = diagram_url ?? null;
-    if (admin_notes !== undefined)  updates.admin_notes = admin_notes;
-    if (needs_review !== undefined) updates.needs_review = Boolean(needs_review);
+    if (has_diagram !== undefined)   updates.has_diagram = Boolean(has_diagram);
+    if ('diagram_url' in req.body)   updates.diagram_url = diagram_url ?? null;
+    if (admin_notes !== undefined)   updates.admin_notes = admin_notes;
+    if (needs_review !== undefined)  updates.needs_review = Boolean(needs_review);
+    if (correct_answer !== undefined) {
+      if (!['A','B','C','D'].includes(String(correct_answer).toUpperCase())) {
+        return res.status(400).json({ error: 'correct_answer must be A, B, C, or D' });
+      }
+      updates.correct_answer = String(correct_answer).toUpperCase();
+    }
+    if (explanation !== undefined)   updates.explanation = explanation;
 
     if (!Object.keys(updates).length) {
       return res.status(400).json({ error: 'No patchable fields supplied' });

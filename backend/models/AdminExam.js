@@ -93,7 +93,8 @@ const AdminExam = {
   },
 
   async patch(id, updates) {
-    const ALLOWED = ['has_diagram', 'diagram_url', 'admin_notes', 'needs_review'];
+    const ALLOWED = ['has_diagram', 'diagram_url', 'admin_notes', 'needs_review',
+                     'correct_answer', 'explanation'];
     const keys = Object.keys(updates).filter(k => ALLOWED.includes(k));
     if (!keys.length) return null;
 
