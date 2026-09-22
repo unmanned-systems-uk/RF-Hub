@@ -94,7 +94,7 @@ Before transmitting on any frequency:
 
 ### 7B1a — Pre-CQ Checklist
 
-> **Prerequisite:** Foundation and Intermediate courses cover the basics of making a call. The following is a reminder of the full procedure, with the nuance expected at Full licence level. If any step is unclear, review §7A (Band Plans and Frequency Etiquette) for calling-frequency conventions.
+> **Prerequisite:** Foundation courses cover the basics of making contact. This section extends that with the operating procedure and frequency-etiquette detail expected at Intermediate level. If any step is unclear, review §7A (Band Plans and Frequency Etiquette) first.
 
 Before you press PTT, run through these steps in order. Skipping them is how amateurs cause the kind of interference they complain about in others.
 

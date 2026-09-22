@@ -40,9 +40,7 @@ including licence revocation.
 
 **Who may inspect your equipment?**
 
-> [INFO] **1A (D2F-M1-Q07):** A Full licensee must allow inspection of their radio equipment
-> by **any person authorised by Ofcom.** This includes Ofcom enforcement officers and anyone
-> acting on Ofcom's behalf.
+> [INFO] **1A (D2F-M1-Q07):** All UK amateur licensees — Foundation, Intermediate, and Full — must allow inspection of their radio equipment by **any person authorised by Ofcom.** This includes Ofcom enforcement officers and anyone acting on Ofcom's behalf.
 
 ### 1A Theory — EMF Compliance (1A2, 1G1)
 
@@ -273,9 +271,10 @@ Because 2E1CYL is operating under supervision, the supervisor's correctly locati
 **Power limit when supervised:**
 
 > [INFO] **1C (D2F-M2-Q06):** If a scout is supervised by a 2E0 Intermediate operator,
-> the scout must operate at no greater than **100 W.** Intermediate licence power is
-> 100 W PEP — which applies here since the supervising operator holds a Full licence allowing
-> higher power. The limit is set by the supervising licensee's licence terms.
+> the scout must operate at no greater than **100 W** — the Intermediate licence maximum.
+> A supervised station cannot exceed the power limit of the supervising licensee's own
+> licence class. The limit is set by the class of licence the supervisor holds, not the
+> supervised person's class.
 
 #### Amateur radio nets (1B1)
 
