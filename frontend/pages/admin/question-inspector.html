@@ -512,7 +512,7 @@
     });
   }
 
-  function apiGetMe() { return apiFetch('/api/v1/auth/me'); }
+  function apiGetMe() { return apiFetch('/api/auth/profile'); }
 
   function apiListQuestions(filter, offset, limit) {
     var p = new URLSearchParams({ offset: offset || 0, limit: limit || 50 });
@@ -999,8 +999,8 @@
   setLoading(true);
   apiGetMe()
     .then(function (data) {
-      var user = data.user || data;
-      if (!user.is_admin) {
+      var user = data.user;
+      if (!user || !user.is_admin) {
         window.location.href = '/pages/portal.html';
         throw new Error('not admin');
       }
