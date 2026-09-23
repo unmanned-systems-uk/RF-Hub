@@ -63,7 +63,7 @@ class User {
               bio, avatar_url, timezone, theme, email_notifications,
               total_modules_completed, total_quizzes_passed,
               total_badges_earned, current_streak_days,
-              created_at, last_login, updated_at
+              is_admin, created_at, last_login, updated_at
        FROM users
        WHERE user_id = $1`,
       [user_id]
