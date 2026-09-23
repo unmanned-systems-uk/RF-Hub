@@ -44,13 +44,25 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
-const limiter = rateLimit({
+// Rate limiting — two tiers:
+//   authLimiter: tight, scoped to login/register only (brute-force protection)
+//   apiLimiter:  generous, covers all other /api/ routes
+//   skipSuccessfulRequests keeps 403/401 bounces from burning quota on admin tools
+const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { error: 'Too many requests, please try again later' }
+  max: 30,
+  message: { error: 'Too many requests, please try again later' },
+  skipSuccessfulRequests: false
 });
-app.use('/api/', limiter);
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: { error: 'Too many requests, please try again later' },
+  skipSuccessfulRequests: true
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/', apiLimiter);
 
 // Request logging (development)
 if (process.env.NODE_ENV === 'development') {
