@@ -119,6 +119,38 @@ signal, making it easier to attenuate with the RF filter.
 
 ---
 
+## 3A2: Direct Conversion Receivers (Zero-IF)
+
+### 3A2 Theory — Direct Conversion Receiver
+
+A **direct conversion receiver** (also called a **zero-IF receiver**) takes a different approach to the superhet. Instead of converting the signal to an intermediate frequency first, it mixes the incoming RF directly down to audio in a single step.
+
+**The key difference:** the local oscillator runs at **exactly the same frequency as the wanted signal** — not offset by an IF. The mixer output is audio directly.
+
+**Block diagram:**
+
+```
+Antenna → [RF Amp] → Mixer → Audio LPF → Audio Amp → Speaker
+                        ↑
+                    LO (at signal frequency)
+```
+
+Compare to the superhet: the superhet's LO is offset by the IF; the direct conversion LO is tuned to the signal frequency itself.
+
+**Advantages:**
+- Simple circuit — fewer stages, no IF transformer, no IF filter
+- Lower cost and parts count
+- Popular for homebrew CW and SSB receivers
+
+**Disadvantages:**
+- **Both sidebands received equally** — because the signal, its image, and the LO are all at the same frequency, there is no image rejection. Both the upper and lower sidebands mix down to the same audio frequencies.
+- **LO drift shifts audio pitch directly** — any frequency drift in the LO produces an immediate change in the audio tone. A superhet's IF filter holds the audio frequency steady even if the LO drifts slightly.
+- **Susceptible to hum and microphonics** — audio emerges from the mixer at baseband with no IF amplification stage between. Any mains hum or mechanical vibration picked up here goes straight to the speaker.
+
+> [INFO] **Direct conversion — key exam fact:** In a direct conversion (zero-IF) receiver, **the LO frequency equals the frequency of the wanted signal.** This is the single most commonly tested fact about this receiver type.
+
+---
+
 ## 3B: Mixers
 
 ### 3B Theory — How a Mixer Works (3B1)
