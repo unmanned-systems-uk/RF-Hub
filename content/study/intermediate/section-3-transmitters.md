@@ -332,6 +332,18 @@ a slight rise and fall time). This is "key shaping" or "keying envelope shaping.
 > [INFO] **3H (D2F-M1-Q33):** The most desirable CW transmitted signal has shaped
 > (soft) rise and fall times — not an abrupt square wave. This minimises key clicks.
 
+**Chirp**
+
+**Chirp** is a small frequency shift that occurs during each dit or dah, making the CW note sound wobbly or "chirpy" rather than a clean tone.
+
+**Cause:** poor voltage regulation on the oscillator supply. When the key closes, the PA suddenly draws current. The PSU voltage sags slightly, the oscillator supply dips with it, and the oscillator frequency shifts for the duration of the transmission.
+
+**Fix:** regulate the oscillator supply separately with a dedicated voltage regulator, so PSU sag from the PA cannot reach the oscillator. Alternatively, key a later amplifier stage rather than gating the oscillator directly, or use a stiffer PSU with better regulation.
+
+> [INFO] **CW artefacts — chirp vs key clicks (both examinable):**
+> - **Key clicks** — broadband interference on adjacent frequencies, caused by hard (abrupt) on/off keying. Fix: shaped keying (soft rise/fall times).
+> - **Chirp** — frequency wobble during each tone, caused by PSU voltage sag reaching the oscillator. Fix: regulate the oscillator supply separately.
+
 **CW demodulation:** requires a **Beat Frequency Oscillator (BFO).**
 
 In SSB/AM receive, the detector reconstructs audio from the IF. For CW, there is only
