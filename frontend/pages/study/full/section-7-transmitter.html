@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 7: The Transmitter — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260914-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img { max-width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .crossref {
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.85rem;
+      margin: 1rem 0; display: inline-block;
+    }
+    .crossref a { color: var(--accent-em); text-decoration: none; }
+    .crossref a:hover { text-decoration: underline; }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <a href="/pages/study/full/">Full Licence</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <span>Chapter 7</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~15&ndash;20% &nbsp;&middot;&nbsp; Heavily examined</span>
+      </div>
+      <h1>The Transmitter</h1>
+      <p class="hero-subtitle">Architecture, SSB generation, FM, oscillators (LC / crystal / PLL / DDS), frequency multipliers, mixers, power amplifiers, PEP and speech processors, ALC, SWR protection, and transceiver design.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-7A">7A Architecture</a></li>
+        <li><a href="#ch-7B">7B SSB Generation</a></li>
+        <li><a href="#ch-7C">7C FM Generation</a></li>
+        <li><a href="#ch-7D">7D Oscillators</a></li>
+        <li><a href="#ch-7E">7E Multipliers &amp; Mixers</a></li>
+        <li><a href="#ch-7F">7F Power Amplifiers</a></li>
+        <li><a href="#ch-7G">7G PEP, Speech &amp; ALC</a></li>
+        <li><a href="#ch-7H">7H SWR &amp; Transceivers</a></li>
+        <li><a href="#ch-7I">&#9733; Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-7A"><span class="toc-code">7A</span>Transmitter Architecture</a></li>
+        <li><a href="#ch-7B"><span class="toc-code">7B</span>SSB Generation</a></li>
+        <li><a href="#ch-7C"><span class="toc-code">7C</span>FM Generation</a></li>
+        <li><a href="#ch-7D"><span class="toc-code">7D</span>Oscillators</a></li>
+        <li><a href="#ch-7E"><span class="toc-code">7E</span>Freq Multipliers &amp; Mixers</a></li>
+        <li><a href="#ch-7F"><span class="toc-code">7F</span>Power Amplifiers</a></li>
+        <li><a href="#ch-7G"><span class="toc-code">7G</span>PEP, Speech Processors &amp; ALC</a></li>
+        <li><a href="#ch-7H"><span class="toc-code">7H</span>SWR Protection &amp; Transceivers</a></li>
+        <li><a href="#ch-7I"><span class="toc-code">&#9733;</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:2rem;">A transmitter must produce a <strong>clean, modulated sinewave at the desired frequency</strong> with minimal output at any other frequency. Modern multi-mode transceivers have replaced mode-specific designs &mdash; a single configurable architecture serves all modes. This chapter traces that architecture stage by stage.</p>
+
+    <p class="crossref">Cross-ref: PA bias classes (Class A, B, C) are covered in <a href="section-5-semiconductors.html#ch-5F">&sect;5F Bias Classes</a>. This chapter applies those classes to transmitter design and adds PEP and ALC.</p>
+
+    <!-- ════════════════════ 7A: ARCHITECTURE ════════════════════ -->
+    <section class="chapter" id="ch-7A">
+      <div class="chapter-header">
+        <span class="chapter-num">7A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Transmitter Architecture</h2>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-1.svg"
+            alt="Multi-mode transmitter block diagram (Fig 7.1): three functional paths. Audio/modulation path: microphone → audio amplifier → modulator and filter block (where modulation is applied and unwanted products removed). Carrier/frequency path: crystal reference oscillator → frequency synthesiser → mixer. RF path: modulated IF signal → mixer → filter → RF driver → power amplifier → output filter → antenna. The modulator block handles SSB, FM, AM or data as appropriate."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.1 &mdash; Multi-mode transmitter block diagram. Three functional paths: audio/modulation (top), carrier/frequency (bottom), RF output (right).</figcaption>
+      </figure>
+
+      <p>The general-purpose transmitter has three functional paths:</p>
+      <ul>
+        <li><strong>Audio/modulation path:</strong> microphone &rarr; audio amplifier &rarr; modulator and filter (where modulation is applied and unwanted products are removed).</li>
+        <li><strong>Carrier/frequency path:</strong> crystal reference oscillator &rarr; frequency synthesiser &rarr; mixer. The synthesiser provides the precise, stable, tuneable carrier frequency.</li>
+        <li><strong>RF path:</strong> modulated signal at IF &rarr; mixer &rarr; filter &rarr; RF driver &rarr; power amplifier &rarr; output filter &rarr; antenna.</li>
+      </ul>
+
+      <p>The block labelled &ldquo;modulator and filter&rdquo; handles SSB, FM, AM, or data as appropriate &mdash; it represents the mode-specific circuitry. Everything downstream is mode-agnostic.</p>
+
+      <h3>Why Low-IF First?</h3>
+      <p>Modulation is performed at a low intermediate frequency (IF), typically 1&ndash;10&nbsp;MHz, not at the final transmit frequency. This allows:</p>
+      <ul>
+        <li>Sharp crystal filters to remove unwanted sidebands (easier at low IF where proportional selectivity is better)</li>
+        <li>Stable, mode-locked oscillators not subject to pulling</li>
+        <li>Simple band-changing by adjusting the synthesiser, not the modulator</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7B: SSB GENERATION ════════════════════ -->
+    <section class="chapter" id="ch-7B">
+      <div class="chapter-header">
+        <span class="chapter-num">7B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Single Sideband (SSB) Generation</h2>
+
+      <h3>SSB and Why It Is Efficient</h3>
+      <p>An AM signal is equivalent to three sinewaves: the carrier (which carries no information) plus two sidebands &mdash; upper and lower &mdash; that are mirror images of each other. Both sidebands carry identical information. At 100% modulation, each sideband contains only one quarter of the carrier power.</p>
+
+      <p><strong>SSB removes the carrier and one sideband</strong>, transmitting only the information-bearing sideband. Benefits:</p>
+      <ul>
+        <li><strong>Half the bandwidth</strong> of AM (or the same bandwidth as a single sideband of AM)</li>
+        <li><strong>All transmitted power carries information</strong> &mdash; no wasted carrier power</li>
+        <li><strong>Power advantage:</strong> with 100% AM modulation, each sideband is &frac14; of carrier power; with SSB the full transmitter power goes into one sideband</li>
+      </ul>
+
+      <h3>The Balanced Modulator</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-13.svg"
+            alt="Diode ring balanced modulator circuit (Fig 7.13). Audio input enters via a centre-tapped transformer on the left. RF carrier input enters via a centre-tapped transformer on the top. Four diodes are arranged in a ring (bridge) between the two transformers. On alternate half-cycles of the carrier, one diagonal pair of diodes conducts while the other pair is cut off. The carrier currents cancel in the output transformer windings, suppressing the carrier. The output (right transformer) carries only the two audio sidebands — a double-sideband suppressed-carrier (DSB-SC) signal."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.13 &mdash; Diode ring balanced modulator. Carrier currents cancel in the output transformer; only both sidebands appear at the output (DSB-SC).</figcaption>
+      </figure>
+
+      <p>The <strong>diode ring balanced modulator</strong> produces a <strong>double-sideband suppressed-carrier (DSB-SC)</strong> output. The RF carrier is injected at the junction of the two transformers. On each half-cycle, one pair of diodes conducts and the other is cut off. The carrier currents cancel through the transformer windings &mdash; the carrier is suppressed. What remains is both sidebands with no carrier.</p>
+
+      <h3>The Crystal Filter</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-14.svg"
+            alt="Crystal filter circuit and frequency response (Fig 7.14). Circuit: ladder network of series and shunt crystals. Frequency diagram above: left shaded area shows lower sideband (rejected); narrow gap at centre shows suppressed carrier; right unshaded area shows upper sideband passing through the filter passband. The filter's extremely steep skirts (high Q) allow the wanted sideband to pass while the unwanted sideband is attenuated to negligible levels."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.14 &mdash; Crystal filter for SSB generation. Ladder network of crystals; very high Q gives steep skirts. One sideband passes; the other is rejected.</figcaption>
+      </figure>
+
+      <p>The DSB-SC signal is passed through a <strong>crystal filter</strong> &mdash; a narrow bandpass filter centred on one sideband. Crystal filters have extremely sharp skirts (high Q, up to 50,000 per crystal) and are able to remove the unwanted sideband while passing the wanted one. This is most practical at a low IF (e.g. 6&nbsp;MHz) because at 6&nbsp;MHz a 600&nbsp;Hz separation represents a larger proportional frequency difference than at 144&nbsp;MHz.</p>
+
+      <p>The resulting <strong>SSB signal cannot be multiplied in frequency</strong> &mdash; multiplication would scale the audio frequencies along with the carrier, distorting the modulation. It must be <strong>mixed</strong> to the final transmit frequency.</p>
+
+      <h3>Mixing Up to the Final Frequency</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-17.svg"
+            alt="SSB IF mixing and band selection block diagram (Fig 7.17). 6 MHz crystal oscillator → modulator and sideband filter → Mixer 1. VFO (7.8–8.35 MHz) → Mixer 1. Mixer 1 output → Filter 1 (1.8–2 MHz passband for 160m/80m) or → Mixer 2 → Filter 2 (14–14.35 MHz passband for 20m). The same 6 MHz modulator block covers multiple HF bands by selecting different IF filters and VFO ranges."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.17 &mdash; SSB IF block diagram. Mixing the 6&nbsp;MHz SSB signal with the VFO produces sum and difference outputs covering different HF bands via filter selection.</figcaption>
+      </figure>
+
+      <p>The SSB signal at IF (e.g. 6&nbsp;MHz) is mixed with the local oscillator (VFO or PLL, e.g. 7.8&ndash;8.35&nbsp;MHz). The mixer produces <strong>sum and difference</strong> outputs:</p>
+      <ul>
+        <li>Difference: 7.8 &minus; 6 = <strong>1.8&nbsp;MHz</strong> to 8.35 &minus; 6 = <strong>2.35&nbsp;MHz</strong> (covers 160&nbsp;m and 80&nbsp;m)</li>
+        <li>Sum: 7.8 + 6 = <strong>13.8&nbsp;MHz</strong> to 8.35 + 6 = <strong>14.35&nbsp;MHz</strong> (covers 20&nbsp;m)</li>
+      </ul>
+      <p>A filter selects the desired output; the unwanted mixer product is rejected. By switching filters and adjusting the VFO range, the same modulator covers multiple HF bands.</p>
+
+      <div class="callout-exam">
+        <strong>[7B1]</strong> SSB generation: balanced modulator (DSB-SC) &rarr; crystal filter (select one sideband) &rarr; mixer to final frequency. SSB uses half the bandwidth of AM and all power carries information. Cannot be frequency-multiplied.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7C: FM GENERATION ════════════════════ -->
+    <section class="chapter" id="ch-7C">
+      <div class="chapter-header">
+        <span class="chapter-num">7C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Frequency Modulation (FM) Generation</h2>
+
+      <h3>FM Fundamentals</h3>
+      <p>In FM, the <strong>carrier frequency</strong> varies in proportion to the instantaneous amplitude of the audio signal. The amplitude of the carrier is constant &mdash; no amplitude information is conveyed.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-fm1.svg"
+            alt="FM modulation waveform diagram (three traces). Top trace: audio sinewave input. Middle trace: unmodulated carrier (constant frequency and amplitude). Bottom trace: FM-modulated carrier showing frequency compression and expansion in proportion to the audio amplitude — the carrier is squeezed together (higher frequency) at the positive audio peaks and spread apart (lower frequency) at the negative audio peaks. The carrier amplitude remains constant throughout."
+            loading="lazy">
+        </div>
+        <figcaption>FM modulation &mdash; frequency varies with audio amplitude; carrier amplitude is constant. Compare with AM where frequency is fixed but amplitude varies.</figcaption>
+      </figure>
+
+      <table>
+        <thead>
+          <tr><th>Term</th><th>Definition</th><th>Formula</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Peak deviation</td>
+            <td>Maximum frequency swing from carrier</td>
+            <td>Set by transmitter design and regulatory limit</td>
+          </tr>
+          <tr>
+            <td>Deviation ratio</td>
+            <td>Ratio of actual deviation to peak deviation at any instant</td>
+            <td>Actual deviation / Peak deviation</td>
+          </tr>
+          <tr>
+            <td>Modulation index</td>
+            <td>Ratio of peak deviation to maximum audio frequency</td>
+            <td>Peak deviation / Max audio frequency</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Amateur FM Parameters</h3>
+      <table>
+        <thead>
+          <tr><th>Band</th><th>Peak deviation</th><th>Max audio</th><th>Modulation index</th><th>Carson&rsquo;s BW</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VHF (145&nbsp;MHz)</td>
+            <td>&plusmn;2.5&nbsp;kHz</td>
+            <td>2.8&ndash;3&nbsp;kHz</td>
+            <td>&asymp;0.8</td>
+            <td>2&times;(3+2.5) = <strong>11&nbsp;kHz</strong></td>
+          </tr>
+          <tr>
+            <td>UHF (70&nbsp;cm)</td>
+            <td>&plusmn;5&nbsp;kHz</td>
+            <td>3&nbsp;kHz</td>
+            <td>&asymp;1.7</td>
+            <td>2&times;(3+5) = <strong>16&nbsp;kHz</strong></td>
+          </tr>
+          <tr>
+            <td>FM broadcast</td>
+            <td>&plusmn;75&nbsp;kHz</td>
+            <td>15&nbsp;kHz</td>
+            <td>5</td>
+            <td>Wide band</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>Carson&rsquo;s Rule</strong> gives the bandwidth containing most FM signal power:</p>
+      <div class="formula-block">BW = 2 &times; (maximum audio frequency + peak deviation)</div>
+
+      <p>Amateur FM uses <strong>narrow-band FM (NBFM)</strong> with modulation index &le;&nbsp;1. FM broadcast is <strong>wide-band FM (WBFM)</strong> with index &gt;&nbsp;1.</p>
+
+      <div class="callout-exam">
+        <strong>[7C1]</strong> FM over-deviation increases bandwidth and causes interference to <strong>adjacent channels only</strong> (unlike AM over-modulation which affects multiple channels). Both are undesirable and must be avoided.
+      </div>
+
+      <h3>FM Spectrum</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-fm2.svg"
+            alt="FM spectrum diagram. Centre carrier at 1000 kHz. Sidebands extending both above and below the carrier at 997, 998, 999, 1001, 1002, 1003 kHz etc. The sidebands are theoretically infinite in number but their amplitude diminishes rapidly with distance from the carrier. Unlike AM which has only two sidebands, FM has many sidebands; the number significant increases with modulation index."
+            loading="lazy">
+        </div>
+        <figcaption>FM spectrum &mdash; theoretically infinite sidebands, but amplitude diminishes rapidly. More sidebands are significant with higher modulation index.</figcaption>
+      </figure>
+
+      <h3>Generating FM</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-12.svg"
+            alt="Colpitts oscillator with varicap diode for FM generation (Fig 7.12). The basic Colpitts oscillator has a transistor with C1 and C2 forming the capacitive divider feedback network and inductor L as the tank circuit. A varicap (varactor) diode is connected across the L-C tank circuit. Audio input arrives via a DC-blocking capacitor so only the AC audio component reaches the varicap. The reverse-bias voltage on the varicap changes with the audio, changing its capacitance, which changes the oscillator frequency in proportion. DC blocking capacitors prevent the audio from disturbing the varicap's DC operating point."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.12 &mdash; Colpitts oscillator with varicap for FM. The audio voltage changes varicap capacitance, which changes oscillator frequency.</figcaption>
+      </figure>
+
+      <p>FM is applied directly at the <strong>oscillator</strong>. A <strong>varicap (varactor) diode</strong> is connected across the oscillator&rsquo;s LC tuned circuit. The audio voltage changes the reverse bias on the varicap, which changes its capacitance, which changes the oscillator frequency. DC blocking capacitors prevent the audio from disturbing the varicap&rsquo;s DC bias point.</p>
+
+      <p><strong>Phase modulation</strong> is an alternative: the phase of the oscillator output is shifted by the audio, which manifests as frequency modulation. Phase modulation is applied to the <strong>output</strong> of the oscillator, not its frequency-determining components &mdash; this avoids degrading oscillator stability. A CR circuit can make phase modulation appear identical to frequency modulation.</p>
+
+      <h3>Simple FM VHF Transmitter</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-2.svg"
+            alt="Simple FM VHF transmitter block diagram (Fig 7.2). Microphone → audio amplifier → oscillator (FM modulation injected directly, or via phase modulation into buffer). Oscillator → buffer amplifier → frequency multiplier chain (e.g. ×3 × ×3 × ×2 = ×18) → filter and driver → PA and filtering → antenna. The two modulation injection points (direct FM and phase mod) are shown with dashed lines. A low-frequency oscillator (e.g. 8 MHz) is multiplied by ×18 to reach 144 MHz. Both frequency and deviation are multiplied."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.2 &mdash; Simple FM VHF transmitter using a multiplier chain. Low-frequency oscillator &times;18 = 144&nbsp;MHz. Deviation is also multiplied.</figcaption>
+      </figure>
+
+      <p>The early FM VHF transmitter used a frequency multiplier chain to achieve the final output frequency. A low-frequency oscillator (e.g. 8&nbsp;MHz) is multiplied by a chain to reach 144&nbsp;MHz (e.g. &times;18 = 3&times;3&times;2). <strong>Frequency deviation is also multiplied</strong>, so the oscillator needs only a small deviation to produce the required deviation at VHF. This design has largely been superseded by synthesisers at VHF and below, but is still used at microwave frequencies where synthesisers are expensive.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7D: OSCILLATORS ════════════════════ -->
+    <section class="chapter" id="ch-7D">
+      <div class="chapter-header">
+        <span class="chapter-num">7D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Oscillators</h2>
+
+      <p>The oscillator is the frequency-governing heart of the transmitter. It must be accurate, stable, and controllable.</p>
+
+      <h3>LC Oscillator (Colpitts VFO)</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-3.svg"
+            alt="Colpitts VFO circuit diagram (Fig 7.3). A transistor in emitter-follower configuration. C1 and C2 are capacitors that divide the tank circuit voltage and feed back to the emitter (positive feedback). L is the inductor; a main variable capacitor C provides tuning. DC blocking capacitors are shown on the feedback path. The frequency is set by: f = 1/(2π√(LC)) where C is the effective series combination of C1, C2, and the main variable capacitor C."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.3 &mdash; Colpitts VFO. C1 and C2 form the capacitive divider feedback; variable C tunes the frequency.</figcaption>
+      </figure>
+
+      <p>The <strong>Colpitts oscillator</strong> uses an emitter-follower transistor. The output at the emitter is fed back via a capacitor voltage divider (C1 and C2) to the tuned LC circuit. The circuit amplifies its own signal at the resonant frequency.</p>
+
+      <div class="formula-block">f = 1 / (2&pi;&radic;(LC))   where C is the effective series combination of C1, C2, and main variable C</div>
+
+      <p>This device is a <strong>VFO (Variable Frequency Oscillator)</strong> because C can be varied to tune. Design rules for a stable VFO:</p>
+      <ul>
+        <li>Separate, stable DC supply (isolated from the PA)</li>
+        <li>High-quality components; coil tightly wound on low-loss former</li>
+        <li>Rigid variable capacitor, insulated coupling to the front panel</li>
+        <li>Short, rigid wiring; away from heat sources</li>
+        <li>Buffer amplifier follows the VFO output (to prevent load pulling)</li>
+      </ul>
+      <p>VFOs can drift with temperature and mechanical vibration &mdash; a calibration check is essential.</p>
+
+      <h3>Crystal Oscillator</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-4.svg"
+            alt="Crystal oscillator circuit diagram (Fig 7.4). Based on the Colpitts design but with the crystal replacing part of the feedback path. Trimmer capacitors (5–35 pF) are shown allowing small frequency pulling. DC blocking capacitors are shown. The crystal resonates at a precise frequency with Q up to 50,000, far higher than any LC circuit."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.4 &mdash; Crystal oscillator: crystal replaces the LC element in the feedback path. Trimmer capacitors allow small frequency adjustment (VXO).</figcaption>
+      </figure>
+
+      <p>A <strong>crystal</strong> replaces the LC element in the feedback path. Crystal resonators have a Q of up to 50,000 &mdash; far higher than any LC circuit &mdash; giving extremely stable, accurate, and repeatable frequency. The crystal can resonate at either its <strong>series</strong> or <strong>parallel</strong> resonant frequency (within about 0.1% of each other); circuit design determines which is used.</p>
+
+      <p><strong>Frequency pulling:</strong> trimmer capacitors (5&ndash;35&nbsp;pF) can shift the crystal frequency slightly &mdash; a <strong>VXO</strong> (variable crystal oscillator). The range is small.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-5.svg"
+            alt="Crystal switching circuit (Fig 7.5). Multiple crystals are each connected via a diode or position of a rotary switch to the 0V rail. Only the selected crystal is active at any time. This allows channelised operation by switching between a set of precision frequencies."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.5 &mdash; Multiple switched crystals for channelised operation. Today the crystal mainly serves as a precision frequency reference for a PLL synthesiser.</figcaption>
+      </figure>
+
+      <h3>Phase Locked Loop (PLL) Synthesiser</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-6.svg"
+            alt="PLL synthesiser block diagram (Fig 7.6). Crystal reference oscillator (6 MHz) → fixed divider ÷A (e.g. ÷6000) → 1 kHz reference signal → Phase comparator. VCO output f_out → programmable divider ÷N → 1 kHz comparison signal → Phase comparator. Phase comparator outputs a DC error voltage → Low-pass loop filter → VCO varicap tuning input. When locked, f_out = f_crystal × N/A. Changing N changes f_out in steps equal to the reference frequency (1 kHz)."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.6 &mdash; PLL synthesiser block diagram. Crystal accuracy + VCO agility. Step size = reference frequency. f<sub>out</sub> = f<sub>crystal</sub> &times; N/A.</figcaption>
+      </figure>
+
+      <p>The PLL combines the <strong>frequency agility of a VFO</strong> with the <strong>accuracy of a crystal</strong>, without needing a crystal calibrator.</p>
+
+      <p><strong>How it works:</strong></p>
+      <ol>
+        <li>The crystal reference oscillator (e.g. 6&nbsp;MHz) is divided by a fixed value A (e.g. 6000) to produce a reference of 1&nbsp;kHz.</li>
+        <li>The <strong>VCO</strong> (Voltage Controlled Oscillator &mdash; a Colpitts with varicap) runs at the desired output frequency f<sub>out</sub>.</li>
+        <li>f<sub>out</sub> is divided by a programmable value N. If the VCO is on frequency, this also gives 1&nbsp;kHz.</li>
+        <li>The <strong>phase comparator</strong> compares the two 1&nbsp;kHz signals and outputs a DC voltage proportional to the phase difference.</li>
+        <li>This voltage is smoothed by a <strong>low-pass filter</strong> and applied to the VCO varicap &mdash; correcting its frequency.</li>
+      </ol>
+
+      <div class="formula-block">f_out = f_crystal &times; N / A
+
+Step size = reference frequency (1 kHz in this example)</div>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-7.svg"
+            alt="PLL phase comparator waveforms (Fig 7.7). Three traces. Top: reference frequency (1 kHz, stable). Middle: VCO output divided by N (1 kHz when locked). Bottom: phase comparator output pulses. When the VCO is fast (leads), pulses are wide, producing a higher average DC voltage that pushes the VCO lower. When the VCO is slow (lags), pulses are narrow, producing lower DC voltage that allows the VCO to rise. The pulse width varies continuously to maintain lock."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.7 &mdash; PLL waveforms. Phase comparator pulse width varies to correct the VCO frequency. Wide pulses = VCO too fast; narrow pulses = VCO too slow.</figcaption>
+      </figure>
+
+      <p><strong>PLL problems:</strong> if the frequency dial is turned quickly, the two comparator inputs diverge in frequency and <strong>lock is lost</strong>. The VCO swings uncontrolled, producing signals across adjacent channels. An <strong>out-of-lock indication</strong> must inhibit the transmitter until lock is restored. Modern <strong>dual-loop</strong> PLL designs use two nested loops with different step sizes &mdash; fast response for large steps, fine steps for slow movements.</p>
+
+      <h3>Direct Digital Synthesis (DDS)</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-8.svg"
+            alt="DDS block diagram (Fig 7.8). Clock input → Frequency control register (sets step size through look-up table) → Sinewave look-up table (stores one complete cycle of sine wave as digital amplitude values) → DAC → Low-pass output filter → Sinewave output. The output frequency equals: f_out = (step size × clock frequency) / table length."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.8 &mdash; DDS block diagram. The step size register controls output frequency. f<sub>out</sub> = (step &times; clock) / table length.</figcaption>
+      </figure>
+
+      <p><strong>DDS</strong> uses a DAC (from &sect;6F) to generate a sinewave directly in the digital domain:</p>
+      <ol>
+        <li>A <strong>sinewave look-up table</strong> stores one cycle as digital amplitude values</li>
+        <li>A <strong>clock</strong> steps through the table; the step size (controlled by a register) sets the output frequency</li>
+        <li>The DAC converts each digital value to an analogue voltage &rarr; staircase approximating a sinewave</li>
+        <li>A <strong>low-pass filter</strong> removes the harmonics from the staircase</li>
+      </ol>
+
+      <div class="formula-block">f_out = (step size &times; clock frequency) / table length</div>
+
+      <p>DDS gives extremely fine frequency resolution (sub-Hz) and fast settling. The disadvantage is <strong>phase noise</strong> &mdash; the discrete amplitude steps produce sidebands close to the carrier that the LPF cannot remove, raising the noise floor. This degrades adjacent-channel performance. Increasing the number of bits reduces, but cannot eliminate, phase noise.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7E: MULTIPLIERS & MIXERS ════════════════════ -->
+    <section class="chapter" id="ch-7E">
+      <div class="chapter-header">
+        <span class="chapter-num">7E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Frequency Multipliers and Mixers</h2>
+
+      <h3>Frequency Multiplier</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-10.svg"
+            alt="Frequency multiplier circuit (Fig 7.10). A transistor is biased in Class C — the base is held just below cut-off by the resistor bias network, so the transistor conducts for less than half a cycle. RF input at frequency f drives the base. The collector tuned circuit (inductor and capacitor) resonates at the desired harmonic: 2f for a doubler, 3f for a tripler. The tuned circuit selects that harmonic and suppresses the fundamental and other harmonics. Output at 2f or 3f."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.10 &mdash; Frequency multiplier. Class C biased transistor produces harmonics; collector tuned circuit selects 2f or 3f.</figcaption>
+      </figure>
+
+      <p>A transistor biased in <strong>Class C</strong> (&sect;5F) conducts for less than half a cycle, producing a highly distorted pulse output rich in harmonics. The <strong>collector tuned circuit</strong> is resonated at the desired harmonic (2f for doubling, 3f for tripling). The tuned circuit selects that harmonic and suppresses the fundamental and others.</p>
+
+      <div class="formula-block">Example: 8 MHz &times; 3 &times; 3 &times; 2 = 144 MHz
+If required deviation at 144 MHz = &plusmn;2.5 kHz, oscillator needs &plusmn;138 Hz</div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>SSB signals cannot be multiplied</strong> &mdash; this would scale the audio sideband frequencies along with the carrier, distorting the voice information and corrupting the modulation. SSB must be mixed to the final frequency instead.</div>
+      </div>
+
+      <h3>Mixer (Up-Conversion)</h3>
+      <p>A mixer multiplies two input signals to produce sum and difference frequency outputs:</p>
+
+      <div class="formula-block">f_out = f_in &plusmn; f_LO</div>
+
+      <p>For a 6&nbsp;MHz SSB signal mixed with a VFO at 8.0&ndash;8.35&nbsp;MHz:</p>
+      <ul>
+        <li>Difference: 8.0&ndash;8.35 &minus; 6 = <strong>2.0&ndash;2.35&nbsp;MHz</strong> (filtered away for 20&nbsp;m selection)</li>
+        <li>Sum: 8.0&ndash;8.35 + 6 = <strong>14.0&ndash;14.35&nbsp;MHz</strong> (20&nbsp;m band &mdash; selected by filter)</li>
+      </ul>
+      <p>Adjusting the VFO range to 7.8&ndash;8.0&nbsp;MHz shifts the sum output to 13.8&ndash;14.0&nbsp;MHz. In this way, a single 6&nbsp;MHz modulator block covers the entire 20&nbsp;m band. Switching filters covers other HF bands.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7F: POWER AMPLIFIERS ════════════════════ -->
+    <section class="chapter" id="ch-7F">
+      <div class="chapter-header">
+        <span class="chapter-num">7F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Power Amplifiers</h2>
+
+      <h3>PA Classes in the Transmitter</h3>
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>Amplitude variation?</th><th>Required PA class</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SSB</td>
+            <td>Yes &mdash; varies with speech</td>
+            <td><strong>Class A (linear)</strong></td>
+            <td>Non-linearity would create IMD products and distort voice</td>
+          </tr>
+          <tr>
+            <td>AM</td>
+            <td>Yes &mdash; carrier + sidebands</td>
+            <td><strong>Class A (linear)</strong></td>
+            <td>Same reason</td>
+          </tr>
+          <tr>
+            <td>FM</td>
+            <td>No &mdash; constant envelope</td>
+            <td><strong>Class C</strong></td>
+            <td>No amplitude info to preserve; Class C efficient, harmonics filtered by tuned output</td>
+          </tr>
+          <tr>
+            <td>CW</td>
+            <td>On/off only</td>
+            <td><strong>Class C</strong></td>
+            <td>Amplitude is binary; harmonics filtered</td>
+          </tr>
+          <tr>
+            <td>FSK/AFSK</td>
+            <td>Depends on type</td>
+            <td>Class A if amplitude changes; Class C for constant-envelope FSK</td>
+            <td>AFSK uses SSB modulation &mdash; must be linear</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>PA Circuit Design</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-19.svg"
+            alt="144 MHz low-power PA circuit (Fig 7.19). RF power transistor (BLY83 class). RFC1 (RF choke) holds the base at 0V DC, placing the transistor in Class C. RFC2 provides DC supply to the collector without passing RF. L2, L3 and associated variable capacitors provide both harmonic filtering (tuned network attenuates harmonics from Class C distorted waveform) and impedance matching (transforms low transistor collector impedance to 50Ω standard). Trimmer capacitors are adjustable from the front panel."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.19 &mdash; 144&nbsp;MHz PA. RFC1 places transistor in Class C; L2/L3 network provides harmonic filtering and impedance matching to 50&nbsp;&Omega;.</figcaption>
+      </figure>
+
+      <p>The <strong>base at 0&nbsp;V</strong> (held by RFC1, which has negligible impedance to DC but high impedance to RF) places the transistor in <strong>Class C</strong>. RFC2 provides DC supply to the collector without passing RF.</p>
+
+      <p>L2, L3 and the associated capacitors serve a <strong>dual function</strong>:</p>
+      <ol>
+        <li><strong>Harmonic filtering</strong> &mdash; the tuned network attenuates harmonics from the Class C distorted waveform</li>
+        <li><strong>Impedance matching</strong> &mdash; transforms the transistor&rsquo;s low collector impedance to the 50&nbsp;&Omega; standard expected by feeders and antennas</li>
+      </ol>
+
+      <div class="callout-exam">
+        <strong>[7F1]</strong> Transistors operating into the wrong impedance are prone to damage. Commercial transmitters include a sensing facility that detects mismatch and progressively shuts down the output.
+      </div>
+
+      <h3>PA Efficiency</h3>
+      <table>
+        <thead>
+          <tr><th>Class</th><th>Conduction angle</th><th>Efficiency</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td>360&deg;</td>
+            <td>&asymp;35%</td>
+            <td>Linear; half supply voltage headroom wasted even at zero signal</td>
+          </tr>
+          <tr>
+            <td>B (push-pull)</td>
+            <td>180&deg;</td>
+            <td>&asymp;50%</td>
+            <td>Two transistors, complementary; crossover distortion without Class AB</td>
+          </tr>
+          <tr>
+            <td>AB</td>
+            <td>&gt;180&deg;</td>
+            <td>Between A and B</td>
+            <td>Eliminates crossover distortion; used for linear audio PAs</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>&lt;180&deg;</td>
+            <td>&asymp;67%</td>
+            <td>Best efficiency; tuned output mandatory; constant envelope only</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>PA Output Matching</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-20.svg"
+            alt="28–30 MHz PA output matching circuit (Fig 7.20). RF choke provides DC feed to collector. An inductor and capacitor LC network matches the low transistor collector impedance to a 50Ω output. Trimmer capacitors are adjustable from the front panel and must be re-adjusted when changing frequency — critical for Class C designs where collector Q determines efficiency and harmonic suppression."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.20 &mdash; 28&ndash;30&nbsp;MHz PA output matching. LC network transforms collector impedance to 50&nbsp;&Omega;. Trimmers must be adjusted when changing frequency.</figcaption>
+      </figure>
+
+      <p>At 28&ndash;30&nbsp;MHz (Fig 7.20) the inductor is not tapped (the frequency is high enough that simple LC networks suffice). Trimmer capacitors must be re-adjusted when changing frequency &mdash; important for Class C designs where collector Q is critical. At VHF/UHF, integrated-circuit RF amplifier modules are common, requiring minimal external matching.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7G: PEP / SPEECH / ALC ════════════════════ -->
+    <section class="chapter" id="ch-7G">
+      <div class="chapter-header">
+        <span class="chapter-num">7G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>PEP, Speech Processors, and ALC</h2>
+
+      <h3>Peak Envelope Power (PEP)</h3>
+      <p>On SSB, the transmitted power varies from zero (silence) to maximum on speech peaks. The licence states the <strong>Peak Envelope Power (PEP)</strong> permitted &mdash; defined as:</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>PEP</strong> = the average RF power over one RF cycle at the crest of the modulation envelope. It is measured at the highest-amplitude peak of the signal, not the average over time.</div>
+      </div>
+
+      <p>Speech is highly <strong>peaky</strong> &mdash; a typical peak-to-average ratio of <strong>20:1 (13&nbsp;dB)</strong>. A 100&nbsp;W PEP transmitter averages only about 5&nbsp;W on voice. The peak must not exceed the licensed limit. <strong>No RF cycle may exceed 400&nbsp;W</strong> (or 1&nbsp;kW on Primary amateur allocations).</p>
+
+      <p>An ordinary moving-coil meter is too sluggish to capture genuine speech peaks. PEP measurement requires an oscilloscope or an electronic <strong>peak-hold</strong> device.</p>
+
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>Average power relative to PEP</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SSB voice</td><td>~5% (20:1 peak ratio)</td></tr>
+          <tr><td>AM (carrier + sidebands)</td><td>~67% of peak (constant carrier)</td></tr>
+          <tr><td>FM</td><td>100% (constant envelope &mdash; always at full power when PTT pressed)</td></tr>
+          <tr><td>RTTY / data (continuous)</td><td>100% &mdash; fully modulated continuously</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout-exam">
+        <strong>[7G1]</strong> RTTY and slow-scan TV may run the PA at full average power continuously. Heatsinks designed for SSB voice duty may be inadequate for data modes. Check thermal ratings before extended data operation.
+      </div>
+
+      <h3>Speech Processors</h3>
+      <p>A speech processor limits the peak amplitude of the audio signal, raising the <strong>average</strong> power for the same PEP rating:</p>
+      <ul>
+        <li>Halving peak amplitude &rarr; <strong>doubles average power</strong> (from 5&nbsp;W to 10&nbsp;W on a 100&nbsp;W PEP rig)</li>
+        <li>Heavy processing on difficult contacts can raise average power to 40&nbsp;W or more</li>
+        <li>Check heatsink ratings &mdash; data-level average power may be sustained</li>
+      </ul>
+
+      <h3>Automatic Level Control (ALC)</h3>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-alc.svg"
+            alt="ALC block diagram. Output of the power amplifier is sampled by a detector (directional coupler or output sample). The ALC detector produces a DC voltage proportional to the output level. This DC voltage is fed back to reduce the gain of the driver stage or the PA input when the output exceeds the threshold. The ALC level is displayed on a front-panel meter or bar-graph. The feedback loop continuously adjusts gain to keep the output within limits."
+            loading="lazy">
+        </div>
+        <figcaption>ALC block diagram &mdash; PA output is sampled; feedback reduces driver gain if output exceeds threshold. Displayed on front-panel meter.</figcaption>
+      </figure>
+
+      <p><strong>ALC</strong> samples the PA output and reduces the drive if the level exceeds a set threshold. ALC is <strong>essential</strong> because:</p>
+      <ol>
+        <li>Over-driving the PA causes <strong>distortion and splatter</strong> &mdash; IMD products spread onto adjacent frequencies, far beyond the occupied bandwidth</li>
+        <li>Over-driving may <strong>damage</strong> the PA transistors</li>
+      </ol>
+
+      <p>Best practice: set the drive so that ALC just kicks in on the loudest speech peaks &mdash; the transmitter operates against its manual drive setting, with ALC acting as a safety net, not the primary level control.</p>
+
+      <div class="callout-exam">
+        <strong>[7G1]</strong> If an external PA is used, ALC from the PA must control the transceiver&rsquo;s output. If no ALC interface is available, reduce transceiver output manually so the PA never overloads.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7H: SWR & TRANSCEIVERS ════════════════════ -->
+    <section class="chapter" id="ch-7H">
+      <div class="chapter-header">
+        <span class="chapter-num">7H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>SWR Protection and Transceivers</h2>
+
+      <h3>SWR Protection</h3>
+      <p>Most VHF/UHF transmitters (and many HF rigs) include an <strong>SWR sensing</strong> circuit that monitors reflected power. The hazard from high SWR is not primarily the reflected power itself &mdash; it is that the <strong>load impedance seen by the transistor is incorrect</strong>, which can place the transistor outside its safe operating area. At high power this can destroy the output stage.</p>
+
+      <p><strong>Protection action:</strong> the SWR sensor progressively reduces output power as SWR rises. Continued operation into a mismatched load is permissible at reduced power &mdash; instant destruction is prevented, but the root cause (wrong antenna, damaged feeder, faulty connector) must be investigated.</p>
+
+      <h3>CW and Keying</h3>
+
+      <p>A CW transmission keys the carrier on and off &mdash; conceptually 100% AM. The <strong>carrier oscillator must run continuously</strong> and must never be keyed directly. Even small supply voltage variations from keying cause a frequency shift heard as a <strong>chirp</strong> at the onset of each dot or dash.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-15.svg"
+            alt="CW keying envelope waveforms (Fig 7.15). Top trace: key up/down control signal. Middle trace: RF carrier envelope with fast rise time — very abrupt edges causing high-frequency components; these are the source of key clicks audible several kHz from the operating frequency. Bottom trace: RF carrier envelope with slow, shaped rise and fall times — the rounded edges have a much narrower bandwidth; no key clicks."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.15 &mdash; CW keying. Fast rise time (top) &rarr; key clicks; shaped slow rise time (bottom) &rarr; clean, narrow-bandwidth signal.</figcaption>
+      </figure>
+
+      <p>The bandwidth of a CW transmission is determined by the <strong>rise and fall time of the envelope</strong>, not by the sending speed:</p>
+      <ul>
+        <li><strong>Fast rise time</strong> &rarr; abrupt edges &rarr; high-frequency components &rarr; <strong>key clicks</strong> audible several kHz away</li>
+        <li><strong>Slow, shaped rise time</strong> &rarr; narrower BW &rarr; clean signal &rarr; good operating practice</li>
+      </ul>
+
+      <h3>Data Modes</h3>
+      <p><strong>FSK (Frequency Shift Keying):</strong> two RF signals 170&nbsp;Hz apart; switched between &lsquo;mark&rsquo; and &lsquo;space&rsquo;. Non-linear PA acceptable.</p>
+      <p><strong>AFSK (Audio FSK):</strong> two audio tones (e.g. 1275&nbsp;Hz / 1445&nbsp;Hz) fed into the microphone socket. The audio modulates a USB or LSB carrier. The resulting RF spectrum is identical to the audio spectrum shifted up by the carrier frequency. Using the wrong sideband inverts the data. AFSK requires a <strong>linear PA</strong> because it uses SSB modulation.</p>
+
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>RF bandwidth</th><th>Type</th><th>PA class</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>RTTY</td><td>~300&nbsp;Hz</td><td>FSK</td><td>Class C/A</td></tr>
+          <tr><td>PSK31</td><td>31&nbsp;Hz</td><td>Phase shift keying</td><td>Linear (Class A)</td></tr>
+          <tr><td>PSK63</td><td>63&nbsp;Hz</td><td>PSK</td><td>Linear</td></tr>
+          <tr><td>Olivia</td><td>500&nbsp;Hz&ndash;2&nbsp;kHz</td><td>MFSK, error-correcting</td><td>Linear</td></tr>
+          <tr><td>FT8</td><td>50&nbsp;Hz</td><td>Digital weak signal</td><td>Linear</td></tr>
+          <tr><td>WSPR</td><td>6&nbsp;Hz</td><td>Beacon/propagation</td><td>Linear</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Transceivers</h3>
+      <p>A <strong>transceiver</strong> integrates transmitter and receiver in one unit. Oscillators, IF filters, and certain amplifier stages are <strong>shared</strong> between the transmit and receive paths.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-7/fig-7-21.svg"
+            alt="20m SSB transceiver block diagram (Fig 7.21). Shared components: PLL synthesiser (8–8.35 MHz), mixer (between 14–14.35 MHz antenna side and 6 MHz IF side), 6 MHz IF filter, and 6 MHz crystal oscillator. Receive path: antenna → T/R relay → RF amp → mixer → IF filter → product detector (driven by 6 MHz oscillator) → audio amp → speaker. Transmit path: microphone → mic amp → balanced modulator (driven by 6 MHz oscillator) → 6 MHz sideband filter → 6 MHz amplifier → mixer → PA → T/R relay → antenna. T/R changeover relay switches the antenna between paths."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 7.21 &mdash; 20&nbsp;m SSB transceiver. Shared: PLL, mixer, IF filter, 6&nbsp;MHz crystal oscillator. T/R relay switches antenna between PA and RF amplifier.</figcaption>
+      </figure>
+
+      <p><strong>On receive:</strong> antenna &rarr; RF amp &rarr; mixer (with PLL) &rarr; 6&nbsp;MHz IF filter &rarr; product detector (with 6&nbsp;MHz carrier injection) &rarr; audio amplifier.</p>
+      <p><strong>On transmit:</strong> microphone &rarr; audio amp &rarr; balanced modulator (with 6&nbsp;MHz crystal carrier) &rarr; 6&nbsp;MHz sideband filter &rarr; 6&nbsp;MHz amplifier &rarr; mixer (with PLL) &rarr; PA &rarr; antenna.</p>
+
+      <p>The <strong>T/R (transmit/receive) changeover relay</strong> switches the antenna between PA output and RF amplifier input. On CW it is operated by the key; on SSB/FM/data by the PTT.</p>
+
+      <p><strong>RIT (Receiver Incremental Tuning):</strong> allows the receive frequency to be offset from the transmit frequency by a small amount (typically &plusmn;3&ndash;10&nbsp;kHz). Useful in SSB nets where stations on slightly different frequencies cause tonal differences &mdash; you can tune your received audio without moving your transmit frequency and disrupting the whole net.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 7I: SELF-CHECK ════════════════════ -->
+    <section class="chapter" id="ch-7I">
+      <div class="chapter-header">
+        <span class="chapter-num">&#9733;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+      <p>Work through these without looking at the answers first. Style matches Full Licence exam questions.</p>
+
+      <div class="self-checks">
+        <h3>Self-Check &mdash; Chapter 7</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. Why is the modulation stage of a multi-mode transmitter usually performed at a low IF rather than at the final transmit frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-1" hidden>
+            <p>Crystal filters for removing the unwanted SSB sideband are much more practical at low frequencies &mdash; at 6&nbsp;MHz, 600&nbsp;Hz represents a proportionally larger separation than at 144&nbsp;MHz, allowing sharper filter response. Also, the modulated signal must be mixed (not multiplied) to the final frequency, and mixing is straightforward to implement after the filter stage.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. Describe the function of the balanced modulator in SSB generation.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-2" hidden>
+            <p>The balanced modulator (diode ring circuit) combines the audio and RF carrier signals to produce a <strong>double-sideband suppressed-carrier (DSB-SC)</strong> output. The carrier is cancelled by the symmetry of the ring; only both sidebands appear at the output. The crystal filter then removes one sideband to leave a single-sideband signal.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. State Carson&rsquo;s Rule and calculate the RF bandwidth required for 70&nbsp;cm FM amateur use (peak deviation &plusmn;5&nbsp;kHz, maximum audio 3&nbsp;kHz).</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-3" hidden>
+            <p>Carson&rsquo;s Rule: <strong>BW = 2 &times; (max audio frequency + peak deviation)</strong> = 2 &times; (3 + 5) = <strong>16&nbsp;kHz</strong>.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. A PLL synthesiser uses a 10&nbsp;MHz crystal reference divided by 10,000 to produce a 1&nbsp;kHz reference. The VCO output is divided by N. If N = 144,500, what is the output frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-4" hidden>
+            <p>f<sub>out</sub> = f<sub>crystal</sub> &times; N/A = 10&nbsp;MHz &times; 144,500 / 10,000 = <strong>144.500&nbsp;MHz</strong>. Step size = 1&nbsp;kHz (the reference frequency).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. Why can an SSB signal not be frequency-multiplied to reach the final transmit frequency?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-5" hidden>
+            <p>Frequency multiplication scales all frequencies present by the multiplication factor &mdash; this includes the audio sideband frequencies. The audio components would be multiplied along with the carrier, distorting the voice pitch and making the transmission unintelligible. SSB must be mixed to the final frequency instead (mixing preserves audio frequencies; only the carrier shifts).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. A 100&nbsp;W PEP SSB transmitter has a typical voice peak-to-average ratio of 20:1. What is the approximate average power on voice, and what happens to average power when a speech processor halves the peak amplitude?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-6" hidden>
+            <p>Average power = 100 / 20 = <strong>5&nbsp;W</strong>. Halving the peak amplitude while maintaining the same PEP limit approximately doubles the average power to <strong>~10&nbsp;W</strong>.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q7. What is the definition of Peak Envelope Power (PEP)?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-7">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-7" hidden>
+            <p>PEP is the <strong>average RF power over one complete RF cycle measured at the crest of the modulation envelope</strong> &mdash; i.e. at the highest-amplitude peak of the signal.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q8. Explain why FM and CW transmitters can use Class C PA stages but SSB transmitters cannot.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-8">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-8" hidden>
+            <p>FM has a constant-amplitude envelope &mdash; the PA only needs to reproduce frequency variation, not amplitude variation. CW amplitude is simply on or off. Class C can handle both without distortion of the information.</p>
+            <p>SSB encodes information in <strong>amplitude variations</strong>; a non-linear Class C stage would generate intermodulation products that distort the voice and spread the signal across adjacent frequencies.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q9. What is the purpose of the ALC circuit and what fault condition does over-driving the PA cause?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-9">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-9" hidden>
+            <p>ALC (Automatic Level Control) monitors PA output and reduces the drive if power exceeds a set level, preventing over-drive.</p>
+            <p>Over-driving causes the PA to operate non-linearly, generating <strong>intermodulation distortion (IMD) products</strong> that appear as splatter on adjacent frequencies &mdash; potentially several kHz either side of the intended signal &mdash; and may damage the output transistors.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q10. What is RIT on a transceiver and when is it useful?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-7-10">Show answer</button>
+          <div class="self-check__reveal" id="ans-7-10" hidden>
+            <p>RIT (Receiver Incremental Tuning) allows the receive frequency to be offset from the transmit frequency without altering the transmit frequency. It is useful when operating on an SSB net where other stations are on slightly different frequencies &mdash; you can optimise received audio quality without disrupting others&rsquo; transmit frequencies.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════ KEY FACTS ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">&#9733;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Chapter 7 &mdash; Key Facts Summary</h2>
+      <div class="key-facts">
+        <ul>
+          <li><strong>Modulation at low IF:</strong> crystal filters work better at low frequencies; mode-agnostic RF path; band-change by VFO only.</li>
+          <li><strong>Balanced modulator</strong> (diode ring) &rarr; DSB-SC. <strong>Crystal filter</strong> &rarr; selects one sideband &rarr; SSB. Cannot frequency-multiply SSB.</li>
+          <li><strong>SSB benefits:</strong> half AM bandwidth; all power carries information; 100&nbsp;W PEP = ~5&nbsp;W average voice.</li>
+          <li><strong>FM:</strong> carrier frequency varies; amplitude constant. Carson&rsquo;s BW = 2(f_audio + deviation). Over-deviation = adjacent channel interference.</li>
+          <li><strong>Varicap diode</strong> converts audio voltage to frequency change via LC capacitance shift.</li>
+          <li><strong>VFO:</strong> tuneable LC oscillator; can drift. Needs stable supply, rigid construction, and buffer amp.</li>
+          <li><strong>Crystal oscillator:</strong> Q up to 50,000; stable and accurate. VXO allows small pulling. Mainly used as PLL reference today.</li>
+          <li><strong>PLL:</strong> f_out = f_crystal &times; N/A. Step size = reference frequency. Out-of-lock must inhibit TX.</li>
+          <li><strong>DDS:</strong> look-up table + DAC + LPF. Sub-Hz resolution. Phase noise cannot be filtered; limits adjacent-channel performance.</li>
+          <li><strong>Class C:</strong> conduction &lt;180&deg;; efficiency ~67%; only for constant-envelope modes (FM, CW). Tuned output filters harmonics.</li>
+          <li><strong>Class A:</strong> linear; ~35% efficiency; required for SSB, AM, AFSK, PSK.</li>
+          <li><strong>PEP:</strong> average power at envelope crest. SSB voice ~5% average. Speech processor raises average without exceeding PEP.</li>
+          <li><strong>ALC:</strong> samples PA output; reduces drive if overdriven. Over-drive = IMD splatter + PA damage.</li>
+          <li><strong>CW keying:</strong> key the PA, not the oscillator. Slow rise/fall time = narrow BW; fast = key clicks.</li>
+          <li><strong>AFSK</strong> uses SSB modulation &rarr; linear PA required. Wrong sideband inverts the data.</li>
+          <li><strong>Transceiver:</strong> shared PLL, mixer, IF filter, crystal oscillator. T/R relay switches antenna. RIT offsets receive without moving TX frequency.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════ SECTION NAV ════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-6-analogue-digital-signals.html" class="section-nav__link">&larr; Chapter 6: Analogue &amp; Digital Signals</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;section=7"
+         class="section-nav__link section-nav__practice">Practice This Chapter</a>
+      <a href="section-8-transmitter-interference.html" class="section-nav__link">Chapter 8: TX Interference &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260914-1000" defer></script>
+</body>
+</html>

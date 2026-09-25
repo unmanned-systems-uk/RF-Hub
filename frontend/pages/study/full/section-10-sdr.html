@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 10: Software Defined Radio — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260917-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    .arch-diagram {
+      background: rgba(6,182,212,0.04); border: 1px solid rgba(6,182,212,0.18);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: 1rem 0;
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-h);
+      overflow-x: auto; white-space: pre;
+    }
+    .arch-diagram .arch-note { color: var(--text-dim); font-size: 0.78rem; display: block; margin-top: 0.5rem; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .crossref {
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.85rem;
+      margin: 1rem 0; display: inline-block;
+    }
+    .crossref a { color: var(--accent-em); text-decoration: none; }
+    .crossref a:hover { text-decoration: underline; }
+    .bit-depth-table td:nth-child(1) { font-family: var(--font-mono); color: var(--accent-h); }
+    .bit-depth-table td:nth-child(2) { font-family: var(--font-mono); }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <nav class="hero-breadcrumb" aria-label="Breadcrumb">
+        <a href="/index.html">Home</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="index.html">Full Licence</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <span>Chapter 10</span>
+      </nav>
+      <div class="hero-badge-row">
+        <span class="badge badge--level">Full Licence</span>
+        <span class="badge">Chapter 10</span>
+        <span class="badge">3–5% exam weight</span>
+      </div>
+      <h1>Software Defined Radio</h1>
+      <p class="hero-lead">SDR moves the boundary between hardware and software as close to the antenna as possible. Understanding where and how that boundary sits — and what it costs in terms of sample rate and dynamic range — is the entire chapter.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-10A">10A SDR Architecture</a></li>
+        <li><a href="#ch-10B">10B Direct Sampling</a></li>
+        <li><a href="#ch-10C">10C I/Q Signals</a></li>
+        <li><a href="#ch-10D">10D Sample Rate &amp; Bit Depth</a></li>
+        <li><a href="#ch-10E">10E FFT Waterfall</a></li>
+        <li><a href="#ch-10F">10F Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+
+    <div class="toc">
+      <p class="toc__label">In this chapter</p>
+      <ol>
+        <li><a href="#ch-10A"><span class="toc-code">10A</span>What SDR Is</a></li>
+        <li><a href="#ch-10B"><span class="toc-code">10B</span>Direct Sampling vs Down-Conversion</a></li>
+        <li><a href="#ch-10C"><span class="toc-code">10C</span>I/Q Signals and Quadrature Sampling</a></li>
+        <li><a href="#ch-10D"><span class="toc-code">10D</span>Sample Rate and Bit Depth</a></li>
+        <li><a href="#ch-10E"><span class="toc-code">10E</span>FFT Waterfall and Panadapter</a></li>
+        <li><a href="#ch-10F"><span class="toc-code">10F</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ════════════════════ §10A ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10A">
+      <div class="chapter-header">
+        <span class="chapter-num">10A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>What SDR Is</h2>
+
+      <p>In a conventional transceiver, each function (filter, demodulation, frequency selection) is implemented in dedicated hardware. Change mode from SSB to FM and the signal path physically switches between different filter and detector stages.</p>
+
+      <p>A <strong>Software Defined Radio</strong> replaces those hardware stages with a general-purpose processor running algorithms:</p>
+
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/full/section-10/fig-10-1-sdr-block-diagram.svg" alt="SDR overview block diagram: antenna feeds analogue front-end and ADC (analogue domain), then digital samples flow through software DSP to produce audio or decoded data (digital domain)" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+
+      <p>The front-end is minimal — typically only a bandpass filter and low-noise amplifier. Everything from filtering to demodulation runs in software (a PC, FPGA, or embedded DSP).</p>
+
+      <p><strong>Why this matters:</strong></p>
+      <ul>
+        <li>Any mode (SSB, FM, CW, FT8, WSPR, SSTV) is just a different software module — no hardware change</li>
+        <li>The full instantaneous bandwidth of the ADC is visible simultaneously on a waterfall display</li>
+        <li>Received RF can be recorded as raw I/Q samples and replayed or reprocessed later</li>
+        <li>Firmware updates can improve performance or add modes without touching hardware</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §10B ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10B">
+      <div class="chapter-header">
+        <span class="chapter-num">10B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Direct Sampling vs Down-Conversion</h2>
+
+      <p>Two architectures dominate amateur SDR.</p>
+
+      <h3>Down-Conversion SDR</h3>
+
+      <p>The incoming RF is mixed to a low intermediate frequency (IF) or to baseband before the ADC. This is the most common approach.</p>
+
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/full/section-10/fig-10-2-sdr-hardware-frontend.svg" alt="SDR hardware front-end block diagram: antenna feeds bandpass filter, LNA, mixer (with software-controlled local oscillator below), baseband filter and ADC before software processing" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+
+      <p>The ADC only needs to sample at twice the bandwidth of interest — a 2 MHz bandwidth radio needs only a ~2 Msps ADC. Most consumer SDR dongles (RTL-SDR, SDRplay, Airspy) use this approach with a TV tuner chip as the RF front-end.</p>
+
+      <p><strong>Quadrature (I/Q) sampling</strong> is used to avoid image problems. Two ADC channels are used, with the local oscillator fed 90° out of phase to one of them:</p>
+      <ul>
+        <li><strong>I channel</strong> — In-phase samples</li>
+        <li><strong>Q channel</strong> — Quadrature (90°-shifted) samples</li>
+      </ul>
+
+      <p>The I/Q pair encodes both the amplitude and phase of the signal. Software can then tune to any frequency within the sampled band, and image frequencies that would alias into the passband in a single-channel receiver are cleanly separated. This is fundamental to how SDR tuning works: changing the software's digital NCO frequency tunes the radio, not the hardware oscillator.</p>
+
+      <h3>Direct Sampling</h3>
+
+      <p>In direct sampling, the ADC sits immediately at the antenna (after a bandpass filter and LNA), with no mixer:</p>
+
+      <div class="arch-diagram">Antenna → BPF → LNA → high-speed ADC → digital samples → software<span class="arch-note">No mixer — the ADC digitises the RF directly. Requires much higher sample rate.</span></div>
+
+      <p>This requires a much faster ADC. To cover 0–30 MHz requires at least 60 Msps (Nyquist); in practice, 100–200 Msps ADCs are used. The Nyquist alias bands are used intentionally to fold higher-frequency signals into the ADC's usable range — a form of harmonic undersampling.</p>
+
+      <p>High-end amateur transceivers (Flex-6000 series, ANAN series, modern Icom/Yaesu flagship models) use direct-sampling HF architectures. The ADC digitises the entire HF spectrum simultaneously; software selects the desired channel.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Down-conversion</th>
+            <th>Direct sampling</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ADC speed required</strong></td>
+            <td>Low (×2 BW only)</td>
+            <td>High (covers full RF band)</td>
+          </tr>
+          <tr>
+            <td><strong>Hardware complexity</strong></td>
+            <td>Higher (mixer, LO)</td>
+            <td>Lower (no mixer)</td>
+          </tr>
+          <tr>
+            <td><strong>Image rejection</strong></td>
+            <td>I/Q cancellation</td>
+            <td>Inherent (no mixing)</td>
+          </tr>
+          <tr>
+            <td><strong>Typical use</strong></td>
+            <td>Consumer dongles, entry SDR</td>
+            <td>High-performance transceivers</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ════════════════════ §10C ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10C">
+      <div class="chapter-header">
+        <span class="chapter-num">10C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>I/Q Signals and Quadrature Sampling</h2>
+
+      <p>It is worth spending a moment on I/Q, because it appears in every SDR discussion.</p>
+
+      <p>A real-valued signal sampled at rate f<sub>s</sub> can only represent frequencies from 0 to f<sub>s</sub>/2 (one-sided spectrum). An <strong>I/Q pair</strong> sampled at f<sub>s</sub> represents a complex (two-sided) signal from &minus;f<sub>s</sub>/2 to +f<sub>s</sub>/2. This doubles the usable bandwidth for the same sample rate, and — more importantly — allows the software to distinguish positive and negative frequency offsets from the centre frequency.</p>
+
+      <p>When you tune an SDR receiver to 14.200 MHz and the sample rate is 2 Msps, the software sees frequencies from 13.200 to 15.200 MHz simultaneously. A signal at 14.150 MHz appears at &minus;50 kHz (i.e. 50 kHz below centre) in the I/Q representation, while one at 14.250 MHz appears at +50 kHz. Without I/Q, both would fold to the same 50 kHz offset and be indistinguishable.</p>
+
+      <div class="callout-exam">
+        <strong>Exam note:</strong> I/Q sampling gives a two-sided spectrum from &minus;f<sub>s</sub>/2 to +f<sub>s</sub>/2. This lets the software distinguish a signal 50 kHz above centre from one 50 kHz below — a single-channel ADC cannot do this.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §10D ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10D">
+      <div class="chapter-header">
+        <span class="chapter-num">10D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Sample Rate and Bit Depth</h2>
+
+      <p>Two ADC parameters set the limits of an SDR receiver's performance.</p>
+
+      <h3>Sample Rate → Bandwidth</h3>
+
+      <p>By the Nyquist theorem <span class="crossref"><a href="section-6-analogue-digital-signals.html#ch-6C">§6C — Nyquist / sampling</a></span>, the maximum usable bandwidth is half the sample rate. A 2.048 Msps SDR can process (and display on the waterfall) a total of 2.048 MHz of spectrum at once.</p>
+
+      <p>Higher sample rate means:</p>
+      <ul>
+        <li>Wider panadapter window</li>
+        <li>More simultaneous channels visible</li>
+        <li>Higher requirement for USB/PCIe transfer bandwidth and CPU processing</li>
+      </ul>
+
+      <p>Entry-level SDR dongles: 2–3.2 Msps. High-performance SDRs: 10–20 Msps. Transceiver ADCs: 100–200 Msps for full HF coverage.</p>
+
+      <h3>Bit Depth → Dynamic Range</h3>
+
+      <p>Each bit of ADC resolution contributes approximately 6 dB of dynamic range. A 14-bit ADC has a theoretical SNR of ~80 dB. A 16-bit ADC reaches ~96 dB.</p>
+
+      <p>In practice, the Spurious-Free Dynamic Range (SFDR) and IP3 of the analogue front-end set the real limit — but bit depth is the ceiling:</p>
+
+      <table class="bit-depth-table">
+        <thead>
+          <tr>
+            <th>Bit depth</th>
+            <th>Theoretical dynamic range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>8-bit (cheap dongle)</td>
+            <td>~48 dB</td>
+          </tr>
+          <tr>
+            <td>12-bit</td>
+            <td>~72 dB</td>
+          </tr>
+          <tr>
+            <td>14-bit</td>
+            <td>~80 dB</td>
+          </tr>
+          <tr>
+            <td>16-bit</td>
+            <td>~96 dB</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>A receiver with only 48 dB of dynamic range will produce visible IMD products when a strong signal is present, even if the software is excellent. This is why high-end SDR receivers use 16-bit ADCs — the same fundamental constraint as <span class="crossref"><a href="section-9-receiver.html#ch-9B">§9B — Noise figure &amp; dynamic range</a></span> applies whether the receiver is analogue or digital.</p>
+
+      <div class="callout-exam">
+        <strong>10C1/10D1:</strong> Sample rate determines how much spectrum the SDR can see simultaneously (instantaneous bandwidth = sample_rate / 2). Bit depth sets the dynamic range ceiling (~6 dB per bit). A 14-bit SDR has the same ~80 dB ceiling as a 14-bit ADC in a traditional receiver.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §10E ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10E">
+      <div class="chapter-header">
+        <span class="chapter-num">10E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>FFT Waterfall and Panadapter</h2>
+
+      <h3>Panadapter</h3>
+
+      <p>A <strong>panadapter</strong> is a real-time spectrum display: frequency runs along the X axis, received signal power on the Y axis. The display updates typically 15–25 times per second.</p>
+
+      <p>The FFT (Fast Fourier Transform) converts a block of time-domain I/Q samples into a power-vs-frequency spectrum:</p>
+
+      <div class="formula-block">Block of N I/Q samples → FFT → N/2 frequency bins
+Each bin width = sample_rate / N
+
+Example: 2.048 Msps, FFT size 4096
+  → bin width = 2,048,000 / 4096 = 500 Hz
+  → total span = 2.048 MHz</div>
+
+      <p>Larger FFT → finer frequency resolution, but more computation and higher latency. Most SDR software allows the FFT size to be adjusted.</p>
+
+      <h3>Waterfall Display</h3>
+
+      <p>The <strong>waterfall</strong> adds a time dimension: each new spectrum line is added at the top and scrolls downward. Signal power is represented as colour (typically black → blue → green → yellow → red for increasing power). Earlier time is visible lower on the screen.</p>
+
+      <p>The waterfall makes it easy to:</p>
+      <ul>
+        <li>Identify signal types by their visual signature (PSK31 = single thin vertical line; SSB = wide lumpy trace; FT8 = eight simultaneous tones appearing for 12.6 seconds at a time; WSPR = two faint tones lasting 110 seconds)</li>
+        <li>Spot propagation openings (a band that was empty suddenly fills with signals)</li>
+        <li>Distinguish continuous carriers from intermittent signals</li>
+        <li>Find clear frequencies without transmitting</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>10E1:</strong> A panadapter shows frequency vs signal strength in real time using FFT. A waterfall adds time as the vertical axis (latest at top, scrolling downward), with power shown as colour. The frequency resolution is sample_rate / FFT_size — larger FFT gives finer resolution at the cost of longer processing time.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §10F SELF-CHECK ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-10F">
+      <div class="chapter-header">
+        <span class="chapter-num">10F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q1.</strong> An SDR dongle has an 8-bit ADC sampling at 2.048 Msps. What is the instantaneous bandwidth visible on its waterfall, and what is the theoretical dynamic range?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-10-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-10-1" hidden>
+            <p><strong>Bandwidth:</strong> Nyquist limit = sample_rate / 2 = 2.048 / 2 = <strong>1.024 MHz</strong>.</p>
+            <p><strong>Dynamic range:</strong> 8 bits &times; 6 dB = <strong>~48 dB</strong>. This is relatively modest; a strong broadcast station nearby can produce visible IMD products in the display.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q2.</strong> Why does SDR use I/Q (quadrature) sampling rather than a single ADC channel?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-10-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-10-2" hidden>
+            <p>A single ADC produces a one-sided spectrum (0 to f<sub>s</sub>/2). It cannot distinguish a signal 50 kHz above the centre frequency from one 50 kHz below — both alias to the same offset. The I/Q pair encodes complex (amplitude + phase) samples, giving a two-sided spectrum (&minus;f<sub>s</sub>/2 to +f<sub>s</sub>/2) that distinguishes positive and negative offsets from centre. This doubles effective bandwidth and eliminates image frequency ambiguity.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q3.</strong> A direct-sampling SDR receiver uses a 100 Msps ADC. What is the maximum frequency it can digitise without aliasing?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-10-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-10-3" hidden>
+            <p>Nyquist limit = 100 / 2 = <strong>50 MHz</strong>. Signals above 50 MHz would alias. A bandpass filter before the ADC must remove signals above 50 MHz to prevent aliasing.</p>
+            <p>In practice, the second Nyquist zone (50–100 MHz) can be used intentionally via undersampling, but this requires careful bandpass filtering of that specific zone.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q4.</strong> What is the difference between a panadapter and a waterfall display?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-10-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-10-4" hidden>
+            <p>A <strong>panadapter</strong> shows a real-time frequency-vs-power spectrum (a single horizontal slice). A <strong>waterfall</strong> adds time as the vertical axis: each new panadapter sweep scrolls the display downward, so the history of received signals is visible. A waterfall makes it easy to identify intermittent signals, propagation changes, and signal types by their characteristic visual patterns.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-9-receiver.html" class="section-nav__link">&larr; Chapter 9: The Receiver</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=10"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-11-feeders-antennas.html" class="section-nav__link">Chapter 11: Feeders &amp; Antennas &rarr;</a>
+    </nav>
+
+    <footer style="padding-bottom: 3rem; color: var(--text-dim); font-size: 0.8rem; font-family: var(--font-mono);">
+      Chapter 10 &nbsp;&middot;&nbsp; Full Licence &nbsp;&middot;&nbsp;
+      <a href="index.html" style="color: var(--text-dim); text-decoration: none;">Full Licence index</a>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260917-1000" defer></script>
+</body>
+</html>

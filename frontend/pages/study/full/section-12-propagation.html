@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 12: Propagation — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260915-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .callout-xref {
+      background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.18);
+      border-left: 3px solid var(--accent-h);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.875rem;
+      color: var(--text-dim);
+    }
+    .callout-xref strong { color: var(--text-secondary); }
+    .callout-xref a { color: var(--accent-h); text-decoration: none; }
+    .callout-xref a:hover { text-decoration: underline; }
+    .interactive-frame { margin: 1.5rem 0; border-radius: var(--radius-md); overflow: hidden; }
+    /* Layer table — colour-coded presence */
+    .layer-table td:nth-child(3) { font-size: 0.82rem; }
+    .layer-table td:nth-child(4) { font-size: 0.82rem; color: var(--text-dim); }
+    /* SFI table — SFI range col mono */
+    .sfi-table td:nth-child(1) { font-family: var(--font-mono); font-size: 0.82rem; }
+    /* Kp table — Kp col mono, amber threshold */
+    .kp-table td:nth-child(1) { font-family: var(--font-mono); font-size: 0.82rem; }
+    .kp-table tr:nth-child(n+3) td:nth-child(1) { color: var(--accent-e); }
+    /* Shower table */
+    .shower-table td:nth-child(3) { font-family: var(--font-mono); text-align: right; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .self-check__reveal .formula-block { font-size: 0.85rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <nav class="hero-breadcrumb" aria-label="Breadcrumb">
+        <a href="/index.html">Home</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="index.html">Full Licence</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <span>Chapter 12</span>
+      </nav>
+      <div class="hero-badge-row">
+        <span class="badge badge--level">Full Licence</span>
+        <span class="badge">Chapter 12</span>
+        <span class="badge">8–12% exam weight</span>
+      </div>
+      <h1>Propagation</h1>
+      <p class="hero-lead">How radio waves travel from transmitter to receiver. At HF, the ionosphere is the critical factor; at VHF and above, tropospheric effects and direct scatter dominate. Full level adds the MUF formula, Solar Flux Index, Kp index for aurora, and the digital modes that unlock EME and meteor scatter.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-12A">12A Ionospheric Layers</a></li>
+        <li><a href="#ch-12B">12B Solar Activity / SFI</a></li>
+        <li><a href="#ch-12C">12C Critical Frequency</a></li>
+        <li><a href="#ch-12D">12D MUF / LUF</a></li>
+        <li><a href="#ch-12E">12E Skip &amp; Dead Zone</a></li>
+        <li><a href="#ch-12F">12F Fading</a></li>
+        <li><a href="#ch-12G">12G Tropospheric</a></li>
+        <li><a href="#ch-12H">12H Sporadic-E</a></li>
+        <li><a href="#ch-12I">12I Aurora</a></li>
+        <li><a href="#ch-12J">12J Meteor Scatter</a></li>
+        <li><a href="#ch-12K">12K EME</a></li>
+        <li><a href="#ch-12L">12L Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+
+    <div class="toc">
+      <p class="toc__label">In this chapter</p>
+      <ol>
+        <li><a href="#ch-12A"><span class="toc-code">12A</span>Ionospheric Layers</a></li>
+        <li><a href="#ch-12B"><span class="toc-code">12B</span>Solar Activity: SFI and Sunspot Cycle</a></li>
+        <li><a href="#ch-12C"><span class="toc-code">12C</span>Critical Frequency and the Ionosonde</a></li>
+        <li><a href="#ch-12D"><span class="toc-code">12D</span>MUF, LUF, and Optimal Working Frequency</a></li>
+        <li><a href="#ch-12E"><span class="toc-code">12E</span>Skip Distance and the Dead Zone</a></li>
+        <li><a href="#ch-12F"><span class="toc-code">12F</span>Fading: Multipath and Selective</a></li>
+        <li><a href="#ch-12G"><span class="toc-code">12G</span>Tropospheric Propagation</a></li>
+        <li><a href="#ch-12H"><span class="toc-code">12H</span>Sporadic-E</a></li>
+        <li><a href="#ch-12I"><span class="toc-code">12I</span>Auroral Propagation</a></li>
+        <li><a href="#ch-12J"><span class="toc-code">12J</span>Meteor Scatter</a></li>
+        <li><a href="#ch-12K"><span class="toc-code">12K</span>Earth-Moon-Earth (EME)</a></li>
+        <li><a href="#ch-12L"><span class="toc-code">12L</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <div class="callout-xref">
+      <strong>Cross-reference &mdash; Intermediate §5:</strong> The Intermediate propagation chapter covers ground wave, basic ionospheric structure, frequency-dependent behaviour, solar/seasonal variation, VHF/UHF modes, and fading (§5A&ndash;§5F). Full level builds on all of those. Read this chapter alongside the Intermediate material rather than in isolation.
+    </div>
+
+    <!-- ════════════════════ §12A ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12A">
+      <div class="chapter-header">
+        <span class="chapter-num">12A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Ionospheric Layers</h2>
+
+      <p>The <strong>ionosphere</strong> is the region of the upper atmosphere from approximately 60 km to 1000 km altitude, where solar ultraviolet (UV) and X-ray radiation ionises gas molecules, creating free electrons and positive ions. It is the free electrons that refract and reflect radio waves.</p>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> Intermediate §5B covers ionospheric formation and the basic layer model. The following extends that material with layer-specific properties needed at Full level.
+      </div>
+
+      <h3>Layer Properties</h3>
+
+      <table class="layer-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Altitude</th>
+            <th>Daytime presence</th>
+            <th>Night-time</th>
+            <th>Primary effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>D</strong></td>
+            <td>60–90 km</td>
+            <td>Present</td>
+            <td>Disappears</td>
+            <td>Absorbs MF and low HF; attenuates signals passing through</td>
+          </tr>
+          <tr>
+            <td><strong>E</strong></td>
+            <td>90–130 km</td>
+            <td>Moderate</td>
+            <td>Weak</td>
+            <td>Short-range HF hops; host of sporadic-E clouds</td>
+          </tr>
+          <tr>
+            <td><strong>F1</strong></td>
+            <td>130–210 km</td>
+            <td>Present</td>
+            <td>Merges with F2</td>
+            <td>Transitional layer; low HF reflections</td>
+          </tr>
+          <tr>
+            <td><strong>F2</strong></td>
+            <td>210–400 km</td>
+            <td>Strong</td>
+            <td>Present (weaker)</td>
+            <td>Primary DX reflection layer; supports long HF paths day and night</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>D layer</strong> &mdash; exists only in daylight, created principally by Lyman-&alpha; UV radiation acting on nitric oxide. It does not reflect HF but strongly absorbs it; absorption &prop; 1/f&sup2;, so lower frequencies are absorbed more. This is why the 80 m and 40 m bands are closed or noisy during the day &mdash; signals attempting to reach the F layer pass through and are absorbed by the D layer. At night the D layer disappears rapidly, and these bands open.</p>
+
+      <p><strong>E layer</strong> &mdash; formed by harder UV and soft X-rays acting on molecular oxygen. Supports one-hop HF paths of approximately 1000&ndash;2000 km during daylight. The E layer hosts sporadic-E (§12H).</p>
+
+      <p><strong>F layer</strong> &mdash; the workhorse for HF DX. The F1 layer disappears at sunset; the F2 layer persists through the night because recombination at its altitude (very thin air) is slow. A single F2 hop carries signals 2000&ndash;4000 km. Multiple hops allow global paths.</p>
+
+      <h3>Diurnal and Seasonal Variation</h3>
+      <ul>
+        <li>Ionisation is maximum at local solar noon; the F2 layer density peaks 1&ndash;2 hours after noon</li>
+        <li>In winter, F2 ionisation is sometimes <em>higher</em> than in summer at mid-latitudes (the &ldquo;winter anomaly&rdquo;)</li>
+        <li>The F1 layer is absent in winter at high latitudes</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §12B ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12B">
+      <div class="chapter-header">
+        <span class="chapter-num">12B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Solar Activity: Sunspot Cycle and Solar Flux Index</h2>
+
+      <h3>The 11-Year Sunspot Cycle</h3>
+
+      <p>Sunspots are dark regions on the solar surface associated with intense magnetic activity. Their count (Smoothed Sunspot Number, SSN) follows an approximately 11-year cycle between solar minimum and solar maximum. Solar Cycle 25 began in 2019 and peaked around 2024&ndash;2025 with unusually high activity.</p>
+
+      <p>High solar activity means:</p>
+      <ul>
+        <li>More UV and EUV radiation &rarr; stronger F2 ionisation &rarr; higher critical frequency (f<sub>c</sub>)</li>
+        <li>Higher f<sub>c</sub> &rarr; higher MUF &rarr; more HF bands open for DX &rarr; 10 m (28 MHz) and 12 m (24 MHz) usable at solar maximum, effectively dead near minimum</li>
+      </ul>
+
+      <h3>Solar Flux Index (SFI / F10.7)</h3>
+
+      <p>The <strong>Solar Flux Index</strong> (SFI, also F10.7) is the solar radio flux measured daily at 10.7 cm wavelength (2800 MHz) from Penticton, British Columbia, Canada. It is expressed in <strong>solar flux units (sfu)</strong> where 1 sfu = 10<sup>&minus;22</sup> W m<sup>&minus;2</sup> Hz<sup>&minus;1</sup>.</p>
+
+      <p>SFI correlates closely with the EUV radiation that ionises the F2 layer and is used as the key numerical proxy for HF propagation prediction:</p>
+
+      <table class="sfi-table">
+        <thead>
+          <tr><th>SFI range</th><th>Interpretation</th><th>HF impact</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>65&ndash;70</td><td>Solar minimum</td><td>10 m, 12 m closed or marginal; 14&ndash;18 MHz DX with effort</td></tr>
+          <tr><td>80&ndash;100</td><td>Low moderate</td><td>14&ndash;18 MHz reliable; 21 MHz possible</td></tr>
+          <tr><td>100&ndash;150</td><td>Moderate to high</td><td>21 MHz opens; 28 MHz possible near equinox</td></tr>
+          <tr><td>&gt;150</td><td>High (solar max)</td><td>28 MHz global; 24 MHz excellent; trans-equatorial propagation (TEP)</td></tr>
+        </tbody>
+      </table>
+
+      <p>SFI is published daily by NOAA, RSGB PropNet, and DX cluster software. Many logging programs display the current SFI, Kp, and A-index as headline indicators of propagation conditions.</p>
+
+      <div class="callout-exam">
+        <strong>12B1:</strong> The Solar Flux Index (SFI / F10.7) measures solar radio emission at 2800 MHz and is the primary numerical indicator used in HF propagation prediction. High SFI &rarr; higher MUF &rarr; more HF bands open. The 11-year sunspot cycle drives SFI between ~65 (minimum) and &gt;200 (maximum).
+      </div>
+
+      <h3>Geomagnetic Disturbances</h3>
+
+      <p>Solar flares emit X-ray bursts that reach Earth in ~8 minutes, causing a <strong>Sudden Ionospheric Disturbance (SID)</strong>: a rapid increase in D-layer ionisation &rarr; HF blackout (typically on the sunlit hemisphere only), lasting minutes to hours.</p>
+
+      <p>Coronal Mass Ejections (CMEs) arrive 1&ndash;3 days later, compressing the magnetosphere and causing a <strong>geomagnetic storm</strong>. The F layer becomes disturbed and irregular; HF propagation deteriorates or ceases for hours to days. The <strong>Kp index</strong> (0&ndash;9 scale, measured every 3 hours) quantifies geomagnetic disturbance: Kp &le; 2 = quiet; Kp 4&ndash;5 = unsettled; Kp &ge; 6 = storm; Kp &ge; 7 = severe storm. High Kp enables aurora at lower latitudes (§12I) but degrades HF propagation.</p>
+    </section>
+
+    <!-- ════════════════════ §12C ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12C">
+      <div class="chapter-header">
+        <span class="chapter-num">12C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Critical Frequency and the Ionosonde</h2>
+
+      <h3>Critical Frequency (f<sub>c</sub>)</h3>
+
+      <p>The <strong>critical frequency</strong> (f<sub>c</sub>, specifically <strong>foF2</strong> for the F2 layer) is the highest frequency at which a radio wave transmitted vertically upward is reflected back to Earth. A wave at exactly f<sub>c</sub> is reflected; a wave at any higher frequency passes through the F2 layer and is lost to space.</p>
+
+      <p>Typical values:</p>
+      <ul>
+        <li>Solar minimum, night: foF2 &asymp; 2&ndash;4 MHz</li>
+        <li>Solar minimum, day: foF2 &asymp; 5&ndash;8 MHz</li>
+        <li>Solar maximum, day: foF2 &asymp; 8&ndash;14 MHz</li>
+      </ul>
+
+      <p>The critical frequency depends on the electron density N (electrons per m&sup3;):</p>
+
+      <div class="formula-block">f_c = √(N / 81)   [MHz, with N in electrons/m³]
+
+(This is the plasma frequency formula, from which the fc–N relationship is derived.)</div>
+
+      <h3>The Ionosonde</h3>
+
+      <p>An <strong>ionosonde</strong> is a specialised swept-frequency radar that transmits short pulses across the HF range (typically 1&ndash;20 MHz) and measures the two-way travel time to the reflecting layer. From the time delay, the virtual height of reflection is calculated. The resulting plot &mdash; an <strong>ionogram</strong> &mdash; shows virtual height vs frequency for each layer (D, E, F1, F2).</p>
+
+      <p>From the ionogram:</p>
+      <ul>
+        <li><strong>foF2</strong> is read as the highest frequency producing a F2 echo &mdash; this is the critical frequency</li>
+        <li>The <strong>virtual height</strong> of each layer is visible directly</li>
+        <li>Layer splitting (E and F2 separately) is visible by day; at night only F2 remains</li>
+      </ul>
+
+      <p>Real-time ionograms from a network of ~200 ionosondes worldwide are available at ionosonde.net and through the DIDBase system. Amateur operators can use these to estimate current foF2 at their location and hence predict the MUF for a given path.</p>
+
+      <div class="callout-exam">
+        <strong>12C1:</strong> The critical frequency (foF2) is the highest frequency reflected vertically by the F2 layer. It is measured by an ionosonde (swept radar). f<sub>c</sub> varies from ~3 MHz (solar minimum, night) to ~14 MHz (solar maximum, day). All HF band planning for oblique paths starts from this number.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §12D ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12D">
+      <div class="chapter-header">
+        <span class="chapter-num">12D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>MUF, LUF, and Optimal Working Frequency</h2>
+
+      <h3>Maximum Usable Frequency (MUF)</h3>
+
+      <p>For an oblique (non-vertical) path, a wave strikes the ionosphere at an angle &mdash; and a wave at a higher frequency than f<sub>c</sub> can still be reflected, because the oblique geometry reduces the effective vertical component of the wave vector. The <strong>Maximum Usable Frequency</strong> for a given path is:</p>
+
+      <div class="formula-block">MUF = f_c × sec(θ)
+
+Where θ is the angle of incidence measured from the vertical at the reflection point,
+and sec(θ) = 1/cos(θ).
+
+For a flat-Earth approximation with F2 layer height h and ground path length d:
+  sec(θ) = √(1 + (d / 2h)²)</div>
+
+      <p><strong>Worked example:</strong> f<sub>c</sub> = 8 MHz, h = 300 km, d = 2000 km:</p>
+
+      <div class="formula-block">sec(θ) = √(1 + (2000 / 600)²) = √(1 + 11.1) = √12.1 ≈ 3.48
+MUF = 8 × 3.48 ≈ 28 MHz</div>
+
+      <p>So a 2000 km path with f<sub>c</sub> = 8 MHz has MUF &asymp; 28 MHz &mdash; the 10 m band just opens. The same path with f<sub>c</sub> = 6 MHz (lower solar activity) gives MUF &asymp; 21 MHz &mdash; only 15 m is open.</p>
+
+      <p>The sec(&theta;) factor is commonly in the range 3&ndash;5 for typical amateur paths:</p>
+      <ul>
+        <li>1000 km path, h = 300 km &rarr; sec &asymp; 2.5</li>
+        <li>2000 km path, h = 300 km &rarr; sec &asymp; 3.5</li>
+        <li>3000 km path, h = 300 km &rarr; sec &asymp; 5.0</li>
+      </ul>
+
+      <p>For multi-hop paths (e.g. UK to Japan via 3&ndash;4 hops), the MUF for the complete path is set by the hop with the <em>lowest</em> MUF along the route.</p>
+
+      <h3>Lowest Usable Frequency (LUF)</h3>
+
+      <p>The <strong>Lowest Usable Frequency</strong> is set by D-layer absorption. As frequency decreases, D-layer absorption increases approximately as 1/f&sup2;. Below the LUF, signal losses in the D layer reduce the received signal strength below a useful threshold, regardless of whether the F layer would reflect the signal.</p>
+
+      <ul>
+        <li>Daytime LUF: typically 8&ndash;12 MHz on long paths (D layer strong)</li>
+        <li>Night-time LUF: typically 2&ndash;5 MHz (D layer gone; absorption minimal)</li>
+        <li>LUF rises during solar flares (D-layer enhancement)</li>
+      </ul>
+
+      <p>The <strong>Optimal Working Frequency (OWF)</strong> is typically taken as <strong>0.85 &times; MUF</strong>. Operating at 85% of MUF gives a 15% margin against ionospheric variations (day-to-day variations in foF2 can be &plusmn;20&ndash;30% of the monthly median). Operating too close to MUF risks sudden signal loss as the ionosphere fluctuates below the required level.</p>
+
+      <div class="callout-exam">
+        <strong>12D1:</strong> MUF = f<sub>c</sub> &times; sec(&theta;) &mdash; the maximum frequency for a given path, determined by the critical frequency and path geometry. LUF is set by D-layer absorption (&prop; 1/f&sup2;). The usable frequency window is LUF to MUF; the optimal working frequency is 0.85 &times; MUF.
+      </div>
+
+      <h3>MUF/LUF Predictor</h3>
+      <p>Use the interactive below to explore how MUF and LUF vary with solar flux, path length, and time of day:</p>
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-muf-luf-predictor.html"
+                style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+                loading="lazy"
+                title="MUF / LUF Predictor"
+                aria-label="Interactive MUF and LUF predictor — adjust solar flux, path length, and time of day"></iframe>
+      </div>
+    </section>
+
+    <!-- ════════════════════ §12E ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12E">
+      <div class="chapter-header">
+        <span class="chapter-num">12E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Skip Distance and the Dead Zone</h2>
+
+      <h3>Skip Distance</h3>
+
+      <p>A transmitter radiates signals at a range of elevation angles. Waves at high elevation angles hit the ionosphere nearly vertically &mdash; if the frequency is below f<sub>c</sub> they are reflected; if above f<sub>c</sub> they pass through. Waves at lower elevation angles strike obliquely and are reflected at higher frequencies (§12D).</p>
+
+      <p>The <strong>skip distance</strong> is the minimum surface distance from the transmitter at which the sky-wave signal returns to Earth. At elevations below the critical angle for the operating frequency, all waves pass through the ionosphere &mdash; there is a minimum reflection distance below which the sky wave does not return.</p>
+
+      <ul>
+        <li>At 14 MHz with moderate ionospheric conditions: skip distance &asymp; 800&ndash;1500 km</li>
+        <li>At 28 MHz: skip distance may be 2000&ndash;4000 km (or no propagation if below MUF)</li>
+        <li>At 7 MHz: skip distance &asymp; 200&ndash;800 km by day, shorter at night when F layer is lower</li>
+      </ul>
+
+      <h3>Dead Zone</h3>
+
+      <p>The <strong>dead zone</strong> (or skip zone) is the annular region between:</p>
+      <ul>
+        <li>The outer limit of the <strong>ground wave</strong> (typically a few hundred km at HF, decreasing with frequency)</li>
+        <li>The inner limit of the <strong>sky wave</strong> (the skip distance)</li>
+      </ul>
+
+      <p>Within the dead zone, neither propagation mode delivers a usable signal. A station 300 km away may hear nothing while a station 1200 km away receives a strong signal and a station 50 km away receives via ground wave.</p>
+
+      <p>The dead zone varies constantly with ionospheric conditions. On 14 MHz at solar maximum, the skip distance can extend to 3000 km, leaving a very large dead zone; during grey-line conditions or at solar minimum the skip distance shortens.</p>
+
+      <p><strong>Practical implication:</strong> A station transmitting at a frequency above the MUF for a specific path will not establish contact &mdash; the wave passes through the ionosphere and is lost to space. Listening for signals from the target area and noting that they are audible confirms the path is open.</p>
+    </section>
+
+    <!-- ════════════════════ §12F ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12F">
+      <div class="chapter-header">
+        <span class="chapter-num">12F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Fading: Multipath and Selective</h2>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> The mechanism of fading (QSB) &mdash; multiple path lengths, phase addition and cancellation &mdash; is covered in detail in <a href="/pages/study/intermediate/section-5-propagation.html#ch-5f">Intermediate §5F</a>. Read that section alongside the following.
+      </div>
+
+      <h3>Multipath Fading</h3>
+
+      <p>On any HF sky-wave path, the signal may arrive via several routes simultaneously:</p>
+      <ul>
+        <li>Different ionospheric layers (E and F2 simultaneously)</li>
+        <li>Different numbers of hops (1-hop and 2-hop F2)</li>
+        <li>Different polarisation states (ordinary and extraordinary rays in the magnetised ionosphere)</li>
+      </ul>
+
+      <p>Each path has a slightly different length; the signals arrive with different phases. When they add in phase the signal is strong; when they add destructively the signal fades &mdash; sometimes deeply (30 dB or more). As the ionosphere changes continuously, the path lengths change, causing the characteristic slow variation of signal strength (QSB).</p>
+
+      <p><strong>Fast fading (flutter):</strong> Fractions of a second, audible as rapid amplitude variation; common near MUF (signals are propagating near the edge of the usable window and path geometry is sensitive to small changes).</p>
+
+      <p><strong>Slow fading:</strong> Minutes, typical of stable F2 paths.</p>
+
+      <h3>Selective Fading</h3>
+
+      <p><strong>Selective fading</strong> occurs when different frequencies within the same signal fade at different rates. A wideband signal (like SSB, which spans ~2.4 kHz) has frequency components that travel on paths of slightly different lengths due to the dispersive nature of the ionosphere. One part of the audio spectrum may fade while another does not.</p>
+
+      <p>The audible result on SSB is the characteristic &ldquo;Donald Duck&rdquo; distortion &mdash; parts of the voice are attenuated or absent while others are loud, making the signal unintelligible even when the measured signal strength appears adequate.</p>
+
+      <p><strong>Selective fading is worst when:</strong></p>
+      <ul>
+        <li>Near the MUF (path is most dispersive)</li>
+        <li>On wideband modes (SSB more affected than CW)</li>
+        <li>During disturbed ionospheric conditions (multiple competing layers)</li>
+      </ul>
+
+      <p>There is no simple cure: CW (200 Hz BW) suffers much less than SSB; digital modes with error correction (FT8, JS8Call) recover from fading that would destroy SSB intelligibility.</p>
+    </section>
+
+    <!-- ════════════════════ §12G ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12G">
+      <div class="chapter-header">
+        <span class="chapter-num">12G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Tropospheric Propagation</h2>
+
+      <p>The troposphere (surface to ~12 km) supports VHF and UHF propagation beyond the geometric horizon through two mechanisms.</p>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> Intermediate §5E covers troposcatter and ducting briefly. The following adds quantitative context.
+      </div>
+
+      <h3>Troposcatter</h3>
+
+      <p>Random turbulence in the troposphere (temperature and humidity gradients) scatters a tiny fraction of the incident RF energy in all directions, including back toward Earth. This <strong>troposcatter</strong> is always present and provides a weak but reliable signal path of up to ~800 km at VHF/UHF, even with no temperature inversion.</p>
+
+      <p>Path loss is very high &mdash; typically 100&ndash;150 dB more than free-space loss at the same distance &mdash; so troposcatter is not useful for casual amateur contacts except with high-gain antenna systems and high power. It is used commercially for over-the-horizon links in remote areas.</p>
+
+      <h3>Tropospheric Ducting</h3>
+
+      <p>When a <strong>temperature inversion</strong> forms &mdash; a layer of warm air above cool air &mdash; the refractive index gradient can guide VHF/UHF signals horizontally over great distances with little loss. The signal is trapped in a &ldquo;duct&rdquo; between the inversion layer and the ground (surface duct) or between two inversion layers (elevated duct).</p>
+
+      <p><strong>Conditions favouring ducting:</strong></p>
+      <ul>
+        <li>High pressure (anticyclonic) weather &mdash; stable descending air mass</li>
+        <li>Coastal boundaries &mdash; sea is cooler than land in summer mornings</li>
+        <li>Subsidence inversions at 500&ndash;1500 m altitude over sea</li>
+      </ul>
+
+      <p><strong>Amateur impact:</strong></p>
+      <ul>
+        <li>144 MHz: DX contacts to 1000&ndash;2000 km; cross-Channel and trans-North Sea paths opening regularly in summer</li>
+        <li>432 MHz and above: even more susceptible to ducting; paths over 2000 km recorded</li>
+        <li>FM broadcast band (88&ndash;108 MHz) co-channel interference from distant stations is a common indicator of ducting conditions &mdash; if you hear unexpected FM stations from 500+ km, check DX cluster for VHF openings</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §12H ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12H">
+      <div class="chapter-header">
+        <span class="chapter-num">12H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Sporadic-E (Es)</h2>
+
+      <p><strong>Sporadic-E</strong> is the sudden appearance of patches of unusually dense ionisation in the E layer (90&ndash;130 km), far denser than normal E-layer ionisation and capable of reflecting much higher frequencies.</p>
+
+      <h3>Characteristics</h3>
+      <ul>
+        <li>Occurrence is largely unpredictable; peaks in Northern Hemisphere summer (May&ndash;August) and around equinoxes; a secondary peak in late November&ndash;December</li>
+        <li>The patches are small (tens to hundreds of km across) and move horizontally at speeds of 50&ndash;100 km/h</li>
+        <li>A single-hop Es path covers approximately <strong>1000&ndash;2200 km</strong> &mdash; insufficient for nearby contacts, too short for F2-style DX</li>
+        <li>At 50 MHz (6 m), Es is the dominant long-distance mode and produces spectacular openings; at 70 MHz similar; at 144 MHz (2 m), Es openings are rarer but do occur, often at the higher end of summer peak</li>
+        <li>At HF, Es can produce extremely strong signals on bands that are otherwise dead (e.g. 21 or 28 MHz in deep solar minimum) but over limited distances</li>
+      </ul>
+
+      <h3>Double-Hop Es</h3>
+
+      <p>Two Es patches in sequence enable <strong>double-hop</strong> propagation, roughly doubling the path to 2000&ndash;4000 km. This allows 50 MHz contacts across the Atlantic (EU to NA) or EU to Middle East/Africa &mdash; paths that would otherwise require F2 ionisation.</p>
+
+      <h3>Mechanism</h3>
+
+      <p>The exact mechanism of Es formation remains an active research topic. Leading theories involve:</p>
+      <ul>
+        <li><strong>Wind shear</strong> at E-layer altitudes creating convergence of metallic ions (from meteor ablation) into thin, dense layers</li>
+        <li><strong>Gravity wave</strong> interactions coupling lower atmosphere dynamics to E-layer ionisation</li>
+        <li>Correlation with thunderstorm activity at low and mid latitudes</li>
+      </ul>
+
+      <h3>Monitoring Es</h3>
+      <ul>
+        <li>DX cluster: spots on 50 and 70 MHz are a reliable indicator; also VHF DX records on HF bands</li>
+        <li>PSKReporter and DX Maps: real-time band opening maps</li>
+        <li>FM co-channel (§12G indicator also works for Es at longer ranges ~2000 km)</li>
+      </ul>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> Intermediate §5D covers Es occurrence and basic properties.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §12I ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12I">
+      <div class="chapter-header">
+        <span class="chapter-num">12I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Auroral Propagation</h2>
+
+      <p>During geomagnetic disturbances, energetic charged particles from the sun enter the upper atmosphere near the magnetic poles, ionising nitrogen and oxygen and producing the visible aurora borealis/australis. The ionised auroral curtain can reflect VHF radio waves.</p>
+
+      <h3>Propagation Characteristics</h3>
+      <ul>
+        <li><strong>Frequency range:</strong> Primarily 50&ndash;144 MHz; occasionally 432 MHz in very strong events</li>
+        <li><strong>Path geometry:</strong> Signals must reflect from the auroral arc, which lies roughly along geomagnetic latitudes 65&ndash;75&deg;N (or S). Contacts are therefore predominantly oriented <strong>north&ndash;south</strong> &mdash; UK stations work Scandinavia and Iceland via aurora; east&ndash;west contacts are rarely possible</li>
+        <li><strong>Characteristic distortion:</strong> Signals received via aurora are &ldquo;buzzed&rdquo; &mdash; rapid amplitude and frequency modulation from the constantly moving, irregular ionisation. CW is the most effective mode; SSB is heavily distorted and rarely intelligible; FM is unusable</li>
+        <li><strong>Digital modes:</strong> FSK441 (and to some extent JT6M for aurora EME) can work through the distortion; standard FT8 is not suitable for auroral paths due to Doppler spread</li>
+      </ul>
+
+      <h3>Predicting Aurora</h3>
+
+      <p>The <strong>Kp index</strong> (0&ndash;9) measures global geomagnetic disturbance averaged over 3-hour intervals. For aurora-assisted propagation:</p>
+
+      <table class="kp-table">
+        <thead>
+          <tr><th>Kp</th><th>Aurora likelihood (UK)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>&le; 3</td><td>No aurora</td></tr>
+          <tr><td>4&ndash;5</td><td>Aurora possible at northern Scotland/Orkney</td></tr>
+          <tr><td>5&ndash;6</td><td>Aurora to northern England, northern Wales</td></tr>
+          <tr><td>7&ndash;8</td><td>Aurora to southern England; usable for VHF aurora contacts across UK</td></tr>
+          <tr><td>&ge; 8</td><td>Exceptional; visible aurora from southern Europe</td></tr>
+        </tbody>
+      </table>
+
+      <p>Real-time Kp is available from NOAA Space Weather Center, Space Weather Live, and various amateur apps. The A-index (daily average) provides context; the K-index (3-hour snapshot) is more useful for predicting current openings.</p>
+    </section>
+
+    <!-- ════════════════════ §12J ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12J">
+      <div class="chapter-header">
+        <span class="chapter-num">12J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Meteor Scatter</h2>
+
+      <p>When a meteoroid enters the atmosphere at 60&ndash;120 km altitude and ablates, it leaves a column of ionised gas &mdash; a <strong>meteor trail</strong> &mdash; that can briefly reflect VHF radio waves. The trail lasts from milliseconds (small meteors, underdense trails) to several seconds (larger meteors, overdense trails).</p>
+
+      <h3>Practical Parameters</h3>
+      <ul>
+        <li><strong>Frequency range:</strong> 28&ndash;144 MHz; 50 MHz and 144 MHz are the primary amateur bands</li>
+        <li><strong>Path length:</strong> 1000&ndash;2200 km (comparable to single-hop Es, but the geometry is different &mdash; both stations must have a reflection point visible in common from the meteor trail)</li>
+        <li><strong>Trail duration:</strong> A few milliseconds to 10 s; contacts must exchange information in very short bursts</li>
+        <li><strong>Modes:</strong>
+          <ul>
+            <li><strong>MSK144</strong>: the current standard for 144 MHz meteor scatter; 15-second Tx/Rx periods; ultra-fast modulation (very wide bandwidth) captures the brief trail reflections; replaces the older FSK441</li>
+            <li><strong>FSK441</strong>: still used at 50 MHz and for slower contacts; 30-second periods</li>
+            <li><strong>Q65 (short)</strong>: weak-signal optimised, suitable when trails are brief</li>
+          </ul>
+        </li>
+        <li><strong>Software:</strong> WSJT-X implements all current meteor scatter modes with tight timing coordination</li>
+      </ul>
+
+      <h3>Meteor Showers</h3>
+
+      <p>Major showers significantly increase the rate of usable trails:</p>
+
+      <table class="shower-table">
+        <thead>
+          <tr><th>Shower</th><th>Peak date (approx.)</th><th>Zenithal Hourly Rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Quadrantids</strong></td><td>3&ndash;4 January</td><td>~120</td></tr>
+          <tr><td><strong>Perseids</strong></td><td>11&ndash;13 August</td><td>~100</td></tr>
+          <tr><td><strong>Geminids</strong></td><td>13&ndash;14 December</td><td>~120</td></tr>
+          <tr><td><strong>Leonids</strong></td><td>17&ndash;18 November</td><td>~15 (storm years &gg; 1000)</td></tr>
+          <tr><td><strong>Sporadic background</strong></td><td>Year-round</td><td>~5&ndash;10/hour</td></tr>
+        </tbody>
+      </table>
+
+      <p>During major showers, 144 MHz meteor scatter contacts become more frequent; outside showers, the sporadic background still provides usable opportunities, especially at 50 MHz.</p>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> Intermediate §5E briefly mentions meteor scatter. Full level adds the specific modes (MSK144) and shower calendar.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §12K ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12K">
+      <div class="chapter-header">
+        <span class="chapter-num">12K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Earth-Moon-Earth (EME)</h2>
+
+      <p><strong>EME</strong> (moonbounce) uses the lunar surface as a passive reflector. Round-trip path: approximately 800,000 km; path loss approximately 250&ndash;260 dB at 144 MHz.</p>
+
+      <h3>Requirements and Modern Practice</h3>
+
+      <p>Historically EME required large arrays (e.g. 16 &times; 20-element Yagis), high power (1 kW+), and low-noise LNAs. Digital weak-signal modes have changed this:</p>
+      <ul>
+        <li><strong>JT65B</strong> at 144 MHz: contacts possible with 100 W and a 4&ndash;5 element Yagi under good conditions; EME has been democratised</li>
+        <li><strong>QRA64</strong>: slightly more efficient than JT65B; growing adoption at microwave bands</li>
+        <li>The key constraint is antenna gain and system noise temperature, not transmitter power: every dB of noise figure at the LNA input directly reduces the detectable signal threshold</li>
+      </ul>
+
+      <h3>Operating Considerations</h3>
+      <ul>
+        <li><strong>Antenna pointing:</strong> The moon moves ~0.5&deg;/min; antenna heading must be updated every few minutes for a beam narrower than ~10&deg;</li>
+        <li><strong>Doppler shift:</strong> The moon's velocity relative to both stations causes Doppler shift; at 144 MHz the total Doppler (TX station + RX station) can reach &plusmn;300 Hz. WSJT-X applies Doppler correction automatically</li>
+        <li><strong>Window:</strong> Both stations must have the moon above the horizon simultaneously; EME contacts are timed to mutual moon-rise/moon-set windows, typically 4&ndash;8 hours of common visibility per day</li>
+        <li><strong>Propagation-independent:</strong> EME works regardless of ionospheric state &mdash; during geomagnetic storms when all HF and VHF/UHF paths fail, EME continues to function</li>
+      </ul>
+
+      <div class="callout-xref">
+        <strong>Cross-reference:</strong> Intermediate §5E mentions EME briefly.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §12L SELF-CHECK ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-12L">
+      <div class="chapter-header">
+        <span class="chapter-num">12L</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q1.</strong> Why can the 80 m band (3.5 MHz) support long-distance sky-wave contacts at night but not typically by day?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-1" hidden>
+            <p>By day, the D layer is present (60&ndash;90 km altitude), created by UV radiation. D-layer absorption is proportional to 1/f&sup2;, so at 3.5 MHz absorption is very high. Signals attempting to reach the F layer are absorbed in the D layer before they can be reflected. At night, the D layer disappears rapidly (no UV source), so 3.5 MHz signals pass through with minimal absorption and are reflected by the F2 layer &mdash; enabling DX contacts.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q2.</strong> The critical frequency foF2 is measured as 9 MHz. A path of 2000 km uses an F2 layer at height 300 km. Estimate the MUF for this path.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-2" hidden>
+            <div class="formula-block">sec(θ) = √(1 + (d/2h)²) = √(1 + (2000/(2×300))²)
+       = √(1 + (3.33)²) = √(1 + 11.1) = √12.1 ≈ 3.48
+
+MUF = f_c × sec(θ) = 9 × 3.48 ≈ 31 MHz</div>
+            <p>The 10 m band (28 MHz) would be open for this path; the OWF (0.85 &times; 31) &asymp; 26 MHz, so 12 m (24.9 MHz) would be the most reliable operating frequency.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q3.</strong> What is the dead zone, and why does it exist?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-3" hidden>
+            <p>The dead zone is the annular region where neither ground wave nor sky wave delivers a usable signal. Ground wave attenuates with distance (typically useful within a few hundred km at HF). Sky wave returns to Earth at a minimum distance called the skip distance &mdash; below the skip distance it does not return. Between these two limits is the dead zone: no propagation mode reaches it. Its extent depends on frequency and ionospheric conditions.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q4.</strong> What is the Solar Flux Index (SFI), and how does it relate to HF propagation?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-4" hidden>
+            <p>The SFI (or F10.7) is the solar radio flux measured daily at 10.7 cm wavelength (2800 MHz). It correlates closely with the solar EUV output that ionises the F2 layer. High SFI &rarr; higher electron density &rarr; higher critical frequency (foF2) &rarr; higher MUF for any given path &rarr; more HF bands usable for DX. SFI ~65 at solar minimum (10 m closed), &gt;150 at solar maximum (10 m opens globally). Amateurs monitor SFI daily as the primary HF propagation indicator.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q5.</strong> A station working meteor scatter on 144 MHz uses MSK144. What determines the maximum contact range, and why must both stations be online simultaneously?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-5" hidden>
+            <p>Range is determined by the geometry of the meteor trail: both stations must have a common reflection point on the trail, which exists at 80&ndash;120 km altitude. The maximum path where this is geometrically possible is approximately 1000&ndash;2200 km &mdash; beyond this, the trail is below the horizon for at least one station.</p>
+            <p>Both stations must be online simultaneously because the ionised trail lasts only milliseconds to a few seconds. Unlike ionospheric propagation (which can be one-way for long periods), a meteor trail is a fleeting, point-in-time reflector. Both stations must transmit in strict alternating 15-second periods, and reception of the brief burst must coincide with a meteor trail appearing during that period.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q6.</strong> During a geomagnetic storm (Kp = 7), which propagation modes would you expect to be working and which would be degraded?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-12-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-12-6" hidden>
+            <p><strong>Degraded:</strong> HF sky-wave paths &mdash; the F2 layer is disturbed and irregular during geomagnetic storms; MUF drops, D-layer absorption may increase on lower HF, and paths become unreliable. The higher the HF band, the more susceptible.</p>
+            <p><strong>Working or enhanced:</strong></p>
+            <ul>
+              <li><strong>Aurora</strong> (50&ndash;144 MHz): Kp 7 provides strong auroral ionisation, enabling north&ndash;south VHF paths via aurora; characteristic buzzing CW signals</li>
+              <li><strong>EME</strong>: Earth-Moon-Earth is completely unaffected by ionospheric conditions &mdash; the path is through space; contacts continue normally</li>
+              <li><strong>Ground wave</strong>: Short-range ground-wave contacts on MF/HF continue regardless of ionospheric state</li>
+              <li><strong>Troposcatter/ducting</strong>: Unaffected by geomagnetic activity</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-11-feeders-antennas.html" class="section-nav__link">&larr; Chapter 11: Feeders &amp; Antennas</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=12"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-13-emc.html" class="section-nav__link">Chapter 13: EMC &rarr;</a>
+    </nav>
+
+    <footer style="padding-bottom: 3rem; color: var(--text-dim); font-size: 0.8rem; font-family: var(--font-mono);">
+      Chapter 12 &nbsp;&middot;&nbsp; Full Licence &nbsp;&middot;&nbsp;
+      <a href="index.html" style="color: var(--text-dim); text-decoration: none;">Full Licence index</a>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260915-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260915-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260915-1000" defer></script>
+</body>
+</html>

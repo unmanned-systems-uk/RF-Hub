@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section 5: Semiconductors — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260917-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+
+    /* ToC */
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+
+    /* Chapter structure */
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* Formula blocks */
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .formula-block p { margin: 0; font-size: 0.95rem; }
+
+    /* Figures */
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img { max-width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+
+    /* Callout variants */
+    .callout--warning {
+      background: rgba(245,158,11,0.07);
+      border-color: rgba(245,158,11,0.3);
+    }
+    .callout--warning .callout-icon { color: var(--accent-e); }
+
+    /* Self-checks */
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+
+    /* Section nav */
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="../">Study</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <a href="./">Full</a>
+        <span class="hero-breadcrumb__sep">›</span>
+        <span>Section 5</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~6–7 / 46 questions &nbsp;·&nbsp; ~12–16%</span>
+      </div>
+      <h1>Semiconductors</h1>
+      <p class="hero-subtitle">P-N junctions, rectifier circuits, zener and varactor diodes, BJT configurations, load-line analysis, amplifier bias classes, FETs, MOSFETs, regulated PSUs and switch-mode power supplies.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-5A">5A P-N Junction Diode</a></li>
+        <li><a href="#ch-5B">5B Rectifier Circuits</a></li>
+        <li><a href="#ch-5C">5C Special Diodes</a></li>
+        <li><a href="#ch-5D">5D Bipolar Transistors</a></li>
+        <li><a href="#ch-5E">5E BJT Configurations</a></li>
+        <li><a href="#ch-5F">5F Amplifier Bias Classes</a></li>
+        <li><a href="#ch-5G">5G Field Effect Transistors</a></li>
+        <li><a href="#ch-5H">5H Regulated Power Supplies</a></li>
+        <li><a href="#ch-5I">5I Switch-Mode PSUs</a></li>
+        <li><a href="#ch-5J">5J ICs &amp; Op-Amps</a></li>
+        <li><a href="#ch-5K">★ Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents — Section 5</p>
+      <ol>
+        <li><a href="#ch-5A"><span class="toc-code">5A</span>The P-N Junction Diode</a></li>
+        <li><a href="#ch-5B"><span class="toc-code">5B</span>Rectifier Circuits</a></li>
+        <li><a href="#ch-5C"><span class="toc-code">5C</span>Special Diodes</a></li>
+        <li><a href="#ch-5D"><span class="toc-code">5D</span>Bipolar Junction Transistors</a></li>
+        <li><a href="#ch-5E"><span class="toc-code">5E</span>BJT Circuit Configurations</a></li>
+        <li><a href="#ch-5F"><span class="toc-code">5F</span>Amplifier Bias Classes</a></li>
+        <li><a href="#ch-5G"><span class="toc-code">5G</span>Field Effect Transistors</a></li>
+        <li><a href="#ch-5H"><span class="toc-code">5H</span>Regulated Power Supplies</a></li>
+        <li><a href="#ch-5I"><span class="toc-code">5I</span>Switch-Mode Power Supplies (SMPS)</a></li>
+        <li><a href="#ch-5J"><span class="toc-code">5J</span>Integrated Circuits &amp; Op-Amps</a></li>
+        <li><a href="#ch-5K"><span class="toc-code">★</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="font-size:0.93rem; color:var(--text-secondary); margin-bottom:2rem;">Chapter 5 builds directly on the semiconductor foundations from Intermediate level. At Full level the emphasis shifts from "what does it do" to "how is it configured, biased and analysed". You will need to know the three BJT configurations by their impedances and phase characteristics, draw and interpret a load line, classify amplifiers by bias point, and understand the block-level operation of switch-mode power supplies and their interference implications.</p>
+    <p style="font-size:0.87rem; color:var(--text-dim); margin-bottom:2.5rem;">Cross-reference: <a href="../intermediate/section-2-electronics.html" target="_blank" style="color:var(--accent-em);">Intermediate §2 — Electronics</a> covers P-N junction basics, diode rectification, and BJT introduction — this section builds directly on that foundation.</p>
+
+    <!-- ═══════════════════════ 5A: P-N JUNCTION DIODE ════════════════ -->
+    <section class="chapter" id="ch-5A">
+      <div class="chapter-header">
+        <span class="chapter-num">5A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The P-N Junction Diode</h2>
+
+      <h3>5A.1 — Semiconductor Material</h3>
+      <p>Pure silicon is not a conductor — it has no free electrons. By adding trace impurities (<strong>doping</strong>) we create two types of semiconductor:</p>
+      <ul>
+        <li><strong>N-type:</strong> doped with an element such as Arsenic; the extra electrons are free to move and become the charge carriers</li>
+        <li><strong>P-type:</strong> doped with an element such as Gallium; the reduced electron count creates "holes" — the absence of electrons — which behave as positive charge carriers</li>
+      </ul>
+      <p>Neither n-type nor p-type is a conductor by itself; together, at the junction, they form a useful device.</p>
+
+      <h3>5A.2 — The P-N Junction and Depletion Layer</h3>
+      <p>When p-type and n-type material are brought together, excess electrons from the n-side fall into holes on the p-side. This creates a region near the junction — the <strong>depletion layer</strong> — that is swept clear of mobile charge carriers. The depletion layer acts as an insulating barrier.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-1.svg" alt="Cross-section of a semiconductor diode showing P-type material (left) and N-type material (right) joined at a junction. The depletion layer is marked in the centre — a region swept clear of mobile charge carriers. Anode and cathode connections are labelled.">
+        </div>
+        <figcaption>Fig 5.1 — Semiconductor diode structure. The depletion layer at the P-N junction acts as an insulating barrier in reverse bias; forward bias collapses it and allows current to flow.</figcaption>
+      </figure>
+
+      <p><strong>Forward bias:</strong> connect the positive supply to the p-end (anode) and negative to the n-end (cathode). The depletion layer collapses and current flows. There is a small forward voltage drop:</p>
+      <ul>
+        <li><strong>~0.6 V</strong> at the onset of conduction (silicon)</li>
+        <li><strong>~0.7 V</strong> at higher currents (as ohmic resistance increases)</li>
+      </ul>
+      <p><strong>Reverse bias:</strong> polarity reversed; the depletion layer widens; no current flows (apart from a minute leakage due to residual impurities). Diodes can withstand reverse voltages from 60 V to over 1200 V depending on construction.</p>
+
+      <h3>5A.3 — Diode I–V Characteristics</h3>
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-2.svg" alt="Diode I-V curve. Horizontal axis: applied voltage from about −60V to +1V. Vertical axis: current (log or linear). Forward region: current is negligible until the 0.6V knee, then rises steeply. Reverse region: tiny leakage current until the PIV breakdown voltage, where current rises sharply (breakdown).">
+        </div>
+        <figcaption>Fig 5.2 — Diode I–V characteristic. Forward region: sharp onset at ~0.6 V. Reverse region: negligible leakage until breakdown (PIV). Exceeding the PIV rating destroys the device unless current is limited (cf. zener diode).</figcaption>
+      </figure>
+      <p>The I–V curve shows:</p>
+      <ul>
+        <li>Forward region: current negligible until ~0.6 V, then rises rapidly</li>
+        <li>Reverse region: tiny leakage current; catastrophic breakdown if the <strong>Peak Inverse Voltage (PIV)</strong> rating is exceeded</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5A1:</strong> The ~0.6 V forward drop of a silicon diode is a frequently tested value. In calculations involving rectifier circuits, subtract 0.6 V (or 0.7 V) from the supply voltage to find the actual output voltage across the load.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5B: RECTIFIER CIRCUITS ═══════════════ -->
+    <section class="chapter" id="ch-5B">
+      <div class="chapter-header">
+        <span class="chapter-num">5B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Rectifier Circuits</h2>
+
+      <h3>5B.1 — Half-Wave Rectifier</h3>
+      <p>The simplest rectifier: a single diode in series with the load. Only the positive half-cycles pass; the negative half-cycles are blocked.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-3.svg" alt="Half-wave rectifier circuit: AC source, series diode D1 with arrow pointing right (cathode toward load), and load resistor R_L. Output waveform shows only positive half-cycles; negative half-cycles are absent (blocked by diode).">
+        </div>
+        <figcaption>Fig 5.3 — Half-wave rectifier. The diode conducts only on positive half-cycles. Output voltage ≈ V_supply − 0.6 V during positive half-cycles; zero during negative half-cycles. Ripple frequency = supply frequency.</figcaption>
+      </figure>
+
+      <h3>5B.2 — Smoothing Capacitor</h3>
+      <p>Adding a reservoir capacitor across the load converts the pulsing half-wave output to a roughly DC voltage with superimposed ripple.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-4.svg" alt="Half-wave rectifier circuit with reservoir capacitor C1 in parallel with load R_L. Waveform overlay shows capacitor voltage: rising steeply on each positive half-cycle as diode conducts and charges C1, then decaying slowly through R_L as diode blocks.">
+        </div>
+        <figcaption>Fig 5.4 — Half-wave rectifier with reservoir capacitor. C1 charges to V_peak on positive half-cycles and discharges through the load between peaks. Time constant CR determines ripple magnitude.</figcaption>
+      </figure>
+
+      <p><strong>Ripple vs capacitor size:</strong></p>
+      <ul>
+        <li><strong>Small capacitor:</strong> short time constant CR; voltage falls almost to zero before the next recharge pulse — large ripple</li>
+        <li><strong>Large capacitor:</strong> long time constant; voltage barely falls between recharge pulses — small ripple</li>
+      </ul>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-5.svg" alt="Two voltage-vs-time graphs comparing reservoir capacitor sizes. Top graph (small C): output voltage shows large sawtooth ripple, falling nearly to zero between recharge pulses. Bottom graph (large C): output nearly flat, with only small ripple visible between pulses.">
+        </div>
+        <figcaption>Fig 5.5 — Ripple amplitude vs capacitor size. Large capacitor (bottom) has long time constant → small ripple. Small capacitor (top) → large ripple. Ripple voltage ≈ I_load / (f × C).</figcaption>
+      </figure>
+
+      <p><strong>Peak Inverse Voltage:</strong> In a half-wave circuit with a reservoir capacitor, the capacitor holds the output positive while the supply swings negative. The diode must therefore withstand the peak supply voltage plus the capacitor voltage — approximately <strong>twice the peak supply voltage (2 × V_peak)</strong>. The diode PIV rating must exceed this.</p>
+      <p><strong>Diode current rating:</strong> The diode conducts only briefly each cycle (a narrow pulse) but must supply all the charge lost by the capacitor during discharge. The peak diode current is much greater than the average load current; choose a diode rated for the peak pulse current, not just the average.</p>
+
+      <h3>5B.3 — Full-Wave Rectifier (Centre-Tap)</h3>
+      <p>Using a centre-tapped transformer and two diodes gives two charges per cycle — one from each half of the winding.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-6.svg" alt="Full-wave centre-tap rectifier: centre-tapped transformer with two secondary halves, D1 connected to the top half and D2 to the bottom half, both cathodes connected to the positive output terminal and the centre-tap to the 0V return. Load R_L across the output. Waveform shows both half-cycles rectified.">
+        </div>
+        <figcaption>Fig 5.6 — Full-wave centre-tap rectifier. D1 conducts on positive half-cycles; D2 conducts on negative half-cycles. Ripple frequency = 2× supply frequency (100 Hz from 50 Hz mains). Each diode PIV = 2 × V_peak.</figcaption>
+      </figure>
+
+      <ul>
+        <li>On positive half-cycles: D1 conducts (top winding)</li>
+        <li>On negative half-cycles: D2 conducts (bottom winding)</li>
+        <li>Each diode carries only half the total current</li>
+        <li>Ripple frequency = <strong>twice</strong> the supply frequency (100 Hz from 50 Hz mains)</li>
+        <li>PIV on each diode = 2 × peak voltage</li>
+      </ul>
+
+      <h3>5B.4 — Bridge Rectifier</h3>
+      <p>The bridge circuit (four diodes, no centre-tap required) is the most commonly used full-wave rectifier.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-7.svg" alt="Full-wave bridge rectifier: four diodes D1–D4 arranged in a diamond. AC input enters at left and right corners. Positive DC output exits the top corner; 0V return at the bottom corner. Load R_L connected across the DC output. Arrows trace current paths for both half-cycles.">
+        </div>
+        <figcaption>Fig 5.7 — Full-wave bridge rectifier. D1/D3 conduct on positive half-cycles; D2/D4 on negative. PIV per diode = V_peak (lower than centre-tap). No centre-tapped transformer required.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>Positive half-cycles:</strong> current flows through D1, the load, D3 and back to the transformer</li>
+        <li><strong>Negative half-cycles:</strong> current flows through D2, the load, D4 and back</li>
+        <li>Current through the load is always in the same direction — full-wave rectification without a centre-tap</li>
+        <li>Each diode carries half the average load current; PIV = peak supply voltage (lower than centre-tap arrangement)</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5B1:</strong> The bridge rectifier is the standard, most practical full-wave rectifier. Know the four-diode diamond arrangement and be able to trace current flow for both half-cycles.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5C: SPECIAL DIODES ═══════════════════ -->
+    <section class="chapter" id="ch-5C">
+      <div class="chapter-header">
+        <span class="chapter-num">5C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Special Diodes</h2>
+
+      <h3>5C.1 — Zener Diode</h3>
+      <p>A zener diode is designed to operate in <strong>reverse breakdown</strong> at a specific, well-defined voltage (the zener voltage V_z). Unlike a normal diode, this breakdown is <strong>non-destructive</strong> provided the current is limited by a series resistor to keep dissipation within the device rating.</p>
+      <p><strong>Types:</strong> Zener effect (below ~5 V) and avalanche effect (above ~6 V). The distinction matters for temperature coefficient but both are commonly called "zener diodes."</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-8.svg" alt="Zener diode I-V curve. Forward region normal (0.6V knee). Reverse region: current is negligible until V_z (the zener breakdown voltage), where it rises steeply but the voltage remains almost constant — the zener voltage clamp behaviour is shown as a near-vertical line at V_z.">
+        </div>
+        <figcaption>Fig 5.8 — Zener diode I–V characteristic. Reverse breakdown at V_z is sharp and non-destructive (within ratings). The voltage across the zener remains nearly constant as current varies — the basis of its use as a voltage reference.</figcaption>
+      </figure>
+
+      <p><strong>Power dissipation:</strong> P = V_z × I (where I is the current flowing through the device)</p>
+      <p><strong>As a voltage reference:</strong> Connect a series resistor R_S between the supply and the zener; the output voltage across the zener is held at V_z regardless of moderate changes in supply or load current.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-10.svg" alt="Zener voltage reference circuit: 12V supply → series resistor R_S → zener diode D1 (cathode to top, anode to 0V) → 0V. Output is taken across the zener (cathode terminal). V_out is labelled as V_z (e.g. 9.6V for a BZX79C9V1).">
+        </div>
+        <figcaption>Fig 5.10 — Simple zener voltage reference. R_S limits current through the zener; V_out = V_z and is approximately independent of supply or load variations (within the zener's operating range).</figcaption>
+      </figure>
+
+      <p>Available in voltage ranges from <strong>3 V to 150 V</strong>; power ratings from <strong>200 mW upward</strong>.</p>
+
+      <h3>5C.2 — Varactor (Varicap) Diode</h3>
+      <p>The varactor diode exploits the capacitance of a reverse-biased P-N junction. In reverse bias:</p>
+      <ul>
+        <li>The depletion layer acts as the <strong>dielectric</strong> of a capacitor</li>
+        <li>The P and N regions either side act as the <strong>plates</strong></li>
+        <li><strong>Increasing reverse bias widens the depletion layer → reduces capacitance</strong></li>
+      </ul>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-11.svg" alt="Graph of varactor capacitance in picofarads versus reverse voltage in volts. Curve starts high (e.g. 40 pF at 1V reverse bias) and falls as a hyperbola toward a minimum (e.g. 5 pF at 20V). Typical operating range of a BB105 or similar varactor is indicated.">
+        </div>
+        <figcaption>Fig 5.11 — Varactor capacitance vs reverse voltage. Increasing reverse bias reduces capacitance. Typical range: 5–40 pF. Applied as a voltage-controlled capacitor in tuned circuits and PLL synthesisers.</figcaption>
+      </figure>
+
+      <p><strong>Application:</strong> Voltage-controlled tuning. Apply a DC tuning voltage to the varactor in a tuned circuit and the resonant frequency changes without any mechanical moving parts. Used in VFOs, PLL synthesisers and AFC circuits.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">The varactor is always reverse biased in use — it is a capacitor, not a current-carrying device.</div>
+      </div>
+
+      <h3>5C.3 — Other Diodes (Brief Reference)</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Key property</th><th>Typical use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Schottky</strong></td><td>Very low forward drop (~0.2 V); fast switching</td><td>RF detectors, high-speed rectifiers, mixers</td></tr>
+          <tr><td><strong>LED</strong></td><td>Emits light when forward biased; GaAs/GaP etc</td><td>Indicators, optoelectronics</td></tr>
+          <tr><td><strong>PIN</strong></td><td>Wide intrinsic layer; acts as variable resistor at RF</td><td>RF switches, attenuators</td></tr>
+          <tr><td><strong>Tunnel</strong></td><td>Quantum tunnelling; negative resistance region</td><td>Oscillators, microwave amplifiers</td></tr>
+          <tr><td><strong>Varistor (TVS)</strong></td><td>Clamps transient overvoltages</td><td>Transient protection</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5D: BIPOLAR TRANSISTORS ═════════════ -->
+    <section class="chapter" id="ch-5D">
+      <div class="chapter-header">
+        <span class="chapter-num">5D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Bipolar Junction Transistors</h2>
+
+      <h3>5D.1 — NPN Structure and Operation</h3>
+      <p>The <strong>bipolar junction transistor (BJT)</strong> is a single crystal doped into an NPN (or PNP) sandwich. The NPN type is most common.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-13.svg" alt="NPN transistor symbol (left): arrow on emitter pointing outward. Labels: base (b) at left, collector (c) at top, emitter (e) at bottom. Current flow arrows: I_B into base, I_C into collector from supply, I_E out of emitter to 0V. I_E = I_C + I_B is indicated.">
+        </div>
+        <figcaption>Fig 5.13 — NPN transistor: emitter (e), base (b), collector (c). I_C = β × I_B; I_E = I_C + I_B. A small base current controls a much larger collector current.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>Emitter:</strong> connected to the 0 V reference (or negative supply for NPN)</li>
+        <li><strong>Base:</strong> the control terminal; a small positive voltage (≥0.6 V) causes a small base current</li>
+        <li><strong>Collector:</strong> connected to the positive supply via a load; a much larger collector current flows</li>
+      </ul>
+      <p>The key relationship — <strong>current gain β (also written h_FE):</strong></p>
+      <div class="formula-block"><p><strong>I_C = β × I_B</strong></p></div>
+      <p>A typical small-signal transistor has β of several hundred; a power transistor may have β of only 25. β is quoted in data sheets as h_fe (AC) or h_FE (DC) and they are approximately equal.</p>
+      <p><strong>PNP transistor:</strong> identical in principle but all polarities reversed — the emitter is connected to the positive supply and the collector pulls current down through the load.</p>
+
+      <h3>5D.2 — Transistor Characteristics</h3>
+      <p><strong>Transfer characteristic (I_C vs V_BE):</strong> an exponential curve showing how collector current grows with base-emitter voltage.</p>
+      <p><strong>Output characteristics (I_C vs V_CE):</strong> a family of curves for different base currents (I_B = 0, 20 μA, 40 μA, 60 μA). Key observation: above a few tenths of a volt, I_C is almost independent of V_CE and is set almost entirely by I_B. The transistor behaves as a <strong>current-controlled current source</strong>.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-14.svg" alt="Two graphs side by side. Left: transfer characteristic — I_C (mA) vs V_BE (V); exponential curve rising from 0 at about 0.6V. Right: output characteristics — I_C (mA) vs V_CE (V) for a family of base currents (I_B = 0, 20μA, 40μA, 60μA); curves are nearly flat above 1V, showing current-source behaviour.">
+        </div>
+        <figcaption>Fig 5.14 — BJT characteristics. Left: I_C vs V_BE — exponential onset at ~0.6 V. Right: I_C vs V_CE family for increasing I_B — flat curves show that I_C is controlled primarily by I_B, not V_CE.</figcaption>
+      </figure>
+
+      <h3>5D.3 — Simple Biasing and Its Instability</h3>
+      <p>To amplify a signal the transistor must be <strong>biased</strong> — given the correct quiescent (no-signal) DC voltages and currents.</p>
+      <p><strong>Simple bias (single base resistor R_B):</strong></p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-15.svg" alt="Simple bias circuit: V_CC at top → R_B to base → NPN transistor → R_C (collector load) from V_CC to collector. Emitter to 0V. Only one resistor (R_B) sets the base current.">
+        </div>
+        <figcaption>Fig 5.15 — Simple single-resistor bias. R_B sets I_B; I_C = β × I_B. Because β varies widely between devices and with temperature, this circuit is thermally and device-to-device unstable.</figcaption>
+      </figure>
+
+      <p><strong>Example</strong> (V_CC = +10 V, target I_C = 10 mA, V_C = 5 V, β = 100):</p>
+      <ul>
+        <li>R_C = V/I = 5/0.01 = 500 Ω</li>
+        <li>V_BE ≈ 0.6 V, so V_B ≈ 0.6 V; I_B = I_C/β = 10 mA/100 = 100 μA</li>
+        <li>R_B = (10 − 0.6)/100 μA = 94 kΩ</li>
+      </ul>
+      <p><strong>The instability problem:</strong> if β is actually 200 (BC108 spreads from 110 to 800), then I_C = 200 × 100 μA = 20 mA, V_C = 10 − 20 mA × 500 Ω = 0 V — the transistor is saturated and the circuit fails to amplify.</p>
+
+      <h3>5D.4 — Stable Bias: Potential Divider and Emitter Resistor</h3>
+      <p>The stable bias circuit adds:</p>
+      <ol>
+        <li><strong>R1/R2 potential divider</strong> — holds the base voltage constant regardless of β variation (provided the divider current ≫ I_B)</li>
+        <li><strong>Emitter resistor R4</strong> — applies negative feedback: if I_C rises, I_E rises, V_E rises, V_BE falls, I_B falls, I_C falls</li>
+      </ol>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-17.svg" alt="Improved bias circuit with emitter resistor: V_CC → R_C (collector load) → collector of NPN → emitter → R_E (emitter resistor) → 0V. Base connected to a single R_B as before, but now R_E provides emitter degeneration (negative feedback stabilises I_C).">
+        </div>
+        <figcaption>Fig 5.17 — Improved bias with emitter resistor R_E. If I_C rises, V_E rises, V_BE falls, restoring equilibrium — negative feedback stabilises the quiescent point against β variation.</figcaption>
+      </figure>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-18.svg" alt="Full stable bias circuit: V_CC → R1 (top of potential divider) → base junction. R2 from base to 0V forms the lower divider. V_CC → R3 (R_C, collector load) → collector. Emitter → R4 (R_E) → 0V. C1 (input coupling cap), C2 (output coupling cap) and C3 (emitter bypass cap in parallel with R4) also shown.">
+        </div>
+        <figcaption>Fig 5.18 — Stable bias: R1/R2 potential divider holds the base voltage; R4 (R_E) provides emitter degeneration for thermal and β stability. C3 bypasses R4 at signal frequencies to restore full AC gain.</figcaption>
+      </figure>
+
+      <p><strong>Design example</strong> (V_CC = +10 V, I_C = 1 mA, V_C = 5 V, V_E = 1.5 V, β = 100):</p>
+      <ul>
+        <li>R_C = (10 − 5)/1 mA = 4 kΩ</li>
+        <li>R_E = 1.5 V/1 mA = 1.5 kΩ</li>
+        <li>V_B = 1.5 + 0.6 = 2.1 V; with divider current 100 μA: R2 = 21 kΩ, R1 = 79 kΩ</li>
+      </ul>
+      <p><strong>Emitter bypass capacitor C3</strong> (50–200 μF): at AC signal frequencies, C3 short-circuits R4, restoring the full AC gain. Without C3, R4 reduces voltage gain at signal frequencies (a useful deliberate trade-off in some designs, but not usually wanted).</p>
+      <p><strong>Coupling capacitors C1/C2</strong> block DC between stages while passing the AC signal.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5D1:</strong> The potential divider bias is the standard, stable bias circuit. Know: (a) why single base-resistor bias is unstable (β varies widely), (b) how R1/R2 + R_E provides stability via negative feedback, (c) the role of the emitter bypass capacitor in restoring AC gain.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5E: BJT CONFIGURATIONS ═══════════════ -->
+    <section class="chapter" id="ch-5E">
+      <div class="chapter-header">
+        <span class="chapter-num">5E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>BJT Circuit Configurations</h2>
+
+      <p>The same transistor can be wired in three fundamentally different configurations depending on which terminal is <strong>common</strong> (connected to both input and output reference).</p>
+
+      <h3>5E.1 — Common Emitter (CE)</h3>
+      <p>The emitter is common to both input and output circuits.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-20.svg" alt="Common emitter configuration schematic: input signal applied between base and emitter (emitter to AC ground via bypass cap). Output taken from collector to emitter. Labels: Z_in ~1kΩ, Z_out ~5kΩ, 180° phase inversion indicated by inverted output waveform.">
+        </div>
+        <figcaption>Fig 5.20 — Common emitter configuration. Z_in ~1 kΩ; Z_out ~5 kΩ; 180° phase inversion. Most commonly used for audio and RF amplification.</figcaption>
+      </figure>
+
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical value</th></tr></thead>
+        <tbody>
+          <tr><td>Input impedance Z_in</td><td>~1 kΩ (medium-low)</td></tr>
+          <tr><td>Output impedance Z_out</td><td>~5 kΩ (medium)</td></tr>
+          <tr><td>Voltage gain</td><td>Medium to high</td></tr>
+          <tr><td>Current gain</td><td>Yes (β)</td></tr>
+          <tr><td>Phase</td><td><strong>180° inversion</strong> — output is inverted relative to input</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Why phase inversion?</strong> A positive input increases V_BE → I_B increases → I_C increases → more voltage across R_C → collector voltage falls. Output goes down when input goes up.</p>
+      <p><strong>Most commonly used configuration</strong> for audio and RF amplifiers.</p>
+
+      <h3>5E.2 — Common Base (CB)</h3>
+      <p>The base is common to both input (emitter) and output (collector).</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-21.svg" alt="Common base configuration schematic: input applied between emitter and base (base to AC ground). Output taken from collector to base. Labels: Z_in ~50Ω, Z_out ~50kΩ, no phase inversion (output in phase with input).">
+        </div>
+        <figcaption>Fig 5.21 — Common base configuration. Z_in ~50 Ω (very low); Z_out ~50 kΩ (very high); no phase inversion; no current gain. Used for VHF/UHF stages and coax matching.</figcaption>
+      </figure>
+
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical value</th></tr></thead>
+        <tbody>
+          <tr><td>Input impedance Z_in</td><td>~50 Ω (very low)</td></tr>
+          <tr><td>Output impedance Z_out</td><td>~50 kΩ (very high)</td></tr>
+          <tr><td>Voltage gain</td><td>High</td></tr>
+          <tr><td>Current gain</td><td>Less than 1 (no current gain)</td></tr>
+          <tr><td>Phase</td><td>No inversion — output in phase with input</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Use case:</strong> VHF and UHF stages where very low input impedance is needed to match coaxial feeders; the common base configuration has the highest maximum operating frequency of the three.</p>
+
+      <h3>5E.3 — Common Collector (Emitter Follower)</h3>
+      <p>The collector is common to input and output; the output is taken from the emitter.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-22.svg" alt="Emitter follower (common collector) schematic: input to base; collector to V_CC (AC ground). Output taken from emitter through R_E to 0V. Labels: Z_in 50kΩ–2MΩ, Z_out 10–500Ω, gain ~1, no phase inversion.">
+        </div>
+        <figcaption>Fig 5.22 — Common collector (emitter follower). Z_in 50 kΩ–2 MΩ (very high); Z_out 10–500 Ω (very low); voltage gain ~1; no phase inversion. Used as a buffer / impedance transformer.</figcaption>
+      </figure>
+
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical value</th></tr></thead>
+        <tbody>
+          <tr><td>Input impedance Z_in</td><td>50 kΩ–2 MΩ (very high)</td></tr>
+          <tr><td>Output impedance Z_out</td><td>10–500 Ω (very low)</td></tr>
+          <tr><td>Voltage gain</td><td>~1 (slight loss — output follows input)</td></tr>
+          <tr><td>Current gain</td><td>Yes</td></tr>
+          <tr><td>Phase</td><td>No inversion — output follows input</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Use case:</strong> impedance transformation and buffering — isolates a high-impedance source (e.g. oscillator) from a low-impedance load without degrading the signal. Commonly used as a buffer stage between a VFO and the next stage.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5E1:</strong> Three configurations summary:
+          <table style="margin:0.6rem 0 0; font-size:0.82rem; border-collapse:collapse; width:100%;">
+            <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+              <th style="padding:0.35rem 0.5rem; text-align:left; font-weight:600; color:var(--text-primary);"></th>
+              <th style="padding:0.35rem 0.5rem; text-align:left; font-weight:600; color:var(--text-primary);">CE</th>
+              <th style="padding:0.35rem 0.5rem; text-align:left; font-weight:600; color:var(--text-primary);">CB</th>
+              <th style="padding:0.35rem 0.5rem; text-align:left; font-weight:600; color:var(--text-primary);">CC (EF)</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">Z_in</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">~1 kΩ</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">~50 Ω</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">50k–2 MΩ</td></tr>
+              <tr><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">Z_out</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">~5 kΩ</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">~50 kΩ</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">10–500 Ω</td></tr>
+              <tr><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">Phase</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">180° inversion</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">In phase</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">In phase</td></tr>
+              <tr><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">I gain</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">Yes</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">No (&lt;1)</td><td style="padding:0.3rem 0.5rem; color:var(--text-secondary);">Yes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5F: AMPLIFIER BIAS CLASSES ══════════ -->
+    <section class="chapter" id="ch-5F">
+      <div class="chapter-header">
+        <span class="chapter-num">5F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Amplifier Bias Classes</h2>
+
+      <p>The <strong>bias class</strong> describes where on the transistor's I_C vs V_BE curve the quiescent operating point (Q-point) is set, and therefore what portion of the input cycle the transistor conducts.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-24.svg" alt="Load line diagram: I_C (mA) on vertical axis, V_CE (V) on horizontal axis. A diagonal load line runs from V_CC/R_C on the I_C axis to V_CC on the V_CE axis. Four Q-point positions are marked: Class A (centre of line), Class AB (near the lower knee), Class B (at the knee, V_BE ≈ 0.6V, I_C ≈ 0), Class C (below the knee — reverse biased, no quiescent current).">
+        </div>
+        <figcaption>Fig 5.24 — Load line with Q-points for Class A, AB, B and C bias positions. The load line is drawn from I_C(sat) = V_CC/R_C (y-intercept) to V_CE = V_CC (x-intercept). Class A sits in the centre; Class C is below cut-off.</figcaption>
+      </figure>
+
+      <h3>5F.1 — Class A</h3>
+      <ul>
+        <li>Q-point is set in the <strong>centre</strong> of the linear region</li>
+        <li>Transistor conducts for the <strong>full 360°</strong> of the input cycle</li>
+        <li>Output is a faithful replica of the input (assuming signal is not too large)</li>
+        <li><strong>Advantages:</strong> lowest distortion; no crossover artefacts</li>
+        <li><strong>Disadvantages:</strong> quiescent current is high — wastes power as heat; inefficient (theoretical maximum ~50%)</li>
+        <li><strong>Uses:</strong> low-distortion audio stages; receiver IF amplifiers; low-level RF amplifiers</li>
+      </ul>
+
+      <h3>5F.2 — Class B</h3>
+      <ul>
+        <li>Q-point at the <strong>edge of conduction</strong> (V_BE ≈ 0.6 V); quiescent collector current is essentially zero</li>
+        <li>Transistor conducts only during the <strong>positive half-cycle</strong> (for NPN)</li>
+        <li><strong>Problem:</strong> if a single transistor is used, the output is only the positive half — serious distortion</li>
+        <li><strong>Solution:</strong> push-pull pair — one transistor handles each half-cycle</li>
+        <li><strong>Advantages:</strong> very low quiescent dissipation; high efficiency</li>
+        <li><strong>Disadvantages:</strong> crossover distortion (small dead zone around the zero-crossing)</li>
+      </ul>
+
+      <h3>5F.3 — Class AB</h3>
+      <ul>
+        <li>Q-point just above the onset of conduction — a <strong>small quiescent current</strong> flows</li>
+        <li>Transistor conducts for slightly <strong>more than 180°</strong> of the cycle</li>
+        <li>Practical compromise: eliminates crossover distortion of Class B while maintaining reasonable efficiency</li>
+        <li>Most audio power amplifiers and push-pull RF PA stages use Class AB</li>
+      </ul>
+
+      <h3>5F.4 — Class C</h3>
+      <ul>
+        <li>Base is <strong>reverse-biased</strong> beyond cut-off — no quiescent collector current at all</li>
+        <li>Transistor conducts only during the <strong>peaks of large drive signals</strong> (much less than 180° of the cycle)</li>
+        <li>Output is a series of narrow current pulses rich in harmonics</li>
+        <li><strong>Requires a tuned resonant circuit</strong> at the output to reconstruct the fundamental</li>
+        <li><strong>Advantages:</strong> very high efficiency (theoretical ~75%); used in high-power RF transmitters</li>
+        <li><strong>Disadvantages:</strong> severe distortion — only usable with CW or FM, not SSB or AM</li>
+      </ul>
+
+      <h3>5F.5 — Class B Push-Pull Amplifier</h3>
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-25.svg" alt="Class B push-pull amplifier: NPN transistor Tr1 (emitter follower) with emitter connected to load and to collector of PNP transistor Tr2 (emitter follower). Tr1 emitter to +15V; Tr2 emitter to −15V. Input signal drives both bases. Two small diodes in the bias network set each transistor just into Class AB to eliminate crossover distortion.">
+        </div>
+        <figcaption>Fig 5.25 — Class B push-pull amplifier. Tr1 (NPN) conducts on positive half-cycles; Tr2 (PNP) on negative half-cycles. Small diodes in the bias network push both into Class AB to eliminate crossover notch.</figcaption>
+      </figure>
+      <p>Both transistors are configured as emitter followers. On positive half-cycles Tr1 (NPN) conducts; on negative half-cycles Tr2 (PNP) conducts. The loudspeaker (or load) is the common emitter element. Small diodes in the bias network set both transistors just into conduction (Class AB in practice) to eliminate crossover distortion.</p>
+      <p><strong>Quiescent current is very low</strong> → far less heat than Class A → critical advantage in battery-powered equipment.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5G: FIELD EFFECT TRANSISTORS ════════ -->
+    <section class="chapter" id="ch-5G">
+      <div class="chapter-header">
+        <span class="chapter-num">5G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Field Effect Transistors</h2>
+
+      <h3>5G.1 — JFET Operation</h3>
+      <p>The <strong>junction FET (JFET)</strong> has an n-type channel (source to drain) surrounded by a ring of p-type material. The p-n junction forms a depletion layer that intrudes into the channel.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-26.svg" alt="N-channel JFET: cross-section showing N-type channel between source (S) and drain (D), surrounded by P-type gate material (G). Depletion regions shown intruding into the channel from the gate-channel junctions. Circuit symbol alongside: arrow on gate pointing inward toward channel.">
+        </div>
+        <figcaption>Fig 5.26 — N-channel JFET. Reverse-biasing the gate widens the depletion layer, narrows the channel and reduces drain current. At pinch-off, the channel is fully blocked.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>Gate</strong> is reverse-biased — the gate is a junction, so it presents high input impedance (no gate current flows)</li>
+        <li>Increasing reverse bias on the gate <strong>widens the depletion layer → narrows the channel → reduces drain current</strong></li>
+        <li>Sufficient reverse bias pinches the channel completely shut (<strong>pinch-off</strong>); no drain current flows</li>
+        <li>The <strong>gate-source voltage V_GS controls the drain current</strong> — a voltage-controlled device (unlike the BJT which is current-controlled)</li>
+      </ul>
+      <p><strong>Key difference from BJT:</strong></p>
+      <ul>
+        <li>BJT: current in (I_B) → current out (I_C = β × I_B)</li>
+        <li>FET: voltage in (V_GS) → current out (I_D = f(V_GS)); no gate current needed</li>
+      </ul>
+
+      <h3>5G.2 — MOSFET and IGFET</h3>
+      <p>The <strong>MOSFET (Metal Oxide Semiconductor FET)</strong> uses an insulating oxide layer between the gate metal and the semiconductor channel. This gives:</p>
+      <ul>
+        <li><strong>DC input impedance in the GΩ range</strong> (the gate is completely isolated)</li>
+        <li>Extremely high sensitivity to static discharge — the thin oxide layer breaks down at <strong>as little as 5–10 V</strong></li>
+      </ul>
+      <p>The IGFET (Insulated Gate FET) is the same device; MOSFET is the industry-standard name.</p>
+
+      <h3>5G.3 — Dual-Gate MOSFET</h3>
+      <p>A dual-gate MOSFET has two gates (Gate 1 and Gate 2) in series along the channel.</p>
+      <ul>
+        <li><strong>Gate 1</strong> (nearest the source): used as the signal input — same role as the gate on a single-gate FET</li>
+        <li><strong>Gate 2</strong> (nearest the drain): held at a suitable positive DC voltage; varying this voltage changes the gain of the device — used for <strong>AGC (Automatic Gain Control)</strong></li>
+        <li>Gate 2 can also be used as a <strong>second signal input</strong> — the device then acts as a four-quadrant multiplier, making it ideal for mixers</li>
+      </ul>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-27.svg" alt="Dual-gate MOSFET amplifier circuit: RF input signal to Gate 1 via coupling capacitor. Gate 2 connected to DC AGC voltage via decoupling network. Drain to V_DD via RF choke and tuned circuit load. Source to 0V.">
+        </div>
+        <figcaption>Fig 5.27 — Dual-gate MOSFET amplifier. Gate 1 receives the RF input; Gate 2 receives the DC AGC voltage (or a second signal for mixing). Gain is controlled by the Gate 2 DC level.</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5G1:</strong> The dual-gate MOSFET's two uses: (1) Gate 2 for AGC (remote gain control by varying DC voltage on Gate 2); (2) Gate 2 as second signal input for frequency mixing. Both appear in exam questions.</div>
+      </div>
+
+      <h3>5G.4 — ESD Precautions</h3>
+      <p>MOSFETs and CMOS ICs are immediately destroyed by electrostatic discharge as low as <strong>5–10 V</strong>. A person walking on a carpet can accumulate several kilovolts; nylon clothing can charge to 50 kV.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>ESD — Always handle FETs and CMOS devices with precautions:</strong>
+          <ul style="margin:0.5rem 0 0 1.1rem; color:inherit;">
+            <li>Keep devices in their antistatic conductive packaging until required</li>
+            <li>Use an <strong>antistatic wristband</strong> connected to earth via a <strong>series resistor of a few MΩ</strong> (the resistor limits fault current to a safe level while still draining static)</li>
+            <li>Work on an antistatic mat connected to earth</li>
+            <li><strong>Do not wear the wristband when working on live mains-powered equipment</strong> — the high resistance of the band would not prevent a dangerous shock</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5H: REGULATED POWER SUPPLIES ════════ -->
+    <section class="chapter" id="ch-5H">
+      <div class="chapter-header">
+        <span class="chapter-num">5H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Regulated Power Supplies</h2>
+
+      <h3>5H.1 — Simple Zener Stabiliser</h3>
+      <p>A single zener diode with a series resistor gives a fixed output voltage V_z. This is adequate for low-current applications but the output voltage varies slightly with load current (the zener has a small dynamic resistance).</p>
+
+      <h3>5H.2 — Series-Pass Transistor Regulator</h3>
+      <p>Adding a transistor (the <strong>series-pass transistor</strong> Tr1) in series with the supply dramatically increases the available load current while maintaining regulation.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-29.svg" alt="Simple transistor voltage stabiliser: unregulated DC input → series-pass NPN transistor Tr1 (emitter follower) → output to load. Zener diode D1 in series with resistor R1 connected from input to base of Tr1 and to 0V. Zener holds base at V_z; output = V_z − 0.6V.">
+        </div>
+        <figcaption>Fig 5.29 — Simple transistor voltage stabiliser. D1 (zener) holds Tr1's base at V_z. Output = V_z − V_BE ≈ V_z − 0.6 V. Tr1 can supply much larger currents than the zener alone.</figcaption>
+      </figure>
+
+      <p><strong>How it works:</strong></p>
+      <ul>
+        <li>Zener D1 holds Tr1's base at a fixed voltage V_z</li>
+        <li>The emitter voltage (= output) follows: V_out = V_z − V_BE ≈ V_z − 0.6 V</li>
+        <li>Tr1 can supply large currents to the load because I_C = β × I_B and only a small base current flows through the zener</li>
+      </ul>
+      <p><strong>Improved version with feedback:</strong></p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-30.svg" alt="Regulated PSU with feedback: unregulated input → series-pass transistor Tr1. Output sampled by R3/R4 voltage divider to the base of error amplifier Tr2. Tr2 emitter connected to zener reference D2. Zener sets the reference level; Tr2 compares output sample to reference and drives Tr1 base via R1. C1 connected base-to-collector of Tr1 for frequency stability.">
+        </div>
+        <figcaption>Fig 5.30 — Regulated PSU with feedback. Tr2 (error amplifier) compares a sample of the output (R3/R4 divider) against the zener reference. Any output deviation drives Tr1 to correct it. C1 prevents oscillation.</figcaption>
+      </figure>
+
+      <ul>
+        <li>Tr2 (control transistor) compares a sample of the output voltage (from R3/R4 divider) against the zener reference voltage at its emitter</li>
+        <li>If output rises: Tr2 base rises → Tr2 draws more current → pulls Tr1 base down → Tr1 emitter (output) falls — negative feedback corrects the error</li>
+        <li>Same mechanism rejects ripple from the reservoir capacitor</li>
+        <li>C1 prevents instability/oscillation — critical component</li>
+      </ul>
+      <p><strong>Power dissipation in Tr1:</strong> The difference between the unregulated input voltage and the regulated output is dissipated as heat in Tr1. With 4 V across it at 500 mA, that is 2 W — a power transistor and heatsink are required.</p>
+
+      <h3>5H.3 — IC Voltage Regulator (78xx / 79xx Series)</h3>
+      <p>The entire regulated supply circuit — sensing, reference, error amplifier and pass transistor — is integrated on a single chip with <strong>three terminals: input, output, ground</strong>.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-31.svg" alt="Practical PSU with IC stabiliser: mains transformer → bridge rectifier → 5000μF reservoir capacitor → 78xx IC (three-terminal regulator, input left, output right, ground bottom). 2μF tantalum capacitor from input pin to 0V; 2μF tantalum from output pin to 0V. Load R_L at output.">
+        </div>
+        <figcaption>Fig 5.31 — Practical PSU with 78xx IC regulator. Bridge rectifier and 5000 μF smooth the mains. The 78xx provides a regulated output. The two 2 μF tantalum capacitors at the IC pins are mandatory — omitting them causes RF oscillation.</figcaption>
+      </figure>
+
+      <p><strong>Common 78xx (positive) voltages:</strong> 5, 6, 9, 12, 15 V. The <strong>79xx</strong> series provides equivalent negative rails.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">The two 2 μF capacitors at the IC regulator input and output pins are essential. Without them the regulator oscillates at RF frequencies, potentially damaging the IC and anything it is powering.</div>
+      </div>
+      <p><strong>Power dissipation:</strong> The IC regulator is a linear device — transistors operate in Class A. The power wasted = (V_in − V_out) × I_load. A 5 V regulator supplied with 17 V at 4 A dissipates 48 W — a substantial heatsink is required. This is the main disadvantage of linear regulators compared with switch-mode designs.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5I: SWITCH-MODE PSU ══════════════════ -->
+    <section class="chapter" id="ch-5I">
+      <div class="chapter-header">
+        <span class="chapter-num">5I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Switch-Mode Power Supplies (SMPS)</h2>
+
+      <h3>5I.1 — Principle of Operation</h3>
+      <p>Instead of dissipating the difference between input and output voltage as heat (as linear regulators do), a switch-mode PSU <strong>chops the DC at high frequency</strong> and uses a transformer and filter to achieve the desired output voltage.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-32.svg" alt="SMPS block diagram: Mains AC → Input EMC filter → Bridge rectifier → Small reservoir cap → High-voltage switch (MOSFET, 30–60 kHz) → Ferrite-core transformer → Output rectifier → Output filter → Regulated DC output. Feedback path from output through optical isolator back to PWM controller on the primary side.">
+        </div>
+        <figcaption>Fig 5.32 — SMPS block diagram. The switching transistor chops the HV DC at 30–60 kHz; the ferrite transformer steps down voltage; PWM feedback via optical isolator maintains regulation. High-frequency operation allows a much smaller transformer and smoothing capacitor than a 50 Hz linear supply.</figcaption>
+      </figure>
+
+      <p><strong>Block-by-block:</strong></p>
+      <ol>
+        <li><strong>Input filter</strong> — prevents switching noise feeding back into the mains (EMC requirement)</li>
+        <li><strong>Rectify</strong> — converts mains AC to high-voltage DC (≈325 V peak from 230 V mains)</li>
+        <li><strong>Small reservoir capacitor</strong> — holds the HV DC between switching pulses</li>
+        <li><strong>Chop</strong> — high-voltage transistors switched on/off at <strong>30–60 kHz</strong>; biased as <strong>switches</strong> (not Class A), so dissipation when fully on or fully off is very low</li>
+        <li><strong>Ferrite-core transformer</strong> — transforms to required voltage; ferrite core because at 50 kHz the time between charges is 1000× less than at 50 Hz, so the smoothing capacitor can be <strong>1000× smaller in value</strong></li>
+        <li><strong>Rectify and output filter</strong> — converts HV AC back to low-voltage DC</li>
+        <li><strong>Feedback via optical isolator</strong> — a photo-diode/LED pair provides feedback across the mains–output isolation barrier; the control circuit adjusts the <strong>pulse width (PWM)</strong> on the primary side to maintain constant output voltage</li>
+      </ol>
+
+      <h3>5I.2 — Advantages and Disadvantages</h3>
+      <table>
+        <thead><tr><th>Aspect</th><th>SMPS</th><th>Linear regulator</th></tr></thead>
+        <tbody>
+          <tr><td>Efficiency</td><td>High (70–95%)</td><td>Low (30–60% at full load)</td></tr>
+          <tr><td>Size / weight</td><td>Small and light (small transformer)</td><td>Bulky (large iron transformer)</td></tr>
+          <tr><td>Heat</td><td>Minimal</td><td>Significant (heatsink required)</td></tr>
+          <tr><td>RF noise generated</td><td><strong>High</strong> — switching harmonics radiate</td><td>Low</td></tr>
+          <tr><td>Output quality</td><td>Good with filtering</td><td>Excellent</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>SMPS and RF:</strong> Switching at 30–60 kHz generates harmonics that extend well into the HF amateur bands. A poor-quality SMPS can raise the local RF noise floor by several dB, rendering low-signal-level reception impossible. Always use SMPS units with good input and output filtering; screen the unit if necessary. USB chargers, LED drivers and laptop supplies are common offenders.</div>
+      </div>
+
+      <h3>5I.3 — Step-Down Within Equipment</h3>
+      <p>When a different DC voltage is needed within existing equipment, the existing supply rail can be chopped internally at high frequency, passed through a small inductor, and smoothed. The back-EMF of the inductor during the off-time provides the energy transfer. No mains-side transformer or optical isolator is needed for this internal DC–DC conversion.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5J: ICs & OP-AMPS ═══════════════════ -->
+    <section class="chapter" id="ch-5J">
+      <div class="chapter-header">
+        <span class="chapter-num">5J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Integrated Circuits and Op-Amps</h2>
+
+      <h3>5J.1 — IC Fundamentals</h3>
+      <p>An <strong>integrated circuit (IC)</strong> fabricates many transistors, resistors and capacitors on a single chip of silicon. ICs range from simple logic gates to complete radio systems.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-5/fig-5-28.svg" alt="IC package illustrations: left: DIP (dual in-line package) — rectangular body with two rows of pins; right: SMD (surface-mount) flat IC with gull-wing leads. Both labelled with pin 1 indicator. Scale comparison shown.">
+        </div>
+        <figcaption>Fig 5.28 — IC packages. DIP (dual in-line, left): through-hole mounting; easy to handle and solder by hand. SMD (surface-mount, right): smaller, lighter, requires soldering iron or reflow; used in modern transceiver construction.</figcaption>
+      </figure>
+
+      <p>For the amateur radio context, the key IC types are:</p>
+      <ul>
+        <li><strong>Linear ICs:</strong> op-amps, voltage regulators, audio amplifiers (e.g. LM386), RF/IF amplifier blocks (e.g. NE612 mixer/oscillator)</li>
+        <li><strong>Digital/logic ICs:</strong> counters, frequency dividers, CMOS switches used in transceiver control</li>
+        <li><strong>Specialised RF ICs:</strong> PLLs, DDS chips, ADC/DAC for SDR</li>
+      </ul>
+
+      <h3>5J.2 — The Operational Amplifier (Op-Amp)</h3>
+      <p>An <strong>operational amplifier</strong> is a high-gain differential amplifier. Its two inputs are the <strong>inverting input</strong> (−) and the <strong>non-inverting input</strong> (+). The output is proportional to the difference between them, multiplied by the open-loop gain (typically 100,000 or more).</p>
+      <p><strong>Ideal op-amp properties:</strong></p>
+      <ul>
+        <li>Infinite input impedance (no current drawn at either input)</li>
+        <li>Zero output impedance</li>
+        <li>Infinite gain (in practice, 10⁴–10⁶)</li>
+        <li>Infinite bandwidth (in practice, limited by gain-bandwidth product)</li>
+      </ul>
+      <p><strong>Virtual earth (inverting amplifier):</strong> In a closed-loop inverting amplifier, the inverting input is held at (virtually) 0 V by negative feedback — this is the <strong>virtual earth</strong> principle. The gain is set by the ratio of feedback resistor R_f to input resistor R_in:</p>
+      <div class="formula-block"><p><strong>Gain = −R_f / R_in</strong></p></div>
+      <p>The negative sign indicates phase inversion.</p>
+      <p><strong>Non-inverting amplifier:</strong></p>
+      <div class="formula-block"><p><strong>Gain = 1 + (R_f / R_in)</strong></p></div>
+      <p>No phase inversion; input fed directly to the + terminal.</p>
+      <p><strong>Negative feedback</strong> is the key to op-amp circuit design: feeding a fraction of the output back to the inverting input stabilises gain, reduces distortion, and broadens bandwidth. The trade-off is that closed-loop gain is much lower than open-loop gain — but far more predictable and stable.</p>
+      <p><strong>Common op-amp uses in amateur radio:</strong></p>
+      <ul>
+        <li>Audio processing stages in SSB transceivers</li>
+        <li>Active filters (audio CW filters, SSB cut-off filters)</li>
+        <li>Comparators (frequency discriminators, level detectors)</li>
+        <li>Logarithmic amplifiers (S-meter circuits)</li>
+        <li>Voltage followers / buffers (unity gain, very high Z_in)</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>5J1:</strong> Know the virtual earth concept, the inverting gain formula (−R_f/R_in), and the non-inverting gain formula (1 + R_f/R_in). Op-amp questions typically test these ratios or the concept of negative feedback stabilising gain.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════════ 5K: SELF-CHECK ═══════════════════════ -->
+    <section class="chapter" id="ch-5K">
+      <div class="chapter-header">
+        <span class="chapter-num">★</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Ten questions — work through before checking answers</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">1. A silicon diode is forward biased. What is the approximate voltage across it at normal operating current?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-1" hidden>
+            <p>Approximately <strong>0.6–0.7 V</strong> (0.6 V at the onset of conduction, rising to ~0.7 V at higher currents as ohmic resistance increases).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">2. In a bridge rectifier connected to a 30 V peak AC supply, what is the approximate average DC output voltage (before smoothing) and what PIV rating do the diodes need?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-2" hidden>
+            <p>Average DC output (full-wave) ≈ V_peak × 0.636 = 30 × 0.636 ≈ <strong>19 V</strong>. (Practical output before smoothing: 30 − 1.4 ≈ 28.6 V peak after two diode drops.)</p>
+            <p>Each diode must withstand the peak supply voltage: PIV ≥ <strong>30 V</strong>. (In a bridge, PIV per diode = V_peak, lower than the centre-tap arrangement.)</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">3. A zener diode rated at 5.6 V is connected in series with a 470 Ω resistor from a 12 V supply. What current flows through the zener and what power does it dissipate?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-3" hidden>
+            <p>I = (V_supply − V_z) / R_S = (12 − 5.6) / 470 = 6.4 / 470 ≈ <strong>13.6 mA</strong></p>
+            <p>P = V_z × I = 5.6 × 0.0136 ≈ <strong>76 mW</strong> (within a typical 400 mW zener rating)</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">4. A BJT has a current gain β of 150. If the collector current is 15 mA, what is the base current?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-4" hidden>
+            <p>I_B = I_C / β = 15 mA / 150 = <strong>0.1 mA = 100 μA</strong></p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">5. What are the approximate input and output impedances of a common-emitter BJT stage, and does it invert the signal?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-5" hidden>
+            <p>Z_in ≈ <strong>1 kΩ</strong> (medium-low); Z_out ≈ <strong>5 kΩ</strong> (medium); yes, the CE stage <strong>inverts the signal (180° phase shift)</strong>.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">6. You need an amplifier stage with very high input impedance and very low output impedance for use as a buffer between an oscillator and the next stage. Which BJT configuration should you choose?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-6" hidden>
+            <p><strong>Common collector (emitter follower)</strong> — Z_in = 50 kΩ–2 MΩ (very high), Z_out = 10–500 Ω (very low), voltage gain ≈ 1, no phase inversion. Ideal for buffering without loading the oscillator.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">7. Why does a Class C amplifier require a tuned resonant circuit at its output?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-7">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-7" hidden>
+            <p>A Class C amplifier conducts only during narrow peaks of the drive signal — much less than 180° of the cycle — producing a pulse waveform rich in harmonics. The <strong>tuned resonant circuit selects the fundamental frequency and rejects harmonics</strong>, reconstructing a clean sinewave output. Without the tuned circuit, the harmonics would be radiated, causing interference and breaching licence conditions.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">8. A dual-gate MOSFET is used in a receiver front end. What is Gate 2 typically used for?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-8">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-8" hidden>
+            <p><strong>AGC (Automatic Gain Control):</strong> the DC voltage on Gate 2 is varied by the AGC system to control the gain of the stage, reducing gain when a strong signal is present to prevent overloading the receiver. (Gate 2 can alternatively be used as a second signal input for mixing.)</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">9. A 78xx IC voltage regulator is powered from a 20 V unregulated supply and delivers 12 V at 2 A. How much power is dissipated in the regulator, and what does this imply about the design?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-9">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-9" hidden>
+            <p>P = (V_in − V_out) × I_load = (20 − 12) × 2 = <strong>16 W</strong></p>
+            <p>This requires a substantial heatsink and means the regulator is wasting significant energy as heat — a linear regulator is inefficient at large voltage differentials. A switch-mode design would be more appropriate here.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">10. Give two advantages and one disadvantage of a switch-mode PSU compared to a linear regulator.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-5-10">Show answer</button>
+          <div class="self-check__reveal" id="ans-5-10" hidden>
+            <p><strong>Advantages (any two):</strong> much higher efficiency (70–95% vs 30–60%); smaller and lighter (small ferrite transformer instead of large iron transformer); far less waste heat (smaller or no heatsink needed).</p>
+            <p><strong>Disadvantage:</strong> generates RF switching harmonics that extend into the HF amateur bands, raising the local noise floor and degrading reception — requires good input/output filtering to mitigate.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SECTION NAV ══════════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-4-basic-circuits.html" class="section-nav__link">← Section 4: Basic Circuits</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=5"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <span class="section-nav__link section-nav__link--disabled">Section 6 →</span>
+    </nav>
+  </main>
+
+  <footer style="border-top:1px solid var(--border); padding:2rem 0; margin-top:0;">
+    <div class="container" style="font-size:0.8rem; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:1rem; justify-content:space-between; align-items:center;">
+      <span>Full Licence · Section 5: Semiconductors · RF-Hub Study</span>
+      <span>Sources: RSGB Full Licence Manual, 3rd Ed., Chapter 5</span>
+      <a href="./" style="color:var(--text-dim); text-decoration:none;">← Back to Full Study</a>
+    </div>
+  </footer>
+
+  <script src="/assets/js/search.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1000"></script>
+  <script>
+    window.addEventListener('scroll', function () {
+      var doc = document.documentElement;
+      var scrollTop = doc.scrollTop || document.body.scrollTop;
+      var scrollHeight = doc.scrollHeight - doc.clientHeight;
+      var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+    });
+
+    document.querySelectorAll('.btn-reveal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+</body>
+</html>

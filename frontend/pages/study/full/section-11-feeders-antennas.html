@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 11: Feeders &amp; Antennas — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260915-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    .arch-diagram {
+      background: rgba(6,182,212,0.04); border: 1px solid rgba(6,182,212,0.18);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: 1rem 0;
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-h);
+      overflow-x: auto; white-space: pre;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .callout-warn {
+      background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.22);
+      border-left: 3px solid var(--accent-e);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-warn strong { color: var(--text-primary); }
+    .crossref {
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.85rem;
+      margin: 1rem 0; display: inline-block;
+    }
+    .crossref a { color: var(--accent-em); text-decoration: none; }
+    .crossref a:hover { text-decoration: underline; }
+    .interactive-frame {
+      margin: 1.5rem 0; border-radius: var(--radius-md); overflow: hidden;
+    }
+    .vswr-table td:nth-child(1), .vswr-table td:nth-child(2) { font-family: var(--font-mono); }
+    .vswr-table td:nth-child(3) { font-family: var(--font-mono); color: var(--accent-e); }
+    .atu-table td:nth-child(4) { color: var(--text-dim); font-style: italic; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .self-check__reveal .formula-block { font-size: 0.85rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <nav class="hero-breadcrumb" aria-label="Breadcrumb">
+        <a href="/index.html">Home</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="index.html">Full Licence</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <span>Chapter 11</span>
+      </nav>
+      <div class="hero-badge-row">
+        <span class="badge badge--level">Full Licence</span>
+        <span class="badge">Chapter 11</span>
+        <span class="badge">12–15% exam weight</span>
+      </div>
+      <h1>Feeders &amp; Antennas</h1>
+      <p class="hero-lead">One of the most practically important and heavily examined chapters. It covers the full chain from transmitter output to radiated wave: the cable, the antenna, and the matching networks that reconcile impedance mismatches.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-11A">11A Impedance Interface</a></li>
+        <li><a href="#ch-11B">11B Coaxial Feeder</a></li>
+        <li><a href="#ch-11C">11C Open-Wire</a></li>
+        <li><a href="#ch-11D">11D Velocity Factor</a></li>
+        <li><a href="#ch-11E">11E Baluns/Ununs</a></li>
+        <li><a href="#ch-11F">11F VSWR</a></li>
+        <li><a href="#ch-11G">11G Ground Plane</a></li>
+        <li><a href="#ch-11H">11H Yagi</a></li>
+        <li><a href="#ch-11I">11I Log-Periodic</a></li>
+        <li><a href="#ch-11J">11J 5/8 Wave</a></li>
+        <li><a href="#ch-11K">11K Folded Dipole</a></li>
+        <li><a href="#ch-11L">11L EFHW</a></li>
+        <li><a href="#ch-11M">11M Slot Antenna</a></li>
+        <li><a href="#ch-11N">11N Loading Coils</a></li>
+        <li><a href="#ch-11O">11O ATU Networks</a></li>
+        <li><a href="#ch-11P">11P Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+
+    <div class="toc">
+      <p class="toc__label">In this chapter</p>
+      <ol>
+        <li><a href="#ch-11A"><span class="toc-code">11A</span>The Antenna as an Impedance Interface</a></li>
+        <li><a href="#ch-11B"><span class="toc-code">11B</span>Coaxial Feeder</a></li>
+        <li><a href="#ch-11C"><span class="toc-code">11C</span>Open-Wire Feeder</a></li>
+        <li><a href="#ch-11D"><span class="toc-code">11D</span>Velocity Factor and Electrical Length</a></li>
+        <li><a href="#ch-11E"><span class="toc-code">11E</span>Baluns and Ununs</a></li>
+        <li><a href="#ch-11F"><span class="toc-code">11F</span>VSWR and Standing Waves</a></li>
+        <li><a href="#ch-11G"><span class="toc-code">11G</span>Ground Plane and Counterpoise</a></li>
+        <li><a href="#ch-11H"><span class="toc-code">11H</span>The Yagi&ndash;Uda Antenna</a></li>
+        <li><a href="#ch-11I"><span class="toc-code">11I</span>Log-Periodic Dipole Array</a></li>
+        <li><a href="#ch-11J"><span class="toc-code">11J</span>The 5/8 Wave Antenna</a></li>
+        <li><a href="#ch-11K"><span class="toc-code">11K</span>Folded Dipole</a></li>
+        <li><a href="#ch-11L"><span class="toc-code">11L</span>End-Fed Half-Wave (EFHW)</a></li>
+        <li><a href="#ch-11M"><span class="toc-code">11M</span>Slot Antenna</a></li>
+        <li><a href="#ch-11N"><span class="toc-code">11N</span>Loading Coils and Trap Antennas</a></li>
+        <li><a href="#ch-11O"><span class="toc-code">11O</span>ATU Networks: L, T, and Pi</a></li>
+        <li><a href="#ch-11P"><span class="toc-code">11P</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ════════════════════ §11A ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11A">
+      <div class="chapter-header">
+        <span class="chapter-num">11A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Antenna as an Impedance Interface</h2>
+
+      <h3>Free Space Impedance</h3>
+
+      <p>Electromagnetic waves travelling through free space have a characteristic impedance set by the fundamental constants of physics:</p>
+
+      <div class="formula-block">η = √(μ₀ / ε₀) ≈ 377 Ω</div>
+
+      <p>This 377 Ω is the ratio of electric field strength to magnetic field strength in a plane wave in free space — it is as fixed as the speed of light. There is nothing an engineer can do to change it.</p>
+
+      <p>A transmitting antenna must bridge two worlds:</p>
+      <ul>
+        <li>The <strong>feeder</strong> side: a coaxial cable with 50 Ω characteristic impedance</li>
+        <li>The <strong>free-space</strong> side: a radiation environment with 377 Ω intrinsic impedance</li>
+      </ul>
+
+      <p>The antenna does this through its geometry. A half-wave dipole in free space presents a <strong>radiation resistance</strong> of approximately <strong>73 Ω</strong> at its feed point — not exactly 377 Ω, but a value set by the current distribution along the element. The dipole's physical structure controls how it couples to the propagating wave.</p>
+
+      <h3>Radiation Resistance</h3>
+
+      <p>Radiation resistance (R<sub>rad</sub>) is a fictitious but useful resistance: it represents the equivalent resistive load that would dissipate the same power as the antenna radiates. For a half-wave dipole in free space, R<sub>rad</sub> ≈ 73 Ω. For shorter antennas, R<sub>rad</sub> falls rapidly:</p>
+
+      <table>
+        <thead>
+          <tr><th>Antenna type</th><th>Approx. R<sub>rad</sub></th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Half-wave dipole</strong></td><td>~73 Ω</td></tr>
+          <tr><td><strong>Quarter-wave vertical</strong> (over perfect ground)</td><td>~35 Ω</td></tr>
+          <tr><td><strong>Short dipole</strong> (≤ 0.1λ)</td><td>&lt; 5 Ω</td></tr>
+          <tr><td><strong>5/8-wave vertical</strong></td><td>~60 Ω</td></tr>
+        </tbody>
+      </table>
+
+      <p>A short antenna with R<sub>rad</sub> of 1 Ω and a 10 Ω loss resistance in the loading coil is only ~10% efficient — most of the power heats the coil, not the air.</p>
+    </section>
+
+    <!-- ════════════════════ §11B ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11B">
+      <div class="chapter-header">
+        <span class="chapter-num">11B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Coaxial Feeder</h2>
+
+      <h3>Construction and Characteristic Impedance</h3>
+
+      <p>Coaxial cable has a central conductor surrounded by a dielectric (insulator), a braided outer conductor (screen), and a protective outer jacket. The screen carries the return current and shields the inner conductor from external interference.</p>
+
+      <p>The <strong>characteristic impedance</strong> Z<sub>0</sub> is set by the geometry of the conductors and the dielectric:</p>
+
+      <div class="formula-block">Z₀ = (138 / √ε_r) × log₁₀(D/d)   [Ω]
+
+Where: D = inner diameter of the screen
+       d = outer diameter of the inner conductor
+       ε_r = relative permittivity of the dielectric</div>
+
+      <p>Common impedances:</p>
+      <ul>
+        <li><strong>50 Ω</strong> — used throughout amateur radio and professional RF (the compromise between maximum power handling at ~30 Ω and minimum loss at ~77 Ω gives ~50 Ω as a standard)</li>
+        <li><strong>75 Ω</strong> — used in cable TV, satellite, and domestic TV installations; slightly lower loss than 50 Ω but with less power handling</li>
+      </ul>
+
+      <h3>Feeder Loss</h3>
+
+      <p>Coaxial cable loss increases with frequency (higher skin effect resistance) and with VSWR (reflected power makes multiple passes, each adding loss). Typical attenuation figures:</p>
+
+      <table>
+        <thead>
+          <tr><th>Cable type</th><th>Loss at 10 MHz</th><th>Loss at 144 MHz</th><th>Loss at 432 MHz</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>RG58</strong> (5 mm)</td><td>~0.5 dB/10m</td><td>~2.0 dB/10m</td><td>~4.0 dB/10m</td></tr>
+          <tr><td><strong>RG213</strong> (10 mm)</td><td>~0.2 dB/10m</td><td>~0.8 dB/10m</td><td>~1.6 dB/10m</td></tr>
+          <tr><td><strong>LMR-400</strong> (10 mm, foam)</td><td>~0.1 dB/10m</td><td>~0.4 dB/10m</td><td>~0.7 dB/10m</td></tr>
+          <tr><td><strong>Aircell-7</strong> (7 mm, foam)</td><td>~0.15 dB/10m</td><td>~0.55 dB/10m</td><td>~1.0 dB/10m</td></tr>
+        </tbody>
+      </table>
+
+      <p>At 144 MHz, a 30 m run of RG58 costs 6 dB — half the transmitter power. For VHF/UHF, feeder choice matters enormously.</p>
+    </section>
+
+    <!-- ════════════════════ §11C ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11C">
+      <div class="chapter-header">
+        <span class="chapter-num">11C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Open-Wire Feeder</h2>
+
+      <h3>Why Open Wire?</h3>
+
+      <p>Open-wire (ladder line) feeder uses two parallel conductors with a high impedance (300–600 Ω). The fields are concentrated <em>between</em> the conductors, with very little field at the conductor surfaces. Skin-effect loss is therefore much lower than coax at the same frequency, and the higher impedance line carries less current (for the same power), further reducing I&sup2;R loss.</p>
+
+      <p>At HF with high VSWR (as in a multiband dipole fed with ladder line), the feeder loss remains manageable where coax would waste significant power.</p>
+
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Impedance</th><th>Velocity factor</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>300 Ω ribbon</strong> (TV twin)</td><td>300 Ω</td><td>0.82</td><td>Flat twin; moderate loss if wet</td></tr>
+          <tr><td><strong>450 Ω ladder line</strong></td><td>450 Ω</td><td>0.91</td><td>Open ladder spacers; low loss</td></tr>
+          <tr><td><strong>600 Ω open wire</strong></td><td>600 Ω</td><td>~0.97</td><td>Ceramic spacers; very low loss</td></tr>
+        </tbody>
+      </table>
+
+      <p>Open-wire feeder cannot be routed through buildings (fields are external), cannot be buried, and must be kept away from metal surfaces. It is fed into an ATU that converts the balanced high-impedance feeder to the transmitter's unbalanced 50 Ω output.</p>
+    </section>
+
+    <!-- ════════════════════ §11D ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11D">
+      <div class="chapter-header">
+        <span class="chapter-num">11D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Velocity Factor and Electrical Length</h2>
+
+      <h3>Velocity Factor</h3>
+
+      <p>A signal in a cable travels slower than in free space because the dielectric slows the wave. The <strong>velocity factor (VF)</strong> is the ratio of the signal's speed in the cable to the speed of light:</p>
+
+      <div class="formula-block">VF = v / c   (dimensionless, typically 0.66–0.97)
+
+Typical values:
+  Solid polyethylene (RG58, RG213)    VF ≈ 0.66
+  Foam polyethylene (LMR-400)         VF ≈ 0.80–0.85
+  PTFE                                VF ≈ 0.70
+  Open ladder line                    VF ≈ 0.91–0.97</div>
+
+      <h3>Electrical Length</h3>
+
+      <p>The electrical length of a cable is its physical length expressed as a fraction of the signal's wavelength <em>in that cable</em>:</p>
+
+      <div class="formula-block">λ_cable = (300 / f_MHz) × VF   [metres]
+
+Example — λ/4 matching section at 144 MHz in RG58 (VF 0.66):
+  λ_cable/4 = (300 / 144) × 0.66 / 4 = 0.344 m ≈ 34.4 cm
+  (free-space λ/4 at 144 MHz = 52 cm)</div>
+
+      <p>Velocity factor matters for:</p>
+      <ul>
+        <li><strong>Stubs</strong> — shorted or open-circuited lengths of cable used as reactive elements; length must account for VF</li>
+        <li><strong>Phasing harnesses</strong> — cables used to feed antenna arrays with a specific phase delay</li>
+        <li><strong>&lambda;/4 transformers</strong> — a quarter-wave section transforms impedance: Z<sub>in</sub> = Z<sub>0</sub>&sup2; / Z<sub>load</sub></li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11E ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11E">
+      <div class="chapter-header">
+        <span class="chapter-num">11E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Baluns and Ununs</h2>
+
+      <h3>The Balance Problem</h3>
+
+      <p>A dipole is a <strong>balanced</strong> antenna — the two arms carry equal and opposite currents, and neither is connected to ground. Coaxial cable is <strong>unbalanced</strong> — the inner conductor carries signal, the outer braid carries return current but is also a conductor that can support common-mode (in-phase) current.</p>
+
+      <p>If coax is connected directly to a dipole with no balun:</p>
+      <ul>
+        <li>The braid current splits: some flows as intended along the outer surface of the braid, but some also flows <strong>back down the outside</strong> of the coax toward the transmitter</li>
+        <li>This common-mode current makes the feeder radiate, distorting the antenna pattern and potentially bringing RF back into the shack</li>
+        <li>The antenna's feed-point impedance is also shifted unpredictably</li>
+      </ul>
+
+      <h3>1:1 Current Balun (Choke Balun)</h3>
+
+      <p>A <strong>choke balun</strong> presents high impedance to common-mode current without transforming impedance. The simplest version is several turns of the coaxial cable wound into a coil (a common-mode choke). Alternatively, a toroidal ferrite core threaded with the coax suppresses common-mode current on the outer surface.</p>
+
+      <p>It does <strong>not</strong> transform impedance (1:1) — it only suppresses the common mode. Used at:</p>
+      <ul>
+        <li>Dipole centre feeds (50 Ω dipole to 50 Ω coax)</li>
+        <li>Yagi driven elements when 50 Ω split-dipole is used</li>
+        <li>Any coax-to-balanced antenna feed where no impedance step is needed</li>
+      </ul>
+
+      <h3>4:1 Voltage Balun</h3>
+
+      <p>A <strong>4:1 balun</strong> transforms impedance by a factor of 4 (e.g. 200 Ω balanced to 50 Ω unbalanced). It is wound on a ferrite toroid and uses transmission-line windings. Used at:</p>
+      <ul>
+        <li>Folded dipole feeds (~280 Ω &rarr; 50 Ω via 4:1 + slight mismatch, or &rarr; 75 Ω via 4:1 exactly)</li>
+        <li>EFHW matching transformers (see §11L)</li>
+        <li>Long-wire antennas requiring impedance step-down</li>
+      </ul>
+
+      <p>There are two sub-types: <strong>Guanella</strong> (current balun, better for high VSWR) and <strong>Ruthroff</strong> (voltage balun, simpler construction but performance degrades at high VSWR).</p>
+
+      <h3>Unun</h3>
+
+      <p>An <strong>unun</strong> (unbalanced-to-unbalanced transformer) transforms impedance without balancing. Common ratios:</p>
+      <ul>
+        <li><strong>9:1 unun</strong>: ~2,450 Ω &rarr; 50 Ω (used in EFHW transformers — see §11L)</li>
+        <li><strong>4:1 unun</strong>: used with random-wire end-fed antennas</li>
+        <li><strong>1.5:1 or 2:1</strong>: used for modest impedance shifts in vertical antennas</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11F ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11F">
+      <div class="chapter-header">
+        <span class="chapter-num">11F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>VSWR and Standing Waves</h2>
+
+      <h3>Matched and Mismatched Lines</h3>
+
+      <p>When a transmission line is terminated in its characteristic impedance Z<sub>0</sub>, all incident power is absorbed by the load and no energy is reflected. The voltage and current are uniform along the line.</p>
+
+      <p>When the load impedance Z<sub>L</sub> &ne; Z<sub>0</sub>, some energy is reflected. The incident and reflected waves superimpose to form a <strong>standing wave</strong> — a pattern of voltage and current maxima (antinodes) and minima (nodes) that repeats every half-wavelength along the line.</p>
+
+      <h3>Reflection Coefficient and VSWR</h3>
+
+      <p>The <strong>reflection coefficient</strong> &Gamma; measures how much of the incident wave is reflected:</p>
+
+      <div class="formula-block">Γ = (Z_L − Z₀) / (Z_L + Z₀)
+
+|Γ| ranges from 0 (perfect match) to 1 (total reflection: open or short).</div>
+
+      <p><strong>Voltage Standing Wave Ratio (VSWR)</strong> is the ratio of voltage maximum to voltage minimum along the line:</p>
+
+      <div class="formula-block">VSWR = (1 + |Γ|) / (1 − |Γ|)</div>
+
+      <p><strong>Reflected power</strong> as a percentage of incident power:</p>
+
+      <div class="formula-block">P_reflected = |Γ|² × 100%</div>
+
+      <table class="vswr-table">
+        <thead>
+          <tr><th>VSWR</th><th>|&Gamma;|</th><th>% Power reflected</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1:1</td><td>0</td><td>0%</td></tr>
+          <tr><td>1.5:1</td><td>0.200</td><td>4%</td></tr>
+          <tr><td>2:1</td><td>0.333</td><td>11%</td></tr>
+          <tr><td>3:1</td><td>0.500</td><td>25%</td></tr>
+          <tr><td>5:1</td><td>0.667</td><td>44%</td></tr>
+          <tr><td>&infin;:1</td><td>1.000</td><td>100%</td></tr>
+        </tbody>
+      </table>
+
+      <p>A 2:1 VSWR reflects only 11% of power — the direct loss is modest. However, high VSWR multiplies feeder loss significantly, because the reflected power travels back through the lossy cable a second time.</p>
+
+      <h3>Practical VSWR Effects</h3>
+      <ul>
+        <li><strong>Feeder heating</strong>: power lost on each pass; at VSWR 5:1, a 1 dB/100m cable becomes ~3 dB effective loss</li>
+        <li><strong>Voltage peaks</strong>: a shorted &lambda;/4 stub has a voltage antinode at the feed end; at QRO power levels, cable voltage rating may be exceeded</li>
+        <li><strong>Transmitter protection</strong>: most modern transceivers fold back power above VSWR ~2–3:1 to protect the PA</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>11F1:</strong> VSWR measures the mismatch between feeder and load. VSWR = (1+|&Gamma;|)/(1&minus;|&Gamma;|). A 2:1 VSWR reflects only ~11% of power directly, but increases feeder loss on all passes. High VSWR is most damaging in lossy feeders (thin coax at VHF) or at high power.
+      </div>
+
+      <h3>Standing Wave Visualiser</h3>
+      <p>Use the interactive below to see how voltage and current standing wave patterns change with VSWR, and how a matched line compares to a mismatched one:</p>
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-standing-wave-animator.html"
+                style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+                loading="lazy"
+                title="Standing Wave Animator"
+                aria-label="Interactive standing wave animator showing voltage and current patterns vs VSWR"></iframe>
+      </div>
+    </section>
+
+    <!-- ════════════════════ §11G ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11G">
+      <div class="chapter-header">
+        <span class="chapter-num">11G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Ground Plane and Counterpoise</h2>
+
+      <h3>Quarter-Wave Vertical</h3>
+
+      <p>A quarter-wave vertical is half a dipole — it needs a return current path to complete the circuit. Over a perfect conducting ground plane (infinite flat conductor), the ground acts as a mirror: the antenna 'sees' its own image, completing the equivalent dipole. Radiation resistance ≈ 35 Ω (half of the dipole's 73 Ω).</p>
+
+      <p>In practice, a ground plane is approximated by:</p>
+      <ul>
+        <li><strong>Buried radials</strong> — typically 16–32 radials of &lambda;/4 length, improving ground conductivity immediately beneath the antenna base; radiation resistance rises slightly toward 35–40 Ω</li>
+        <li><strong>Elevated radials</strong> — 3–4 radials mounted at the antenna base, angled at ~45° below horizontal; with 4 radials the impedance rises to ~50 Ω (good match to coax without a matching network)</li>
+        <li><strong>Vehicle body</strong> — mobile whip on a car roof; asymmetric ground plane, but adequate at VHF/UHF</li>
+      </ul>
+
+      <h3>Counterpoise</h3>
+
+      <p>An elevated ground plane antenna relies on a <strong>counterpoise</strong> — a deliberate conductor (or set of conductors) acting as the RF return path. The counterpoise floats at RF (not connected to earth) and must be long enough to carry the return current without excessive loss resistance. If no counterpoise exists, the feeder outer braid carries return current and the feeder radiates, dragging RF back into the shack.</p>
+    </section>
+
+    <!-- ════════════════════ §11H ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11H">
+      <div class="chapter-header">
+        <span class="chapter-num">11H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Yagi&ndash;Uda Antenna</h2>
+
+      <h3>Operating Principle</h3>
+
+      <p>A Yagi uses <strong>parasitic</strong> elements — directors and a reflector — to shape the radiation pattern of a driven dipole. No power is fed directly to the parasitic elements; they intercept and re-radiate the driven element's field, adding constructively in one direction and destructively in others.</p>
+
+      <ul>
+        <li><strong>Reflector</strong>: slightly longer than &lambda;/2 (inductive), placed behind the driven element; reflects energy forward</li>
+        <li><strong>Driven element</strong>: fed directly; length ≈ &lambda;/2 (adjusted for element diameter and mounting)</li>
+        <li><strong>Directors</strong>: slightly shorter than &lambda;/2 (capacitive), placed in front; focus energy in the forward direction</li>
+      </ul>
+
+      <p>Additional directors increase forward gain and narrow the beamwidth, but each successive director adds less gain than the one before.</p>
+
+      <h3>Gain and Front-to-Back Ratio</h3>
+
+      <table>
+        <thead>
+          <tr><th>Configuration</th><th>Approx. gain (dBd)</th><th>F/B ratio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Dipole alone</strong></td><td>0 dBd</td><td>—</td></tr>
+          <tr><td><strong>2-el</strong> (refl + driven)</td><td>~4 dBd</td><td>~10 dB</td></tr>
+          <tr><td><strong>3-el</strong></td><td>~6–7 dBd</td><td>~15–20 dB</td></tr>
+          <tr><td><strong>5-el</strong></td><td>~8–9 dBd</td><td>~20–25 dB</td></tr>
+          <tr><td><strong>10-el</strong></td><td>~12–13 dBd</td><td>~25 dB</td></tr>
+        </tbody>
+      </table>
+
+      <p>(dBd = gain relative to a dipole; dBi = gain relative to an isotropic radiator; 0 dBd = 2.15 dBi)</p>
+
+      <p><strong>Front-to-back ratio</strong> is the ratio of forward gain to rearward (180°) gain. A high F/B ratio is important for avoiding interference from the rear; typical well-designed Yagis achieve 20–25 dB.</p>
+
+      <h3>Impedance and Matching</h3>
+
+      <p>The feed impedance of a split-dipole Yagi driven element is typically 25–30 Ω (lowered from 73 Ω by coupling to the parasitic elements). Options:</p>
+      <ul>
+        <li><strong>&lambda;/4 matching section</strong>: a 37 Ω coax section transforms 25 Ω to 50 Ω (Z<sub>0</sub> = &radic;(25 &times; 50) ≈ 35 Ω — closest standard is 37.5 Ω)</li>
+        <li><strong>Folded dipole driven element</strong>: raises impedance by 4× to ~100–280 Ω; use 4:1 balun to 50 Ω</li>
+        <li><strong>Gamma match or delta match</strong>: mechanical matching without a balun</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11I ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11I">
+      <div class="chapter-header">
+        <span class="chapter-num">11I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Log-Periodic Dipole Array (LPDA)</h2>
+
+      <h3>Principle</h3>
+
+      <p>A log-periodic dipole array consists of a series of dipoles of decreasing length along a boom, connected alternately (each element's phase is reversed relative to its neighbour). At any given frequency, the set of elements near resonance forms an <strong>active region</strong> that radiates; elements in front are too short to resonate and act as directors; elements behind are too long and act as reflectors.</p>
+
+      <p>As frequency changes, the active region moves along the boom — the same self-similar structure repeats at logarithmically spaced intervals.</p>
+
+      <h3>Properties</h3>
+
+      <ul>
+        <li><strong>Wide bandwidth</strong>: a single LPDA can cover 3–30 MHz or 50–470 MHz with consistent gain and impedance</li>
+        <li><strong>Gain</strong>: typically 6–8 dBd — less than a Yagi of equivalent boom length at a single frequency, but consistent across the whole band</li>
+        <li><strong>Impedance</strong>: typically 50–75 Ω across the operating range; can be fed directly with coax</li>
+        <li><strong>Narrower beamwidth options</strong>: for high gain at a specific frequency a Yagi is better; for frequency agility across a range the LPDA wins</li>
+      </ul>
+
+      <p><strong>Typical uses:</strong> HF multiband beam antennas covering multiple amateur bands; EMC test antennas (requiring known, constant gain vs frequency); TV aerials covering the full UHF band.</p>
+    </section>
+
+    <!-- ════════════════════ §11J ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11J">
+      <div class="chapter-header">
+        <span class="chapter-num">11J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The 5/8 Wave Antenna</h2>
+
+      <p>A 5/8-wave vertical is 0.625&lambda; in electrical length, longer than a quarter-wave. Compared to a quarter-wave vertical:</p>
+      <ul>
+        <li>Radiation resistance ≈ <strong>50–60 Ω</strong> (closer to coax than a quarter-wave's 35 Ω)</li>
+        <li>The radiation pattern tilts toward the horizon (lower angle of radiation) — better for mobile and DX work</li>
+        <li>Gain ≈ <strong>+3 dBd</strong> over a quarter-wave vertical</li>
+        <li>The antenna has significant capacitive reactance at the feed point — a <strong>series inductance</strong> (base loading coil) cancels this reactance to achieve resonance</li>
+      </ul>
+
+      <p>The inductor (typically a few µH) is placed at the base of the antenna. This is a loading coil used for matching, not for shortening (see §11N). The result is a 50–75 Ω near-resistive feed point — easily matched to coax.</p>
+
+      <p>5/8-wave whips are standard for VHF/UHF mobile (2 m, 70 cm), providing the low radiation angle needed for coverage along roads and in urban areas.</p>
+    </section>
+
+    <!-- ════════════════════ §11K ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11K">
+      <div class="chapter-header">
+        <span class="chapter-num">11K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Folded Dipole</h2>
+
+      <h3>Construction</h3>
+
+      <p>A folded dipole consists of a half-wave conductor bent into a loop: both ends of the dipole are connected by a second parallel conductor, and the feed is applied across a break in one conductor at the centre.</p>
+
+      <p>Both conductors carry current, but in the outer conductor the current doubles back. The combined effect raises the feed-point impedance by a factor of approximately 4:</p>
+
+      <div class="formula-block">Z_folded ≈ 4 × Z_dipole ≈ 4 × 73 Ω ≈ 280–300 Ω</div>
+
+      <h3>Properties</h3>
+      <ul>
+        <li><strong>Impedance ≈ 280 Ω</strong>: matches 300 Ω ribbon or via 4:1 balun to 75 Ω coax</li>
+        <li><strong>Slightly broader bandwidth</strong> than a simple dipole — the two conductors lower the Q slightly</li>
+        <li><strong>Standard as a Yagi driven element</strong>: the higher impedance is useful because parasitic coupling in a Yagi lowers the driven element impedance; starting at 280 Ω leaves room to drop to ~100–150 Ω, still matchable with a 4:1 balun and 50 Ω coax</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11L ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11L">
+      <div class="chapter-header">
+        <span class="chapter-num">11L</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>End-Fed Half-Wave (EFHW)</h2>
+
+      <h3>Why End-Fed?</h3>
+
+      <p>A half-wave dipole fed at its centre has a convenient feed impedance of ~73 Ω. Fed at one end (a voltage antinode), the impedance is very high — typically <strong>2,000–5,000 Ω</strong> depending on the environment. An end-fed half-wave is popular for portable and SOTA operation because:</p>
+      <ul>
+        <li>No balun required at the centre of a long antenna</li>
+        <li>One end of the antenna can be low or coiled near the ground; the radiating element hangs in the air</li>
+        <li>The coax can run away from the antenna without a balun (though it will still carry common-mode current)</li>
+      </ul>
+
+      <h3>49:1 Unun Transformer</h3>
+
+      <p>To match 2,450 Ω to 50 Ω, a <strong>49:1 unun</strong> is wound on a ferrite toroid (FT-240-43 or similar):</p>
+
+      <div class="formula-block">Impedance ratio = (N_primary / N_secondary)² = 49
+→ turns ratio = 7:1  (e.g. 2 turns primary, 14 turns secondary)
+
+Some designs use a 64:1 unun (8:1 turns ratio) for higher-impedance variants.</div>
+
+      <h3>Multiband Operation</h3>
+
+      <p>An EFHW cut for 40 m (20.1 m physical) is also a full-wave on 20 m, a 1.5-wave on 15 m, and a 2-wave on 10 m — all resonant harmonically. A single antenna can be used on four bands without retuning (the 49:1 unun presents an acceptable match on all bands).</p>
+
+      <h3>Common-Mode Issues</h3>
+
+      <p>The 49:1 unun is <strong>not</strong> a current balun — common-mode current still flows on the coax braid. Without a separate choke balun on the coax close to the unun, the feeder radiates and RF appears in the shack. A common cure is to wind 8–10 turns of coax on a ferrite toroid (FT-240-31 or similar) immediately at the unun output to suppress common-mode current.</p>
+
+      <div class="callout-exam">
+        <strong>11L1:</strong> An EFHW antenna has a very high impedance (~2,450 Ω) at the feed end. A 49:1 unun (7:1 turns ratio) matches this to 50 Ω coax. The same antenna is resonant on harmonically related bands (40/20/15/10 m). A separate common-mode choke is needed on the coax to prevent feeder radiation.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §11M ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11M">
+      <div class="chapter-header">
+        <span class="chapter-num">11M</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Slot Antenna</h2>
+
+      <p>A slot antenna is the electromagnetic <strong>complement</strong> of a dipole. Where a dipole is a thin conductor in free space, a slot is a thin aperture cut in a conducting surface.</p>
+
+      <p>By <strong>Babinet's principle</strong>, the electric and magnetic fields of a slot are swapped relative to those of the complementary dipole. The impedance of a resonant slot in an infinite ground plane is:</p>
+
+      <div class="formula-block">Z_slot = η² / (4 × Z_dipole) = 377² / (4 × 73) ≈ 486 Ω</div>
+
+      <p>In practice, a slot cut in a finite conducting panel has an impedance in the range 50–200 Ω depending on shape, and can be matched directly.</p>
+
+      <p><strong>Applications:</strong></p>
+      <ul>
+        <li><strong>Aircraft</strong>: flush-mounted (low drag); the aircraft skin forms the ground plane</li>
+        <li><strong>Marine VHF</strong>: hidden slot in the fibreglass hull or mast; low profile</li>
+        <li><strong>Mobile phones</strong>: slot cut in metal frame of the device; allows a metal-bodied phone to have an effective antenna</li>
+        <li><strong>Waveguide slot arrays</strong>: slots cut in the broad face of a rectangular waveguide to radiate controlled patterns (used in radar)</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11N ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11N">
+      <div class="chapter-header">
+        <span class="chapter-num">11N</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Loading Coils and Trap Antennas</h2>
+
+      <h3>Why Load?</h3>
+
+      <p>A full-size quarter-wave vertical on 80 m (3.5 MHz) would be 21 m tall. A mobile whip of practical length (1–2 m) is electrically very short — it looks capacitive and has very low radiation resistance. A <strong>loading coil</strong> adds inductance to cancel the capacitive reactance and resonate the antenna at the operating frequency.</p>
+
+      <h3>Types of Loading</h3>
+
+      <p><strong>Base loading</strong>: the coil is at the bottom of the antenna. Easiest to mount and adjust. Disadvantage: the coil sees maximum current (high I&sup2;R loss); also the current node is effectively moved up, reducing the effective height and radiation resistance.</p>
+
+      <p><strong>Centre loading</strong>: the coil is placed part-way up the element (typically 40–50% of the way up). Current distribution is better preserved, so radiation resistance and efficiency are higher than base loading. Standard for high-performance mobile HF antennas.</p>
+
+      <p><strong>Top loading</strong>: a capacitance hat (radial spokes) at the top of the antenna raises the effective height and capacitance, reducing the inductance needed in the coil. Top-loaded verticals approach full-size efficiency.</p>
+
+      <h3>Coil Q and Efficiency</h3>
+
+      <p>A loading coil has loss resistance due to the finite Q of the wire. If R<sub>rad</sub> = 3 Ω and the coil loss resistance R<sub>loss</sub> = 10 Ω, then:</p>
+
+      <div class="formula-block">Efficiency = R_rad / (R_rad + R_loss) = 3 / 13 ≈ 23%
+
+High-Q coils (silver-plated, air-spaced, large diameter) are essential.
+Achievable Q: 300–500 with good construction.</div>
+
+      <h3>Trap Antennas</h3>
+
+      <p>A <strong>trap</strong> is a parallel L/C resonant circuit (tuned to a specific frequency) inserted into an antenna element. At the trap's resonant frequency, it presents high impedance — effectively an open circuit — which electrically shortens the antenna and prevents current flowing into the outer section. Below trap frequency, the inductance in the trap acts as a loading coil, allowing the outer section to extend the effective electrical length.</p>
+
+      <p>This is how a trap dipole (or trap vertical) operates on multiple bands:</p>
+      <ul>
+        <li>On the upper band: trap resonates, acting as an open circuit; inner section radiates</li>
+        <li>On the lower band: trap is inductive below resonance; outer section adds electrical length</li>
+      </ul>
+    </section>
+
+    <!-- ════════════════════ §11O ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11O">
+      <div class="chapter-header">
+        <span class="chapter-num">11O</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>ATU Networks: L, T, and Pi</h2>
+
+      <p>An <strong>Antenna Tuning Unit (ATU)</strong> — more accurately called an Antenna Matching Unit — transforms the impedance presented by the feeder to the 50 Ω the transmitter expects. It does <strong>not</strong> fix the VSWR on the feeder between itself and the antenna; it only ensures the transmitter sees a 50 Ω match at its output.</p>
+
+      <div class="callout-warn">
+        <strong>Critical point:</strong> Fitting an ATU and getting the transmitter SWR to 1:1 does not reduce losses on a high-VSWR feeder. The feeder still has elevated loss due to the standing waves. ATUs are most efficient when the feeder is low-loss (open wire) or when antenna resonance is close.
+      </div>
+
+      <h3>L-Network</h3>
+
+      <div class="arch-diagram">            series element
+TX ────[L or C]──────────┬──── ANT
+                          |
+                     shunt element
+                          |
+                         GND</div>
+
+      <p>An L-network uses two reactive elements — one series, one shunt. It can match any source impedance to any load impedance, but only in one direction (high-to-low or low-to-high, depending on shunt element position).</p>
+      <ul>
+        <li><strong>High-pass L</strong> (series cap, shunt inductor): most common; passes RF, blocks DC; some harmonic suppression</li>
+        <li><strong>Low-pass L</strong> (series inductor, shunt cap): passes RF, attenuates harmonics strongly</li>
+        <li>Low loss, simple, but offers no Q adjustment</li>
+      </ul>
+
+      <h3>T-Network</h3>
+
+      <div class="arch-diagram">TX ──[series 1]──┬──[series 2]── ANT
+                  |
+              shunt element
+                  |
+                 GND</div>
+
+      <p>A T-network has two series elements and one shunt element. The Q factor of the network is independently adjustable (within limits), allowing the user to choose between maximum efficiency (low Q) and better harmonic suppression (higher Q). Most commercial ATUs (MFJ, LDG, etc.) use a high-pass T-network (two series capacitors, shunt inductor).</p>
+      <ul>
+        <li>Very wide matching range</li>
+        <li>At high Q, harmonic suppression is significant</li>
+        <li>At very high Q, circulating currents cause increased coil loss — don't use more Q than needed</li>
+      </ul>
+
+      <h3>Pi-Network</h3>
+
+      <div class="arch-diagram">TX ──┬──[series L]──┬── ANT
+      |              |
+  shunt C        shunt C
+      |              |
+     GND            GND</div>
+
+      <p>A Pi-network has two shunt elements and one series element. It is inherently a <strong>low-pass</strong> filter, providing excellent harmonic attenuation. PA output circuits in valve and some transistor amplifiers use a Pi-network for both matching and harmonic filtering. It can match a high-impedance PA output (valve: 2–5 k&Omega;) down to 50 Ω across a wide impedance range.</p>
+
+      <table class="atu-table">
+        <thead>
+          <tr><th>Network</th><th>Topology</th><th>Harmonic suppression</th><th>Typical use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>L</strong></td>
+            <td>series + shunt</td>
+            <td>Low</td>
+            <td>Simple antenna coupler, amplifier stages</td>
+          </tr>
+          <tr>
+            <td><strong>T</strong> (high-pass)</td>
+            <td>shunt + series + shunt</td>
+            <td>Medium (adjustable Q)</td>
+            <td>Commercial ATU, covers wide impedance range</td>
+          </tr>
+          <tr>
+            <td><strong>Pi</strong> (low-pass)</td>
+            <td>series + shunt + shunt</td>
+            <td>High (intrinsic LPF)</td>
+            <td>PA output stage, linear amplifiers</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>ATU Matching Visualiser</h3>
+      <p>Experiment with L, T, and Pi matching as you tune the ATU in the interactive below:</p>
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-atu-matcher.html"
+                style="width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;"
+                loading="lazy"
+                title="ATU Matcher"
+                aria-label="Interactive ATU matcher showing L, T, and Pi network impedance transformation"></iframe>
+      </div>
+    </section>
+
+    <!-- ════════════════════ §11P SELF-CHECK ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-11P">
+      <div class="chapter-header">
+        <span class="chapter-num">11P</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q1.</strong> A half-wave dipole in free space has a radiation resistance of approximately 73 Ω, yet free space has an impedance of 377 Ω. Explain why these are different.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-1" hidden>
+            <p>The 377 Ω is the intrinsic impedance of free space — the ratio of E-field to H-field in a plane wave propagating through vacuum. The 73 Ω radiation resistance of a dipole is the equivalent resistance representing radiated power for the current distribution along the dipole's conductors. The antenna's geometry, not the medium, sets the radiation resistance; the dipole is not a uniform field interface — it concentrates and shapes the electromagnetic field in a specific pattern that results in 73 Ω at the feed point.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q2.</strong> A coaxial feeder has VSWR 3:1. What percentage of the incident power is reflected?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-2" hidden>
+            <div class="formula-block">|Γ| = (VSWR − 1) / (VSWR + 1) = 2/4 = 0.5
+P_reflected = |Γ|² = 0.5² = 0.25 = 25%</div>
+            <p>Three-quarters of the power is still absorbed by the load, but 25% returns through the feeder, increasing effective feeder loss.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q3.</strong> Why is a balun needed when feeding a dipole with coaxial cable?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-3" hidden>
+            <p>A dipole is a balanced antenna; coax is unbalanced (the braid is referenced to ground at the transmitter end). Without a balun, common-mode current flows back down the outer surface of the coax braid, which is no longer simply a return path but an additional radiating element. This distorts the antenna pattern, introduces RF into the shack, and shifts the measured feed impedance. A 1:1 choke balun suppresses the common-mode current without transforming impedance.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q4.</strong> A 5/8-wave whip needs a series inductor at its base. What is the purpose of this inductor?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-4" hidden>
+            <p>A 5/8-wave antenna is longer than a quarter-wave, which makes it <strong>capacitively reactive</strong> at the feed point. The series inductor cancels this capacitive reactance, producing a near-resistive feed impedance of approximately 50–60 Ω — suitable for direct connection to 50 Ω coax. Without the matching inductor, the antenna would be a very poor match and VSWR would be high.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q5.</strong> What is the difference between a 4:1 balun and a 49:1 unun, and where would each be used?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-5" hidden>
+            <p>A <strong>4:1 balun</strong> transforms impedance by a factor of 4 <em>and</em> converts between balanced and unbalanced circuits. It is used where a balanced antenna (folded dipole, ~280 Ω) needs to connect to unbalanced 75 Ω coax.</p>
+            <p>A <strong>49:1 unun</strong> transforms impedance by a factor of 49 between two <em>unbalanced</em> circuits — there is no balancing action. It is used at the feed point of an end-fed half-wave antenna (~2,450 Ω) to match to 50 Ω coax. Because it provides no common-mode suppression, a separate coax choke is still needed to prevent the feeder radiating.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q6.</strong> An ATU is connected between a transmitter and a long wire antenna via coax. The ATU is adjusted for 1:1 VSWR at the transmitter. Is there still a VSWR on the feeder?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-6" hidden>
+            <p><strong>Yes.</strong> The ATU presents a matched 50 Ω impedance to the transmitter, but it does not change the impedance mismatch between the feeder and the antenna. The VSWR on the coax between ATU and antenna is unchanged — potentially still very high. The feeder loss at that high VSWR remains elevated. The ATU protects the transmitter's PA and allows it to operate at full power, but it does not improve feeder efficiency. This is why open-wire (low-loss) feeders are preferred when feeding mismatched antennas through an ATU.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q7.</strong> Compare the operating principle of a Yagi with a log-periodic dipole array. Under what conditions would you choose one over the other?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-11-7">Show answer</button>
+          <div class="self-check__reveal" id="ans-11-7" hidden>
+            <p>A <strong>Yagi</strong> uses fixed-length parasitic elements (one reflector, multiple directors) optimised for a single frequency or narrow band. It achieves high gain for its boom length but is only effective across a few percent of bandwidth.</p>
+            <p>A <strong>log-periodic</strong> uses multiple dipoles of different resonant lengths along a boom. The active region shifts along the boom as frequency changes, maintaining near-constant gain and impedance across a wide bandwidth (decade range possible).</p>
+            <p>Choose a <strong>Yagi</strong> for maximum gain on a single band (DX contest stack on 20 m, 144 MHz EME). Choose an <strong>LPDA</strong> where consistent performance across a wide frequency range is needed (multiband HF beam, EMC test antenna, TV receiving aerial covering all UHF channels).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-10-sdr.html" class="section-nav__link">&larr; Chapter 10: SDR</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=11"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-12-propagation.html" class="section-nav__link">Chapter 12: Propagation &rarr;</a>
+    </nav>
+
+    <footer style="padding-bottom: 3rem; color: var(--text-dim); font-size: 0.8rem; font-family: var(--font-mono);">
+      Chapter 11 &nbsp;&middot;&nbsp; Full Licence &nbsp;&middot;&nbsp;
+      <a href="index.html" style="color: var(--text-dim); text-decoration: none;">Full Licence index</a>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260915-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260915-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260915-1000" defer></script>
+</body>
+</html>

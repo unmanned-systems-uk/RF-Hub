@@ -280,7 +280,11 @@ R = 1 / 0.001229 = 813 Ω</pre>
       </div>
 
       <h3>Potential Dividers</h3>
-      <p>A <strong>potential divider</strong> (voltage divider) uses two or more resistors in series to tap off a fraction of the supply voltage. The output voltage is:</p>
+      <p>A <strong>potential divider</strong> (voltage divider) uses two or more resistors in series to tap off a fraction of the supply voltage.</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-2/fig-2-1-potential-divider.svg" alt="Potential divider circuit: +Vs connects to R1 (top), junction at middle taps V_out, R2 (bottom) connects to GND. V_out = Vs × R2 / (R1 + R2)" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+      <p>The output voltage is:</p>
       <pre>V_out = Vs × R2 / (R1 + R2)</pre>
       <p>This only works accurately if the load draws very little current — significant load current changes the effective R2 value.</p>
       <div class="callout callout--info">
@@ -1360,6 +1364,10 @@ IE = IC + IB       (emitter current = collector + base)
       <p>Two diodes plus a <strong>centre-tapped transformer</strong> gives full-wave rectification without needing four diodes. Each diode conducts on one half-cycle, so both halves of the input reach the output as positive pulses. More efficient than half-wave (no wasted half-cycle), but requires a special transformer with a tap at the centre of the secondary winding. Modern PSUs usually use the bridge rectifier below instead, which needs no centre tap.</p>
       <h4>Full-wave bridge rectifier</h4>
       <p>Four diodes arranged in a bridge pass both half-cycles. Both positive and negative half-cycles are converted to positive pulses. Output has twice the ripple frequency of half-wave. More efficient.</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-2/fig-2-2-bridge-rectifier.gif" alt="Animated bridge rectifier: four diodes in a diamond arrangement; green diodes are non-conducting, red shows current flow — direction reverses each half-cycle but DC output polarity stays constant." style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+        <figcaption style="font-size: 0.75em; color: #64748b; margin-top: 0.35em;">Fig 2-2 — Bridge rectifier: green diodes non-conducting; red shows current flow on each half-cycle. Animation by Zureks, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer" style="color: inherit;">CC BY-SA 3.0</a>, via Wikimedia Commons.</figcaption>
+      </figure>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>2I1:</strong> A diode changes AC to DC. A full-wave bridge uses <strong>four diodes</strong> and is more efficient than a half-wave rectifier.</div>
@@ -1382,6 +1390,9 @@ IE = IC + IB       (emitter current = collector + base)
       <p>A <strong>voltage regulator</strong> keeps the output at a fixed voltage regardless of load.</p>
       <h4>Zener diode regulator</h4>
       <p>A <strong>zener diode</strong> is designed to break down at a specific reverse voltage (the zener voltage), maintaining a constant voltage across itself as long as some minimum current flows.</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-2/fig-2-3-zener-regulator.svg" alt="Zener voltage regulator: +Vin feeds through R_series resistor to the output junction. A Zener diode from junction to GND clamps Vout to the Zener voltage V_z. R_series drops any excess input voltage." style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
       <h4>Series-pass regulator with error amplifier</h4>
       <p>A practical linear regulator adds a <strong>series-pass transistor</strong> that sits in-line with the load and handles the full load current. A second transistor and a Zener diode form an <strong>error amplifier</strong>: they compare the output voltage against the Zener reference and continuously adjust the series-pass transistor to keep the output constant even as load current changes. This is the circuit inside a typical linear voltage regulator IC (7805, 7812, etc.). Linear regulators produce clean output with little RF noise, but the series-pass transistor dissipates the excess voltage as heat &mdash; hence the need for heat sinks and the "inefficient and heavy" reputation of linear PSUs.</p>
       <h4>IC voltage regulators</h4>
@@ -1772,7 +1783,8 @@ Power is reduced by a factor of 1 000 (to 1/1000 of input)</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/search.js?v=20260917-1100" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1100" defer></script>
+  <script src="/assets/js/study-page.js?v=20260917-1100" defer></script>
 </body>
 </html>

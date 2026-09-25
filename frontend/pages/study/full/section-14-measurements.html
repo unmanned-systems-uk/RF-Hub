@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14: Measurements — Full Licence Study | RF-Hub</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#06b6d4">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260916-1000">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260916-1000">
+<meta name="site-nav-active" content="study">
+<style>
+/* ── Page-level overrides ───────────────────────────────── */
+:root {
+  --accent-e:  #f59e0b;
+  --accent-h:  #06b6d4;
+  --accent-em: #a78bfa;
+  --surface:   #111827;
+  --surface2:  #1f2937;
+  --text-dim:  #6b7280;
+  --border:    rgba(255,255,255,0.08);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+
+/* ── Progress bar ───────────────────────────────────────── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0;
+  height: 3px; z-index: 999;
+  background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+  transition: width 0.1s linear;
+}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.study-hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 0 2.5rem;
+}
+.study-hero .container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+.study-hero-eyebrow {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.75rem; color: var(--accent-em);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 0 0 0.75rem;
+}
+.study-hero h1 {
+  font-family: var(--font-display, 'DM Serif Display', serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: #f9fafb; margin: 0 0 1rem; line-height: 1.2;
+}
+.study-hero-sub {
+  color: #9ca3af; font-size: 0.9rem; line-height: 1.6;
+  margin: 0; max-width: 600px;
+}
+.study-hero-chapters {
+  list-style: none; padding: 0; margin: 1.25rem 0 0;
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.study-hero-chapters li {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem; color: #9ca3af;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 4px; padding: 0.2rem 0.5rem;
+}
+
+/* ── Main content ───────────────────────────────────────── */
+.study-page-main { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── TOC ────────────────────────────────────────────────── */
+.toc-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 1.5rem 1.75rem;
+  margin: 2rem 0;
+}
+.toc-card h2 {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-dim); margin: 0 0 1rem;
+}
+.toc-list { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 2rem; }
+.toc-list li { margin-bottom: 0.4rem; break-inside: avoid; }
+.toc-list a {
+  font-size: 0.875rem; color: #9ca3af; text-decoration: none;
+  display: flex; align-items: baseline; gap: 0.5rem;
+}
+.toc-list a:hover { color: var(--accent-em); }
+.toc-code {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem; color: var(--accent-em);
+  flex-shrink: 0; min-width: 2.8rem;
+}
+@media (max-width: 600px) { .toc-list { columns: 1; } }
+
+/* ── Chapter sections ───────────────────────────────────── */
+.chapter {
+  margin: 2.5rem 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.chapter-anchor { scroll-margin-top: 4rem; }
+.chapter h2 {
+  font-family: var(--font-display, 'DM Serif Display', serif);
+  font-size: 1.5rem; color: #f9fafb; margin: 0 0 0.25rem;
+}
+.chapter-code {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem; color: var(--accent-em);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  display: block; margin-bottom: 1rem;
+}
+.chapter h3 {
+  font-size: 1.05rem; color: #f9fafb;
+  margin: 1.5rem 0 0.5rem; font-weight: 600;
+}
+.chapter p { color: #9ca3af; line-height: 1.75; margin: 0 0 1rem; }
+.chapter ul, .chapter ol { color: #9ca3af; line-height: 1.75; padding-left: 1.5rem; margin: 0 0 1rem; }
+.chapter li { margin-bottom: 0.35rem; }
+.chapter strong { color: #e5e7eb; }
+
+/* ── Formula blocks ─────────────────────────────────────── */
+pre.formula-block {
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.9rem; color: #e5e7eb;
+  padding: 0.85rem 1rem; margin: 1rem 0;
+  white-space: pre-wrap; overflow-x: auto;
+}
+
+/* ── Callouts ───────────────────────────────────────────── */
+.callout-exam {
+  background: rgba(167,139,250,0.07);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-left: 3px solid var(--accent-em);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.85rem 1rem; margin: 1.25rem 0;
+  font-size: 0.875rem; color: #9ca3af; line-height: 1.6;
+}
+.callout-exam strong { color: var(--accent-em); }
+.callout-xref {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.22);
+  border-left: 3px solid var(--accent-h);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.85rem 1rem; margin: 1.25rem 0;
+  font-size: 0.875rem; color: #9ca3af; line-height: 1.6;
+}
+.callout-xref strong { color: var(--accent-h); }
+.callout-warn {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-left: 3px solid var(--accent-e);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.85rem 1rem; margin: 1.25rem 0;
+  font-size: 0.9rem; color: #9ca3af; line-height: 1.6;
+}
+.callout-warn strong { color: var(--accent-e); }
+
+/* ── Tables ─────────────────────────────────────────────── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem; margin: 1rem 0 1.5rem;
+}
+.data-table th {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--accent-em); font-weight: 500;
+  border-bottom: 1px solid rgba(167,139,250,0.25);
+  padding: 0.5rem 0.75rem; text-align: left;
+}
+.data-table td {
+  color: #9ca3af; border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem; vertical-align: top;
+}
+.data-table td:first-child {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  color: #e5e7eb; font-size: 0.8rem;
+}
+.data-table tr:last-child td { border-bottom: none; }
+
+/* Placement table — col 1 bold, col 3 amber */
+.placement-table td:first-child { color: var(--accent-h); }
+.placement-table td:nth-child(3) { color: var(--accent-e); font-style: italic; }
+
+/* Marker table — col 1 mono */
+.marker-table td:first-child { color: var(--accent-em); }
+
+/* ── Interactive iframe wrapper ──────────────────────────── */
+.interactive-frame {
+  margin: 1.5rem 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.interactive-frame iframe {
+  width: 100%; display: block;
+  border: 1px solid #1e293b; border-radius: 8px;
+}
+
+/* ── Self-check ─────────────────────────────────────────── */
+.self-check-section { margin-top: 3rem; }
+.self-check-section h2 {
+  font-family: var(--font-display, 'DM Serif Display', serif);
+  font-size: 1.4rem; color: #f9fafb; margin: 0 0 0.25rem;
+}
+.self-check {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+.self-check p { color: #9ca3af; line-height: 1.7; margin: 0 0 0.75rem; }
+.self-check strong { color: #e5e7eb; }
+.btn-reveal {
+  background: transparent; border: 1px solid rgba(167,139,250,0.4);
+  color: var(--accent-em); border-radius: var(--radius-sm);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem; padding: 0.3rem 0.8rem;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-reveal:hover { background: rgba(167,139,250,0.1); }
+.self-check__reveal {
+  margin-top: 0.75rem; padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  color: #9ca3af; line-height: 1.7;
+}
+.self-check__reveal p { margin: 0 0 0.5rem; }
+.self-check__reveal strong { color: #e5e7eb; }
+
+/* ── Section navigation ─────────────────────────────────── */
+.section-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.75rem; flex-wrap: wrap;
+  margin: 2.5rem 0 1.5rem;
+  padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.section-nav__link {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.4rem 0.9rem;
+  transition: border-color 0.15s, color 0.15s;
+}
+.section-nav__link:hover { border-color: var(--accent-em); color: var(--accent-em); }
+.section-nav__practice {
+  color: #4ade80; border-color: rgba(74,222,128,0.35);
+}
+.section-nav__practice:hover { border-color: #4ade80; color: #4ade80; }
+.section-nav__link--disabled {
+  color: var(--text-dim); border-color: var(--border);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/study/">Study</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="study-hero">
+  <div class="container">
+    <p class="study-hero-eyebrow">Full Licence — Chapter 14</p>
+    <h1>Measurements</h1>
+    <p class="study-hero-sub">Test equipment from the ground up — voltmeter loading error, PEP, SWR and reflection coefficient, the Bruene coupler, CRT and DSO oscilloscopes, spectrum analyser controls, and frequency reference standards.</p>
+    <ul class="study-hero-chapters">
+      <li>§14A Voltmeter &amp; Ammeter Error</li>
+      <li>§14B RMS, Peak &amp; PEP</li>
+      <li>§14C SWR &amp; Return Loss</li>
+      <li>§14D Bruene Coupler</li>
+      <li>§14E CRT Oscilloscope</li>
+      <li>§14F Digital Storage Oscilloscope</li>
+      <li>§14G RF Envelopes</li>
+      <li>§14H Frequency Counter</li>
+      <li>§14I TCXO &amp; OCXO</li>
+      <li>§14J Dip Meter</li>
+      <li>§14K Spectrum Analyser</li>
+      <li>§14L Dummy Load</li>
+      <li>§14M SWR Meter Practice</li>
+      <li>§14N Field Strength Meter</li>
+      <li>§14O Self-Check</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<main class="container study-page-main" style="padding-bottom: 2rem;">
+
+  <div class="callout-xref">
+    <strong>Cross-references:</strong> Intermediate §9 (measurements overview — voltmeter/ammeter rules, oscilloscope basics, SWR meter placement, spectrum analyser overview, dip meter) &mdash; Full §4 (SWR/VSWR theory) &mdash; Full §8 (spurious emissions and dummy load testing) &mdash; Full §13 (spectrum analyser in EMC context). Read this chapter as an extension of the Intermediate measurements material.
+  </div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+    <h2>Contents</h2>
+    <ul class="toc-list">
+      <li><a href="#ch-14A"><span class="toc-code">14A</span> Voltmeter Loading &amp; Ammeter Error</a></li>
+      <li><a href="#ch-14B"><span class="toc-code">14B</span> AC Waveforms: RMS, Peak &amp; PEP</a></li>
+      <li><a href="#ch-14C"><span class="toc-code">14C</span> SWR, Reflection Coefficient &amp; Return Loss</a></li>
+      <li><a href="#ch-14D"><span class="toc-code">14D</span> The Bruene Directional Coupler</a></li>
+      <li><a href="#ch-14E"><span class="toc-code">14E</span> The CRT Oscilloscope</a></li>
+      <li><a href="#ch-14F"><span class="toc-code">14F</span> The Digital Storage Oscilloscope</a></li>
+      <li><a href="#ch-14G"><span class="toc-code">14G</span> Viewing RF Signals: SSB, AM &amp; FM</a></li>
+      <li><a href="#ch-14H"><span class="toc-code">14H</span> Frequency Counter: Reciprocal Counting</a></li>
+      <li><a href="#ch-14I"><span class="toc-code">14I</span> TCXO &amp; OCXO Reference Oscillators</a></li>
+      <li><a href="#ch-14J"><span class="toc-code">14J</span> The Dip Meter</a></li>
+      <li><a href="#ch-14K"><span class="toc-code">14K</span> Spectrum Analyser: RBW, VBW &amp; Markers</a></li>
+      <li><a href="#ch-14L"><span class="toc-code">14L</span> The Dummy Load</a></li>
+      <li><a href="#ch-14M"><span class="toc-code">14M</span> SWR Meter in Practice</a></li>
+      <li><a href="#ch-14N"><span class="toc-code">14N</span> The Field Strength Meter</a></li>
+      <li><a href="#ch-14O"><span class="toc-code">14O</span> Self-Check</a></li>
+    </ul>
+  </div>
+
+  <p style="color:#9ca3af; line-height:1.75; margin-bottom:0.5rem;">
+    Measurement is the foundation of engineering. Every calculation in this manual assumes the transmitter outputs what the specification claims, the antenna is matched as expected, and the receiver is as sensitive as the data sheet suggests. Test equipment converts assumption into evidence.
+  </p>
+  <p style="color:#9ca3af; line-height:1.75; margin-bottom:2rem;">
+    The Intermediate licence introduces the instruments. Full level extends into the theory behind the readings: why a voltmeter changes the circuit it measures, how a directional coupler separates forward and reflected power, how a digital oscilloscope stores and displays a waveform that is gone before the screen updates, and what the resolution bandwidth setting on a spectrum analyser actually controls.
+  </p>
+
+  <!-- ── §14A ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14A">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14A · 14A1</span>
+    <h2>Voltmeter Loading and Ammeter Error</h2>
+
+    <p>Every measuring instrument interacts with the circuit it measures. At Intermediate level the rule is simple: voltmeters in parallel, ammeters in series. At Full level we quantify the error and know when it matters.</p>
+
+    <h3>Voltmeter Loading Error</h3>
+    <p>A voltmeter measures the voltage at a node by connecting its own input resistance <strong>R_m</strong> in parallel with the circuit impedance <strong>R_c</strong> at that node. The parallel combination is always less than R_c, so the voltmeter lowers the node voltage below its unloaded value.</p>
+
+    <p>The measured voltage is:</p>
+<pre class="formula-block">V_measured = V_true × R_m / (R_m + R_c)</pre>
+
+    <p>The <strong>loading error</strong> as a fraction of true voltage:</p>
+<pre class="formula-block">Error fraction = R_c / (R_m + R_c)</pre>
+
+    <p><strong>Example — negligible error:</strong> a circuit node sits at 10 V behind a 10 kΩ Thevenin resistance; a DMM with 1 MΩ input impedance is connected:</p>
+    <p style="margin-left:1rem; font-family:var(--font-mono,'IBM Plex Mono',monospace); font-size:0.875rem; color:#e5e7eb;">
+      V_measured = 10 × 1,000,000 / (1,000,000 + 10,000) = 10 × 0.9901 = <strong>9.90 V</strong> (0.99% error — negligible)
+    </p>
+
+    <p><strong>Example — severe error:</strong> same node, but R_c = 1 MΩ and R_m = 1 MΩ:</p>
+    <p style="margin-left:1rem; font-family:var(--font-mono,'IBM Plex Mono',monospace); font-size:0.875rem; color:#e5e7eb;">
+      V_measured = 10 × 1,000,000 / (1,000,000 + 1,000,000) = <strong>5.0 V</strong> (50% error — unusable)
+    </p>
+
+    <p><strong>Rule:</strong> The voltmeter input impedance must be at least <strong>10× the circuit impedance</strong> for the loading error to be below 10%. For measurements on high-impedance circuits (FET gates, valve grids, oscillator tuned circuits), use a high-impedance probe (10:1 scope probe, input impedance typically 10 MΩ) or an electronic voltmeter with FET input.</p>
+
+    <h3>Ammeter Insertion Error</h3>
+    <p>An ammeter has a small but non-zero internal resistance <strong>R_a</strong>. Inserting it in series adds this resistance to the circuit, reducing the current slightly below its unloaded value:</p>
+<pre class="formula-block">I_measured = V_source / (R_circuit + R_a)</pre>
+
+    <p>The insertion error is significant when R_a is comparable to R_circuit. A 0.1 Ω ammeter in a 1 Ω circuit introduces a 10% error; in a 100 Ω circuit the same ammeter introduces 0.1%.</p>
+    <p><strong>Rule:</strong> The ammeter internal resistance should be at least 100× smaller than the circuit resistance.</p>
+
+    <h3>AC Measurement on Non-Sinusoidal Waveforms</h3>
+    <p>Most DMMs calibrated in AC mode are designed for pure <strong>sine waves</strong> — they measure the mean-rectified value and scale it by 1.111 (the form factor for a sine wave) to give a reading calibrated in RMS. For non-sinusoidal waveforms (square waves, audio programme, SSB RF), this gives the wrong RMS value.</p>
+    <p>To measure true RMS of a non-sinusoidal waveform, use a <strong>true-RMS DMM</strong> — these contain an analogue squaring circuit or a thermal converter that directly computes RMS regardless of waveform shape.</p>
+
+    <div class="callout-exam">
+      <strong>14A1:</strong> V_measured = V_true × R_m/(R_m + R_c). Loading error is significant when R_m is comparable to R_c. Use a true-RMS DMM for non-sinusoidal waveforms. Ammeter insertion error is significant when R_a is comparable to R_circuit. Rule of thumb: meter impedance must be ≥10× (voltmeter) or ≤1/100× (ammeter) the circuit impedance.
+    </div>
+  </section>
+
+  <!-- ── §14B ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14B">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14B · 14B1</span>
+    <h2>AC Waveforms: RMS, Peak, and Peak Envelope Power</h2>
+
+    <h3>Sine Wave Relationships</h3>
+    <p>For a <strong>pure sine wave</strong> of peak voltage V_pk:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Quantity</th><th>Formula</th><th>Example (V_pk = 100 V)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Peak-to-peak</td><td>V_pp = 2 × V_pk</td><td>200 V</td></tr>
+        <tr><td>RMS</td><td>V_rms = V_pk / √2 ≈ V_pk × 0.707</td><td>70.7 V</td></tr>
+        <tr><td>Mean (half-wave rectified)</td><td>V_mean = V_pk × (2/π) ≈ V_pk × 0.637</td><td>63.7 V</td></tr>
+        <tr><td>Form factor</td><td>V_rms / V_mean = π/(2√2) ≈ 1.111</td><td>—</td></tr>
+        <tr><td>Crest factor</td><td>V_pk / V_rms = √2 ≈ 1.414</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <p>The <strong>crest factor</strong> tells you how much the peak exceeds the RMS. For a square wave, crest factor = 1. For audio and SSB signals, the crest factor can be 4:1 (12 dB) or higher — the peaks are much higher than the average.</p>
+
+    <h3>RF Power: Average vs Peak Envelope Power</h3>
+    <p>For a <strong>continuous wave (CW) or FM</strong> signal, the amplitude is constant. The average power equals the RMS power:</p>
+<pre class="formula-block">P_avg = V_rms² / R = V_pk² / (2R)</pre>
+
+    <p>For a <strong>single-sideband (SSB)</strong> signal, the amplitude varies with the audio programme — it is zero during speech pauses and reaches a peak when a loud, sustained tone is present. There are two relevant power quantities:</p>
+
+    <p><strong>Average power (P_avg):</strong> the mean power over a period much longer than one modulation cycle. For a typical SSB voice signal, P_avg is approximately 25–30% of PEP (4–6 dB below PEP).</p>
+
+    <p><strong>Peak Envelope Power (PEP):</strong> the maximum average power in any single RF cycle at the crest of the modulation envelope. It is calculated over the <strong>single RF cycle</strong> with the highest amplitude:</p>
+<pre class="formula-block">PEP = V_pk(envelope)² / (2 × R)</pre>
+    <p>where V_pk(envelope) is the peak RF voltage at the crest of the modulation envelope, and R is the load impedance (typically 50 Ω).</p>
+
+    <p><strong>Worked example:</strong> An SSB transmitter's output, viewed on an oscilloscope with a 50 Ω termination, shows a peak RF voltage of 141 V at the loudest speech peak.</p>
+    <p style="margin-left:1rem; font-family:var(--font-mono,'IBM Plex Mono',monospace); font-size:0.875rem; color:#e5e7eb;">
+      PEP = 141² / (2 × 50) = 19,881 / 100 = <strong>198.8 W ≈ 200 W</strong>
+    </p>
+    <p>This is the figure that matters for licence power limits — the UK amateur licence specifies maximum power in PEP for SSB.</p>
+
+    <p><strong>For AM:</strong> The carrier has power P_c = V_carrier²/(2R). With 100% AM modulation depth m:</p>
+<pre class="formula-block">PEP_AM = P_c × (1 + m)²    → PEP = 4 × P_c at m = 1 (100% modulation)
+P_avg_AM = P_c × (1 + m²/2) → total average power including sidebands</pre>
+
+    <p><strong>For FM:</strong> constant amplitude, so PEP = P_avg = V_pk²/(2R). FM does not have a variable envelope; the power is constant regardless of modulation depth.</p>
+
+    <div class="callout-exam">
+      <strong>14B1:</strong> For a sine wave, V_rms = V_pk/√2 and P = V_rms²/R = V_pk²/(2R). PEP for SSB = V_pk(envelope)²/(2R) — the peak power in any single RF cycle. Average SSB power ≈ PEP − 4 to 6 dB. UK licence power limits are specified in PEP for SSB.
+    </div>
+  </section>
+
+  <!-- ── §14C ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14C">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14C · 14C1</span>
+    <h2>SWR, Reflection Coefficient, and Return Loss</h2>
+
+    <h3>Reflection Coefficient</h3>
+    <p>When a transmission line of characteristic impedance Z₀ is terminated by a load Z_L, the mismatch creates a reflected wave. The voltage reflection coefficient Γ (gamma) is:</p>
+<pre class="formula-block">Γ = (Z_L − Z₀) / (Z_L + Z₀)</pre>
+
+    <p>Γ is in general a complex number (magnitude and phase). For resistive loads, Γ is real. Its magnitude |Γ| ranges from 0 (perfect match) to 1 (total reflection — open or short circuit).</p>
+
+    <ul>
+      <li>Z_L = 50 Ω, Z₀ = 50 Ω: Γ = 0/100 = <strong>0</strong> (perfect match)</li>
+      <li>Z_L = 100 Ω, Z₀ = 50 Ω: Γ = 50/150 = <strong>0.333</strong></li>
+      <li>Z_L = 25 Ω, Z₀ = 50 Ω: Γ = −25/75 = <strong>−0.333</strong> (magnitude 0.333)</li>
+      <li>Z_L = open circuit (∞): Γ = <strong>+1</strong></li>
+      <li>Z_L = short circuit (0): Γ = <strong>−1</strong></li>
+    </ul>
+
+    <h3>SWR from Γ</h3>
+<pre class="formula-block">SWR = (1 + |Γ|) / (1 − |Γ|)
+|Γ| = (SWR − 1) / (SWR + 1)   ← inverse</pre>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>|Γ|</th><th>SWR</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>1.0 : 1</td><td>Perfect match</td></tr>
+        <tr><td>0.1</td><td>1.22 : 1</td><td>Excellent</td></tr>
+        <tr><td>0.2</td><td>1.5 : 1</td><td>Good</td></tr>
+        <tr><td>0.333</td><td>2.0 : 1</td><td>Acceptable</td></tr>
+        <tr><td>0.5</td><td>3.0 : 1</td><td>Marginal</td></tr>
+        <tr><td>1.0</td><td>∞</td><td>Total reflection</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Return Loss</h3>
+    <p>Return loss (RL) is the magnitude of reflection expressed in dB — how much lower the reflected power is than the incident power. A <strong>higher return loss means a better match</strong>:</p>
+<pre class="formula-block">RL (dB) = −20 × log₁₀|Γ| = 20 × log₁₀(1/|Γ|)</pre>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>SWR</th><th>|Γ|</th><th>Return Loss</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1.5 : 1</td><td>0.200</td><td>14 dB</td></tr>
+        <tr><td>2.0 : 1</td><td>0.333</td><td>9.5 dB</td></tr>
+        <tr><td>3.0 : 1</td><td>0.500</td><td>6 dB</td></tr>
+        <tr><td>10.0 : 1</td><td>0.818</td><td>1.7 dB</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Reflected Power</h3>
+    <p>The fraction of incident power that is reflected:</p>
+<pre class="formula-block">P_reflected / P_incident = |Γ|²</pre>
+    <p>For SWR = 2.0:1, |Γ| = 0.333, P_reflected = 0.333² × P_incident = <strong>11.1% of incident power reflected</strong>.</p>
+
+    <h3>VSWR Calculator</h3>
+    <div class="interactive-frame">
+      <iframe src="/interactives/full-vswr-calculator.html" style="height:650px;" loading="lazy" title="VSWR and Return Loss Calculator"></iframe>
+    </div>
+
+    <div class="callout-exam">
+      <strong>14C1:</strong> Γ = (Z_L − Z₀)/(Z_L + Z₀). SWR = (1+|Γ|)/(1−|Γ|). Return loss = −20 log|Γ| dB (higher = better match). Reflected power = |Γ|² × incident power. These three quantities express the same physical mismatch — an instrument may display any of them.
+    </div>
+  </section>
+
+  <!-- ── §14D ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14D">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14D · 14D1</span>
+    <h2>RF Power Measurement: The Bruene Directional Coupler</h2>
+
+    <p>An SWR meter or RF power meter needs to separate the <strong>forward</strong> (incident) wave from the <strong>reflected</strong> (returning) wave simultaneously — sampling both without absorbing significant power from the main transmission line. The standard circuit for this is the <strong>Bruene directional coupler</strong> (also called a reflectometer or tandem match).</p>
+
+    <h3>Circuit Construction</h3>
+    <p>The Bruene coupler contains two sensing elements placed in the main transmission line:</p>
+
+    <p><strong>1 — Current transformer:</strong> A small toroidal transformer wound around (or with a one-turn primary formed by) the centre conductor of the coaxial line. The secondary winding produces a voltage proportional to the <strong>current</strong> flowing in the line.</p>
+
+    <p><strong>2 — Voltage tap:</strong> A resistive or capacitive voltage divider connected between the centre conductor and outer braid. This produces a voltage proportional to the <strong>voltage</strong> on the line.</p>
+
+    <p>In the main line, the forward travelling wave has V = I × Z₀ (voltage and current in phase). The reflected wave has V = −I × Z₀ (current reversed). By adding and subtracting the two sampled quantities:</p>
+    <ul>
+      <li><strong>Forward sample:</strong> V_coupler + I × Z₀ → gives only the forward wave voltage</li>
+      <li><strong>Reflected sample:</strong> V_coupler − I × Z₀ → gives only the reflected wave voltage</li>
+    </ul>
+
+    <p>These two composite signals are passed through diode peak detectors to produce DC voltages proportional to the forward and reflected amplitudes. A meter connected to these DC voltages can be calibrated to read forward power, reflected power, or SWR (from the ratio of the two).</p>
+
+    <h3>Directivity</h3>
+    <p><strong>Directivity</strong> is a measure of how well the coupler separates forward from reflected signals — how much of the "wrong" direction signal appears in each output. Expressed in dB: a 30 dB directivity means the rejected direction is 30 dB below the accepted direction. Poor directivity causes a reflected-power reading even when the line is perfectly matched (the forward power leaks into the reflected port).</p>
+
+    <h3>Practical Notes</h3>
+    <ul>
+      <li>The Bruene coupler must be impedance-matched to the system Z₀ (typically 50 Ω) — a mismatch causes directivity errors</li>
+      <li>The resistor in the voltage divider must be non-inductive and rated for the full RF voltage (not just RF power)</li>
+      <li>Calibration: with a known 50 Ω dummy load (SWR = 1:1), the reflected meter should read zero — if it does not, the coupler's directivity is insufficient</li>
+    </ul>
+
+    <div class="callout-exam">
+      <strong>14D1:</strong> A Bruene directional coupler uses a current transformer plus a voltage tap on the main transmission line. Adding and subtracting the two samples produces forward-only and reflected-only output ports. Diode peak detectors convert RF amplitude to DC for meter deflection. Directivity (dB) determines how cleanly forward and reflected waves are separated.
+    </div>
+  </section>
+
+  <!-- ── §14E ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14E">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14E · 14E1</span>
+    <h2>The CRT Oscilloscope</h2>
+
+    <p>The cathode-ray tube (CRT) oscilloscope was the standard laboratory instrument for over 60 years. Understanding its construction explains the terminology that digital oscilloscopes inherit.</p>
+
+    <h3>Electron Gun and Deflection</h3>
+    <p>The CRT is an evacuated glass envelope containing:</p>
+
+    <p><strong>Electron gun:</strong> a heated cathode emits electrons; an accelerating anode (at a high positive voltage) accelerates them into a narrow beam. A Wehnelt cylinder (control grid) modulates the beam intensity — this is the <strong>brightness</strong> control.</p>
+
+    <p><strong>Y deflection plates (vertical):</strong> two horizontal plates above and below the beam path. A voltage applied between them deflects the beam vertically. The Y input of the oscilloscope amplifies the signal and drives these plates.</p>
+
+    <p><strong>X deflection plates (horizontal):</strong> two vertical plates left and right of the beam path. Driven by the <strong>timebase generator</strong> — a linear ramp voltage that sweeps the beam from left to right at a controlled rate (set by the time/div control), then snaps back and repeats.</p>
+
+    <p><strong>Phosphor screen:</strong> the beam strikes the phosphor, exciting it to glow. The persistence time of the phosphor is typically 10–100 ms — long enough for the eye to see a continuous waveform if the timebase repeats faster than flicker fusion (~25 Hz).</p>
+
+    <h3>Triggering</h3>
+    <p>The timebase ramp must start at the same phase of the input waveform on each sweep, or the display is unstable (the waveform appears to scroll horizontally). The <strong>trigger circuit</strong> samples the input signal and starts the timebase sweep when the signal crosses a set threshold in the set direction (rising or falling edge). Without stable triggering, waveform measurements are impossible.</p>
+
+    <h3>Bandwidth and Probe Loading</h3>
+    <p>CRT oscilloscopes specify a <strong>bandwidth</strong> — the frequency at which the Y amplifier's gain drops by 3 dB (0.707). Beyond this frequency, the displayed amplitude is attenuated.</p>
+    <p>The input impedance is typically 1 MΩ shunted by 20–30 pF. At RF, the 30 pF capacitance shunts the input significantly — at 14 MHz, X_C of 30 pF is 379 Ω, comparable to many RF circuit impedances. A 10:1 passive probe (10× voltage divider at the tip) raises the effective input impedance to 10 MΩ / 3 pF, drastically reducing loading.</p>
+
+    <div class="callout-exam">
+      <strong>14E1:</strong> CRT oscilloscope: electron gun → Y-plates (vertical deflection, proportional to signal voltage) → X-plates (horizontal deflection, driven by timebase sawtooth) → phosphor screen. Trigger circuit synchronises timebase start to input waveform phase. Bandwidth = −3 dB frequency of Y amplifier. Use a 10:1 probe for high-impedance RF circuit measurements.
+    </div>
+  </section>
+
+  <!-- ── §14F ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14F">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14F · 14F1</span>
+    <h2>The Digital Storage Oscilloscope (DSO)</h2>
+
+    <p>The digital storage oscilloscope (DSO) replaces the CRT's analogue deflection system with an analogue-to-digital converter (ADC), digital memory, and a raster LCD display. This allows waveform capture, storage, mathematics, and far higher functionality than any analogue instrument.</p>
+
+    <h3>Acquisition Chain</h3>
+    <p><strong>Attenuator/amplifier:</strong> scales the input signal to the ADC's full-scale range (set by the volts/div control).</p>
+    <p><strong>ADC:</strong> samples the analogue input at the <strong>sample rate</strong> (measured in samples per second, MS/s or GS/s). To accurately represent a sinewave, the Nyquist theorem requires at least 2 samples per cycle — in practice, 5–10 samples per cycle is recommended for a faithful waveform shape.</p>
+    <p><strong>Acquisition memory:</strong> stores the ADC samples. Memory depth determines how many samples can be held — deeper memory allows slower time/div settings without reducing sample rate.</p>
+    <p><strong>Reconstruction and display:</strong> the stored samples are re-drawn on the LCD as a waveform. At fast time/div settings the DSO may need interpolation.</p>
+
+    <h3>Acquisition Modes</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Mode</th><th>Operation</th><th>Best used for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Normal</td><td>One triggered acquisition per screen refresh</td><td>Standard waveform viewing</td></tr>
+        <tr><td>Peak Detect</td><td>Captures the highest and lowest sample in each display pixel time</td><td>Catching narrow glitches that would be missed by normal sampling</td></tr>
+        <tr><td>Average</td><td>Averages N consecutive acquisitions</td><td>Reducing random noise on a repetitive signal</td></tr>
+        <tr><td>High-Res</td><td>Averages adjacent samples within one acquisition</td><td>Effectively increases ADC resolution on slow signals</td></tr>
+        <tr><td>Roll</td><td>Continuously scrolls waveform (no trigger required)</td><td>Monitoring slow signals</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Digital Persistence</h3>
+    <p>DSOs can simulate CRT phosphor persistence digitally by accumulating multiple acquisitions on screen using a colour map — frequently occurring amplitudes appear bright (warm colours); rare amplitudes appear dim (cool colours). This reveals amplitude variation over time that single-acquisition mode hides.</p>
+
+    <div class="callout-exam">
+      <strong>14F1:</strong> DSO acquisition chain: attenuator → ADC → memory → display. Sample rate ≥ 5× signal frequency for faithful waveform. Peak-detect mode catches narrow glitches. Average mode reduces noise on repetitive signals. Memory depth limits how long a capture at full sample rate can be.
+    </div>
+  </section>
+
+  <!-- ── §14G ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14G">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14G · 14G1</span>
+    <h2>Viewing RF Signals: SSB, AM, and FM Envelopes</h2>
+
+    <p>The oscilloscope is the only instrument that shows the time-domain waveform of an RF signal. By connecting the oscilloscope after a detector or at the transmitter output (via an attenuator), the modulation envelope becomes visible.</p>
+
+    <h3>SSB Envelope</h3>
+    <p>An SSB signal carries one sideband — the amplitude envelope of the RF carrier traces the instantaneous amplitude of the audio signal on that sideband. On an oscilloscope set to a slow enough time/div to see the modulation:</p>
+    <ul>
+      <li><strong>Silence:</strong> no output, flat line (carrier suppressed)</li>
+      <li><strong>Single audio tone:</strong> constant-amplitude sine wave at the audio frequency, riding on the RF</li>
+      <li><strong>Speech:</strong> burst of RF activity that follows the speech waveform — high amplitude on vowels, low or zero between words</li>
+    </ul>
+    <p>The <strong>crest factor</strong> of speech on SSB is typically 4:1 (12 dB). This means the peak RF voltage is 4× the RMS, and PEP = 16× the average power. Overdriving the SSB transmitter flattens the peaks (hard clipping), which produces a squared waveform with strong harmonics and a broad, splattered signal.</p>
+
+    <h3>AM Envelope</h3>
+    <p>An AM signal consists of a carrier at constant frequency with both sidebands. The envelope amplitude varies with the audio:</p>
+    <ul>
+      <li><strong>At 0% modulation:</strong> constant-amplitude carrier (no modulation)</li>
+      <li><strong>At 100% modulation:</strong> the envelope swings from 0 to 2× the unmodulated carrier amplitude</li>
+    </ul>
+    <p>Modulation depth <strong>m</strong> can be read directly from the oscilloscope envelope:</p>
+<pre class="formula-block">m = (V_max − V_min) / (V_max + V_min)</pre>
+    <p>where V_max is the peak of the envelope and V_min is the trough.</p>
+    <p><strong>Over-modulation (m &gt; 1):</strong> the negative peaks of the modulation drive the envelope to zero and below — the carrier cuts off, creating a distorted waveform with intermodulation products and splatter on adjacent channels.</p>
+
+    <h3>FM Envelope</h3>
+    <p>An FM signal conveys information entirely in frequency variation — the carrier amplitude is constant. On an oscilloscope, an FM signal appears as a <strong>constant-amplitude carrier with varying apparent frequency</strong>. The envelope does not change with modulation. This makes oscilloscope examination useless for checking FM deviation — a spectrum analyser (viewing the sideband structure) or a deviation meter (FM demodulator + audio voltmeter) is needed instead.</p>
+
+    <h3>RF Oscilloscope Simulator</h3>
+    <div class="interactive-frame">
+      <iframe src="/interactives/full-oscilloscope-sim.html" style="height:750px;" loading="lazy" title="RF Oscilloscope Simulator — SSB, AM, FM Envelopes"></iframe>
+    </div>
+
+    <div class="callout-exam">
+      <strong>14G1:</strong> SSB: variable-amplitude envelope tracking audio (zero amplitude in silence). AM: constant-carrier with amplitude-modulated envelope; m = (V_max−V_min)/(V_max+V_min). FM: constant-amplitude carrier; oscilloscope shows no modulation depth change — only frequency varies. Use spectrum analyser or deviation meter for FM deviation.
+    </div>
+  </section>
+
+  <!-- ── §14H ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14H">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14H · 14H1</span>
+    <h2>The Frequency Counter: Reciprocal Counting</h2>
+
+    <p>A frequency counter measures signal frequency with high precision. Modern counters use the <strong>reciprocal counting</strong> technique, which gives constant percentage resolution across all frequencies.</p>
+
+    <h3>Simple Gate Counting</h3>
+    <p>The simplest counter counts the number of input cycles N during a precisely timed gate interval T_gate:</p>
+<pre class="formula-block">f_measured = N / T_gate</pre>
+    <p><strong>Resolution:</strong> 1 count in N counts → 1/T_gate Hz. With a 1-second gate: 1 Hz resolution at all frequencies.</p>
+    <p><strong>Problem:</strong> the resolution is constant in Hz, not in percentage — 1 Hz resolution is excellent at 100 MHz (0.000001%) but useless at 100 Hz (1%). At low frequencies, a long gate time is needed for acceptable resolution.</p>
+
+    <h3>Reciprocal Counting</h3>
+    <p>The reciprocal counter measures the <strong>period</strong> of the input signal (time between edges), then computes frequency as 1/period:</p>
+    <ol>
+      <li>Start an internal high-frequency clock (the <strong>timebase oscillator</strong>, typically 10 MHz or 100 MHz)</li>
+      <li>Count clock pulses between successive zero-crossings of the input signal</li>
+      <li>Period T = (clock pulse count) / (timebase frequency)</li>
+      <li>Frequency f = 1/T</li>
+    </ol>
+    <p>Since the timebase is typically 10–100 MHz, each input cycle is measured to ±1 timebase clock period — this gives the same <strong>percentage resolution</strong> at all input frequencies. In practice, reciprocal counters average many input cycles to achieve a specified resolution — typically 8–10 digits of resolution in a 0.1–1 s measurement time, independent of input frequency.</p>
+
+    <div class="callout-exam">
+      <strong>14H1:</strong> Simple gate counting resolution = 1/T_gate Hz (constant Hz, not %). Reciprocal counting measures period (clock pulses per input cycle) then takes 1/T — gives constant percentage resolution at all frequencies. Modern frequency counters use the reciprocal technique.
+    </div>
+  </section>
+
+  <!-- ── §14I ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14I">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14I · 14I1</span>
+    <h2>Frequency Reference Oscillators: TCXO and OCXO</h2>
+
+    <p>The accuracy of any frequency counter, frequency synthesiser, or software-defined radio depends entirely on its frequency reference. Quartz crystal oscillators are stable, but crystal frequency drifts with temperature. Two techniques address this:</p>
+
+    <h3>TCXO — Temperature Compensated Crystal Oscillator</h3>
+    <p>A TCXO contains a quartz crystal oscillator with a <strong>thermistor-controlled voltage-variable capacitor (varicap)</strong>. As temperature changes, the thermistor network drives the varicap to shift the oscillator frequency in the opposite direction — partially compensating the crystal's temperature coefficient.</p>
+    <ul>
+      <li><strong>Stability:</strong> ±0.5 to ±2.5 ppm over the operating temperature range (typically −40 to +85 °C)</li>
+      <li><strong>No warm-up time</strong> — compensation is active immediately</li>
+      <li><strong>Use cases:</strong> handheld radios, portable test equipment, SDR receivers, GPS modules</li>
+    </ul>
+
+    <h3>OCXO — Oven Controlled Crystal Oscillator</h3>
+    <p>An OCXO encloses the crystal and oscillator circuit in a <strong>temperature-controlled oven</strong> — a miniature heated enclosure that holds the crystal at a constant temperature above ambient (typically +70 to +85 °C). The crystal then operates at a single fixed temperature, eliminating temperature variation entirely.</p>
+    <ul>
+      <li><strong>Stability:</strong> ±0.001 to ±0.01 ppm — typically 100–1000× better than a TCXO</li>
+      <li><strong>Warm-up time:</strong> 3–5 minutes (some high-precision OCXOs require 30 minutes)</li>
+      <li><strong>Power consumption:</strong> heater requires constant power (typically 0.5–5 W)</li>
+      <li><strong>Use cases:</strong> bench frequency counters, laboratory signal generators, professional test equipment</li>
+    </ul>
+
+    <h3>Ageing and GPS Locking</h3>
+    <p>All crystal oscillators exhibit long-term <strong>ageing</strong> — a slow monotonic drift in frequency as the crystal surface slowly changes. Typical ageing: 1–5 ppm/year (TCXO), 0.01–0.1 ppm/year (OCXO).</p>
+    <p><strong>GPS-disciplined oscillators (GPSDO):</strong> use the precisely known frequency of GPS satellite signals to continuously discipline the local OCXO or TCXO output. This eliminates both temperature drift and ageing — the output tracks GPS time to ±100 ns. GPSDOs are used as frequency standards in amateur and professional settings.</p>
+
+    <div class="callout-exam">
+      <strong>14I1:</strong> TCXO: thermistor-compensated varicap corrects temperature drift — ±0.5–2.5 ppm, no warm-up. OCXO: heated oven holds crystal at constant temperature — ±0.001–0.01 ppm, requires 3–5 min warm-up and constant heater power. GPSDO: GPS-disciplined OCXO, eliminates ageing. Frequency counter calibration requires OCXO or GPSDO reference.
+    </div>
+  </section>
+
+  <!-- ── §14J ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14J">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14J · 14J1</span>
+    <h2>The Dip Meter</h2>
+
+    <p>A <strong>dip meter</strong> (formerly called a grid-dip oscillator or GDO) is one of the simplest and most useful instruments in the amateur toolkit for characterising resonant circuits without a network analyser.</p>
+
+    <h3>Construction and Operation</h3>
+    <p>The dip meter contains:</p>
+    <ul>
+      <li>A tuneable LC oscillator (the coil is exposed, accessible from the outside of the case)</li>
+      <li>A meter indicating the oscillator's output amplitude</li>
+      <li>A frequency-calibrated tuning scale</li>
+    </ul>
+    <p>When the oscillator coil is held near a resonant circuit, energy couples between the dip meter coil and the external circuit by mutual inductance. When the oscillator frequency equals the resonant frequency of the external circuit, maximum energy transfers into the external circuit — and the oscillator's own amplitude <strong>dips</strong>. This dip is visible on the meter.</p>
+
+    <h3>Uses</h3>
+    <p><strong>Finding antenna resonant frequency:</strong> hold the dip meter coil near the feedpoint of a disconnected antenna. Tune for a dip — the frequency at the dip is the antenna's natural resonant frequency.</p>
+
+    <p><strong>Measuring coil inductance:</strong> connect a known capacitor in parallel with the coil under test. Hold the dip meter near, find the resonant frequency. Calculate L from:</p>
+<pre class="formula-block">f₀ = 1 / (2π√LC)
+
+Rearranged: L = 1 / (4π² × f₀² × C)</pre>
+
+    <p><strong>Finding filter resonance:</strong> check a finished filter's self-resonance by coupling the dip meter near each section. Sharp resonances above the design cut-off indicate component self-resonances that can degrade stop-band performance.</p>
+    <p><strong>Stub tuning:</strong> identify the resonant frequency of a coaxial stub (quarter-wave or half-wave).</p>
+
+    <h3>Precautions</h3>
+    <ul>
+      <li><strong>Do not connect the dip meter to the circuit under test</strong> — it couples by induction only; direct connection loads the circuit and changes its resonant frequency</li>
+      <li><strong>Keep coupling loose:</strong> excessive coupling broadens the dip and makes the frequency reading imprecise. Use the minimum coupling that gives a clear dip indication</li>
+      <li><strong>Active circuits:</strong> a powered amplifier near the dip meter can drive the oscillator off-frequency. Measure circuits with power off</li>
+    </ul>
+
+    <div class="callout-exam">
+      <strong>14J1:</strong> The dip meter detects resonance by energy transfer — the oscillator amplitude dips when its frequency matches the external circuit's resonance. Uses: antenna resonant frequency, coil inductance (with known C: L = 1/(4π²f₀²C)), filter self-resonance. Couple loosely; do not connect directly; circuits unpowered.
+    </div>
+  </section>
+
+  <!-- ── §14K ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14K">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14K · 14K1</span>
+    <h2>The Spectrum Analyser: Span, RBW, VBW, and Markers</h2>
+
+    <p>The spectrum analyser displays signal amplitude versus frequency. Full-level treatment covers the key controls — resolution bandwidth, video bandwidth, and span — that determine what you can and cannot see, and how to make distortion measurements.</p>
+
+    <h3>Architecture: Swept Superheterodyne vs FFT</h3>
+    <p><strong>Swept superheterodyne:</strong> a local oscillator sweeps across the span, mixing each frequency in turn to a fixed intermediate frequency (IF). The IF filter (the <strong>resolution bandwidth filter</strong>) passes a narrow slice of the spectrum; its output is envelope-detected and plotted as one pixel column. This is the architecture of most professional RF spectrum analysers.</p>
+    <p><strong>FFT analyser:</strong> the input is digitised at high speed, and the FFT is computed to produce the spectrum. FFT analysers capture the entire span simultaneously and are common in SDR-based tools (e.g. GQRX waterfall). Their instantaneous bandwidth is limited by the ADC sample rate.</p>
+
+    <h3>Resolution Bandwidth (RBW)</h3>
+    <p>The <strong>RBW</strong> is the width of the IF filter — the narrowest frequency difference that can be resolved as two separate peaks on the display.</p>
+    <ul>
+      <li><strong>Narrow RBW:</strong> better frequency resolution; can separate closely spaced signals; longer sweep time (proportional to 1/RBW²); lower displayed noise floor</li>
+      <li><strong>Wide RBW:</strong> faster sweep; higher noise floor; adjacent signals merge into one</li>
+    </ul>
+    <p>The analyser's thermal noise floor rises as √(RBW). For a given analyser noise figure (NF) and input termination temperature:</p>
+<pre class="formula-block">Noise floor (dBm) ≈ −174 + NF + 10 × log₁₀(RBW_Hz)</pre>
+    <p><strong>Example:</strong> 10 dB noise figure, 1 kHz RBW: −174 + 10 + 10×3 = <strong>−134 dBm</strong> noise floor.</p>
+
+    <h3>Video Bandwidth (VBW)</h3>
+    <p>The <strong>VBW</strong> is a low-pass filter applied to the detected amplitude signal (the video) before it is drawn on screen. It acts as a noise-smoothing filter:</p>
+    <ul>
+      <li><strong>Wide VBW (VBW ≥ RBW):</strong> fast response; noise appears as a noisy trace</li>
+      <li><strong>Narrow VBW (VBW &lt; RBW):</strong> smooths the noise trace; individual noise peaks are averaged; makes small signals visible against the noise floor</li>
+    </ul>
+    <p><strong>Rule of thumb:</strong> set VBW = RBW/3 to visually smooth noise without losing signal peaks. Use VBW ≪ RBW to find weak signals buried in noise.</p>
+
+    <h3>Span and Reference Level</h3>
+    <p><strong>Span</strong> is the total frequency range displayed. Setting span/RBW = 1,000–10,000 is typical for clear spectrum displays.</p>
+    <p><strong>Reference level</strong> is the amplitude corresponding to the top graticule line, in dBm. Set it just above the highest expected signal to maximise dynamic range below the signal.</p>
+
+    <h3>Marker Functions</h3>
+    <table class="data-table marker-table">
+      <thead>
+        <tr><th>Marker mode</th><th>Function</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Normal</td><td>Place marker at a frequency; read amplitude and frequency</td></tr>
+        <tr><td>Peak</td><td>Automatically finds and marks the highest peak</td></tr>
+        <tr><td>Delta</td><td>Second marker; reads amplitude and frequency difference between two markers</td></tr>
+        <tr><td>Noise marker</td><td>Reads noise density (dBm/Hz) — useful for noise floor and noise figure measurements</td></tr>
+        <tr><td>Band power</td><td>Integrates total power within a frequency band</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Harmonic Distortion Measurement</h3>
+    <p>To measure harmonic distortion from a transmitter:</p>
+    <ol>
+      <li>Set span to cover the fundamental and at least 3 harmonics (e.g. 0–100 MHz for a 20 m transmitter)</li>
+      <li>Set RBW narrow enough to resolve adjacent harmonics (1–10 kHz is typical)</li>
+      <li>Set reference level 10 dB above the fundamental</li>
+      <li>Transmit into a dummy load; use a calibrated attenuator or directional coupler at the analyser input</li>
+      <li>Use delta markers: set marker 1 on the fundamental, marker 2 on the harmonic; the delta dB reading is the harmonic level relative to the fundamental</li>
+    </ol>
+    <p><strong>Licence requirement:</strong> all Full licence harmonics and other spurious emissions must be at least 40 dB below the fundamental (for transmitters ≤25 W) or as specified in the licence for higher powers.</p>
+
+    <div class="callout-exam">
+      <strong>14K1:</strong> RBW: resolution — narrower gives better frequency separation and lower noise floor, slower sweep. VBW: smoothing — narrower reduces visible noise. Noise floor (dBm) = −174 + NF + 10 log₁₀(RBW_Hz). Harmonic measurement: TX into dummy load via attenuator; delta marker gives harmonic level relative to fundamental.
+    </div>
+  </section>
+
+  <!-- ── §14L ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14L">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14L · 14L1</span>
+    <h2>The Dummy Load</h2>
+
+    <p>A dummy load is a <strong>50 Ω non-inductive resistive termination</strong> that absorbs all RF power as heat. It is the essential companion of all transmitter testing — it prevents radiation and provides a stable, known load.</p>
+
+    <h3>RF Power Dissipation</h3>
+    <p>Power dissipated in the dummy load resistor:</p>
+<pre class="formula-block">P = V_rms² / R = I_rms² × R = V_pk² / (2R)</pre>
+
+    <p>The <strong>peak RF current</strong> in the load at a given power:</p>
+<pre class="formula-block">I_pk = √(2P / R)</pre>
+
+    <p><strong>Example — 400 W into 50 Ω:</strong></p>
+    <p style="margin-left:1rem; font-family:var(--font-mono,'IBM Plex Mono',monospace); font-size:0.875rem; color:#e5e7eb;">
+      I_pk = √(2 × 400 / 50) = √16 = <strong>4 A peak</strong> (2.83 A RMS)<br>
+      V_pk = I_pk × R = 4 × 50 = <strong>200 V peak</strong> (141 V RMS)
+    </p>
+    <p>These are significant figures — the dummy load must be rated for both the RMS power and the peak voltage.</p>
+
+    <h3>Construction</h3>
+    <ul>
+      <li><strong>Wirewound resistors:</strong> common for QRP dummy loads. The winding creates inductance — at VHF and above, the inductance becomes significant. Suitable for HF only.</li>
+      <li><strong>Metal film or carbon film non-inductive resistors:</strong> the resistive element has negligible inductance. Multiple 200 Ω or 250 Ω resistors in parallel give 50 Ω — scale the number of resistors for the required power.</li>
+      <li><strong>RF dummy load with oil cooling:</strong> high-power loads (1 kW+) use non-inductive resistors in a sealed metal container filled with transformer oil. A 1 kW oil-cooled load can typically operate for 30–60 seconds of CW before the oil temperature becomes excessive.</li>
+    </ul>
+
+    <p><strong>SWR of a dummy load:</strong> a good dummy load should present SWR &lt; 1.1:1 across the full HF band and ideally to 144 MHz. A poorly constructed dummy load with long resistor leads can have SWR &gt; 1.5:1 at 144 MHz.</p>
+
+    <div class="callout-exam">
+      <strong>14L1:</strong> Dummy load: 50 Ω non-reactive, absorbs RF as heat. I_pk = √(2P/R). V_pk = I_pk × R. Wirewound resistors inductive at VHF — use non-inductive film resistors for broadband loads. Oil-cooled loads handle high continuous power. Always verify SWR across the operating frequency range.
+    </div>
+  </section>
+
+  <!-- ── §14M ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14M">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14M · 14M1</span>
+    <h2>The SWR Meter in Practice</h2>
+
+    <p>Building on the Bruene coupler theory (§14D), the practical SWR meter has several important placement and interpretation considerations.</p>
+
+    <h3>Placement and What Each Position Tells You</h3>
+    <table class="data-table placement-table">
+      <thead>
+        <tr><th>Position</th><th>Reading</th><th>What it reveals</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TX output → ATU input</td><td>SWR as seen by the PA</td><td>Whether the PA is protected from mismatch</td></tr>
+        <tr><td>ATU output → feeder</td><td>True feeder + antenna SWR</td><td>What the ATU is actually matching</td></tr>
+        <tr><td>Remote (antenna feedpoint)</td><td>True antenna SWR only</td><td>Feeder not included in reading</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout-warn">
+      <strong>Warning:</strong> An SWR meter placed at the transmitter output when an ATU is in circuit will always read close to 1:1 — the ATU transforms the antenna mismatch to match the PA's required load. This confirms the PA is protected but reveals nothing about the antenna. Place the SWR meter <strong>between the ATU and the feeder</strong> to measure the antenna system's true SWR.
+    </div>
+
+    <h3>Power Calibration</h3>
+    <p>SWR meters are calibrated for a specific system impedance (50 Ω in most amateur systems). Using a 50 Ω meter in a 75 Ω system introduces errors: the bridge balance condition is incorrect, and both forward and reflected readings are wrong. Ensure the SWR meter's rated Z₀ matches the system.</p>
+
+    <h3>The Cross-Pointer Power Meter</h3>
+    <p>A <strong>cross-pointer meter</strong> (also called a watt meter) uses two meters — one for forward power, one for reflected power — both calibrated in watts. This gives more intuitive reading than SWR: you see directly that the transmitter is delivering 100 W forward and 5 W is being reflected.</p>
+
+    <div class="callout-exam">
+      <strong>14M1:</strong> SWR meter between PA and ATU: protects PA, does not show antenna SWR. Between ATU and feeder: shows true antenna system SWR — the diagnostic position. An ATU hides antenna mismatch from the PA; the SWR meter must be on the antenna side to reveal the actual mismatch.
+    </div>
+  </section>
+
+  <!-- ── §14N ─────────────────────────────────────────────── -->
+  <section class="chapter" id="ch-14N">
+    <span class="chapter-anchor"></span>
+    <span class="chapter-code">§14N · 14N1</span>
+    <h2>The Field Strength Meter</h2>
+
+    <p>A field strength meter measures the <strong>relative or absolute electric field strength</strong> (V/m) or magnetic field strength (A/m) in the vicinity of an antenna system. It is used for pattern measurement, proximity checks, and EMF compliance assessment.</p>
+
+    <h3>Construction</h3>
+    <p>The simplest field strength meter consists of:</p>
+    <ul>
+      <li>A <strong>dipole antenna element</strong> (or a short monopole rod) proportioned for the frequency of interest</li>
+      <li>A <strong>diode peak detector</strong> that converts the RF voltage on the antenna to a DC current</li>
+      <li>A <strong>microammeter</strong> or milliammeter calibrated in relative field strength</li>
+    </ul>
+    <p>The detector output is proportional to E² (since power density ∝ E²), so meter deflection ∝ E². For a linear meter scale calibrated in E (V/m), the scale would be square-root compressed.</p>
+    <p>More sophisticated instruments use a calibrated antenna element of known effective height h_eff, allowing conversion from antenna terminal voltage V_a to field strength E:</p>
+<pre class="formula-block">E (V/m) = V_a / h_eff</pre>
+
+    <h3>Uses</h3>
+    <p><strong>Antenna pattern measurement:</strong> slowly rotate the antenna under test (or walk around it) while monitoring the field strength meter. The meter reads relative field strength at each azimuth angle, mapping the antenna's horizontal radiation pattern.</p>
+
+    <p><strong>Proximity check (EMF compliance):</strong> monitor field strength at increasing distance from the antenna. Compare against the ICNIRP reference levels for occupational or public exposure. The field strength formula (§13D) gives an estimate; the field strength meter provides a direct measurement.</p>
+
+    <p><strong>Transmitter output relative check:</strong> with a fixed antenna in the near field, the meter indicates relative RF output power. Useful for comparing adjustments (ATU tuning, antenna length) without a calibrated power meter.</p>
+
+    <p><strong>Feeder radiation check:</strong> move the field strength meter along the coaxial feeder. Any significant reading indicates CM current on the feeder outer braid — a braid-breaker choke is needed (§13G).</p>
+
+    <h3>Limitations</h3>
+    <p>An uncalibrated field strength meter gives only <strong>relative</strong> readings. Converting to absolute V/m requires a calibrated antenna element with known h_eff or gain, a known reference distance and power level for in-situ calibration, and account for near-field effects if measurements are within λ/2π of the antenna.</p>
+    <p>For formal EMF compliance assessment, calibrated equipment and the Ofcom EMF calculation spreadsheet should be used in preference to a simple diode-and-meter instrument.</p>
+
+    <div class="callout-exam">
+      <strong>14N1:</strong> Field strength meter: dipole + diode + meter. Output ∝ E². Calibrated instruments convert antenna terminal voltage to E(V/m) via h_eff. Uses: antenna pattern, EMF proximity check, feeder CM current detection. Uncalibrated instruments give relative readings only — use Ofcom EMF spreadsheet and calibrated instrumentation for compliance measurements.
+    </div>
+  </section>
+
+  <!-- ── §14 Self-Check ─────────────────────────────────── -->
+  <section class="self-check-section" id="ch-14O">
+    <span class="chapter-code">§14O · Self-Check</span>
+    <h2>Self-Check</h2>
+
+    <div class="self-check">
+      <p><strong>Q1.</strong> A voltmeter with 1 MΩ input impedance measures a node with a Thevenin resistance of 100 kΩ. What is the loading error percentage?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-1">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-1" hidden>
+        <p>Error fraction = R_c / (R_m + R_c) = 100,000 / (1,000,000 + 100,000) = 100,000 / 1,100,000 ≈ <strong>9.1%</strong>.</p>
+        <p>The measured voltage will be approximately 9% below the true open-circuit voltage. A 10 MΩ instrument would reduce this to 0.99%.</p>
+      </div>
+    </div>
+
+    <div class="self-check">
+      <p><strong>Q2.</strong> An SSB transmitter produces a peak RF voltage of 200 V on a 50 Ω load at the loudest speech peak. What is the PEP?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-2">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-2" hidden>
+        <p>PEP = V_pk² / (2 × R) = 200² / (2 × 50) = 40,000 / 100 = <strong>400 W PEP</strong>.</p>
+      </div>
+    </div>
+
+    <div class="self-check">
+      <p><strong>Q3.</strong> An antenna analyser measures Z_L = 150 Ω on a 50 Ω system. What is |Γ|, the SWR, and the return loss?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-3">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-3" hidden>
+        <p>Γ = (Z_L − Z₀) / (Z_L + Z₀) = (150 − 50) / (150 + 50) = 100 / 200 = <strong>0.5</strong></p>
+        <p>SWR = (1 + 0.5) / (1 − 0.5) = 1.5 / 0.5 = <strong>3.0 : 1</strong></p>
+        <p>Return loss = −20 × log₁₀(0.5) = −20 × (−0.301) = <strong>6.0 dB</strong></p>
+      </div>
+    </div>
+
+    <div class="self-check">
+      <p><strong>Q4.</strong> A spectrum analyser has a noise figure of 15 dB and is set to a 3 kHz resolution bandwidth. What is the approximate noise floor in dBm?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-4">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-4" hidden>
+        <p>Noise floor = −174 + NF + 10 × log₁₀(RBW_Hz)</p>
+        <p>= −174 + 15 + 10 × log₁₀(3000)</p>
+        <p>= −174 + 15 + 10 × 3.477</p>
+        <p>= −174 + 15 + 34.8 = <strong>−124.2 dBm ≈ −124 dBm</strong></p>
+      </div>
+    </div>
+
+    <div class="self-check">
+      <p><strong>Q5.</strong> What is the peak RF current in a 50 Ω dummy load when 200 W is dissipated?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-5">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-5" hidden>
+        <p>I_pk = √(2P / R) = √(2 × 200 / 50) = √8 = <strong>2.83 A peak</strong> (2.0 A RMS)</p>
+      </div>
+    </div>
+
+    <div class="self-check">
+      <p><strong>Q6.</strong> A dip meter finds resonance at 14.2 MHz when coupled to an unknown inductor in parallel with a known 100 pF capacitor. What is the inductor's value?</p>
+      <button class="btn-reveal" aria-expanded="false" data-target="ans-14-6">Show answer</button>
+      <div class="self-check__reveal" id="ans-14-6" hidden>
+        <p>L = 1 / (4π² × f₀² × C)</p>
+        <p>= 1 / (4 × 9.87 × (14.2 × 10⁶)² × 100 × 10⁻¹²)</p>
+        <p>= 1 / (4 × 9.87 × 2.016 × 10¹⁴ × 10⁻¹⁰)</p>
+        <p>= 1 / (4 × 9.87 × 2.016 × 10⁴)</p>
+        <p>= 1 / (7.954 × 10⁵) ≈ <strong>1.26 μH</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section navigation ─────────────────────────────── -->
+  <nav class="section-nav" aria-label="Section navigation">
+    <a href="section-13-emc.html" class="section-nav__link">&larr; Chapter 13: EMC</a>
+    <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=14"
+       class="section-nav__link section-nav__practice">Practice This Section</a>
+    <span class="section-nav__link section-nav__link--disabled">All chapters complete</span>
+  </nav>
+
+  <footer style="padding-bottom: 3rem; color: var(--text-dim); font-size: 0.8rem; font-family: var(--font-mono, 'IBM Plex Mono', monospace);">
+    Chapter 14 &nbsp;&middot;&nbsp; Full Licence &nbsp;&middot;&nbsp;
+    <a href="index.html" style="color: var(--text-dim); text-decoration: none;">Full Licence index</a>
+  </footer>
+
+</main>
+
+<!-- ─── FOOTER ───────────────────────────────────────────── -->
+<div id="site-footer-mount">
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+    </div>
+  </footer>
+</div>
+
+<script>
+  /* Progress bar */
+  (function() {
+    var bar = document.getElementById('progress-bar');
+    if (!bar) return;
+    window.addEventListener('scroll', function() {
+      var d = document.documentElement;
+      var pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+      bar.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+  })();
+
+  /* Self-check reveal toggles */
+  document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = document.getElementById(this.dataset.target);
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      this.textContent = expanded ? 'Show answer' : 'Hide answer';
+      target.hidden = expanded;
+    });
+  });
+</script>
+<script src="/assets/js/search.js?v=20260916-1000" defer></script>
+<script src="/assets/js/nav-loader.js?v=20260916-1000" defer></script>
+<script src="/assets/js/study-page.js?v=20260916-1000" defer></script>
+</body>
+</html>

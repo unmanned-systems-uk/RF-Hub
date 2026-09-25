@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260913-1600">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260918-1000">
   <style>
     #progress-bar {
       position: fixed; top: 0; left: 0;
@@ -526,6 +526,14 @@ Where:
       </div>
       <h2>Emission Designators and Bandwidth Terms</h2>
 
+      <p><em>This section expands beyond the RSGB Chapter 1 text, covering material required at Full licence level. Emission designator codes are defined in ITU Radio Regulations Appendix 1 &mdash; [VERIFY] specific codes against current ITU RR before citing in any regulatory context.</em></p>
+
+      <h3>Where Does the System Come From?</h3>
+      <p>Emission designators were born from an early 20th-century need to classify the rapidly expanding variety of radio signals crossing national borders. When the International Telecommunication Union codified its Radio Regulations in the 1920s and 1930s, it became clear that each country needed a common vocabulary for signal types &mdash; one that a Japanese regulator and a Chilean regulator could both apply to the same signal and reach the same classification. The result was Appendix 1 of the ITU Radio Regulations: a compact, machine-readable three-character code that describes any emission unambiguously.</p>
+      <p>The system was designed to be <strong>universal and legally precise</strong>. Informal mode names like &ldquo;SSB&rdquo;, &ldquo;CW&rdquo;, or &ldquo;FT8&rdquo; are conversational shorthand &mdash; useful between operators who share context, but imprecise in legal documents. &ldquo;SSB&rdquo; does not specify whether the carrier is suppressed or reduced, or whether the signal carries voice, data, or something else. The emission designator <strong>J3E</strong> leaves no room for ambiguity: single sideband, suppressed carrier, single analogue channel, telephony.</p>
+      <p>The ITU system is used today by everyone who works at the boundary between radio operation and regulation. National regulators including Ofcom and the US FCC cite designators in licence documents and enforcement actions. IARU regional band planners use them to define which signal types belong in which segment of a band. Exam boards test whether candidates understand what they are actually licensed to emit. Spectrum monitoring services record designators when logging interference sources. Amateurs encounter them directly in NoV applications and in the fine print of Schedule 1.</p>
+      <p>Understanding the system also helps decode your own logbook. The ADIF logging format&rsquo;s MODE field loosely follows the designator taxonomy &mdash; FT8 is logged as &ldquo;FT8&rdquo; because that is the commonly understood name, but the underlying signal is classified <strong>J2D</strong> (SSB-type carrier, single digital channel with audio sub-carrier, data). Knowing the system makes the decode table below something you can actually use, not just memorise.</p>
+
       <h3>The ITU Emission Designator System</h3>
       <p>The ITU uses a standardised system to describe the type of emission produced by a station. An <strong>emission designator</strong> has three mandatory characters (sometimes preceded by an optional bandwidth figure in kHz/MHz/GHz):</p>
       <pre>[Optional bandwidth] + Character 1 + Character 2 + Character 3
@@ -537,6 +545,8 @@ Character 1 — Type of modulation:
   J = Single sideband, suppressed carrier (SSB)
   R = Single sideband, reduced carrier
   P = Unmodulated pulse
+  K = Amplitude-modulated pulse
+  (others exist — see ITU RR Appendix 1)
 
 Character 2 — Nature of the modulating signal:
   0 = No modulating signal (unmodulated carrier)
@@ -574,16 +584,42 @@ Character 3 — Type of information transmitted:
       </div>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text">Key designators: <strong>A1A</strong> = CW, <strong>F3E</strong> = FM voice, <strong>J3E</strong> = SSB voice, <strong>A3E</strong> = AM voice, <strong>F1D</strong> = RTTY/FSK. The first letter gives the modulation type; the second the nature of the signal; the third the information type.</div>
+        <div class="callout-text">Key designators: <strong>A1A</strong> = CW, <strong>F3E</strong> = FM voice, <strong>J3E</strong> = SSB voice, <strong>A3E</strong> = AM voice, <strong>F1D</strong> = RTTY/FSK. The first letter gives the modulation type; the second the nature of the signal; the third the information type. [VERIFY] against ITU RR Appendix 1.</div>
       </div>
 
-      <h3>Bandwidth Terminology</h3>
-      <p><strong>Necessary bandwidth</strong> &mdash; the minimum bandwidth sufficient to ensure the transmission of information at the required rate and quality under the specified conditions. This is a theoretical minimum &mdash; what the signal theoretically occupies.</p>
-      <p><strong>Occupied bandwidth</strong> &mdash; the frequency range within which 99% of the total mean power is radiated. Measured on a spectrum analyser: find the frequencies below which 0.5% of power lies and above which 0.5% lies; the range between them is the occupied bandwidth.</p>
-      <p><strong>Assigned bandwidth</strong> &mdash; the frequency band within which the emission is authorised. Slightly wider than the occupied bandwidth to allow for practical imperfections in the transmitter.</p>
+      <h3>Where You Will Actually Encounter These Designators</h3>
+      <p>Knowing how to decode a designator is one thing; knowing where you will actually see one is another. Here are the most common practical touch-points:</p>
+      <p><strong>Ofcom Schedule 1 conditions.</strong> The frequency allocation table attached to your licence specifies which modes are permitted or restricted on particular bands. Some entries reference emission designators directly &mdash; for example, restricting a shared allocation to specific signal types to protect the primary user.</p>
+      <p><strong>IARU Region 1 band plan.</strong> The IARU band plan divides amateur HF and VHF bands into usage segments by designator. A segment described as &ldquo;narrow-band modes: A1A, F1B, G1D, J2D&rdquo; is telling you which coded signal types are expected there &mdash; and implicitly, that F3E (wideband FM voice) does not belong.</p>
+      <p><strong>Full licence exam questions.</strong> The syllabus specifically tests decoding &mdash; expect questions such as &ldquo;What does J3E mean?&rdquo; or &ldquo;Which designator describes FM voice?&rdquo; A candidate who has internalised the three-character structure can answer without rote memorisation.</p>
+      <p><strong>Interference complaints and enforcement.</strong> When Ofcom or a spectrum monitoring service documents interference, it records the emission type by designator. An enforcement notice stating &ldquo;spurious emission F3E on [frequency]&rdquo; is unambiguous in a way that &ldquo;someone was using FM&rdquo; is not.</p>
+      <p><strong>NoV applications.</strong> Applications for a Notice of Variation &mdash; for example, to operate a special-event station with a unique callsign, or to request permissions outside standard licence conditions &mdash; may require you to list the emission types you intend to use.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text">In exam questions: <strong>necessary bandwidth</strong> = minimum theoretically needed; <strong>occupied bandwidth</strong> = 99% of power within; <strong>assigned bandwidth</strong> = what the licence authorises (widest of the three).</div>
+        <div class="callout-text"><strong>Worked scenario:</strong> If Ofcom&rsquo;s conditions for 5&nbsp;MHz state &ldquo;permitted emissions: A1A, J3E, J2D&rdquo; &mdash; you now know that authorises CW, SSB voice, and audio-subcarrier digital, but excludes FM voice (F3E) and direct-FM data (F1D). You can read the licence condition directly rather than waiting for someone to translate it for you.</div>
+      </div>
+
+      <h3>Why Bandwidth Terminology Matters in Practice</h3>
+      <p>Three separate bandwidth definitions appear in the ITU Radio Regulations and in UK licence documentation. They often appear together in exam questions, which tempts candidates to treat them as similar-but-slightly-different things to memorise. They are not &mdash; each measures something genuinely different, and the practical difference matters when transmitters misbehave.</p>
+      <p><strong>Necessary bandwidth</strong> is a design specification. It is the minimum bandwidth sufficient to carry the information at the required rate and quality. It is a theoretical floor, calculated from the signal type, not measured at the antenna. You encounter it in engineering documents and band-planning calculations.</p>
+      <p><strong>Occupied bandwidth</strong> is a measurement. It is what your transmitter actually radiates &mdash; specifically, the frequency range containing 99% of the total radiated power. A spectrum analyser can measure it directly. When a regulator checks your signal, occupied bandwidth is what they observe.</p>
+      <p><strong>Assigned bandwidth</strong> is a legal permission. It is the frequency range your licence authorises you to use, set wider than typical occupied bandwidth to accommodate practical transmitter imperfections.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">A well-behaved transmitter: necessary bandwidth = 2.4&nbsp;kHz (SSB voice, theoretical); occupied bandwidth = 2.8&nbsp;kHz (what the antenna actually radiates, measured); assigned bandwidth = 3.0&nbsp;kHz (what the licence authorises). Three different numbers describing the same signal.</div>
+      </div>
+      <p>The difference becomes critical when something goes wrong. If ALC (Automatic Level Control) is misadjusted on an SSB transmitter, intermodulation products splatter far outside the intended passband. The necessary bandwidth of the signal type has not changed. The assigned bandwidth in the licence has not changed. But the occupied bandwidth has grown &mdash; and if it exceeds the assigned bandwidth, the transmission is non-compliant regardless of how small the theoretical signal should be. Regulators measure occupied bandwidth. Your licence constrains you to assigned bandwidth. Keeping occupied bandwidth comfortably inside assigned bandwidth is both good practice and a legal obligation.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text">
+          <strong>Exam crib &mdash; bandwidth terms (ITU RR definitions):</strong>
+          <ul style="margin: 0.4rem 0 0 1.2rem; padding: 0;">
+            <li><strong>Necessary bandwidth</strong> &mdash; minimum bandwidth sufficient to carry the information at the required rate and quality. Theoretical; calculated from signal type.</li>
+            <li><strong>Occupied bandwidth</strong> &mdash; range containing 99% of total mean power (0.5% excluded at each end). Measured; what a spectrum analyser shows.</li>
+            <li><strong>Assigned bandwidth</strong> &mdash; the range the licence authorises. Widest of the three; set to accommodate real-world transmitter imperfections.</li>
+          </ul>
+          <p style="margin: 0.4rem 0 0;">[VERIFY] exact wording against ITU RR Appendix 1 before citing in any regulatory context.</p>
+        </div>
       </div>
     </section>
 
@@ -707,7 +743,8 @@ Character 3 — Type of information transmitted:
     });
   </script>
 
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/search.js?v=20260918-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260918-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260918-1000" defer></script>
 </body>
 </html>

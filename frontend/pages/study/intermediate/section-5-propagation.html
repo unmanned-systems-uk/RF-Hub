@@ -508,6 +508,11 @@ Radio range (km) &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx)
         <div class="callout-text"><strong>5B5:</strong> VHF/UHF is primarily line-of-sight above ~30 MHz. The radio horizon is slightly further than the visual horizon due to atmospheric refraction. Antenna height is the primary factor in extending range.</div>
       </div>
 
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper</div>
+        <div class="callout-text"><a href="/pages/blog/station-survey-01-six-degree-skyline.html" target="_blank">Station Survey 01 &mdash; The Six-Degree Skyline</a> &mdash; a real case study applying these concepts: terrain profiling with Copernicus data and LiDAR reveals how hills, trees, and buildings cap the effective radio horizon at a UK station, and models the improvement from raising the antenna.</div>
+      </div>
+
       <h3>Tropospheric Ducting (5C3)</h3>
       <p>The <strong>troposphere</strong> is the lowest layer of the atmosphere (0&ndash;12 km) &mdash; the layer where weather happens.</p>
       <p>Normally, air temperature decreases with altitude. But under certain weather conditions, a <strong>temperature inversion</strong> occurs: a layer of warmer air sits above cooler air. Radio signals entering the warm layer are bent back downward and can become <strong>trapped in a duct</strong> &mdash; bouncing between the inversion layer and the earth&rsquo;s surface for hundreds of kilometres with very little loss.</p>
@@ -550,8 +555,31 @@ Radio range (km) &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx)
 
       <h3>Fading (5B2)</h3>
       <p><strong>Fading</strong> (or QSB &mdash; Q-code for signal variation) is the variation in received signal strength over time, caused by <strong>multipath propagation</strong>: multiple slightly different paths from transmitter to receiver, each arriving with a slightly different delay. As the ionosphere moves and changes, these paths vary in length by metres &mdash; enough to put the signals from each path in and out of phase.</p>
-      <p>When signals from two paths add in phase &rarr; signal is strong. When they partially cancel &rarr; signal is weak.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>Note:</strong> Some RSGB publications and older texts use the term <em>multi-wave propagation</em> for the same phenomenon. Multipath and multi-wave are interchangeable &mdash; both describe signals arriving via more than one path and interfering at the receiver.</div>
+      </div>
+
+      <p>When signals from two paths add in phase &rarr; signal is strong. When they partially cancel &rarr; signal is weak. The rate of fading depends on how quickly the path lengths change:</p>
+      <ul>
+        <li><strong>Fast fading (flutter):</strong> path length changes in fractions of a second &mdash; typically caused by a moving reflector (aircraft) or rapid ionospheric turbulence</li>
+        <li><strong>Slow fading:</strong> signal strength drifts over seconds or minutes as the ionosphere gradually shifts</li>
+      </ul>
       <p><strong>Selective fading</strong> is when different frequencies within the same signal band fade at different rates. This is particularly destructive to SSB because parts of the voice spectrum fade while others don&rsquo;t, making the received audio garbled even when the signal appears to be present.</p>
+
+      <h3>VHF/UHF Multipath</h3>
+      <p>On VHF and UHF bands (144 MHz and above), the ionosphere plays no role in local propagation. Multipath instead arises from <strong>reflections from substantial structures</strong> &mdash; buildings, hillsides, and bodies of water act as reflectors. A signal travelling the direct path and a reflected path arrive at the receiver with a phase difference determined by the extra distance travelled by the reflected path.</p>
+      <p>If the path difference is an odd multiple of a half-wavelength, the two signals cancel &mdash; creating a <strong>signal null</strong>. Moving the antenna by as little as half a wavelength (~1 m at 144 MHz, ~35 cm at 432 MHz) can shift a null into a peak. This is why small antenna height adjustments can dramatically change signal strength on VHF.</p>
+
+      <p><strong>Aircraft flutter</strong> is a specific form of VHF/UHF multipath where the reflector is a moving aircraft. As the aircraft moves, the reflected path length changes continuously, causing rapid amplitude modulation of the received signal &mdash; perceived as a rapid fluttering or warbling on the audio. Flutter rates of 10&ndash;20 Hz are typical at 144 MHz and are a recognisable characteristic of signals passing over busy airspace. The effect is also noticeable at lower VHF frequencies on FM repeater signals under certain conditions.</p>
+
+      <p><strong>Urban multipath</strong> causes rapid signal fading and dropouts in built-up areas. Signals reflect from multiple buildings simultaneously, creating a complex interference pattern that varies across short distances. This <em>urban canyon effect</em> means that a signal can be strong on one side of a street and drop out entirely on the other. FM signals are particularly vulnerable because the FM capture effect &mdash; which normally suppresses weaker interfering signals &mdash; can fail entirely when the wanted signal and an out-of-phase reflection are of comparable strength.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>5B2 (VHF/UHF):</strong> Multipath on VHF/UHF is caused by reflections from buildings, hills, and water &mdash; not the ionosphere. Effects include signal nulls at specific antenna heights, aircraft flutter (10&ndash;20 Hz AM), and urban canyon dropouts. The underlying physics is identical to ionospheric multipath fading on HF.</div>
+      </div>
 
       <div class="callout callout--info">
         <div class="callout-icon">&#x2139;</div>
@@ -843,7 +871,8 @@ Radio range (km) &asymp; 3.57 &times; (&radic;h_tx + &radic;h_rx)
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/search.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260914-1000" defer></script>
 </body>
 </html>

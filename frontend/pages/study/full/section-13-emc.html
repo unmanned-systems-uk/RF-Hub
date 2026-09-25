@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 13: Electromagnetic Compatibility (EMC) — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260917-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .callout-xref {
+      background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.18);
+      border-left: 3px solid var(--accent-h);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.875rem;
+      color: var(--text-dim);
+    }
+    .callout-xref strong { color: var(--text-secondary); }
+    .callout-xref a { color: var(--accent-h); text-decoration: none; }
+    .callout-xref a:hover { text-decoration: underline; }
+    .callout-warn {
+      background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.25);
+      border-left: 3px solid var(--accent-e);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-warn strong { color: var(--text-primary); }
+    .callout--danger {
+      background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.28);
+      border-left: 3px solid #ef4444;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout--danger strong { color: var(--text-primary); }
+    .interactive-frame { margin: 1.5rem 0; border-radius: var(--radius-md); overflow: hidden; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .self-check__reveal .formula-block { font-size: 0.85rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <nav class="hero-breadcrumb" aria-label="Breadcrumb">
+        <a href="/index.html">Home</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <a href="index.html">Full Licence</a>
+        <span class="hero-breadcrumb__sep">/</span>
+        <span>Chapter 13</span>
+      </nav>
+      <div class="hero-badge-row">
+        <span class="badge badge--level">Full Licence</span>
+        <span class="badge">Chapter 13</span>
+        <span class="badge">8–10% exam weight</span>
+      </div>
+      <h1>Electromagnetic Compatibility (EMC)</h1>
+      <p class="hero-lead">Can two pieces of electronic equipment coexist without disrupting each other? As a licensed amateur you are simultaneously a potential source of interference and a victim of it. Full level adds common/differential mode analysis, field-strength calculation, Pi and T filter derivation, and the legal framework for handling interference complaints.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-13A">13A Dual Role</a></li>
+        <li><a href="#ch-13B">13B Legal Framework</a></li>
+        <li><a href="#ch-13C">13C CM / DM Currents</a></li>
+        <li><a href="#ch-13D">13D Field Strength</a></li>
+        <li><a href="#ch-13E">13E Near / Far Field</a></li>
+        <li><a href="#ch-13F">13F Coupling Mechanisms</a></li>
+        <li><a href="#ch-13G">13G Ferrite Chokes</a></li>
+        <li><a href="#ch-13H">13H Filter Types</a></li>
+        <li><a href="#ch-13I">13I Pi &amp; T Design</a></li>
+        <li><a href="#ch-13J">13J Cascading</a></li>
+        <li><a href="#ch-13K">13K Coax Choice</a></li>
+        <li><a href="#ch-13L">13L Mains Filters</a></li>
+        <li><a href="#ch-13M">13M Notch Filters</a></li>
+        <li><a href="#ch-13N">13N Equipment-Specific</a></li>
+        <li><a href="#ch-13O">13O Telephone RFI</a></li>
+        <li><a href="#ch-13P">13P Computer / SMPS RFI</a></li>
+        <li><a href="#ch-13Q">13Q Complaint Procedure</a></li>
+        <li><a href="#ch-13R">13R Shack EMC</a></li>
+        <li><a href="#ch-13S">13S Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+
+    <div class="toc">
+      <p class="toc__label">In this chapter</p>
+      <ol>
+        <li><a href="#ch-13A"><span class="toc-code">13A</span>Introduction: What EMC Means and the Amateur's Dual Role</a></li>
+        <li><a href="#ch-13B"><span class="toc-code">13B</span>Legal Framework: UK EMC and Radio Equipment Regulations</a></li>
+        <li><a href="#ch-13C"><span class="toc-code">13C</span>Common Mode and Differential Mode Currents</a></li>
+        <li><a href="#ch-13D"><span class="toc-code">13D</span>Transmitted Field Strength</a></li>
+        <li><a href="#ch-13E"><span class="toc-code">13E</span>Antenna Position: Near Field vs Far Field</a></li>
+        <li><a href="#ch-13F"><span class="toc-code">13F</span>How Interference Travels: Coupling Mechanisms</a></li>
+        <li><a href="#ch-13G"><span class="toc-code">13G</span>Common-Mode Ferrite Chokes</a></li>
+        <li><a href="#ch-13H"><span class="toc-code">13H</span>Filter Types and Placement</a></li>
+        <li><a href="#ch-13I"><span class="toc-code">13I</span>Pi and T Filter Design</a></li>
+        <li><a href="#ch-13J"><span class="toc-code">13J</span>Cascading Filters</a></li>
+        <li><a href="#ch-13K"><span class="toc-code">13K</span>Coaxial Cable Choice</a></li>
+        <li><a href="#ch-13L"><span class="toc-code">13L</span>Mains Interference Filters</a></li>
+        <li><a href="#ch-13M"><span class="toc-code">13M</span>Notch Filters</a></li>
+        <li><a href="#ch-13N"><span class="toc-code">13N</span>Equipment-Specific Interference</a></li>
+        <li><a href="#ch-13O"><span class="toc-code">13O</span>Telephone Line RFI</a></li>
+        <li><a href="#ch-13P"><span class="toc-code">13P</span>Computer and SMPS RFI</a></li>
+        <li><a href="#ch-13Q"><span class="toc-code">13Q</span>The Complaint Procedure</a></li>
+        <li><a href="#ch-13R"><span class="toc-code">13R</span>Shack EMC: Earth Loops and RF in Equipment</a></li>
+        <li><a href="#ch-13S"><span class="toc-code">13S</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <div class="callout-xref">
+      <strong>Cross-reference &mdash; Intermediate §6:</strong> The Intermediate EMC chapter introduces the definition of EMC, the amateur's dual role, basic filter types, and the complaint procedure. Full level builds on that foundation with quantitative analysis. Read <a href="/pages/study/intermediate/section-6-emc.html">Intermediate §6</a> first if you have not already covered it. Also cross-referenced: <a href="section-11-feeders-antennas.html">Full §11 Feeders &amp; Antennas</a> (coax shielding), <a href="section-8-transmitter-interference.html">Full §8 Spurious Emissions</a>.
+    </div>
+
+    <!-- ════════════════════ §13A ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13A">
+      <div class="chapter-header">
+        <span class="chapter-num">13A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Introduction: What EMC Means and the Amateur's Dual Role</h2>
+
+      <p><strong>Electromagnetic Compatibility (EMC)</strong> is the ability of equipment to function correctly in its electromagnetic environment <strong>without itself causing unacceptable interference</strong> to other equipment in that environment.</p>
+
+      <p>The definition contains two distinct obligations:</p>
+      <ol>
+        <li><strong>Emission control</strong> — the equipment must not radiate or conduct energy at levels that interfere with neighbouring equipment</li>
+        <li><strong>Immunity</strong> — the equipment must continue to function correctly when exposed to electromagnetic energy produced by its environment</li>
+      </ol>
+      <p>Both obligations apply to manufacturers (their equipment must be designed to meet both) and, by extension, to amateur operators operating that equipment.</p>
+
+      <h3>The Amateur's Dual Position (13A1)</h3>
+      <p>Amateur radio operators occupy an unusual position in the electromagnetic environment:</p>
+      <p><strong>As sources of interference:</strong> We transmit at power levels from 10 W (Foundation) to 1000 W (Full post-2024), using antennas in or near residential buildings. Our signals at HF propagate through walls, along power cables, and into neighbour equipment that was designed for an environment containing only domestic electronics. We are a potential source of interference.</p>
+      <p><strong>As victims of interference:</strong> The modern home is saturated with unintentional emitters — switch-mode power supplies, LED lamp drivers, solar panel inverters, PLT (Powerline Telecommunications) adapters, VDSL broadband modems, and motor-controller circuits. Every one of these generates conducted and radiated noise that can raise our noise floor to the point where DX is impossible.</p>
+
+      <div class="callout-exam">
+        <strong>13A1:</strong> The amateur licence acknowledges the dual role: we accept some interference from lawfully operated equipment, in return for the right to transmit at power levels that may affect neighbours. Neither party has an absolute right — a reasonable balance must be achieved.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13B ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13B">
+      <div class="chapter-header">
+        <span class="chapter-num">13B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Legal Framework: UK EMC and Radio Equipment Regulations (13B1)</h2>
+
+      <p>Before Brexit, UK law transposed the EU <strong>EMC Directive 2014/30/EU</strong> and the <strong>Radio Equipment Directive (RED) 2014/53/EU</strong> into domestic law. After the UK's departure from the EU, these became:</p>
+      <ul>
+        <li><strong>The Electromagnetic Compatibility Regulations 2016 (SI 2016/1091)</strong> — governing equipment that generates or is susceptible to electromagnetic disturbance</li>
+        <li><strong>The Radio Equipment Regulations 2017 (SI 2017/1206)</strong> — governing transmitting and receiving apparatus (replaces the R&amp;TTE Directive)</li>
+      </ul>
+
+      <h3>What the Regulations Require</h3>
+      <p><strong>For manufacturers and importers:</strong></p>
+      <ul>
+        <li>Equipment must not cause interference that cannot be overcome</li>
+        <li>Equipment must have adequate immunity to interference to enable normal use</li>
+        <li>Equipment must bear the <strong>UKCA mark</strong> (UK market post-Brexit) or <strong>CE mark</strong> (goods placed on market before the transition, still valid in Great Britain for a transitional period)</li>
+        <li>Technical documentation must be retained demonstrating conformity</li>
+      </ul>
+      <p><strong>For users (including amateurs):</strong></p>
+      <ul>
+        <li>You must use equipment as it was designed to be used (modifications that defeat EMC measures may void conformity and legal use)</li>
+        <li>You have no legal right to cause interference, even with a licence — the amateur licence authorises transmission, it does not override EMC law</li>
+        <li>If your equipment causes unacceptable interference, you may be required to cease operating until the problem is resolved</li>
+      </ul>
+
+      <h3>The Amateur's Legal Position (13B1)</h3>
+      <p>Amateur radio equipment is often home-built or modified. Such equipment is <strong>not CE/UKCA marked</strong> and is not subject to the regulations in the same way, but the operator remains legally responsible under the <strong>Wireless Telegraphy Act 2006</strong> for operating a station that causes undue interference. The amateur licence contains specific conditions on spurious emissions (see <a href="section-8-transmitter-interference.html">§8</a>) that are enforceable by Ofcom.</p>
+
+      <div class="callout-exam">
+        <strong>13B1:</strong> Post-Brexit UK law: the EMC Regulations 2016 (SI 2016/1091) govern equipment; the Radio Equipment Regulations 2017 (SI 2017/1206) govern radio apparatus. Both replace EU directives. CE marking remains valid on equipment placed on market before the UK transition period ended; new UK-market equipment requires UKCA marking.
+      </div>
+      <div class="callout-warn">
+        <strong>Warning:</strong> Modifying commercial equipment (adding an amplifier, removing filters, bypassing AGC) may invalidate its conformity assessment and create personal legal liability if interference results.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13C ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13C">
+      <div class="chapter-header">
+        <span class="chapter-num">13C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Common Mode and Differential Mode Currents (13C1)</h2>
+
+      <p>Any cable carrying signal or power current carries <strong>two types of current simultaneously</strong>. Understanding this distinction is the foundation of practical EMC work.</p>
+
+      <h3>Differential Mode (DM) — the Wanted Current</h3>
+      <p><strong>Differential mode current</strong> flows in <strong>opposite directions</strong> in the two conductors of a cable pair. The signal current flows down conductor A and returns via conductor B. In a coaxial cable: signal flows on the inner conductor, return flows on the inner surface of the braid.</p>
+      <p>The magnetic fields produced by DM currents in the two conductors are <strong>opposite and approximately equal</strong> — they cancel at distance. DM current produces little external radiation. This is the current the circuit is designed to carry.</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/full/section-13/fig-13-1-dm-vs-cm-currents.svg" alt="Differential mode versus common mode current comparison: left panel shows DM with opposite-direction currents whose fields cancel; right panel shows CM with same-direction currents whose fields add and radiate" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+
+      <h3>Common Mode (CM) — the Interference Current</h3>
+      <p><strong>Common mode current</strong> flows in the <strong>same direction</strong> in both conductors simultaneously. It is not the wanted signal — it is a parasitic current driven by an interference source that treats the cable as a single conductor against a ground reference.</p>
+      <p>The magnetic fields produced by CM currents <strong>add</strong> rather than cancel. The cable behaves like a single-conductor antenna radiating at the CM current level.</p>
+      <p><em>(See the diagram above for a side-by-side comparison of DM and CM current flow.)</em></p>
+
+      <h3>The Relationship Between CM and DM (13C1)</h3>
+      <p>If the actual currents in conductors A and B are I_A and I_B:</p>
+      <div class="formula-block">I_DM = (I_A − I_B) / 2     (differential component — equal and opposite)
+I_CM = (I_A + I_B) / 2     (common mode component — same direction in both)</div>
+      <p>In an ideal cable with a balanced source and load, I_A = −I_B so I_CM = 0. In practice, asymmetry in impedances, parasitic paths, and ground connections all allow I_CM to develop.</p>
+
+      <h3>Why CM is the Problem</h3>
+      <p>A common-mode current of just a few milliamps on a metre of cable can produce field strengths at 10 m distance that exceed regulatory limits. The same cable carries a DM signal at hundreds of milliamps with negligible radiation. This is why the standard EMC solution is to <strong>suppress CM current</strong> while leaving DM current unaffected — and this is exactly what a properly wound ferrite choke does (see <a href="#ch-13G">§13G</a>).</p>
+      <p>On a coaxial feeder, CM current flows on the <strong>outside</strong> of the braid. The inner surface of the braid carries the legitimate return current (DM). A ferrite choke around the outside of the coax adds impedance to the outer braid surface without affecting the inner DM path.</p>
+
+      <div class="callout-exam">
+        <strong>13C1:</strong> Common mode current flows the same direction in both conductors and radiates. Differential mode current flows in opposite directions and largely cancels. EMC filters and chokes target CM current specifically; they must not significantly impede the DM signal.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13D ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13D">
+      <div class="chapter-header">
+        <span class="chapter-num">13D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Transmitted Field Strength (13D1)</h2>
+
+      <p>When you transmit, your antenna creates an electromagnetic field that decays with distance. The <strong>field strength</strong> (measured in volts per metre, V/m) at a given distance determines whether your signal is likely to cause interference to nearby equipment.</p>
+
+      <h3>From Power to Field Strength</h3>
+      <p>Starting from <strong>Power Flux Density (PFD)</strong> in the far field:</p>
+      <div class="formula-block">PFD = (P × G) / (4πr²)    W/m²
+
+Relationship between PFD and E in free space:
+PFD = E² / (120π)
+
+Combining:
+E² = 120π × (P × G) / (4πr²) = 30 × P × G / r²
+
+E (V/m) = √(30 × P × G) / r</div>
+      <p>where P is transmitter power in watts, G is antenna gain as a numeric ratio (not dBi), and r is distance in metres. This is the fundamental field-strength formula — RMS electric field strength at distance r in the far field.</p>
+
+      <h3>Worked Examples</h3>
+      <p><strong>100 W transmitter, unity gain antenna (G = 1), at r = 10 m:</strong><br>
+      E = √(30 × 100 × 1) / 10 = √3000 / 10 = 54.77 / 10 = <strong>5.5 V/m</strong></p>
+      <p><strong>100 W, 3-element Yagi with 8 dBi gain (G = 6.3), at r = 30 m in the beam direction:</strong><br>
+      E = √(30 × 100 × 6.3) / 30 = √18,900 / 30 = 137.5 / 30 = <strong>4.6 V/m</strong></p>
+      <p><strong>5 W Foundation operator, unity gain antenna, at r = 3 m (neighbour's wall):</strong><br>
+      E = √(30 × 5 × 1) / 3 = √150 / 3 = 12.25 / 3 = <strong>4.1 V/m</strong></p>
+      <p>Note: the Foundation operator at close range produces only slightly less field strength at the wall than 100 W at 10 m. Close proximity matters more than power level.</p>
+      <p><strong>Rearranged for distance: r = √(30 × P × G) / E</strong><br>
+      If a piece of equipment becomes susceptible above E = 1 V/m, and your transmitter produces 100 W with G = 1:<br>
+      r = √3000 / 1 = <strong>54.8 m</strong> — equipment must be over 55 m away to be below the susceptibility threshold.</p>
+
+      <h3>Field Strength Calculator</h3>
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-field-strength-calculator.html"
+          style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="Field Strength Calculator"></iframe>
+      </div>
+
+      <div class="callout-exam">
+        <strong>13D1:</strong> E (V/m) = √(30 × P × G) / r. Field strength falls inversely with distance (not as the square — that is PFD). Doubling distance halves E. Both power AND antenna gain enter equally; a 3 dBi gain increase has the same effect on field strength as doubling transmitter power.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13E ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13E">
+      <div class="chapter-header">
+        <span class="chapter-num">13E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Antenna Position: Near Field vs Far Field (13E1)</h2>
+
+      <p>The field-strength formula of §13D applies only in the <strong>far field</strong> — the region where the wave has separated from the antenna and propagates as a plane wave. Close to the antenna, the field structure is more complex and the formula does not apply.</p>
+
+      <h3>The Near-Field / Far-Field Boundary</h3>
+      <p>The transition occurs at approximately:</p>
+      <div class="formula-block">r_boundary ≈ λ / (2π) ≈ 0.159 × λ</div>
+      <p>At this distance, the stored reactive energy in the near field equals the radiated energy in the far field.</p>
+
+      <table>
+        <thead><tr><th>Band</th><th>Frequency</th><th>λ</th><th>Near-field boundary (λ/2π)</th></tr></thead>
+        <tbody>
+          <tr><td>80 m</td><td>3.5 MHz</td><td>85.7 m</td><td><strong>13.6 m</strong></td></tr>
+          <tr><td>40 m</td><td>7.1 MHz</td><td>42.3 m</td><td><strong>6.7 m</strong></td></tr>
+          <tr><td>20 m</td><td>14.2 MHz</td><td>21.1 m</td><td><strong>3.4 m</strong></td></tr>
+          <tr><td>10 m</td><td>28 MHz</td><td>10.7 m</td><td><strong>1.7 m</strong></td></tr>
+          <tr><td>2 m</td><td>145 MHz</td><td>2.07 m</td><td><strong>33 cm</strong></td></tr>
+          <tr><td>70 cm</td><td>433 MHz</td><td>0.69 m</td><td><strong>11 cm</strong></td></tr>
+        </tbody>
+      </table>
+
+      <p>For the HF bands, a neighbour's house 10–20 m away is at or inside the near-field boundary. This has important implications:</p>
+      <p><strong>In the near field:</strong></p>
+      <ul>
+        <li>The electric and magnetic fields do not have the free-space 120π relationship</li>
+        <li>The field does not fall as 1/r — it may fall faster (as 1/r²) or the pattern is complex</li>
+        <li>The far-field formula E = √(30PG)/r is <strong>not valid</strong> — for EMF compliance assessments at HF, use Ofcom's spreadsheet</li>
+      </ul>
+      <p><strong>In the far field (r &gt; λ/2π):</strong></p>
+      <ul>
+        <li>The formula applies; E falls as 1/r (PFD falls as 1/r²)</li>
+        <li>Field impedance equals 120π ≈ 377 Ω (free space)</li>
+      </ul>
+
+      <h3>Antenna Siting and Interference Reduction</h3>
+      <p>Antenna position is the most effective single control over interference:</p>
+      <ul>
+        <li><strong>Height and distance:</strong> every doubling of distance halves field strength at a neighbour's equipment</li>
+        <li><strong>Directivity:</strong> pointing a beam away from susceptible equipment reduces field in that direction by the front-to-back ratio</li>
+        <li><strong>Antenna type:</strong> a ground-mounted vertical radiates strongly at low angles towards neighbouring houses; a dipole at height 10–20 m concentrates radiation at higher elevation angles, reducing field strength at ground level nearby</li>
+        <li><strong>Use the lowest power consistent with the contact</strong> — power has the same effect as distance (√P factor in the formula)</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>13E1:</strong> Near-field boundary ≈ λ/2π. At HF, neighbours within ~10 m are typically in the near field. The E = √(30PG)/r formula applies only in the far field; for compliance assessments at close range, use Ofcom's EMF spreadsheet.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13F ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13F">
+      <div class="chapter-header">
+        <span class="chapter-num">13F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>How Interference Travels: Coupling Mechanisms (13F1)</h2>
+
+      <p>Interference reaching a victim equipment takes one of four routes. Identifying the correct coupling mechanism determines which remedy to apply.</p>
+
+      <h3>1. Radiated Coupling</h3>
+      <p>RF energy radiates from the source antenna (or any part of the transmitting system carrying CM current), travels through space, and is received by the victim equipment — by its connecting cables (acting as antennas), its case (resonant structure), or its input circuitry.</p>
+      <p><strong>Identification:</strong> interference exists even when source and victim share no conductors; it may vary with antenna direction; it is reduced by distance and shielding.</p>
+      <p><strong>Remedies:</strong> distance, antenna directivity, shielding the victim equipment, ferrite chokes on victim cables.</p>
+
+      <h3>2. Conducted Coupling</h3>
+      <p>RF energy travels along a shared conductor — most commonly the <strong>mains wiring</strong> that both source and victim connect to. The transmitter generates RF on the mains via its power supply, and the mains carries this to the victim.</p>
+      <p><strong>Identification:</strong> interference follows the victim wherever it is plugged in; disconnecting the mains removes the interference; interference appears on a current probe on the mains.</p>
+      <p><strong>Remedies:</strong> mains filter at the transmitter (CM choke + X/Y capacitors), separate mains circuits for the shack, ferrite on transmitter mains lead.</p>
+
+      <h3>3. Inductive (Magnetic Field) Coupling</h3>
+      <p>The changing magnetic field around current-carrying conductors induces a voltage in a nearby conductor loop by mutual inductance. This is significant at close range and particularly at low frequencies where wavelength is long.</p>
+      <p><strong>Identification:</strong> interference is present only when source and victim are in close proximity; field strength falls rapidly with distance (as 1/r³ in the near-field magnetic case); a loop of wire near the victim that can be rotated shows strong directional dependence.</p>
+      <p><strong>Remedies:</strong> physical separation; shielded twisted pair (twisting reduces the loop area that picks up magnetic flux); magnetic shielding with mu-metal or silicon-steel.</p>
+
+      <h3>4. Capacitive (Electric Field) Coupling</h3>
+      <p>High-voltage RF produces an electric field that capacitively couples onto nearby conductors through stray capacitance. This is the "hand capacitance" effect — your body is a capacitor to ground, and can conduct RF from a nearby antenna onto your skin and then into equipment you touch.</p>
+      <p><strong>Identification:</strong> interference is correlated with proximity of source antenna to victim cable/equipment; often affects high-impedance circuits (audio preamplifiers, DECT aerial); may be traced with an E-field probe.</p>
+      <p><strong>Remedies:</strong> shielded cables on victim; reduce source-to-victim distance; decoupling capacitors to ground at victim inputs; CM ferrite choke where cable enters victim equipment.</p>
+
+      <h3>Coupling Mechanism Summary (13F1)</h3>
+      <table>
+        <thead><tr><th>Mechanism</th><th>Travels via</th><th>Falls with distance</th><th>Remedy</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Radiated</strong></td><td>Space (EM wave)</td><td>E ∝ 1/r (far field)</td><td>Shield, distance, choke</td></tr>
+          <tr><td><strong>Conducted</strong></td><td>Shared mains / cables</td><td>N/A — shared path</td><td>Mains filter, isolation</td></tr>
+          <tr><td><strong>Inductive</strong></td><td>Magnetic field</td><td>H ∝ 1/r³ (near field)</td><td>Separation, twisted pair</td></tr>
+          <tr><td><strong>Capacitive</strong></td><td>Electric field</td><td>E ∝ 1/r² (near field)</td><td>Shielding, CM choke</td></tr>
+        </tbody>
+      </table>
+      <p>In practice, multiple mechanisms operate simultaneously — a complete interference solution often addresses all four.</p>
+
+      <div class="callout-exam">
+        <strong>13F1:</strong> The four coupling mechanisms are radiated, conducted, inductive, and capacitive. Each requires a different diagnostic approach and a different remedy. Mis-identifying the coupling mechanism leads to remedies that don't work.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13G ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13G">
+      <div class="chapter-header">
+        <span class="chapter-num">13G</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Common-Mode Ferrite Chokes (13G1)</h2>
+
+      <p>The ferrite CM choke is the single most versatile EMC component in the amateur toolkit. Correctly specified and wound, it suppresses CM current without affecting DM signal.</p>
+
+      <h3>How a Ferrite CM Choke Works</h3>
+      <p>Wind several turns of coax (or a cable pair) through a ferrite toroid. The DM current in the two conductors creates <strong>opposing magnetic flux</strong> in the core — they cancel, and the core presents no impedance to the DM signal. The CM current creates <strong>additive magnetic flux</strong> in the core — the core presents high impedance (Z = jωL_CM) to the CM current, suppressing it.</p>
+      <p>For a coax choke: the coaxial cable is wound through the toroid without breaking the coax. The DM path (inner conductor + braid inner surface) is undisturbed. The CM path (braid outer surface) sees high series impedance.</p>
+
+      <h3>Ferrite Mix Selection (13G1)</h3>
+      <table>
+        <thead><tr><th>Mix</th><th>Trade name</th><th>Best frequency range</th><th>Application</th></tr></thead>
+        <tbody>
+          <tr><td><strong>31</strong></td><td>Fair-Rite 31</td><td>1–300 MHz</td><td>Broadband HF choke (most common choice)</td></tr>
+          <tr><td><strong>43</strong></td><td>Fair-Rite 43</td><td>25–300 MHz</td><td>HF/low VHF choke; slightly higher impedance peak</td></tr>
+          <tr><td><strong>61</strong></td><td>Fair-Rite 61</td><td>200 MHz–1 GHz</td><td>VHF/UHF choke; not effective at HF</td></tr>
+          <tr><td><strong>75</strong></td><td>Fair-Rite 75</td><td>0.5–30 MHz</td><td>Optimised for MF/low HF; very high μ</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Rule of thumb:</strong> Mix 31 is the best general-purpose choice for HF amateur work. For suppressing 2 m or 70 cm interference reaching HF equipment, Mix 61 is more appropriate.</p>
+
+      <h3>Winding and Impedance</h3>
+      <p>The CM impedance of a ferrite choke increases with:</p>
+      <ul>
+        <li>Number of turns (Z ∝ N²)</li>
+        <li>Ferrite permeability (μ)</li>
+        <li>Core cross-sectional area</li>
+      </ul>
+      <p>A single FT240-31 toroid with 8 turns of RG-58 coax provides approximately <strong>1500–3000 Ω</strong> CM impedance across 3–30 MHz — sufficient to reduce CM current by 30–40 dB in a typical 50 Ω system.</p>
+      <p>For greater suppression: add a second toroid in series, or use a longer ferrite rod with 10–12 turns.</p>
+
+      <h3>Braid Breaker</h3>
+      <p>A <strong>braid breaker</strong> (also called a line isolator or current balun) is a CM choke placed on the coaxial feeder where it leaves the antenna. It prevents RF from the antenna from travelling back down the outside of the feeder braid into the shack and onto the mains — the most common cause of RF in audio equipment and computers.</p>
+      <p>For a dipole without a balun, the coax braid is directly connected to one half of the dipole. CM current flows down the outside of the braid and into the shack. A single FT240-31 with 8 turns at the feedpoint eliminates this current.</p>
+
+      <div class="callout-exam">
+        <strong>13G1:</strong> A CM ferrite choke suppresses common-mode current without affecting differential-mode signal. Select Mix 31 for HF. More turns = more impedance (Z ∝ N²). Place a braid-breaker at the antenna feedpoint to prevent RF travelling down the coax outer into the shack.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13H ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13H">
+      <div class="chapter-header">
+        <span class="chapter-num">13H</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Filter Types and Placement (13H1)</h2>
+
+      <p>When ferrite chokes are insufficient, or when harmonic suppression is needed rather than CM suppression, <strong>LC filters</strong> are the correct tool. There are four types; the choice depends on what you want to pass and what you want to stop.</p>
+
+      <h3>Filter Placement — TX or Victim?</h3>
+      <p><strong>At the transmitter output:</strong> suppresses harmonics before they reach the antenna. A low-pass filter here benefits all potential victims simultaneously. This is the preferred position for harmonic suppression.</p>
+      <p><strong>At the victim input:</strong> a high-pass filter at the TV aerial input blocks HF signals while passing UHF television. This targets a specific victim without affecting the transmitter. Useful when the TX output already has a low-pass filter and interference still occurs via radiated coupling.</p>
+      <p><strong>Both positions together:</strong> maximum effectiveness; the TX filter reduces harmonics by X dB and the victim filter adds a further Y dB of rejection.</p>
+
+      <h3>Low-Pass Filter (LPF)</h3>
+      <p>Passes frequencies below the cut-off frequency; attenuates harmonics above it. Used at the <strong>transmitter output</strong> to suppress harmonics. For an HF transmitter: f<sub>c</sub> set at 32–35 MHz ensures the fundamental passes but 2nd/3rd harmonics are attenuated. The response falls at approximately 6 dB/octave per reactive element beyond f<sub>c</sub>. A 3-element Pi LPF gives 60 dB/decade rolloff.</p>
+
+      <h3>High-Pass Filter (HPF)</h3>
+      <p>Passes frequencies above f<sub>c</sub>; attenuates frequencies below. Used at the <strong>victim equipment input</strong> to block HF interference while passing VHF/UHF signals. Example: a TV aerial-input HPF with f<sub>c</sub> = 40 MHz blocks 1.8–30 MHz HF transmissions while passing Freeview (470–790 MHz) with negligible loss.</p>
+
+      <h3>Band-Pass Filter (BPF)</h3>
+      <p>Passes a band of frequencies; attenuates both above and below. Used when the victim operates on a specific band and only signals in that band should be admitted. Example: a BPF centred on 14 MHz with 1 MHz bandwidth allows only 20 m signals to reach the receiver input, rejecting both lower and higher-frequency interferers.</p>
+
+      <h3>Band-Stop (Notch) Filter (BSF)</h3>
+      <p>Attenuates a specific narrow band; passes all others. Used to suppress a single interferer. (See <a href="#ch-13M">§13M</a> for notch filter detail.)</p>
+
+      <h3>Filter Type Selection Summary (13H1)</h3>
+      <table>
+        <thead><tr><th>Interference type</th><th>Filter position</th><th>Filter type</th></tr></thead>
+        <tbody>
+          <tr><td>TX harmonics reaching neighbours</td><td>TX output</td><td>Low-pass</td></tr>
+          <tr><td>HF reaching TV aerial input</td><td>TV input</td><td>High-pass</td></tr>
+          <tr><td>Broadcast AM RFI at audio input</td><td>Hi-fi input</td><td>High-pass or band-stop</td></tr>
+          <tr><td>Specific strong signal overloading RX</td><td>Before RX</td><td>Band-stop / notch</td></tr>
+          <tr><td>Wideband noise from victim</td><td>TX output</td><td>Low-pass</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout-exam">
+        <strong>13H1:</strong> A low-pass filter at the transmitter output is the first remedy for harmonic interference. A high-pass filter at the victim input is the first remedy for HF breakthrough into TV, hi-fi, or telephones. These two filters are complementary — use both for maximum effectiveness.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13I ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13I">
+      <div class="chapter-header">
+        <span class="chapter-num">13I</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Pi and T Filter Design (13I1)</h2>
+
+      <p>Both Pi and T LC filters use the same two components — inductors and capacitors — arranged in different topologies. Both can be designed to the same cut-off frequency from the same formula; their difference lies in which impedance they present at source and load.</p>
+
+      <h3>Pi Filter (Shunt–Series–Shunt)</h3>
+      <p>The Pi low-pass filter has two shunt capacitors flanking one series inductor:</p>
+      <pre class="formula-block">Input ──┬──[L]──┬── Output
+        │       │
+       [C]     [C]
+        │       │
+       GND     GND</pre>
+      <p>The Pi filter's shunt capacitors present low impedance to high-frequency components at both input and output, while the series inductor presents high impedance to high frequencies in the signal path. This makes the Pi filter well-suited to <strong>high-impedance source and load</strong>.</p>
+
+      <h3>T Filter (Series–Shunt–Series)</h3>
+      <p>The T low-pass filter has two series inductors flanking one shunt capacitor:</p>
+      <pre class="formula-block">Input ──[L]──┬──[L]── Output
+             │
+            [C]
+             │
+            GND</pre>
+      <p>The T filter's series inductors block high-frequency energy at both input and output; the shunt capacitor drains it to ground. Better suited to <strong>low-impedance source and load</strong>.</p>
+
+      <h3>Component Value Derivation (13I1)</h3>
+      <p>For a single-section LP filter with cut-off frequency f<sub>c</sub> and source/load impedance Z₀:</p>
+      <div class="formula-block">Series inductor:  L = Z₀ / (2π × f_c)
+Shunt capacitor:  C = 1 / (2π × f_c × Z₀)
+
+Derived from: inductive reactance X_L = Z₀ at f_c → L = Z₀/ωc
+              capacitive reactance X_C = Z₀ at f_c → C = 1/(ωc × Z₀)
+              where ωc = 2πfc
+
+For a High-Pass filter — swap element types:
+  Series capacitor: C = 1 / (2π × f_c × Z₀)
+  Shunt inductor:   L = Z₀ / (2π × f_c)</div>
+
+      <h3>Worked Examples</h3>
+      <p><strong>LP Pi filter, f<sub>c</sub> = 30 MHz, Z₀ = 50 Ω (transmitter HF LPF):</strong></p>
+      <div class="formula-block">L = 50 / (2π × 30×10⁶) = 50 / 188,495,559 = 265 nH
+C = 1 / (2π × 30×10⁶ × 50) = 1 / 9,424,778 = 106 pF
+Pi topology: 106 pF shunt → 265 nH series → 106 pF shunt
+Standard values: 100 pF and 270 nH</div>
+
+      <p><strong>HP Pi filter, f<sub>c</sub> = 40 MHz, Z₀ = 75 Ω (TV input, blocks HF, passes UHF):</strong></p>
+      <div class="formula-block">C_series = 1 / (2π × 40×10⁶ × 75) = 1 / 18,849,556 = 53 pF
+L_shunt  = 75 / (2π × 40×10⁶) = 75 / 251,327,412 = 298 nH ≈ 300 nH
+Components: two 56 pF (series), one 300 nH (shunt)</div>
+
+      <p><strong>LP T filter, f<sub>c</sub> = 50 MHz, Z₀ = 50 Ω:</strong></p>
+      <div class="formula-block">L_series = 50 / (2π × 50×10⁶) = 159 nH
+C_shunt  = 1 / (2π × 50×10⁶ × 50) = 63.7 pF</div>
+
+      <h3>LC Filter Designer</h3>
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-lc-filter-designer.html"
+          style="width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="LC Filter Designer — Pi and T Networks"></iframe>
+      </div>
+
+      <div class="callout-exam">
+        <strong>13I1:</strong> L = Z₀/(2πf<sub>c</sub>) and C = 1/(2πf<sub>c</sub> × Z₀). These two formulas cover both elements of any single-section LP or HP filter — swap L and C for HP. Pi filter: shunt–series–shunt; T filter: series–shunt–series. Same formulas, different topology.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13J ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13J">
+      <div class="chapter-header">
+        <span class="chapter-num">13J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Cascading Filters (13J1)</h2>
+
+      <p>A single filter section provides limited attenuation well beyond the cut-off frequency. Cascading two or more filter sections multiplies the attenuation.</p>
+
+      <h3>Adding dB</h3>
+      <p>When filters are cascaded, their attenuations <strong>add in dB</strong>:</p>
+      <div class="formula-block">Total attenuation (dB) = Filter 1 (dB) + Filter 2 (dB) + ...</div>
+      <p>A single 3-element Pi LP filter provides approximately 60 dB/decade rolloff beyond f<sub>c</sub>. A second identical section in cascade adds another 60 dB/decade → <strong>120 dB/decade</strong> total.</p>
+      <p>At two octaves above f<sub>c</sub> (4× the frequency), each section attenuates approximately:</p>
+      <ul>
+        <li>1-section Pi: ~36 dB</li>
+        <li>2-section Pi cascade: ~72 dB</li>
+        <li>3-section Pi cascade: ~108 dB</li>
+      </ul>
+
+      <h3>Impedance Matching Between Sections</h3>
+      <p>When two filter sections are cascaded, the output impedance of the first section must match the input impedance of the second. Both sections should be designed for the same Z₀. If a capacitor sits at the junction between two Pi filters, the two shunt capacitors at the junction can be combined into one capacitor of double the value — reducing the total component count.</p>
+
+      <h3>Practical Limits</h3>
+      <p>Physical parasitic effects (inductor self-resonance, capacitor series inductance) limit useful attenuation at high frequencies to approximately 80–100 dB regardless of how many sections are added. At VHF and above, the inductors' self-resonant frequency may be within the filter's stop band, significantly limiting performance. For VHF/UHF harmonic suppression, low-pass filter design must use high-quality, physically small components with self-resonant frequencies well above the highest harmonic of interest.</p>
+
+      <div class="callout-exam">
+        <strong>13J1:</strong> Cascade filters to increase attenuation: each identical section adds the same dB. Two 3-element Pi sections give approximately twice the dB attenuation of one. At VHF/UHF, component parasitics limit the achievable attenuation — two well-designed sections are usually more effective than one over-optimistic section.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13K ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13K">
+      <div class="chapter-header">
+        <span class="chapter-num">13K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Coaxial Cable Choice (13K1)</h2>
+
+      <p>The outer conductor (braid or foil) of coaxial cable acts as the shield that prevents RF on the inner conductor from radiating and prevents external fields from reaching the inner conductor. The effectiveness of this shielding depends on the cable construction.</p>
+
+      <h3>Braid Coverage</h3>
+      <p>Standard thin coax (RG-58): braid coverage approximately 95%. The gaps in the braid allow a small amount of energy to pass through the shield — characterised as <strong>transfer impedance</strong> Z_T (Ω/m). Higher braid coverage → lower transfer impedance → better shielding.</p>
+
+      <h3>Cable Types and Shielding Effectiveness</h3>
+      <table>
+        <thead><tr><th>Cable</th><th>Construction</th><th>Shielding effectiveness</th><th>Typical use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>RG-58</strong></td><td>Single braid ~95%</td><td>~40 dB</td><td>General HF, Intermediate use</td></tr>
+          <tr><td><strong>RG-213</strong></td><td>Single heavy braid ~98%</td><td>~45 dB</td><td>Standard Full-licence HF/VHF</td></tr>
+          <tr><td><strong>RG-214</strong></td><td>Double-screened (braid + foil)</td><td>~80–90 dB</td><td>VHF/UHF, sensitive RX</td></tr>
+          <tr><td><strong>Ecoflex/Aircell</strong></td><td>Foam dielectric, copper foil + braid</td><td>100+ dB</td><td>High-performance HF/VHF</td></tr>
+          <tr><td><strong>Triax</strong></td><td>Braid + foil + outer braid</td><td>&gt;100 dB</td><td>Laboratory, test equipment</td></tr>
+        </tbody>
+      </table>
+      <p>A <strong>double-screened</strong> cable (foil inner shield + outer braid) provides dramatically better shielding. The foil provides continuity that the braid gaps cannot; the braid provides mechanical protection. Double-screened coax at 144 MHz may provide 40–50 dB more screening than single-braid.</p>
+
+      <h3>When to Use Double-Screened Cable</h3>
+      <ul>
+        <li>Feeding a receiver masthead preamplifier near noise sources</li>
+        <li>Routing feeder past SMPS units or PLT adapters in the home</li>
+        <li>Any run where the feeder is close to computer equipment, inverters, or solar panels</li>
+        <li>VHF/UHF where higher frequencies are more easily coupled through braid gaps</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>13K1:</strong> Braid coverage and transfer impedance characterise shielding effectiveness. Double-screened coax (foil + braid) provides 40–50 dB more shielding than single braid at VHF. Use double-screened cable when routing feeder past noise sources or in EMC-sensitive installations.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13L ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13L">
+      <div class="chapter-header">
+        <span class="chapter-num">13L</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Mains Interference Filters (13L1)</h2>
+
+      <p>The mains supply is a shared conducted-interference bus. RF from the transmitter PA (conducted out via the SMPS in the transceiver), and noise from domestic electronics (conducted in via the same mains), both require filtering.</p>
+
+      <h3>Mains Filter Components</h3>
+      <p><strong>X Capacitors</strong> — connected <strong>across the line conductors</strong> (L to N). They present low impedance to differential-mode mains interference. Safe for continuous connection across the mains — designed to fail open-circuit if they break down.</p>
+      <p><strong>Y Capacitors</strong> — connected <strong>between each line conductor and earth</strong> (L to earth, N to earth). They present low impedance to common-mode interference between line and ground. They divert CM noise currents to earth.</p>
+      <p><strong>CM Choke</strong> — a pair of inductors wound on a shared ferrite core, connected in series with L and N. The DM mains current (opposite in the two windings) creates zero net flux in the core — minimal DM impedance. CM noise (same direction in both windings) creates additive flux — high CM impedance. Same principle as the coax CM choke, applied to the mains.</p>
+
+      <h3>Mains Filter Circuit</h3>
+      <pre class="formula-block">L ──[CM choke L]──[Xc across L-N]──[Yc L-E]── To equipment
+N ──[CM choke N]──                 ──[Yc N-E]── To equipment
+E ───────────────────────────────────────────── To equipment</pre>
+      <p>The X capacitor(s) and Y capacitors are typically inside the same component. IEC inlet mains filters integrate X caps, Y caps, and a CM choke into one module with a standard IEC 320 socket.</p>
+
+      <h3>Y Capacitor Safety Limit (13L1)</h3>
+      <p>Y capacitors connected from live to earth carry leakage current to earth. The maximum Y capacitor value is limited by safety standards to ensure the earth leakage current does not present a shock hazard or trip the ELCB:</p>
+      <div class="formula-block">Maximum Y capacitor per line: 4.7 nF (Class Y2) for single-phase mains equipment
+
+At 50 Hz: X_C = 1/(2π × 50 × 4.7×10⁻⁹) = 677 kΩ
+Leakage: I = 230 V / 677 kΩ ≈ 0.34 mA per capacitor
+Total (L + N): ≈ 0.68 mA — within safe limit of 3.5 mA (IEC 60950)</div>
+
+      <div class="callout--danger">
+        <strong>Danger:</strong> Never increase Y capacitor values beyond the rated maximum. Larger Y caps increase earth leakage current — in a PME (Protective Multiple Earthing) system where the neutral bonded to earth may rise in potential during a supply fault, increased leakage current can cause electric shock. 4.7 nF per conductor is the maximum.
+      </div>
+
+      <div class="callout-exam">
+        <strong>13L1:</strong> Mains filter structure: X caps across L-N (DM), Y caps from each line to earth (CM), CM choke in series with both conductors. Maximum Y cap value: 4.7 nF (leakage current limit). IEC inlet filter modules integrate all three components. Prefer equipment with a built-in IEC mains filter.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13M ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13M">
+      <div class="chapter-header">
+        <span class="chapter-num">13M</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Notch Filters (13M1)</h2>
+
+      <p>A notch filter (band-stop filter) is a highly selective filter that deeply attenuates a specific narrow frequency band while passing all others with minimal loss. It is the appropriate tool when a single strong interferer needs to be rejected without affecting the broader signal path.</p>
+
+      <h3>When to Use a Notch Filter</h3>
+      <ul>
+        <li>A powerful local FM broadcast station is entering the HF receiver front end and desensitising it</li>
+        <li>A nearby DAB transmitter on 200–230 MHz is reaching the 2 m low-noise amplifier</li>
+        <li>A specific amateur band is being interfered with by a single source (e.g. AM broadcast producing a harmonic coinciding with 80 m)</li>
+      </ul>
+
+      <h3>Parallel LC Trap</h3>
+      <p>The simplest notch filter is a parallel LC circuit placed in shunt across the signal path. At resonance (f<sub>r</sub> = 1/2π√LC), the parallel LC presents very high impedance to the main signal path, creating a low-impedance shunt that diverts the interfering frequency to ground — which appears as a notch in the response.</p>
+      <p>The depth of the notch is limited by the Q of the LC circuit. A high-Q inductor (low winding resistance) produces a deep, narrow notch. A low-Q inductor produces a shallower, broader notch.</p>
+      <p>Alternatively, a series LC placed <strong>in series</strong> with the signal path presents very low impedance (near-short circuit) at resonance, short-circuiting the interfering frequency.</p>
+
+      <div class="callout-exam">
+        <strong>13M1:</strong> A notch filter rejects a specific frequency while passing others. Use when a single strong interferer dominates — a parallel LC trap across the signal line, or a series LC trap in line. Notch depth is limited by inductor Q; high-Q air-wound inductors give the deepest notches.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13N ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13N">
+      <div class="chapter-header">
+        <span class="chapter-num">13N</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Equipment-Specific Interference (13N1)</h2>
+
+      <p>Different types of victim equipment respond differently to amateur RF, and different remedies are appropriate for each.</p>
+
+      <h3>BC AM Radio — RF Rectification</h3>
+      <p>Medium-wave broadcast receivers operating on 531–1602 kHz are designed to detect amplitude-modulated signals at those frequencies. When an amateur HF transmission couples onto the antenna or speaker leads, the AM-modulated SSB or CW signal can be <strong>rectified by protection diodes or semiconductor junctions inside the equipment</strong>, producing audio output at SSB audio frequencies — voices or Morse code audible from a neighbour's radio even though it is tuned to a completely different frequency.</p>
+      <p>This is <strong>RF rectification</strong> (also called demodulation by non-linearity). The remedy is to fit a <strong>ferrite choke on the antenna lead</strong> of the radio, plus a <strong>bypass capacitor to ground</strong> on the audio input, to prevent RF from entering the audio circuit.</p>
+
+      <h3>DVB-T Digital Television — Overload of LNA</h3>
+      <p>HF amateur signals reaching the aerial amplifier or TV input can cause <strong>overload</strong> of the low-noise amplifier (LNA) in an aerial distribution amplifier. The LNA clips, generating intermodulation products that interfere with Freeview channels. Symptoms include pixelation, loss of multiple channels simultaneously, and interference that correlates precisely with the transmitter being on.</p>
+      <p>Remedy: a <strong>high-pass filter at the aerial input</strong> (f<sub>c</sub> = 450 MHz) preventing HF and VHF reaching the distribution amplifier; isolation between shack feeder and TV aerial system.</p>
+
+      <h3>DECT Cordless Phones</h3>
+      <p>DECT phones operate in the 1880–1900 MHz band. HF amateur signals do not normally interfere with DECT directly. However, RF entering the DECT base station's power supply or handset charging lead via conducted coupling can desensitise the base station or cause audio interference.</p>
+      <p>Remedy: ferrite CM choke on the base station mains lead; keep the base station physically separated from the amateur station.</p>
+
+      <h3>Hi-Fi Systems — RF into Amplifier Inputs (13N1)</h3>
+      <p>Hi-fi audio amplifiers typically have input impedances of 10–100 kΩ. At these impedances, the connecting leads (audio interconnects from CD player, tuner, etc.) act as efficient RF antennas at HF. The RF signal couples onto the unbalanced interconnect and is rectified by the transistor junctions in the preamplifier stage — producing audio-frequency output.</p>
+      <p>Remedy: <strong>ferrite choke on each audio interconnect lead</strong> at the entry to the amplifier; small bypass capacitors (1 nF ceramic) from signal pin to screen at the amplifier input sockets; use shorter interconnects or balanced (XLR) connections where possible.</p>
+
+      <h3>Computers and PLT (Powerline Telecommunications) (13N1)</h3>
+      <p><strong>PLT adapters</strong> use the mains wiring to carry broadband internet data, using frequencies from approximately 1 MHz to 30 MHz — directly overlapping the HF amateur bands. PLT is <strong>the single most significant source of interference to amateur HF reception</strong> in many urban areas. PLT produces conducted interference on the mains (which then radiates from mains wiring throughout the house) and directly radiated interference from the wiring acting as an antenna.</p>
+
+      <h3>Alarms and PIR Detectors</h3>
+      <p>Passive infrared (PIR) security sensors and alarm panels can be triggered by strong RF fields — <strong>RF immunity failure</strong>. Symptoms: false alarms triggered when the transmitter is switched on. Remedy: fit ferrite chokes on all cables entering the alarm panel; add bypass capacitors to the sensor inputs; contact the alarm company — CE-marked equipment should be immune to the RF levels produced by a licensed amateur station.</p>
+
+      <div class="callout-exam">
+        <strong>13N1:</strong> Each equipment type responds to RF differently. BC radios suffer rectification; TVs suffer overload of aerial amplifiers; hi-fi systems suffer rectification at audio inputs; PLT adapters create interference rather than suffering from it. Match the remedy to the mechanism: ferrite choke and bypass cap for rectification; HPF for TV; CM choke on mains for conducted emissions.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13O ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13O">
+      <div class="chapter-header">
+        <span class="chapter-num">13O</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Telephone Line RFI (13O1)</h2>
+
+      <p>Telephone lines (both PSTN copper and the local loop for ADSL/VDSL broadband) are balanced pairs designed for audio frequencies. Amateur HF signals couple onto the line via:</p>
+      <ol>
+        <li><strong>Radiated coupling</strong> — the line acts as an aerial for the amateur signal</li>
+        <li><strong>Inductive coupling</strong> — the loop formed by the telephone cable and ground couples magnetic flux from nearby antennas</li>
+        <li><strong>Conducted coupling</strong> — RF enters via the mains connection of the DECT base or DSL modem</li>
+      </ol>
+
+      <h3>Effects on Telephone Equipment</h3>
+      <p>RF on the telephone line can be detected by:</p>
+      <ul>
+        <li>The handset microphone or earpiece leads (rectification at the internal semiconductor, producing audio from an SSB transmission)</li>
+        <li>The ADSL/VDSL modem (RF at amateur frequencies raises the noise floor, reducing broadband sync speed)</li>
+      </ul>
+
+      <h3>Remedies for Telephone RFI (13O1)</h3>
+      <ul>
+        <li><strong>Ferrite CM choke on the telephone line</strong> at the point where it enters the equipment. Wind 4–6 turns of the telephone cable through an FT50-31 or FT82-31 toroid.</li>
+        <li><strong>Bypass capacitor</strong> (100 pF–1 nF) from each line conductor to the handset shield/screen — provides CM decoupling at RF without affecting audio</li>
+        <li>For ADSL noise: keep amateur feeder cables at least 0.5 m from telephone lines; fit a low-pass filter on the telephone entry point</li>
+        <li>Check your own equipment: the amateur station itself should not be producing mains-conducted RF at telephone frequencies</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>13O1:</strong> Telephone interference is caused by RF coupling onto the balanced telephone pair. Ferrite CM chokes and bypass capacitors on the handset and line-entry point are the primary remedies. SSB audio heard in a phone indicates rectification at semiconductor junctions inside the phone — the choke prevents RF entering the circuit.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13P ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13P">
+      <div class="chapter-header">
+        <span class="chapter-num">13P</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Computer and SMPS RFI (13P1)</h2>
+
+      <p>Switch-mode power supplies (SMPS) are present in virtually every modern electronic device — PC power supplies, laptop chargers, phone chargers, LED drivers, and modern amateur transceivers. All produce RF noise as a by-product of their switching operation.</p>
+
+      <h3>SMPS Noise Generation</h3>
+      <p>An SMPS switches transistors at frequencies typically ranging from 20 kHz to 500 kHz. The switching waveforms are rich in harmonics — a 100 kHz SMPS produces harmonics at 200, 300, 400 kHz, 1 MHz, 2 MHz... up through the HF spectrum and beyond. Each harmonic is conducted back along the mains supply (conducted emission) and radiated from the SMPS enclosure and its cabling (radiated emission).</p>
+      <p>Modern SMPS units are required to meet the <strong>EN 55032</strong> emissions standard to obtain CE/UKCA marking. However:</p>
+      <ul>
+        <li>Cheap uncertified chargers (especially grey-market imports) often do not comply</li>
+        <li>Even compliant SMPS can cause localised interference at close range to a sensitive HF receiver</li>
+        <li>Multiple SMPS in a shack environment raise the local noise floor cumulatively</li>
+      </ul>
+
+      <h3>Identification</h3>
+      <p>On a spectrum analyser or SDR waterfall: regular combs of narrowband peaks separated by the fundamental SMPS switching frequency. Switch off suspect devices one at a time to identify the source.</p>
+
+      <h3>Remedies for SMPS RFI (13P1)</h3>
+      <ul>
+        <li><strong>Mains filter on the offending SMPS:</strong> if the SMPS does not have an adequate internal mains filter, add an external IEC inlet filter module in series with its mains lead</li>
+        <li><strong>Ferrite CM choke on the output leads</strong> of the SMPS (12V or 5V DC leads): addresses conducted noise on the DC side</li>
+        <li><strong>Replace</strong> uncertified cheap chargers with quality CE-marked alternatives — the price difference is small and the emissions difference can be 20–40 dB</li>
+        <li><strong>Physical separation:</strong> moving the SMPS further from the receiver or feeder can reduce radiated coupling sufficiently</li>
+        <li><strong>Shielded enclosure:</strong> placing an offending device in a grounded metal enclosure with filtered cable entries; practical for a single problem device</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>13P1:</strong> SMPS noise appears as a comb of regularly spaced spurs across the HF spectrum. Identify by switching suspect devices off one at a time. Remedy: mains filter + CM choke on DC leads. Replace uncertified grey-market chargers. CE-marked quality SMPS units include adequate internal filters.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13Q ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13Q">
+      <div class="chapter-header">
+        <span class="chapter-num">13Q</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>The Complaint Procedure (13Q1)</h2>
+
+      <p>When interference occurs that you cannot resolve unilaterally, a structured procedure maximises the chance of resolution while maintaining good relations with your neighbour.</p>
+
+      <h3>Step 1 — Verify Your Own Equipment First</h3>
+      <p>Before approaching anyone: <strong>eliminate yourself as the cause</strong>.</p>
+      <ul>
+        <li>Test on a <strong>dummy load</strong> — if the interference disappears when the dummy load replaces the antenna, the problem is with your transmitted signal (harmonics, spurious emissions, or excessive power reaching nearby equipment)</li>
+        <li>Check all spurious emissions with a spectrum analyser or a second receiver</li>
+        <li>Ensure low-pass filter is fitted at the transmitter output and is functional</li>
+        <li>Confirm operation is within licence conditions (power, band, mode)</li>
+      </ul>
+
+      <h3>Step 2 — Keep a Log</h3>
+      <p>Maintain a detailed interference log including: dates and times of interference incidents; your operating frequency, mode, and power; your antenna type and direction; nature of the interference reported; weather conditions (relevant for tropospheric ducting-based interference patterns). The log is essential evidence if the matter is escalated to Ofcom.</p>
+
+      <h3>Step 3 — Approach the Neighbour</h3>
+      <p>Approach non-confrontationally. Most neighbours do not know what amateur radio is. A brief, friendly explanation of what you do and an offer to investigate and, if possible, fit a ferrite choke or filter free of charge resolves the majority of cases.</p>
+      <p>Avoid: arguing about rights; suggesting it is their equipment's fault (even if it is); discussing the legal position until you have exhausted practical remedies.</p>
+
+      <h3>Step 4 — RSGB EMC Advisory Service</h3>
+      <p>The RSGB operates an <strong>EMC Advisory Service</strong> (free to RSGB members) staffed by experienced amateurs who have handled hundreds of interference cases. They can provide advice on the likely cause and remedy, recommend appropriate commercial filters, supply template letters, and advise whether the neighbour's equipment is legally required to be immune. Contact via the RSGB website.</p>
+
+      <h3>Step 5 — Ofcom Spectrum Management</h3>
+      <p>If the neighbour's equipment is causing interference and is either non-compliant (CE/UKCA mark absent or falsely claimed, or demonstrated to exceed emission limits), or the operator refuses to take reasonable steps to resolve it — then Ofcom's Spectrum Management team can investigate. Ofcom can issue enforcement notices requiring cessation of interference-causing use.</p>
+      <p>For PLT-specific complaints: report to Ofcom using their online interference reporting tool; include your log, screenshots of the interference on an SDR waterfall or spectrum analyser, and the dates/times.</p>
+
+      <div class="callout-exam">
+        <strong>13Q1:</strong> Complaint procedure: (1) verify your own equipment (dummy load test); (2) keep a log; (3) approach the neighbour non-confrontationally; (4) contact RSGB EMC Advisory Service; (5) escalate to Ofcom Spectrum Management if legal non-compliance is demonstrated. Most cases are resolved at step 3 or 4.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13R ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13R">
+      <div class="chapter-header">
+        <span class="chapter-num">13R</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Shack EMC: Earth Loops and RF in Equipment (13R1)</h2>
+
+      <p>The shack itself can be a source of self-interference: RF from the transmitter enters connected equipment (logging PC, audio interface, microphone preamplifier) via CM currents on interconnecting cables. This is both an EMC problem and a practical operating problem — your own voice heard in your own headphones, or RF hash appearing in the audio.</p>
+
+      <h3>Single-Point Earthing</h3>
+      <p>The classical remedy is <strong>single-point earthing</strong> (star topology):</p>
+      <ul>
+        <li>One single earth bus bar (a copper bar or plate) in the shack</li>
+        <li>All equipment chassis bonded <strong>individually</strong> to this bar with short, wide conductors (braid or copper strip, NOT wire)</li>
+        <li>The bar is connected to the shack earth point (system earth) at one single connection</li>
+      </ul>
+      <p>This prevents <strong>earth loops</strong> — closed loops formed by two or more pieces of equipment connected to earth at different points. A loop in an RF field acts as a one-turn pickup antenna; the induced current flows through the equipment and creates interference. Single-point earthing eliminates the loop by removing the alternative earth paths.</p>
+
+      <h3>RF in Microphone and Audio Cables</h3>
+      <p>The microphone cable from the desk microphone to the transceiver carries a balanced audio signal but is often a single-screened cable at close range. RF from the transmitter (particularly at HF where the wavelength is comparable to the cable length) drives CM current on the outer screen, which enters the preamplifier stage.</p>
+      <p>Remedies:</p>
+      <ul>
+        <li><strong>Ferrite CM choke</strong> on the microphone cable, close to the transceiver input</li>
+        <li>Use a <strong>balanced microphone and balanced input</strong> — both conductors carry the signal in opposition; CM interference cancels in the differential input stage</li>
+        <li>Keep microphone cables short and away from the feeder</li>
+      </ul>
+
+      <h3>RF in PC USB and Serial Interfaces</h3>
+      <p>Digital audio interfaces, logging programs, CAT control, and SDR dongles all connect via USB, which is unshielded or lightly shielded. RF enters the USB cable as a CM current and appears as:</p>
+      <ul>
+        <li>Transmitter audio appearing in the digital interface's monitoring output</li>
+        <li>CAT commands corrupted, causing the logging program to lose contact with the transceiver</li>
+        <li>SDR dongle showing intermittent lock loss when the transmitter keys</li>
+      </ul>
+      <p>Remedies:</p>
+      <ul>
+        <li><strong>Ferrite choke</strong> on every USB cable entering and leaving the shack</li>
+        <li><strong>Galvanic isolator</strong> (USB or audio isolator) between the computer and the radio-side equipment — breaks the ground loop completely</li>
+        <li>Keep the computer and its cabling away from the feeder; avoid routing USB cables parallel to feeder runs</li>
+      </ul>
+
+      <h3>Shack Earth Loop — the Common Case</h3>
+      <p><strong>Scenario:</strong> transceiver ground → PC audio card ground via audio cable → PC mains earth → mains distribution board → transceiver mains → transceiver ground. This forms a large earth loop enclosing significant area. RF in this loop appears as hum, buzz, or feedback on transmit.</p>
+      <p><strong>Diagnosis:</strong> disconnect the audio cable between PC and transceiver — interference disappears.</p>
+      <p><strong>Remedy:</strong> add a ferrite CM choke on the audio interconnect; or use a proper audio galvanic isolator (1:1 transformer) to break the loop.</p>
+
+      <div class="callout-exam">
+        <strong>13R1:</strong> Single-point earthing (star topology) prevents earth loops. Ferrite CM chokes on every cable entering the shack address radiated and conducted CM coupling. For persistent problems, galvanic isolators on audio and USB break ground loops completely. RF in audio is a CM problem — the differential signal itself is not affected; a CM choke cures it without affecting audio quality.
+      </div>
+    </section>
+
+    <!-- ════════════════════ §13S SELF-CHECK ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="ch-13S">
+      <div class="chapter-header">
+        <span class="chapter-num">13S</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. A transmitter radiates 100 W into a unity-gain antenna. What is the electric field strength at 10 m distance?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-1" hidden>
+            <p><strong>E = √(30 × P × G) / r = √(30 × 100 × 1) / 10 = √3000 / 10 ≈ 5.5 V/m.</strong></p>
+            <p>Use the formula E = √(30PG)/r. PFD = E²/120π. Doubling distance would give 2.75 V/m; halving power would give 3.9 V/m — distance is the more effective lever.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. At what distance from a 40 m band transmitter does the far field begin?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-2" hidden>
+            <p><strong>λ at 7 MHz = 300/7 ≈ 42.9 m. Far-field boundary ≈ λ/2π = 42.9/6.28 ≈ 6.8 m.</strong></p>
+            <p>Neighbours within 7 m are in the near field; the formula E = √(30PG)/r does not apply there. For EMF compliance assessments at HF close range, use Ofcom's EMF spreadsheet.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. What distinguishes common-mode current from differential-mode current, and why does CM current cause more interference?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-3" hidden>
+            <p><strong>DM current flows in opposite directions in the two conductors — the magnetic fields cancel at distance, so the cable radiates very little. CM current flows in the same direction in both — the fields add, making the cable radiate like a single-conductor antenna.</strong></p>
+            <p>A small CM current (a few mA on a 1 m cable) can produce field strengths at 10 m that exceed regulatory limits. The same cable can carry hundreds of mA of DM signal with negligible radiation. EMC filters and ferrite chokes target CM current specifically.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. Calculate the inductor and capacitor values for a Pi low-pass filter with f_c = 30 MHz and Z₀ = 50 Ω.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-4" hidden>
+            <p><strong>L = Z₀/(2πf<sub>c</sub>) = 50/(2π × 30×10⁶) = 265 nH.</strong></p>
+            <p><strong>C = 1/(2πf<sub>c</sub> × Z₀) = 1/(2π × 30×10⁶ × 50) = 106 pF.</strong></p>
+            <p>Pi topology: 106 pF shunt → 265 nH series → 106 pF shunt. Nearest standard values: 100 pF and 270 nH.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. A mains filter contains Y capacitors of 4.7 nF from each line to earth. Why must this value not be increased?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-5" hidden>
+            <p><strong>Y capacitors pass leakage current to earth at mains frequency. At 50 Hz, 4.7 nF presents 677 kΩ; 230 V drives approximately 0.34 mA per capacitor.</strong></p>
+            <p>Increasing C reduces X_C and increases leakage current. Above approximately 3.5 mA total earth leakage the RCD may trip and there is a shock hazard — particularly dangerous in PME installations where the earth conductor may be at elevated potential during a supply fault. 4.7 nF per conductor is the safety maximum (Class Y2).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. A neighbour's hi-fi is picking up voice audio when you transmit on 14 MHz. What is the most likely cause and remedy?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-13-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-13-6" hidden>
+            <p><strong>RF rectification</strong> at semiconductor junctions inside the amplifier's input stage. RF couples onto the unbalanced audio interconnect leads and is demodulated by the transistor junctions, producing audio output.</p>
+            <p><strong>Remedy:</strong> fit a ferrite CM choke (Mix 31 or 43) on each audio lead at the amplifier input, plus a 100 pF capacitor from signal to screen at the input sockets. This prevents RF reaching the junction without affecting audio frequencies. Step 1 of the complaint procedure: verify it is not your own harmonic — test with a dummy load first.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-12-propagation.html" class="section-nav__link">&larr; Chapter 12: Propagation</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;mode=topic&amp;section=13"
+         class="section-nav__link section-nav__practice">Practice This Section</a>
+      <a href="section-14-measurements.html" class="section-nav__link">Chapter 14: Measurements &rarr;</a>
+    </nav>
+
+    <footer style="padding-bottom: 3rem; color: var(--text-dim); font-size: 0.8rem; font-family: var(--font-mono);">
+      Chapter 13 &nbsp;&middot;&nbsp; Full Licence &nbsp;&middot;&nbsp;
+      <a href="index.html" style="color: var(--text-dim); text-decoration: none;">Full Licence index</a>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260917-1000" defer></script>
+</body>
+</html>

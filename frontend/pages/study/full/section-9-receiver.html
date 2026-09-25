@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 9: The Receiver — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260917-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img { max-width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .crossref {
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.85rem;
+      margin: 1rem 0; display: inline-block;
+    }
+    .crossref a { color: var(--accent-em); text-decoration: none; }
+    .crossref a:hover { text-decoration: underline; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .interactive-frame {
+      margin: 1.5rem 0; border-radius: var(--radius-sm); overflow: hidden;
+    }
+    .impairments-summary th:first-child { width: 18%; }
+    .impairments-summary th:nth-child(2) { width: 28%; }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <a href="/pages/study/full/">Full Licence</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <span>Chapter 9</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~10&ndash;12% &nbsp;&middot;&nbsp; Dense chapter &mdash; give extra time</span>
+      </div>
+      <h1>The Receiver</h1>
+      <p class="hero-subtitle">Sensitivity and noise figure, dynamic range and IP3, superheterodyne architecture, image rejection, double superhet, product detector and BFO, AGC, FM discriminators, receiver filters, blocking / cross-modulation / reciprocal mixing, and masthead preamplifiers.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-9A">9A Sensitivity &amp; NF</a></li>
+        <li><a href="#ch-9B">9B Dynamic Range &amp; IP3</a></li>
+        <li><a href="#ch-9C">9C Superhet</a></li>
+        <li><a href="#ch-9D">9D Image Frequency</a></li>
+        <li><a href="#ch-9E">9E Double Superhet</a></li>
+        <li><a href="#ch-9F">9F Product Detector &amp; BFO</a></li>
+        <li><a href="#ch-9G">9G AGC</a></li>
+        <li><a href="#ch-9H">9H FM Demodulation</a></li>
+        <li><a href="#ch-9I">9I Receiver Filters</a></li>
+        <li><a href="#ch-9J">9J Blocking, Cross-mod &amp; Reciprocal Mixing</a></li>
+        <li><a href="#ch-9K">9K Masthead Preamps</a></li>
+        <li><a href="#ch-9L">&#9733; Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-9A"><span class="toc-code">9A</span>Sensitivity &amp; Noise Figure</a></li>
+        <li><a href="#ch-9B"><span class="toc-code">9B</span>Dynamic Range &amp; IP3</a></li>
+        <li><a href="#ch-9C"><span class="toc-code">9C</span>The Superheterodyne Receiver</a></li>
+        <li><a href="#ch-9D"><span class="toc-code">9D</span>Image Frequency &amp; Rejection</a></li>
+        <li><a href="#ch-9E"><span class="toc-code">9E</span>The Double Superhet</a></li>
+        <li><a href="#ch-9F"><span class="toc-code">9F</span>Product Detector &amp; BFO</a></li>
+        <li><a href="#ch-9G"><span class="toc-code">9G</span>Automatic Gain Control (AGC)</a></li>
+        <li><a href="#ch-9H"><span class="toc-code">9H</span>FM Demodulation</a></li>
+        <li><a href="#ch-9I"><span class="toc-code">9I</span>Receiver Filters</a></li>
+        <li><a href="#ch-9J"><span class="toc-code">9J</span>Blocking, Cross-mod &amp; Reciprocal Mixing</a></li>
+        <li><a href="#ch-9K"><span class="toc-code">9K</span>Masthead Preamplifiers</a></li>
+        <li><a href="#ch-9L"><span class="toc-code">9L</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ════════════════════ §9A ════════════════════ -->
+    <section class="chapter" id="ch-9A">
+      <h2>§9A &mdash; Receiver Sensitivity and Noise Figure</h2>
+
+      <h3>Thermal Noise</h3>
+      <p>Every resistor and amplifier stage adds thermal noise. At room temperature (290&thinsp;K), the available noise power at the input to any circuit is:</p>
+      <div class="formula-block"><p>P_noise = k &times; T &times; B</p></div>
+      <p>Where k = Boltzmann's constant (1.38 &times; 10<sup>&minus;23</sup>&thinsp;J/K), T = temperature in kelvin, B = bandwidth in Hz.</p>
+      <p>This works out to a <strong>noise floor of &minus;174&thinsp;dBm per Hz</strong> at room temperature, rising by 10 &times; log<sub>10</sub>(bandwidth) for wider bandwidths:</p>
+      <table>
+        <thead><tr><th>Bandwidth</th><th>Noise floor (approx.)</th></tr></thead>
+        <tbody>
+          <tr><td>1 Hz</td><td>&minus;174 dBm</td></tr>
+          <tr><td>500 Hz (CW)</td><td>&minus;147 dBm</td></tr>
+          <tr><td>2.4 kHz (SSB)</td><td>&minus;140 dBm</td></tr>
+          <tr><td>10 kHz (AM)</td><td>&minus;134 dBm</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Noise Figure</h3>
+      <p>A receiver adds noise on top of the thermal floor. The <strong>Noise Figure (NF)</strong> is the degradation in signal-to-noise ratio caused by the receiver, expressed in dB:</p>
+      <div class="formula-block"><p>NF = SNR_in (dB) &minus; SNR_out (dB)</p></div>
+      <p>A perfect receiver would have NF = 0&thinsp;dB. Real HF receivers typically achieve NF of 10&ndash;15&thinsp;dB; good LNA-equipped VHF/UHF receivers can achieve NF of 1&ndash;2&thinsp;dB.</p>
+      <p>The <strong>Minimum Discernible Signal (MDS)</strong> is the weakest signal that raises the receiver output by 3&thinsp;dB above the noise floor. A lower NF gives a lower MDS and better sensitivity.</p>
+
+      <h3>Sensitivity and Bandwidth</h3>
+      <p>Sensitivity depends on bandwidth. A narrower filter improves sensitivity by reducing the noise admitted:</p>
+      <ul>
+        <li>Widening the filter from 2.4&thinsp;kHz (SSB) to 10&thinsp;kHz (AM) increases the noise by 10 &times; log(10/2.4) = 6.2&thinsp;dB &mdash; the same as making the signal weaker by 6&thinsp;dB.</li>
+      </ul>
+      <div class="callout-exam">
+        <strong>Key principle:</strong> Reducing receiver bandwidth improves sensitivity. This is why a narrow CW filter makes weak CW signals copyable that are buried in a wider SSB filter.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9B ════════════════════ -->
+    <section class="chapter" id="ch-9B">
+      <h2>§9B &mdash; Dynamic Range and Third-Order Intercept (IP3)</h2>
+
+      <h3>Dynamic Range</h3>
+      <p>A receiver must simultaneously:</p>
+      <ul>
+        <li>Hear signals as weak as &minus;130&thinsp;dBm (or weaker)</li>
+        <li>Not be overloaded by signals as strong as +10&thinsp;dBm from a nearby transmitter</li>
+      </ul>
+      <p>The ratio between the strongest signal the receiver can handle and the weakest it can detect is the <strong>dynamic range</strong>. A good HF receiver achieves 90&ndash;100&thinsp;dB of dynamic range.</p>
+      <p>Two mechanisms limit dynamic range:</p>
+      <ol>
+        <li><strong>Noise floor</strong> (bottom limit): set by thermal noise + NF</li>
+        <li><strong>Compression and IMD</strong> (upper limit): set by the non-linearity of the RF and IF stages</li>
+      </ol>
+
+      <h3>Third-Order Intercept Point (IP3)</h3>
+      <p>When two strong signals are present, third-order intermodulation products appear within the receiver passband. The <strong>IP3</strong> is a figure of merit that predicts the level at which IMD products would reach the same level as the wanted signals &mdash; it is extrapolated beyond the receiver's actual operating range.</p>
+      <div class="formula-block"><p>Spurious-Free Dynamic Range (SFDR) &asymp; 2/3 &times; (OIP3 &minus; Noise Floor)</p></div>
+      <p>A higher IP3 = better handling of strong signals = wider dynamic range.</p>
+
+      <table>
+        <thead><tr><th>Receiver quality</th><th>Typical IP3</th></tr></thead>
+        <tbody>
+          <tr><td>Budget</td><td>0 to +10 dBm</td></tr>
+          <tr><td>Good HF transceiver</td><td>+20 to +30 dBm</td></tr>
+          <tr><td>High-end contest receiver</td><td>+35 to +45 dBm</td></tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-9/fig9-1-ip3.svg"
+               alt="Third-order intercept diagram showing two lines on a log-log plot: the fundamental output (slope 1 dB per dB input) and the third-order IMD product (slope 3 dB per dB input). The lines extrapolate to intersect at the IP3 point. Noise floor, MDS, and spurious-free dynamic range are annotated."
+               loading="lazy" width="680" height="280">
+        </div>
+        <figcaption>Fig&thinsp;9.1 &mdash; IP3 and spurious-free dynamic range. The fundamental and 3rd-order lines extrapolate to the intercept point (IP3). SFDR spans from MDS to where the IMD product equals the noise floor. (SVG pending)</figcaption>
+      </figure>
+
+      <div class="callout-exam">
+        <strong>Exam note:</strong> IP3 does not need to be memorised as a formula. Understand that <strong>higher IP3 means the receiver handles strong nearby signals better</strong> without generating IMD products in the passband.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9C ════════════════════ -->
+    <section class="chapter" id="ch-9C">
+      <h2>§9C &mdash; The Superheterodyne Receiver</h2>
+      <p>The <strong>superheterodyne</strong> (superhet) is the standard architecture for virtually all modern HF/VHF receivers. It was devised by Edwin Armstrong in 1918.</p>
+
+      <h3>Basic Architecture</h3>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/full/section-9/fig-9-1-superhet-rx-chain.svg" alt="Superhet receiver block diagram: antenna feeds RF filter, mixer (with local oscillator below), IF filter, IF amplifier, demodulator and AF amplifier to audio output; IF = RF minus LO" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+      <p>The <strong>mixer</strong> combines the incoming RF signal (f<sub>signal</sub>) with the Local Oscillator (f<sub>LO</sub>) to produce the <strong>Intermediate Frequency (IF)</strong>:</p>
+      <div class="formula-block"><p>f_IF = f_LO &minus; f_signal &nbsp; (or f_signal &minus; f_LO)</p></div>
+      <p>The IF is fixed regardless of the tuned frequency. This allows a <strong>sharp, fixed filter</strong> to be fitted at the IF to select only the wanted signal and reject adjacent channels.</p>
+
+      <h3>Why Fixed IF is an Advantage</h3>
+      <p>A filter tuned to 1.8&thinsp;MHz would need to track as the receiver is tuned from 1.8 to 30&thinsp;MHz. At the IF, the filter is always at the same fixed frequency, so it can be:</p>
+      <ul>
+        <li>A high-Q crystal filter (e.g., at 8.83&thinsp;MHz)</li>
+        <li>A ceramic filter (at 455&thinsp;kHz)</li>
+        <li>A mechanical filter</li>
+      </ul>
+      <p>These provide far sharper selectivity than any tunable filter could achieve.</p>
+
+      <h3>Typical IF Frequencies</h3>
+      <table>
+        <thead><tr><th>Application</th><th>Common IF</th></tr></thead>
+        <tbody>
+          <tr><td>HF SSB receivers</td><td>8&ndash;10 MHz (or 455 kHz second IF)</td></tr>
+          <tr><td>Broadcast AM</td><td>455 kHz</td></tr>
+          <tr><td>VHF/UHF FM</td><td>10.7 MHz (first IF) or 455 kHz (second IF)</td></tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-9/fig9-2-superhet-block.svg"
+               alt="Block diagram of a superheterodyne receiver: antenna feeds a preselector bandpass filter, then a mixer (fed by local oscillator), then an IF filter, IF amplifier, detector, and audio amplifier. Signal flow is left to right."
+               loading="lazy" width="680" height="200">
+        </div>
+        <figcaption>Fig&thinsp;9.2 &mdash; Superheterodyne receiver block diagram. The preselector BPF reduces the image frequency before the mixer. The IF filter provides channel selectivity at the fixed intermediate frequency. (SVG pending)</figcaption>
+      </figure>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9D ════════════════════ -->
+    <section class="chapter" id="ch-9D">
+      <h2>§9D &mdash; Image Frequency and Rejection</h2>
+
+      <h3>The Image Problem</h3>
+      <p>The mixer produces IF signals from <strong>two</strong> RF frequencies: the wanted signal and the <strong>image frequency</strong>. For a given LO frequency and IF:</p>
+      <div class="formula-block"><p>f_image = f_LO + f_IF &nbsp; (when LO is above the signal: f_LO = f_signal + f_IF)</p></div>
+      <p>Or more generally: the image is the frequency on the other side of the LO from the wanted signal, at a distance of f<sub>IF</sub> from the LO.</p>
+
+      <div class="callout-exam">
+        <strong>Example:</strong> Receiver tuned to 7.100&thinsp;MHz, IF = 455&thinsp;kHz, LO = 7.555&thinsp;MHz.<br>
+        Image = 7.555 + 0.455 = <strong>8.010&thinsp;MHz</strong>.<br>
+        A station at 8.010&thinsp;MHz also mixes to produce a 455&thinsp;kHz signal at the IF, indistinguishable from a 7.100&thinsp;MHz signal. The two frequencies are <strong>2 &times; 455&thinsp;kHz = 910&thinsp;kHz apart</strong>.
+      </div>
+
+      <h3>Rejecting the Image</h3>
+      <p>The image must be rejected <strong>before</strong> the mixer &mdash; once a signal has been mixed to the IF, it cannot be distinguished from the wanted signal.</p>
+      <p>The <strong>preselector</strong> (or front-end bandpass filter/tracking filter) before the mixer must attenuate the image frequency. The <strong>image rejection ratio</strong> is how many dB the image is attenuated compared to the wanted signal.</p>
+      <p>Key principle: <strong>a higher IF separates the image frequency further from the wanted signal</strong>, making it easier to filter out. This is why double-superhet receivers use a high first IF (see §9E).</p>
+
+      <div class="callout-exam">
+        <strong>Exam example:</strong> If the IF is 455&thinsp;kHz, the image is only 910&thinsp;kHz away &mdash; hard to filter if the receiver is tuned within a 1&thinsp;MHz band. If the first IF is 45&thinsp;MHz, the image is 90&thinsp;MHz away &mdash; very easy to reject with a simple front-end filter.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9E ════════════════════ -->
+    <section class="chapter" id="ch-9E">
+      <h2>§9E &mdash; The Double Superhet</h2>
+      <p>A <strong>double superhet</strong> uses two successive frequency conversions to get the best of both worlds:</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/full/section-9/fig-9-2-double-conversion-superhet.svg" alt="Double-conversion superhet block diagram: two mixers with separate local oscillators convert RF to a high first IF (for image rejection) then to a low second IF (for selectivity) before demodulation" style="max-width: 800px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+
+      <h3>Why Two Conversions?</h3>
+      <table>
+        <thead><tr><th>Stage</th><th>IF Frequency</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>First conversion</strong></td>
+            <td>High (e.g., 45&ndash;70 MHz)</td>
+            <td>Image is now 90&ndash;140&thinsp;MHz from signal &mdash; easy to reject with simple RF filter</td>
+          </tr>
+          <tr>
+            <td><strong>Second conversion</strong></td>
+            <td>Low (e.g., 455&thinsp;kHz or 9&thinsp;MHz)</td>
+            <td>Allows sharp, high-Q crystal or ceramic filter for selectivity</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>The <strong>roofing filter</strong> at the first IF is the first selectivity stage. It limits the bandwidth of signals reaching the second mixer, preventing very strong out-of-band signals from overloading the second IF stages (see §9J, Blocking).</p>
+
+      <h3>Advantages over Single Superhet</h3>
+      <ul>
+        <li>Better image rejection (high first IF pushes image far away)</li>
+        <li>Better selectivity (low second IF allows sharp filtering)</li>
+        <li>Roofing filter limits the level of strong signals reaching later stages</li>
+      </ul>
+      <p>Almost all modern HF transceivers use a double (or triple) superhet architecture.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9F ════════════════════ -->
+    <section class="chapter" id="ch-9F">
+      <h2>§9F &mdash; Product Detector and BFO</h2>
+      <p>AM signals can be demodulated with a simple envelope detector. SSB and CW signals cannot &mdash; the carrier (or its equivalent) has been suppressed. A <strong>product detector</strong> is used instead.</p>
+
+      <h3>How it Works</h3>
+      <p>The product detector multiplies the IF signal by a locally generated carrier from the <strong>Beat Frequency Oscillator (BFO)</strong>:</p>
+      <div class="formula-block"><p>IF signal &times; BFO signal = demodulated audio</p></div>
+      <p>The BFO is set close to the IF centre frequency. The difference frequency between the BFO and any signal in the IF passband falls in the audio range:</p>
+      <ul>
+        <li><strong>USB:</strong> BFO set just below the IF centre &rarr; upper sideband is demodulated to audio</li>
+        <li><strong>LSB:</strong> BFO set just above the IF centre &rarr; lower sideband is demodulated to audio</li>
+        <li><strong>CW:</strong> BFO offset from IF centre by the desired sidetone pitch (e.g., 600&ndash;700&thinsp;Hz)</li>
+      </ul>
+
+      <h3>RTTY and Data Modes</h3>
+      <p>The product detector also demodulates RTTY (FSK) and most other data modes &mdash; the two shift frequencies appear as two distinct audio tones (e.g., 2125&thinsp;Hz and 2295&thinsp;Hz for RTTY) that the modem software then decodes.</p>
+
+      <div class="callout-exam">
+        <strong>Key fact:</strong> A product detector with a BFO is required for SSB and CW reception. Without a BFO, an SSB signal sounds like unintelligible &ldquo;duck speech&rdquo; because the carrier reference is missing.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9G ════════════════════ -->
+    <section class="chapter" id="ch-9G">
+      <h2>§9G &mdash; Automatic Gain Control (AGC)</h2>
+
+      <h3>Purpose</h3>
+      <p>Amateur band signal levels vary enormously &mdash; from a weak DX station at &minus;120&thinsp;dBm to a local station at &minus;40&thinsp;dBm, a variation of 80&thinsp;dB. Without AGC, the receiver would saturate (clip) on strong signals and require constant volume adjustment on weak ones.</p>
+      <p><strong>AGC</strong> automatically reduces the IF (and sometimes RF) amplifier gain in proportion to the signal strength, maintaining a roughly constant audio output level.</p>
+
+      <h3>How AGC Works</h3>
+      <ol>
+        <li>A detector (rectifier) measures the average amplitude of the IF signal.</li>
+        <li>The resulting DC voltage is fed back to control the gain of one or more IF amplifier stages (and optionally the RF amp).</li>
+        <li>Stronger signal &rarr; more negative AGC voltage &rarr; less gain &rarr; audio level stays constant.</li>
+      </ol>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-9/fig9-3-agc-loop.svg"
+               alt="AGC feedback loop block diagram: IF amplifier output feeds an envelope detector and smoothing circuit, producing a DC control voltage that is fed back to reduce the gain of the IF amplifier (and optionally the RF amplifier) when signal levels increase."
+               loading="lazy" width="680" height="200">
+        </div>
+        <figcaption>Fig&thinsp;9.3 &mdash; AGC feedback loop. The envelope detector and smoothing circuit derive a DC control voltage proportional to signal strength. This is fed back to reduce IF (and optionally RF) gain. (SVG pending)</figcaption>
+      </figure>
+
+      <h3>AGC Time Constants</h3>
+      <table>
+        <thead><tr><th>Parameter</th><th>Typical Value</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Attack time</strong></td><td>1&ndash;10 ms</td><td>How fast AGC responds to a suddenly stronger signal</td></tr>
+          <tr><td><strong>Decay time</strong></td><td>0.5&ndash;5 s</td><td>How fast AGC releases after signal falls</td></tr>
+        </tbody>
+      </table>
+      <p>For <strong>SSB</strong>, the ideal AGC is &ldquo;fast attack, slow decay&rdquo; &mdash; it follows the amplitude envelope of speech without pumping audibly between syllables.</p>
+      <p><strong>Hang AGC</strong> holds the gain-reduced state for a brief period (the &ldquo;hang time&rdquo;) after a signal peak, preventing the noise between syllables from sounding loud.</p>
+
+      <h3>AGC Threshold</h3>
+      <p>Below the AGC threshold, the AGC does not act &mdash; weak signals below a certain level receive full gain. This prevents the AGC from amplifying noise between transmissions.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9H ════════════════════ -->
+    <section class="chapter" id="ch-9H">
+      <h2>§9H &mdash; FM Demodulation</h2>
+
+      <h3>The FM Discriminator</h3>
+      <p>An FM discriminator converts instantaneous frequency variations in the IF signal to a proportional audio voltage. Common types:</p>
+      <table>
+        <thead><tr><th>Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Foster-Seeley</strong> (phase discriminator)</td><td>Classic circuit; sensitive to amplitude as well as frequency</td></tr>
+          <tr><td><strong>Ratio detector</strong></td><td>Variant of Foster-Seeley; inherently amplitude-insensitive</td></tr>
+          <tr><td><strong>Quadrature detector</strong></td><td>Common in ICs; the IF is split, shifted 90&deg;, and multiplied</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The Limiter Stage</h3>
+      <p>Because FM carries information only in frequency, any amplitude variation on the FM signal is noise. A <strong>limiter</strong> &mdash; a hard-driven amplifier stage that clips the IF signal to a constant amplitude &mdash; is placed before the discriminator to remove AM noise, including impulse noise. This is the <strong>capture effect</strong>: FM naturally rejects weaker co-channel signals in favour of the strongest one present.</p>
+
+      <h3>SINAD</h3>
+      <p>FM receiver sensitivity is specified by <strong>SINAD</strong> (Signal + Noise + Distortion / Noise + Distortion). A receiver is rated at its SINAD sensitivity &mdash; the signal level that produces a SINAD of 12&thinsp;dB. A lower signal level for 12&thinsp;dB SINAD = better sensitivity.</p>
+
+      <h3>NBFM vs WBFM</h3>
+      <table>
+        <thead><tr><th>Mode</th><th>Deviation</th><th>Bandwidth</th><th>Application</th></tr></thead>
+        <tbody>
+          <tr><td><strong>NBFM</strong></td><td>&plusmn;2.5 kHz</td><td>~11 kHz (Carson)</td><td>Amateur VHF/UHF voice</td></tr>
+          <tr><td><strong>WBFM</strong></td><td>&plusmn;75 kHz</td><td>~200 kHz</td><td>Broadcast FM</td></tr>
+        </tbody>
+      </table>
+      <p>The IF filter bandwidth must match the mode: a WBFM receiver with a narrow NBFM filter would clip the outer sidebands and cause audio distortion.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9I ════════════════════ -->
+    <section class="chapter" id="ch-9I">
+      <h2>§9I &mdash; Receiver Filters</h2>
+
+      <h3>Crystal Filters</h3>
+      <p>Crystal filters use the mechanical resonance of quartz crystals to produce very high-Q (sharp) bandpass filters at fixed IF frequencies (typically 6&ndash;12&thinsp;MHz). They are the primary selectivity element in HF SSB receivers.</p>
+      <p>A typical SSB crystal filter has:</p>
+      <ul>
+        <li><strong>Bandwidth:</strong> 2.0&ndash;2.8&thinsp;kHz at &minus;6&thinsp;dB</li>
+        <li><strong>Shape factor:</strong> ratio of &minus;60&thinsp;dB bandwidth to &minus;6&thinsp;dB bandwidth (ideally close to 1; typically 1.5&ndash;3 for a ladder crystal filter)</li>
+        <li><strong>Passband ripple:</strong> should be low (&lt;&thinsp;1&thinsp;dB) for good audio quality</li>
+      </ul>
+
+      <h3>Ceramic Filters</h3>
+      <p>Ceramic resonators achieve lower Q than crystals, but are inexpensive and suited to:</p>
+      <ul>
+        <li>455&thinsp;kHz (AM, NBFM second IF)</li>
+        <li>10.7&thinsp;MHz (VHF FM first IF)</li>
+      </ul>
+
+      <h3>Mechanical Filters</h3>
+      <p>Mechanical filters use the resonance of metal discs coupled by wires. They achieve very high Q at 455&thinsp;kHz and were widely used in older HF SSB equipment. Now largely replaced by crystal filters or DSP.</p>
+
+      <h3>DSP Filters</h3>
+      <p>Software-defined receivers perform filtering in the digital domain using FIR or IIR algorithms. DSP filters offer:</p>
+      <ul>
+        <li>Continuously adjustable bandwidth</li>
+        <li>Near-ideal rectangular passband shape</li>
+        <li>Notch filters for carriers within the passband</li>
+        <li>No fixed component aging</li>
+      </ul>
+      <p>However, a front-end <strong>roofing filter</strong> is still needed to prevent strong out-of-band signals from overloading the ADC before the DSP can filter them.</p>
+
+      <div class="callout-exam">
+        <strong>Roofing filter:</strong> The first IF filter in a superhet receiver. It is normally wider than the final bandwidth filter (to allow for frequency accuracy) but narrower than the full IF bandwidth. Its primary purpose is to <strong>protect later stages from strong signals</strong>, not to provide final selectivity.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9J ════════════════════ -->
+    <section class="chapter" id="ch-9J">
+      <h2>§9J &mdash; Receiver Impairments: Blocking, Cross-Modulation, and Reciprocal Mixing</h2>
+      <p>These three impairments all arise from the presence of <strong>strong signals near the wanted channel</strong>. They are distinct in mechanism but all limit the ability to hear weak stations in the presence of strong ones.</p>
+
+      <h3>1 &mdash; Blocking (Desensitisation)</h3>
+      <p>A very strong off-channel signal drives the RF amplifier or mixer into <strong>compression</strong>. The receiver's gain is reduced for all signals, including the wanted one &mdash; the wanted signal appears to become weaker or disappear entirely while the strong signal is present.</p>
+      <ul>
+        <li>Blocking is temporary; the receiver recovers when the strong signal is removed.</li>
+        <li>Measured as the <strong>blocking dynamic range</strong> (dB between MDS and the level at which a 1&thinsp;dB compression occurs).</li>
+        <li>Improved by: better RF stage linearity (higher IP3), roofing filter, attenuator.</li>
+      </ul>
+
+      <h3>2 &mdash; Cross-Modulation</h3>
+      <p>A strong AM-modulated signal (or any signal with significant amplitude variation) causes its modulation to transfer onto the wanted received signal via the non-linearity of the RF or mixer stage:</p>
+      <ul>
+        <li>You hear the wanted station's signal but also hear the audio from the strong station's AM broadcast underneath it.</li>
+        <li>The strong station does not need to be on a close frequency &mdash; it just needs to be strong enough to drive the stage non-linearly.</li>
+        <li>Reduced by: better linearity (higher IP3), front-end attenuation, or a band-pass filter to block the strong signal.</li>
+      </ul>
+
+      <h3>3 &mdash; Reciprocal Mixing</h3>
+      <p>This is the most subtle and important impairment for a weak-signal operator:</p>
+      <p>Every local oscillator has <strong>phase noise</strong> &mdash; a broadband skirt of low-level noise sidebands close to the LO frequency. When a <strong>strong off-channel signal</strong> mixes with these LO noise sidebands, the result is a broadband noise signal at the IF, at the frequency corresponding to the wanted channel.</p>
+      <p>This noise can mask a weak wanted signal even though the strong signal is many kHz away from the wanted channel.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-9/fig9-4-reciprocal-mixing.svg"
+               alt="Reciprocal mixing diagram: LO spectrum showing a central carrier with phase noise skirt. An off-channel interferer at frequency offset delta-f mixes with the LO phase noise to produce a noise product at the IF channel. A weak wanted signal at that channel is buried under the resulting noise."
+               loading="lazy" width="680" height="240">
+        </div>
+        <figcaption>Fig&thinsp;9.4 &mdash; Reciprocal mixing. LO phase noise sidebands (grey skirt) mix with a strong off-channel signal (amber). The product falls as broadband noise in the wanted channel (cyan), masking a weak station. (SVG pending)</figcaption>
+      </figure>
+
+      <div class="interactive-frame">
+        <iframe src="/interactives/full-reciprocal-mixing-visualiser.html"
+                style="width:100%; height:700px; border:1px solid #1e293b; border-radius:8px; display:block;"
+                loading="lazy"
+                title="Reciprocal Mixing Visualiser"></iframe>
+      </div>
+
+      <p><strong>Why it matters:</strong> A receiver with poor LO phase noise can be 10&ndash;20&thinsp;dB more susceptible to reciprocal mixing than a high-quality receiver, even if the noise figures and IP3 values are similar. Phase noise is a key differentiator between budget and high-end receivers.</p>
+      <p><strong>Improvement:</strong> Use a low phase-noise synthesiser (OCXO reference, high-loop-bandwidth PLL) or a high-Q crystal VFO.</p>
+
+      <h3>Summary Table</h3>
+      <table class="impairments-summary">
+        <thead><tr><th>Impairment</th><th>Mechanism</th><th>Symptom</th><th>Improved by</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Blocking</strong></td>
+            <td>Strong signal compresses RF/mixer stage</td>
+            <td>Wanted signal disappears</td>
+            <td>Higher IP3, roofing filter, attenuator</td>
+          </tr>
+          <tr>
+            <td><strong>Cross-mod</strong></td>
+            <td>Strong AM signal transfers modulation via non-linearity</td>
+            <td>Hear other station's audio underneath</td>
+            <td>Higher IP3, bandpass filter</td>
+          </tr>
+          <tr>
+            <td><strong>Reciprocal mixing</strong></td>
+            <td>Strong signal &times; LO phase noise = IF noise</td>
+            <td>Noise rises when strong signal present</td>
+            <td>Lower LO phase noise</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §9K ════════════════════ -->
+    <section class="chapter" id="ch-9K">
+      <h2>§9K &mdash; Masthead Preamplifiers</h2>
+
+      <h3>The Friis Noise Equation</h3>
+      <p>The total noise figure of a cascaded receiver chain is dominated by the first stage:</p>
+      <div class="formula-block"><p>F_total = F&sub1; + (F&sub2; &minus; 1)/G&sub1; + (F&sub3; &minus; 1)/(G&sub1; &times; G&sub2;) + &hellip;</p></div>
+      <p>Where F = noise factor (linear, not dB) and G = gain (linear). This is the <strong>Friis formula</strong>.</p>
+      <p>If the first stage has high gain (G<sub>1</sub> &gg; 1), the noise of subsequent stages (F<sub>2</sub>, F<sub>3</sub>&hellip;) is divided by G<sub>1</sub> and becomes negligible. <strong>The first stage noise figure dominates.</strong></p>
+
+      <h3>Feeder Loss is Noise</h3>
+      <p><strong>Coaxial cable has loss.</strong> At VHF and above, even a few metres of cable can introduce 1&ndash;3&thinsp;dB of attenuation. Attenuation before the receiver is equivalent to adding noise:</p>
+      <ul>
+        <li>3&thinsp;dB of cable loss before a receiver with NF = 3&thinsp;dB &rarr; effective NF = <strong>6&thinsp;dB</strong>.</li>
+        <li>The signal is 3&thinsp;dB weaker but the noise floor is unchanged (the cable itself generates thermal noise).</li>
+      </ul>
+
+      <h3>The Masthead Preamp Solution</h3>
+      <p>Fitting a <strong>low-noise amplifier (LNA) at the masthead</strong> (at the antenna, before the coaxial feed):</p>
+      <ol>
+        <li>The LNA amplifies the antenna signal before the cable loss degrades it.</li>
+        <li>Because the cable now follows a high-gain, low-NF stage, its noise contribution is divided by the LNA gain and becomes negligible.</li>
+        <li>The overall system NF is now approximately the LNA's NF (e.g., 0.5&ndash;1&thinsp;dB) rather than LNA NF + cable loss.</li>
+      </ol>
+
+      <div class="callout-exam">
+        <strong>Example:</strong> LNA NF = 0.8&thinsp;dB, gain = 15&thinsp;dB; cable loss = 3&thinsp;dB (NF equivalent = 3&thinsp;dB); receiver NF = 5&thinsp;dB.<br>
+        <strong>Without LNA:</strong> system NF &asymp; 3 + 5 = <strong>8&thinsp;dB</strong> (cable loss + receiver in series).<br>
+        <strong>With LNA at masthead:</strong> system NF &asymp; <strong>0.8 + (3&minus;1)/20 + &hellip; &asymp; 0.9&thinsp;dB</strong> &mdash; a very large improvement.
+      </div>
+
+      <h3>Disadvantages and Risks</h3>
+      <ul>
+        <li><strong>Overloading:</strong> a masthead LNA amplifies all signals, including very strong local ones. Strong broadcast or commercial transmitters can overdrive the LNA, generating IMD products that appear across the band.</li>
+        <li><strong>DC feed:</strong> the LNA requires power, typically fed up the coaxial cable (bias-T supply).</li>
+        <li><strong>TX protection:</strong> the LNA must be switched out of circuit (or bypassed) during transmission to prevent the transmitter output from destroying it. A PIN diode switch or relay is used.</li>
+        <li><strong>Marginal benefit on HF:</strong> at HF, the dominant noise source is external (atmospheric, galactic, man-made) &mdash; far above the thermal noise floor. A masthead LNA on HF does not improve sensitivity if the antenna already receives more external noise than the receiver's noise floor. Masthead preamps are primarily beneficial at <strong>VHF and above</strong> where external noise is low.</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ SELF-CHECK §9L ════════════════════ -->
+    <section class="chapter" id="ch-9L">
+      <h2>§9L &mdash; Self-Check Questions</h2>
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q1.</strong> A receiver has a noise figure of 10&thinsp;dB and is used with a 2.4&thinsp;kHz SSB filter. What is the approximate minimum discernible signal level?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-1" hidden>
+            <p>Thermal noise floor at 2.4&thinsp;kHz = &minus;174 + 10 &times; log<sub>10</sub>(2400) = &minus;174 + 33.8 = &minus;140.2&thinsp;dBm.</p>
+            <p>Add the 10&thinsp;dB noise figure: effective noise floor &asymp; &minus;130&thinsp;dBm.</p>
+            <p>MDS is approximately 3&thinsp;dB above the noise floor: <strong>&asymp; &minus;127&thinsp;dBm</strong>.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q2.</strong> State two causes of limited dynamic range in a receiver.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-2" hidden>
+            <p>1. The <strong>thermal noise floor</strong> (plus receiver noise figure) sets the lower limit &mdash; signals weaker than the effective noise floor cannot be detected.</p>
+            <p>2. <strong>Third-order intermodulation products</strong> from the non-linearity of the RF/mixer stage set the upper limit &mdash; strong signals generate IMD products within the passband that mask weak wanted signals. A higher IP3 raises this upper limit.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q3.</strong> A receiver is tuned to 14.200&thinsp;MHz with a 9&thinsp;MHz first IF. What is the image frequency, and how far is it from the wanted signal?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-3" hidden>
+            <p>LO = 14.200 + 9 = <strong>23.200&thinsp;MHz</strong>.</p>
+            <p>Image = 23.200 + 9 = <strong>32.200&thinsp;MHz</strong>.</p>
+            <p>The image is 32.200 &minus; 14.200 = <strong>18&thinsp;MHz</strong> from the wanted signal &mdash; very easy to reject with a simple HF bandpass filter. Compare with a 455&thinsp;kHz IF where the image would be only 910&thinsp;kHz away.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q4.</strong> Why does a double superhet receiver use a high first IF followed by a low second IF?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-4" hidden>
+            <p>The <strong>high first IF</strong> places the image frequency far enough from the wanted signal to be rejected by a simple RF bandpass filter. This achieves good image rejection without needing a complex tracking filter.</p>
+            <p>The <strong>low second IF</strong> allows the fitting of a high-Q crystal or ceramic filter for sharp channel selectivity, which is only practical at a fixed, low frequency. These two benefits cannot be achieved simultaneously with a single conversion.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q5.</strong> Why does SSB reception require a product detector and BFO?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-5" hidden>
+            <p>In SSB, the carrier is suppressed at the transmitter. A simple envelope detector would produce an unintelligible output because there is no carrier reference to define the zero-crossing of the modulation.</p>
+            <p>The <strong>BFO</strong> re-inserts a local carrier at the IF; the <strong>product detector</strong> multiplies the IF signal by this carrier, producing the original audio frequencies as the difference products. Without the BFO, SSB sounds like unintelligible &ldquo;duck speech.&rdquo;</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q6.</strong> Explain the difference between blocking and reciprocal mixing.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-6" hidden>
+            <p><strong>Blocking:</strong> a very strong off-channel signal compresses the gain of the RF or mixer stage, reducing the receiver's sensitivity to <em>all</em> signals &mdash; the wanted signal appears to fade or disappear. The root cause is non-linearity/saturation of the active stages. Improved by higher IP3 and a roofing filter.</p>
+            <p><strong>Reciprocal mixing:</strong> a strong off-channel signal mixes with the <em>phase noise sidebands</em> of the local oscillator, producing broadband noise at the IF that masks weak wanted signals. The root cause is LO phase noise, not stage non-linearity. Improved by using a lower phase-noise LO (OCXO, high-Q VFO).</p>
+            <p>Both worsen in the presence of a strong nearby signal, but they have different root causes and different cures.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q7.</strong> Why is a masthead preamplifier more beneficial at VHF than at HF?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-9-7">Show answer</button>
+          <div class="self-check__reveal" id="ans-9-7" hidden>
+            <p>At HF, the external noise received by the antenna (atmospheric, galactic, man-made interference) is typically 20&ndash;40&thinsp;dB above the receiver's thermal noise floor. Adding a low-noise preamp does not improve the signal-to-noise ratio because the noise is already dominated by external sources entering via the antenna &mdash; amplifying everything equally does not help.</p>
+            <p>At VHF and UHF, the external noise environment is much quieter (especially on paths with low man-made interference), so the receiver's own noise figure and the coaxial cable losses become the dominant noise source. A masthead LNA placed before the cable loss directly improves the overall system noise figure and thus the received SNR.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════ KEY FACTS ════════════════════ -->
+    <section class="chapter" style="margin-top: 2rem;">
+      <div class="key-facts">
+        <h3 style="margin-top: 0; margin-bottom: 0.85rem;">Chapter 9 &mdash; Key Facts</h3>
+        <ul>
+          <li><strong>Thermal noise floor:</strong> &minus;174&thinsp;dBm/Hz at 290&thinsp;K; increases by 10&thinsp;log(BW).</li>
+          <li><strong>Noise figure:</strong> degradation in SNR through the receiver (dB). Lower NF = lower MDS = better sensitivity.</li>
+          <li><strong>Dynamic range:</strong> ratio of max handleable signal to MDS; limited below by noise floor, above by IMD/compression.</li>
+          <li><strong>IP3:</strong> higher IP3 = better strong-signal handling. A key receiver quality differentiator.</li>
+          <li><strong>Superhet mixer:</strong> f<sub>IF</sub> = |f<sub>LO</sub> &minus; f<sub>signal</sub>|. Fixed IF allows sharp crystal/ceramic filters.</li>
+          <li><strong>Image frequency:</strong> 2&thinsp;&times;&thinsp;f<sub>IF</sub> away from the wanted signal; must be rejected before the mixer.</li>
+          <li><strong>Double superhet:</strong> high first IF (good image rejection) + low second IF (sharp selectivity).</li>
+          <li><strong>Roofing filter:</strong> first IF filter; protects downstream stages from strong signals.</li>
+          <li><strong>Product detector + BFO:</strong> required for SSB, CW, RTTY. BFO re-inserts suppressed carrier.</li>
+          <li><strong>AGC:</strong> fast attack, slow decay for SSB. Hang AGC prevents between-word noise burst.</li>
+          <li><strong>FM limiter:</strong> removes AM noise from FM IF; enables capture effect.</li>
+          <li><strong>SINAD:</strong> FM sensitivity metric; lower signal level for 12&thinsp;dB SINAD = better sensitivity.</li>
+          <li><strong>Blocking:</strong> strong signal compresses gain. Root cause: non-linearity. Cure: higher IP3, attenuation.</li>
+          <li><strong>Cross-mod:</strong> AM modulation transfers to wanted signal. Root cause: non-linearity. Cure: higher IP3, BPF.</li>
+          <li><strong>Reciprocal mixing:</strong> LO phase noise + strong off-channel signal = IF noise. Cure: low phase-noise LO.</li>
+          <li><strong>Friis formula:</strong> system NF dominated by first stage; masthead LNA must have low NF and high gain.</li>
+          <li><strong>Masthead LNA:</strong> beneficial at VHF+ (external noise quiet); marginal at HF (external noise dominates).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════ SECTION NAV ════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-8-transmitter-interference.html" class="section-nav__link">&larr; Chapter 8: TX Interference</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;section=9"
+         class="section-nav__link section-nav__practice">Practice This Chapter</a>
+      <a href="section-10-sdr.html" class="section-nav__link">Chapter 10: SDR &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260917-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260917-1000" defer></script>
+</body>
+</html>

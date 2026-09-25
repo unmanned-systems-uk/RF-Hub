@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 6: Analogue &amp; Digital Signals — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260914-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .formula-block p { margin: 0; font-size: 0.95rem; }
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img { max-width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    /* Binary table highlight */
+    .binary-table td:first-child { font-family: var(--font-mono); color: var(--text-primary); }
+    .binary-table td:nth-child(2) { font-family: var(--font-mono); color: var(--accent-em); }
+    .binary-table td:nth-child(3) { font-family: var(--font-mono); color: var(--text-primary); }
+    .binary-table td:nth-child(4) { font-family: var(--font-mono); color: var(--accent-em); }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <a href="/pages/study/full/">Full Licence</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <span>Chapter 6</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~5&ndash;8% &nbsp;&middot;&nbsp; New at Full</span>
+      </div>
+      <h1>Analogue &amp; Digital Signals</h1>
+      <p class="hero-subtitle">How analogue signals become numbers, the Nyquist theorem and aliasing, Fourier transforms and the frequency domain, ADC quantisation, and Digital-to-Analogue conversion. The foundation of SDR and DDS synthesis.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-6A">6A Analogue vs Digital</a></li>
+        <li><a href="#ch-6B">6B Binary Numbers</a></li>
+        <li><a href="#ch-6C">6C ADC &amp; Quantisation</a></li>
+        <li><a href="#ch-6D">6D Nyquist &amp; Aliasing</a></li>
+        <li><a href="#ch-6E">6E Fourier &amp; FFT</a></li>
+        <li><a href="#ch-6F">6F DAC &amp; DDS</a></li>
+        <li><a href="#ch-6G">&#9733; Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-6A"><span class="toc-code">6A</span>Analogue vs Digital</a></li>
+        <li><a href="#ch-6B"><span class="toc-code">6B</span>Binary Numbers</a></li>
+        <li><a href="#ch-6C"><span class="toc-code">6C</span>ADC &amp; Quantisation</a></li>
+        <li><a href="#ch-6D"><span class="toc-code">6D</span>Sampling &amp; Nyquist Theorem</a></li>
+        <li><a href="#ch-6E"><span class="toc-code">6E</span>Fourier Transforms &amp; FFT</a></li>
+        <li><a href="#ch-6F"><span class="toc-code">6F</span>DAC &amp; DDS</a></li>
+        <li><a href="#ch-6G"><span class="toc-code">&#9733;</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:2rem;">This short but exam-dense chapter underpins Software Defined Radio (Ch&nbsp;10) and the DDS synthesiser in Ch&nbsp;7. It introduces digital signal processing theory &mdash; how analogue signals are converted to numbers, sampled, transformed between domains, and reconstructed.</p>
+
+    <!-- ════════════════════ 6A: ANALOGUE AND DIGITAL ════════════════════ -->
+    <section class="chapter" id="ch-6A">
+      <div class="chapter-header">
+        <span class="chapter-num">6A</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Analogue and Digital Signals</h2>
+
+      <p>An <strong>analogue signal</strong> can take any voltage or current value within the circuit&rsquo;s limits and can contain any range of frequencies. Any noise added to it becomes indistinguishable from the wanted signal and degrades the information.</p>
+
+      <p>A <strong>digital signal</strong> is limited to a fixed number of discrete levels &mdash; most commonly two: logic &lsquo;1&rsquo; and logic &lsquo;0&rsquo;. The actual voltages depend on the technology (RS232 uses &plusmn;3&ndash;25&nbsp;V; microcontrollers often 0/3.3&nbsp;V). Crucially, provided a voltage is within the specified range for its level, noise that does not push it over the threshold has <strong>no effect</strong> on the stored information. This is the fundamental advantage of digital representation over analogue.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>Key contrast:</strong> An analogue signal degrades continuously with noise. A digital signal is immune to noise up to the point where the noise margin is exceeded &mdash; then it fails catastrophically. This threshold behaviour makes digital systems far more robust in noisy environments.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6B: BINARY NUMBERS ════════════════════ -->
+    <section class="chapter" id="ch-6B">
+      <div class="chapter-header">
+        <span class="chapter-num">6B</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Binary Numbers</h2>
+
+      <p>Microprocessors process information as ones and zeros &mdash; <strong>base&nbsp;2</strong> (binary). Each digit position doubles in value, so a 4-bit word can represent 0 to 15 (2<sup>4</sup> &minus; 1 = 15).</p>
+
+      <table class="binary-table">
+        <thead>
+          <tr><th>Decimal</th><th>Binary</th><th>Decimal</th><th>Binary</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>0000</td><td>8</td><td>1000</td></tr>
+          <tr><td>1</td><td>0001</td><td>9</td><td>1001</td></tr>
+          <tr><td>2</td><td>0010</td><td>10</td><td>1010</td></tr>
+          <tr><td>3</td><td>0011</td><td>11</td><td>1011</td></tr>
+          <tr><td>4</td><td>0100</td><td>12</td><td>1100</td></tr>
+          <tr><td>5</td><td>0101</td><td>13</td><td>1101</td></tr>
+          <tr><td>6</td><td>0110</td><td>14</td><td>1110</td></tr>
+          <tr><td>7</td><td>0111</td><td>15</td><td>1111</td></tr>
+        </tbody>
+      </table>
+
+      <p>An 8-bit <strong>byte</strong> covers 0&ndash;255 (2<sup>8</sup> &minus; 1). The more bits used, the finer the representation.</p>
+
+      <p><strong>Converting decimal to binary:</strong> repeatedly divide by 2 and record the remainders from bottom to top. For example, 13 &rarr; 8+4+1 &rarr; <strong>1101</strong>.</p>
+
+      <div class="callout-exam">
+        <strong>Exam tip:</strong> Know that an N-bit ADC gives 2<sup>N</sup> levels. A 4-bit ADC = 16 levels; 8-bit = 256 levels; 14-bit = 16,384 levels. More bits = finer amplitude resolution = lower quantisation noise.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6C: ADC / QUANTISATION ════════════════════ -->
+    <section class="chapter" id="ch-6C">
+      <div class="chapter-header">
+        <span class="chapter-num">6C</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Analogue to Digital Conversion (ADC)</h2>
+
+      <p>To process an analogue signal digitally, it must be <strong>sampled</strong> at intervals and each sample represented as a binary number (a <strong>digital word</strong>).</p>
+
+      <h3>Quantisation and Quantisation Noise</h3>
+      <p>Because the amplitude is rounded to the nearest available digital level, the result is not exact &mdash; the error is called <strong>quantisation noise</strong>. With a 4-bit ADC, only 16 levels are available; a 14-bit ADC gives 16,384 levels.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-6/fig-6-1.svg"
+            alt="ADC quantisation diagram: a sine wave overlaid on a binary level staircase with 16 steps (0000 to 1111). Sample points are shown at regular intervals. The quantisation error is visible as the gap between the true analogue value and the nearest digital step. A 4-bit ADC gives only 16 levels; a 14-bit ADC gives 16,384 levels, greatly reducing this error."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 6.1 &mdash; ADC quantisation: the analogue signal (smooth curve) is rounded to the nearest digital level (staircase). The rounding error is quantisation noise.</figcaption>
+      </figure>
+
+      <p><strong>Handling negative voltages:</strong> the zero-crossing is mapped to the mid-scale binary word (e.g. 1000 for a 4-bit ADC). Words below 1000 represent negative voltages; words above represent positive voltages.</p>
+
+      <h3>SNR and Bit Depth</h3>
+      <p>A 14-bit ADC gives a signal-to-quantisation-noise ratio (SNR) of better than <strong>80&nbsp;dB</strong> when the signal fully uses the ADC range. In practice, if the wanted signal is 60&nbsp;dB below the ADC&rsquo;s maximum, the effective SNR drops to 80 &minus; 60 = <strong>20&nbsp;dB</strong>. The ADC design must ensure quantisation noise stays below the RF noise floor so the converter is not the limiting factor in receiving weak signals.</p>
+
+      <div class="callout-exam">
+        <strong>Exam note:</strong> The exact bits-to-SNR formula is not in the syllabus &mdash; the concept and approximate figures are what matter. Know that more bits = better SNR.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6D: SAMPLING / NYQUIST ════════════════════ -->
+    <section class="chapter" id="ch-6D">
+      <div class="chapter-header">
+        <span class="chapter-num">6D</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Sampling Rate and the Nyquist Theorem</h2>
+
+      <p>Sampling too infrequently misses detail; sampling too often creates excess data that overwhelms processing. Harry Nyquist proved the optimum:</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>Nyquist theorem:</strong> A signal must be sampled at <strong>at least twice the highest frequency present</strong> to be faithfully reproduced.</div>
+      </div>
+
+      <p>If the highest audio frequency is 3&nbsp;kHz, the minimum sample rate is 6&nbsp;ksamples/s. In practice, sample rates are higher because real filters are imperfect.</p>
+
+      <div style="margin: 1.5rem 0;">
+        <iframe src="/interactives/full-sampling-aliasing-visualiser.html"
+          style="width:100%; height:640px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy"
+          title="Nyquist Sampling &amp; Aliasing Visualiser"></iframe>
+      </div>
+
+      <h3>Aliasing</h3>
+      <p>If a frequency <strong>above half the sample rate</strong> is present during sampling, it is indistinguishable from a lower frequency &mdash; its <strong>alias</strong>. For example, with a 2&nbsp;ksamples/s rate, a 1.1&nbsp;kHz signal aliases to 900&nbsp;Hz (the signal is 100&nbsp;Hz above the Nyquist limit of 1&nbsp;kHz; the alias appears 100&nbsp;Hz below that limit).</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-6/fig-6-4.svg"
+            alt="Aliasing demonstration: two overlapping waveforms — a solid 900 Hz sine wave and a dashed 1100 Hz sine wave — share identical sample points when sampled at 2 ksamples/s. Because both pass through the same sample values, the ADC cannot distinguish between them. The 1100 Hz signal appears as a 900 Hz alias."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 6.4 &mdash; Aliasing: a 900&nbsp;Hz signal (solid) and a 1100&nbsp;Hz signal (dashed) produce identical samples at 2&nbsp;ksamples/s. The ADC cannot tell them apart.</figcaption>
+      </figure>
+
+      <p><strong>Anti-aliasing filter:</strong> a low-pass filter fitted <strong>before</strong> the ADC removes any frequencies above the Nyquist limit before sampling, preventing aliasing. It is an essential part of every practical ADC system.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>Anti-aliasing filter</strong> is placed <em>before</em> the ADC input. It limits the signal bandwidth to below half the sample rate. Without it, high-frequency signals fold into the audio band as inaudible-to-visible artefacts.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6E: FOURIER TRANSFORMS ════════════════════ -->
+    <section class="chapter" id="ch-6E">
+      <div class="chapter-header">
+        <span class="chapter-num">6E</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Fourier Transforms and the Frequency Domain</h2>
+
+      <p>An analogue waveform displayed on an oscilloscope shows <strong>amplitude vs time</strong> &mdash; the <strong>time domain</strong>. The same signal can be represented as <strong>amplitude vs frequency</strong> &mdash; the <strong>frequency domain</strong> &mdash; showing which frequencies are present and at what level, exactly as a spectrum analyser displays.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-6/fig-6-5.svg"
+            alt="Two-panel illustration. Left panel: time domain showing a complex waveform composed of a 1 kHz fundamental, a phase-shifted 2nd harmonic, and a 1.25 kHz component — the waveform appears as a complex, non-sinusoidal curve. Right panel: frequency domain showing the same signal as three clear peaks at 1 kHz, 1.25 kHz, and 2 kHz, each with labelled amplitude. The frequency domain view immediately reveals the constituent frequencies that are invisible in the time domain waveform."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 6.5 &mdash; Left: time domain (oscilloscope view). Right: frequency domain (spectrum analyser view). The same signal reveals different information depending on the representation.</figcaption>
+      </figure>
+
+      <p>The <strong>Fourier transform</strong> is the mathematical process that converts time-domain sample data into frequency-domain data. The <strong>Fast Fourier Transform (FFT)</strong> is a computationally efficient algorithm that allows near-real-time frequency analysis &mdash; the basis of the <strong>waterfall display</strong> in SDR software.</p>
+
+      <table>
+        <thead>
+          <tr><th>Representation</th><th>Axes</th><th>Instrument</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Time domain</td><td>Amplitude vs time</td><td>Oscilloscope</td></tr>
+          <tr><td>Frequency domain</td><td>Amplitude vs frequency</td><td>Spectrum analyser / SDR waterfall</td></tr>
+        </tbody>
+      </table>
+
+      <p>The same signal &mdash; two different views. Neither is more &ldquo;real&rdquo;; each reveals information the other obscures.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>FFT</strong> is the algorithm that converts time-domain digital samples into a frequency-domain plot. SDR software uses the FFT continuously to generate the waterfall display in near-real-time. The spectrum analyser in the lab does the same thing in hardware.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6F: DAC / DDS ════════════════════ -->
+    <section class="chapter" id="ch-6F">
+      <div class="chapter-header">
+        <span class="chapter-num">6F</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Digital to Analogue Conversion (DAC)</h2>
+
+      <p>The reverse process reconstructs an analogue signal from digital words. A <strong>DAC</strong> reads a sequence of digital values and produces a corresponding analogue voltage. The output is a <strong>staircase</strong> approximating the desired waveform.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-6/fig-6-6.svg"
+            alt="DAC staircase output: a sine wave target (smooth curve, shown dashed) overlaid with the actual DAC output (solid staircase). The staircase steps between quantised amplitude levels each clock cycle, approximating the sine wave. The smoother the steps (more bits), the closer the staircase approaches the ideal waveform. Harmonics from the discrete steps are removed by the output low-pass filter."
+            loading="lazy">
+        </div>
+        <figcaption>Fig 6.6 &mdash; DAC staircase approximation of a sine wave. The low-pass filter removes the harmonic content from the steps, leaving the smooth waveform.</figcaption>
+      </figure>
+
+      <h3>Look-Up Table Approach</h3>
+      <p>A <strong>sinewave look-up table</strong> stores one cycle of a sine wave as digital amplitudes. Stepping through this table at a clock-controlled rate generates a sine wave whose frequency equals:</p>
+
+      <div class="formula-block">
+        <p>f<sub>out</sub> = (step rate through table) &times; (clock frequency / table length)</p>
+      </div>
+
+      <p>This is the basis of <strong>Direct Digital Synthesis (DDS)</strong> &mdash; covered in &sect;7D.</p>
+
+      <h3>Output Artefacts</h3>
+      <p>The staircase output contains harmonics from the discrete amplitude levels. These must be removed by an <strong>analogue low-pass filter</strong> on the DAC output. Any errors in amplitude or timing also produce <strong>phase noise</strong> sidebands close to the wanted frequency &mdash; a limitation of DDS that cannot be filtered away.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">&#x2139;</div>
+        <div class="callout-text"><strong>Phase noise</strong> in DDS arises from quantisation errors in the amplitude table and the finite step size. It manifests as elevated noise sidebands close to the carrier &mdash; close enough that the output LPF cannot remove them. This is a fundamental DDS limitation compared to a well-designed PLL synthesiser.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 6G: SELF-CHECK ════════════════════ -->
+    <section class="chapter" id="ch-6G">
+      <div class="chapter-header">
+        <span class="chapter-num">&#9733;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Self-Check Questions</h2>
+      <p>Work through these without looking at the answers first.</p>
+
+      <div class="self-checks">
+        <h3>Self-Check &mdash; Chapter 6</h3>
+
+        <div class="self-check">
+          <p class="self-check__q">Q1. Why is a digital signal more noise-resistant than an analogue signal?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-1" hidden>
+            <p>A digital signal uses discrete levels (typically just two). Noise must exceed the threshold margin before it changes the logical value &mdash; any noise below the threshold has zero effect. An analogue signal carries any noise directly as distortion of the wanted information, with no immunity whatsoever.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q2. An ADC has 8 bits. How many discrete amplitude levels can it represent?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-2" hidden>
+            <p>2<sup>8</sup> = <strong>256 levels</strong> (0 to 255).</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q3. State the Nyquist theorem in plain language.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-3" hidden>
+            <p>A signal must be sampled at <strong>least twice as fast as the highest frequency present</strong> in order to be accurately reconstructed from the samples.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q4. A system samples at 8&nbsp;ksamples/s. What is the highest audio frequency that can be correctly represented, and what must be done to frequencies above this before sampling?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-4" hidden>
+            <p>The Nyquist limit is 8&thinsp;000 &divide; 2 = <strong>4&nbsp;kHz</strong>. Any frequencies above 4&nbsp;kHz must be removed by an <strong>anti-aliasing low-pass filter</strong> placed before the ADC; otherwise they will alias to lower frequencies and corrupt the audio.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q5. What is the difference between the time domain and the frequency domain view of a signal?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-5" hidden>
+            <p>The <strong>time domain</strong> shows how the signal amplitude varies with time &mdash; the oscilloscope view. The <strong>frequency domain</strong> shows which frequencies are present and at what amplitude &mdash; the spectrum analyser or SDR waterfall view. The <strong>Fourier transform</strong> (FFT) converts between the two representations.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q">Q6. Why does the DAC output require a low-pass filter?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-6-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-6-6" hidden>
+            <p>The DAC output is a staircase waveform containing harmonics generated by the discrete amplitude steps. The low-pass filter removes these harmonics, leaving only the wanted analogue waveform.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════ KEY FACTS ════════════════════ -->
+    <hr class="divider">
+    <section class="chapter" id="key-facts">
+      <div class="chapter-header">
+        <span class="chapter-num">&#9733;</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Chapter 6 &mdash; Key Facts Summary</h2>
+      <div class="key-facts">
+        <ul>
+          <li><strong>Digital vs analogue:</strong> digital signals are immune to noise up to the threshold margin; analogue degrades continuously.</li>
+          <li><strong>N-bit ADC</strong> gives 2<sup>N</sup> amplitude levels; 8-bit = 256; 14-bit = 16,384.</li>
+          <li><strong>Quantisation noise</strong> = rounding error from mapping analogue amplitude to nearest digital level.</li>
+          <li><strong>14-bit ADC SNR</strong> &asymp; 80&nbsp;dB when signal uses full ADC range.</li>
+          <li><strong>Nyquist theorem:</strong> sample rate must be &ge; 2 &times; highest signal frequency.</li>
+          <li><strong>Aliasing</strong> occurs when signal frequency exceeds half the sample rate; the signal folds to a false lower frequency.</li>
+          <li><strong>Anti-aliasing filter</strong> (LPF before ADC) prevents aliasing &mdash; mandatory in practical systems.</li>
+          <li><strong>Time domain</strong> = amplitude vs time (oscilloscope). <strong>Frequency domain</strong> = amplitude vs frequency (spectrum analyser / waterfall).</li>
+          <li><strong>FFT</strong> (Fast Fourier Transform) converts digital time-domain samples to frequency-domain display in near-real-time.</li>
+          <li><strong>DAC</strong> produces a staircase output; <strong>output LPF</strong> removes harmonic content from the steps.</li>
+          <li><strong>DDS</strong> uses a look-up table + DAC + LPF to synthesise frequencies digitally. Produces phase noise that LPF cannot remove.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════ SECTION NAV ════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-5-semiconductors.html" class="section-nav__link">&larr; Chapter 5: Semiconductors</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;section=6"
+         class="section-nav__link section-nav__practice">Practice This Chapter</a>
+      <a href="section-7-transmitter.html" class="section-nav__link">Chapter 7: The Transmitter &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="progress-bar"></div>
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260914-1000" defer></script>
+</body>
+</html>

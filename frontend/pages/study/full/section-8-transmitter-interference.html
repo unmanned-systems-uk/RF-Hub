@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 8: Transmitter Interference — Full Licence Study | RF-Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260914-1000">
+  <style>
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-em), var(--accent-h));
+      z-index: 1000; transition: width 0.1s linear; pointer-events: none;
+    }
+    .hero { text-align: left; padding: 3.5rem 0 2.5rem; }
+    .hero h1 { background: none; -webkit-text-fill-color: var(--text-primary); color: var(--text-primary); }
+    .hero-breadcrumb {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .hero-breadcrumb a { color: var(--text-dim); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: var(--accent-em); }
+    .hero-breadcrumb__sep { opacity: 0.4; }
+    .hero-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .hero-sub-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 1.25rem; list-style: none; padding: 0;
+    }
+    .hero-sub-list a {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);
+      text-decoration: none; padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .hero-sub-list a:hover { color: var(--accent-em); border-color: rgba(167,139,250,0.4); }
+    .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.5rem; margin: 2rem 0 2.5rem;
+    }
+    .toc__label {
+      font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; gap: 0.5rem; }
+    @media (max-width: 580px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 0.35rem; break-inside: avoid; }
+    .toc a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.12s; }
+    .toc a:hover { color: var(--accent-em); }
+    .toc-code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); margin-right: 0.35rem; }
+    .chapter h3 { margin-top: 1.75rem; margin-bottom: 0.6rem; }
+    .chapter h4 { margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .chapter p { font-size: 0.97rem; }
+    .chapter ul, .chapter ol { margin: 0.5rem 0 1rem 1.25rem; color: var(--text-secondary); }
+    .chapter li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .chapter li strong { color: var(--text-primary); }
+    .chapter table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+    .chapter th {
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem; text-align: left;
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+    }
+    .chapter td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; color: var(--text-secondary); vertical-align: top; }
+    .chapter tr:hover td { background: rgba(255,255,255,0.025); }
+    .chapter td strong { color: var(--text-primary); }
+    .formula-block {
+      background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18);
+      border-radius: var(--radius-sm); padding: 0.85rem 1.1rem;
+      margin: 0.85rem 0; font-family: var(--font-mono); font-size: 0.9rem;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .formula-block p { margin: 0; font-size: 0.9rem; }
+    figure { margin: 1.75rem 0; }
+    .fig-wrap {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+    .fig-wrap img { max-width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);
+      text-align: center; margin-top: 0.5rem; line-height: 1.4;
+    }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .callout-exam {
+      background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.22);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.85rem 1rem; margin: 1.25rem 0; font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    .callout-exam strong { color: var(--text-primary); }
+    .crossref {
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.85rem;
+      margin: 1rem 0; display: inline-block;
+    }
+    .crossref a { color: var(--accent-em); text-decoration: none; }
+    .crossref a:hover { text-decoration: underline; }
+    .self-checks { margin: 2rem 0 1rem; }
+    .self-checks > h3 {
+      font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 0.85rem;
+    }
+    .self-check {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 0.6rem;
+    }
+    .self-check__q { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.65rem; }
+    .btn-reveal {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent-em); background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.22); border-radius: var(--radius-sm);
+      padding: 0.3rem 0.75rem; cursor: pointer; transition: background 0.12s;
+    }
+    .btn-reveal:hover { background: rgba(167,139,250,0.18); }
+    .self-check__reveal {
+      margin-top: 0.85rem; padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .self-check__reveal p { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal p:last-child { margin-bottom: 0; }
+    .self-check__reveal ul { margin: 0.4rem 0 0 1.1rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .self-check__reveal li { margin-bottom: 0.25rem; }
+    .section-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; padding: 2rem 0 4rem;
+      border-top: 1px solid var(--border); margin-top: 3rem;
+    }
+    .section-nav__link {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.5rem 1.1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); transition: background 0.12s;
+    }
+    .section-nav__link:hover { background: rgba(167,139,250,0.1); }
+    .section-nav__link--disabled { color: var(--text-dim); border-color: var(--border); pointer-events: none; }
+    .section-nav__practice { color: var(--accent-current); border-color: rgba(34,197,94,0.3); }
+    .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
+    .key-facts {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-em);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    }
+    .key-facts ul { margin: 0; padding-left: 1.1rem; }
+    .key-facts li { color: var(--text-secondary); margin-bottom: 0.4rem; font-size: 0.925rem; }
+    .key-facts li strong { color: var(--text-primary); }
+    .imd-table td:last-child { color: var(--text-dim); font-style: italic; }
+  </style>
+  <meta name="site-nav-active" content="study">
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-breadcrumb">
+        <a href="/pages/study/">Study</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <a href="/pages/study/full/">Full Licence</a>
+        <span class="hero-breadcrumb__sep">&rsaquo;</span>
+        <span>Chapter 8</span>
+      </div>
+      <div class="hero-badge-row">
+        <span class="hero-badge">Full Licence</span>
+        <span class="badge badge--warning">~5&ndash;8% &nbsp;&middot;&nbsp; Exam focus: harmonics, key clicks, IMD</span>
+      </div>
+      <h1>Transmitter Interference</h1>
+      <p class="hero-subtitle">Frequency stability and drift, harmonics and spurious emissions, PLL and DDS spurious outputs, key clicks, FM over-deviation, and intermodulation distortion / SSB splatter.</p>
+      <ul class="hero-sub-list">
+        <li><a href="#ch-8A">8A Frequency Stability</a></li>
+        <li><a href="#ch-8B">8B Harmonics &amp; Spurious</a></li>
+        <li><a href="#ch-8C">8C PLL &amp; DDS Spurs</a></li>
+        <li><a href="#ch-8D">8D Key Clicks</a></li>
+        <li><a href="#ch-8E">8E FM Over-deviation</a></li>
+        <li><a href="#ch-8F">8F IMD &amp; SSB Splatter</a></li>
+        <li><a href="#ch-8G">&#9733; Self-Check</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="container study-page-main" style="padding-bottom: 2rem;">
+    <div id="study-sidebar-mount"></div>
+
+    <div class="toc" aria-label="Section contents">
+      <p class="toc__label">Contents</p>
+      <ol>
+        <li><a href="#ch-8A"><span class="toc-code">8A</span>Frequency Stability &amp; Drift</a></li>
+        <li><a href="#ch-8B"><span class="toc-code">8B</span>Harmonics &amp; Spurious Emissions</a></li>
+        <li><a href="#ch-8C"><span class="toc-code">8C</span>PLL &amp; DDS Spurious Outputs</a></li>
+        <li><a href="#ch-8D"><span class="toc-code">8D</span>Key Clicks</a></li>
+        <li><a href="#ch-8E"><span class="toc-code">8E</span>FM Over-deviation</a></li>
+        <li><a href="#ch-8F"><span class="toc-code">8F</span>IMD &amp; SSB Splatter</a></li>
+        <li><a href="#ch-8G"><span class="toc-code">8G</span>Self-Check Questions</a></li>
+      </ol>
+    </div>
+
+    <!-- ════════════════════ §8A ════════════════════ -->
+    <section class="chapter" id="ch-8A">
+      <h2>§8A &mdash; Frequency Stability and Drift</h2>
+      <p>A transmitter's output frequency is not perfectly constant. <strong>Frequency drift</strong> is a slow, unwanted change in output frequency over time.</p>
+
+      <h3>Causes of Drift</h3>
+      <table>
+        <thead><tr><th>Cause</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Temperature</strong></td><td>Inductors, capacitors, and crystal cuts change with temperature</td></tr>
+          <tr><td><strong>Supply voltage</strong></td><td>Transistor junction capacitance varies with bias voltage</td></tr>
+          <tr><td><strong>Mechanical stress</strong></td><td>Physical flexing of components changes LC values</td></tr>
+          <tr><td><strong>Crystal ageing</strong></td><td>Crystal cut relaxes very slowly over years</td></tr>
+        </tbody>
+      </table>
+      <p>A <strong>crystal oscillator</strong> (Q up to 50,000) is far more stable than a free-running LC VFO (Q of a few hundred). PLL synthesisers locked to a crystal reference inherit that crystal's stability.</p>
+
+      <h3>Consequences</h3>
+      <ul>
+        <li>Drift shifts the transmitted signal off the stated frequency, potentially causing interference to adjacent channel users.</li>
+        <li>Licence conditions require that the transmitted frequency be held within stated tolerances (typically &plusmn;50&thinsp;Hz at HF for a modern transceiver).</li>
+        <li>A drifting transmitter can be identified by the pitch change heard at a distant receiver using a BFO/product detector.</li>
+      </ul>
+
+      <h3>Mitigation</h3>
+      <ul>
+        <li>Use crystal oscillators or PLL synthesisers rather than free-running LC VFOs.</li>
+        <li>Allow warm-up time before transmitting.</li>
+        <li>Use a temperature-compensated crystal oscillator (TCXO) or oven-controlled crystal oscillator (OCXO) in critical applications.</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §8B ════════════════════ -->
+    <section class="chapter" id="ch-8B">
+      <h2>§8B &mdash; Harmonics and Spurious Emissions</h2>
+
+      <h3>Harmonics</h3>
+      <p>A <strong>harmonic</strong> is a signal at an integer multiple of the fundamental transmit frequency. All practical transmitter PA stages produce some harmonics because transistors are non-linear devices.</p>
+      <ul>
+        <li><strong>2nd harmonic:</strong> 2 &times; f<sub>carrier</sub> (e.g., 14&thinsp;MHz &rarr; 28&thinsp;MHz)</li>
+        <li><strong>3rd harmonic:</strong> 3 &times; f<sub>carrier</sub> (e.g., 14&thinsp;MHz &rarr; 42&thinsp;MHz)</li>
+        <li><strong>5th harmonic:</strong> 5 &times; f<sub>carrier</sub> (14&thinsp;MHz &rarr; 70&thinsp;MHz)</li>
+      </ul>
+
+      <div class="callout-exam">
+        <strong>Exam trap:</strong> A class C PA producing a strong 3rd harmonic from 14&thinsp;MHz will fall at 42&thinsp;MHz &mdash; within the 6&thinsp;m band. A 7&thinsp;MHz 3rd harmonic lands at 21&thinsp;MHz (15&thinsp;m band). Harmonics from one amateur band can cause interference on another.
+      </div>
+
+      <p>Class C amplifiers produce stronger harmonics than class A because of their highly non-linear operation. The tuned output network provides some harmonic attenuation, but a dedicated <strong>low-pass filter</strong> on the transmitter output is the primary suppression mechanism.</p>
+      <p><strong>UK licence limit:</strong> Spurious emissions (including harmonics) must generally be at least <strong>&minus;43&thinsp;dBc</strong> (43&thinsp;dB below the carrier) for transmitters above 25&thinsp;W, and &minus;50&thinsp;dBc for some categories. The exact limits are in the licence terms.</p>
+
+      <h3>Other Spurious Emissions</h3>
+      <p>Beyond harmonics, transmitters can produce:</p>
+      <ul>
+        <li><strong>Parasitic oscillations:</strong> self-oscillation at unintended frequencies due to stray feedback (RF on supply lines, stray inductance/capacitance). Cured by ferrite beads, bypassing, and careful layout.</li>
+        <li><strong>Mixer products:</strong> in a superhet transmitter, unwanted IF signals reaching the output if the filtering is insufficient.</li>
+        <li><strong>Sub-harmonics:</strong> rare, but possible in some designs operating near saturation.</li>
+      </ul>
+
+      <h3>Mitigation</h3>
+      <ol>
+        <li><strong>Low-pass filter</strong> on the PA output &mdash; most effective for harmonics.</li>
+        <li><strong>Bandpass filter</strong> on the output &mdash; also rejects signals on other bands entirely.</li>
+        <li>Good PA design with appropriate class of operation for the mode.</li>
+        <li>Ferrite beads on supply leads to kill parasitic oscillations.</li>
+      </ol>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §8C ════════════════════ -->
+    <section class="chapter" id="ch-8C">
+      <h2>§8C &mdash; PLL and DDS Spurious Outputs</h2>
+
+      <h3>PLL Reference Spurs</h3>
+      <p>A PLL synthesiser is locked to a reference frequency f<sub>ref</sub>. In practice, the reference frequency is not completely removed by the loop filter and appears as <strong>reference spurs</strong> &mdash; sidebands offset from the carrier by &plusmn;f<sub>ref</sub> (and multiples).</p>
+
+      <div class="callout-exam">
+        <strong>Example:</strong> A PLL with a 5&thinsp;kHz reference produces sidebands 5&thinsp;kHz either side of the carrier. On SSB, these sidebands lie within adjacent SSB channels and can cause interference.
+      </div>
+
+      <p>Reference spurs are reduced by:</p>
+      <ul>
+        <li>Improving the loop filter (more suppression at the reference frequency offset).</li>
+        <li>Reducing the reference frequency step size (worse for frequency resolution &mdash; a design tradeoff).</li>
+        <li>Using a fractional-N PLL architecture.</li>
+      </ul>
+
+      <h3>DDS Spurious Outputs</h3>
+      <p>A <strong>DDS</strong> synthesiser produces phase truncation spurs because the phase accumulator has more bits than the look-up table address width. These appear at predictable offsets related to the ratio of the output frequency to the clock frequency.</p>
+      <p>Unlike harmonics, DDS spurs cannot be removed by a simple low-pass filter because they may fall within the LPF passband. Careful choice of output frequency (avoiding problematic ratios) and higher DAC bit depth reduce these spurs.</p>
+
+      <h3>Phase Noise</h3>
+      <p>Both PLL and DDS synthesisers add <strong>phase noise</strong> &mdash; a broadband skirt of low-level noise close to the carrier. High phase noise degrades transmitted signal quality and, in a receiver, causes reciprocal mixing (see §9J). For transmitters:</p>
+      <ul>
+        <li>Phase noise from the LO mixes with the modulation to widen the effective transmitted bandwidth.</li>
+        <li>A good-quality synthesiser will have phase noise well below &minus;120&thinsp;dBc/Hz at 10&thinsp;kHz offset.</li>
+      </ul>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §8D ════════════════════ -->
+    <section class="chapter" id="ch-8D">
+      <h2>§8D &mdash; Key Clicks</h2>
+      <p><strong>Key clicks</strong> are spurious radio frequency energy radiated either side of the carrier when sending CW. They arise from the shape of the keyed envelope.</p>
+
+      <h3>Cause</h3>
+      <p>When a carrier is switched on and off by a Morse key, the envelope waveform has rise and fall edges. A <strong>square-wave keying</strong> waveform (infinitely fast rise and fall) would theoretically produce sidebands extending infinitely either side of the carrier. In practice, fast but finite rise times produce sidebands extending many kHz beyond the CW signal, causing interference to stations on nearby frequencies.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-8/fig8-1-key-clicks.svg"
+               alt="Time-domain comparison of square-wave CW keying (sharp edges, wide spectral spread) versus shaped cosine-rise keying (smooth edges, narrow spectral spread). The shaped envelope keeps sidebands close to the carrier."
+               loading="lazy" width="680" height="220">
+        </div>
+        <figcaption>Fig&thinsp;8.1 — CW envelope shaping. Left: fast (square) rise; wide spectral spread. Right: shaped cosine rise; narrow sidebands. (SVG pending)</figcaption>
+      </figure>
+
+      <h3>Solution: Envelope Shaping</h3>
+      <p>The rise and fall time of the CW envelope must be <strong>shaped</strong> &mdash; typically with a raised cosine or Gaussian envelope &mdash; to avoid abrupt transitions:</p>
+      <ul>
+        <li><strong>Rise/fall time &approx; 5&thinsp;ms</strong> is a commonly quoted target for HF CW.</li>
+        <li>Too fast (&lt;&thinsp;1&thinsp;ms): key clicks extend several kHz either side.</li>
+        <li>Too slow (&gt;&thinsp;15&thinsp;ms): the Morse dots become soft and hard to copy; the signal may even sound like a &ldquo;chirp&rdquo;.</li>
+      </ul>
+      <p>Most modern transceivers include built-in envelope shaping. Older or homebrew rigs may require a shaping circuit between the key and the PA.</p>
+
+      <div class="callout-exam">
+        <strong>Key fact:</strong> Key clicks are caused by a <strong>short rise time</strong> on the CW envelope. The cure is to slow the rise and fall time with shaping.
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §8E ════════════════════ -->
+    <section class="chapter" id="ch-8E">
+      <h2>§8E &mdash; FM Over-deviation</h2>
+
+      <span class="crossref">Background on FM modulation and deviation: <a href="section-7-transmitter.html#ch-7C">§7C &mdash; FM Generation</a></span>
+
+      <p>FM over-deviation is covered in §7C in the context of the transmitter design. The interference aspect: when a transmitter <strong>over-deviates</strong>, the instantaneous frequency swings beyond the channel edges, occupying the frequencies allocated to adjacent channels. The effect on adjacent-channel stations is heard as a buzzing or splashing noise, appearing as if the transmitting station is simultaneously on their frequency.</p>
+
+      <h3>Causes</h3>
+      <ul>
+        <li>Audio input level too high (gain too high on the microphone amplifier).</li>
+        <li>No audio limiter or compressor fitted in the transmit chain.</li>
+        <li>Use of a condenser microphone with high sensitivity without appropriate gain-setting.</li>
+        <li>CTCSS/sub-tone signals adding to the audio level.</li>
+      </ul>
+
+      <h3>Permitted Deviation</h3>
+      <ul>
+        <li>UK VHF/UHF amateur FM: typically &plusmn;2.5&thinsp;kHz for 12.5&thinsp;kHz channel spacing.</li>
+        <li>Maximum deviation is set by the transmitter's audio limiter.</li>
+      </ul>
+
+      <h3>Detection</h3>
+      <p>Over-deviation is typically identified by other users on adjacent channels reporting interference, or by measuring the transmitted signal on a spectrum analyser or deviation meter.</p>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ §8F ════════════════════ -->
+    <section class="chapter" id="ch-8F">
+      <h2>§8F &mdash; Intermodulation Distortion (IMD) and SSB Splatter</h2>
+
+      <h3>What is IMD?</h3>
+      <p><strong>Intermodulation distortion (IMD)</strong> occurs when two or more signals mix in a non-linear device, producing sum and difference products at new frequencies. In a transmitter PA, the non-linearity of the transistor causes the multiple audio frequency components in an SSB signal to mix with each other.</p>
+      <p>For two audio tones f<sub>1</sub> and f<sub>2</sub> passing through a non-linear PA, the significant third-order IMD products appear at:</p>
+      <ul>
+        <li><strong>2f<sub>1</sub> &minus; f<sub>2</sub></strong> and <strong>2f<sub>2</sub> &minus; f<sub>1</sub></strong></li>
+      </ul>
+      <p>These fall very close to the original signals &mdash; just outside the normal audio bandwidth &mdash; and appear in the transmitted spectrum as sidebands adjacent to the wanted signal.</p>
+
+      <h3>SSB Splatter</h3>
+      <p>When these IMD products are strong enough to be detected by adjacent-channel receivers, the effect is called <strong>splatter</strong>. The receiving operator hears a distorted copy of the transmitting station's audio on their frequency, often described as a &ldquo;splashing&rdquo; sound.</p>
+
+      <figure>
+        <div class="fig-wrap">
+          <img src="/assets/images/study/full/section-8/fig8-2-imd-spectrum.svg"
+               alt="Spectrum display comparing a clean two-tone SSB signal (two narrow peaks) versus an overdriven signal with 3rd-order IMD products appearing as additional peaks either side of the main sideband cluster."
+               loading="lazy" width="680" height="220">
+        </div>
+        <figcaption>Fig&thinsp;8.2 — Two-tone SSB spectrum. Left: clean (linear PA). Right: IMD products visible at 3rd-order offsets. (SVG pending)</figcaption>
+      </figure>
+
+      <h3>Third-Order IMD Products</h3>
+      <p>Third-order products are the most troublesome because they fall close to the wanted signal:</p>
+
+      <div class="callout-exam">
+        <strong>Two-tone test:</strong> Apply two equal audio tones (e.g., 700&thinsp;Hz and 1,900&thinsp;Hz) to the SSB transmitter and observe the output spectrum. The 3rd-order products appear at offsets predicted by 2f<sub>1</sub>&minus;f<sub>2</sub> and 2f<sub>2</sub>&minus;f<sub>1</sub>. The 3rd-order ratio is specified as the dB difference between the wanted tone and the 3rd-order product.
+      </div>
+
+      <h3>Causes</h3>
+      <ol>
+        <li><strong>PA overdrive:</strong> driving the PA beyond its linear region compresses the peaks and creates IMD.</li>
+        <li><strong>Inadequate ALC:</strong> if the ALC feedback is not working or is incorrectly set, speech peaks can overdrive the PA.</li>
+        <li><strong>Mismatched PA:</strong> operating the PA into the wrong load impedance (high SWR) can push it into compression.</li>
+      </ol>
+
+      <h3>Consequences</h3>
+      <table class="imd-table">
+        <thead><tr><th>IMD Level</th><th>Typical Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Better than &minus;30&thinsp;dBc</td><td>Acceptable; minimal adjacent-channel interference</td></tr>
+          <tr><td>&minus;20 to &minus;30&thinsp;dBc</td><td>Audible splatter; complaints from adjacent stations</td></tr>
+          <tr><td>Worse than &minus;20&thinsp;dBc</td><td>Severe splatter; technically illegal under licence terms</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Cure</h3>
+      <ol>
+        <li>Reduce the audio drive or transmitter drive level.</li>
+        <li>Ensure the ALC is operating correctly and connected.</li>
+        <li>Use a speech processor <strong>with care</strong> &mdash; over-compression increases the peak-to-average ratio, worsening IMD.</li>
+        <li>Ensure the antenna match is correct (SWR &lt; 1.5:1 ideally).</li>
+      </ol>
+
+      <div class="callout-exam">
+        <strong>Revision note:</strong> IMD is an <strong>amplitude</strong> problem caused by <strong>non-linearity</strong> in the PA. It only matters for amplitude-varying modes (SSB, AM). FM and CW are unaffected by PA non-linearity (constant-envelope modes).
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ SELF-CHECK §8G ════════════════════ -->
+    <section class="chapter" id="ch-8G">
+      <h2>§8G &mdash; Self-Check Questions</h2>
+      <div class="self-checks">
+        <h3>Test your understanding</h3>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q1.</strong> Name three causes of transmitter frequency drift.</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-1">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-1" hidden>
+            <p>Temperature changes (altering component values), supply voltage variations (affecting transistor junction capacitance), and mechanical stress/vibration (changing LC component values). Crystal ageing is a fourth cause operating over longer timescales.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q2.</strong> A transmitter operates on 14.150&thinsp;MHz with a class C PA. The 3rd harmonic falls on which frequency, and which amateur band is it close to?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-2">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-2" hidden>
+            <p>3rd harmonic = 3 &times; 14.150&thinsp;MHz = <strong>42.450&thinsp;MHz</strong>. This is close to the 6&thinsp;m amateur band (50&ndash;52&thinsp;MHz in the UK). Note: 42.450&thinsp;MHz is just below the 6&thinsp;m band; the key point is that 3rd harmonics of 20&thinsp;m signals land in this region and can cause interference to 6&thinsp;m stations.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q3.</strong> What is the primary method of reducing harmonic radiation from a transmitter?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-3">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-3" hidden>
+            <p>A <strong>low-pass filter</strong> fitted at the transmitter output. For multi-band operation, a set of switched low-pass filters (one per band) is used to ensure effective harmonic suppression across all operating frequencies.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q4.</strong> What causes key clicks, and how are they cured?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-4">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-4" hidden>
+            <p>Key clicks are caused by a fast (near square-wave) rise and fall time on the CW keying envelope, which creates wide sidebands extending many kHz either side of the carrier.</p>
+            <p>The cure is to <strong>shape the envelope</strong> &mdash; typically slowing the rise and fall to approximately 5&thinsp;ms using a raised-cosine or Gaussian shaping circuit &mdash; without making the edges so slow that Morse dots become indistinct.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q5.</strong> What is the difference between over-deviation and IMD/splatter in terms of which mode each affects?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-5">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-5" hidden>
+            <p><strong>Over-deviation</strong> affects FM transmitters: excessive audio level causes the carrier to swing beyond the permitted frequency deviation, occupying adjacent channels.</p>
+            <p><strong>IMD/splatter</strong> affects SSB (and AM) transmitters: non-linearity in the PA causes multiple audio tones to mix, producing intermodulation products just outside the wanted bandwidth.</p>
+            <p>FM is a constant-amplitude mode, so PA non-linearity does not generate IMD products; over-deviation is the FM-specific interference mechanism.</p>
+          </div>
+        </div>
+
+        <div class="self-check">
+          <p class="self-check__q"><strong>Q6.</strong> What is a PLL reference spur, and why is it problematic?</p>
+          <button class="btn-reveal" aria-expanded="false" data-target="ans-8-6">Show answer</button>
+          <div class="self-check__reveal" id="ans-8-6" hidden>
+            <p>A PLL reference spur is a spurious signal appearing as a sideband at &plusmn;f<sub>reference</sub> (and harmonics) from the carrier, caused by incomplete filtering of the reference frequency in the PLL loop filter.</p>
+            <p>It is problematic because it places a discrete spurious signal within adjacent channels that may be occupied by other stations, and &mdash; unlike a broadband noise skirt &mdash; it appears as a fully modulated copy of the transmitted signal on a neighbouring frequency.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════ KEY FACTS ════════════════════ -->
+    <section class="chapter" style="margin-top: 2rem;">
+      <div class="key-facts">
+        <h3 style="margin-top: 0; margin-bottom: 0.85rem;">Chapter 8 &mdash; Key Facts</h3>
+        <ul>
+          <li><strong>Frequency drift causes:</strong> temperature, supply voltage, mechanical stress, crystal ageing.</li>
+          <li><strong>Harmonic frequencies:</strong> integer multiples of f<sub>carrier</sub>; class C PAs produce strongest harmonics.</li>
+          <li><strong>UK spurious limit:</strong> &minus;43&thinsp;dBc (above 25&thinsp;W); &minus;50&thinsp;dBc for some categories.</li>
+          <li><strong>Primary harmonic suppression:</strong> low-pass filter at PA output.</li>
+          <li><strong>PLL reference spurs:</strong> at &plusmn;f<sub>ref</sub> from carrier; reduced by better loop filter or fractional-N.</li>
+          <li><strong>DDS spurs:</strong> phase truncation; cannot be removed by LPF if inside passband.</li>
+          <li><strong>Key clicks:</strong> caused by fast rise/fall time on CW envelope; cure = shaped envelope &approx;5&thinsp;ms.</li>
+          <li><strong>FM over-deviation:</strong> audio level too high; swings beyond channel edges; set by audio limiter.</li>
+          <li><strong>IMD/splatter:</strong> 3rd-order products at 2f<sub>1</sub>&minus;f<sub>2</sub>; amplitude-varying modes only; cure = reduce drive, check ALC.</li>
+          <li><strong>IMD does not affect FM/CW</strong> &mdash; constant-envelope modes are immune to PA non-linearity.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════ SECTION NAV ════════════════════ -->
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="section-7-transmitter.html" class="section-nav__link">&larr; Chapter 7: The Transmitter</a>
+      <a href="/pages/exam-practice/exam.html?level=full&amp;section=8"
+         class="section-nav__link section-nav__practice">Practice This Chapter</a>
+      <a href="section-9-receiver.html" class="section-nav__link">Chapter 9: The Receiver &rarr;</a>
+    </nav>
+
+  </main>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      var bar = document.getElementById('progress-bar');
+      function update() {
+        var s = document.documentElement, b = document.body;
+        var h = s.scrollHeight - s.clientHeight;
+        var p = h > 0 ? (s.scrollTop || b.scrollTop) / h * 100 : 0;
+        bar.style.width = p + '%';
+      }
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+
+    document.querySelectorAll('.btn-reveal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.dataset.target);
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        this.textContent = expanded ? 'Show answer' : 'Hide answer';
+        target.hidden = expanded;
+      });
+    });
+  </script>
+  <script src="/assets/js/search.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260914-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260914-1000" defer></script>
+</body>
+</html>
