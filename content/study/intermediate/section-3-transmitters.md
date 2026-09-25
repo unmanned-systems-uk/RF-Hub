@@ -524,6 +524,65 @@ Running RTTY at 100 W peak subjects the PA to continuous full power — the tran
 > power level as voice will cause it to run **considerably hotter.** Reduce power when
 > operating continuous-carrier modes (RTTY, FM, SSTV).
 
+### 3G Theory — PA Efficiency and Heat Dissipation
+
+A power amplifier converts DC power drawn from the PSU into RF power delivered to the antenna. It never does this perfectly — some of the input power is always lost as heat.
+
+**Efficiency η** is defined as:
+
+```
+η = P_out / P_in
+```
+
+Where `P_out` is the RF power reaching the antenna and `P_in` is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat.
+
+To find heat dissipation, rearrange to get P_in, then subtract P_out:
+
+```
+P_in  = P_out / η
+P_heat = P_in − P_out
+```
+
+**Worked example — typical exam question shape:**
+
+> A PA stage has 60% efficiency and delivers 50 W of RF. How much power is dissipated as heat?
+
+```
+P_in   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
+P_heat = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
+Answer: ~33 W
+```
+
+> [INFO] **Common exam trap:** Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the **output** (RF delivered), not the input. Efficiency applies to the **input** power. You must find P_in first, then subtract P_out to get heat. The correct path: P_in = 50 ÷ 0.6 = 83 W; heat = 83 − 50 = **33 W**, not 20 W.
+
+**Mental-arithmetic shortcuts for common efficiencies:**
+
+| Efficiency | Heat as fraction of RF output |
+|---|---|
+| 50% | Heat = P_out (equal amounts) |
+| 60% | Heat ≈ ⅔ × P_out (ratio 3:2 out:heat) |
+| 66% | Heat ≈ ½ × P_out |
+| 75% | Heat ≈ ⅓ × P_out |
+
+For 60% efficient: the out:heat ratio is 60:40 = 3:2, so heat ≈ (2/3) × RF output = (2/3) × 50 = **33 W** — same answer, faster arithmetic.
+
+**Why amplifier class matters here:**
+
+Amplifier class determines maximum efficiency. The classes used in amateur transmitters are approximately:
+
+| Class | Typical efficiency | Used for |
+|---|---|---|
+| A | 25–30% | Low-noise pre-amplifiers; linear but wastes most power as heat |
+| AB | 50–60% | SSB PA stages — sufficient linearity to avoid distortion on SSB |
+| B | 65–70% | Push-pull audio and RF amplifiers |
+| C | 70–85% | CW and FM PA stages — efficient but highly non-linear; destroys SSB signal |
+
+SSB requires the PA to faithfully reproduce amplitude variations in the signal — linearity is essential. Class C is efficient but clips the signal, which is acceptable for constant-amplitude modes (CW, FM) and fatal for SSB. This is why SSB transmitters use Class AB despite its lower efficiency and greater heat output.
+
+*(Cross-ref: amplifier class theory is covered in detail in §5 Semiconductors.)*
+
+**Practical implication:** The heat has to go somewhere. A Full-licence HF linear running 400 W output at 60% efficiency draws P_in = 400 ÷ 0.6 = 667 W from the PSU and dissipates **267 W as heat** — more than twice the heat of a 100 W station. This is why HF linears have large heatsinks, internal cooling fans, and thermal cutout protection. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.
+
 ### 3G Self-Check Questions
 
 **Q1.** What is peak deviation in FM?
