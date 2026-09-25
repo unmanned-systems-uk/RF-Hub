@@ -948,6 +948,18 @@ steep skirts. A 2.4 kHz crystal filter is typical for SSB; a 500 Hz filter for C
 This keeps the audio output at a roughly constant level across a wide range of signal
 strengths.
 
+**Where the AGC signal comes from**
+
+The AGC control voltage is derived from the **IF signal** — a rectifier after the final IF amplifier produces a DC voltage that rises when a strong signal is present. That DC voltage is fed back to earlier stages (the RF amplifier and IF amplifier stages) to reduce their gain.
+
+Why the IF, and not somewhere else?
+
+- **Not the RF input** — the incoming RF is too weak and variable to produce a reliable control voltage.
+- **Not the audio output** — audio is intermittent. On CW and SSB the audio level drops to zero in the gaps between words and dits. Using audio as the control source would cause the AGC to release (increase gain) in every pause, producing a pumping effect.
+- **The IF is correct** — after passing through the IF amplifier the signal is strong and relatively steady, giving a stable DC control voltage that reflects actual received signal strength.
+
+> [INFO] **AGC derivation — exam fact:** The AGC signal is derived from the **IF stage** — specifically the output of the final IF amplifier. A rectifier converts this to a DC control voltage that is fed back to reduce gain in the RF and IF amplifier stages.
+
 **AGC attack time:** how quickly the AGC responds to a sudden strong signal.
 - **Fast attack:** the gain reduces quickly when a sudden strong signal arrives.
   Benefit: prevents a loud burst on SSB from being painful. Useful on crowded bands.
