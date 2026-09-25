@@ -151,6 +151,45 @@ Compare to the superhet: the superhet's LO is offset by the IF; the direct conve
 
 ---
 
+## 3A3: Tuned Radio Frequency (TRF) Receivers
+
+### 3A3 Theory — TRF Receiver
+
+The **tuned radio frequency (TRF)** receiver is the architecture that predates the superhet. There is no mixer, no local oscillator, and no IF. Instead, several RF amplifier stages are cascaded — all tuned to the incoming signal frequency — feeding a detector and audio amplifier directly.
+
+**Block diagram:**
+
+```
+Antenna → RF Amp 1 → RF Amp 2 → RF Amp 3 → Detector → Audio Amp → Speaker
+           (tuned)    (tuned)    (tuned)
+           ← all stages tuned to signal frequency →
+```
+
+**Key exam fact:** In a TRF receiver, **all tuned stages operate at the signal frequency.** There is no frequency conversion.
+
+**Advantages:**
+- Simple concept — no mixer, no LO, no IF circuitry
+- Suitable for very basic designs (crystal sets, simple AM radios)
+
+**Disadvantages:**
+- **Poor selectivity** — sharp filtering is hard to achieve at RF, especially across a wide tuning range
+- **Gang tuning required** — all RF stages must track together as the user tunes; keeping them aligned is mechanically complex
+- **Instability** — multiple high-gain stages all amplifying the same frequency are prone to oscillation via stray feedback coupling between stages
+
+**Legacy status:** TRF receivers are largely obsolete for serious HF work, replaced by the superhet. They still appear in crystal sets, basic AM broadcast receivers, and simple educational designs.
+
+> [INFO] **TRF — key exam fact:** A TRF receiver has no mixer and no IF. **All tuned stages operate at the incoming signal frequency.** Selectivity is poor compared to a superhet because filtering at a variable RF is harder than filtering at a fixed IF.
+
+**Receiver architecture comparison:**
+
+| Architecture | Mixer? | LO frequency | Where gain is | Selectivity |
+|---|---|---|---|---|
+| TRF | No | None | At signal frequency (RF) | Poor |
+| Direct conversion | Yes | = signal frequency | At audio (baseband) | No image rejection |
+| Superhet | Yes | Signal ± IF | At fixed IF | Good |
+
+---
+
 ## 3B: Mixers
 
 ### 3B Theory — How a Mixer Works (3B1)
