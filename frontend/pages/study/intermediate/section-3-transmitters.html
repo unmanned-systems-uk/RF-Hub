@@ -155,6 +155,7 @@
       <p class="hero-subtitle">How radios work inside — superheterodyne receivers, SSB/CW/FM transmitters, digital modes, transceivers, filters, DSP, and oscillators. Expect block diagram questions.</p>
       <ul class="hero-sub-list">
         <li><a href="#ch-3a">3A Superhet</a></li>
+        <li><a href="#ch-3a2">3A2 Direct Conversion</a></li>
         <li><a href="#ch-3b">3B Mixers</a></li>
         <li><a href="#ch-3c">3C Characteristics</a></li>
         <li><a href="#ch-3e">3E CW &amp; SSB</a></li>
@@ -176,6 +177,7 @@
       <p class="toc__label">Contents</p>
       <ol>
         <li><a href="#ch-3a"><span class="toc-code">3A</span>The Superheterodyne Receiver</a></li>
+        <li><a href="#ch-3a2"><span class="toc-code">3A2</span>Direct Conversion Receivers</a></li>
         <li><a href="#ch-3b"><span class="toc-code">3B</span>Mixers</a></li>
         <li><a href="#ch-3c"><span class="toc-code">3C</span>Receiver Characteristics</a></li>
         <li><a href="#ch-3e"><span class="toc-code">3E</span>CW and SSB Transmitters</a></li>
@@ -291,6 +293,42 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
             <p>By using a <strong>higher IF.</strong> This places the image frequency further away from the wanted signal, making it easier to attenuate with the RF filter.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════ 3A2: DIRECT CONVERSION ══════════════ -->
+    <section class="chapter" id="ch-3a2">
+      <div class="chapter-header">
+        <span class="chapter-num">3A2</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Direct Conversion Receivers (Zero-IF)</h2>
+
+      <h3>3A2 Theory &mdash; Direct Conversion Receiver</h3>
+      <p>A <strong>direct conversion receiver</strong> (also called a <strong>zero-IF receiver</strong>) takes a different approach to the superhet. Instead of converting the signal to an intermediate frequency first, it mixes the incoming RF directly down to audio in a single step.</p>
+      <p><strong>The key difference:</strong> the local oscillator runs at <strong>exactly the same frequency as the wanted signal</strong> &mdash; not offset by an IF. The mixer output is audio directly.</p>
+      <p><strong>Block diagram:</strong></p>
+      <pre>Antenna &rarr; [RF Amp] &rarr; Mixer &rarr; Audio LPF &rarr; Audio Amp &rarr; Speaker
+                               &uarr;
+                          LO (at signal frequency)</pre>
+      <p>Compare to the superhet: the superhet&rsquo;s LO is offset by the IF; the direct conversion LO is tuned to the signal frequency itself.</p>
+      <p><strong>Advantages:</strong></p>
+      <ul>
+        <li>Simple circuit &mdash; fewer stages, no IF transformer, no IF filter</li>
+        <li>Lower cost and parts count</li>
+        <li>Popular for homebrew CW and SSB receivers</li>
+      </ul>
+      <p><strong>Disadvantages:</strong></p>
+      <ul>
+        <li><strong>Both sidebands received equally</strong> &mdash; because the signal, its image, and the LO are all at the same frequency, there is no image rejection. Both the upper and lower sidebands mix down to the same audio frequencies.</li>
+        <li><strong>LO drift shifts audio pitch directly</strong> &mdash; any frequency drift in the LO produces an immediate change in the audio tone. A superhet&rsquo;s IF filter holds the audio frequency steady even if the LO drifts slightly.</li>
+        <li><strong>Susceptible to hum and microphonics</strong> &mdash; audio emerges from the mixer at baseband with no IF amplification stage between. Any mains hum or mechanical vibration picked up here goes straight to the speaker.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Direct conversion &mdash; key exam fact:</strong> In a direct conversion (zero-IF) receiver, <strong>the LO frequency equals the frequency of the wanted signal.</strong> This is the single most commonly tested fact about this receiver type.</div>
       </div>
     </section>
 
@@ -1483,7 +1521,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260925-1200" defer></script>
-  <script src="/assets/js/study-page.js?v=20260925-1200" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260925-1300" defer></script>
+  <script src="/assets/js/study-page.js?v=20260925-1300" defer></script>
 </body>
 </html>
