@@ -753,6 +753,18 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-text"><strong>3G2:</strong> Harmonics are <strong>multiples of the fundamental frequency.</strong> A signal at 7 MHz produces harmonics at 14 MHz, 21 MHz, 28 MHz, etc.</div>
       </div>
 
+      <h4>Choosing an oscillator frequency &mdash; a design trap</h4>
+      <p>Consider a 2 m FM transceiver using an oscillator at 48 MHz, mixed up to produce a 145 MHz output. Check where the harmonics land:</p>
+      <pre>2nd harmonic: 48 × 2 =  96 MHz  — outside 2 m band (144–146 MHz), filterable
+3rd harmonic: 48 × 3 = 144 MHz  — INSIDE the 2 m band
+4th harmonic: 48 × 4 = 192 MHz  — outside 2 m band, filterable</pre>
+      <p>The 3rd harmonic at 144 MHz is only 1 MHz below the wanted 145 MHz output. A low-pass filter cannot remove a harmonic that close to the wanted signal &mdash; removing 144 MHz would also remove 145 MHz.</p>
+      <p>This is why FM and CW designers choose oscillator frequencies whose harmonics fall well outside the transmit band, or use frequency synthesis (PLL) instead of a simple multiplier chain.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3G2 &mdash; design rule:</strong> Always check that no harmonic of your oscillator falls inside the transmit band. If one does, filtering is impractical &mdash; choose a different oscillator frequency or use synthesis.</div>
+      </div>
+
       <h3>Transmitter Without an Antenna (3G3)</h3>
       <p>Operating a transmitter without a connected antenna is undesirable. All the output power has nowhere to go — it is reflected back into the transmitter's power amplifier stage.</p>
       <p>This can:</p>
@@ -1462,7 +1474,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260925-1000" defer></script>
-  <script src="/assets/js/study-page.js?v=20260925-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260925-1100" defer></script>
+  <script src="/assets/js/study-page.js?v=20260925-1100" defer></script>
 </body>
 </html>
