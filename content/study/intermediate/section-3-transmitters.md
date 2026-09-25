@@ -494,6 +494,22 @@ other bands. A low-pass filter at the transmitter output suppresses them.
 > [INFO] **3G2:** Harmonics are **multiples of the fundamental frequency.** A signal at
 > 7 MHz produces harmonics at 14 MHz, 21 MHz, 28 MHz, etc.
 
+**Choosing an oscillator frequency — a design trap**
+
+Consider a 2 m FM transceiver using an oscillator at 48 MHz, mixed up to produce a 145 MHz output. Check where the harmonics land:
+
+```
+2nd harmonic: 48 × 2 =  96 MHz  — outside 2 m band (144–146 MHz), filterable
+3rd harmonic: 48 × 3 = 144 MHz  — INSIDE the 2 m band
+4th harmonic: 48 × 4 = 192 MHz  — outside 2 m band, filterable
+```
+
+The 3rd harmonic at 144 MHz is only 1 MHz below the wanted 145 MHz output. A low-pass filter cannot remove a harmonic that close to the wanted signal — removing 144 MHz would also remove 145 MHz.
+
+This is why FM and CW designers choose oscillator frequencies whose harmonics fall well outside the transmit band, or use frequency synthesis (PLL) instead of a simple multiplier chain.
+
+> [INFO] **3G2 — design rule:** Always check that no harmonic of your oscillator falls inside the transmit band. If one does, filtering is impractical — choose a different oscillator frequency or use synthesis.
+
 ### 3G Theory — Transmitter Without an Antenna (3G3)
 
 Operating a transmitter without a connected antenna is undesirable. All the output power
