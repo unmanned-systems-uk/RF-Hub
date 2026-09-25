@@ -328,13 +328,40 @@ Because the two conductors carry equal-and-opposite currents, their electromagne
 
 > [INFO] **4A1:** Balanced feeder (ladder line) has much lower loss than coax, particularly at HF. Typical impedances: 300 Ω, 450 Ω, 600 Ω. Sensitive to nearby metal objects which can unbalance it and cause unwanted radiation.
 
-### Waveguide (brief mention)
+### Waveguide
 
-**Waveguide** is a hollow metal pipe used to carry microwave signals at frequencies above a few GHz. The minimum cross-section dimension must be greater than λ/2 at the signal frequency. At lower HF and VHF frequencies, a waveguide would need to be impractically large — it is only practical at microwave frequencies.
+**Waveguide** is a hollow metal pipe used to carry microwave signals at frequencies above a few GHz. Unlike coax, it has no inner conductor — the signal travels as an electromagnetic wave bouncing down the inside of the pipe. Loss is extremely low once the signal is above the cutoff frequency.
 
-You are unlikely to see waveguide in an Intermediate exam question, but you should know it exists and what it is used for.
+**Cutoff frequency — the key calculation**
 
-> [INFO] **4A1:** Waveguide is a hollow conductive pipe used as a feeder at microwave frequencies. The cross-section must be > λ/2. Not practical at HF or VHF.
+A rectangular waveguide propagates signals above a minimum frequency called the **cutoff frequency**. For the dominant TE10 mode, the cutoff wavelength depends only on the wide (internal) dimension `a`:
+
+```
+λ_c = 2 × a
+f_c  = c / λ_c  =  c / (2 × a)
+```
+
+Where `c` = 3 × 10⁸ m/s and `a` is in metres. Below `f_c` the signal is heavily attenuated and does not propagate. Above `f_c` propagation is essentially loss-free until the next higher-order mode appears — the usable operating band runs from about **1.25× to 1.9×** the cutoff frequency.
+
+**Worked example — WG13:**
+
+WG13 has internal dimensions 40.4 mm × 20.2 mm (wide × narrow).
+
+```
+λ_c = 2 × 40.4 mm = 80.8 mm = 0.0808 m
+f_c = (3 × 10⁸) / 0.0808 ≈ 3.71 GHz
+Operating band ≈ 1.25 × 3.71 to 1.9 × 3.71 = 4.6 to 7.0 GHz
+```
+
+WG13 is designed for C-band (~5–6 GHz). Trying to use it at, say, 2.4 GHz would fail — that frequency is below cutoff.
+
+**The 2:1 aspect ratio**
+
+Standard rectangular waveguides have narrow dimension ≈ wide dimension / 2 (notice 20.2 mm ≈ 40.4 mm / 2 for WG13). This ratio suppresses higher-order modes across the operating band. The narrow dimension does not affect the cutoff frequency — only the wide dimension determines `f_c`.
+
+**Why not at HF or VHF?** At 145 MHz, `a` would need to be about 1 metre — impractically large. Waveguide is only practical above a few GHz.
+
+> [INFO] **4A1 — waveguide cutoff (examinable):** Cutoff wavelength = 2 × wide internal dimension. Cutoff frequency = c ÷ (2 × wide dimension in metres). Practical operating frequency is approximately 1.5× the cutoff frequency. Know how to apply this to a given waveguide dimension.
 
 **Interactive — Feeder Loss vs Frequency:**
 
