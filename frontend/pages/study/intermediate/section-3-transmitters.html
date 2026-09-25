@@ -1217,6 +1217,18 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
 
       <h3>AGC (Automatic Gain Control) (3H3, 3H4)</h3>
       <p><strong>AGC</strong> automatically reduces the IF or RF gain when a strong signal is received. This keeps the audio output at a roughly constant level across a wide range of signal strengths.</p>
+      <p><strong>Where the AGC signal comes from</strong></p>
+      <p>The AGC control voltage is derived from the <strong>IF signal</strong> &mdash; a rectifier after the final IF amplifier produces a DC voltage that rises when a strong signal is present. That DC voltage is fed back to earlier stages (the RF amplifier and IF amplifier stages) to reduce their gain.</p>
+      <p>Why the IF, and not somewhere else?</p>
+      <ul>
+        <li><strong>Not the RF input</strong> &mdash; the incoming RF is too weak and variable to produce a reliable control voltage.</li>
+        <li><strong>Not the audio output</strong> &mdash; audio is intermittent. On CW and SSB the audio level drops to zero in the gaps between words and dits. Using audio as the control source would cause the AGC to release (increase gain) in every pause, producing a pumping effect.</li>
+        <li><strong>The IF is correct</strong> &mdash; after passing through the IF amplifier the signal is strong and relatively steady, giving a stable DC control voltage that reflects actual received signal strength.</li>
+      </ul>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>AGC derivation &mdash; exam fact:</strong> The AGC signal is derived from the <strong>IF stage</strong> &mdash; specifically the output of the final IF amplifier. A rectifier converts this to a DC control voltage that is fed back to reduce gain in the RF and IF amplifier stages.</div>
+      </div>
       <p><strong>AGC attack time:</strong> how quickly the AGC responds to a sudden strong signal.</p>
       <ul>
         <li><strong>Fast attack:</strong> the gain reduces quickly when a sudden strong signal arrives. Benefit: prevents a loud burst on SSB from being painful. Useful on crowded bands.</li>
@@ -1569,8 +1581,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/search.js?v=20260925-1400" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260925-1400" defer></script>
-  <script src="/assets/js/study-page.js?v=20260925-1400" defer></script>
+  <script src="/assets/js/search.js?v=20260925-1500" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260925-1500" defer></script>
+  <script src="/assets/js/study-page.js?v=20260925-1500" defer></script>
 </body>
 </html>
