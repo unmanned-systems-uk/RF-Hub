@@ -217,9 +217,9 @@
 
       <h3>Superhet Block Diagram (3A3)</h3>
       <p>The superhet receive chain in order:</p>
-      <pre>Antenna → [RF Amplifier] → [Mixer] → [IF Amplifier] → [Detector] → [AF Amplifier] → Speaker
-                               ↑
-                         [Local Oscillator]</pre>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-3/fig-3-1-superhet-rx-block.svg" alt="Superheterodyne receiver block diagram showing signal chain from antenna through RF Amp, Mixer, IF Amp, Detector and AF Amp to speaker, with Local Oscillator feeding the Mixer" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
+      </figure>
       <p><strong>Each stage explained:</strong></p>
       <ol>
         <li><strong>RF Amplifier:</strong> Boosts the weak incoming signal. Selects a range of frequencies including the wanted signal. Helps set the noise figure of the receiver.</li>
@@ -477,9 +477,9 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <div class="callout-text"><strong>3E1 / 3E2:</strong> In decreasing order of bandwidth: <strong>AM, SSB, CW.</strong> (FM is wider than AM but is less commonly compared in this context.)</div>
       </div>
       <p><strong>SSB transmitter block diagram:</strong></p>
-      <pre>Microphone → [AF Amplifier] → [Balanced Modulator] → [SSB Filter] → [Mixer] → [PA] → Antenna
-                                                                         ↑
-                                                               [VFO / PLL Oscillator]</pre>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/study/section-3/fig-3-2-ssb-tx-block.svg" alt="SSB transmitter block diagram showing signal chain from microphone through AF Amp, Balanced Modulator, SSB Filter, Mixer and PA to antenna, with VFO/PLL Oscillator feeding the Mixer" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
+      </figure>
       <p><strong>Balanced modulator:</strong> produces a double-sideband suppressed-carrier (DSB-SC) signal. Both sidebands are present, but the carrier is suppressed (cancelled by the balanced circuit design).</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
@@ -776,6 +776,53 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
       <div class="callout callout--warning">
         <div class="callout-icon">⚠</div>
         <div class="callout-text"><strong>3G (D2F-M2-Q32):</strong> Running an SSB transmitter on RTTY at the same peak power level as voice will cause it to run <strong>considerably hotter.</strong> Reduce power when operating continuous-carrier modes (RTTY, FM, SSTV).</div>
+      </div>
+
+      <h3>PA Efficiency and Heat Dissipation</h3>
+      <p>A power amplifier converts DC power drawn from the PSU into RF power delivered to the antenna. It never does this perfectly &mdash; some of the input power is always lost as heat.</p>
+      <p><strong>Efficiency &eta;</strong> is defined as:</p>
+      <pre>η = P_out / P_in</pre>
+      <p>Where <code>P_out</code> is the RF power reaching the antenna and <code>P_in</code> is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat. To find heat dissipation, rearrange to get P_in, then subtract P_out:</p>
+      <pre>P_in   = P_out / η
+P_heat = P_in − P_out</pre>
+
+      <h4>Worked example</h4>
+      <blockquote>A PA stage has 60% efficiency and delivers 50 W of RF. How much power is dissipated as heat?</blockquote>
+      <pre>P_in   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
+P_heat = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
+Answer: ~33 W</pre>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Common exam trap:</strong> Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the <strong>output</strong> (RF delivered), not the input. You must find P_in first, then subtract: P_in = 50 ÷ 0.6 = 83 W; heat = 83 &minus; 50 = <strong>33 W</strong>, not 20 W.</div>
+      </div>
+      <p><strong>Mental-arithmetic shortcuts for common efficiencies:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Efficiency</th><th>Heat as fraction of RF output</th></tr></thead>
+          <tbody>
+            <tr><td>50%</td><td>Heat = P_out (equal amounts)</td></tr>
+            <tr><td>60%</td><td>Heat &asymp; &frac23; &times; P_out (ratio 3:2 out:heat)</td></tr>
+            <tr><td>66%</td><td>Heat &asymp; &frac12; &times; P_out</td></tr>
+            <tr><td>75%</td><td>Heat &asymp; &frac13; &times; P_out</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Why amplifier class matters:</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Class</th><th>Typical efficiency</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td><strong>A</strong></td><td>25–30%</td><td>Low-noise pre-amplifiers; linear but wastes most power as heat</td></tr>
+            <tr><td><strong>AB</strong></td><td>50–60%</td><td>SSB PA stages &mdash; sufficient linearity to avoid distortion on SSB</td></tr>
+            <tr><td><strong>B</strong></td><td>65–70%</td><td>Push-pull audio and RF amplifiers</td></tr>
+            <tr><td><strong>C</strong></td><td>70–85%</td><td>CW and FM PA stages &mdash; efficient but highly non-linear; destroys SSB signal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>SSB requires the PA to faithfully reproduce amplitude variations &mdash; linearity is essential. Class C is efficient but clips the signal, which is acceptable for constant-amplitude modes (CW, FM) and fatal for SSB. This is why SSB transmitters use Class AB despite its lower efficiency and greater heat output. <em>(Cross-ref: amplifier class theory is covered in detail in §5 Semiconductors.)</em></p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">A Full-licence HF linear running 400 W at 60% efficiency draws P_in = 667 W from the PSU and dissipates <strong>267 W as heat</strong>. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.</div>
       </div>
 
       <div class="self-checks">
@@ -1334,6 +1381,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
           <li><strong>FM generation:</strong> varicap diode on oscillator pulled by AF signal</li>
           <li><strong>Harmonics:</strong> multiples of fundamental; suppress with low-pass filter at TX output</li>
           <li><strong>RTTY duty cycle:</strong> continuous carrier — runs transmitter hot; reduce power from SSB levels</li>
+          <li><strong>PA efficiency:</strong> &eta; = P_out/P_in; heat = P_in &minus; P_out; Class AB (~55%) for SSB, Class C (~75%) for CW/FM</li>
           <li><strong>AGC fast attack:</strong> prevents sudden loud audio burst on SSB</li>
           <li><strong>PLL:</strong> Phase Locked Loop — stable frequency synthesis from crystal reference</li>
           <li><strong>Transverter:</strong> extends transceiver to a different band using a mixer and LO</li>
@@ -1366,6 +1414,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
             <tr><td><a href="#ch-3g" target="_blank">β = Δf / f_mod</a></td><td>FM modulation index</td></tr>
             <tr><td><a href="#ch-3e" target="_blank">Audio = |IF − BFO|</a></td><td>CW receive tone</td></tr>
             <tr><td><a href="#ch-3m" target="_blank">f = 1/T</a></td><td>Frequency from period</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">P_in = P_out / &eta;</a></td><td>PA input power from efficiency</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">P_heat = P_in &minus; P_out</a></td><td>Heat dissipated by PA</td></tr>
           </tbody>
         </table>
       </div>
@@ -1412,7 +1462,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/nav-loader.js?v=20260913-1600" defer></script>
-  <script src="/assets/js/study-page.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260925-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260925-1000" defer></script>
 </body>
 </html>
