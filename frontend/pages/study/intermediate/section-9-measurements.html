@@ -165,6 +165,7 @@
         <li><a href="#ch-9g">9G Dip Meters &amp; Antenna Analysers</a></li>
         <li><a href="#ch-9h">9H Test Setups &amp; Procedures</a></li>
         <li><a href="#ch-9i">9I Safety During Testing</a></li>
+        <li><a href="#ch-9k">9K Construction Basics</a></li>
         <li><a href="#ch-9j">★ Self-Check Questions</a></li>
       </ul>
     </div>
@@ -185,6 +186,7 @@
         <li><a href="#ch-9g"><span class="toc-code">9G</span>Dip Meters &amp; Antenna Analysers</a></li>
         <li><a href="#ch-9h"><span class="toc-code">9H</span>Test Setups &amp; Procedures</a></li>
         <li><a href="#ch-9i"><span class="toc-code">9I</span>Safety During Testing</a></li>
+        <li><a href="#ch-9k"><span class="toc-code">9K</span>Construction Basics</a></li>
         <li><a href="#ch-9j"><span class="toc-code">★</span>Self-Check Questions</a></li>
       </ol>
     </div>
@@ -812,6 +814,91 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
 
     <hr class="divider">
 
+    <!-- ═══════════════ 9K: CONSTRUCTION BASICS ═════════════ -->
+    <section class="chapter" id="ch-9k">
+      <div class="chapter-header">
+        <span class="chapter-num">9K</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Construction Basics (9C1, 9D1, 9E1&ndash;9E4)</h2>
+
+      <h3>Resistor Marking &mdash; BS 1852 Letter Code (9C1)</h3>
+      <p>Component values on schematics and PCB silkscreens often use the <strong>BS 1852</strong> letter-code notation rather than decimal numbers. The letter replaces the decimal point and simultaneously indicates the multiplier:</p>
+      <table>
+        <thead>
+          <tr><th>Letter</th><th>Multiplier</th><th>Example</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R</td><td>&times; 1 (ohms)</td><td>R47</td><td>0.47 &Omega;</td></tr>
+          <tr><td>R</td><td>&times; 1 (ohms)</td><td>4R7</td><td>4.7 &Omega;</td></tr>
+          <tr><td>K</td><td>&times; 1000 (kilohms)</td><td>5K6</td><td>5.6 k&Omega;</td></tr>
+          <tr><td>M</td><td>&times; 1 000 000 (megohms)</td><td>2M2</td><td>2.2 M&Omega;</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Why use it?</strong> A printed decimal point can be misread if the ink is smudged or the component is small. The letter is unambiguous even on a heavily worn PCB.</p>
+      <p>Resistors are manufactured in <strong>preferred value series</strong> (E12, E24, E96). The E12 series has 12 values per decade:</p>
+      <pre>1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2</pre>
+      <p>Each multiplied by 10, 100, 1000 etc. to cover the full range. You cannot buy exactly 4.0 k&Omega; in the E12 series &mdash; the nearest values are 3.9 k&Omega; and 4.7 k&Omega;. Circuit design accounts for this.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9C1 &mdash; BS 1852:</strong> The letter replaces the decimal point and indicates multiplier. R47 = 0.47 &Omega;, 4R7 = 4.7 &Omega;, 5K6 = 5.6 k&Omega;, 2M2 = 2.2 M&Omega;. Used to avoid ambiguity from smudged decimal points on component markings.</div>
+      </div>
+
+      <h3>Screening and Shielding (9D1)</h3>
+      <p>In RF circuits, unwanted coupling between stages is a constant problem. A high-gain IF amplifier can pick up its own output, causing oscillation. An audio stage running alongside an RF stage can pick up RF and demodulate it as hum or interference.</p>
+      <p><strong>Screening</strong> places a thin metal sheet between stages, providing an electrostatic and electromagnetic barrier. Common materials are aluminium sheet, tinplate, and solid copper pours on PCBs.</p>
+      <p><strong>Key rules:</strong></p>
+      <ul>
+        <li>The screen must be <strong>continuous</strong> &mdash; gaps and holes degrade its effectiveness</li>
+        <li>At RF, a mesh or perforated screen only works if the holes are smaller than <strong>&lambda;/10</strong> of the highest frequency being screened. Above a few hundred MHz, even small holes transmit signals effectively</li>
+        <li>The screen must be <strong>bonded to the circuit ground</strong> to be effective &mdash; a floating (unconnected) screen has little benefit and can make things worse by introducing capacitive coupling</li>
+      </ul>
+      <p><strong>IF transformer screening cans</strong> are an example of screening applied inside a receiver. The aluminium can around each IF transformer prevents the high-gain IF amplifier from coupling back to earlier stages through stray magnetic and electric fields.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9D1 &mdash; screening:</strong> A thin metal sheet between stages prevents unwanted RF coupling. Screen must be continuous, grounded, and free of holes larger than &lambda;/10 at the frequency being screened.</div>
+      </div>
+
+      <h3>Soldering &mdash; Materials and Technique (9E1&ndash;9E4)</h3>
+
+      <h4>Metals and Solderability (9E3)</h4>
+      <p>Not all metals solder equally well. The key factor is whether the metal forms a stable oxide layer that prevents solder wetting. Ranked from easiest to hardest:</p>
+      <table>
+        <thead>
+          <tr><th>Metal</th><th>Solderability</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Copper</td><td>Excellent</td><td>Wets easily with standard rosin flux</td></tr>
+          <tr><td>Brass</td><td>Good</td><td>Slightly more oxide; clean before soldering</td></tr>
+          <tr><td>Tinned steel</td><td>Good</td><td>The tin coating provides a copper-like surface</td></tr>
+          <tr><td>Bare steel</td><td>Difficult</td><td>Requires active (acid) flux; not suitable for PCBs</td></tr>
+          <tr><td>Aluminium</td><td>Very hard</td><td>Native oxide reforms instantly; special flux needed</td></tr>
+          <tr><td>Stainless steel</td><td>Almost impossible</td><td>Impractical with normal workshop equipment</td></tr>
+        </tbody>
+      </table>
+      <p>For amateur radio construction, <strong>copper</strong> (PCB pads, copper wire, coax braid) and <strong>tinned steel</strong> (chassis, connector bodies) are the standard materials. Avoid attempting to solder to aluminium chassis &mdash; use bolt connections or crimps instead.</p>
+
+      <h4>Flux &mdash; What It Does (9E2)</h4>
+      <p>Solder does not flow onto bare metal. A <strong>flux</strong> is required to dissolve the oxide layer from the surface and prevent it reforming while the joint is at temperature.</p>
+      <p><strong>Rosin flux</strong> (colophony) is the standard for electronics. It is mildly acidic when hot but becomes chemically inert when cooled. This means it can be left on the joint after soldering without causing corrosion &mdash; unlike the <strong>acid fluxes</strong> used for plumbing, which must be cleaned off immediately.</p>
+      <p><strong>Never use plumber&rsquo;s acid flux on electronic joints.</strong> The residue is corrosive and will attack copper pads and component leads over time.</p>
+
+      <h4>Tinning the Iron (9E4)</h4>
+      <p>A freshly bought soldering iron tip needs to be <strong>tinned</strong> before first use, and the tip should be kept tinned during use. Tinning means coating the tip with a thin layer of solder.</p>
+      <p><strong>Why it matters:</strong> Heat transfers from the iron to the joint via the solder bridge that forms between the iron tip and the joint. A clean tinned tip forms this bridge immediately. An oxidised, dry tip transfers heat poorly and makes good joints much harder to achieve.</p>
+      <p>To tin: heat the iron to working temperature, apply solder until the tip is coated, and wipe off excess with the damp sponge or brass wool provided with the stand.</p>
+
+      <h4>Lead-Free vs Leaded Solder (9E1)</h4>
+      <p>Traditional <strong>tin-lead solder</strong> (Sn60/Pb40 or the eutectic Sn63/Pb37) melts at around 183 &deg;C and wets reliably with rosin flux. It produces shiny, easy-to-inspect joints.</p>
+      <p><strong>Lead-free solder</strong> (typically Sn99/Cu0.7/Ag0.3 or similar) is now required for commercial electronics manufacture under EU RoHS regulations. It has a higher melting point (~217&ndash;220 &deg;C), requires more heat, and produces duller joints that can be harder to inspect. For amateur construction using pre-2006 components and PCBs, leaded solder remains in use and is legally permitted for hobby work in the UK.</p>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9E1&ndash;9E4 &mdash; soldering summary:</strong> (1) Copper solders best; aluminium is impractical. (2) Rosin flux dissolves oxide and prevents re-oxidation during the joint &mdash; do not use acid flux on electronics. (3) Keep the iron tip tinned to maximise heat transfer. (4) Lead-free solder is required in commercial manufacture; higher melt temperature and duller appearance than leaded. Wash hands after handling lead solder.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
     <!-- ═══════════════════ 9J: SELF-CHECK ═══════════════════ -->
     <section class="chapter" id="ch-9j">
       <div class="chapter-header">
@@ -930,8 +1017,8 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       });
     });
   </script>
-  <script src="/assets/js/search.js?v=20260917-1100" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260917-1100" defer></script>
-  <script src="/assets/js/study-page.js?v=20260917-1100" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1000" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1000" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1000" defer></script>
 </body>
 </html>
