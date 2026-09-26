@@ -164,7 +164,8 @@
         <li><a href="#ch-7f">7F Contests</a></li>
         <li><a href="#ch-7g">7G Log-keeping</a></li>
         <li><a href="#ch-7h">7H Radio Housekeeping</a></li>
-        <li><a href="#ch-7i">★ Self-Check</a></li>
+        <li><a href="#ch-7j">7J Amateur Satellites</a></li>
+        <li><a href="#ch-7k">★ Self-Check</a></li>
       </ul>
     </div>
   </section>
@@ -183,7 +184,8 @@
         <li><a href="#ch-7f"><span class="toc-code">7F</span>Contest Operating</a></li>
         <li><a href="#ch-7g"><span class="toc-code">7G</span>Log-keeping</a></li>
         <li><a href="#ch-7h"><span class="toc-code">7H</span>Good Radio Housekeeping</a></li>
-        <li><a href="#ch-7i"><span class="toc-code">★</span>Self-Check Questions</a></li>
+        <li><a href="#ch-7j"><span class="toc-code">7J</span>Amateur Satellite Operating</a></li>
+        <li><a href="#ch-7k"><span class="toc-code">★</span>Self-Check Questions</a></li>
       </ol>
     </div>
 
@@ -986,10 +988,144 @@ Calling station: QSL, 73</pre>
 
     <hr class="divider">
 
-    <!-- ═══════════════════ 7I: SELF-CHECK ═══════════════════ -->
-    <section class="chapter" id="ch-7i">
+    <!-- ═══════════════════ 7J: AMATEUR SATELLITE OPERATING ═══════════════════ -->
+    <section class="chapter" id="ch-7j">
       <div class="chapter-header">
-        <span class="chapter-num">7I</span>
+        <span class="chapter-num">7J</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>Amateur Satellite Operating (7G2–7G4)</h2>
+
+      <p class="chapter-intro">Amateur satellites give any licensed operator the ability to make contacts over thousands of kilometres of path using relatively modest equipment. The physics and operating conventions are specific to satellites — this section covers what you need to understand them.</p>
+
+      <h3>Types of Amateur Satellite</h3>
+
+      <h4>LEO — Low Earth Orbit</h4>
+      <p>Most amateur satellites orbit at 500–1000 km altitude and complete an orbit every 90–100 minutes. This geometry gives a <strong>pass</strong> of typically 10–15 minutes during which the satellite is above the horizon and accessible. An operator in the UK might have 4–6 usable passes per day from a given satellite, each on a different track across the sky.</p>
+      <p>Because LEO satellites move quickly relative to the ground, two effects matter practically: the pass window is short, and Doppler shift is significant.</p>
+
+      <h4>GEO — Geostationary Orbit</h4>
+      <p>A geostationary satellite orbits at ~35,786 km altitude in the equatorial plane, matching Earth's rotation. From the ground it appears stationary. The best-known amateur GEO satellite is <strong>QO-100 (Es'hail-2)</strong>, launched in 2018 and operated with AMSAT-DL. QO-100 is visible from the UK at approximately 26° elevation, covering Europe, Africa, the Middle East, and parts of Asia — a footprint of roughly 120° of longitude.</p>
+
+      <p>Key differences:</p>
+      <ul>
+        <li>QO-100 is permanently accessible (no pass windows) — you can have a long SSB QSO at any time</li>
+        <li>Doppler shift is negligible — the satellite is effectively stationary</li>
+        <li>Path loss is much higher than LEO — a small dish with an LNB and a modest uplink is required</li>
+        <li><strong>Uplink: S-band (2400.25–2409.5 MHz)</strong> — a 2.4 GHz upconverter or transverter transmits toward the dish</li>
+        <li><strong>Downlink: X-band / 3 cm (10489.5–10500 MHz)</strong> — received via a standard LNB on a small offset dish; the LNB's 9750 MHz local oscillator converts the 10.489 GHz downlink to a 739 MHz IF (10489 − 9750 = 739 MHz)</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7G2:</strong> LEO satellites give 10–15 minute pass windows. GEO satellites (QO-100) are permanently accessible. The key practical difference is pass duration vs continuous availability.</div>
+      </div>
+
+      <h3>Doppler Shift (7G3)</h3>
+      <p>When a satellite approaches your location, the radio waves it transmits are compressed — you receive a slightly <strong>higher</strong> frequency than the satellite transmits. As it recedes, the waves are stretched and you receive a slightly <strong>lower</strong> frequency.</p>
+      <p>The shift at closest approach on a typical 145 MHz downlink can be <strong>±3 kHz</strong> or more, and changes continuously throughout the pass. The shift is fastest at <strong>time of closest approach (TCA)</strong> when the satellite is crossing the sky most quickly.</p>
+
+      <p><strong>Practical effects:</strong></p>
+      <ul>
+        <li>On FM satellites: the receiver may not open squelch correctly at the start and end of a pass if it is not retuned — use tone squelch or work with squelch open</li>
+        <li>On SSB satellites: voices will sound higher-pitched as the satellite approaches and lower-pitched as it recedes if you do not compensate</li>
+        <li>Software such as <strong>SatPC32</strong> or <strong>Gpredict</strong> can control a radio's VFO automatically to correct for Doppler throughout a pass</li>
+      </ul>
+      <p><strong>GEO satellites (QO-100):</strong> essentially zero Doppler shift. No retuning is needed during a QSO.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7G3 — Doppler shift:</strong> Approaching satellite → frequency heard is HIGHER than transmitted. Receding satellite → frequency is LOWER. Rate of change is fastest at TCA. On QO-100 (GEO) there is no practical Doppler shift.</div>
+      </div>
+
+      <h3>Uplink and Downlink Frequencies (7G2)</h3>
+      <p>Amateur satellites use <strong>different bands for uplink (ground to satellite) and downlink (satellite to ground)</strong> to prevent the satellite's own receiver from being desensed by its transmitter.</p>
+
+      <p>Common band combinations:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Combination</th>
+              <th>Uplink</th>
+              <th>Downlink</th>
+              <th>Example satellites</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>V/U (Mode B)</td>
+              <td>2 m (145 MHz)</td>
+              <td>70 cm (435 MHz)</td>
+              <td>Many FM LEO birds</td>
+            </tr>
+            <tr>
+              <td>U/V</td>
+              <td>70 cm (435 MHz)</td>
+              <td>2 m (145 MHz)</td>
+              <td>RS-44 style</td>
+            </tr>
+            <tr>
+              <td>V/S</td>
+              <td>2 m (145 MHz)</td>
+              <td>S-band (~2.4 GHz)</td>
+              <td>Some experimental linear transponders</td>
+            </tr>
+            <tr>
+              <td><strong>QO-100 GEO</strong></td>
+              <td><strong>S-band 2.4 GHz</strong></td>
+              <td><strong>X-band 10.489 GHz</strong></td>
+              <td><strong>Narrowband SSB/CW transponder</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>As an operator, you <strong>transmit on the uplink frequency and receive on the downlink frequency simultaneously</strong> — full duplex. Monitoring your own downlink signal while transmitting is important: it confirms you are accessing the satellite and lets you hear if your audio is distorted or too loud.</p>
+
+      <h3>Transmit Power — Less is More (7G4)</h3>
+      <p>On any amateur satellite transponder, <strong>use the minimum power that gives a readable signal</strong>. The reasons:</p>
+      <ul>
+        <li>The satellite's transponder has a fixed total power budget. A strong signal from one station compresses the satellite's AGC, reducing the output level for everyone on the pass — quieting weaker stations</li>
+        <li>Battery power on the satellite is finite and shared with every operator in the satellite's footprint</li>
+        <li>International courtesy — a satellite pass is a shared resource across an entire continent</li>
+      </ul>
+      <p>QRP satellite operating is effective in practice. 5 W to a handheld crossed-dipole or small Yagi is sufficient for most LEO satellites. For QO-100, 10–25 W to a small dish is typical.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7G4:</strong> Use minimum power on amateur satellites. Strong signals take the transponder's AGC headroom and reduce output for all other stations in the footprint.</div>
+      </div>
+
+      <h3>Practical Station Setup</h3>
+      <p><strong>For LEO (FM) satellites:</strong></p>
+      <ul>
+        <li>A 2 m / 70 cm dual-band handheld is sufficient for many FM LEO passes</li>
+        <li>Antenna: circular-polarised (helical or crossed-dipole with phasing harness) handles spacecraft tumble — the satellite's antenna polarisation changes throughout the pass; a linear antenna drops up to 3 dB periodically</li>
+        <li>Tracking: use a prediction app or site (amsat.org, heavens-above.com) to know when passes occur and which direction to point</li>
+      </ul>
+      <p><strong>For QO-100:</strong></p>
+      <ul>
+        <li>RX: small offset dish (60–80 cm), standard LNB tuned to 739 MHz IF, connected to an SDR or a downconverting receiver</li>
+        <li>TX: 2.4 GHz upconverter or purpose-built transverter, plus a small feed on the dish</li>
+      </ul>
+      <p><strong>Awards:</strong> DXCC contacts via satellite are valid for DXCC and similar awards. Satellite QSOs through QO-100's large footprint give access to many entities not otherwise reachable at Intermediate power levels.</p>
+
+      <h3>Legal Position</h3>
+      <p>No special satellite licence is needed in the UK. You operate under your normal Intermediate or Full amateur licence on the uplink frequency. The uplink for most LEO satellites is on 2 m or 70 cm, both of which are accessible at Intermediate level. Foundation licensees with access to 2 m may also use FM LEO satellites.</p>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>7G legal:</strong> No special satellite NoV or licence is required. Operate under your normal licence class on the uplink frequency. Foundation operators with 2 m access may use FM LEO satellites within their power limit.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ═══════════════════ 7K: SELF-CHECK ═══════════════════ -->
+    <section class="chapter" id="ch-7k">
+      <div class="chapter-header">
+        <span class="chapter-num">7K</span>
         <div class="chapter-line"></div>
       </div>
       <h2>Self-Check Questions</h2>
@@ -1128,8 +1264,8 @@ Calling station: QSL, 73</pre>
       });
     });
   </script>
-  <script src="/assets/js/search.js?v=20260922-1000" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260922-1000" defer></script>
-  <script src="/assets/js/study-page.js?v=20260922-1000" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1200" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1200" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1200" defer></script>
 </body>
 </html>
