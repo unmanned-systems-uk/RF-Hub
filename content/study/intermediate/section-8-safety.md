@@ -424,6 +424,75 @@ Rodents gnaw through coaxial cable insulation, mains leads, and connecting cable
 
 ---
 
+## 8J — Workshop Construction Safety (8B3–8B6)
+
+Building and modifying equipment is a core part of amateur radio. The workshop introduces its own set of hazards — different from mains wiring but just as capable of causing injury. Most workshop accidents are caused by one of three things: inadequate securing of work, wrong tool for the job, and lapses in PPE.
+
+### General Principles
+
+A safe workshop is an organised one. Keep the bench clear of clutter — searching for a tool with one hand while holding work with the other is how cuts happen. Ensure the area is well lit; poor lighting leads to misjudged cuts and missed fingers. Tie back long hair and avoid loose sleeves. Loose clothing near rotating equipment (drill, rotary tool) can catch and pull a hand in before you react.
+
+> [INFO] **8B3:** Safe workshop basics: clear bench, adequate lighting, no loose clothing near rotating equipment, hair tied back.
+
+### Hand Tools
+
+Use the **correct tool for the job** — attempting to use a screwdriver as a chisel or a file as a lever is dangerous and damages both the tool and the work.
+
+**Sharp tools are safer than blunt ones.** A blunt saw or drill bit requires extra force; that force is uncontrolled when the tool slips. A sharp tool cuts predictably with light pressure.
+
+**Always work away from the body.** When using a screwdriver, file, or chisel, the direction of force should not be pointing at your own hand, wrist, or body in case the tool slips.
+
+### Marking Out and Centre Punching
+
+Before drilling, **mark the drill position clearly** and use a **centre punch** to make a small indent. Without a centre punch, a drill bit will wander across the surface before biting in — especially on metal. The punch indent gives the tip somewhere to seat immediately and prevents slipping.
+
+> [INFO] **8B5 — centre punch:** Always centre punch a metal workpiece before drilling. This prevents the drill bit walking across the surface and causing a mis-drilled hole or personal injury from the bit snagging.
+
+### Clamping and Securing Work
+
+**Never hold work freehand while drilling or sawing.** A drill bit catching in the work at the moment of breakthrough can spin the workpiece violently. A bench vice, G-clamp, or machine vice holds the work securely so that catch-and-spin cannot injure you.
+
+> [INFO] **8B3:** Always clamp or vice work securely before drilling or sawing. A workpiece that spins free can cause serious laceration injuries.
+
+### Drilling — Hand Drill vs Pillar Drill
+
+A **hand drill (or cordless drill)** is versatile and portable. A **pillar drill (bench drill)** is safer for repetitive or accurate work:
+
+- Both hands are free to hold the work or operate the guard
+- Feed rate is controlled by the quill handle, not arm pressure
+- A chip guard can be fitted to the column
+
+**The chuck key rule:** On any drill with a keyed chuck, the **chuck key must be removed before switching the power on.** A chuck key left in the chuck becomes a projectile the instant the motor starts. Make removing the key the last action before pressing the power button — every time.
+
+> [WARNING] **8B4, 8B6 — chuck key:** Remove the chuck key from the drill before switching power on. A key left in the chuck will fly out with serious force when the motor starts.
+
+**PPE for drilling:**
+- **Safety glasses** — metal swarf and drill tip fragments are eye hazards
+- **No gloves near rotating drills** — a loose glove can catch in the rotating chuck or bit and pull the hand in; bare hands give you tactile feedback and can pull clear
+
+### Cutting and Deburring
+
+After cutting metal with a hacksaw or tin snips, the cut edge will have a sharp burr. Run a **file** across both sides of the cut to remove it. Burrs on aluminium chassis, PCB brackets, and connector holes will cut skin without obvious contact — deburr every cut edge before handling.
+
+### Battery Short-Circuit Hazard
+
+Vehicle and leisure batteries operate at 12 V — low enough that electric shock is rarely the hazard. The hazard is **short-circuit current**. A large lead-acid battery can deliver hundreds of amps through a short circuit, enough to instantly weld rings, watches, and bracelets against skin, causing deep burns from heat rather than electrical energy.
+
+Remove **all jewellery and metal watch straps** before working on vehicle batteries or any high-capacity battery system. A wedding ring bridging the positive terminal and the vehicle chassis can be welded to the finger in less than a second.
+
+> [WARNING] **8A8 — battery short-circuit:** Remove all jewellery and metal watch straps before working near vehicle batteries. A 12 V battery is not a shock hazard but produces enough current to cause severe burns from short-circuit heating.
+
+### Drilling and Soldering PPE Summary
+
+| Activity | Required PPE | Forbidden |
+|---|---|---|
+| Drilling metal | Safety glasses | Gloves near rotating bit |
+| Cutting with snips/saw | Safety glasses, care with edges | — |
+| Soldering | Safety glasses (for lead clipping), ventilation | Eating/drinking at bench |
+| Working on batteries | Remove jewellery, watch strap | Metal tools laid across terminals |
+
+---
+
 ## Interactive Suggestions (for INTERACTIVES batch)
 
 1. **Fuse rating calculator** — enter appliance power (W) and mains voltage (V), get the calculated current and the correct BS 1362 fuse rating with the worked calculation shown. Directly practises the 8A4 exam calculation.

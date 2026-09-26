@@ -179,6 +179,8 @@ f = 1 ÷ 0.005 = 200 Hz
 - **Oscillator output** — check the waveform of a VFO or crystal oscillator
 - **Audio chain** — trace audio from microphone preamp through to the modulator
 
+<iframe src='/interactives/virtual-oscilloscope.html' style='width:100%; height:820px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='Virtual Oscilloscope'></iframe>
+
 ---
 
 ## 9D — Signal Generators (9D1)
@@ -371,6 +373,89 @@ Key points:
 > [INFO] **9E1, 9E2, 9E3, 9E4:** Standard test setups — transmitter: TX → SWR meter → dummy load (+ spectrum analyser via directional coupler); receiver: RF signal generator → attenuator → receiver input. **9E1:** always use a dummy load for transmitter tests. **9E2:** use an attenuator between signal generator and receiver. **9E3:** never connect a spectrum analyser directly to TX output. **9E4:** common errors include wrong meter function, ammeter in parallel, SWR meter placed after the ATU, and resistance measured in a live circuit.
 
 > [WARNING] A spectrum analyser input is typically rated at **+20 to +30 dBm maximum** (100 mW to 1 W). A 100 W transmitter delivers +50 dBm. Connecting directly will destroy the analyser's input immediately and permanently.
+
+---
+
+## 9K — Construction Basics (9C1, 9D1, 9E1–9E4)
+
+### Resistor Marking — BS 1852 Letter Code (9C1)
+
+Component values on schematics and PCB silkscreens often use the **BS 1852** letter-code notation rather than decimal numbers. The letter replaces the decimal point and simultaneously indicates the multiplier:
+
+| Letter | Multiplier | Example | Meaning |
+|---|---|---|---|
+| R | × 1 (ohms) | R47 | 0.47 Ω |
+| R | × 1 (ohms) | 4R7 | 4.7 Ω |
+| K | × 1000 (kilohms) | 5K6 | 5.6 kΩ |
+| M | × 1 000 000 (megohms) | 2M2 | 2.2 MΩ |
+
+**Why use it?** A printed decimal point can be misread if the ink is smudged or the component is small. The letter is unambiguous even on a heavily worn PCB.
+
+Resistors are manufactured in **preferred value series** (E12, E24, E96). The E12 series has 12 values per decade:
+
+```
+1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2
+```
+
+Each multiplied by 10, 100, 1000 etc. to cover the full range. You cannot buy exactly 4.0 kΩ in the E12 series — the nearest values are 3.9 kΩ and 4.7 kΩ. Circuit design accounts for this.
+
+> [INFO] **9C1 — BS 1852:** The letter replaces the decimal point and indicates multiplier. R47 = 0.47 Ω, 4R7 = 4.7 Ω, 5K6 = 5.6 kΩ, 2M2 = 2.2 MΩ. Used to avoid ambiguity from smudged decimal points on component markings.
+
+### Screening and Shielding (9D1)
+
+In RF circuits, unwanted coupling between stages is a constant problem. A high-gain IF amplifier can pick up its own output, causing oscillation. An audio stage running alongside an RF stage can pick up RF and demodulate it as hum or interference.
+
+**Screening** places a thin metal sheet between stages, providing an electrostatic and electromagnetic barrier. Common materials are aluminium sheet, tinplate, and solid copper pours on PCBs.
+
+**Key rules:**
+- The screen must be **continuous** — gaps and holes degrade its effectiveness
+- At RF, a mesh or perforated screen only works if the holes are smaller than **λ/10** of the highest frequency being screened. Above a few hundred MHz, even small holes transmit signals effectively
+- The screen must be **bonded to the circuit ground** to be effective — a floating (unconnected) screen has little benefit and can make things worse by introducing capacitive coupling
+
+**IF transformer screening cans** are an example of screening applied inside a receiver. The aluminium can around each IF transformer prevents the high-gain IF amplifier from coupling back to earlier stages through stray magnetic and electric fields.
+
+> [INFO] **9D1 — screening:** A thin metal sheet between stages prevents unwanted RF coupling. Screen must be continuous, grounded, and free of holes larger than λ/10 at the frequency being screened.
+
+### Soldering — Materials and Technique (9E1–9E4)
+
+#### Metals and Solderability (9E3)
+
+Not all metals solder equally well. The key factor is whether the metal forms a stable oxide layer that prevents solder wetting. Ranked from easiest to hardest:
+
+| Metal | Solderability | Notes |
+|---|---|---|
+| Copper | Excellent | Wets easily with standard rosin flux |
+| Brass | Good | Slightly more oxide; clean before soldering |
+| Tinned steel | Good | The tin coating provides a copper-like surface |
+| Bare steel | Difficult | Requires active (acid) flux; not suitable for PCBs |
+| Aluminium | Very hard | Native oxide reforms instantly; special flux needed |
+| Stainless steel | Almost impossible | Impractical with normal workshop equipment |
+
+For amateur radio construction, **copper** (PCB pads, copper wire, coax braid) and **tinned steel** (chassis, connector bodies) are the standard materials. Avoid attempting to solder to aluminium chassis — use bolt connections or crimps instead.
+
+#### Flux — What It Does (9E2)
+
+Solder does not flow onto bare metal. A **flux** is required to dissolve the oxide layer from the surface and prevent it reforming while the joint is at temperature.
+
+**Rosin flux** (colophony) is the standard for electronics. It is mildly acidic when hot but becomes chemically inert when cooled. This means it can be left on the joint after soldering without causing corrosion — unlike the **acid fluxes** used for plumbing, which must be cleaned off immediately.
+
+**Never use plumber's acid flux on electronic joints.** The residue is corrosive and will attack copper pads and component leads over time.
+
+#### Tinning the Iron (9E4)
+
+A freshly bought soldering iron tip needs to be **tinned** before first use, and the tip should be kept tinned during use. Tinning means coating the tip with a thin layer of solder.
+
+**Why it matters:** Heat transfers from the iron to the joint via the solder bridge that forms between the iron tip and the joint. A clean tinned tip forms this bridge immediately. An oxidised, dry tip transfers heat poorly and makes good joints much harder to achieve.
+
+To tin: heat the iron to working temperature, apply solder until the tip is coated, and wipe off excess with the damp sponge or brass wool provided with the stand.
+
+#### Lead-Free vs Leaded Solder (9E1)
+
+Traditional **tin-lead solder** (Sn60/Pb40 or the eutectic Sn63/Pb37) melts at around 183 °C and wets reliably with rosin flux. It produces shiny, easy-to-inspect joints.
+
+**Lead-free solder** (typically Sn99/Cu0.7/Ag0.3 or similar) is now required for commercial electronics manufacture under EU RoHS regulations. It has a higher melting point (~217–220 °C), requires more heat, and produces duller joints that can be harder to inspect. For amateur construction using pre-2006 components and PCBs, leaded solder remains in use and is legally permitted for hobby work in the UK.
+
+> [INFO] **9E1–9E4 — soldering summary:** (1) Copper solders best; aluminium is impractical. (2) Rosin flux dissolves oxide and prevents re-oxidation during the joint — do not use acid flux on electronics. (3) Keep the iron tip tinned to maximise heat transfer. (4) Lead-free solder is required in commercial manufacture; higher melt temperature and duller appearance than leaded. Wash hands after handling lead solder.
 
 ---
 
