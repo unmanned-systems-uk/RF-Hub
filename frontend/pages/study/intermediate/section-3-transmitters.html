@@ -1316,17 +1316,43 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
 
       <h3>AGC (Automatic Gain Control) (3H3, 3H4)</h3>
       <p><strong>AGC</strong> automatically reduces the IF or RF gain when a strong signal is received. This keeps the audio output at a roughly constant level across a wide range of signal strengths.</p>
-      <p><strong>Where the AGC signal comes from</strong></p>
-      <p>The AGC control voltage is derived from the <strong>IF signal</strong> &mdash; a rectifier after the final IF amplifier produces a DC voltage that rises when a strong signal is present. That DC voltage is fed back to earlier stages (the RF amplifier and IF amplifier stages) to reduce their gain.</p>
-      <p>Why the IF, and not somewhere else?</p>
+      <p><strong>Where the AGC signal comes from — the detector stage</strong></p>
+      <p>In a classic AM superhet, the <strong>detector diode</strong> does two jobs simultaneously from a single rectification:</p>
+      <ol>
+        <li><strong>Recovers the audio</strong> — the AC component of the rectified output, varying at speech frequencies.</li>
+        <li><strong>Produces the AGC voltage</strong> — the DC average of that same rectified output, which rises in proportion to carrier strength.</li>
+      </ol>
+      <p>The output of the detector splits into two paths by filtering:</p>
+      <pre>IF amplifier → detector diode + capacitor
+                       ↓
+              [rectified output]
+                 ↙            ↘
+         AC component        DC average
+        (audio path)         (AGC path)
+              ↓                    ↓
+      AC-coupled to         Low-pass filter removes audio
+      audio amplifier       → slow DC rises with carrier
+                            → fed back to IF amplifier
+                              (and often RF amplifier)
+                              to reduce gain</pre>
+      <ul>
+        <li><strong>Audio path:</strong> AC-coupled — passes the rapid variations that carry the voice.</li>
+        <li><strong>AGC path:</strong> low-pass filtered — strips the audio, leaving a slow DC voltage that tracks carrier strength. This is the AGC control voltage.</li>
+      </ul>
+      <p>One detector diode performs both functions. The exam answer to "where does the AGC come from?" is <strong>the detector stage</strong>.</p>
+      <p>Why the detector, and not somewhere else?</p>
       <ul>
         <li><strong>Not the RF input</strong> &mdash; the incoming RF is too weak and variable to produce a reliable control voltage.</li>
-        <li><strong>Not the audio output</strong> &mdash; audio is intermittent. On CW and SSB the audio level drops to zero in the gaps between words and dits. Using audio as the control source would cause the AGC to release (increase gain) in every pause, producing a pumping effect.</li>
-        <li><strong>The IF is correct</strong> &mdash; after passing through the IF amplifier the signal is strong and relatively steady, giving a stable DC control voltage that reflects actual received signal strength.</li>
+        <li><strong>Not the audio output</strong> &mdash; audio is intermittent. On CW and SSB the level drops to zero in every gap. Using audio as the source would cause the AGC to pump on each pause.</li>
+        <li><strong>The detector is correct</strong> &mdash; by this point the signal has been amplified through the IF chain and is strong and steady. The rectified DC accurately tracks received signal strength.</li>
       </ul>
+      <div class="callout callout--info" style="border-left-color:#6b7280;">
+        <div class="callout-icon">📝</div>
+        <div class="callout-text"><strong>SSB receivers:</strong> SSB audio uses a product detector (which needs a BFO), and a product detector's output is not suitable for AGC generation. SSB receivers therefore have a separate envelope rectifier in the IF chain to produce the AGC voltage independently. This is a nuance — at Intermediate level, the exam focus is the AM case above.</div>
+      </div>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>AGC derivation &mdash; exam fact:</strong> The AGC signal is derived from the <strong>IF stage</strong> &mdash; specifically the output of the final IF amplifier. A rectifier converts this to a DC control voltage that is fed back to reduce gain in the RF and IF amplifier stages.</div>
+        <div class="callout-text"><strong>3L1:</strong> The AGC signal is derived at the <strong>detector stage</strong>. The detector diode rectifies the IF signal, and the DC average of that rectified output is the AGC control voltage. In a simple AM receiver, one diode does both audio recovery and AGC generation — the same rectification produces both signals. The AGC is fed back to reduce the <strong>IF amplifier gain</strong> (and typically the RF amplifier gain too).</div>
       </div>
       <p><strong>AGC attack time:</strong> how quickly the AGC responds to a sudden strong signal.</p>
       <ul>
@@ -1683,8 +1709,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/search.js?v=20260926-1500" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260926-1500" defer></script>
-  <script src="/assets/js/study-page.js?v=20260926-1500" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1600" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1600" defer></script>
 </body>
 </html>
