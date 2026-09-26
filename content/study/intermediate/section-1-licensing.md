@@ -445,11 +445,24 @@ Amateur radio allocations can be:
 > [INFO] **1H1 (1H1-2025-Int'd-1203):** The 10.100–10.150 MHz band (30 m) is given
 > **secondary status** to Intermediate licensees. The primary user is fixed services.
 
-| Band | Status for amateurs in UK |
-|------|--------------------------|
-| Most HF bands | Primary |
-| 30 m (10.100–10.150 MHz) | Secondary |
-| Some microwave allocations | Secondary or shared |
+The table below covers the main UK amateur allocations. Note the satellite column — this is examined at Intermediate level.
+
+| Band | Frequency range | Amateur status (UK) | Satellite allocation? |
+|------|-----------------|--------------------|----------------------|
+| 160 m | 1.810–1.850 MHz | Primary | No |
+| 80 m | 3.500–3.800 MHz | Primary | No |
+| 40 m | 7.000–7.200 MHz | Primary | No |
+| **30 m** | **10.100–10.150 MHz** | **Secondary** | **No** |
+| 20 m | 14.000–14.350 MHz | Primary | Yes |
+| 17 m | 18.068–18.168 MHz | Primary | Yes |
+| 15 m | 21.000–21.450 MHz | Primary | Yes |
+| 12 m | 24.890–24.990 MHz | Primary | Yes |
+| 10 m | 28.000–29.700 MHz | Primary | Yes |
+| 2 m | 144–146 MHz | Primary | Yes |
+| 70 cm | 430–440 MHz | Primary/shared | Yes (435–438 MHz sub-band) |
+| Microwave | Various GHz bands | Secondary or shared | Varies |
+
+> [INFO] **Exam trap — 30 m and satellite:** The 30 m band (10.100–10.150 MHz) is the only commonly examined HF band that is both **secondary** AND has **no satellite allocation**. All higher HF bands (20 m to 10 m) share spectrum with the Amateur-Satellite Service. An exam question asking which HF band has no satellite allocation has 30 m as the correct answer.
 
 ### 1D Self-Check Questions
 
@@ -506,6 +519,22 @@ It is useful for:
 - Confirming contacts for awards
 - Providing evidence in case of interference disputes
 - Tracking your operating patterns
+
+### 1E Theory — Beacons and Unattended Operation (1E1)
+
+An **amateur beacon** is an automated transmitter that sends a continuous or repeated signal — used for propagation monitoring, direction-finding (DF) events, or navigation training. The rules on unattended operation differ by licence class.
+
+| Licence class | May operate beacon? | Unattended operation? | Requirements |
+|---|---|---|---|
+| Foundation | Yes, under supervision | **No** — must be attended | Supervising Full or Intermediate licensee must be present at all times |
+| Intermediate | Yes | Yes | Notify and coordinate with local repeater/beacon group |
+| Full | Yes | Yes | Same notification practice; RSGB Regional Manager involvement for permanent beacons |
+
+A Foundation licensee may operate a beacon (for example during a club DF event) but **must not leave it running unattended**. An Intermediate or Full licensee may set up and leave an unattended beacon, subject to normal licence conditions on power, frequency, and identification.
+
+**Notice of Variation (NoV):** Special-event beacons — for example a temporary DF beacon on an unusual frequency, at higher power, or otherwise outside standard licence terms — may require a **NoV from Ofcom** before operation begins.
+
+> [INFO] **1E1:** Foundation licensees may only operate a beacon under supervision — unattended beacon operation requires at minimum an Intermediate licence. Special-event or out-of-band beacons may require a NoV from Ofcom. All beacons must identify with the licensee's callsign at regular intervals.
 
 ### 1E Self-Check Questions
 

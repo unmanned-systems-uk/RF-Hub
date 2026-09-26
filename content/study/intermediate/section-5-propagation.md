@@ -103,15 +103,27 @@ At night, the D layer disappears (solar radiation stops; ions and electrons reco
 
 The most significant E-layer phenomenon for operators is **Sporadic-E (Es)**:
 
-**Sporadic-E** is the appearance of intense, patchy regions of very high ionisation in the E layer. These patches can refract signals at much higher frequencies than normal — typically 50 MHz (6 m) and sometimes up to 144 MHz (2 m). This allows contacts of up to **2,000 km** on bands that are normally line-of-sight only.
+**Sporadic-E** is the appearance of intense, patchy regions of very high ionisation in the E layer, typically forming at approximately **110 km altitude** — slightly below the normal E layer centre. These patches can refract signals at much higher frequencies than the E layer normally supports.
+
+Bands regularly opened by Sporadic-E in the UK:
+
+| Band | Frequency | Typical Es? |
+|------|-----------|------------|
+| 10 m | 28–29.7 MHz | Yes — often the first band to open at the start of an Es event |
+| 12 m | 24.89–24.99 MHz | Yes |
+| 6 m | 50–52 MHz | Yes — the primary UK Es band |
+| 4 m | 70–70.5 MHz | Yes — excellent Es band when conditions allow |
+| 2 m | 144–146 MHz | Occasionally, on the strongest openings only |
+
+This allows contacts of up to **2,000 km** on bands that are otherwise limited to line-of-sight range. Signals appear and vanish suddenly — a path that is S9 one moment may be completely gone the next.
 
 Key characteristics of Sporadic-E:
-- Most common in **summer** (May–August in the UK) and to a lesser extent in December
-- Completely unpredictable — can appear and disappear within minutes
-- Not related to sunspot activity — it is caused by wind shear and jet stream behaviour in the lower atmosphere (exact mechanism still debated)
-- Contact completion must often be rapid as the opening can close without warning
+- Peak season: **late May through early August** in the UK (secondary peak in December)
+- Completely unpredictable — can appear and vanish within minutes with no warning
+- Not related to sunspot activity — caused by wind shear and jet stream behaviour in the lower atmosphere (exact mechanism still debated)
+- Contact completion must be rapid as the opening can close without warning
 
-> [INFO] **5B1:** The E layer (100–125 km) supports short-skip HF propagation. Sporadic-E brings intense patches of E-layer ionisation that allow VHF signals (up to ~150 MHz) to propagate up to 2,000 km. Most common in summer; completely unpredictable.
+> [INFO] **5B1:** Sporadic-E forms as intense patches of ionisation at around **110 km** altitude. It opens the **10 m, 12 m, 6 m, and 4 m** bands (and occasionally 2 m) to propagation over up to 2,000 km. Peak season is late May–early August. Completely unpredictable; signals appear and vanish suddenly. The E layer itself (100–125 km) also supports normal short-skip HF propagation by day.
 
 ### The F Layer (5B1, 5B2)
 

@@ -459,6 +459,56 @@ Traditional **tin-lead solder** (Sn60/Pb40 or the eutectic Sn63/Pb37) melts at a
 
 ---
 
+## 9L — dB Power Shortcuts (9B1, 9E2)
+
+The decibel (dB) is used throughout radio to express power ratios. Exam questions often require quick dB arithmetic. The key rule: **dB values add and subtract, while power ratios multiply and divide.** Build up any conversion from a small set of memorised facts.
+
+### Core dB–to–Power Ratio Table
+
+| dB | Power ratio | Built from |
+|----|-------------|-----------|
+| +3 dB | × 2 | Fundamental |
+| −3 dB | ÷ 2 | Fundamental |
+| +6 dB | × 4 | 3 + 3 dB |
+| +10 dB | × 10 | Fundamental |
+| −10 dB | ÷ 10 | Fundamental |
+| +13 dB | × 20 | 10 + 3 dB = ×10 × ×2 |
+| +17 dB | × 50 | 10 + 7 dB = ×10 × ×5 (7 dB ≈ ×5) |
+| +20 dB | × 100 | 10 + 10 dB |
+| +23 dB | × 200 | 20 + 3 dB = ×100 × ×2 |
+| +26 dB | × 400 | 20 + 6 dB = ×100 × ×4 |
+| +30 dB | × 1000 | 10 + 10 + 10 dB |
+
+### Worked Example — ERP Calculation (9B1)
+
+> **A transmitter outputs 15 W. The feeder has 3 dB loss. The antenna has 17 dB gain. What is the ERP (Effective Radiated Power)?**
+
+Step-by-step using the shortcut table:
+
+```
+Start:                     15 W
+Feeder loss  (−3 dB):  15 ÷ 2  =  7.5 W
+Antenna gain (+17 dB): 7.5 × 50 = 375 W   ERP
+```
+
+Check via net gain: −3 + 17 = **+14 dB** above TX power.
++14 dB = 10 + 3 + 1 ≈ 10 + 4 dB ≈ ×25 → 15 × 25 = **375 W** ✓
+
+### Quick-Reference Cheat Sheet
+
+```
+Memorise these five:          Derive the rest by adding:
+  +3 dB  = ×2                   +13 dB = 10+3 = ×20
+  +10 dB = ×10                  +17 dB = 10+7 = ×50
+  +20 dB = ×100                 +23 dB = 20+3 = ×200
+  −3 dB  = ÷2                   +26 dB = 20+6 = ×400
+  −10 dB = ÷10
+```
+
+> [INFO] **9B1:** dB values add/subtract; power ratios multiply/divide. The five core shortcuts (±3 dB = ×÷2; ±10 dB = ×÷10; +20 dB = ×100) let you derive any common exam value. Typical exam ERP calculation: 15 W TX − 3 dB feeder + 17 dB antenna gain = **375 W ERP**.
+
+---
+
 ## 9J — Self-Check
 
 <details>

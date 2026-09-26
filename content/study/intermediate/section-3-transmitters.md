@@ -484,9 +484,35 @@ prevents this.
 | SSB | Amplitude (one sideband only) | HF voice |
 | CW | Amplitude (keyed on/off) | Morse code |
 
-**Modulation index (m):**
-- For AM: m = peak modulating voltage / carrier voltage (100% modulation = m = 1)
-- For FM: m (or β) = peak deviation / modulating frequency
+**AM depth of modulation (m):**
+
+```
+m = V_mod_peak / V_carrier
+```
+
+`V_mod_peak` = peak amplitude of the audio modulating signal; `V_carrier` = peak amplitude of the unmodulated carrier.
+
+| m value | Depth % | Meaning | Effect |
+|---------|---------|---------|--------|
+| 0.1 | 10% | Very quiet speech | Audio very low; signal technically clean |
+| 0.5 | 50% | Normal speech | Good; practical operating level |
+| 1.0 | 100% | Full modulation | Maximum audio, no distortion — target value |
+| >1.0 | >100% | **Overmodulation** | **Splatter** — clipping distortion causes interference to adjacent channels |
+
+At m = 1.0 (100% modulation), the total radiated power equals 1.5× the unmodulated carrier power (the extra 0.5× is split between the two sidebands). This is the maximum before distortion. Exceeding it causes the transmitted signal to clip, producing splatter sidebands that extend well beyond the intended channel bandwidth.
+
+**FM modulation index (β):**
+
+```
+β = Δf / f_mod
+```
+
+where Δf is the peak frequency deviation and f_mod is the modulating frequency. Unlike AM, β **can exceed 1.0** without distortion — it simply produces more sidebands and a wider bandwidth (governed by Carson's Rule). There is no overmodulation in FM in the same sense as AM.
+
+```
+AM:  m > 1.0 → clipping → splatter (interferes with adjacent channels)
+FM:  β > 1.0 → more sidebands → wider bandwidth (allowed, but uses more spectrum)
+```
 
 Overmodulation in AM causes **splatter** — distortion sidebands spread beyond the
 intended bandwidth and interfere with adjacent channels.

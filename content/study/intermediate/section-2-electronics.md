@@ -771,6 +771,25 @@ further along the feeder**.
 > [INFO] **2F1:** Standing wave patterns on feeders repeat every half wavelength. Voltage
 > nodes are separated by λ/2.
 
+#### Worked Phase Example (2F1)
+
+**Question:** At a given instant, there is a positive voltage peak at point A on a transmission line. What is the voltage at a point **¼λ toward the antenna**? What about **½λ toward the antenna**?
+
+```
+← toward TX     A         B          C      → antenna
+                +V       zero        +V
+              (peak)    (node)      (peak)
+                    ←¼λ→      ←¼λ→
+                    ←————————½λ————————→
+```
+
+**Answers:**
+
+- **Point B (¼λ from A):** voltage is **zero** — a voltage node. The pattern passes through zero exactly ¼ of a wavelength from any peak.
+- **Point C (½λ from A):** voltage is the **same positive peak** — the standing wave repeats exactly every half wavelength.
+
+> [INFO] **2F1 exam crib:** Points ½λ apart on a standing wave are always at the same phase and amplitude. Points ¼λ apart are always at opposite extremes — if one point is at a positive peak, the point ¼λ away is at zero. **Cross-reference §4B:** impedance also repeats every ½λ along the feeder, which is why λ/4 stubs and ½λ matching sections work.
+
 ### 2F Theory — Digital Signals and Sampling (2F1)
 
 Analogue signals (such as audio from a microphone) can be converted to digital data.
