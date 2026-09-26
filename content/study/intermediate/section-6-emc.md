@@ -39,6 +39,21 @@ Your amateur licence conditions include a requirement to **accept interference f
 
 > [INFO] **6A3, 6A4:** Amateurs have a special dual role: we are both potential sources of interference (to neighbours) and victims of interference (from domestic electronics). The licence obliges us to operate cleanly and to accept some interference from lawfully operated equipment.
 
+### Why CE-Marked Equipment Can Still Be Interfered With (6A3)
+
+A device bearing a CE mark has been tested for immunity — but only up to a **stated level**. The immunity test levels in the EN standards are set for a typical domestic environment, not for a property next door to a legal amateur station running 100 W into a garden antenna.
+
+In practice:
+- An amateur transmitter at 50 W on 7 MHz can produce an electric field strength of several volts per metre at 5–10 metres range
+- The immunity test for CE-marked consumer goods requires the equipment to survive fields of typically 1–3 V/m at the test frequency
+- The amateur's legitimate transmission can therefore exceed the immunity level that CE marking requires, while still being fully compliant with the amateur licence
+
+This means both statements can be simultaneously true: **your transmission is clean and legal**, and **the victim equipment is CE-marked and compliant**. Interference still happens. Neither party is technically at fault. The immunity standard assumes equipment will not be used immediately adjacent to a high-power transmitter.
+
+This is not a loophole to hide behind — the practical and neighbourly duty is to minimise unnecessary interference regardless of the legal position. But it does mean the amateur is not automatically in the wrong.
+
+> [INFO] **6A3:** CE marking guarantees immunity only to the test level stated in the relevant EN standard. Amateur transmitters in residential gardens may produce field strengths exceeding that test level. Both the amateur and the neighbour's equipment can be fully compliant while interference still occurs.
+
 ---
 
 ## 6B — Sources of Interference
@@ -92,6 +107,27 @@ A receiving amateur in a modern residential area may experience a **noise floor 
 
 > [INFO] **6B2, 6B3:** Common domestic interference sources include SMPS, LED lighting, VDSL modems, solar inverters, arcing thermostats, and computers. These raise the HF noise floor, making weak-signal reception difficult. All are covered by EMC Regulations requiring a minimum immunity level.
 
+### Why Some Devices Interfere and Others Do Not (6B2)
+
+The pattern is consistent: **devices that switch electrical current rapidly produce broadband RF noise**; devices that simply heat or move at slow speeds produce little or none. Understanding why helps you prioritise the investigation when your noise floor rises.
+
+**HIGH interference potential:**
+- Switched-mode power supplies (any charger, LED driver, PC PSU, TV power supply) — the switching transistor creates fast edges at the switching frequency and all its harmonics, extending from audio frequencies into the HF range and beyond
+- PLT (Powerline Telecommunications) / VDSL modems — deliberately inject RF into the mains wiring as a data carrier; the mains wiring acts as an unintentional antenna
+- LED lighting with cheap or unfiltered drivers — the LED driver is a switch-mode converter running at 50–500 kHz
+- Solar PV inverters and battery inverters — high-power switching at RF-generating frequencies
+- EV chargers — high-power switching converters
+- Electric motors with carbon brush commutators — the commutator sparks on every contact; a vacuum cleaner or power drill produces bursts of broadband noise
+- Arcing thermostats — the arc at the contact switch produces a click-burst every cycle
+
+**LOW or no interference potential:**
+- Soldering irons — passive resistive heating element, no switching, no RF emission
+- Incandescent light bulbs — resistive heating, no RF emission (now largely replaced)
+- Mechanical clocks — no electrical switching
+- Linear (non-switching) power supplies — only mains-frequency harmonics, negligible at HF
+
+**Practical diagnostic step:** with your receiver running, walk around the building switching circuits off at the consumer unit one at a time. Watch the noise floor. The circuit whose disconnection makes a significant difference identifies the culprit.
+
 ---
 
 ## 6C — Effects of Interference
@@ -109,6 +145,20 @@ A receiving amateur in a modern residential area may experience a **noise floor 
 | Any strong RF | Digital audio dropouts, VDSL disconnections, DAB muting, pixelation on digital TV |
 
 > [INFO] **6C1:** AM/SSB breakthrough causes speech sounds. FM breakthrough causes muted/reduced volume (capture effect). Strong RF on any mode can disrupt VDSL, DAB, digital TV.
+
+### Masthead TV Amplifier Overload (6C2)
+
+A **masthead amplifier** (also called a mast-head pre-amp or antenna booster) is a small wideband amplifier fitted at the top of the TV aerial mast, as close to the antenna as possible. Its purpose is to boost all incoming signals before the coax feeder attenuates them.
+
+The problem for an amateur radio operator is that a masthead amplifier is **wideband** — it amplifies everything from roughly 40 MHz upward. When an amateur transmitter is nearby, the amplifier receives not only the TV signals in the UHF band (470–790 MHz) but also the much stronger amateur transmissions on HF or VHF.
+
+A strong input signal can **overdrive (overload) the amplifier's input stage**. When a low-noise amplifier is overloaded, it generates **intermodulation products** — spurious signals that appear at combination frequencies across the entire spectrum. The effect on the TV is ghost images, patterning, sudden loss of signal, or dropouts on all channels simultaneously. All channels are affected, which distinguishes this from a co-channel interference problem.
+
+**Counter-intuitive result:** the masthead amplifier was fitted to *improve* TV reception, but in the presence of a nearby amateur station it can actively worsen it by generating intermodulation across all channels.
+
+**Fix:** fit a **high-pass filter** between the antenna and the masthead amplifier input. A filter that passes 470 MHz and above while rejecting HF and VHF amateur frequencies removes the overloading signal before it reaches the amplifier. Replacement masthead amplifiers with integrated bandpass filtering are also available.
+
+> [INFO] **6C2 — masthead amplifier overload:** A wideband masthead amplifier can be overloaded by strong nearby amateur transmissions, generating intermodulation products that disrupt all TV channels simultaneously. Fix: fit a high-pass filter ahead of the amplifier to block amateur-band frequencies.
 
 **When domestic interference affects your reception:**
 
@@ -138,6 +188,26 @@ If your transmissions are causing interference, the first thing to check is whet
 - A mains filter should be fitted between the mains socket and the power supply
 
 > [INFO] **6D1, 6D3:** Low-pass filter at the TX output suppresses harmonics. Ferrite rings on mains leads prevent RF entering the domestic mains. Always place ferrites as close to the equipment as possible. Disconnect the antenna and test with a dummy load to determine whether the problem is radiated or conducted.
+
+### Diagnostic Procedure — Radiated vs Conducted Path (6D4)
+
+When a complaint arises, the first question is: **is the RF reaching the victim equipment through the air (radiated path), or through the mains wiring (conducted path)?** The symptoms alone do not tell you — both paths can produce identical effects at the victim device.
+
+**Standard two-step procedure:**
+
+**Step 1 — dummy load test:**
+Disconnect the antenna, connect a 50 Ω dummy load, and transmit.
+- If the interference **stops** → the problem is a **radiated path** from the antenna. The RF only reached the victim because the antenna was radiating. Fix: work on antenna placement, transmitter filtering, and victim-side ferrite chokes.
+- If the interference **continues** → the RF is arriving via the **mains supply** as a conducted signal. The antenna is not the culprit — RF from your transmitter is coupling into the mains wiring directly. Fix: fit ferrite chokes on the transmitter mains lead, add a mains filter, and check the victim device's mains lead too.
+
+**Step 2 — harmonic emission check (6D3):**
+Once you have confirmed the primary path, check whether harmonics are contributing:
+- Keep the dummy load connected
+- Tune a general-coverage receiver (or RTL-SDR) to 2×f, 3×f, 4×f of your operating frequency in turn
+- Key the transmitter briefly on CW
+- A weak signal is normal — any significant signal strength indicates a harmonic that may be causing interference on that band
+
+> [INFO] **6D3, 6D4 — diagnostic procedure:** (1) Disconnect antenna, use dummy load, transmit — if interference stops, the path is radiated from the antenna; if it continues, the path is conducted via mains. (2) Check harmonics by tuning a receiver to 2f, 3f, 4f with the dummy load connected.
 
 ### Route Separation and Cable Management (6D4)
 
@@ -285,7 +355,49 @@ If a neighbour complains:
 
 ---
 
-## 6H — ISM Bands (cross-reference to §1)
+## 6H — Vehicle Installation EMC (6F3)
+
+Installing a radio in a vehicle is one of the most EMC-challenging environments in amateur radio. A modern car contains dozens of microcontrollers, a CAN bus, engine management units, and kilometres of wiring — all in close proximity to your transmitter and antenna.
+
+### Antenna Position
+
+Getting the antenna position right is the single most effective step. The ranking from best to worst:
+
+| Position | Ground plane | RF coupling to loom | Notes |
+|---|---|---|---|
+| Centre of metal roof | Large and symmetric | Minimal — equidistant from all looms | Best, but requires drilling |
+| Boot/hatchback lip | Moderate | Low | Common compromise, good performance |
+| Wing or rear quarter | Smaller, asymmetric | Moderate — nearer front/rear looms | Acceptable if roof not possible |
+| Bonnet / front bumper | Poor (near engine) | High — directly over ECU and ignition | Worst choice; likely to cause engine RFI |
+
+The further the antenna is from the engine bay and its wiring harness, the less RF is coupled in. The larger and more symmetric the ground plane, the better the antenna performs and the lower the ground current that flows through the bodywork.
+
+### Wiring and Cable Routing
+
+Modern vehicles use a **CAN bus** — a two-wire network connecting all electronic control units. CAN is heavily filtered and robust, but individual ECUs can still be disrupted by high-field RF.
+
+**To minimise coupling:**
+- Route the TX power cable and coaxial feeder **perpendicular to vehicle wiring looms** where they must cross — parallel runs, even a short distance apart, pick up RF inductively
+- Keep RF cable runs as short as practicable
+- Use quality coax with a solid braid — poor braid coverage causes the feeder to radiate
+- Connect power directly to the battery positive terminal via a fused cable, and negative to the battery negative terminal or a clean chassis bonding point — not via an auxiliary fuse box buried in a wiring loom
+
+### RFI Effects on Engine Management
+
+A poorly installed VHF/UHF mobile transmitter can cause RF to appear on the **ignition system**, **oxygen sensor inputs**, or **mass-airflow sensor** circuits. Symptoms include:
+
+- Rough idle or misfire when transmitting
+- Engine management warning light illuminating during transmission
+- Fault codes logged in the ECU memory that appear without an apparent mechanical fault
+- Adaptive functions (idle speed, fuel trim) resetting after each transmission
+
+These are not permanent faults — the ECU recovers when RF is removed — but repeated triggering can cause the vehicle to enter limp-home mode. The fix is always better antenna placement and cable routing, never modifications to the vehicle's ECU or wiring.
+
+> [INFO] **6F3 — vehicle EMC:** Centre-roof antenna gives the best ground plane and the least RFI coupling to vehicle wiring. Route power and RF cables perpendicular to vehicle looms. RFI on engine management can cause misfires and fault codes — fix by improving antenna position and cable routing, not by modifying vehicle systems.
+
+---
+
+## 6J — ISM Bands (cross-reference to §1)
 
 The **ISM (Industrial, Scientific, and Medical) bands** are frequency allocations that can be used without a specific licence for industrial, scientific, and medical applications. Common examples:
 - **2.4 GHz:** Wi-Fi, Bluetooth, microwave ovens
@@ -298,7 +410,7 @@ Amateur radio shares some ISM allocations. As an amateur, you **must accept inte
 
 ---
 
-## 6I — Self-Check Questions
+## 6K — Self-Check Questions
 
 **Q1.** What does EMC stand for, and what two obligations does it place on equipment manufacturers?
 
