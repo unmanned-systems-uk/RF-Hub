@@ -1038,17 +1038,44 @@ steep skirts. A 2.4 kHz crystal filter is typical for SSB; a 500 Hz filter for C
 This keeps the audio output at a roughly constant level across a wide range of signal
 strengths.
 
-**Where the AGC signal comes from**
+**Where the AGC signal comes from — the detector stage**
 
-The AGC control voltage is derived from the **IF signal** — a rectifier after the final IF amplifier produces a DC voltage that rises when a strong signal is present. That DC voltage is fed back to earlier stages (the RF amplifier and IF amplifier stages) to reduce their gain.
+In a classic AM superhet, the **detector diode** does two jobs simultaneously from a single rectification:
 
-Why the IF, and not somewhere else?
+1. **Recovers the audio** — the AC component of the rectified output, varying at speech frequencies.
+2. **Produces the AGC voltage** — the DC average of that same rectified output, which rises in proportion to carrier strength.
+
+The output of the detector splits into two paths by filtering:
+
+```
+IF amplifier → detector diode + capacitor
+                       ↓
+              [rectified output]
+                 ↙            ↘
+         AC component        DC average
+        (audio path)         (AGC path)
+              ↓                    ↓
+      AC-coupled to         Low-pass filter removes audio
+      audio amplifier       → slow DC rises with carrier
+                            → fed back to IF amplifier
+                              (and often RF amplifier)
+                              to reduce gain
+```
+
+- **Audio path:** AC-coupled — passes the rapid variations that carry the voice.
+- **AGC path:** low-pass filtered — strips the audio, leaving a slow DC voltage that tracks carrier strength. This is the AGC control voltage.
+
+One detector diode performs both functions. The exam answer to "where does the AGC come from?" is **the detector stage**.
+
+Why the detector, and not somewhere else?
 
 - **Not the RF input** — the incoming RF is too weak and variable to produce a reliable control voltage.
-- **Not the audio output** — audio is intermittent. On CW and SSB the audio level drops to zero in the gaps between words and dits. Using audio as the control source would cause the AGC to release (increase gain) in every pause, producing a pumping effect.
-- **The IF is correct** — after passing through the IF amplifier the signal is strong and relatively steady, giving a stable DC control voltage that reflects actual received signal strength.
+- **Not the audio output** — audio is intermittent. On CW and SSB the level drops to zero in every gap. Using audio as the source would cause the AGC to pump on each pause.
+- **The detector is correct** — by this point the signal has been amplified through the IF chain and is strong and steady. The rectified DC accurately tracks received signal strength.
 
-> [INFO] **AGC derivation — exam fact:** The AGC signal is derived from the **IF stage** — specifically the output of the final IF amplifier. A rectifier converts this to a DC control voltage that is fed back to reduce gain in the RF and IF amplifier stages.
+> [NOTE] **SSB receivers:** SSB audio uses a product detector (which needs a BFO), and a product detector's output is not suitable for AGC generation. SSB receivers therefore have a separate envelope rectifier in the IF chain to produce the AGC voltage independently. This is a nuance — at Intermediate level, the exam focus is the AM case above.
+
+> [INFO] **3L1:** The AGC signal is derived at the **detector stage**. The detector diode rectifies the IF signal, and the DC average of that rectified output is the AGC control voltage. In a simple AM receiver, one diode does both audio recovery and AGC generation — the same rectification produces both signals. The AGC is fed back to reduce the **IF amplifier gain** (and typically the RF amplifier gain too).
 
 **AGC attack time:** how quickly the AGC responds to a sudden strong signal.
 - **Fast attack:** the gain reduces quickly when a sudden strong signal arrives.
