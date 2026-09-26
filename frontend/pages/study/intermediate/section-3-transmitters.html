@@ -155,6 +155,7 @@
       <p class="hero-subtitle">How radios work inside — superheterodyne receivers, SSB/CW/FM transmitters, digital modes, transceivers, filters, DSP, and oscillators. Expect block diagram questions.</p>
       <ul class="hero-sub-list">
         <li><a href="#ch-3a">3A Superhet</a></li>
+        <li><a href="#ch-3a-tune">3A↳ Tuning Model</a></li>
         <li><a href="#ch-3a-lo">3A↳ LO Injection</a></li>
         <li><a href="#ch-3a2">3A2 Direct Conversion</a></li>
         <li><a href="#ch-3a3">3A3 TRF</a></li>
@@ -179,6 +180,7 @@
       <p class="toc__label">Contents</p>
       <ol>
         <li><a href="#ch-3a"><span class="toc-code">3A</span>The Superheterodyne Receiver</a></li>
+        <li><a href="#ch-3a-tune"><span class="toc-code">3A↳</span>What Happens When You Tune a Superhet</a></li>
         <li><a href="#ch-3a-lo"><span class="toc-code">3A↳</span>High-Side vs Low-Side LO Injection</a></li>
         <li><a href="#ch-3a2"><span class="toc-code">3A2</span>Direct Conversion Receivers</a></li>
         <li><a href="#ch-3a3"><span class="toc-code">3A3</span>TRF Receivers</a></li>
@@ -238,6 +240,43 @@
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>3I3:</strong> The RF amplifier in a superhet <strong>selects a range of signals including the wanted signal.</strong> It does not do the final selectivity — that is the IF filter's job.</div>
+      </div>
+
+      <h3 id="ch-3a-tune">What Actually Happens When You Tune a Superhet (3I3)</h3>
+      <p>When you rotate the tuning dial, only one thing moves: the local oscillator.</p>
+
+      <p><strong>Scenario: dialling from 14.150 MHz to 14.200 MHz</strong></p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>What?</th><th>At 14.150 MHz</th><th>At 14.200 MHz</th><th>Moves?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Wanted signal</td><td>14.150 MHz</td><td>14.200 MHz</td><td>Yes — the user chose it</td></tr>
+            <tr><td>Local oscillator (LO)</td><td>14.610 MHz</td><td>14.660 MHz</td><td>Yes — tracks the signal</td></tr>
+            <tr><td><strong>Intermediate frequency (IF)</strong></td><td><strong>460 kHz</strong></td><td><strong>460 kHz</strong></td><td><strong>No — stays fixed</strong></td></tr>
+            <tr><td><strong>IF filter passband</strong></td><td>460 kHz ± BW</td><td>460 kHz ± BW</td><td><strong>No — unchanged</strong></td></tr>
+            <tr><td><strong>Detector input</strong></td><td>460 kHz</td><td>460 kHz</td><td><strong>No — unchanged</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><em>(High-side injection: LO = signal + 460 kHz. When the signal shifts 50 kHz, the LO shifts by exactly 50 kHz too — the difference stays at 460 kHz.)</em></p>
+
+      <h4>The Key Insight</h4>
+      <p>The IF filter is deaf to everything except 460 kHz. It never has to retune. The tuning dial really rotates the LO; the mixer takes whatever RF the antenna delivers and shifts it down to the one fixed frequency where the filter and detector live.</p>
+
+      <h4>Superhet vs TRF — The Essential Difference</h4>
+      <p>In a TRF receiver, every tuned RF stage tracks together as you tune — multiple circuits all moving simultaneously. In a superhet, the dial moves only the LO. Everything after the mixer is permanently fixed at one frequency.</p>
+
+      <h4>Exam-Trap Warning</h4>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text">Watch for the answer option <strong>"constant offset from the LO"</strong>. It is technically true that IF = |LO − signal| is always the same number. But it inverts the model. The IF is not derived from the LO — it is the fixed anchor the whole receiver is built around. The LO moves to bring the signal down to the IF. The IF never moves.</div>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I3:</strong> The IF stays on a fixed frequency as you tune. Turning the dial changes only the LO. Everything after the mixer — the IF filter, the detector — operates at the same frequency regardless of which signal you are receiving. <strong>Exam trap:</strong> "constant offset from the LO" sounds plausible but inverts cause and effect. The IF is the fixed anchor; the LO moves to meet it.</div>
       </div>
 
       <h3>Image Frequency and Rejection (3A2, 3I2)</h3>
@@ -1644,8 +1683,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/search.js?v=20260926-1400" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260926-1400" defer></script>
-  <script src="/assets/js/study-page.js?v=20260926-1400" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1500" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1500" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1500" defer></script>
 </body>
 </html>
