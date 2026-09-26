@@ -711,6 +711,20 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
         <li><strong>m &gt; 1.0</strong> &mdash; <strong>overmodulation</strong>. The envelope tries to go below zero, which the transmitter can't do &mdash; the signal clips and generates <strong>splatter</strong>: distortion sidebands that spread beyond the intended bandwidth and interfere with adjacent channels.</li>
       </ul>
 
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>m value</th><th>Depth %</th><th>Meaning</th><th>Effect</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0.1</td><td>10%</td><td>Very quiet speech</td><td>Audio very low; signal technically clean</td></tr>
+            <tr><td>0.5</td><td>50%</td><td>Normal speech</td><td>Good; practical operating level</td></tr>
+            <tr><td>1.0</td><td>100%</td><td>Full modulation</td><td>Maximum audio, no distortion — target value</td></tr>
+            <tr><td><strong>&gt;1.0</strong></td><td><strong>&gt;100%</strong></td><td><strong>Overmodulation</strong></td><td><strong>Splatter</strong> — clipping distortion causes interference to adjacent channels</td></tr>
+          </tbody>
+        </table>
+      </div>
+
       <figure style="margin: 1rem 0;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" style="width:100%;font-family:'IBM Plex Sans',sans-serif;">
           <!-- Panel m=0.5 -->
@@ -761,6 +775,11 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
       <p><strong>For FM</strong> &mdash; modulation index (&beta;, "beta") compares peak frequency deviation to the modulating frequency:</p>
       <pre>&beta; = peak deviation (&Delta;f) / modulating frequency (f<sub>mod</sub>)</pre>
       <p>Unlike AM, FM's modulation index is <em>not capped at 1</em>. Narrowband FM (amateur voice) typically has &beta; around 1&ndash;3; wideband broadcast FM uses &beta; around 5. Higher &beta; = more sidebands = wider occupied bandwidth (see Carson's rule in the FM section below).</p>
+
+      <p>At m = 1.0 (100% modulation), the total radiated AM power equals <strong>1.5&times; the unmodulated carrier power</strong> — the extra 0.5&times; is split equally between the two sidebands. This is the maximum before distortion. Exceeding m = 1.0 causes clipping, producing splatter sidebands that extend well beyond the intended channel bandwidth.</p>
+
+      <pre>AM:  m &gt; 1.0 &rarr; clipping &rarr; splatter (interferes with adjacent channels)
+FM:  &beta; &gt; 1.0 &rarr; more sidebands &rarr; wider bandwidth (allowed, but uses more spectrum)</pre>
 
       <p><strong>Why it matters at the microphone:</strong> the index tells the operator how loud to talk. Under-modulation (m too low) wastes power and gives a weak signal at the receiver. Over-modulation causes splatter that annoys neighbouring stations and can lead to complaints. Modern rigs have ALC (Automatic Level Control) meters that show the modulation level &mdash; the "target zone" on the meter corresponds to m near but not exceeding 1.</p>
       <div class="callout callout--info">
@@ -1581,8 +1600,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/search.js?v=20260925-1500" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260925-1500" defer></script>
-  <script src="/assets/js/study-page.js?v=20260925-1500" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1300" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1300" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1300" defer></script>
 </body>
 </html>

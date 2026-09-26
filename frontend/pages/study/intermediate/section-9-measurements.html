@@ -166,6 +166,7 @@
         <li><a href="#ch-9h">9H Test Setups &amp; Procedures</a></li>
         <li><a href="#ch-9i">9I Safety During Testing</a></li>
         <li><a href="#ch-9k">9K Construction Basics</a></li>
+        <li><a href="#ch-9l">9L dB Shortcuts</a></li>
         <li><a href="#ch-9j">★ Self-Check Questions</a></li>
       </ul>
     </div>
@@ -187,6 +188,7 @@
         <li><a href="#ch-9h"><span class="toc-code">9H</span>Test Setups &amp; Procedures</a></li>
         <li><a href="#ch-9i"><span class="toc-code">9I</span>Safety During Testing</a></li>
         <li><a href="#ch-9k"><span class="toc-code">9K</span>Construction Basics</a></li>
+        <li><a href="#ch-9l"><span class="toc-code">9L</span>dB Power Shortcuts</a></li>
         <li><a href="#ch-9j"><span class="toc-code">★</span>Self-Check Questions</a></li>
       </ol>
     </div>
@@ -899,6 +901,66 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
 
     <hr class="divider">
 
+    <!-- ═══════════════════ 9L: dB POWER SHORTCUTS ═══════════════════ -->
+    <section class="chapter" id="ch-9l">
+      <div class="chapter-header">
+        <span class="chapter-num">9L</span>
+        <div class="chapter-line"></div>
+      </div>
+      <h2>dB Power Shortcuts (9B1, 9E2)</h2>
+
+      <p class="chapter-intro">The decibel (dB) is used throughout radio to express power ratios. Exam questions often require quick dB arithmetic. The key rule: <strong>dB values add and subtract, while power ratios multiply and divide.</strong> Build up any conversion from a small set of memorised facts.</p>
+
+      <h3>Core dB-to-Power Ratio Table</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>dB</th><th>Power ratio</th><th>Built from</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>+3 dB</td><td>× 2</td><td>Fundamental</td></tr>
+            <tr><td>−3 dB</td><td>÷ 2</td><td>Fundamental</td></tr>
+            <tr><td>+6 dB</td><td>× 4</td><td>3 + 3 dB</td></tr>
+            <tr><td>+10 dB</td><td>× 10</td><td>Fundamental</td></tr>
+            <tr><td>−10 dB</td><td>÷ 10</td><td>Fundamental</td></tr>
+            <tr><td>+13 dB</td><td>× 20</td><td>10 + 3 dB = ×10 × ×2</td></tr>
+            <tr><td>+17 dB</td><td>× 50</td><td>10 + 7 dB = ×10 × ×5 (7 dB ≈ ×5)</td></tr>
+            <tr><td>+20 dB</td><td>× 100</td><td>10 + 10 dB</td></tr>
+            <tr><td>+23 dB</td><td>× 200</td><td>20 + 3 dB = ×100 × ×2</td></tr>
+            <tr><td>+26 dB</td><td>× 400</td><td>20 + 6 dB = ×100 × ×4</td></tr>
+            <tr><td>+30 dB</td><td>× 1000</td><td>10 + 10 + 10 dB</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Worked Example — ERP Calculation (9B1)</h3>
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Example:</strong> A transmitter outputs 15 W. The feeder has 3 dB loss. The antenna has 17 dB gain. What is the ERP (Effective Radiated Power)?</div>
+      </div>
+      <p>Step-by-step using the shortcut table:</p>
+      <pre>Start:                     15 W
+Feeder loss  (−3 dB):  15 ÷ 2  =  7.5 W
+Antenna gain (+17 dB): 7.5 × 50 = 375 W   ERP</pre>
+      <p>Check via net gain: −3 + 17 = <strong>+14 dB</strong> above TX power.<br>
+      +14 dB = 10 + 3 + 1 ≈ 10 + 4 dB ≈ ×25 → 15 × 25 = <strong>375 W ✓</strong></p>
+
+      <h3>Quick-Reference Cheat Sheet</h3>
+      <pre>Memorise these five:          Derive the rest by adding:
+  +3 dB  = ×2                   +13 dB = 10+3 = ×20
+  +10 dB = ×10                  +17 dB = 10+7 = ×50
+  +20 dB = ×100                 +23 dB = 20+3 = ×200
+  −3 dB  = ÷2                   +26 dB = 20+6 = ×400
+  −10 dB = ÷10</pre>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>9B1:</strong> dB values add/subtract; power ratios multiply/divide. The five core shortcuts (±3 dB = ×÷2; ±10 dB = ×÷10; +20 dB = ×100) let you derive any common exam value. Typical exam ERP calculation: 15 W TX − 3 dB feeder + 17 dB antenna gain = <strong>375 W ERP</strong>.</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
     <!-- ═══════════════════ 9J: SELF-CHECK ═══════════════════ -->
     <section class="chapter" id="ch-9j">
       <div class="chapter-header">
@@ -1017,8 +1079,8 @@ f = 1 ÷ 0.005 = 200 Hz</pre>
       });
     });
   </script>
-  <script src="/assets/js/search.js?v=20260926-1000" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260926-1000" defer></script>
-  <script src="/assets/js/study-page.js?v=20260926-1000" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1300" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1300" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1300" defer></script>
 </body>
 </html>
