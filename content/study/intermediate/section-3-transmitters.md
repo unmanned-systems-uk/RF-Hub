@@ -78,6 +78,40 @@ amplifier could pick up its own output and oscillate.
 > [INFO] **3I2:** IF transformers are screened in aluminium cans to **prevent unwanted
 > coupling between stages**.
 
+### 3A Theory — High-Side vs Low-Side LO Injection (3I2)
+
+The LO can be placed either ABOVE or BELOW the received signal. Both arrangements produce the same IF from the mixer. The two are called **high-side injection** and **low-side injection**.
+
+**High-side injection:** `LO = f_signal + f_IF` — LO is ABOVE the signal. The mixer takes LO − RF = IF.
+
+**Low-side injection:** `LO = f_signal − f_IF` — LO is BELOW the signal. The mixer takes RF − LO = IF.
+
+Both produce an identical IF and are equally valid superhet designs. The choice is a design decision about where to park the oscillator.
+
+#### Worked example — 20 m band, 460 kHz IF
+
+Signal at **14.100 MHz**, IF = **460 kHz**:
+
+| Injection side | Calculation | LO frequency | LO inside 20 m band? |
+|----------------|-------------|--------------|----------------------|
+| High-side | 14.100 + 0.460 | **14.560 MHz** | **Yes** (14.000–14.350 MHz) ⚠ |
+| Low-side | 14.100 − 0.460 | **13.640 MHz** | **No** — just below 20 m ✓ |
+
+#### Why the choice matters — LO leakage
+
+A superhet's local oscillator inevitably leaks a small amount of RF back through the mixer and out of the antenna. If the LO frequency falls inside the amateur band the receiver is tuned to, that leakage is radiated on the very band the user is listening on — potentially causing interference to nearby stations. Placing the LO outside the target band eliminates this problem.
+
+**General design rule:** choose whichever injection side puts the LO in an unused or protected frequency region. For HF amateur bands, low-side injection is often preferred because it shifts the LO below the band.
+
+#### Exam approach
+
+When a question gives you signal frequency and IF and asks for the LO:
+- Both `f_signal + f_IF` and `f_signal − f_IF` are mathematically correct
+- If only one answer is offered, that is the intended answer
+- If both are offered, the answer that places the LO **outside** the amateur band is the preferred choice
+
+> [INFO] **3I2:** LO injection can be high-side (`f_signal + f_IF`) or low-side (`f_signal − f_IF`). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = **13.640 MHz** (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.
+
 ### 3A Self-Check Questions
 
 **Q1.** In a superhet receiver, what is the purpose of the local oscillator?
@@ -1229,8 +1263,11 @@ transceiver output mixes to 50 MHz output).
 
 | Formula | Use |
 |---------|-----|
-| IF = \|f_RF − f_LO\| | Intermediate frequency |
+| IF = \|f_RF − f_LO\| | Intermediate frequency (both injection sides) |
+| f_LO = f_RF + f_IF | LO frequency — high-side injection |
+| f_LO = f_RF − f_IF | LO frequency — low-side injection |
 | f_image = f_RF + 2 × IF | Image frequency (high-side LO) |
+| f_image = f_RF − 2 × IF | Image frequency (low-side LO) |
 | BW ≈ 2(Δf + f_max) | FM bandwidth (Carson's rule) |
 | β = Δf / f_mod | FM modulation index |
 | Audio = \|IF − BFO\| | CW receive tone |
