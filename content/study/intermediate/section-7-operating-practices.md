@@ -549,7 +549,8 @@ Key differences:
 - QO-100 is permanently accessible (no pass windows) — you can have a long SSB QSO at any time
 - Doppler shift is negligible — the satellite is effectively stationary
 - Path loss is much higher than LEO — a small dish with an LNB and a modest uplink is required
-- Uplink uses a narrowband VHF/UHF frequency; downlink uses S-band (2.4 GHz receive via LNB and satellite dish)
+- **Uplink: S-band (2400.25–2409.5 MHz)** — a 2.4 GHz upconverter or transverter transmits toward the dish
+- **Downlink: X-band / 3 cm (10489.5–10500 MHz)** — received via a standard LNB on a small offset dish; the LNB's 9750 MHz local oscillator converts the 10.489 GHz downlink to a 739 MHz IF (10489 − 9750 = 739 MHz)
 
 > [INFO] **7G2:** LEO satellites give 10–15 minute pass windows. GEO satellites (QO-100) are permanently accessible. The key practical difference is pass duration vs continuous availability.
 
@@ -578,7 +579,8 @@ Common band combinations:
 |---|---|---|---|
 | V/U (Mode B) | 2 m (145 MHz) | 70 cm (435 MHz) | Many FM LEO birds |
 | U/V | 70 cm (435 MHz) | 2 m (145 MHz) | RS-44 style |
-| V/S | 2 m (145 MHz) | S-band (~2.4 GHz) | QO-100 style |
+| V/S | 2 m (145 MHz) | S-band (~2.4 GHz) | Some experimental linear transponders |
+| **QO-100 GEO** | **S-band 2.4 GHz** | **X-band 10.489 GHz** | **Narrowband SSB/CW transponder** |
 
 As an operator, you **transmit on the uplink frequency and receive on the downlink frequency simultaneously** — full duplex. Monitoring your own downlink signal while transmitting is important: it confirms you are accessing the satellite and lets you hear if your audio is distorted or too loud.
 
