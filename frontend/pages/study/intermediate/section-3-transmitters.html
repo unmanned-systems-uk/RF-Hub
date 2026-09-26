@@ -155,6 +155,7 @@
       <p class="hero-subtitle">How radios work inside — superheterodyne receivers, SSB/CW/FM transmitters, digital modes, transceivers, filters, DSP, and oscillators. Expect block diagram questions.</p>
       <ul class="hero-sub-list">
         <li><a href="#ch-3a">3A Superhet</a></li>
+        <li><a href="#ch-3a-lo">3A↳ LO Injection</a></li>
         <li><a href="#ch-3a2">3A2 Direct Conversion</a></li>
         <li><a href="#ch-3a3">3A3 TRF</a></li>
         <li><a href="#ch-3b">3B Mixers</a></li>
@@ -178,6 +179,7 @@
       <p class="toc__label">Contents</p>
       <ol>
         <li><a href="#ch-3a"><span class="toc-code">3A</span>The Superheterodyne Receiver</a></li>
+        <li><a href="#ch-3a-lo"><span class="toc-code">3A↳</span>High-Side vs Low-Side LO Injection</a></li>
         <li><a href="#ch-3a2"><span class="toc-code">3A2</span>Direct Conversion Receivers</a></li>
         <li><a href="#ch-3a3"><span class="toc-code">3A3</span>TRF Receivers</a></li>
         <li><a href="#ch-3b"><span class="toc-code">3B</span>Mixers</a></li>
@@ -256,6 +258,45 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text"><strong>3I2:</strong> IF transformers are screened in aluminium cans to <strong>prevent unwanted coupling between stages.</strong></div>
+      </div>
+
+      <h3 id="ch-3a-lo">High-Side vs Low-Side LO Injection (3I2)</h3>
+      <p>The local oscillator can be placed either above or below the received signal frequency. Both arrangements produce the same IF from the mixer — they are called <strong>high-side injection</strong> and <strong>low-side injection</strong>.</p>
+      <ul>
+        <li><strong>High-side injection:</strong> <code>f_LO = f_signal + f_IF</code> — LO is above the signal. Mixer takes LO − RF = IF.</li>
+        <li><strong>Low-side injection:</strong> <code>f_LO = f_signal − f_IF</code> — LO is below the signal. Mixer takes RF − LO = IF.</li>
+      </ul>
+      <p>Both produce an identical IF and are equally valid superhet designs. The choice is a design decision about where to park the oscillator.</p>
+
+      <h4>Worked Example — 20 m band, 460 kHz IF</h4>
+      <p>Signal at <strong>14.100 MHz</strong>, IF = <strong>460 kHz</strong>:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Injection side</th><th>Calculation</th><th>LO frequency</th><th>LO inside 20 m band?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>High-side</td><td>14.100 + 0.460</td><td><strong>14.560 MHz</strong></td><td><strong>Yes</strong> (14.000–14.350 MHz) ⚠</td></tr>
+            <tr><td>Low-side</td><td>14.100 − 0.460</td><td><strong>13.640 MHz</strong></td><td><strong>No</strong> — just below 20 m ✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Why the Choice Matters — LO Leakage</h4>
+      <p>A superhet's local oscillator inevitably leaks a small amount of RF back through the mixer and out of the antenna. If the LO frequency falls inside the amateur band the receiver is tuned to, that leakage is radiated on the very band the user is listening on — potentially causing interference to nearby stations. Placing the LO outside the target band eliminates this problem.</p>
+      <p><strong>General design rule:</strong> choose whichever injection side puts the LO in an unused or protected frequency region. For HF amateur bands, low-side injection is often preferred because it shifts the LO below the band.</p>
+
+      <h4>Exam Approach</h4>
+      <p>When a question gives you signal frequency and IF and asks for the LO:</p>
+      <ul>
+        <li>Both <code>f_signal + f_IF</code> and <code>f_signal − f_IF</code> are mathematically correct</li>
+        <li>If only one answer is offered, that is the intended answer</li>
+        <li>If both are offered, the answer that places the LO <strong>outside</strong> the amateur band is the preferred choice</li>
+      </ul>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>3I2:</strong> LO injection can be high-side (<code>f_signal + f_IF</code>) or low-side (<code>f_signal − f_IF</code>). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = <strong>13.640 MHz</strong> (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.</div>
       </div>
 
       <div class="self-checks">
@@ -1546,8 +1587,11 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
             <tr><th>Formula</th><th>Use</th></tr>
           </thead>
           <tbody>
-            <tr><td><a href="#ch-3a" target="_blank">IF = |f_RF − f_LO|</a></td><td>Intermediate frequency</td></tr>
+            <tr><td><a href="#ch-3a" target="_blank">IF = |f_RF − f_LO|</a></td><td>Intermediate frequency (both injection sides)</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f_LO = f_RF + f_IF</a></td><td>LO frequency — high-side injection</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f_LO = f_RF − f_IF</a></td><td>LO frequency — low-side injection</td></tr>
             <tr><td><a href="#ch-3a" target="_blank">f_image = f_RF + 2 × IF</a></td><td>Image frequency (high-side LO)</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f_image = f_RF − 2 × IF</a></td><td>Image frequency (low-side LO)</td></tr>
             <tr><td><a href="#ch-3g" target="_blank">BW ≈ 2(Δf + f_max)</a></td><td>FM bandwidth (Carson's rule)</td></tr>
             <tr><td><a href="#ch-3g" target="_blank">β = Δf / f_mod</a></td><td>FM modulation index</td></tr>
             <tr><td><a href="#ch-3e" target="_blank">Audio = |IF − BFO|</a></td><td>CW receive tone</td></tr>
@@ -1600,8 +1644,8 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
       </div>
     </footer>
   </div>
-  <script src="/assets/js/search.js?v=20260926-1300" defer></script>
-  <script src="/assets/js/nav-loader.js?v=20260926-1300" defer></script>
-  <script src="/assets/js/study-page.js?v=20260926-1300" defer></script>
+  <script src="/assets/js/search.js?v=20260926-1400" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260926-1400" defer></script>
+  <script src="/assets/js/study-page.js?v=20260926-1400" defer></script>
 </body>
 </html>
