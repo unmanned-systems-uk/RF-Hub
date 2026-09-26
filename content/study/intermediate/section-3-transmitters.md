@@ -54,6 +54,36 @@ The superhet receive chain in order:
 > [INFO] **3I3:** The RF amplifier in a superhet **selects a range of signals including
 > the wanted signal.** It does not do the final selectivity — that is the IF filter's job.
 
+### 3A Theory — What Actually Happens When You Tune a Superhet (3I3)
+
+When you rotate the tuning dial, only one thing moves: the local oscillator.
+
+**Scenario: dialling from 14.150 MHz to 14.200 MHz**
+
+| What? | At 14.150 MHz | At 14.200 MHz | Moves? |
+|---|---|---|---|
+| Wanted signal | 14.150 MHz | 14.200 MHz | Yes — the user chose it |
+| Local oscillator (LO) | 14.610 MHz | 14.660 MHz | Yes — tracks the signal |
+| Intermediate frequency (IF) | **460 kHz** | **460 kHz** | **No — stays fixed** |
+| IF filter passband | 460 kHz ± BW | 460 kHz ± BW | **No — unchanged** |
+| Detector input | 460 kHz | 460 kHz | **No — unchanged** |
+
+*(High-side injection: LO = signal + 460 kHz. When the signal shifts 50 kHz, the LO shifts by exactly 50 kHz too — the difference stays at 460 kHz.)*
+
+**The key insight**
+
+The IF filter is deaf to everything except 460 kHz. It never has to retune. The tuning dial really rotates the LO; the mixer takes whatever RF the antenna delivers and shifts it down to the one fixed frequency where the filter and detector live.
+
+**Superhet vs TRF — the essential difference**
+
+In a TRF receiver, every tuned RF stage tracks together as you tune — multiple circuits all moving simultaneously. In a superhet, the dial moves only the LO. Everything after the mixer is permanently fixed at one frequency.
+
+**Exam-trap warning**
+
+Watch for the answer option **"constant offset from the LO"**. It is technically true that IF = |LO − signal| is always the same number. But it inverts the model. The IF is not derived from the LO — it is the fixed anchor the whole receiver is built around. The LO moves to bring the signal down to the IF. The IF never moves.
+
+> [INFO] **3I3:** The IF stays on a fixed frequency as you tune. Turning the dial changes only the LO. Everything after the mixer — the IF filter, the detector — operates at the same frequency regardless of which signal you are receiving. **Exam trap:** "constant offset from the LO" sounds plausible but inverts cause and effect. The IF is the fixed anchor; the LO moves to meet it.
+
 ### 3A Theory — Image Frequency and Rejection (3A2, 3I2)
 
 The mixer responds to two RF frequencies that both produce the same IF:
