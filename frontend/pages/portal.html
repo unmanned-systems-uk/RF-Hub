@@ -231,8 +231,10 @@
 .grid-code { font-weight: 600; }
 .licence-study-legend { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); text-align: center; margin: 0.25rem 0 0.85rem; }
 .licence-study-cta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+#lsFullSectionGrid { grid-template-columns: repeat(14, 1fr); }
 @media (max-width: 640px) {
   .licence-study-grid { grid-template-columns: repeat(5, 1fr); }
+  #lsFullSectionGrid { grid-template-columns: repeat(7, 1fr); }
 }
 </style>
 <link rel="stylesheet" href="/assets/css/search.css?v=20260916-2330">
@@ -310,11 +312,11 @@
     </div>
 
     <div class="licence-study-progress">
-      <div class="progress-label">Sections opened: <strong id="lsFullSectionsOpened">0</strong> / 10</div>
+      <div class="progress-label">Sections opened: <strong id="lsFullSectionsOpened">0</strong> / 14</div>
       <div class="progress-bar"><div class="progress-fill" id="lsFullProgressFill" style="width: 0%">0%</div></div>
     </div>
 
-    <div class="licence-study-grid" id="lsFullSectionGrid" style="grid-template-columns: repeat(10, 1fr);"></div>
+    <div class="licence-study-grid" id="lsFullSectionGrid"></div>
     <p class="licence-study-legend"><span>📖</span> opened &nbsp;·&nbsp; <span>📌</span> bookmarked</p>
 
     <div class="licence-study-cta">
@@ -957,16 +959,20 @@
     if (!userId) return;
 
     const SECTION_MAP = [
-      { code: '1',  name: 'Licence Conditions',       slug: 'section-1-licence-conditions' },
-      { code: '2',  name: 'Operating & Safety',        slug: 'section-2-operating-safety' },
-      { code: '3',  name: 'Basic Circuits',            slug: 'section-3-basic-circuits' },
-      { code: '4',  name: 'Semiconductors',            slug: 'section-4-semiconductors' },
-      { code: '5',  name: 'Signals & Transmitters',    slug: 'section-5-signals-transmitters' },
-      { code: '6',  name: 'Interference & Receivers',  slug: 'section-6-interference-receivers' },
-      { code: '7',  name: 'SDR & Feeders/Antennas',   slug: 'section-7-sdr-feeders-antennas' },
-      { code: '8',  name: 'Propagation',               slug: 'section-8-propagation' },
-      { code: '9',  name: 'EMC',                       slug: 'section-9-emc' },
-      { code: '10', name: 'Measurements',              slug: 'section-10-measurements' },
+      { code: '1',  name: 'Licence Conditions',           slug: 'section-1-licence-conditions' },
+      { code: '2',  name: 'Operating Techniques',         slug: 'section-2-operating-techniques' },
+      { code: '3',  name: 'Amateur Radio Safety',         slug: 'section-3-amateur-radio-safety' },
+      { code: '4',  name: 'Basic Circuits',               slug: 'section-4-basic-circuits' },
+      { code: '5',  name: 'Semiconductors',               slug: 'section-5-semiconductors' },
+      { code: '6',  name: 'Analogue & Digital Signals',   slug: 'section-6-analogue-digital-signals' },
+      { code: '7',  name: 'The Transmitter',               slug: 'section-7-transmitter' },
+      { code: '8',  name: 'Transmitter Interference',     slug: 'section-8-transmitter-interference' },
+      { code: '9',  name: 'The Receiver',                  slug: 'section-9-receiver' },
+      { code: '10', name: 'Software Defined Radio',       slug: 'section-10-sdr' },
+      { code: '11', name: 'Feeders & Antennas',            slug: 'section-11-feeders-antennas' },
+      { code: '12', name: 'Propagation',                   slug: 'section-12-propagation' },
+      { code: '13', name: 'EMC',                           slug: 'section-13-emc' },
+      { code: '14', name: 'Measurements',                  slug: 'section-14-measurements' },
     ];
 
     const token = localStorage.getItem('authToken');
