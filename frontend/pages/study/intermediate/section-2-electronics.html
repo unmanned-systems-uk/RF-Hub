@@ -104,6 +104,21 @@
     .section-nav__practice:hover { background: rgba(34,197,94,0.1); }
     /* Formula reference */
     .formula-ref-table td:first-child { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-em); white-space: nowrap; }
+    /* Filter-signal preset links (compact row, replaces a duplicate iframe) */
+    .filter-preset-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.75rem 0 1rem; }
+    .filter-preset-link {
+      font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500;
+      color: var(--accent-em); text-decoration: none;
+      padding: 0.6rem 1rem; border: 1px solid rgba(167,139,250,0.3);
+      border-radius: var(--radius-sm); background: rgba(167,139,250,0.04);
+      transition: background 0.12s, border-color 0.12s;
+      min-height: 44px; display: inline-flex; align-items: center;
+    }
+    .filter-preset-link:hover { background: rgba(167,139,250,0.14); border-color: rgba(167,139,250,0.5); }
+    @media (max-width: 480px) {
+      .filter-preset-row { flex-direction: column; }
+      .filter-preset-link { width: 100%; justify-content: center; }
+    }
     /* Key facts */
     .key-facts {
       background: var(--bg-card); border: 1px solid var(--border);
@@ -1010,12 +1025,13 @@ Resonant frequency halves.</pre>
         <div class="callout-text"><strong>Memory aid:</strong> <em>"Series = Small impedance."</em> Get series right and parallel follows by elimination — it's the opposite in every column of the table above. See <strong>Antenna traps</strong> above for a real-world parallel-LC-in-line example.</div>
       </div>
 
-      <div style="margin: 1rem 0;">
-        <iframe src="/interactives/filter-signal.html?input=noise&filter=parallel-inline"
-          style="width:100%; height:1200px; border:1px solid #1e293b; border-radius:8px; display:block;"
-          loading="lazy" title="Filter Signal — broadband noise through a parallel LC in-line (notch)"></iframe>
+      <p style="font-size:0.85rem;color:var(--text-dim);margin:0.75rem 0 0.5rem;">Try it — same broadband-noise input, all four LC placements from the table above (opens the Filter Signal interactive in a new tab):</p>
+      <div class="filter-preset-row">
+        <a class="filter-preset-link" href="/interactives/filter-signal.html?input=noise&filter=series-inline" target="_blank" rel="noopener">Series LC in-line (band-pass)</a>
+        <a class="filter-preset-link" href="/interactives/filter-signal.html?input=noise&filter=series-shunt" target="_blank" rel="noopener">Series LC shunt (notch)</a>
+        <a class="filter-preset-link" href="/interactives/filter-signal.html?input=noise&filter=parallel-inline" target="_blank" rel="noopener">Parallel LC in-line (notch)</a>
+        <a class="filter-preset-link" href="/interactives/filter-signal.html?input=noise&filter=parallel-shunt" target="_blank" rel="noopener">Parallel LC shunt (band-pass)</a>
       </div>
-      <p style="font-size:0.85rem;color:var(--text-dim);margin:0.4rem 0 0;">Try it: a parallel LC placed in-line blocks its resonant frequency, carving a notch out of broadband noise. Swap the preset to <code>filter=series-shunt</code> to see the equivalent series-LC-as-shunt notch.</p>
 
       <h4>Key filter terms</h4>
       <ul>
@@ -1029,11 +1045,10 @@ Resonant frequency halves.</pre>
         <li><strong>Roll-off / order:</strong> how steeply the response falls outside the passband. A higher-order filter rolls off faster (steeper skirts) but costs more components.</li>
       </ul>
 
-      <div style="margin: 1rem -12.5%;">
-        <iframe src="/interactives/lc-filter.html?mode=bs"
-          style="width:100%; height:950px; border:1px solid #1e293b; border-radius:8px; display:block;"
-          loading="lazy" title="LC Filter Interactive — band-stop (notch) mode"></iframe>
-      </div>
+      <p style="margin: 0.75rem 0 0;">
+        <a href="/interactives/lc-filter.html?mode=bs" target="_blank" rel="noopener" style="color:var(--accent-em);font-weight:500;">Open the LC Filter interactive in band-stop mode →</a>
+        <span style="font-size:0.85rem;color:var(--text-dim);"> (same notch demo as above — full R/L/C sliders, standalone)</span>
+      </p>
 
       <div class="callout callout--info" style="border-left-color:#06b6d4;">
         <div class="callout-label" style="color:#06b6d4;">Go deeper &mdash; where each filter type lives in a real station</div>
