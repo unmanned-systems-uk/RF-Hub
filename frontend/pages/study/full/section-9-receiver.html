@@ -242,7 +242,7 @@
 
       <h3>Thermal Noise</h3>
       <p>Every resistor and amplifier stage adds thermal noise. At room temperature (290&thinsp;K), the available noise power at the input to any circuit is:</p>
-      <div class="formula-block"><p>P_noise = k &times; T &times; B</p></div>
+      <div class="formula-block"><p>P<sub>noise</sub> = k &times; T &times; B</p></div>
       <p>Where k = Boltzmann's constant (1.38 &times; 10<sup>&minus;23</sup>&thinsp;J/K), T = temperature in kelvin, B = bandwidth in Hz.</p>
       <p>This works out to a <strong>noise floor of &minus;174&thinsp;dBm per Hz</strong> at room temperature, rising by 10 &times; log<sub>10</sub>(bandwidth) for wider bandwidths:</p>
       <table>
@@ -257,7 +257,7 @@
 
       <h3>Noise Figure</h3>
       <p>A receiver adds noise on top of the thermal floor. The <strong>Noise Figure (NF)</strong> is the degradation in signal-to-noise ratio caused by the receiver, expressed in dB:</p>
-      <div class="formula-block"><p>NF = SNR_in (dB) &minus; SNR_out (dB)</p></div>
+      <div class="formula-block"><p>NF = SNR<sub>in</sub> (dB) &minus; SNR<sub>out</sub> (dB)</p></div>
       <p>A perfect receiver would have NF = 0&thinsp;dB. Real HF receivers typically achieve NF of 10&ndash;15&thinsp;dB; good LNA-equipped VHF/UHF receivers can achieve NF of 1&ndash;2&thinsp;dB.</p>
       <p>The <strong>Minimum Discernible Signal (MDS)</strong> is the weakest signal that raises the receiver output by 3&thinsp;dB above the noise floor. A lower NF gives a lower MDS and better sensitivity.</p>
 
@@ -330,7 +330,7 @@
         <img src="/assets/images/study/full/section-9/fig-9-1-superhet-rx-chain.svg" alt="Superhet receiver block diagram: antenna feeds RF filter, mixer (with local oscillator below), IF filter, IF amplifier, demodulator and AF amplifier to audio output; IF = RF minus LO" style="max-width: 700px; width: 100%; height: auto;" loading="lazy">
       </figure>
       <p>The <strong>mixer</strong> combines the incoming RF signal (f<sub>signal</sub>) with the Local Oscillator (f<sub>LO</sub>) to produce the <strong>Intermediate Frequency (IF)</strong>:</p>
-      <div class="formula-block"><p>f_IF = f_LO &minus; f_signal &nbsp; (or f_signal &minus; f_LO)</p></div>
+      <div class="formula-block"><p>f<sub>IF</sub> = f<sub>LO</sub> &minus; f<sub>signal</sub> &nbsp; (or f<sub>signal</sub> &minus; f<sub>LO</sub>)</p></div>
       <p>The IF is fixed regardless of the tuned frequency. This allows a <strong>sharp, fixed filter</strong> to be fitted at the IF to select only the wanted signal and reject adjacent channels.</p>
 
       <h3>Why Fixed IF is an Advantage</h3>
@@ -370,7 +370,7 @@
 
       <h3>The Image Problem</h3>
       <p>The mixer produces IF signals from <strong>two</strong> RF frequencies: the wanted signal and the <strong>image frequency</strong>. For a given LO frequency and IF:</p>
-      <div class="formula-block"><p>f_image = f_LO + f_IF &nbsp; (when LO is above the signal: f_LO = f_signal + f_IF)</p></div>
+      <div class="formula-block"><p>f<sub>image</sub> = f<sub>LO</sub> + f<sub>IF</sub> &nbsp; (when LO is above the signal: f<sub>LO</sub> = f<sub>signal</sub> + f<sub>IF</sub>)</p></div>
       <p>Or more generally: the image is the frequency on the other side of the LO from the wanted signal, at a distance of f<sub>IF</sub> from the LO.</p>
 
       <div class="callout-exam">
@@ -648,7 +648,7 @@
 
       <h3>The Friis Noise Equation</h3>
       <p>The total noise figure of a cascaded receiver chain is dominated by the first stage:</p>
-      <div class="formula-block"><p>F_total = F&sub1; + (F&sub2; &minus; 1)/G&sub1; + (F&sub3; &minus; 1)/(G&sub1; &times; G&sub2;) + &hellip;</p></div>
+      <div class="formula-block"><p>F<sub>total</sub> = F&sub1; + (F&sub2; &minus; 1)/G&sub1; + (F&sub3; &minus; 1)/(G&sub1; &times; G&sub2;) + &hellip;</p></div>
       <p>Where F = noise factor (linear, not dB) and G = gain (linear). This is the <strong>Friis formula</strong>.</p>
       <p>If the first stage has high gain (G<sub>1</sub> &gg; 1), the noise of subsequent stages (F<sub>2</sub>, F<sub>3</sub>&hellip;) is divided by G<sub>1</sub> and becomes negligible. <strong>The first stage noise figure dominates.</strong></p>
 

@@ -34,33 +34,33 @@ Every measuring instrument interacts with the circuit it measures. At Intermedia
 
 ### Voltmeter Loading Error
 
-A voltmeter measures the voltage at a node by connecting its own input resistance **R_m** in parallel with the circuit impedance **R_c** at that node. The parallel combination is always less than R_c, so the voltmeter lowers the node voltage below its unloaded value.
+A voltmeter measures the voltage at a node by connecting its own input resistance **R<sub>m</sub>** in parallel with the circuit impedance **R<sub>c</sub>** at that node. The parallel combination is always less than R<sub>c</sub>, so the voltmeter lowers the node voltage below its unloaded value.
 
 The measured voltage is:
 
-> **V_measured = V_true × R_m / (R_m + R_c)**
+> **V<sub>measured</sub> = V<sub>true</sub> × R<sub>m</sub> / (R<sub>m</sub> + R<sub>c</sub>)**
 
 The **loading error** as a fraction of true voltage:
 
-> **Error fraction = R_c / (R_m + R_c)**
+> **Error fraction = R<sub>c</sub> / (R<sub>m</sub> + R<sub>c</sub>)**
 
 **Example:** a circuit node sits at 10 V behind a 10 kΩ Thevenin resistance. A DMM with 1 MΩ input impedance is connected:
 
-V_measured = 10 × 1,000,000 / (1,000,000 + 10,000) = 10 × 0.9901 = **9.90 V** (0.99% error — negligible)
+V<sub>measured</sub> = 10 × 1,000,000 / (1,000,000 + 10,000) = 10 × 0.9901 = **9.90 V** (0.99% error — negligible)
 
-**Example with high-impedance circuit:** the same node, but R_c = 1 MΩ and R_m = 1 MΩ:
+**Example with high-impedance circuit:** the same node, but R<sub>c</sub> = 1 MΩ and R<sub>m</sub> = 1 MΩ:
 
-V_measured = 10 × 1,000,000 / (1,000,000 + 1,000,000) = **5.0 V** (50% error — unusable)
+V<sub>measured</sub> = 10 × 1,000,000 / (1,000,000 + 1,000,000) = **5.0 V** (50% error — unusable)
 
 **Rule:** The voltmeter input impedance must be at least **10× the circuit impedance** for the loading error to be below 10%. For measurements on high-impedance circuits (FET gates, valve grids, oscillator tuned circuits), use a high-impedance probe (10:1 scope probe, input impedance typically 10 MΩ) or an electronic voltmeter with FET input.
 
 ### Ammeter Insertion Error
 
-An ammeter has a small but non-zero internal resistance **R_a**. Inserting it in series adds this resistance to the circuit, reducing the current slightly below its unloaded value.
+An ammeter has a small but non-zero internal resistance **R<sub>a</sub>**. Inserting it in series adds this resistance to the circuit, reducing the current slightly below its unloaded value.
 
-> **I_measured = V_source / (R_circuit + R_a)**
+> **I<sub>measured</sub> = V<sub>source</sub> / (R<sub>circuit</sub> + R<sub>a</sub>)**
 
-The **insertion error** is significant when R_a is comparable to R_circuit. A 0.1 Ω ammeter in a 1 Ω circuit introduces a 10% error; in a 100 Ω circuit the same ammeter introduces 0.1%.
+The **insertion error** is significant when R<sub>a</sub> is comparable to R<sub>circuit</sub>. A 0.1 Ω ammeter in a 1 Ω circuit introduces a 10% error; in a 100 Ω circuit the same ammeter introduces 0.1%.
 
 **Rule:** The ammeter internal resistance should be at least 100× smaller than the circuit resistance.
 
@@ -70,7 +70,7 @@ Most DMMs calibrated in AC mode are designed for pure **sine waves** — they me
 
 To measure true RMS of a non-sinusoidal waveform, use a **true-RMS DMM** — these contain an analogue squaring circuit or a thermal converter that directly computes RMS regardless of waveform shape.
 
-> [INFO] **14A1:** V_measured = V_true × R_m/(R_m + R_c). Loading error is significant when R_m is comparable to R_c. Use a true-RMS DMM for non-sinusoidal waveforms. Ammeter insertion error is significant when R_a is comparable to R_circuit.
+> [INFO] **14A1:** V<sub>measured</sub> = V<sub>true</sub> × R<sub>m</sub>/(R<sub>m</sub> + R<sub>c</sub>). Loading error is significant when R<sub>m</sub> is comparable to R<sub>c</sub>. Use a true-RMS DMM for non-sinusoidal waveforms. Ammeter insertion error is significant when R<sub>a</sub> is comparable to R<sub>circuit</sub>.
 
 ---
 
@@ -78,15 +78,15 @@ To measure true RMS of a non-sinusoidal waveform, use a **true-RMS DMM** — the
 
 ### Sine Wave Relationships
 
-For a **pure sine wave** of peak voltage V_pk:
+For a **pure sine wave** of peak voltage V<sub>pk</sub>:
 
-| Quantity | Formula | Example (V_pk = 100 V) |
+| Quantity | Formula | Example (V<sub>pk</sub> = 100 V) |
 |----------|---------|------------------------|
-| Peak-to-peak | V_pp = 2 × V_pk | 200 V |
-| RMS | V_rms = V_pk / √2 ≈ V_pk × 0.707 | 70.7 V |
-| Mean (half-wave rectified) | V_mean = V_pk × (2/π) ≈ V_pk × 0.637 | 63.7 V |
-| Form factor | V_rms / V_mean = π/(2√2) ≈ 1.111 | — |
-| Crest factor | V_pk / V_rms = √2 ≈ 1.414 | — |
+| Peak-to-peak | V<sub>pp</sub> = 2 × V<sub>pk</sub> | 200 V |
+| RMS | V<sub>rms</sub> = V<sub>pk</sub> / √2 ≈ V<sub>pk</sub> × 0.707 | 70.7 V |
+| Mean (half-wave rectified) | V<sub>mean</sub> = V<sub>pk</sub> × (2/π) ≈ V<sub>pk</sub> × 0.637 | 63.7 V |
+| Form factor | V<sub>rms</sub> / V<sub>mean</sub> = π/(2√2) ≈ 1.111 | — |
+| Crest factor | V<sub>pk</sub> / V<sub>rms</sub> = √2 ≈ 1.414 | — |
 
 The **crest factor** tells you how much the peak exceeds the RMS. For a square wave, crest factor = 1. For audio and SSB signals, the crest factor can be 4:1 (12 dB) or higher — the peaks are much higher than the average.
 
@@ -94,17 +94,17 @@ The **crest factor** tells you how much the peak exceeds the RMS. For a square w
 
 For a **continuous wave (CW) or FM** signal, the amplitude is constant. The average power equals the RMS power:
 
-> **P_avg = V_rms² / R = V_pk² / (2R)**
+> **P<sub>avg</sub> = V<sub>rms</sub>² / R = V<sub>pk</sub>² / (2R)**
 
 For a **single-sideband (SSB)** signal, the amplitude varies with the audio programme — it is zero during speech pauses and reaches a peak when a loud, sustained tone is present. There are two relevant power quantities:
 
-**Average power (P_avg):** the mean power over a period much longer than one modulation cycle. For a typical SSB voice signal, P_avg is approximately 25–30% of PEP (4–6 dB below PEP).
+**Average power (P<sub>avg</sub>):** the mean power over a period much longer than one modulation cycle. For a typical SSB voice signal, P<sub>avg</sub> is approximately 25–30% of PEP (4–6 dB below PEP).
 
 **Peak Envelope Power (PEP):** the maximum average power in any single RF cycle at the crest of the modulation envelope. It is calculated over the **single RF cycle** with the highest amplitude:
 
-> **PEP = V_pk(envelope)² / (2 × R)**
+> **PEP = V<sub>pk</sub>(envelope)² / (2 × R)**
 
-where V_pk(envelope) is the peak RF voltage at the crest of the modulation envelope, and R is the load impedance (typically 50 Ω).
+where V<sub>pk</sub>(envelope) is the peak RF voltage at the crest of the modulation envelope, and R is the load impedance (typically 50 Ω).
 
 **Worked example:** An SSB transmitter's output, viewed on an oscilloscope with a 50 Ω termination, shows a peak RF voltage of 141 V at the loudest speech peak.
 
@@ -112,15 +112,15 @@ PEP = 141² / (2 × 50) = 19,881 / 100 = **198.8 W ≈ 200 W**
 
 This is the figure that matters for licence power limits — the UK amateur licence specifies maximum power in PEP for SSB.
 
-**For AM:** The carrier has power P_c = V_carrier² / (2R). With 100% AM modulation depth m:
+**For AM:** The carrier has power P<sub>c</sub> = V<sub>carrier</sub>² / (2R). With 100% AM modulation depth m:
 
-> **PEP_AM = P_c × (1 + m)² / 1 = P_c × 4** at m = 1 (PEP is 4× carrier power at 100% modulation)
+> **PEP<sub>AM</sub> = P<sub>c</sub> × (1 + m)² / 1 = P<sub>c</sub> × 4** at m = 1 (PEP is 4× carrier power at 100% modulation)
 
-> **P_avg_AM = P_c × (1 + m²/2)** — the total average power including sidebands
+> **P<sub>avg AM</sub> = P<sub>c</sub> × (1 + m²/2)** — the total average power including sidebands
 
-**For FM:** constant amplitude, so PEP = P_avg = V_pk²/(2R). FM does not have a variable envelope; the power is constant regardless of modulation depth.
+**For FM:** constant amplitude, so PEP = P<sub>avg</sub> = V<sub>pk</sub>²/(2R). FM does not have a variable envelope; the power is constant regardless of modulation depth.
 
-> [INFO] **14B1:** For a sine wave, V_rms = V_pk/√2 and P = V_rms²/R = V_pk²/(2R). PEP for SSB = V_pk(envelope)²/(2R) — the peak power in any single RF cycle. Average SSB power ≈ PEP − 4 to 6 dB. UK licence power limits are specified in PEP for SSB.
+> [INFO] **14B1:** For a sine wave, V<sub>rms</sub> = V<sub>pk</sub>/√2 and P = V<sub>rms</sub>²/R = V<sub>pk</sub>²/(2R). PEP for SSB = V<sub>pk</sub>(envelope)²/(2R) — the peak power in any single RF cycle. Average SSB power ≈ PEP − 4 to 6 dB. UK licence power limits are specified in PEP for SSB.
 
 ---
 
@@ -128,18 +128,18 @@ This is the figure that matters for licence power limits — the UK amateur lice
 
 ### Reflection Coefficient
 
-When a transmission line of characteristic impedance Z₀ is terminated by a load Z_L, the mismatch creates a reflected wave. The voltage reflection coefficient Γ (gamma) is:
+When a transmission line of characteristic impedance Z₀ is terminated by a load Z<sub>L</sub>, the mismatch creates a reflected wave. The voltage reflection coefficient Γ (gamma) is:
 
-> **Γ = (Z_L − Z₀) / (Z_L + Z₀)**
+> **Γ = (Z<sub>L</sub> − Z₀) / (Z<sub>L</sub> + Z₀)**
 
 Γ is in general a complex number (magnitude and phase). For resistive loads, Γ is real. Its magnitude |Γ| ranges from 0 (perfect match) to 1 (total reflection — open or short circuit).
 
 **Examples:**
-- Z_L = 50 Ω, Z₀ = 50 Ω: Γ = 0/100 = **0** (perfect match)
-- Z_L = 100 Ω, Z₀ = 50 Ω: Γ = 50/150 = **0.333**
-- Z_L = 25 Ω, Z₀ = 50 Ω: Γ = −25/75 = **−0.333** (magnitude 0.333)
-- Z_L = open circuit (∞): Γ = **+1**
-- Z_L = short circuit (0): Γ = **−1**
+- Z<sub>L</sub> = 50 Ω, Z₀ = 50 Ω: Γ = 0/100 = **0** (perfect match)
+- Z<sub>L</sub> = 100 Ω, Z₀ = 50 Ω: Γ = 50/150 = **0.333**
+- Z<sub>L</sub> = 25 Ω, Z₀ = 50 Ω: Γ = −25/75 = **−0.333** (magnitude 0.333)
+- Z<sub>L</sub> = open circuit (∞): Γ = **+1**
+- Z<sub>L</sub> = short circuit (0): Γ = **−1**
 
 ### SWR from Γ
 
@@ -175,15 +175,15 @@ A **higher return loss means a better match** (less power reflected).
 
 The fraction of incident power that is reflected:
 
-> **P_reflected / P_incident = |Γ|²**
+> **P<sub>reflected</sub> / P<sub>incident</sub> = |Γ|²**
 
-For SWR = 2.0:1, |Γ| = 0.333, P_reflected = 0.333² × P_incident = **11.1% of incident power reflected**.
+For SWR = 2.0:1, |Γ| = 0.333, P<sub>reflected</sub> = 0.333² × P<sub>incident</sub> = **11.1% of incident power reflected**.
 
 ### VSWR Calculator
 
 <iframe src='/interactives/full-vswr-calculator.html' style='width:100%; height:650px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='VSWR and Return Loss Calculator'></iframe>
 
-> [INFO] **14C1:** Γ = (Z_L − Z₀)/(Z_L + Z₀). SWR = (1+|Γ|)/(1−|Γ|). Return loss = −20 log|Γ| (dB, higher = better). Reflected power = |Γ|² × incident power. These three quantities express the same physical mismatch; an instrument may display any of them.
+> [INFO] **14C1:** Γ = (Z<sub>L</sub> − Z₀)/(Z<sub>L</sub> + Z₀). SWR = (1+|Γ|)/(1−|Γ|). Return loss = −20 log|Γ| (dB, higher = better). Reflected power = |Γ|² × incident power. These three quantities express the same physical mismatch; an instrument may display any of them.
 
 ---
 
@@ -201,12 +201,12 @@ The Bruene coupler contains two sensing elements placed in the main transmission
 
 In the main line, the forward travelling wave has V = I × Z₀ (voltage and current in phase). The reflected wave has V = −I × Z₀ (current reversed). By adding and subtracting the two sampled quantities:
 
-- **Forward sample:** V_coupler + I × Z₀ → gives only the forward wave voltage
-- **Reflected sample:** V_coupler − I × Z₀ → gives only the reflected wave voltage
+- **Forward sample:** V<sub>coupler</sub> + I × Z₀ → gives only the forward wave voltage
+- **Reflected sample:** V<sub>coupler</sub> − I × Z₀ → gives only the reflected wave voltage
 
 These two composite signals are passed through diode peak detectors to produce DC voltages proportional to the forward and reflected amplitudes. A meter connected to these DC voltages can be calibrated to read:
-- Forward power (V_fwd²/R_coupler)
-- Reflected power (V_ref²/R_coupler)
+- Forward power (V<sub>fwd</sub>²/R<sub>coupler</sub>)
+- Reflected power (V<sub>ref</sub>²/R<sub>coupler</sub>)
 - SWR (from the ratio of the two)
 
 ### Directivity
@@ -247,7 +247,7 @@ The timebase ramp must start at the same phase of the input waveform on each swe
 
 CRT oscilloscopes specify a **bandwidth** — the frequency at which the Y amplifier's gain drops by 3 dB (0.707). Beyond this frequency, the displayed amplitude is attenuated. A 100 MHz bandwidth oscilloscope gives a correct reading at 100 MHz but shows only 70% of the true amplitude at that frequency.
 
-The input impedance is typically 1 MΩ shunted by 20–30 pF. At RF, the 30 pF capacitance shunts the input significantly — at 14 MHz, X_C of 30 pF is 379 Ω, comparable to many RF circuit impedances. A 10:1 passive probe (10× voltage divider at the tip) raises the effective input impedance to 10 MΩ / 3 pF, drastically reducing loading.
+The input impedance is typically 1 MΩ shunted by 20–30 pF. At RF, the 30 pF capacitance shunts the input significantly — at 14 MHz, X<sub>C</sub> of 30 pF is 379 Ω, comparable to many RF circuit impedances. A 10:1 passive probe (10× voltage divider at the tip) raises the effective input impedance to 10 MΩ / 3 pF, drastically reducing loading.
 
 > [INFO] **14E1:** CRT oscilloscope: electron gun → Y-plates (vertical deflection, proportional to signal voltage) → X-plates (horizontal deflection, driven by timebase sawtooth) → phosphor screen. Trigger circuit synchronises timebase start to input waveform phase. Bandwidth = −3 dB frequency of Y amplifier.
 
@@ -309,9 +309,9 @@ An AM signal consists of a carrier at constant frequency with both sidebands. Th
 
 **Modulation depth m** can be read directly from the oscilloscope envelope:
 
-> **m = (V_max − V_min) / (V_max + V_min)**
+> **m = (V<sub>max</sub> − V<sub>min</sub>) / (V<sub>max</sub> + V<sub>min</sub>)**
 
-where V_max is the peak of the envelope and V_min is the trough.
+where V<sub>max</sub> is the peak of the envelope and V<sub>min</sub> is the trough.
 
 **Over-modulation (m > 1):** the negative peaks of the modulation drive the envelope to zero and below — the carrier cuts off, creating a distorted waveform with intermodulation products and splatter on adjacent channels.
 
@@ -323,7 +323,7 @@ An FM signal conveys information entirely in frequency variation — the carrier
 
 <iframe src='/interactives/full-oscilloscope-sim.html' style='width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='RF Oscilloscope Simulator — SSB, AM, FM Envelopes'></iframe>
 
-> [INFO] **14G1:** SSB: variable-amplitude envelope tracking audio (zero amplitude in silence). AM: constant-carrier with amplitude-modulated envelope; m = (V_max−V_min)/(V_max+V_min). FM: constant-amplitude carrier; oscilloscope shows no modulation depth change — only frequency varies. Use spectrum analyser or deviation meter for FM deviation.
+> [INFO] **14G1:** SSB: variable-amplitude envelope tracking audio (zero amplitude in silence). AM: constant-carrier with amplitude-modulated envelope; m = (V<sub>max</sub>−V<sub>min</sub>)/(V<sub>max</sub>+V<sub>min</sub>). FM: constant-amplitude carrier; oscilloscope shows no modulation depth change — only frequency varies. Use spectrum analyser or deviation meter for FM deviation.
 
 ---
 
@@ -333,11 +333,11 @@ A frequency counter measures signal frequency with high precision. Modern counte
 
 ### Simple Gate Counting
 
-The simplest counter counts the number of input cycles N during a precisely timed gate interval T_gate:
+The simplest counter counts the number of input cycles N during a precisely timed gate interval T<sub>gate</sub>:
 
-> **f_measured = N / T_gate**
+> **f<sub>measured</sub> = N / T<sub>gate</sub>**
 
-**Resolution:** 1 count in N counts → 1/T_gate Hz. With a 1-second gate: 1 Hz resolution at all frequencies. With a 10 ms gate: 100 Hz resolution.
+**Resolution:** 1 count in N counts → 1/T<sub>gate</sub> Hz. With a 1-second gate: 1 Hz resolution at all frequencies. With a 10 ms gate: 100 Hz resolution.
 
 **Problem:** at low frequencies, a 1-second gate gives poor temporal resolution — you cannot measure the frequency of a slow event quickly. And the resolution is constant in Hz, not in percentage — which means 1 Hz resolution is excellent at 100 MHz (0.000001%) but useless at 100 Hz (1%).
 
@@ -354,7 +354,7 @@ Since the timebase is typically 10–100 MHz, each input cycle is measured to ±
 
 In practice, reciprocal counters average many input cycles to achieve a specified resolution — typically 8–10 digits of resolution in a 0.1–1 s measurement time, independent of input frequency.
 
-> [INFO] **14H1:** Simple gate counting resolution = 1/T_gate Hz (constant Hz, not %). Reciprocal counting measures period (clock pulses per input cycle) then takes 1/T — gives constant percentage resolution at all frequencies. Modern counters use reciprocal technique.
+> [INFO] **14H1:** Simple gate counting resolution = 1/T<sub>gate</sub> Hz (constant Hz, not %). Reciprocal counting measures period (clock pulses per input cycle) then takes 1/T — gives constant percentage resolution at all frequencies. Modern counters use reciprocal technique.
 
 ---
 
@@ -448,7 +448,7 @@ The **RBW** is the width of the IF filter — the narrowest frequency difference
 
 **RBW and noise floor:** the analyser's thermal noise floor rises as √(RBW) — doubling the RBW raises the noise floor by ~1.5 dB; the noise bandwidth is exactly equal to the RBW. For a given analyser noise figure and input termination temperature, the noise floor in dBm is:
 
-> **Noise floor (dBm) ≈ −174 + NF + 10 × log₁₀(RBW_Hz)**
+> **Noise floor (dBm) ≈ −174 + NF + 10 × log₁₀(RBW<sub>Hz</sub>)**
 
 **Example:** 10 dB noise figure, 1 kHz RBW: −174 + 10 + 10×3 = −134 dBm noise floor.
 
@@ -489,7 +489,7 @@ To measure harmonic distortion from a transmitter:
 
 > **Licence requirement:** All Full licence harmonics and other spurious emissions must be at least 40 dB below the fundamental (for transmitters ≤25 W) or as specified in the licence for higher powers.
 
-> [INFO] **14K1:** RBW: resolution — narrower gives better frequency separation and lower noise floor, slower sweep. VBW: smoothing — narrower reduces visible noise. Noise floor (dBm) = −174 + NF + 10log₁₀(RBW_Hz). Harmonic measurement: TX into dummy load via attenuator; delta marker gives harmonic level relative to fundamental.
+> [INFO] **14K1:** RBW: resolution — narrower gives better frequency separation and lower noise floor, slower sweep. VBW: smoothing — narrower reduces visible noise. Noise floor (dBm) = −174 + NF + 10log₁₀(RBW<sub>Hz</sub>). Harmonic measurement: TX into dummy load via attenuator; delta marker gives harmonic level relative to fundamental.
 
 ---
 
@@ -501,17 +501,17 @@ A dummy load is a **50 Ω non-inductive resistive termination** that absorbs all
 
 Power dissipated in the dummy load resistor:
 
-> **P = V_rms² / R = I_rms² × R = V_pk² / (2R)**
+> **P = V<sub>rms</sub>² / R = I<sub>rms</sub>² × R = V<sub>pk</sub>² / (2R)**
 
 The **peak RF current** in the load at a given power:
 
-> **I_pk = √(2P / R)**
+> **I<sub>pk</sub> = √(2P / R)**
 
 **Example:** 400 W into 50 Ω:
 
-I_pk = √(2 × 400 / 50) = √16 = **4 A peak** (2.83 A RMS)
+I<sub>pk</sub> = √(2 × 400 / 50) = √16 = **4 A peak** (2.83 A RMS)
 
-Peak RF voltage: V_pk = I_pk × R = 4 × 50 = **200 V peak** (141 V RMS)
+Peak RF voltage: V<sub>pk</sub> = I<sub>pk</sub> × R = 4 × 50 = **200 V peak** (141 V RMS)
 
 These are significant figures — the dummy load must be rated for both the RMS power and the peak voltage. A carbon-composition resistor rated for 100 W continuous can handle the 400 W PEP of an SSB signal (with its low average power) but will overheat under sustained CW at 400 W.
 
@@ -525,7 +525,7 @@ These are significant figures — the dummy load must be rated for both the RMS 
 
 **SWR of a dummy load:** a good dummy load should present SWR < 1.1:1 across the full HF band and ideally to 144 MHz. Check with an antenna analyser — a poorly constructed dummy load with long resistor leads can have SWR > 1.5:1 at 144 MHz.
 
-> [INFO] **14L1:** Dummy load: 50 Ω non-reactive, absorbs RF as heat. I_pk = √(2P/R). V_pk = I_pk × R. Wirewound resistors inductive at VHF — use non-inductive film resistors for broadband loads. Oil-cooled loads handle high continuous power. Always verify SWR across the operating frequency range.
+> [INFO] **14L1:** Dummy load: 50 Ω non-reactive, absorbs RF as heat. I<sub>pk</sub> = √(2P/R). V<sub>pk</sub> = I<sub>pk</sub> × R. Wirewound resistors inductive at VHF — use non-inductive film resistors for broadband loads. Oil-cooled loads handle high continuous power. Always verify SWR across the operating frequency range.
 
 ---
 
@@ -569,9 +569,9 @@ The simplest field strength meter consists of:
 
 The detector output is proportional to E² (since power density ∝ E²), and therefore the meter deflection ∝ E². For a linear meter scale calibrated in E (V/m), the scale would be square-root compressed — a half-scale deflection represents E/√2, not E/2.
 
-More sophisticated instruments use a calibrated antenna element of known effective height h_eff, allowing conversion from antenna terminal voltage V_a to field strength E:
+More sophisticated instruments use a calibrated antenna element of known effective height h<sub>eff</sub>, allowing conversion from antenna terminal voltage V<sub>a</sub> to field strength E:
 
-> **E (V/m) = V_a / h_eff**
+> **E (V/m) = V<sub>a</sub> / h<sub>eff</sub>**
 
 ### Uses
 
@@ -586,13 +586,13 @@ More sophisticated instruments use a calibrated antenna element of known effecti
 ### Limitations
 
 An uncalibrated field strength meter gives only **relative** readings. Converting to absolute V/m requires:
-- A calibrated antenna element with known h_eff or gain
+- A calibrated antenna element with known h<sub>eff</sub> or gain
 - A known reference distance and power level for in-situ calibration
 - Account for near-field effects if measurements are within λ/2π of the antenna
 
 For formal EMF compliance assessment, calibrated equipment and the Ofcom EMF calculation spreadsheet should be used in preference to a simple diode-and-meter instrument.
 
-> [INFO] **14N1:** Field strength meter: dipole + diode + meter. Output ∝ E². Calibrated instruments convert antenna terminal voltage to E(V/m) via h_eff. Uses: antenna pattern, EMF proximity, feeder CM current detection. Uncalibrated instruments give relative readings only — use Ofcom EMF spreadsheet and calibrated instrumentation for compliance measurements.
+> [INFO] **14N1:** Field strength meter: dipole + diode + meter. Output ∝ E². Calibrated instruments convert antenna terminal voltage to E(V/m) via h<sub>eff</sub>. Uses: antenna pattern, EMF proximity, feeder CM current detection. Uncalibrated instruments give relative readings only — use Ofcom EMF spreadsheet and calibrated instrumentation for compliance measurements.
 
 ---
 
@@ -600,17 +600,17 @@ For formal EMF compliance assessment, calibrated equipment and the Ofcom EMF cal
 
 **Q1:** A voltmeter with 1 MΩ input impedance measures a node with a Thevenin resistance of 100 kΩ. What is the loading error percentage?
 
-> **A:** Error fraction = R_c/(R_m + R_c) = 100,000/(1,000,000 + 100,000) = 100,000/1,100,000 ≈ **9.1%**. The measured voltage will be approximately 9% below the true open-circuit voltage. A 10 MΩ instrument would reduce this to 0.99%.
+> **A:** Error fraction = R<sub>c</sub>/(R<sub>m</sub> + R<sub>c</sub>) = 100,000/(1,000,000 + 100,000) = 100,000/1,100,000 ≈ **9.1%**. The measured voltage will be approximately 9% below the true open-circuit voltage. A 10 MΩ instrument would reduce this to 0.99%.
 
 ---
 
 **Q2:** An SSB transmitter produces a peak RF voltage of 200 V on a 50 Ω load at the loudest speech peak. What is the PEP?
 
-> **A:** PEP = V_pk² / (2 × R) = 200² / (2 × 50) = 40,000 / 100 = **400 W PEP**.
+> **A:** PEP = V<sub>pk</sub>² / (2 × R) = 200² / (2 × 50) = 40,000 / 100 = **400 W PEP**.
 
 ---
 
-**Q3:** An antenna analyser measures Z_L = 150 Ω on a 50 Ω system. What is |Γ|, the SWR, and the return loss?
+**Q3:** An antenna analyser measures Z<sub>L</sub> = 150 Ω on a 50 Ω system. What is |Γ|, the SWR, and the return loss?
 
 > **A:** Γ = (150 − 50)/(150 + 50) = 100/200 = **0.5**. SWR = (1 + 0.5)/(1 − 0.5) = 1.5/0.5 = **3.0:1**. Return loss = −20 × log₁₀(0.5) = −20 × (−0.301) = **6.0 dB**.
 
@@ -618,13 +618,13 @@ For formal EMF compliance assessment, calibrated equipment and the Ofcom EMF cal
 
 **Q4:** A spectrum analyser has a noise figure of 15 dB and is set to a 3 kHz resolution bandwidth. What is the approximate noise floor in dBm?
 
-> **A:** Noise floor = −174 + NF + 10 × log₁₀(RBW_Hz) = −174 + 15 + 10 × log₁₀(3000) = −174 + 15 + 34.8 = **−124.2 dBm ≈ −124 dBm**.
+> **A:** Noise floor = −174 + NF + 10 × log₁₀(RBW<sub>Hz</sub>) = −174 + 15 + 10 × log₁₀(3000) = −174 + 15 + 34.8 = **−124.2 dBm ≈ −124 dBm**.
 
 ---
 
 **Q5:** What is the peak RF current in a 50 Ω dummy load when 200 W is dissipated?
 
-> **A:** I_pk = √(2P/R) = √(2 × 200/50) = √8 = **2.83 A peak** (2.0 A RMS).
+> **A:** I<sub>pk</sub> = √(2P/R) = √(2 × 200/50) = √8 = **2.83 A peak** (2.0 A RMS).
 
 ---
 

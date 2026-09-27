@@ -178,19 +178,19 @@ Early equipment used multiple switched crystals (Fig 7.5) for channelised operat
 
 ### Phase Locked Loop (PLL) Synthesiser
 
-<!-- VISUAL: section-7-fig7.6 — PLL block diagram: Crystal reference oscillator (6 MHz) → Fixed divider ÷A (÷6000) → 1kHz → Phase comparator; VCO (output f_out) → Programmable divider ÷N → 1kHz → Phase comparator; Phase comparator → Low-pass filter → VCO. f_out = f_crystal × N/A. -->
+<!-- VISUAL: section-7-fig7.6 — PLL block diagram: Crystal reference oscillator (6 MHz) → Fixed divider ÷A (÷6000) → 1kHz → Phase comparator; VCO (output f<sub>out</sub>) → Programmable divider ÷N → 1kHz → Phase comparator; Phase comparator → Low-pass filter → VCO. f<sub>out</sub> = f<sub>crystal</sub> × N/A. -->
 
 The PLL combines the **frequency agility of a VFO** with the **accuracy of a crystal**, without needing a crystal calibrator.
 
 **How it works:**
 1. The crystal reference oscillator (e.g. 6 MHz) is divided by a fixed value A (e.g. 6000) to produce a reference of 1 kHz.
-2. The **VCO** (Voltage Controlled Oscillator — a Colpitts with varicap) runs at the desired output frequency f_out.
-3. f_out is divided by a programmable value N. If the VCO is on frequency, this also gives 1 kHz.
+2. The **VCO** (Voltage Controlled Oscillator — a Colpitts with varicap) runs at the desired output frequency f<sub>out</sub>.
+3. f<sub>out</sub> is divided by a programmable value N. If the VCO is on frequency, this also gives 1 kHz.
 4. The **phase comparator** compares the two 1 kHz signals and outputs a DC voltage proportional to the phase difference.
 5. This voltage is smoothed by a **low-pass filter** and applied to the VCO varicap — correcting its frequency.
 
 ```
-f_out = f_crystal × N / A
+f<sub>out</sub> = f<sub>crystal</sub> × N / A
 ```
 
 The **frequency step size** equals the reference input to the phase comparator (1 kHz in this example). Smaller steps require a smaller reference → larger division ratios → slower loop response.
@@ -210,7 +210,7 @@ The **frequency step size** equals the reference input to the phase comparator (
 4. A **low-pass filter** removes the harmonics from the staircase
 
 ```
-f_out = (step size × clock frequency) / table length
+f<sub>out</sub> = (step size × clock frequency) / table length
 ```
 
 DDS gives extremely fine frequency resolution (sub-Hz) and fast settling. The disadvantage is **phase noise** — the discrete amplitude steps produce sidebands close to the carrier that the LPF cannot remove, raising the noise floor. This degrades adjacent-channel performance. Increasing the number of bits (larger amplitude steps) reduces, but cannot eliminate, phase noise.
@@ -243,7 +243,7 @@ At microwave frequencies, **varactor diode multipliers** are used (Fig 7.11) bec
 A mixer multiplies two input signals to produce sum and difference frequency outputs:
 
 ```
-f_out = f_in ± f_LO
+f<sub>out</sub> = f<sub>in</sub> ± f<sub>LO</sub>
 ```
 
 For a 6 MHz SSB signal mixed with a VFO at 8.0–8.35 MHz:
@@ -413,7 +413,7 @@ Carson's Rule: BW = 2 × (max audio frequency + peak deviation) = 2 × (3 + 5) =
 
 **Q4.** A PLL synthesiser uses a 10 MHz crystal reference divided by 10,000 to produce a 1 kHz reference. The VCO output is divided by N. If N = 144,500, what is the output frequency?
 <details><summary>Answer</summary>
-f_out = f_crystal × N/A = 10 MHz × 144,500 / 10,000 = **144.500 MHz**. Step size = 1 kHz (the reference frequency).
+f<sub>out</sub> = f<sub>crystal</sub> × N/A = 10 MHz × 144,500 / 10,000 = **144.500 MHz**. Step size = 1 kHz (the reference frequency).
 </details>
 
 **Q5.** Why can an SSB signal not be frequency-multiplied to reach the final transmit frequency?
@@ -453,7 +453,7 @@ RIT (Receiver Incremental Tuning) allows the receive frequency to be offset from
 - **PLL lock/unlock visualiser** — reference, VCO, and comparator waveforms; step through frequency change to show lock acquisition.
 - **SSB generation block diagram** — click each block to see the signal at that point (spectrum or waveform view).
 - **Carson's Rule calculator** — sliders for deviation and max audio; live BW output.
-- **PA load-line interactive** — Class A, B, C operating points on I_C–V_CE characteristics; efficiency vs output power visualisation.
+- **PA load-line interactive** — Class A, B, C operating points on I<sub>C</sub>–V<sub>CE</sub> characteristics; efficiency vs output power visualisation.
 - **ALC / PEP meter simulator** — voice waveform input; show difference between average and peak power; speech processor effect.
 
 ---

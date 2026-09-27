@@ -55,7 +55,7 @@ The simplest rectifier: a single diode in series with the load. Only the positiv
 
 ![Fig 5.3 — Half-wave rectifier: diode + load resistor; output waveform shows only positive half-cycles](/assets/images/study/full/section-5/fig-5-3.svg)
 
-The voltage across the load resistor = V_supply − 0.6 V (on positive half-cycles); zero on negative half-cycles.
+The voltage across the load resistor = V<sub>supply</sub> − 0.6 V (on positive half-cycles); zero on negative half-cycles.
 
 ### 5B.2 — Smoothing Capacitor
 
@@ -71,7 +71,7 @@ Adding a reservoir capacitor across the load converts the pulsing half-wave outp
 
 ![Fig 5.5 — Large vs small smoothing capacitor: ripple amplitude comparison](/assets/images/study/full/section-5/fig-5-5.svg)
 
-**Peak Inverse Voltage:** In a half-wave circuit with a reservoir capacitor, the capacitor holds the output positive while the supply swings negative. The diode must therefore withstand the peak supply voltage plus the capacitor voltage — approximately **twice the peak supply voltage (2 × V_peak)**. The diode PIV rating must exceed this.
+**Peak Inverse Voltage:** In a half-wave circuit with a reservoir capacitor, the capacitor holds the output positive while the supply swings negative. The diode must therefore withstand the peak supply voltage plus the capacitor voltage — approximately **twice the peak supply voltage (2 × V<sub>peak</sub>)**. The diode PIV rating must exceed this.
 
 **Diode current rating:** The diode conducts only briefly each cycle (a narrow pulse) but must supply all the charge lost by the capacitor during discharge. The peak diode current is much greater than the average load current; choose a diode rated for the peak pulse current, not just the average.
 
@@ -106,15 +106,15 @@ The bridge circuit (four diodes, no centre-tap required) is the most commonly us
 
 ### 5C.1 — Zener Diode
 
-A zener diode is designed to operate in **reverse breakdown** at a specific, well-defined voltage (the zener voltage V_z). Unlike a normal diode, this breakdown is **non-destructive** provided the current is limited by a series resistor to keep dissipation within the device rating.
+A zener diode is designed to operate in **reverse breakdown** at a specific, well-defined voltage (the zener voltage V<sub>z</sub>). Unlike a normal diode, this breakdown is **non-destructive** provided the current is limited by a series resistor to keep dissipation within the device rating.
 
 **Types:** Zener effect (below ~5 V) and avalanche effect (above ~6 V). The distinction matters for temperature coefficient but both are commonly called "zener diodes."
 
 ![Fig 5.8 — Zener diode I-V curve showing sharp reverse breakdown at V_z](/assets/images/study/full/section-5/fig-5-8.svg)
 
-**Power dissipation:** P = V_z × I (where I is the current flowing through the device)
+**Power dissipation:** P = V<sub>z</sub> × I (where I is the current flowing through the device)
 
-**As a voltage reference:** Connect a series resistor R_S between the supply and the zener; the output voltage across the zener is held at V_z regardless of moderate changes in supply or load current.
+**As a voltage reference:** Connect a series resistor R<sub>S</sub> between the supply and the zener; the output voltage across the zener is held at V<sub>z</sub> regardless of moderate changes in supply or load current.
 
 ![Fig 5.10 — Simple zener voltage reference: R_S + zener from 12V gives stabilised 9.6V output](/assets/images/study/full/section-5/fig-5-10.svg)
 
@@ -157,19 +157,19 @@ The **bipolar junction transistor (BJT)** is a single crystal doped into an NPN 
 - **Base:** the control terminal; a small positive voltage (≥0.6 V) causes a small base current
 - **Collector:** connected to the positive supply via a load; a much larger collector current flows
 
-The key relationship — **current gain β (also written h_FE):**
+The key relationship — **current gain β (also written h<sub>FE</sub>):**
 
-> **I_C = β × I_B**
+> **I<sub>C</sub> = β × I<sub>B</sub>**
 
-A typical small-signal transistor has β of several hundred; a power transistor may have β of only 25. β is quoted in data sheets as h_fe (AC) or h_FE (DC) and they are approximately equal.
+A typical small-signal transistor has β of several hundred; a power transistor may have β of only 25. β is quoted in data sheets as h<sub>fe</sub> (AC) or h<sub>FE</sub> (DC) and they are approximately equal.
 
 **PNP transistor:** identical in principle but all polarities reversed — the emitter is connected to the positive supply and the collector pulls current down through the load.
 
 ### 5D.2 — Transistor Characteristics
 
-**Transfer characteristic (Fig 5.14, left):** I_C vs V_BE — an exponential curve showing how collector current grows with base-emitter voltage.
+**Transfer characteristic (Fig 5.14, left):** I<sub>C</sub> vs V<sub>BE</sub> — an exponential curve showing how collector current grows with base-emitter voltage.
 
-**Output characteristics (Fig 5.14, right):** I_C vs V_CE for a family of base currents (I_B = 0, 20 μA, 40 μA, 60 μA). Key observation: above a few tenths of a volt, I_C is almost independent of V_CE and is set almost entirely by I_B. The transistor behaves as a **current-controlled current source**.
+**Output characteristics (Fig 5.14, right):** I<sub>C</sub> vs V<sub>CE</sub> for a family of base currents (I<sub>B</sub> = 0, 20 μA, 40 μA, 60 μA). Key observation: above a few tenths of a volt, I<sub>C</sub> is almost independent of V<sub>CE</sub> and is set almost entirely by I<sub>B</sub>. The transistor behaves as a **current-controlled current source**.
 
 ![Fig 5.14 — Transistor characteristics: I_C vs V_BE (left) and I_C vs V_CE family curves (right)](/assets/images/study/full/section-5/fig-5-14.svg)
 
@@ -177,32 +177,32 @@ A typical small-signal transistor has β of several hundred; a power transistor 
 
 To amplify a signal the transistor must be **biased** — given the correct quiescent (no-signal) DC voltages and currents.
 
-**Simple bias (single base resistor R_B):**
+**Simple bias (single base resistor R<sub>B</sub>):**
 
 ![Fig 5.15 — Simple bias: R_B sets I_B, R_C is the collector load](/assets/images/study/full/section-5/fig-5-15.svg)
 
-**Example** (V_CC = +10 V, target I_C = 10 mA, V_C = 5 V, β = 100):
-- R_C = V/I = 5/0.01 = 500 Ω
-- V_BE ≈ 0.6 V, so V_B ≈ 0.6 V
-- I_B = I_C/β = 10 mA/100 = 100 μA
-- R_B = (10 − 0.6)/100 μA = 94 kΩ
+**Example** (V<sub>CC</sub> = +10 V, target I<sub>C</sub> = 10 mA, V<sub>C</sub> = 5 V, β = 100):
+- R<sub>C</sub> = V/I = 5/0.01 = 500 Ω
+- V<sub>BE</sub> ≈ 0.6 V, so V<sub>B</sub> ≈ 0.6 V
+- I<sub>B</sub> = I<sub>C</sub>/β = 10 mA/100 = 100 μA
+- R<sub>B</sub> = (10 − 0.6)/100 μA = 94 kΩ
 
-**The instability problem:** if β is actually 200 (BC108 spreads from 110 to 800), then I_C = 200 × 100 μA = 20 mA, V_C = 10 − 20 mA × 500 Ω = 0 V — the transistor is saturated and the circuit fails to amplify.
+**The instability problem:** if β is actually 200 (BC108 spreads from 110 to 800), then I<sub>C</sub> = 200 × 100 μA = 20 mA, V<sub>C</sub> = 10 − 20 mA × 500 Ω = 0 V — the transistor is saturated and the circuit fails to amplify.
 
 ### 5D.4 — Stable Bias: Potential Divider and Emitter Resistor
 
 The stable bias circuit (Fig 5.18) adds:
-1. **R1/R2 potential divider** — holds the base voltage constant regardless of β variation (provided the divider current >> I_B)
-2. **Emitter resistor R4** — applies negative feedback: if I_C rises, I_E rises, V_E rises, V_BE falls, I_B falls, I_C falls
+1. **R1/R2 potential divider** — holds the base voltage constant regardless of β variation (provided the divider current >> I<sub>B</sub>)
+2. **Emitter resistor R4** — applies negative feedback: if I<sub>C</sub> rises, I<sub>E</sub> rises, V<sub>E</sub> rises, V<sub>BE</sub> falls, I<sub>B</sub> falls, I<sub>C</sub> falls
 
 ![Fig 5.17 — Improved bias with emitter resistor](/assets/images/study/full/section-5/fig-5-17.svg)
 ![Fig 5.18 — Stable bias: R1/R2 divider + emitter resistor R4 + bypass capacitor C3](/assets/images/study/full/section-5/fig-5-18.svg)
 
-**Design example** (V_CC = +10 V, I_C = 1 mA, V_C = 5 V, V_E = 1.5 V, β = 100):
-- R_C = (10 − 5)/1 mA = 4 kΩ (≈ R3 in Fig 5.18)
-- R_E = 1.5 V/1 mA = 1.5 kΩ (≈ R4)
-- Base voltage V_B = 1.5 + 0.6 = 2.1 V
-- Divider current chosen >> I_B (e.g. 100 μA):
+**Design example** (V<sub>CC</sub> = +10 V, I<sub>C</sub> = 1 mA, V<sub>C</sub> = 5 V, V<sub>E</sub> = 1.5 V, β = 100):
+- R<sub>C</sub> = (10 − 5)/1 mA = 4 kΩ (≈ R3 in Fig 5.18)
+- R<sub>E</sub> = 1.5 V/1 mA = 1.5 kΩ (≈ R4)
+- Base voltage V<sub>B</sub> = 1.5 + 0.6 = 2.1 V
+- Divider current chosen >> I<sub>B</sub> (e.g. 100 μA):
   - R2 = 2.1 V / 100 μA = 21 kΩ
   - R1 = (10 − 2.1) / 100 μA = 79 kΩ
 
@@ -226,13 +226,13 @@ The emitter is common to both input and output circuits.
 
 | Parameter | Typical value |
 |-----------|--------------|
-| Input impedance Z_in | ~1 kΩ (medium-low) |
-| Output impedance Z_out | ~5 kΩ (medium) |
+| Input impedance Z<sub>in</sub> | ~1 kΩ (medium-low) |
+| Output impedance Z<sub>out</sub> | ~5 kΩ (medium) |
 | Voltage gain | Medium to high |
 | Current gain | Yes (β) |
 | Phase | **180° inversion** — output is inverted relative to input |
 
-**Why phase inversion?** A positive input increases V_BE → I_B increases → I_C increases → more voltage across R_C → collector voltage falls. Output goes down when input goes up.
+**Why phase inversion?** A positive input increases V<sub>BE</sub> → I<sub>B</sub> increases → I<sub>C</sub> increases → more voltage across R<sub>C</sub> → collector voltage falls. Output goes down when input goes up.
 
 **Most commonly used configuration** for audio and RF amplifiers.
 
@@ -244,8 +244,8 @@ The base is common to both input (emitter) and output (collector).
 
 | Parameter | Typical value |
 |-----------|--------------|
-| Input impedance Z_in | ~50 Ω (very low) |
-| Output impedance Z_out | ~50 kΩ (very high) |
+| Input impedance Z<sub>in</sub> | ~50 Ω (very low) |
+| Output impedance Z<sub>out</sub> | ~50 kΩ (very high) |
 | Voltage gain | High |
 | Current gain | Less than 1 (no current gain) |
 | Phase | No inversion — output in phase with input |
@@ -260,8 +260,8 @@ The collector is common to input and output; the output is taken from the emitte
 
 | Parameter | Typical value |
 |-----------|--------------|
-| Input impedance Z_in | 50 kΩ–2 MΩ (very high) |
-| Output impedance Z_out | 10–500 Ω (very low) |
+| Input impedance Z<sub>in</sub> | 50 kΩ–2 MΩ (very high) |
+| Output impedance Z<sub>out</sub> | 10–500 Ω (very low) |
 | Voltage gain | ~1 (slight loss — output follows input) |
 | Current gain | Yes |
 | Phase | No inversion — output follows input |
@@ -271,8 +271,8 @@ The collector is common to input and output; the output is taken from the emitte
 > [INFO] **5E1 [VERIFY]:** The three configurations summary:
 > | | CE | CB | CC (EF) |
 > |--|--|--|--|
-> | Z_in | Medium (~1kΩ) | Low (~50Ω) | High (50k–2MΩ) |
-> | Z_out | Medium (~5kΩ) | High (~50kΩ) | Low (10–500Ω) |
+> | Z<sub>in</sub> | Medium (~1kΩ) | Low (~50Ω) | High (50k–2MΩ) |
+> | Z<sub>out</sub> | Medium (~5kΩ) | High (~50kΩ) | Low (10–500Ω) |
 > | Phase | 180° inversion | In phase | In phase |
 > | Current gain | Yes | No (<1) | Yes |
 
@@ -280,7 +280,7 @@ The collector is common to input and output; the output is taken from the emitte
 
 ## 5F — Amplifier Bias Classes
 
-The **bias class** describes where on the transistor's I_C vs V_BE curve the quiescent operating point (Q-point) is set, and therefore what portion of the input cycle the transistor conducts.
+The **bias class** describes where on the transistor's I<sub>C</sub> vs V<sub>BE</sub> curve the quiescent operating point (Q-point) is set, and therefore what portion of the input cycle the transistor conducts.
 
 ![Fig 5.24 — Load line with Q-points for Class A, AB, B and C bias positions](/assets/images/study/full/section-5/fig-5-24.svg)
 
@@ -295,7 +295,7 @@ The **bias class** describes where on the transistor's I_C vs V_BE curve the qui
 
 ### 5F.2 — Class B
 
-- Q-point at the **edge of conduction** (V_BE ≈ 0.6 V); quiescent collector current is essentially zero
+- Q-point at the **edge of conduction** (V<sub>BE</sub> ≈ 0.6 V); quiescent collector current is essentially zero
 - Transistor conducts only during the **positive half-cycle** (for NPN)
 - **Problem:** if a single transistor is used, the output is only the positive half — serious distortion
 - **Solution:** push-pull pair — one transistor handles each half-cycle
@@ -339,13 +339,13 @@ The **junction FET (JFET)** has an n-type channel (source to drain) surrounded b
 - **Gate** is reverse-biased — the gate is a junction, so it presents high input impedance (no gate current flows)
 - Increasing reverse bias on the gate **widens the depletion layer → narrows the channel → reduces drain current**
 - Sufficient reverse bias pinches the channel completely shut (**pinch-off**); no drain current flows
-- The **gate-source voltage V_GS controls the drain current** — a voltage-controlled device (unlike the BJT which is current-controlled)
+- The **gate-source voltage V<sub>GS</sub> controls the drain current** — a voltage-controlled device (unlike the BJT which is current-controlled)
 
 **Key difference from BJT:**
-- BJT: current in (I_B) → current out (I_C = β × I_B)
-- FET: voltage in (V_GS) → current out (I_D = f(V_GS)); no gate current needed
+- BJT: current in (I<sub>B</sub>) → current out (I<sub>C</sub> = β × I<sub>B</sub>)
+- FET: voltage in (V<sub>GS</sub>) → current out (I<sub>D</sub> = f(V<sub>GS</sub>)); no gate current needed
 
-The ratio of change in drain current to change in gate voltage is the **transconductance g_m** (units: siemens, S) — the FET's analogue of β. *Not examined at Full level but useful context.*
+The ratio of change in drain current to change in gate voltage is the **transconductance g<sub>m</sub>** (units: siemens, S) — the FET's analogue of β. *Not examined at Full level but useful context.*
 
 ### 5G.2 — MOSFET and IGFET
 
@@ -383,7 +383,7 @@ MOSFETs and CMOS ICs are immediately destroyed by electrostatic discharge as low
 
 ### 5H.1 — Simple Zener Stabiliser
 
-A single zener diode with a series resistor gives a fixed output voltage V_z. This is adequate for low-current applications but the output voltage varies slightly with load current (the zener has a small dynamic resistance).
+A single zener diode with a series resistor gives a fixed output voltage V<sub>z</sub>. This is adequate for low-current applications but the output voltage varies slightly with load current (the zener has a small dynamic resistance).
 
 ### 5H.2 — Series-Pass Transistor Regulator
 
@@ -392,9 +392,9 @@ Adding a transistor (the **series-pass transistor** Tr1) in series with the supp
 ![Fig 5.29 — Simple transistor voltage stabiliser: zener holds base constant, transistor passes load current](/assets/images/study/full/section-5/fig-5-29.svg)
 
 **How it works:**
-- Zener D1 holds Tr1's base at a fixed voltage V_z
-- The emitter voltage (= output) follows: V_out = V_z − V_BE ≈ V_z − 0.6 V
-- Tr1 can supply large currents to the load because I_C = β × I_B and only a small base current flows through the zener
+- Zener D1 holds Tr1's base at a fixed voltage V<sub>z</sub>
+- The emitter voltage (= output) follows: V<sub>out</sub> = V<sub>z</sub> − V<sub>BE</sub> ≈ V<sub>z</sub> − 0.6 V
+- Tr1 can supply large currents to the load because I<sub>C</sub> = β × I<sub>B</sub> and only a small base current flows through the zener
 
 **Improved version with feedback** (Fig 5.30):
 
@@ -423,7 +423,7 @@ The entire regulated supply circuit — sensing, reference, error amplifier and 
 
 > [WARNING] The two 2 μF capacitors at the IC regulator pins are essential. Without them the regulator oscillates at RF frequencies, potentially damaging the IC and anything it is powering.
 
-**Power dissipation:** The IC regulator is a linear device — transistors operate in Class A. The power wasted = (V_in − V_out) × I_load. A 5 V regulator supplied with 17 V at 4 A dissipates 48 W — a substantial heatsink is required. This is the main disadvantage of linear regulators compared with switch-mode designs.
+**Power dissipation:** The IC regulator is a linear device — transistors operate in Class A. The power wasted = (V<sub>in</sub> − V<sub>out</sub>) × I<sub>load</sub>. A 5 V regulator supplied with 17 V at 4 A dissipates 48 W — a substantial heatsink is required. This is the main disadvantage of linear regulators compared with switch-mode designs.
 
 ---
 
@@ -486,15 +486,15 @@ An **operational amplifier** is a high-gain differential amplifier. Its two inpu
 - Infinite gain (in practice, 10⁴–10⁶)
 - Infinite bandwidth (in practice, limited by gain-bandwidth product)
 
-**Virtual earth (inverting amplifier):** In a closed-loop inverting amplifier, the inverting input is held at (virtually) 0 V by negative feedback — this is the **virtual earth** principle. The gain is set by the ratio of feedback resistor R_f to input resistor R_in:
+**Virtual earth (inverting amplifier):** In a closed-loop inverting amplifier, the inverting input is held at (virtually) 0 V by negative feedback — this is the **virtual earth** principle. The gain is set by the ratio of feedback resistor R<sub>f</sub> to input resistor R<sub>in</sub>:
 
-> **Gain = −R_f / R_in**
+> **Gain = −R<sub>f</sub> / R<sub>in</sub>**
 
 The negative sign indicates phase inversion.
 
 **Non-inverting amplifier:**
 
-> **Gain = 1 + (R_f / R_in)**
+> **Gain = 1 + (R<sub>f</sub> / R<sub>in</sub>)**
 
 No phase inversion; input fed directly to the + terminal.
 
@@ -505,9 +505,9 @@ No phase inversion; input fed directly to the + terminal.
 - Active filters (audio CW filters, SSB cut-off filters)
 - Comparators (frequency discriminators, level detectors)
 - Logarithmic amplifiers (S-meter circuits)
-- Voltage followers / buffers (unity gain, very high Z_in)
+- Voltage followers / buffers (unity gain, very high Z<sub>in</sub>)
 
-> [INFO] **5J1 [VERIFY]:** Know the virtual earth concept, the inverting gain formula (−R_f/R_in), and the non-inverting gain formula (1 + R_f/R_in). Op-amp questions in the exam typically test these ratios or the concept of negative feedback stabilising gain.
+> [INFO] **5J1 [VERIFY]:** Know the virtual earth concept, the inverting gain formula (−R<sub>f</sub>/R<sub>in</sub>), and the non-inverting gain formula (1 + R<sub>f</sub>/R<sub>in</sub>). Op-amp questions in the exam typically test these ratios or the concept of negative feedback stabilising gain.
 
 ---
 
@@ -529,13 +529,13 @@ No phase inversion; input fed directly to the + terminal.
 
 1. Approximately **0.6–0.7 V** (0.6 V at the onset of conduction, rising to 0.7 V at higher currents).
 2. Approximate DC output ≈ **30 × 0.636 ≈ 19 V** (average of a full-wave rectified sinewave); practical output after one pair of diode drops ≈ 30 − 1.4 ≈ 28.6 V peak before smoothing. PIV needed ≈ **30 V** (for a bridge, each diode must withstand the peak supply voltage).
-3. Current I = (12 − 5.6)/470 = 6.4/470 ≈ **13.6 mA**. Power P = V_z × I = 5.6 × 0.0136 ≈ **76 mW**. (Within typical 400 mW rating.)
-4. I_B = I_C/β = 15 mA/150 = **0.1 mA = 100 μA**.
-5. Z_in ≈ **1 kΩ**; Z_out ≈ **5 kΩ**; yes, the CE stage **inverts the signal (180° phase shift)**.
-6. **Common collector (emitter follower)** — very high Z_in (50 kΩ–2 MΩ), very low Z_out (10–500 Ω), gain ≈ 1, no phase inversion.
+3. Current I = (12 − 5.6)/470 = 6.4/470 ≈ **13.6 mA**. Power P = V<sub>z</sub> × I = 5.6 × 0.0136 ≈ **76 mW**. (Within typical 400 mW rating.)
+4. I<sub>B</sub> = I<sub>C</sub>/β = 15 mA/150 = **0.1 mA = 100 μA**.
+5. Z<sub>in</sub> ≈ **1 kΩ**; Z<sub>out</sub> ≈ **5 kΩ**; yes, the CE stage **inverts the signal (180° phase shift)**.
+6. **Common collector (emitter follower)** — very high Z<sub>in</sub> (50 kΩ–2 MΩ), very low Z<sub>out</sub> (10–500 Ω), gain ≈ 1, no phase inversion.
 7. A Class C amplifier conducts only during narrow peaks of the drive signal, producing a pulse waveform rich in harmonics. The **tuned resonant circuit** selects the fundamental frequency and rejects harmonics, reconstructing a clean sinewave output.
 8. **AGC (Automatic Gain Control):** the DC voltage on Gate 2 is varied by the AGC system to control the gain of the stage, reducing gain when a strong signal is present to prevent overloading.
-9. Power dissipated = (V_in − V_out) × I = (20 − 12) × 2 = **16 W**. This requires a substantial heatsink and means the regulator is wasting significant energy as heat — a linear regulator is inefficient at large voltage differentials.
+9. Power dissipated = (V<sub>in</sub> − V<sub>out</sub>) × I = (20 − 12) × 2 = **16 W**. This requires a substantial heatsink and means the regulator is wasting significant energy as heat — a linear regulator is inefficient at large voltage differentials.
 10. **Advantages:** much higher efficiency (less heat, smaller heatsink); smaller and lighter (small ferrite transformer). **Disadvantage:** generates RF switching noise that can raise the local noise floor and interfere with reception; requires good input/output filtering.
 
 </details>
@@ -548,13 +548,13 @@ No phase inversion; input fed directly to the + terminal.
 
 2. **Rectifier smoothing simulator** — Select half-wave, full-wave or bridge; capacitor value slider; load resistor slider. Live waveform shows diode current pulses, capacitor voltage and ripple magnitude. Maps to §5B.
 
-3. **BJT load-line explorer** — Enter V_CC, R_C, I_C(Q). Draws the load line on the I_C–V_CE characteristic; shows Q-point and its position for Class A/AB/B/C selection. Maps to §5D/§5F.
+3. **BJT load-line explorer** — Enter V<sub>CC</sub>, R<sub>C</sub>, I<sub>C</sub>(Q). Draws the load line on the I<sub>C</sub>–V<sub>CE</sub> characteristic; shows Q-point and its position for Class A/AB/B/C selection. Maps to §5D/§5F.
 
-4. **BJT configuration comparator** — Three-tab display (CE/CB/CC) showing Z_in, Z_out, phase and gain side by side with animated signal waveforms. Maps to §5E.
+4. **BJT configuration comparator** — Three-tab display (CE/CB/CC) showing Z<sub>in</sub>, Z<sub>out</sub>, phase and gain side by side with animated signal waveforms. Maps to §5E.
 
-5. **Op-amp gain calculator** — Enter R_in and R_f; displays inverting gain (−R_f/R_in) and non-inverting gain (1+R_f/R_in); animated virtual-earth diagram. Maps to §5J.
+5. **Op-amp gain calculator** — Enter R<sub>in</sub> and R<sub>f</sub>; displays inverting gain (−R<sub>f</sub>/R<sub>in</sub>) and non-inverting gain (1+R<sub>f</sub>/R<sub>in</sub>); animated virtual-earth diagram. Maps to §5J.
 
-6. **SMPS vs linear efficiency compare** — Enter V_in, V_out, I_load; shows power dissipated in linear regulator vs SMPS; heat visualisation. Maps to §5H/§5I.
+6. **SMPS vs linear efficiency compare** — Enter V<sub>in</sub>, V<sub>out</sub>, I<sub>load</sub>; shows power dissipated in linear regulator vs SMPS; heat visualisation. Maps to §5H/§5I.
 
 ---
 

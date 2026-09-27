@@ -289,7 +289,7 @@
       <h3>4B.1 — Kirchhoff's Voltage Law (KVL)</h3>
       <p><strong>KVL:</strong> The sum of all voltages around any closed loop equals zero, or equivalently: the sum of all voltage drops around a loop equals the supply voltage.</p>
       <p>This is simply the conservation of energy — charge cannot gain or lose net energy travelling around a complete circuit.</p>
-      <p><strong>Practical use:</strong> If you know the supply voltage and all resistor values in a series circuit, KVL lets you write the equation: V_supply = V_R1 + V_R2 + V_R3 and solve for any unknown.</p>
+      <p><strong>Practical use:</strong> If you know the supply voltage and all resistor values in a series circuit, KVL lets you write the equation: V<sub>supply</sub> = V<sub>R1</sub> + V<sub>R2</sub> + V<sub>R3</sub> and solve for any unknown.</p>
 
       <h3>4B.2 — Kirchhoff's Current Law (KCL)</h3>
       <p><strong>KCL:</strong> The sum of currents flowing into any junction equals the sum of currents flowing out. Current is conserved at every node.</p>
@@ -304,11 +304,11 @@
 
       <h3>4B.3 — Resistors in Series and Parallel</h3>
       <p><strong>Series:</strong> resistances add directly.</p>
-      <div class="formula-block"><p><strong>R_total = R1 + R2 + R3 + …</strong></p></div>
+      <div class="formula-block"><p><strong>R<sub>total</sub> = R1 + R2 + R3 + …</strong></p></div>
       <p><strong>Parallel:</strong> the reciprocal of the total equals the sum of the reciprocals.</p>
-      <div class="formula-block"><p><strong>1/R_total = 1/R1 + 1/R2 + 1/R3 + …</strong></p></div>
+      <div class="formula-block"><p><strong>1/R<sub>total</sub> = 1/R1 + 1/R2 + 1/R3 + …</strong></p></div>
       <p>For <strong>two resistors only</strong>, the shortcut is:</p>
-      <div class="formula-block"><p><strong>R_total = (R1 × R2) / (R1 + R2)</strong></p></div>
+      <div class="formula-block"><p><strong>R<sub>total</sub> = (R1 × R2) / (R1 + R2)</strong></p></div>
       <p>This product-over-sum formula is worth memorising for quick calculations.</p>
       <p><strong>Strategy for complex combinations:</strong> First collapse the circuit to find the total current drawn from the supply. Then expand back through the network, using KVL and KCL at each stage to find individual currents and voltages.</p>
       <p><strong>Resistor types and tolerance:</strong></p>
@@ -319,12 +319,12 @@
       </ul>
 
       <h3>4B.4 — The Potential Divider</h3>
-      <p>Two resistors R1 and R2 in series across a supply V_in produce an output voltage V_out across R2:</p>
-      <div class="formula-block"><p><strong>V_out = V_in × R2 / (R1 + R2)</strong></p></div>
+      <p>Two resistors R1 and R2 in series across a supply V<sub>in</sub> produce an output voltage V<sub>out</sub> across R2:</p>
+      <div class="formula-block"><p><strong>V<sub>out</sub> = V<sub>in</sub> × R2 / (R1 + R2)</strong></p></div>
       <p>This is one of the most frequently used relationships in electronics — it appears in bias networks, attenuators, voltage references and sensor interfaces. Know it.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text">The formula assumes no current is drawn from the output (unloaded divider). If a load is connected, it appears in parallel with R2 and reduces V_out. At RF, stray capacitance and lead inductance also affect the division ratio.</div>
+        <div class="callout-text">The formula assumes no current is drawn from the output (unloaded divider). If a load is connected, it appears in parallel with R2 and reduces V<sub>out</sub>. At RF, stray capacitance and lead inductance also affect the division ratio.</div>
       </div>
     </section>
 
@@ -340,7 +340,7 @@
 
       <h3>4C.1 — EMF, Internal Resistance and Terminal Voltage</h3>
       <p>An ideal voltage source maintains constant terminal voltage regardless of current. Real batteries have an <strong>internal resistance r</strong> (typically a fraction of an ohm for a healthy cell) that causes the terminal voltage to drop as current increases.</p>
-      <div class="formula-block"><p><strong>V_terminal = EMF − (I × r)</strong></p></div>
+      <div class="formula-block"><p><strong>V<sub>terminal</sub> = EMF − (I × r)</strong></p></div>
       <p><strong>EMF</strong> (electromotive force, symbol <strong>ε</strong> or V) is the open-circuit voltage. As current increases, the voltage drop across r grows and the terminal voltage falls.</p>
 
       <figure>
@@ -353,20 +353,20 @@
       <p>This matters in practice: a battery tested on open circuit may read 12.6 V while under load it drops to 11.5 V. For a transmitter drawing high current, the supply voltage sag can cause frequency shift, ALC misbehaviour and reduced output power.</p>
 
       <h3>4C.2 — Maximum Power Transfer</h3>
-      <p><strong>Question:</strong> For a fixed-EMF source with internal resistance r, what value of external load R_load extracts the maximum power?</p>
-      <p><strong>Answer:</strong> Maximum power is transferred when <strong>R_load = r</strong>.</p>
-      <p>At this point, exactly half the total power is dissipated in the source (in r) and half in the load. The efficiency is therefore 50% at maximum power transfer. This is not necessarily the operating point you want for power efficiency — battery systems are designed for high efficiency, which means R_load ≫ r — but it is the correct condition for maximum extracted power.</p>
+      <p><strong>Question:</strong> For a fixed-EMF source with internal resistance r, what value of external load R<sub>load</sub> extracts the maximum power?</p>
+      <p><strong>Answer:</strong> Maximum power is transferred when <strong>R<sub>load</sub> = r</strong>.</p>
+      <p>At this point, exactly half the total power is dissipated in the source (in r) and half in the load. The efficiency is therefore 50% at maximum power transfer. This is not necessarily the operating point you want for power efficiency — battery systems are designed for high efficiency, which means R<sub>load</sub> ≫ r — but it is the correct condition for maximum extracted power.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-4.svg" alt="Three-curve graph plotting power delivered to load, terminal voltage, and load current versus load resistance from 0 to 10 ohms. Power peaks at R_load equal to r (source impedance), while voltage rises and current falls monotonically.">
         </div>
-        <figcaption>Fig 4.4 — Power, voltage and current versus load resistance R_load. Maximum power transfer occurs at R_load = r (source impedance).</figcaption>
+        <figcaption>Fig 4.4 — Power, voltage and current versus load resistance R<sub>load</sub>. Maximum power transfer occurs at R<sub>load</sub> = r (source impedance).</figcaption>
       </figure>
 
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>4C1:</strong> Maximum power transfer: R_load = r (source impedance = load impedance). This appears in RF system design as impedance matching — a 50 Ω source drives maximum power into a 50 Ω load. The underlying theorem is identical.</div>
+        <div class="callout-text"><strong>4C1:</strong> Maximum power transfer: R<sub>load</sub> = r (source impedance = load impedance). This appears in RF system design as impedance matching — a 50 Ω source drives maximum power into a 50 Ω load. The underlying theorem is identical.</div>
       </div>
     </section>
 
@@ -430,9 +430,9 @@
       <h3>4D.4 — RC Charging and the Time Constant</h3>
       <p>When a resistor R and capacitor C are connected in series to a DC supply, the capacitor charges exponentially. The <strong>time constant τ (tau)</strong>:</p>
       <div class="formula-block"><p><strong>τ = C × R</strong> (seconds, when C in farads and R in ohms)</p></div>
-      <p>The voltage across the capacitor at time t after connection is: V_C = V_supply × (1 − e<sup>−t/τ</sup>)</p>
+      <p>The voltage across the capacitor at time t after connection is: V<sub>C</sub> = V<sub>supply</sub> × (1 − e<sup>−t/τ</sup>)</p>
       <table>
-        <thead><tr><th>Time elapsed</th><th>Approximate V_C as % of V_supply</th></tr></thead>
+        <thead><tr><th>Time elapsed</th><th>Approximate V<sub>C</sub> as % of V<sub>supply</sub></th></tr></thead>
         <tbody>
           <tr><td>1τ</td><td>63.2%</td></tr>
           <tr><td>2τ</td><td>86.5%</td></tr>
@@ -446,7 +446,7 @@
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-10.svg" alt="Two-panel diagram. Left: RC charging circuit schematic with switch, voltage source V, resistor R, and capacitor C. Right: V_C(t) charging curve rising from 0 to V with knee at 1τ (63%) and asymptote approaching V; I(t) curve falling exponentially from V/R toward zero.">
         </div>
-        <figcaption>Fig 4.10 — RC charging. Circuit (left) and V_C(t) curve (right). At 1τ, V_C reaches 63.2% of supply. The capacitor is considered fully charged after 5τ.</figcaption>
+        <figcaption>Fig 4.10 — RC charging. Circuit (left) and V<sub>C</sub>(t) curve (right). At 1τ, V<sub>C</sub> reaches 63.2% of supply. The capacitor is considered fully charged after 5τ.</figcaption>
       </figure>
 
       <div class="callout callout--info">
@@ -456,16 +456,16 @@
 
       <h3>4D.5 — Capacitors in Series and Parallel</h3>
       <p><strong>Parallel</strong> (same voltage, charges add):</p>
-      <div class="formula-block"><p><strong>C_total = C1 + C2 + C3 + …</strong></p></div>
+      <div class="formula-block"><p><strong>C<sub>total</sub> = C1 + C2 + C3 + …</strong></p></div>
       <p><strong>Series</strong> (same charge, voltages divide):</p>
-      <div class="formula-block"><p><strong>1/C_total = 1/C1 + 1/C2 + …</strong></p></div>
+      <div class="formula-block"><p><strong>1/C<sub>total</sub> = 1/C1 + 1/C2 + …</strong></p></div>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
         <div class="callout-text">Capacitors combine the <em>opposite</em> way to resistors. Two capacitors in series have a smaller combined capacitance than either alone; the voltage across each is inversely proportional to its capacitance (the larger cap gets the smaller share of the voltage).</div>
       </div>
       <p><strong>Worked example:</strong> 2 μF and 4 μF in series on 30 V supply.<br>
-      C_total = (2 × 4)/(2 + 4) = 8/6 = <strong>1.33 μF</strong>.<br>
-      Q = C_total × V = 1.33 × 10⁻⁶ × 30 = <strong>40 μC</strong> (same charge on each).<br>
+      C<sub>total</sub> = (2 × 4)/(2 + 4) = 8/6 = <strong>1.33 μF</strong>.<br>
+      Q = C<sub>total</sub> × V = 1.33 × 10⁻⁶ × 30 = <strong>40 μC</strong> (same charge on each).<br>
       V₁ = Q/C1 = 40/2 = <strong>20 V</strong>; V₂ = Q/C2 = 40/4 = <strong>10 V</strong>. Total: 30 V ✓.</p>
 
       <figure>
@@ -478,7 +478,7 @@
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-8.svg" alt="Two capacitors C1 and C2 connected in series — end-to-end — with total capacitance C_total given by the reciprocal-sum formula.">
         </div>
-        <figcaption>Fig 4.8 — Capacitors in series. Reciprocal formula applies: 1/C_total = 1/C1 + 1/C2. Each capacitor carries the same charge; voltages divide inversely with capacitance.</figcaption>
+        <figcaption>Fig 4.8 — Capacitors in series. Reciprocal formula applies: 1/C<sub>total</sub> = 1/C1 + 1/C2. Each capacitor carries the same charge; voltages divide inversely with capacitance.</figcaption>
       </figure>
 
       <h3>4D.6 — Variable Capacitors</h3>
@@ -538,9 +538,9 @@
 
       <h3>4E.3 — Inductors in Series and Parallel</h3>
       <p><strong>Series:</strong></p>
-      <div class="formula-block"><p><strong>L_total = L1 + L2 + L3 + …</strong> (provided coils are not magnetically coupled to each other)</p></div>
+      <div class="formula-block"><p><strong>L<sub>total</sub> = L1 + L2 + L3 + …</strong> (provided coils are not magnetically coupled to each other)</p></div>
       <p><strong>Parallel:</strong></p>
-      <div class="formula-block"><p><strong>1/L_total = 1/L1 + 1/L2 + …</strong> (same caveat)</p></div>
+      <div class="formula-block"><p><strong>1/L<sub>total</sub> = 1/L1 + 1/L2 + …</strong> (same caveat)</p></div>
 
       <h3>4E.4 — LR Time Constant</h3>
       <p>When a resistor R and inductor L are connected in series to a DC supply, the current builds up exponentially with time constant:</p>
@@ -562,19 +562,19 @@
       <h3>4F.1 — AC Sinewave and RMS Values</h3>
       <p>An AC sinewave is produced by a coil rotating in a uniform magnetic field. The voltage varies sinusoidally between peak positive and peak negative values.</p>
       <p><strong>RMS (Root Mean Square):</strong> the equivalent DC voltage that would deliver the same power to a resistive load. For a pure sinewave:</p>
-      <div class="formula-block"><p><strong>V_rms = V_peak / √2 = 0.707 × V_peak</strong></p></div>
+      <div class="formula-block"><p><strong>V<sub>rms</sub> = V<sub>peak</sub> / √2 = 0.707 × V<sub>peak</sub></strong></p></div>
       <p>The UK mains supply of 230 V is an RMS value; the peak voltage is 230 × √2 ≈ <strong>325 V</strong>.</p>
-      <p><strong>Peak-to-peak voltage</strong> = 2 × V_peak.</p>
+      <p><strong>Peak-to-peak voltage</strong> = 2 × V<sub>peak</sub>.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>4F1:</strong> V_rms = 0.707 × V_peak. All AC voltage and current values quoted in everyday use (and in exam questions unless stated otherwise) are RMS values.</div>
+        <div class="callout-text"><strong>4F1:</strong> V<sub>rms</sub> = 0.707 × V<sub>peak</sub>. All AC voltage and current values quoted in everyday use (and in exam questions unless stated otherwise) are RMS values.</div>
       </div>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-15.svg" alt="One full cycle of a sinewave plotted on voltage vs time axes. Three levels are marked with dashed lines: V_peak (positive crest), 0.707 × V_peak (RMS level), and −V_peak (negative trough). Peak-to-peak span is labelled 2 × V_peak.">
         </div>
-        <figcaption>Fig 4.15 — AC sinewave showing peak, peak-to-peak and RMS voltage. V_rms = 0.707 × V_peak for a pure sinewave.</figcaption>
+        <figcaption>Fig 4.15 — AC sinewave showing peak, peak-to-peak and RMS voltage. V<sub>rms</sub> = 0.707 × V<sub>peak</sub> for a pure sinewave.</figcaption>
       </figure>
 
       <h3>4F.2 — Frequency and Phase</h3>
@@ -607,23 +607,23 @@
       <p>For a capacitor or inductor, the voltage and current are 90° out of phase. Simply dividing the RMS voltage by the RMS current gives a ratio (the <strong>reactance</strong>) but this hides the phase relationship — and ignoring phase leads to errors when combining voltages or currents in AC circuits.</p>
 
       <h3>4G.2 — Capacitive Reactance</h3>
-      <p><strong>Capacitive reactance X_C</strong> is the opposition a capacitor presents to AC. It falls with increasing frequency (a capacitor blocks DC but passes high frequencies):</p>
-      <div class="formula-block"><p><strong>X_C = 1 / (2πfC)</strong> (ohms, f in Hz, C in farads)</p></div>
+      <p><strong>Capacitive reactance X<sub>C</sub></strong> is the opposition a capacitor presents to AC. It falls with increasing frequency (a capacitor blocks DC but passes high frequencies):</p>
+      <div class="formula-block"><p><strong>X<sub>C</sub> = 1 / (2πfC)</strong> (ohms, f in Hz, C in farads)</p></div>
       <p>The current through the capacitor <strong>leads</strong> the voltage by 90°.</p>
       <p><strong>Example:</strong> 2 μF capacitor on 240 V, 50 Hz mains.<br>
-      X_C = 1 / (2π × 50 × 2 × 10⁻⁶) ≈ <strong>1590 Ω</strong><br>
-      I = V / X_C = 240 / 1590 ≈ <strong>0.15 A (150 mA) RMS</strong></p>
+      X<sub>C</sub> = 1 / (2π × 50 × 2 × 10⁻⁶) ≈ <strong>1590 Ω</strong><br>
+      I = V / X<sub>C</sub> = 240 / 1590 ≈ <strong>0.15 A (150 mA) RMS</strong></p>
 
       <h3>4G.3 — Inductive Reactance</h3>
-      <p><strong>Inductive reactance X_L</strong> rises with frequency (an inductor passes DC freely but opposes high-frequency AC):</p>
-      <div class="formula-block"><p><strong>X_L = 2πfL</strong> (ohms, f in Hz, L in henries)</p></div>
+      <p><strong>Inductive reactance X<sub>L</sub></strong> rises with frequency (an inductor passes DC freely but opposes high-frequency AC):</p>
+      <div class="formula-block"><p><strong>X<sub>L</sub> = 2πfL</strong> (ohms, f in Hz, L in henries)</p></div>
       <p>The voltage across the inductor <strong>leads</strong> the current by 90° — the opposite phase relationship to a capacitor.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-17.svg" alt="Graph of reactance in ohms versus frequency. X_L (inductive) rises as a straight line through the origin; X_C (capacitive) falls as a hyperbola. The two curves intersect at the resonant frequency f_r, where X_L = X_C.">
         </div>
-        <figcaption>Fig 4.17 — Reactance versus frequency. X_L rises linearly; X_C falls as a hyperbola. They cross at the resonant frequency f_r where X_L = X_C.</figcaption>
+        <figcaption>Fig 4.17 — Reactance versus frequency. X<sub>L</sub> rises linearly; X<sub>C</sub> falls as a hyperbola. They cross at the resonant frequency f<sub>r</sub> where X<sub>L</sub> = X<sub>C</sub>.</figcaption>
       </figure>
 
       <h3>4G.4 — Coupling, Decoupling and Blocking</h3>
@@ -640,19 +640,19 @@
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-18.svg" alt="Right-triangle diagram showing a 3 m eastward vector and a 4 m northward vector combining to give a 5 m hypotenuse. The angle θ between east and the hypotenuse illustrates the vector-addition principle used in phasor arithmetic.">
         </div>
-        <figcaption>Fig 4.18 — Vector addition analogy. East (3 m) + North (4 m) = 5 m resultant at angle θ. The same Pythagoras relationship applies to phasors: V_supply = √(V_R² + V_X²).</figcaption>
+        <figcaption>Fig 4.18 — Vector addition analogy. East (3 m) + North (4 m) = 5 m resultant at angle θ. The same Pythagoras relationship applies to phasors: V<sub>supply</sub> = √(V<sub>R</sub>² + V<sub>X</sub>²).</figcaption>
       </figure>
 
       <h3>4G.6 — Resistor and Capacitor in Series</h3>
       <p>In a series RC circuit:</p>
       <ul>
-        <li>Voltage across R is in phase with the current (V_R = I × R)</li>
-        <li>Voltage across C lags the current by 90° (V_C = I × X_C)</li>
+        <li>Voltage across R is in phase with the current (V<sub>R</sub> = I × R)</li>
+        <li>Voltage across C lags the current by 90° (V<sub>C</sub> = I × X<sub>C</sub>)</li>
         <li>These two voltages are at 90° to each other and must be added with Pythagoras:</li>
       </ul>
-      <div class="formula-block"><p><strong>V_supply = √(V_R² + V_C²)</strong></p></div>
+      <div class="formula-block"><p><strong>V<sub>supply</sub> = √(V<sub>R</sub>² + V<sub>C</sub>²)</strong></p></div>
       <p>The total opposition to current (the <strong>impedance Z</strong>):</p>
-      <div class="formula-block"><p><strong>Z = √(R² + X_C²)</strong> (ohms)</p></div>
+      <div class="formula-block"><p><strong>Z = √(R² + X<sub>C</sub>²)</strong> (ohms)</p></div>
       <p>Current: <strong>I = V / Z</strong></p>
       <p>The phase angle between supply voltage and current lies between 0° (purely resistive) and 90° (purely capacitive), with voltage lagging current.</p>
 
@@ -660,19 +660,19 @@
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-19.svg" alt="Phasor diagram for a series RC circuit. V_R is drawn horizontally (in phase with current). V_C is drawn vertically downward (lagging current by 90°). V_supply is the hypotenuse at angle θ below horizontal. Z = √(R² + X_C²) is indicated.">
         </div>
-        <figcaption>Fig 4.19 — Phasor diagram: series RC circuit. V_R horizontal (in phase with I); V_C vertical downward (lagging I by 90°); V_supply is the vector sum. Impedance Z = √(R² + X_C²).</figcaption>
+        <figcaption>Fig 4.19 — Phasor diagram: series RC circuit. V<sub>R</sub> horizontal (in phase with I); V<sub>C</sub> vertical downward (lagging I by 90°); V<sub>supply</sub> is the vector sum. Impedance Z = √(R² + X<sub>C</sub>²).</figcaption>
       </figure>
 
       <h3>4G.7 — Resistor and Inductor in Series</h3>
       <p>Same geometry but the inductor's voltage leads the current by 90°:</p>
-      <div class="formula-block"><p><strong>Z = √(R² + X_L²)</strong> (ohms)</p></div>
+      <div class="formula-block"><p><strong>Z = √(R² + X<sub>L</sub>²)</strong> (ohms)</p></div>
       <p>The supply voltage leads the current by an angle between 0° and 90°.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-20.svg" alt="Phasor diagram for a series RL circuit. V_R is drawn horizontally (in phase with current). V_L is drawn vertically upward (leading current by 90°). V_supply is the hypotenuse at angle θ above horizontal. Z = √(R² + X_L²) is indicated.">
         </div>
-        <figcaption>Fig 4.20 — Phasor diagram: series RL circuit. V_R horizontal; V_L vertical upward (leading I by 90°); V_supply leads I by angle θ. Impedance Z = √(R² + X_L²).</figcaption>
+        <figcaption>Fig 4.20 — Phasor diagram: series RL circuit. V<sub>R</sub> horizontal; V<sub>L</sub> vertical upward (leading I by 90°); V<sub>supply</sub> leads I by angle θ. Impedance Z = √(R² + X<sub>L</sub>²).</figcaption>
       </figure>
 
       <div class="callout callout--info">
@@ -698,10 +698,10 @@
       <h2>Resonance, Q Factor and Bandwidth</h2>
 
       <h3>4H.1 — Series Resonance</h3>
-      <p>When L and C are connected in series with an AC source, the voltage across L leads the current by 90° and the voltage across C lags by 90°. These two voltages are therefore in <strong>anti-phase</strong> (180° apart). At any frequency where X_L ≠ X_C they partially cancel.</p>
-      <p>At the <strong>resonant frequency f_r</strong>, X_L = X_C exactly, so the voltages across L and C cancel completely. The series LC combination presents <strong>zero net reactance</strong> — the circuit impedance is just the winding resistance of the inductor. Series resonance is a <strong>minimum impedance</strong> condition.</p>
+      <p>When L and C are connected in series with an AC source, the voltage across L leads the current by 90° and the voltage across C lags by 90°. These two voltages are therefore in <strong>anti-phase</strong> (180° apart). At any frequency where X<sub>L</sub> ≠ X<sub>C</sub> they partially cancel.</p>
+      <p>At the <strong>resonant frequency f<sub>r</sub></strong>, X<sub>L</sub> = X<sub>C</sub> exactly, so the voltages across L and C cancel completely. The series LC combination presents <strong>zero net reactance</strong> — the circuit impedance is just the winding resistance of the inductor. Series resonance is a <strong>minimum impedance</strong> condition.</p>
       <p><strong>Resonant frequency:</strong></p>
-      <div class="formula-block"><p><strong>f_r = 1 / (2π√(LC))</strong> (Hz)</p></div>
+      <div class="formula-block"><p><strong>f<sub>r</sub> = 1 / (2π√(LC))</strong> (Hz)</p></div>
       <p>Rearranged:</p>
       <div class="formula-block"><p><strong>L = 1 / (4π²f²C)</strong> &nbsp;&nbsp; and &nbsp;&nbsp; <strong>C = 1 / (4π²f²L)</strong></p></div>
 
@@ -709,32 +709,32 @@
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-21.svg" alt="Circuit schematic showing an AC voltage source connected in series with an inductor L and capacitor C. Phasor diagram alongside shows V_L upward and V_C downward with equal magnitudes at resonance, cancelling to leave only resistive voltage.">
         </div>
-        <figcaption>Fig 4.21 — Series resonant circuit. At resonance, V_L and V_C are equal and opposite; the net reactive voltage is zero and circuit impedance is minimum (= winding resistance only).</figcaption>
+        <figcaption>Fig 4.21 — Series resonant circuit. At resonance, V<sub>L</sub> and V<sub>C</sub> are equal and opposite; the net reactive voltage is zero and circuit impedance is minimum (= winding resistance only).</figcaption>
       </figure>
 
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text">At series resonance, the voltages across the individual L and C components can be many times the supply voltage (voltage magnification = Q × V_supply). For a transmitter's series resonant output circuit, these voltages can reach hundreds or thousands of volts — a safety and component-rating concern.</div>
+        <div class="callout-text">At series resonance, the voltages across the individual L and C components can be many times the supply voltage (voltage magnification = Q × V<sub>supply</sub>). For a transmitter's series resonant output circuit, these voltages can reach hundreds or thousands of volts — a safety and component-rating concern.</div>
       </div>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-23.svg" alt="Graph of series circuit impedance Z versus frequency. Z starts high at low frequencies, dips sharply to a minimum at f_r (the resonant frequency), then rises again at high frequencies. The minimum corresponds to the winding resistance R.">
         </div>
-        <figcaption>Fig 4.23 — Series resonance: impedance dips to a minimum at f_r. Below f_r the circuit is capacitive (X_C &gt; X_L); above f_r it is inductive (X_L &gt; X_C).</figcaption>
+        <figcaption>Fig 4.23 — Series resonance: impedance dips to a minimum at f<sub>r</sub>. Below f<sub>r</sub> the circuit is capacitive (X<sub>C</sub> &gt; X<sub>L</sub>); above f<sub>r</sub> it is inductive (X<sub>L</sub> &gt; X<sub>C</sub>).</figcaption>
       </figure>
 
       <h3>4H.2 — Parallel Resonance</h3>
-      <p>When L and C are connected in <strong>parallel</strong>, the current in C leads the voltage by 90° and the current in L lags the voltage by 90°. At resonance (X_L = X_C), these two branch currents are equal and opposite and cancel at the input terminals — the input current is theoretically zero, so the <strong>impedance is maximum</strong>.</p>
-      <p>In practice, the inductor has winding resistance R and the input current is V/R_D, where R_D is the <strong>dynamic resistance</strong> of the tuned circuit:</p>
-      <div class="formula-block"><p><strong>R_D = L / (C × R)</strong> (ohms)</p></div>
-      <p>At resonance the parallel tuned circuit looks like a high-value resistor R_D.</p>
+      <p>When L and C are connected in <strong>parallel</strong>, the current in C leads the voltage by 90° and the current in L lags the voltage by 90°. At resonance (X<sub>L</sub> = X<sub>C</sub>), these two branch currents are equal and opposite and cancel at the input terminals — the input current is theoretically zero, so the <strong>impedance is maximum</strong>.</p>
+      <p>In practice, the inductor has winding resistance R and the input current is V/R<sub>D</sub>, where R<sub>D</sub> is the <strong>dynamic resistance</strong> of the tuned circuit:</p>
+      <div class="formula-block"><p><strong>R<sub>D</sub> = L / (C × R)</strong> (ohms)</p></div>
+      <p>At resonance the parallel tuned circuit looks like a high-value resistor R<sub>D</sub>.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-24.svg" alt="Graph of parallel circuit impedance Z versus frequency. Z starts low at low frequencies, peaks sharply at f_r (dynamic resistance R_D), then falls at high frequencies. Inset circuit schematic shows L and C in parallel with the coil resistance R included.">
         </div>
-        <figcaption>Fig 4.24 — Parallel resonance: impedance peaks at f_r to a maximum value R_D = L/(CR). Above and below f_r the impedance falls.</figcaption>
+        <figcaption>Fig 4.24 — Parallel resonance: impedance peaks at f<sub>r</sub> to a maximum value R<sub>D</sub> = L/(CR). Above and below f<sub>r</sub> the impedance falls.</figcaption>
       </figure>
 
       <figure>
@@ -746,31 +746,31 @@
 
       <h3>4H.3 — Q Factor</h3>
       <p>The <strong>Q factor</strong> (Quality factor) is a dimensionless number expressing the sharpness or selectivity of a tuned circuit. It is defined as the ratio of reactance to resistance:</p>
-      <div class="formula-block"><p><strong>Q = X_C / R = 1 / (2πf_r CR)</strong> (using capacitive reactance)</p></div>
+      <div class="formula-block"><p><strong>Q = X<sub>C</sub> / R = 1 / (2πf<sub>r</sub> CR)</strong> (using capacitive reactance)</p></div>
       <p>or equivalently:</p>
-      <div class="formula-block"><p><strong>Q = X_L / R = 2πf_r L / R</strong> (using inductive reactance)</p></div>
-      <p>For a parallel tuned circuit with dynamic resistance R_D:</p>
-      <div class="formula-block"><p><strong>Q = 2πf_r C R_D</strong></p></div>
+      <div class="formula-block"><p><strong>Q = X<sub>L</sub> / R = 2πf<sub>r</sub> L / R</strong> (using inductive reactance)</p></div>
+      <p>For a parallel tuned circuit with dynamic resistance R<sub>D</sub>:</p>
+      <div class="formula-block"><p><strong>Q = 2πf<sub>r</sub> C R<sub>D</sub></strong></p></div>
       <p>Higher Q → sharper tuning → more selective (better at rejecting off-resonance frequencies).</p>
-      <p><strong>Practical Q values:</strong> up to ~70 readily achievable with discrete LC circuits; above 100 is difficult because the parallel resistance of the surrounding circuit reduces the effective R_D. Crystals can achieve Q &gt; 50,000.</p>
+      <p><strong>Practical Q values:</strong> up to ~70 readily achievable with discrete LC circuits; above 100 is difficult because the parallel resistance of the surrounding circuit reduces the effective R<sub>D</sub>. Crystals can achieve Q &gt; 50,000.</p>
 
       <h3>4H.4 — Bandwidth</h3>
       <p>The <strong>half-power bandwidth</strong> (also called the −3 dB bandwidth) is the frequency range over which the circuit response is within 3 dB (a factor of √2 = 0.707 in voltage) of its peak value:</p>
       <div class="formula-block"><p><strong>BW = f₂ − f₁</strong> (where f₁ and f₂ are the lower and upper −3 dB frequencies)</p></div>
       <p>The relationship between Q, resonant frequency and bandwidth:</p>
-      <div class="formula-block"><p><strong>Q = f_r / (f₂ − f₁) = f_r / BW</strong> &nbsp;&nbsp;&nbsp; Rearranged: <strong>BW = f_r / Q</strong></p></div>
+      <div class="formula-block"><p><strong>Q = f<sub>r</sub> / (f₂ − f₁) = f<sub>r</sub> / BW</strong> &nbsp;&nbsp;&nbsp; Rearranged: <strong>BW = f<sub>r</sub> / Q</strong></p></div>
       <p><strong>Example:</strong> A tuned circuit at 7.0 MHz with Q = 70 has bandwidth BW = 7,000,000 / 70 = <strong>100 kHz</strong>. An amateur SSB signal is ~3 kHz wide, so this circuit passes the whole band segment — a bandpass filter needs much higher Q or a more complex design.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-26.svg" alt="Resonance response curve: amplitude versus frequency. The peak is at f_r. Two dashed horizontal lines mark the −3 dB level (0.707 of peak). Vertical dashed lines drop from these intersections to the frequency axis, marking f_1 and f_2. The bandwidth BW = f_2 − f_1 is indicated.">
         </div>
-        <figcaption>Fig 4.26 — Bandwidth: the −3 dB bandwidth BW = f₂ − f₁. Q = f_r / BW. Higher Q gives narrower bandwidth and sharper frequency selectivity.</figcaption>
+        <figcaption>Fig 4.26 — Bandwidth: the −3 dB bandwidth BW = f₂ − f₁. Q = f<sub>r</sub> / BW. Higher Q gives narrower bandwidth and sharper frequency selectivity.</figcaption>
       </figure>
 
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>4H1:</strong> Q = f_r/BW is the key relationship. Know how to rearrange: if you know f_r and Q, calculate bandwidth; if you know f_r and bandwidth, calculate Q.</div>
+        <div class="callout-text"><strong>4H1:</strong> Q = f<sub>r</sub>/BW is the key relationship. Know how to rearrange: if you know f<sub>r</sub> and Q, calculate bandwidth; if you know f<sub>r</sub> and bandwidth, calculate Q.</div>
       </div>
 
       <h3>4H.5 — Circulating Currents</h3>
@@ -851,26 +851,26 @@
       <h3>4J.1 — Transformer Basics</h3>
       <p>A transformer consists of two (or more) coils — <strong>primary</strong> and <strong>secondary</strong> — sharing the same magnetic field, usually via a common core. An alternating current in the primary creates a changing magnetic field that induces a voltage in the secondary.</p>
       <p><strong>Voltage ratio (turns ratio):</strong></p>
-      <div class="formula-block"><p><strong>V_S / V_P = N_S / N_P</strong></p></div>
-      <p>Where N_S and N_P are the number of turns on secondary and primary respectively. A step-down transformer with N_P = 2 × N_S halves the voltage.</p>
+      <div class="formula-block"><p><strong>V<sub>S</sub> / V<sub>P</sub> = N<sub>S</sub> / N<sub>P</sub></strong></p></div>
+      <p>Where N<sub>S</sub> and N<sub>P</sub> are the number of turns on secondary and primary respectively. A step-down transformer with N<sub>P</sub> = 2 × N<sub>S</sub> halves the voltage.</p>
       <p><strong>Current ratio</strong> (conservation of power, neglecting losses):</p>
-      <div class="formula-block"><p><strong>I_P / I_S = N_S / N_P</strong></p></div>
+      <div class="formula-block"><p><strong>I<sub>P</sub> / I<sub>S</sub> = N<sub>S</sub> / N<sub>P</sub></strong></p></div>
       <p>If voltage is halved, current is doubled. Power in = power out.</p>
 
       <figure>
         <div class="fig-wrap">
           <img src="/assets/images/study/full/section-4/fig-4-28.svg" alt="Transformer schematic: primary winding (N_P turns) on left connected to AC voltage source V_P; secondary winding (N_S turns) on right connected to load Z_load. A shared core links both windings. V_S and current arrows I_P and I_S are labelled.">
         </div>
-        <figcaption>Fig 4.28 — Transformer: primary (N_P turns), core, and secondary (N_S turns) with load. V_S/V_P = N_S/N_P; I_P/I_S = N_S/N_P.</figcaption>
+        <figcaption>Fig 4.28 — Transformer: primary (N<sub>P</sub> turns), core, and secondary (N<sub>S</sub> turns) with load. V<sub>S</sub>/V<sub>P</sub> = N<sub>S</sub>/N<sub>P</sub>; I<sub>P</sub>/I<sub>S</sub> = N<sub>S</sub>/N<sub>P</sub>.</figcaption>
       </figure>
 
       <h3>4J.2 — Impedance Transformation</h3>
       <p>The impedance seen at the primary depends on the secondary load and the turns ratio:</p>
-      <div class="formula-block"><p><strong>Z_in = Z_load × (N_P / N_S)²</strong></p></div>
+      <div class="formula-block"><p><strong>Z<sub>in</sub> = Z<sub>load</sub> × (N<sub>P</sub> / N<sub>S</sub>)²</strong></p></div>
       <p>The impedance transformation factor is the <strong>square of the turns ratio</strong>. This is fundamental to RF circuit design: an amplifier transistor might have a 5 Ω output impedance; a 1:√10 turns ratio transformer (impedance ratio 1:10) presents this as 50 Ω to the antenna feed line.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>4J1:</strong> Z_in = Z_out × (N_P/N_S)². The impedance ratio equals the <em>square</em> of the turns ratio — a 3:1 turns ratio gives a 9:1 impedance ratio. This formula appears in RF impedance matching, audio output stages, and ATU design.</div>
+        <div class="callout-text"><strong>4J1:</strong> Z<sub>in</sub> = Z<sub>out</sub> × (N<sub>P</sub>/N<sub>S</sub>)². The impedance ratio equals the <em>square</em> of the turns ratio — a 3:1 turns ratio gives a 9:1 impedance ratio. This formula appears in RF impedance matching, audio output stages, and ATU design.</div>
       </div>
 
       <h3>4J.3 — Core Materials and Eddy Currents</h3>
@@ -951,8 +951,8 @@
           <p class="self-check__q">2. Three resistors of 10 Ω, 20 Ω and 30 Ω are connected in series across 120 V. What is the voltage across the 20 Ω resistor?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-2">Show answer</button>
           <div class="self-check__reveal" id="ans-4-2" hidden>
-            <p>R_total = 10 + 20 + 30 = 60 Ω</p>
-            <p>Total current I = V / R_total = 120 / 60 = 2 A</p>
+            <p>R<sub>total</sub> = 10 + 20 + 30 = 60 Ω</p>
+            <p>Total current I = V / R<sub>total</sub> = 120 / 60 = 2 A</p>
             <p>V across 20 Ω = I × R = 2 × 20 = <strong>40 V</strong></p>
           </div>
         </div>
@@ -961,10 +961,10 @@
           <p class="self-check__q">3. A source has EMF 12 V and internal resistance 2 Ω. At what load resistance is maximum power transferred, and what is the maximum power delivered to the load?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-3">Show answer</button>
           <div class="self-check__reveal" id="ans-4-3" hidden>
-            <p>Maximum power transfer when R_load = r = <strong>2 Ω</strong></p>
-            <p>At this point: V_terminal = EMF / 2 = 12 / 2 = 6 V</p>
-            <p>P_load = V² / R_load = 36 / 2 = <strong>18 W</strong></p>
-            <p>(Or: P_max = EMF² / (4r) = 144 / 8 = 18 W)</p>
+            <p>Maximum power transfer when R<sub>load</sub> = r = <strong>2 Ω</strong></p>
+            <p>At this point: V<sub>terminal</sub> = EMF / 2 = 12 / 2 = 6 V</p>
+            <p>P<sub>load</sub> = V² / R<sub>load</sub> = 36 / 2 = <strong>18 W</strong></p>
+            <p>(Or: P<sub>max</sub> = EMF² / (4r) = 144 / 8 = 18 W)</p>
           </div>
         </div>
 
@@ -981,7 +981,7 @@
           <p class="self-check__q">5. What inductance has a reactance of 50 Ω at 7.0 MHz?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-5">Show answer</button>
           <div class="self-check__reveal" id="ans-4-5" hidden>
-            <p>X_L = 2πfL → rearrange: L = X_L / (2πf)</p>
+            <p>X<sub>L</sub> = 2πfL → rearrange: L = X<sub>L</sub> / (2πf)</p>
             <p>L = 50 / (2π × 7 × 10⁶) = 50 / (44 × 10⁶) ≈ <strong>1.14 μH</strong></p>
           </div>
         </div>
@@ -990,7 +990,7 @@
           <p class="self-check__q">6. A mains supply is 230 V RMS. What is the peak voltage?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-6">Show answer</button>
           <div class="self-check__reveal" id="ans-4-6" hidden>
-            <p>V_peak = V_rms × √2 = 230 × 1.414 ≈ <strong>325 V</strong></p>
+            <p>V<sub>peak</sub> = V<sub>rms</sub> × √2 = 230 × 1.414 ≈ <strong>325 V</strong></p>
           </div>
         </div>
 
@@ -998,10 +998,10 @@
           <p class="self-check__q">7. A series LC circuit has L = 10 μH and C = 100 pF. Calculate the resonant frequency.</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-7">Show answer</button>
           <div class="self-check__reveal" id="ans-4-7" hidden>
-            <p>f_r = 1 / (2π√(LC))</p>
+            <p>f<sub>r</sub> = 1 / (2π√(LC))</p>
             <p>LC = 10 × 10⁻⁶ × 100 × 10⁻¹² = 10⁻¹⁵</p>
             <p>√(LC) = √(10⁻¹⁵) = 31.6 × 10⁻⁹</p>
-            <p>f_r = 1 / (2π × 31.6 × 10⁻⁹) ≈ <strong>5.03 MHz</strong></p>
+            <p>f<sub>r</sub> = 1 / (2π × 31.6 × 10⁻⁹) ≈ <strong>5.03 MHz</strong></p>
           </div>
         </div>
 
@@ -1009,7 +1009,7 @@
           <p class="self-check__q">8. A tuned circuit has a resonant frequency of 14 MHz and a Q of 50. What is the −3 dB bandwidth?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-8">Show answer</button>
           <div class="self-check__reveal" id="ans-4-8" hidden>
-            <p>BW = f_r / Q = 14 × 10⁶ / 50 = <strong>280 kHz</strong></p>
+            <p>BW = f<sub>r</sub> / Q = 14 × 10⁶ / 50 = <strong>280 kHz</strong></p>
           </div>
         </div>
 
@@ -1017,9 +1017,9 @@
           <p class="self-check__q">9. A transformer has 200 primary turns and 50 secondary turns. If the primary is connected to 240 V, what is the secondary voltage? If a 4 Ω load is connected to the secondary, what impedance does the source see at the primary?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-4-9">Show answer</button>
           <div class="self-check__reveal" id="ans-4-9" hidden>
-            <p>Turns ratio N_P/N_S = 200/50 = 4:1 (step-down)</p>
-            <p>V_S = V_P × (N_S/N_P) = 240 × (50/200) = 240 × 0.25 = <strong>60 V</strong></p>
-            <p>Z_in = Z_load × (N_P/N_S)² = 4 × (200/50)² = 4 × 16 = <strong>64 Ω</strong></p>
+            <p>Turns ratio N<sub>P</sub>/N<sub>S</sub> = 200/50 = 4:1 (step-down)</p>
+            <p>V<sub>S</sub> = V<sub>P</sub> × (N<sub>S</sub>/N<sub>P</sub>) = 240 × (50/200) = 240 × 0.25 = <strong>60 V</strong></p>
+            <p>Z<sub>in</sub> = Z<sub>load</sub> × (N<sub>P</sub>/N<sub>S</sub>)² = 4 × (200/50)² = 4 × 16 = <strong>64 Ω</strong></p>
           </div>
         </div>
 

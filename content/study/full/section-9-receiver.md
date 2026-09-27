@@ -22,7 +22,7 @@ This is one of the exam's densest chapters. It covers how a modern amateur recei
 Every resistor and amplifier stage adds thermal noise. At room temperature (290 K), the available noise power at the input to any circuit is:
 
 ```
-P_noise = k × T × B
+P<sub>noise</sub> = k × T × B
 ```
 
 Where k = Boltzmann's constant (1.38 × 10⁻²³ J/K), T = temperature in kelvin, B = bandwidth in Hz.
@@ -41,7 +41,7 @@ This works out to a **noise floor of −174 dBm per Hz** at room temperature, ri
 A receiver adds noise on top of the thermal floor. The **Noise Figure (NF)** is the degradation in signal-to-noise ratio caused by the receiver, expressed in dB:
 
 ```
-NF = SNR_in (dB) − SNR_out (dB)
+NF = SNR<sub>in</sub> (dB) − SNR<sub>out</sub> (dB)
 ```
 
 A perfect receiver would have NF = 0 dB. Real HF receivers typically achieve NF of 10–15 dB; good LNA-equipped VHF/UHF receivers can achieve NF of 1–2 dB.
@@ -102,10 +102,10 @@ The **superheterodyne** (superhet) is the standard architecture for virtually al
 
 <img src="/assets/images/study/full/section-9/fig-9-1-superhet-rx-chain.svg" alt="Superhet receiver block diagram: antenna feeds RF filter, mixer (with local oscillator below), IF filter, IF amplifier, demodulator and AF amplifier to audio output; IF = RF minus LO" width="700" height="220" loading="lazy">
 
-The **mixer** combines the incoming RF signal (f_signal) with the Local Oscillator (f_LO) to produce the **Intermediate Frequency (IF)**:
+The **mixer** combines the incoming RF signal (f<sub>signal</sub>) with the Local Oscillator (f<sub>LO</sub>) to produce the **Intermediate Frequency (IF)**:
 
 ```
-f_IF = f_LO − f_signal   (or f_signal − f_LO)
+f<sub>IF</sub> = f<sub>LO</sub> − f<sub>signal</sub>   (or f<sub>signal</sub> − f<sub>LO</sub>)
 ```
 
 The IF is fixed regardless of the tuned frequency. This allows a **sharp, fixed filter** to be fitted at the IF to select only the wanted signal and reject adjacent channels.
@@ -138,10 +138,10 @@ These provide far sharper selectivity than any tunable filter could achieve.
 The mixer produces IF signals from **two** RF frequencies: the wanted signal and the **image frequency**. For a given LO frequency and IF:
 
 ```
-f_image = f_LO + f_IF   (when LO is above the signal: f_LO = f_signal + f_IF)
+f<sub>image</sub> = f<sub>LO</sub> + f<sub>IF</sub>   (when LO is above the signal: f<sub>LO</sub> = f<sub>signal</sub> + f<sub>IF</sub>)
 ```
 
-Or more generally: the image is the frequency on the other side of the LO from the wanted signal, at a distance of f_IF from the LO.
+Or more generally: the image is the frequency on the other side of the LO from the wanted signal, at a distance of f<sub>IF</sub> from the LO.
 
 > **Example:** Receiver tuned to 7.100 MHz, IF = 455 kHz, LO = 7.555 MHz.
 > Image = 7.555 + 0.455 = **8.010 MHz**.
@@ -366,7 +366,7 @@ This noise can mask a weak wanted signal even though the strong signal is many k
 The total noise figure of a cascaded receiver chain is dominated by the first stage:
 
 ```
-F_total = F₁ + (F₂ − 1)/G₁ + (F₃ − 1)/(G₁ × G₂) + …
+F<sub>total</sub> = F₁ + (F₂ − 1)/G₁ + (F₃ − 1)/(G₁ × G₂) + …
 ```
 
 Where F = noise factor (linear, not dB) and G = gain (linear). This is the **Friis formula**.

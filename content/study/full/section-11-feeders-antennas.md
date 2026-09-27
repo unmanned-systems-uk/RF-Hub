@@ -37,16 +37,16 @@ The antenna does this through its geometry. A half-wave dipole in free space pre
 
 ### Radiation Resistance
 
-Radiation resistance (R_rad) is a fictitious but useful resistance: it represents the equivalent resistive load that would dissipate the same power as the antenna radiates. For a half-wave dipole in free space, R_rad ≈ 73 Ω. For shorter antennas, R_rad falls rapidly:
+Radiation resistance (R<sub>rad</sub>) is a fictitious but useful resistance: it represents the equivalent resistive load that would dissipate the same power as the antenna radiates. For a half-wave dipole in free space, R<sub>rad</sub> ≈ 73 Ω. For shorter antennas, R<sub>rad</sub> falls rapidly:
 
-| Antenna type | Approx. R_rad |
+| Antenna type | Approx. R<sub>rad</sub> |
 |---|---|
 | Half-wave dipole | ~73 Ω |
 | Quarter-wave vertical (over perfect ground) | ~35 Ω |
 | Short dipole (≤ 0.1λ) | < 5 Ω |
 | 5/8-wave vertical | ~60 Ω |
 
-A short antenna with R_rad of 1 Ω and a 10 Ω loss resistance in the loading coil is only ~10% efficient — most of the power heats the coil, not the air.
+A short antenna with R<sub>rad</sub> of 1 Ω and a 10 Ω loss resistance in the loading coil is only ~10% efficient — most of the power heats the coil, not the air.
 
 ---
 
@@ -59,10 +59,10 @@ Coaxial cable has a central conductor surrounded by a dielectric (insulator), a 
 The **characteristic impedance** Z₀ is set by the geometry of the conductors and the dielectric:
 
 ```
-Z₀ = (138 / √ε_r) × log₁₀(D/d)   [Ω]
+Z₀ = (138 / √ε<sub>r</sub>) × log₁₀(D/d)   [Ω]
 ```
 
-Where D = inner diameter of the screen, d = outer diameter of the inner conductor, ε_r = relative permittivity of the dielectric.
+Where D = inner diameter of the screen, d = outer diameter of the inner conductor, ε<sub>r</sub> = relative permittivity of the dielectric.
 
 Common impedances:
 - **50 Ω** — used throughout amateur radio and professional RF (the compromise between maximum power handling at ~30 Ω and minimum loss at ~77 Ω gives ~50 Ω as a standard)
@@ -119,12 +119,12 @@ Typical values: solid polyethylene (RG58, RG213) VF ≈ 0.66; foam polyethylene 
 The electrical length of a cable is its physical length expressed as a fraction of the signal's wavelength *in that cable*:
 
 ```
-λ_cable = (300 / f_MHz) × VF   [metres]
+λ<sub>cable</sub> = (300 / f<sub>MHz</sub>) × VF   [metres]
 ```
 
 A quarter-wave matching section at 144 MHz in RG58 (VF 0.66):
 ```
-λ_cable/4 = (300 / 144) × 0.66 / 4 = 0.344 m ≈ 34.4 cm
+λ<sub>cable</sub>/4 = (300 / 144) × 0.66 / 4 = 0.344 m ≈ 34.4 cm
 ```
 
 The free-space quarter-wave at 144 MHz is 52 cm — the cable is physically shorter but electrically the same length.
@@ -132,7 +132,7 @@ The free-space quarter-wave at 144 MHz is 52 cm — the cable is physically shor
 Velocity factor matters for:
 - **Stubs** — shorted or open-circuited lengths of cable used as reactive elements; length must account for VF
 - **Phasing harnesses** — cables used to feed antenna arrays with a specific phase delay
-- **λ/4 transformers** — a quarter-wave section transforms impedance: Z_in = Z₀² / Z_load
+- **λ/4 transformers** — a quarter-wave section transforms impedance: Z<sub>in</sub> = Z₀² / Z<sub>load</sub>
 
 ---
 
@@ -180,12 +180,12 @@ An **unun** (unbalanced-to-unbalanced transformer) transforms impedance without 
 
 When a transmission line is terminated in its characteristic impedance Z₀, all incident power is absorbed by the load and no energy is reflected. The voltage and current are uniform along the line.
 
-When the load impedance Z_L ≠ Z₀, some energy is reflected. The incident and reflected waves superimpose to form a **standing wave** — a pattern of voltage and current maxima (antinodes) and minima (nodes) that repeats every half-wavelength along the line.
+When the load impedance Z<sub>L</sub> ≠ Z₀, some energy is reflected. The incident and reflected waves superimpose to form a **standing wave** — a pattern of voltage and current maxima (antinodes) and minima (nodes) that repeats every half-wavelength along the line.
 
 ### What Standing Waves Do (and Don't Do)
 
 **Do:**
-- Change the impedance seen at the transmitter end of the line. On a mismatched line, the input impedance is **not** simply Z_L transformed once — it depends on the feeder's **electrical length**: a λ/4 section transforms the load impedance (Z_in = Z₀²/Z_L for a quarter-wave line), and the pattern **repeats every λ/2** (a half-wave line, or any multiple of it, presents the load impedance unchanged at its input). Change the feeder length on a mismatched line and the impedance the transmitter sees changes too.
+- Change the impedance seen at the transmitter end of the line. On a mismatched line, the input impedance is **not** simply Z<sub>L</sub> transformed once — it depends on the feeder's **electrical length**: a λ/4 section transforms the load impedance (Z<sub>in</sub> = Z₀²/Z<sub>L</sub> for a quarter-wave line), and the pattern **repeats every λ/2** (a half-wave line, or any multiple of it, presents the load impedance unchanged at its input). Change the feeder length on a mismatched line and the impedance the transmitter sees changes too.
 - Increase feeder loss (higher I²R and dielectric loss from the elevated current/voltage peaks), worse on lossy lines.
 - Produce real voltage antinodes that can exceed cable/connector voltage ratings at high power.
 
@@ -201,7 +201,7 @@ When the load impedance Z_L ≠ Z₀, some energy is reflected. The incident and
 The **reflection coefficient** Γ measures how much of the incident wave is reflected:
 
 ```
-Γ = (Z_L − Z₀) / (Z_L + Z₀)
+Γ = (Z<sub>L</sub> − Z₀) / (Z<sub>L</sub> + Z₀)
 ```
 
 |Γ| ranges from 0 (perfect match) to 1 (total reflection: open or short circuit).
@@ -217,7 +217,7 @@ VSWR ranges from 1:1 (perfect match) to ∞:1 (open or short).
 **Reflected power** as a percentage of incident power:
 
 ```
-P_reflected = |Γ|² × 100%
+P<sub>reflected</sub> = |Γ|² × 100%
 ```
 
 | VSWR | |Γ| | % Power reflected |
@@ -341,7 +341,7 @@ A folded dipole consists of a half-wave conductor bent into a loop: both ends of
 Both conductors carry current, but in the outer conductor the current doubles back. The combined effect raises the feed-point impedance by a factor of approximately 4:
 
 ```
-Z_folded ≈ 4 × Z_dipole ≈ 4 × 73 Ω ≈ 280–300 Ω
+Z<sub>folded</sub> ≈ 4 × Z<sub>dipole</sub> ≈ 4 × 73 Ω ≈ 280–300 Ω
 ```
 
 ### Properties
@@ -366,7 +366,7 @@ A half-wave dipole fed at its centre has a convenient feed impedance of ~73 Ω. 
 To match 2,450 Ω to 50 Ω, a **49:1 unun** is wound on a ferrite toroid (FT-240-43 or similar):
 
 ```
-Impedance ratio = (N_primary / N_secondary)² = 49
+Impedance ratio = (N<sub>primary</sub> / N<sub>secondary</sub>)² = 49
 → turns ratio = 7:1 (e.g., 2 turns primary, 14 turns secondary)
 ```
 
@@ -391,7 +391,7 @@ A slot antenna is the electromagnetic **complement** of a dipole. Where a dipole
 By **Babinet's principle**, the electric and magnetic fields of a slot are swapped relative to those of the complementary dipole. The impedance of a resonant slot in an infinite ground plane is:
 
 ```
-Z_slot = η² / (4 × Z_dipole) = 377² / (4 × 73) ≈ 486 Ω
+Z<sub>slot</sub> = η² / (4 × Z<sub>dipole</sub>) = 377² / (4 × 73) ≈ 486 Ω
 ```
 
 In practice, a slot cut in a finite conducting panel has an impedance in the range 50–200 Ω depending on shape, and can be matched directly.
@@ -420,10 +420,10 @@ A full-size quarter-wave vertical on 80 m (3.5 MHz) would be 21 m tall. A mobile
 
 ### Coil Q and Efficiency
 
-A loading coil has loss resistance due to the finite Q of the wire. If R_rad = 3 Ω and the coil loss resistance R_loss = 10 Ω, then:
+A loading coil has loss resistance due to the finite Q of the wire. If R<sub>rad</sub> = 3 Ω and the coil loss resistance R<sub>loss</sub> = 10 Ω, then:
 
 ```
-Efficiency = R_rad / (R_rad + R_loss) = 3 / 13 ≈ 23%
+Efficiency = R<sub>rad</sub> / (R<sub>rad</sub> + R<sub>loss</sub>) = 3 / 13 ≈ 23%
 ```
 
 High-Q coils (silver-plated, air-spaced, large diameter) are essential for HF mobile antenna efficiency. Q values of 300–500 are achievable with good construction.
@@ -520,7 +520,7 @@ The 377 Ω is the intrinsic impedance of free space — the ratio of E-field to 
 
 |Γ| = (VSWR − 1) / (VSWR + 1) = 2/4 = 0.5
 
-P_reflected = |Γ|² = 0.5² = **0.25 = 25%**
+P<sub>reflected</sub> = |Γ|² = 0.5² = **0.25 = 25%**
 
 Three-quarters of the power is still absorbed by the load, but 25% returns through the feeder, increasing effective feeder loss.
 </details>

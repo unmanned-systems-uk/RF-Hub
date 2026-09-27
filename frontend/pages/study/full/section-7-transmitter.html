@@ -542,7 +542,7 @@
         <li>This voltage is smoothed by a <strong>low-pass filter</strong> and applied to the VCO varicap &mdash; correcting its frequency.</li>
       </ol>
 
-      <div class="formula-block">f_out = f_crystal &times; N / A
+      <div class="formula-block">f<sub>out</sub> = f<sub>crystal</sub> &times; N / A
 
 Step size = reference frequency (1 kHz in this example)</div>
 
@@ -576,7 +576,7 @@ Step size = reference frequency (1 kHz in this example)</div>
         <li>A <strong>low-pass filter</strong> removes the harmonics from the staircase</li>
       </ol>
 
-      <div class="formula-block">f_out = (step size &times; clock frequency) / table length</div>
+      <div class="formula-block">f<sub>out</sub> = (step size &times; clock frequency) / table length</div>
 
       <p>DDS gives extremely fine frequency resolution (sub-Hz) and fast settling. The disadvantage is <strong>phase noise</strong> &mdash; the discrete amplitude steps produce sidebands close to the carrier that the LPF cannot remove, raising the noise floor. This degrades adjacent-channel performance. Increasing the number of bits reduces, but cannot eliminate, phase noise.</p>
     </section>
@@ -615,7 +615,7 @@ If required deviation at 144 MHz = &plusmn;2.5 kHz, oscillator needs &plusmn;138
       <h3>Mixer (Up-Conversion)</h3>
       <p>A mixer multiplies two input signals to produce sum and difference frequency outputs:</p>
 
-      <div class="formula-block">f_out = f_in &plusmn; f_LO</div>
+      <div class="formula-block">f<sub>out</sub> = f<sub>in</sub> &plusmn; f<sub>LO</sub></div>
 
       <p>For a 6&nbsp;MHz SSB signal mixed with a VFO at 8.0&ndash;8.35&nbsp;MHz:</p>
       <ul>
@@ -998,11 +998,11 @@ If required deviation at 144 MHz = &plusmn;2.5 kHz, oscillator needs &plusmn;138
           <li><strong>Modulation at low IF:</strong> crystal filters work better at low frequencies; mode-agnostic RF path; band-change by VFO only.</li>
           <li><strong>Balanced modulator</strong> (diode ring) &rarr; DSB-SC. <strong>Crystal filter</strong> &rarr; selects one sideband &rarr; SSB. Cannot frequency-multiply SSB.</li>
           <li><strong>SSB benefits:</strong> half AM bandwidth; all power carries information; 100&nbsp;W PEP = ~5&nbsp;W average voice.</li>
-          <li><strong>FM:</strong> carrier frequency varies; amplitude constant. Carson&rsquo;s BW = 2(f_audio + deviation). Over-deviation = adjacent channel interference.</li>
+          <li><strong>FM:</strong> carrier frequency varies; amplitude constant. Carson&rsquo;s BW = 2(f<sub>audio</sub> + deviation). Over-deviation = adjacent channel interference.</li>
           <li><strong>Varicap diode</strong> converts audio voltage to frequency change via LC capacitance shift.</li>
           <li><strong>VFO:</strong> tuneable LC oscillator; can drift. Needs stable supply, rigid construction, and buffer amp.</li>
           <li><strong>Crystal oscillator:</strong> Q up to 50,000; stable and accurate. VXO allows small pulling. Mainly used as PLL reference today.</li>
-          <li><strong>PLL:</strong> f_out = f_crystal &times; N/A. Step size = reference frequency. Out-of-lock must inhibit TX.</li>
+          <li><strong>PLL:</strong> f<sub>out</sub> = f<sub>crystal</sub> &times; N/A. Step size = reference frequency. Out-of-lock must inhibit TX.</li>
           <li><strong>DDS:</strong> look-up table + DAC + LPF. Sub-Hz resolution. Phase noise cannot be filtered; limits adjacent-channel performance.</li>
           <li><strong>Class C:</strong> conduction &lt;180&deg;; efficiency ~67%; only for constant-envelope modes (FM, CW). Tuned output filters harmonics.</li>
           <li><strong>Class A:</strong> linear; ~35% efficiency; required for SSB, AM, AFSK, PSK.</li>

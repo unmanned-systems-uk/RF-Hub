@@ -103,13 +103,13 @@ The magnetic fields produced by CM currents **add** rather than cancel. The cabl
 
 ### The Relationship Between CM and DM (13C1)
 
-If the actual currents in conductors A and B are I_A and I_B:
+If the actual currents in conductors A and B are I<sub>A</sub> and I<sub>B</sub>:
 
-> **I_DM = (I_A − I_B) / 2**     (differential component — equal and opposite)
+> **I<sub>DM</sub> = (I<sub>A</sub> − I<sub>B</sub>) / 2**     (differential component — equal and opposite)
 
-> **I_CM = (I_A + I_B) / 2**     (common mode component — same direction in both)
+> **I<sub>CM</sub> = (I<sub>A</sub> + I<sub>B</sub>) / 2**     (common mode component — same direction in both)
 
-In an ideal cable with a balanced source and load, I_A = −I_B so I_CM = 0. In practice, asymmetry in impedances, parasitic paths, and ground connections all allow I_CM to develop.
+In an ideal cable with a balanced source and load, I<sub>A</sub> = −I<sub>B</sub> so I<sub>CM</sub> = 0. In practice, asymmetry in impedances, parasitic paths, and ground connections all allow I<sub>CM</sub> to develop.
 
 ### Why CM is the Problem
 
@@ -179,7 +179,7 @@ The field-strength formula of §13D applies only in the **far field** — the re
 
 The transition occurs at approximately:
 
-> **r_boundary ≈ λ / (2π) ≈ 0.159 × λ**
+> **r<sub>boundary</sub> ≈ λ / (2π) ≈ 0.159 × λ**
 
 At this distance, the stored reactive energy in the near field equals the radiated energy in the far field.
 
@@ -275,7 +275,7 @@ The ferrite CM choke is the single most versatile EMC component in the amateur t
 
 ### How a Ferrite CM Choke Works
 
-Wind several turns of coax (or a cable pair) through a ferrite toroid. The DM current in the two conductors creates **opposing magnetic flux** in the core — they cancel, and the core presents no impedance to the DM signal. The CM current in the two conductors creates **additive magnetic flux** in the core — the core presents high impedance (Z = jωL_CM) to the CM current, suppressing it.
+Wind several turns of coax (or a cable pair) through a ferrite toroid. The DM current in the two conductors creates **opposing magnetic flux** in the core — they cancel, and the core presents no impedance to the DM signal. The CM current in the two conductors creates **additive magnetic flux** in the core — the core presents high impedance (Z = jωL<sub>CM</sub>) to the CM current, suppressing it.
 
 For a coax choke: the coaxial cable is wound through the toroid without breaking the coax. The DM path (inner conductor + braid inner surface) is undisturbed. The CM path (braid outer surface) sees high series impedance.
 
@@ -401,24 +401,24 @@ The T filter's series inductors block high-frequency energy at both input and ou
 
 For a simple single-section LP filter with cut-off frequency fc and source/load impedance Z₀:
 
-> **Series inductor:** L = Z₀ / (2π × f_c)
+> **Series inductor:** L = Z₀ / (2π × f<sub>c</sub>)
 
-> **Shunt capacitor:** C = 1 / (2π × f_c × Z₀)
+> **Shunt capacitor:** C = 1 / (2π × f<sub>c</sub> × Z₀)
 
-These are derived from the condition that each element has an impedance equal to Z₀ at f_c:
-- Inductive reactance X_L = Z₀ at f_c → L = Z₀/ωc
-- Capacitive reactance X_C = Z₀ at f_c → C = 1/(ωc × Z₀)
+These are derived from the condition that each element has an impedance equal to Z₀ at f<sub>c</sub>:
+- Inductive reactance X<sub>L</sub> = Z₀ at f<sub>c</sub> → L = Z₀/ωc
+- Capacitive reactance X<sub>C</sub> = Z₀ at f<sub>c</sub> → C = 1/(ωc × Z₀)
 
 where ωc = 2πfc.
 
 **For a High-Pass filter** — swap element types:
-- Series **capacitor**: C = 1 / (2π × f_c × Z₀)
-- Shunt **inductor**: L = Z₀ / (2π × f_c)
+- Series **capacitor**: C = 1 / (2π × f<sub>c</sub> × Z₀)
+- Shunt **inductor**: L = Z₀ / (2π × f<sub>c</sub>)
 (Same formula, L and C roles exchanged.)
 
 ### Worked Examples
 
-**LP Pi filter, f_c = 30 MHz, Z₀ = 50 Ω (transmitter HF LPF):**
+**LP Pi filter, f<sub>c</sub> = 30 MHz, Z₀ = 50 Ω (transmitter HF LPF):**
 
 L = 50 / (2π × 30 × 10⁶) = 50 / 188,495,559 = **265 nH**
 
@@ -426,19 +426,19 @@ C = 1 / (2π × 30 × 10⁶ × 50) = 1 / 9,424,778 = **106 pF**
 
 Component values: two 106 pF capacitors (shunt), one 265 nH inductor (series). Standard values: 100 pF (5% low, acceptable) and 270 nH.
 
-**HP Pi filter, f_c = 40 MHz, Z₀ = 75 Ω (TV input, blocks HF, passes UHF):**
+**HP Pi filter, f<sub>c</sub> = 40 MHz, Z₀ = 75 Ω (TV input, blocks HF, passes UHF):**
 
-C_series = 1 / (2π × 40 × 10⁶ × 75) = 1 / 18,849,556 = **53 pF**
+C<sub>series</sub> = 1 / (2π × 40 × 10⁶ × 75) = 1 / 18,849,556 = **53 pF**
 
-L_shunt = 75 / (2π × 40 × 10⁶) = 75 / 251,327,412 = **298 nH ≈ 300 nH**
+L<sub>shunt</sub> = 75 / (2π × 40 × 10⁶) = 75 / 251,327,412 = **298 nH ≈ 300 nH**
 
 Components: two 56 pF capacitors (nearest standard, series), one 300 nH inductor (shunt).
 
-**LP T filter, f_c = 50 MHz, Z₀ = 50 Ω:**
+**LP T filter, f<sub>c</sub> = 50 MHz, Z₀ = 50 Ω:**
 
-L_series = 50 / (2π × 50 × 10⁶) = **159 nH**
+L<sub>series</sub> = 50 / (2π × 50 × 10⁶) = **159 nH**
 
-C_shunt = 1 / (2π × 50 × 10⁶ × 50) = **63.7 pF**
+C<sub>shunt</sub> = 1 / (2π × 50 × 10⁶ × 50) = **63.7 pF**
 
 ### LC Filter Designer
 
@@ -483,7 +483,7 @@ The outer conductor (braid or foil) of coaxial cable acts as the shield that pre
 
 ### Braid Coverage
 
-Standard thin coax (RG-58): braid coverage approximately 95%. The gaps in the braid allow a small amount of energy to pass through the shield — characterised as **transfer impedance** Z_T (Ω/m).
+Standard thin coax (RG-58): braid coverage approximately 95%. The gaps in the braid allow a small amount of energy to pass through the shield — characterised as **transfer impedance** Z<sub>T</sub> (Ω/m).
 
 Higher braid coverage → lower transfer impedance → better shielding.
 
@@ -541,7 +541,7 @@ Y capacitors connected from live to earth carry leakage current to earth. The ma
 > **Maximum Y capacitor per line: 4.7 nF (Class Y2) for single-phase mains equipment**
 
 At 50 Hz mains frequency, 4.7 nF has a reactance of 677 kΩ — the resulting leakage current is:
-I_leakage = 230 V / 677 kΩ ≈ **0.34 mA per capacitor**
+I<sub>leakage</sub> = 230 V / 677 kΩ ≈ **0.34 mA per capacitor**
 
 With Y caps on both L and N, total leakage is approximately 0.68 mA — within the safe limit of 3.5 mA required by IEC 60950.
 
@@ -800,7 +800,7 @@ Remedies:
 
 ---
 
-**Q4:** Calculate the inductor and capacitor values for a Pi low-pass filter with f_c = 30 MHz and Z₀ = 50 Ω.
+**Q4:** Calculate the inductor and capacitor values for a Pi low-pass filter with f<sub>c</sub> = 30 MHz and Z₀ = 50 Ω.
 
 > **A:** L = 50/(2π × 30×10⁶) = **265 nH.** C = 1/(2π × 30×10⁶ × 50) = **106 pF.** Pi topology: 106 pF shunt → 265 nH series → 106 pF shunt.
 
@@ -808,7 +808,7 @@ Remedies:
 
 **Q5:** A mains filter contains Y capacitors of 4.7 nF from each line to earth. Why must this value not be increased?
 
-> **A:** Y capacitors pass leakage current to earth at mains frequency. 4.7 nF at 50 Hz presents 677 kΩ; 230 V drives 0.34 mA per capacitor. Increasing C reduces X_C and increases leakage current. Above ~3.5 mA total earth leakage the RCD trips and there is a shock hazard — particularly dangerous in PME installations where the earth conductor may be at elevated potential.
+> **A:** Y capacitors pass leakage current to earth at mains frequency. 4.7 nF at 50 Hz presents 677 kΩ; 230 V drives 0.34 mA per capacitor. Increasing C reduces X<sub>C</sub> and increases leakage current. Above ~3.5 mA total earth leakage the RCD trips and there is a shock hazard — particularly dangerous in PME installations where the earth conductor may be at elevated potential.
 
 ---
 
