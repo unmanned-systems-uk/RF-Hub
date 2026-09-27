@@ -10,6 +10,75 @@
     if (link) link.classList.add('active');
   }
 
+  // ── Mobile hamburger menu ──────────────────────────────────────────────
+  // rf-hub-v2.css (LOCKED) hides .site-nav-links entirely at <=768px with a
+  // comment saying "implement hamburger menu per page" - nobody had. This
+  // injects the toggle + the CSS needed to actually show the menu on
+  // mobile, once, here, so every page using the SPOT nav gets it for free.
+  function injectMobileNavStyles() {
+    if (document.getElementById('nav-loader-mobile-styles')) return;
+    var style = document.createElement('style');
+    style.id = 'nav-loader-mobile-styles';
+    style.textContent = `
+.site-nav-toggle {
+  display: none;
+  min-width: 44px; min-height: 44px;
+  align-items: center; justify-content: center;
+  background: none; border: none; color: var(--text-primary);
+  font-size: 1.5rem; line-height: 1; cursor: pointer; padding: 0;
+}
+@media (max-width: 768px) {
+  .site-nav .container { position: relative; }
+  .site-nav-toggle { display: flex; }
+  .site-nav-links {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0;
+    background: rgba(10, 14, 26, 0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0;
+  }
+  .site-nav-links.mobile-open { display: flex; }
+  .site-nav-links a {
+    display: block;
+    padding: 1rem var(--space-md);
+    font-size: 14px;
+  }
+}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function wireMobileMenu(mount) {
+    var container = mount.querySelector('.site-nav .container');
+    var linksUl = mount.querySelector('.site-nav-links');
+    if (!container || !linksUl) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'site-nav-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = '☰';
+    container.appendChild(btn);
+
+    function closeMenu() {
+      linksUl.classList.remove('mobile-open');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.textContent = '☰';
+    }
+
+    btn.addEventListener('click', function () {
+      var open = linksUl.classList.toggle('mobile-open');
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? '✕' : '☰';
+    });
+
+    linksUl.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') closeMenu();
+    });
+  }
+
   function wireAuth(mount) {
     var linksUl = mount.querySelector('.site-nav-links');
     if (!linksUl) return;
@@ -40,7 +109,7 @@
       liOut.appendChild(aOut);
       linksUl.appendChild(liOut);
     } else {
-      // Logged out: Login link
+      // Logged out: Login + Register links
       var liIn = document.createElement('li');
       var aIn = document.createElement('a');
       aIn.href = '/pages/login.html';
@@ -48,6 +117,14 @@
       aIn.setAttribute('data-nav', 'login');
       liIn.appendChild(aIn);
       linksUl.appendChild(liIn);
+
+      var liReg = document.createElement('li');
+      var aReg = document.createElement('a');
+      aReg.href = '/pages/register.html';
+      aReg.textContent = 'Register';
+      aReg.setAttribute('data-nav', 'register');
+      liReg.appendChild(aReg);
+      linksUl.appendChild(liReg);
     }
   }
 
@@ -64,10 +141,12 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    loadPartial('site-nav-mount', '/partials/site-nav.html?v=20260913-1600', function (mount) {
+    injectMobileNavStyles();
+    loadPartial('site-nav-mount', '/partials/site-nav.html?v=20260927-2135', function (mount) {
       activateNav(mount, activeKey);
       wireAuth(mount);
+      wireMobileMenu(mount);
     });
-    loadPartial('site-footer-mount', '/partials/site-footer.html?v=20260913-1600', null);
+    loadPartial('site-footer-mount', '/partials/site-footer.html?v=20260927-2135', null);
   });
 }());
