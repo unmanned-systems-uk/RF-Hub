@@ -112,7 +112,7 @@ In practice, the Spurious-Free Dynamic Range (SFDR) and IP3 of the analogue fron
 
 A receiver with only 48 dB of dynamic range will produce visible IMD products when a strong signal is present, even if the software is excellent. This is why high-end SDR receivers use 16-bit ADCs — the same fundamental constraint as §9B applies whether the receiver is analogue or digital.
 
-> [INFO] **10C1/10D1:** Sample rate determines how much spectrum the SDR can see simultaneously (instantaneous bandwidth = sample_rate / 2). Bit depth sets the dynamic range ceiling (~6 dB per bit). A 14-bit SDR has the same ~80 dB ceiling as a 14-bit ADC in a traditional receiver.
+> [INFO] **10C1/10D1:** Sample rate determines how much spectrum the SDR can see simultaneously (instantaneous bandwidth = sample rate / 2). Bit depth sets the dynamic range ceiling (~6 dB per bit). A 14-bit SDR has the same ~80 dB ceiling as a 14-bit ADC in a traditional receiver.
 
 ---
 
@@ -125,7 +125,7 @@ A **panadapter** is a real-time spectrum display: frequency runs along the X axi
 The FFT (Fast Fourier Transform) converts a block of time-domain I/Q samples into a power-vs-frequency spectrum:
 
 ```
-Block of N I/Q samples → FFT → N/2 frequency bins, each bin width = sample_rate / N
+Block of N I/Q samples → FFT → N/2 frequency bins, each bin width = sample rate / N
 ```
 
 With a 2.048 Msps sample rate and FFT size of 4096:
@@ -144,7 +144,7 @@ The waterfall makes it easy to:
 - Distinguish continuous carriers from intermittent signals
 - Find clear frequencies without transmitting
 
-> [INFO] **10E1:** A panadapter shows frequency vs signal strength in real time using FFT. A waterfall adds time as the vertical axis (latest at top, scrolling downward), with power shown as colour. The frequency resolution is sample_rate / FFT_size — larger FFT gives finer resolution at the cost of longer processing time.
+> [INFO] **10E1:** A panadapter shows frequency vs signal strength in real time using FFT. A waterfall adds time as the vertical axis (latest at top, scrolling downward), with power shown as colour. The frequency resolution is sample rate / FFT size — larger FFT gives finer resolution at the cost of longer processing time.
 
 ---
 
@@ -154,7 +154,7 @@ The waterfall makes it easy to:
 
 <details><summary>Answer</summary>
 
-**Bandwidth:** Nyquist limit = sample_rate / 2 = 2.048 / 2 = **1.024 MHz**.
+**Bandwidth:** Nyquist limit = sample rate / 2 = 2.048 / 2 = **1.024 MHz**.
 
 **Dynamic range:** 8 bits × 6 dB = **~48 dB**. This is relatively modest; a strong broadcast station nearby can produce visible IMD products in the display.
 </details>

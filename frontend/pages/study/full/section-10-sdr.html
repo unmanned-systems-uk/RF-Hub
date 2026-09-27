@@ -399,7 +399,7 @@
       <p>A receiver with only 48 dB of dynamic range will produce visible IMD products when a strong signal is present, even if the software is excellent. This is why high-end SDR receivers use 16-bit ADCs — the same fundamental constraint as <span class="crossref"><a href="section-9-receiver.html#ch-9B">§9B — Noise figure &amp; dynamic range</a></span> applies whether the receiver is analogue or digital.</p>
 
       <div class="callout-exam">
-        <strong>10C1/10D1:</strong> Sample rate determines how much spectrum the SDR can see simultaneously (instantaneous bandwidth = sample_rate / 2). Bit depth sets the dynamic range ceiling (~6 dB per bit). A 14-bit SDR has the same ~80 dB ceiling as a 14-bit ADC in a traditional receiver.
+        <strong>10C1/10D1:</strong> Sample rate determines how much spectrum the SDR can see simultaneously (instantaneous bandwidth = sample rate / 2). Bit depth sets the dynamic range ceiling (~6 dB per bit). A 14-bit SDR has the same ~80 dB ceiling as a 14-bit ADC in a traditional receiver.
       </div>
     </section>
 
@@ -419,7 +419,7 @@
       <p>The FFT (Fast Fourier Transform) converts a block of time-domain I/Q samples into a power-vs-frequency spectrum:</p>
 
       <div class="formula-block">Block of N I/Q samples → FFT → N/2 frequency bins
-Each bin width = sample_rate / N
+Each bin width = sample rate / N
 
 Example: 2.048 Msps, FFT size 4096
   → bin width = 2,048,000 / 4096 = 500 Hz
@@ -440,7 +440,7 @@ Example: 2.048 Msps, FFT size 4096
       </ul>
 
       <div class="callout-exam">
-        <strong>10E1:</strong> A panadapter shows frequency vs signal strength in real time using FFT. A waterfall adds time as the vertical axis (latest at top, scrolling downward), with power shown as colour. The frequency resolution is sample_rate / FFT_size — larger FFT gives finer resolution at the cost of longer processing time.
+        <strong>10E1:</strong> A panadapter shows frequency vs signal strength in real time using FFT. A waterfall adds time as the vertical axis (latest at top, scrolling downward), with power shown as colour. The frequency resolution is sample rate / FFT size — larger FFT gives finer resolution at the cost of longer processing time.
       </div>
     </section>
 
@@ -460,7 +460,7 @@ Example: 2.048 Msps, FFT size 4096
           <p class="self-check__q"><strong>Q1.</strong> An SDR dongle has an 8-bit ADC sampling at 2.048 Msps. What is the instantaneous bandwidth visible on its waterfall, and what is the theoretical dynamic range?</p>
           <button class="btn-reveal" aria-expanded="false" data-target="ans-10-1">Show answer</button>
           <div class="self-check__reveal" id="ans-10-1" hidden>
-            <p><strong>Bandwidth:</strong> Nyquist limit = sample_rate / 2 = 2.048 / 2 = <strong>1.024 MHz</strong>.</p>
+            <p><strong>Bandwidth:</strong> Nyquist limit = sample rate / 2 = 2.048 / 2 = <strong>1.024 MHz</strong>.</p>
             <p><strong>Dynamic range:</strong> 8 bits &times; 6 dB = <strong>~48 dB</strong>. This is relatively modest; a strong broadcast station nearby can produce visible IMD products in the display.</p>
           </div>
         </div>
