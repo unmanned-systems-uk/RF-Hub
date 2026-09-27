@@ -27,7 +27,10 @@ Passes DC and low frequencies, attenuates high frequencies above the cut-off fc.
 
 **Worked example — a square wave through a low-pass filter (waveform view):** A square wave is not "one frequency" — Fourier analysis shows it's built from a fundamental sine wave plus an infinite series of odd harmonics (3rd, 5th, 7th...), added together in the right proportions to build the sharp edges and flat tops. A low-pass filter with a cut-off just above the fundamental removes most of those harmonics. What's left is close to a pure sine wave at the fundamental frequency — the sharp corners and flat top of the square wave round off, because the harmonics that built those sharp features are gone.
 
-<!-- SVG: filter-waveform-lowpass-squarewave — two stacked oscilloscope-style traces: top "before" shows a clean square wave, bottom "after" shows a rounded, near-sinusoidal wave at the same fundamental frequency -->
+<!-- VISUAL: Interactive filter-signal widget (waveform + spectrum, square wave input, low-pass filter)
+     When /interactives/filter-signal.html is available, replace this block with:
+     <iframe src='/interactives/filter-signal.html?input=square&filter=lowpass' style='width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;' loading='lazy' title='Filter Signal — square wave through a low-pass filter'></iframe>
+-->
 
 > [INFO] **Key idea:** removing harmonics from a waveform always rounds off its sharp features. This is exactly why a transmitter's **harmonic low-pass filter** cleans up a distorted output stage — see the spectrum example below.
 
@@ -115,14 +118,22 @@ Eight unlabelled response plots — work out the type (and, where you can, rough
 
 ## Part 5: Filters in Your Station
 
-If you're running an IC-9700-class VHF/UHF transceiver or an IC-9610-class HF/VHF/UHF transceiver (or similar modern rigs), you already own several filters without necessarily thinking of them that way:
+Which filters you own — and where they physically live — depends on your receiver's architecture. Every modern rig has a **harmonic low-pass filter** at the antenna output on transmit (required by your licence's spurious-emission conditions) and some form of selectivity on receive, but *how* that receive selectivity is achieved differs:
 
-- **Harmonic low-pass filter** — fitted at the antenna output, removes harmonics of your transmitted signal above the fundamental. Required by your licence's spurious-emission conditions.
-- **Roofing filter** — a wide band-pass filter early in the receiver's IF chain. It protects the later, narrower filters (and the ADC in an SDR-based rig) from being overloaded by strong nearby signals before any selectivity has been applied.
-- **Crystal / mechanical IF filter** — a narrow band-pass filter that sets the receiver's selectivity: how close two signals can be and still be told apart. See the <a href="crystal-filter.html" target="_blank">Crystal Filters sideband</a> for how these are built from ladder and half-lattice crystal networks.
-- **Audio / DSP notch & auto-notch** — a band-stop filter (usually implemented in software/DSP on modern rigs) that removes a single interfering tone from the receive audio, as in the whistle example above.
-- **TVI high-pass filter** — fitted at a TV or other victim receiver's aerial input (not at your station), it blocks amateur HF energy while passing the TV channel's higher frequencies, preventing overload of the TV's front end by a nearby strong HF transmitter.
-- **Diplexers / duplexers** — a diplexer splits (or combines) two different frequency bands onto separate ports using a pair of filters (e.g. HF and VHF sharing one antenna feed); a duplexer lets a single antenna transmit and receive simultaneously on different frequencies (e.g. an FM repeater) by combining a band-pass and band-reject filter pair to isolate TX from RX.
+**Traditional superhet architecture** (analogue IF chain):
+- **Roofing filter** — a wide band-pass filter early in the IF chain, protecting later, narrower filters from being overloaded by strong nearby signals.
+- **Crystal / mechanical IF filter** — a narrow band-pass filter that sets the receiver's selectivity in the analogue domain. See the <a href="crystal-filter.html" target="_blank">Crystal Filters sideband</a> for how these are built from ladder and half-lattice crystal networks.
+
+**Direct-sampling SDR architecture** (ADC close to the antenna, no analogue IF):
+- **Preselector band-pass filter(s)** — analogue band-pass filtering ahead of the ADC, broad enough to cover the band(s) in use, mainly there for image/out-of-band rejection and to protect the ADC's dynamic range rather than to set final selectivity.
+- **Anti-alias filter** — a low-pass (or band-pass) filter ahead of the ADC, preventing frequencies above the sampling system's Nyquist limit from aliasing into the wanted spectrum (see §2F's digital signals section).
+- **Digital IF/DSP filtering** — once digitised, all fine selectivity (narrow CW/SSB filtering, notch, auto-notch) is done in software, not with physical analogue filters.
+
+Both architectures still need the TX **harmonic low-pass filter**, and both can implement an **audio/DSP notch & auto-notch** (band-stop, removing a single interfering tone from receive audio, as in the whistle example above) — that stage is software in both cases on a modern rig.
+
+Elsewhere in the amateur world, a **TVI high-pass filter** is fitted at a TV or other victim receiver's aerial input (not at your station) to block amateur HF energy while passing the TV channel's higher frequencies. A **diplexer** splits (or combines) two different frequency bands onto separate ports using a pair of filters (e.g. HF and VHF sharing one antenna feed); a **duplexer** lets a single antenna transmit and receive simultaneously on different frequencies (e.g. an FM repeater) by combining a band-pass and band-reject filter pair to isolate TX from RX.
+
+Exactly which of the above your own rig uses, and where the line between "analogue" and "digital" falls, is architecture-specific and changes between models and even firmware revisions — check your rig's manual or block diagram rather than assuming.
 
 ## Part 6: Reading a Filter Spec Sheet
 
