@@ -577,6 +577,7 @@ E (V/m) = √(30 × P × G) / r</div>
 
       <h3>Band-Stop (Notch) Filter (BSF)</h3>
       <p>Attenuates a specific narrow band; passes all others. Used to suppress a single interferer. (See <a href="#ch-13M">§13M</a> for notch filter detail.)</p>
+      <div class="callout-xref">See also: <a href="../../sidebands/understanding-filters.html" target="_blank" rel="noopener noreferrer">Understanding Filters sideband</a> &mdash; response curves, spectra, and waveforms for all four filter types, including a worked notch example.</div>
 
       <h3>Filter Type Selection Summary (13H1)</h3>
       <table>
@@ -796,12 +797,13 @@ Total (L + N): ≈ 0.68 mA — within safe limit of 3.5 mA (IEC 60950)</div>
       </ul>
 
       <h3>Parallel LC Trap</h3>
-      <p>The simplest notch filter is a parallel LC circuit placed in shunt across the signal path. At resonance (f<sub>r</sub> = 1/2π√LC), the parallel LC presents very high impedance to the main signal path, creating a low-impedance shunt that diverts the interfering frequency to ground — which appears as a notch in the response.</p>
+      <p>The simplest notch filter is a <strong>parallel LC circuit placed in-line</strong> (in series) with the signal path. At resonance (f<sub>r</sub> = 1/2π√LC), the parallel LC presents very high impedance in the signal path — the "rejector" behaviour — blocking the interfering frequency while lower and higher frequencies pass through more freely. This is the same principle used in an antenna trap.</p>
       <p>The depth of the notch is limited by the Q of the LC circuit. A high-Q inductor (low winding resistance) produces a deep, narrow notch. A low-Q inductor produces a shallower, broader notch.</p>
-      <p>Alternatively, a series LC placed <strong>in series</strong> with the signal path presents very low impedance (near-short circuit) at resonance, short-circuiting the interfering frequency.</p>
+      <p>Alternatively, a <strong>series LC circuit placed as a shunt</strong> to ground presents very low impedance (near-short circuit) at resonance — the "acceptor" behaviour — diverting the interfering frequency to ground while leaving the main signal path largely unaffected.</p>
+      <div class="callout-xref">See also: <a href="../../sidebands/understanding-filters.html" target="_blank" rel="noopener noreferrer">Understanding Filters sideband</a> &mdash; the full series-vs-parallel, in-line-vs-shunt LC placement table with impedance plots.</div>
 
       <div class="callout-exam">
-        <strong>13M1:</strong> A notch filter rejects a specific frequency while passing others. Use when a single strong interferer dominates — a parallel LC trap across the signal line, or a series LC trap in line. Notch depth is limited by inductor Q; high-Q air-wound inductors give the deepest notches.
+        <strong>13M1:</strong> A notch filter rejects a specific frequency while passing others. Use when a single strong interferer dominates — a parallel LC trap in-line with the signal path, or a series LC trap as a shunt to ground. Notch depth is limited by inductor Q; high-Q air-wound inductors give the deepest notches.
       </div>
     </section>
 

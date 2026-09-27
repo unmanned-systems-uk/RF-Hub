@@ -947,6 +947,116 @@ Resonant frequency halves.</pre>
         <div class="callout-text"><strong>2G1 exam note:</strong> Components in a tuned circuit may need high voltage and current ratings because high voltages and circulating currents can exist at resonance — Q times higher than the supply.</div>
       </div>
 
+      <h4>Identify the filter from its response curve</h4>
+      <p>The exam often shows an <strong>amplitude-vs-frequency plot</strong> and asks what type of filter produced it. Four shapes to recognise on sight:</p>
+
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/filter-response-lowpass.svg" alt="Low-pass filter amplitude response: flat pass-band on the left, response falls away above the cut-off frequency fc" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+        <figcaption style="font-family:'IBM Plex Sans',sans-serif;font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;"><strong>Low-pass:</strong> flat on the left, falls away on the right. <em>"Flat, then falls."</em></figcaption>
+      </figure>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/filter-response-highpass.svg" alt="High-pass filter amplitude response: response rises from the left, flat pass-band above the cut-off frequency fc" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+        <figcaption style="font-family:'IBM Plex Sans',sans-serif;font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;"><strong>High-pass:</strong> the mirror image of low-pass — flat on the right, falls away on the left. <em>"Rises, then flat."</em></figcaption>
+      </figure>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/filter-response-bandpass.svg" alt="Band-pass filter amplitude response: a hump between two cut-off frequencies, flat top at f0, attenuated both sides" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+        <figcaption style="font-family:'IBM Plex Sans',sans-serif;font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;"><strong>Band-pass:</strong> a hump between two cut-offs, attenuated both sides. <em>"One hump in the middle."</em> Every IF filter and RF preselector in a superhet is a band-pass filter.</figcaption>
+      </figure>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/filter-response-bandstop.svg" alt="Band-stop (notch) filter amplitude response: a narrow dip cut out of an otherwise flat response, centred on f0" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+        <figcaption style="font-family:'IBM Plex Sans',sans-serif;font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;"><strong>Band-stop / notch:</strong> the mirror image of band-pass — a narrow dip removed from an otherwise flat response. <em>"One dip in the middle."</em></figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Quick recognition rule:</strong> count the transitions. <strong>One</strong> transition (rising or falling) = low-pass or high-pass. <strong>Two</strong> transitions bounding a <em>passed</em> region = band-pass. <strong>Two</strong> transitions bounding a <em>rejected</em> region (a dip, not a hump) = band-stop/notch.</div>
+      </div>
+
+      <div style="margin: 1rem 0;">
+        <iframe src="/interactives/filter-signal.html?input=whistle&filter=notch"
+          style="width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="Filter Signal — heterodyne whistle through an audio notch filter"></iframe>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-dim);margin:0.4rem 0 0;">Try it: a steady heterodyne whistle sits on top of the wanted noise floor as a single tall spike in the spectrum. A notch tuned to that spike removes it — see the before/after spectrum and waveform above.</p>
+
+      <h4>LC circuits in the signal path &mdash; series vs parallel</h4>
+      <p>A tuned circuit behaves very differently depending on (a) whether the L and C are wired in <strong>series or parallel</strong>, and (b) whether that LC pair sits <strong>in-line</strong> (in the signal path) or <strong>as a shunt</strong> (branching off to ground). The same two components, wired four ways, give four different filter behaviours:</p>
+
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/lc-placement-4way.svg" alt="Four LC placements and their filter behaviour: series LC in-line gives band-pass, series LC shunt to ground gives notch, parallel LC in-line gives notch, parallel LC shunt gives band-pass" style="max-width: 600px; width: 100%; height: auto;" loading="lazy">
+      </figure>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>LC type</th><th>At resonance (f₀)</th><th>RSGB name</th><th>In-line (series path)</th><th>As a shunt (to ground)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Series LC</strong></td><td><strong>Minimum</strong> impedance, maximum current</td><td>"Acceptor"</td><td>Passes f₀ through &rarr; <strong>band-pass</strong></td><td>Shorts f₀ to ground &rarr; <strong>notch</strong> (series-resonant trap)</td></tr>
+            <tr><td><strong>Parallel LC</strong></td><td><strong>Maximum</strong> impedance, minimum line current (large <em>circulating</em> current in the tank)</td><td>"Rejector"</td><td>Blocks f₀ &rarr; <strong>notch</strong> (e.g. an antenna trap)</td><td>Passes f₀ to the output &rarr; <strong>band-pass</strong> (IF tank, tuned amplifier load)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The exam may also show an <strong>impedance-vs-frequency</strong> plot rather than an amplitude one:</p>
+      <figure style="margin: 1.2rem 0; text-align: center;">
+        <img src="/assets/images/filters/lc-impedance-series.svg" alt="Series LC impedance vs frequency: V-shaped dip to a minimum at f0" style="max-width: 48%; width: 100%; height: auto; display:inline-block;" loading="lazy">
+        <img src="/assets/images/filters/lc-impedance-parallel.svg" alt="Parallel LC impedance vs frequency: sharp peak to a maximum at f0" style="max-width: 48%; width: 100%; height: auto; display:inline-block;" loading="lazy">
+        <figcaption style="font-family:'IBM Plex Sans',sans-serif;font-size:0.8rem;color:var(--text-dim);margin-top:0.5rem;">Series = V-shaped dip at f₀. Parallel = sharp peak at f₀.</figcaption>
+      </figure>
+
+      <div class="callout callout--info">
+        <div class="callout-icon">ℹ</div>
+        <div class="callout-text"><strong>Memory aid:</strong> <em>"Series = Small impedance."</em> Get series right and parallel follows by elimination — it's the opposite in every column of the table above. See <strong>Antenna traps</strong> above for a real-world parallel-LC-in-line example.</div>
+      </div>
+
+      <div style="margin: 1rem 0;">
+        <iframe src="/interactives/filter-signal.html?input=noise&filter=parallel-inline"
+          style="width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="Filter Signal — broadband noise through a parallel LC in-line (notch)"></iframe>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-dim);margin:0.4rem 0 0;">Try it: a parallel LC placed in-line blocks its resonant frequency, carving a notch out of broadband noise. Swap the preset to <code>filter=series-shunt</code> to see the equivalent series-LC-as-shunt notch.</p>
+
+      <h4>Key filter terms</h4>
+      <ul>
+        <li><strong>Cut-off frequency (fc):</strong> the point where response has fallen 3 dB below the passband level (the "-3 dB point").</li>
+        <li><strong>Passband:</strong> the range of frequencies a filter lets through with little attenuation.</li>
+        <li><strong>Stopband:</strong> the range of frequencies a filter attenuates heavily.</li>
+        <li><strong>Centre frequency (f₀):</strong> the middle of a band-pass or band-stop filter's response.</li>
+        <li><strong>Bandwidth (BW):</strong> the width of the passband (or stopband), usually measured at the -3 dB points.</li>
+        <li><strong>Q:</strong> selectivity, Q = f₀ / BW &mdash; covered in detail just below.</li>
+        <li><strong>Insertion loss:</strong> how much a filter attenuates its own passband (ideally 0 dB; real filters always lose a little).</li>
+        <li><strong>Roll-off / order:</strong> how steeply the response falls outside the passband. A higher-order filter rolls off faster (steeper skirts) but costs more components.</li>
+      </ul>
+
+      <div style="margin: 1rem -12.5%;">
+        <iframe src="/interactives/lc-filter.html?mode=bs"
+          style="width:100%; height:950px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          loading="lazy" title="LC Filter Interactive — band-stop (notch) mode"></iframe>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">Go deeper &mdash; where each filter type lives in a real station</div>
+        <div class="callout-text">
+          <ul style="margin:0.4rem 0 0;">
+            <li><strong>Harmonic low-pass filter</strong> &mdash; fitted at a transmitter's antenna output, removes harmonics above the fundamental (see §3K).</li>
+            <li><strong>Roofing filter</strong> &mdash; a wide band-pass filter early in a modern receiver's IF chain, protects later narrow filters from being overloaded by strong nearby signals.</li>
+            <li><strong>Crystal/mechanical IF filter</strong> &mdash; a narrow band-pass filter that sets a superhet receiver's selectivity (see §3K and the <a href="../../sidebands/crystal-filter.html" style="color:#06b6d4;" target="_blank">Crystal Filters sideband</a>).</li>
+            <li><strong>Audio/DSP notch</strong> &mdash; a band-stop filter tuned to remove a single interfering tone (a heterodyne whistle) from received audio, often adaptive ("auto-notch") in modern DSP rigs.</li>
+            <li><strong>TVI high-pass filter</strong> &mdash; fitted at a TV or other victim receiver's aerial input, blocks amateur HF energy while passing the TV channel's (higher) frequencies.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout--info" style="border-left-color:#06b6d4;">
+        <div class="callout-label" style="color:#06b6d4;">See also</div>
+        <div class="callout-text">
+          <a href="../../sidebands/understanding-filters.html" style="color:#06b6d4;" target="_blank">Sideband &mdash; Understanding Filters</a> &mdash; response curves, before/after spectra and waveforms, and identify-the-filter practice &middot;
+          <a href="../../sidebands/filter-design-build-test.html" style="color:#06b6d4;" target="_blank">Sideband &mdash; Filter Design, Build &amp; Test</a> &mdash; for builders: component-value design and construction &middot;
+          <a href="../../sidebands/crystal-filter.html" style="color:#06b6d4;" target="_blank">Sideband &mdash; Crystal Filters</a> &mdash; ladder/half-lattice crystal filter design
+        </div>
+      </div>
+
       <h3>Q Factor</h3>
       <p><strong>Q (Quality factor)</strong> describes how selective a tuned circuit is.</p>
       <pre>Q = f₀ / BW</pre>
