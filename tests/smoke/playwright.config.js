@@ -9,7 +9,7 @@ module.exports = defineConfig({
 
   use: {
     baseURL: 'https://rf-hub.info',
-    screenshot: 'only-on-failure',
+    screenshot: 'off', // Manual screenshots via takeScreenshot()
     video: 'retain-on-failure',
     trace: 'on-first-retry',
   },
@@ -20,6 +20,8 @@ module.exports = defineConfig({
       use: {
         ...devices['Pixel 5'],
         viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
       },
     },
     {
@@ -27,6 +29,7 @@ module.exports = defineConfig({
       use: {
         viewport: { width: 1280, height: 800 },
         deviceScaleFactor: 1,
+        isMobile: false,
       },
     },
   ],
