@@ -83,7 +83,11 @@ test.describe('RF-Hub Smoke Tests', () => {
 
   test.describe('Mobile Navigation', () => {
     test('should have functional hamburger menu', async ({ page }, testInfo) => {
-      test.skip(testInfo.project.name !== 'phone', 'Mobile nav only on phone');
+      // Only run on phone project
+      if (testInfo.project.name !== 'phone') {
+        test.skip();
+      }
+
       await page.goto('/', { waitUntil: 'networkidle' });
 
       // Find hamburger button (try multiple selectors)

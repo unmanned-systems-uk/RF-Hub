@@ -28,20 +28,34 @@ if (!fs.existsSync(resultsFile)) {
 
 const jsonReport = JSON.parse(fs.readFileSync(resultsFile, 'utf8'));
 
-// Extract all specs from nested suites
+// Extract all specs from nested suites, finding projectName
 const allSpecs = [];
-function extractSpecs(suite, ancestors = []) {
+function extractSpecs(suite, ancestors = [], currentProject = 'unknown') {
+  // Try to find projectName in nested structure
+  let projectName = currentProject;
+  if (suite.projectName) {
+    projectName = suite.projectName;
+  }
+
   if (suite.specs && suite.specs.length > 0) {
     for (const spec of suite.specs) {
+      // Try to find projectName in the spec itself
+      let specProject = projectName;
+      if (spec.projectName) {
+        specProject = spec.projectName;
+      }
+
       allSpecs.push({
         ...spec,
+        projectName: specProject,
         suitePath: [...ancestors, suite.title].filter(t => t && t !== 'smoke.spec.js').join(' > '),
       });
     }
   }
+
   if (suite.suites) {
     for (const subsuite of suite.suites) {
-      extractSpecs(subsuite, [...ancestors, suite.title]);
+      extractSpecs(subsuite, [...ancestors, suite.title], projectName);
     }
   }
 }
@@ -52,10 +66,21 @@ if (jsonReport.suites) {
   }
 }
 
-// Separate by project
+// Separate by project - extract from spec data if available
 const projectTests = {};
 for (const spec of allSpecs) {
-  const projectName = spec.projectName || 'unknown';
+  let projectName = spec.projectName || 'unknown';
+
+  // If still unknown, try to find it from nested test data
+  if (projectName === 'unknown' && spec.tests) {
+    for (const test of spec.tests) {
+      if (test.projectName) {
+        projectName = test.projectName;
+        break;
+      }
+    }
+  }
+
   if (!projectTests[projectName]) {
     projectTests[projectName] = [];
   }
