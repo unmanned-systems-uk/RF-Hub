@@ -735,6 +735,93 @@ ratings** — even if the supply voltage seems low.
 > [WARNING] **2G1 exam note:** Components in a tuned circuit may need high voltage and
 > current ratings because high voltages and circulating currents can exist at resonance.
 
+#### Identify the filter from its response curve
+
+The exam often shows an **amplitude-vs-frequency plot** and asks what type of filter produced
+it. Four shapes to recognise on sight:
+
+<!-- SVG: filter-response-lowpass — amplitude (dB) vs frequency, flat pass-band on the left, response falls away above fc, -3 dB point marked -->
+**Low-pass:** flat on the left, falls away on the right. *"Flat, then falls."*
+
+<!-- SVG: filter-response-highpass — amplitude (dB) vs frequency, response rising from the left, flat pass-band on the right above fc -->
+**High-pass:** flat on the right, falls away on the left. *"Rises, then flat."*
+
+<!-- SVG: filter-response-bandpass — hump shape between two cut-off frequencies, flat top, steep sides, passband/stopband/bandwidth labelled -->
+**Band-pass:** a hump between two cut-offs — flat (or peaked) top, attenuated both sides.
+*"One hump in the middle."*
+
+<!-- SVG: filter-response-bandstop — narrow deep dip cut out of an otherwise flat, high response -->
+**Band-stop / notch:** the opposite of band-pass — a narrow dip cut out of an otherwise flat
+response. *"One dip in the middle."*
+
+> [INFO] **Quick recognition rule:** count the transitions. **One** transition (rising or
+> falling) = low-pass or high-pass. **Two** transitions bounding a passed region = band-pass.
+> **Two** transitions bounding a *rejected* region (a dip, not a hump) = band-stop/notch.
+
+#### LC circuits in the signal path — series vs parallel
+
+A tuned circuit behaves very differently depending on (a) whether the L and C are wired in
+**series or parallel**, and (b) whether that LC pair sits **in-line** (in the signal path) or
+**as a shunt** (branching off to ground). The same two components can be wired four ways,
+giving four different filter behaviours:
+
+<!-- SVG: lc-placement-4way — four small schematics: series LC in-line (labelled band-pass), series LC shunt-to-ground (labelled notch), parallel LC in-line (labelled notch), parallel LC shunt-to-ground (labelled band-pass), with correct circuit symbols -->
+
+| LC type | At resonance (f₀) | RSGB name | In-line (series path) | As a shunt (to ground) |
+|---|---|---|---|---|
+| **Series LC** (L and C in series with each other) | **Minimum** impedance, maximum current | "Acceptor" | Passes f₀ through → **band-pass** | Shorts f₀ to ground → **notch** (series-resonant trap) |
+| **Parallel LC** (L and C across each other) | **Maximum** impedance, minimum line current (but a large *circulating* current inside the tank) | "Rejector" | Blocks f₀ → **notch** (e.g. an antenna trap) | Passes f₀ to the output → **band-pass** (IF tank, tuned amplifier load) |
+
+<!-- SVG: lc-impedance-series — impedance (Ω) vs frequency, V-shaped dip down to a minimum at f0 -->
+<!-- SVG: lc-impedance-parallel — impedance (Ω) vs frequency, sharp peak up to a maximum at f0 -->
+
+The exam may also show an **impedance-vs-frequency** plot rather than an amplitude one —
+these look different: a **series** LC gives a V-shaped **dip** at f₀ (impedance falls to a
+minimum), a **parallel** LC gives a sharp **peak** at f₀ (impedance rises to a maximum).
+
+> [INFO] **Memory aid:** *"Series = Small impedance"* — series-resonant LC has minimum
+> (small) impedance at f₀. Parallel is the opposite: maximum impedance, so it *rejects*
+> current flow through itself at f₀ (hence "rejector") while a series circuit *accepts*
+> current at f₀ (hence "acceptor").
+
+#### Key filter terms
+
+- **Cut-off frequency (fc):** the point where response has fallen 3 dB below the passband
+  level (the "-3 dB point").
+- **Passband:** the range of frequencies a filter lets through with little attenuation.
+- **Stopband:** the range of frequencies a filter attenuates heavily.
+- **Centre frequency (f₀):** the middle of a band-pass or band-stop filter's response.
+- **Bandwidth (BW):** the width of the passband (or stopband), usually measured at the
+  -3 dB points.
+- **Q:** selectivity, Q = f₀ / BW — covered in detail just below.
+- **Insertion loss:** how much a filter attenuates its own passband (ideally 0 dB; real
+  filters always lose a little).
+- **Roll-off / order:** how steeply the response falls outside the passband. A higher-order
+  filter rolls off faster (steeper skirts) but costs more components.
+
+<!-- EMBED: /interactives/lc-filter.html?mode=bs — LC filter interactive in notch mode, placed alongside the notch/band-stop discussion above -->
+<!-- INTERACTIVE REQUEST: filter-signal interactive (waveform + spectrum before/after a filter) — embed here once built -->
+
+<details><summary><strong>Go deeper — where each filter type lives in a real station</strong></summary>
+
+- **Harmonic low-pass filter** — fitted at a transmitter's antenna output, removes harmonics
+  above the fundamental (see §3K).
+- **Roofing filter** — a wide band-pass filter early in a modern receiver's IF chain, protects
+  later narrow filters from being overloaded by strong nearby signals.
+- **Crystal/mechanical IF filter** — a narrow band-pass filter that sets a superhet receiver's
+  selectivity (see §3K and the [Crystal Filters sideband](../../sidebands/crystal-filter.html)).
+- **Audio/DSP notch** — a band-stop filter tuned to remove a single interfering tone (a
+  heterodyne whistle) from received audio, often adaptive ("auto-notch") in modern DSP rigs.
+- **TVI high-pass filter** — fitted at a TV or other victim receiver's aerial input, blocks
+  amateur HF energy while passing the TV channel's (higher) frequencies.
+
+</details>
+
+**See also:**
+- <a href="../../sidebands/understanding-filters.html" target="_blank">Sideband — Understanding Filters</a> — response curves, before/after spectra and waveforms, and identify-the-filter practice
+- <a href="../../sidebands/filter-design-build-test.html" target="_blank">Sideband — Filter Design, Build & Test</a> — for builders: component-value design and construction
+- <a href="../../sidebands/crystal-filter.html" target="_blank">Sideband — Crystal Filters</a> — ladder/half-lattice crystal filter design
+
 ### 2F Theory — Q Factor
 
 **Q (Quality factor)** describes how selective a tuned circuit is.
@@ -868,6 +955,33 @@ how far away is the next voltage zero?
 <details><summary>Answer</summary>
 
 Half wavelength = 40 / 2 = **20 m**. The next voltage zero is 20 m further along the feeder.
+</details>
+
+**Q6.** An amplitude-vs-frequency plot shows a single narrow dip cut out of an otherwise
+flat, high response. What type of filter produced this?
+<details><summary>Answer</summary>
+
+A **band-stop (notch) filter.** A hump would be band-pass; a single falling or rising edge
+would be low-pass or high-pass. A narrow *dip* in an otherwise flat response is the signature
+of a notch.
+</details>
+
+**Q7.** A series LC circuit is connected as a **shunt to ground** across a signal line. What
+does it do to the signal at its resonant frequency?
+<details><summary>Answer</summary>
+
+It **shorts f₀ to ground** — a series LC has minimum impedance at resonance, so as a shunt it
+creates a low-impedance path to ground exactly at f₀, removing it from the signal. This makes
+a **notch (series-resonant trap)**.
+</details>
+
+**Q8.** A parallel LC circuit is placed **in-line** in a signal path (not as a shunt). What
+is its effect at resonance, and why?
+<details><summary>Answer</summary>
+
+It **blocks f₀** — a parallel LC has maximum impedance at resonance, so placed in-line it
+presents a very high series impedance exactly at f₀, attenuating that frequency while lower
+and higher frequencies pass more freely. This is a **notch**, e.g. an antenna trap.
 </details>
 
 ---

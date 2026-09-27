@@ -1011,18 +1011,29 @@ voltage-controlled oscillator to a crystal reference oscillator.
 
 Filters select or reject signals based on frequency.
 
-| Filter type | What it passes | Typical use |
-|-------------|----------------|------------|
-| Low-pass | Frequencies below cut-off | Harmonic suppression at TX output |
-| High-pass | Frequencies above cut-off | Block mains hum, subsonic interference |
-| Band-pass | Frequencies in a range | IF filter, RF preselector |
-| Band-stop (notch) | All except a narrow range | Interference rejection |
+| Filter type | What it passes | Typical use | Built from LC as... |
+|-------------|----------------|------------|---------------------|
+| Low-pass | Frequencies below cut-off | Harmonic suppression at TX output | Ladder of series L / shunt C sections |
+| High-pass | Frequencies above cut-off | Block mains hum, subsonic interference | Ladder of series C / shunt L sections |
+| Band-pass | Frequencies in a range | IF filter, RF preselector | **Series LC in-line**, or **parallel LC as a shunt** |
+| Band-stop (notch) | All except a narrow range | Interference rejection, antenna traps | **Parallel LC in-line**, or **series LC as a shunt** |
 
 > [INFO] **3G3 (D2F-M1-Q32 and 3C):** Fit a **low-pass filter** at the transmitter output
 > to suppress harmonics. The fundamental passes; harmonics above it are attenuated.
 
+**Recognising the response curve:** one transition (rising or falling) = low-pass/high-pass;
+a hump between two cut-offs = band-pass; a narrow dip in an otherwise flat response =
+band-stop/notch. Full recognition detail, worked examples and the four LC placements
+(series/parallel, in-line/shunt) are covered in **§2F** — see the
+<a href="../../sidebands/understanding-filters.html" target="_blank">Understanding Filters sideband</a>
+for further practice.
+
+<!-- SVG: filter-response-bandpass — hump shape between two cut-off frequencies, flat top, steep sides -->
+
 **Crystal filters:** used as IF filters in superhets. Very narrow bandwidth, extremely
-steep skirts. A 2.4 kHz crystal filter is typical for SSB; a 500 Hz filter for CW.
+steep skirts. A 2.4 kHz crystal filter is typical for SSB; a 500 Hz filter for CW. See the
+<a href="../../sidebands/crystal-filter.html" target="_blank">Crystal Filters sideband</a> for
+how ladder and half-lattice crystal filters are designed.
 
 **Ceramic filters:** similar function, lower cost, slightly less ideal performance.
 
@@ -1124,6 +1135,26 @@ What audio tone will be heard?
 A **low-pass filter** passes all frequencies below the cut-off and attenuates above.
 A **band-pass filter** passes a specific range of frequencies (between two cut-offs)
 and attenuates both above and below.
+</details>
+
+**Q6.** You want to build an antenna trap that removes one specific frequency while
+passing others through. Should you use a series or a parallel LC, and how should it be
+placed?
+<details><summary>Answer</summary>
+
+A **parallel LC placed in-line** in the signal path. At resonance a parallel LC has maximum
+impedance, so it blocks that one frequency while passing others more freely — exactly what
+an antenna trap needs.
+</details>
+
+**Q7.** An IF stage uses a parallel LC tank as its load, shunted to the supply rail rather
+than placed in-line. What does this achieve, and why?
+<details><summary>Answer</summary>
+
+It gives **band-pass** selectivity at the tuned frequency. A parallel LC as a **shunt** has
+maximum impedance at resonance, so it develops the largest voltage swing (highest gain)
+there — off-resonance its impedance drops, reducing gain. This is the standard tuned
+IF/RF amplifier load.
 </details>
 
 ---
