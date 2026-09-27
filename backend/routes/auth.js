@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const { generateToken, authenticateToken } = require('../middleware/auth');
+const { generateToken, authenticateToken, optionalAuth } = require('../middleware/auth');
 
 /**
  * POST /api/auth/register
@@ -208,6 +208,23 @@ router.get('/stats', authenticateToken, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+/**
+ * GET /api/auth/study-access
+ * Check whether study section + exam practice are unlocked for this visitor
+ */
+router.get('/study-access', optionalAuth, (req, res) => {
+  const gated = process.env.STUDY_ACCESS_ENABLED === 'true';
+  const logged_in = Boolean(req.user && req.user.user_id);
+  const allowList = (process.env.STUDY_ACCESS_USER_IDS || '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+
+  const allowed = !gated || (logged_in && allowList.includes(req.user.user_id));
+
+  res.json({ gated, allowed, logged_in });
 });
 
 /**
