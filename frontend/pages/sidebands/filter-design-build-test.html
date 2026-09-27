@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filter Design, Build &amp; Test — Passive LC &amp; Active Op-Amp | RF-Hub</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#06b6d4">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css?v=20260917-1100">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260917-1100">
+<meta name="site-nav-active" content="sidebands">
+<style>
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --purple: #a78bfa;
+  --cyan:   #06b6d4;
+  --amber:  #f59e0b;
+  --border: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Progress bar ────────────────────────────────────────── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 3px; z-index: 999;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width 0.1s linear;
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 0 2.5rem;
+}
+.hero .container { max-width: 860px; }
+.hero-badge {
+  display: inline-block;
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--purple); border: 1px solid rgba(167,139,250,0.35);
+  border-radius: 4px; padding: 0.2rem 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--text-primary); margin: 0 0 0.75rem; line-height: 1.2;
+}
+.hero-subtitle {
+  color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65;
+  max-width: 620px; margin: 0 0 1.25rem;
+}
+.tag-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.tag-chip {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  border: 1px solid var(--border); color: var(--text-muted);
+}
+.tag-chip--level { color: var(--cyan); border-color: rgba(6,182,212,0.3); }
+
+/* ── Main content ────────────────────────────────────────── */
+.sideband-content {
+  max-width: 800px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── Cross-reference callout ─────────────────────────────── */
+.callout-cyan {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.22);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.1rem; margin: 0 0 2rem;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65;
+}
+.callout-cyan strong { color: var(--cyan); }
+.callout-cyan a { color: var(--cyan); }
+
+/* ── Amber callout ───────────────────────────────────────── */
+.callout-amber {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.1rem; margin: 1rem 0;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65;
+}
+.callout-amber strong { color: var(--amber); }
+
+/* ── Section dividers ────────────────────────────────────── */
+.section-divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+.part-heading {
+  font-family: var(--font-display); font-size: 1.5rem;
+  color: var(--text-primary); margin: 0 0 0.25rem;
+}
+.part-sub {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--purple); text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 0 0 1.25rem; display: block;
+}
+h3 {
+  font-size: 1.05rem; color: var(--text-primary);
+  margin: 1.75rem 0 0.6rem; font-weight: 600;
+}
+p { color: var(--text-secondary); line-height: 1.75; margin: 0 0 1rem; }
+ul, ol { color: var(--text-secondary); line-height: 1.75; padding-left: 1.5rem; margin: 0 0 1rem; }
+li { margin-bottom: 0.35rem; }
+strong { color: #e5e7eb; }
+
+/* ── Formula display ─────────────────────────────────────── */
+.formula-display {
+  background: rgba(167,139,250,0.07);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-mono); font-size: 0.88rem; color: #e5e7eb;
+  padding: 0.85rem 1.1rem; margin: 0.75rem 0 1rem;
+  white-space: pre-wrap; overflow-x: auto;
+}
+
+/* ── Code / ASCII diagram block ──────────────────────────── */
+.code-block {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 6px;
+  font-family: var(--font-mono); font-size: 0.82rem; color: #9ca3af;
+  padding: 1rem 1.1rem; margin: 0.75rem 0 1rem;
+  white-space: pre; overflow-x: auto;
+  line-height: 1.5;
+}
+
+/* ── Worked example block ────────────────────────────────── */
+.examples {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0 1rem;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7;
+}
+.examples code {
+  font-family: var(--font-mono); font-size: 0.82rem; color: #c4b5fd;
+  background: rgba(167,139,250,0.1); padding: 0 0.3rem; border-radius: 3px;
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem; margin: 0.75rem 0 1.5rem;
+}
+.data-table th {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--purple); font-weight: 500;
+  border-bottom: 1px solid rgba(167,139,250,0.25);
+  padding: 0.5rem 0.75rem; text-align: left;
+}
+.data-table td {
+  color: var(--text-secondary); border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem; vertical-align: top;
+}
+.data-table td:first-child {
+  font-family: var(--font-mono); color: #e5e7eb; font-size: 0.8rem;
+}
+.data-table tr:last-child td { border-bottom: none; }
+
+/* ── Interactive iframe wrapper ──────────────────────────── */
+.interactive-frame {
+  margin: 1.5rem 0;
+  border-radius: 10px; overflow: hidden;
+}
+.interactive-frame iframe {
+  width: 100%; display: block;
+  border: 1px solid #1e293b; border-radius: 8px;
+}
+
+/* ── Footer note ─────────────────────────────────────────── */
+.sideband-footer-note {
+  margin-top: 2.5rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.65;
+}
+.sideband-footer-note a { color: var(--purple); text-decoration: none; }
+.sideband-footer-note a:hover { text-decoration: underline; }
+
+/* ── Jump navigation ─────────────────────────────────────── */
+.jump-nav {
+  display: flex; flex-wrap: wrap; gap: 0.35rem;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0 0 2rem;
+}
+.jump-link {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--text-secondary); text-decoration: none;
+  padding: 0.2rem 0.55rem; border: 1px solid var(--border);
+  border-radius: 4px; transition: color 0.15s, border-color 0.15s;
+}
+.jump-link:hover { color: var(--purple); border-color: rgba(167,139,250,0.4); }
+h2[id], h3[id] { scroll-margin-top: 1.5rem; }
+
+/* ── Mobile responsive ───────────────────────────────────── */
+@media (max-width: 600px) {
+  .sideband-content { padding: 1.5rem 1rem 3rem; }
+  .hero { padding: 2rem 0 1.5rem; }
+  .hero h1 { font-size: 1.6rem; }
+  .hero-subtitle { font-size: 0.875rem; }
+  .formula-display, .code-block { font-size: 0.78rem; }
+  .data-table { font-size: 0.78rem; }
+  .data-table th, .data-table td { padding: 0.4rem 0.5rem; }
+}
+@media (max-width: 380px) {
+  .hero h1 { font-size: 1.35rem; }
+  .part-heading { font-size: 1.25rem; }
+  .jump-nav { padding: 0.7rem 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/study/">Study</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Topic Snippet</div>
+    <h1>Filter Design, Build &amp; Test</h1>
+    <p class="hero-subtitle">Passive LC (Pi, T, HP, bandpass, notch) and active op-amp (Sallen-Key, MFB) filters from first principles. Component selection, PCB layout rules, and step-by-step bench verification.</p>
+    <div class="tag-chips">
+      <span class="tag-chip tag-chip--level">[I]</span>
+      <span class="tag-chip tag-chip--level">[FL]</span>
+      <span class="tag-chip">RSGB 13H1 · 13I1 · 13J1</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<main class="container sideband-content">
+
+  <div class="callout-cyan">
+    <strong>Cross-references:</strong>
+    <a href="../study/full/section-13-emc.html#ch-13H" target="_blank" rel="noopener noreferrer">Full §13H — Filter Types &amp; Placement</a> &nbsp;·&nbsp;
+    <a href="../study/full/section-13-emc.html#ch-13I" target="_blank" rel="noopener noreferrer">Full §13I — Pi &amp; T Filter Design</a> &nbsp;·&nbsp;
+    <a href="../study/full/section-14-measurements.html#ch-14K" target="_blank" rel="noopener noreferrer">Full §14K — Spectrum Analyser</a> &nbsp;·&nbsp;
+    <a href="scientific-calculator-guide.html" target="_blank" rel="noopener noreferrer">Calculator Guide — Group 4: Resonance</a> &nbsp;·&nbsp;
+    <a href="crystal-filter.html" target="_blank" rel="noopener noreferrer">Crystal Filter Sideband</a>
+  </div>
+
+  <nav class="jump-nav" aria-label="Page sections">
+    <a class="jump-link" href="#part-1">Part 1: LC</a>
+    <a class="jump-link" href="#design-formulas">Design Formulas</a>
+    <a class="jump-link" href="#lp-pi">LP Pi</a>
+    <a class="jump-link" href="#lp-t">LP T</a>
+    <a class="jump-link" href="#hp-pi">HP Pi</a>
+    <a class="jump-link" href="#bandpass">Bandpass</a>
+    <a class="jump-link" href="#notch">Notch</a>
+    <a class="jump-link" href="#cascading">Cascading</a>
+    <a class="jump-link" href="#lc-designer">LC Designer</a>
+    <a class="jump-link" href="#part-2">Part 2: Op-Amp</a>
+    <a class="jump-link" href="#sk-lp">Sallen-Key LP</a>
+    <a class="jump-link" href="#sk-hp">Sallen-Key HP</a>
+    <a class="jump-link" href="#mfb">MFB Bandpass</a>
+    <a class="jump-link" href="#opamp-selection">Op-Amp Selection</a>
+    <a class="jump-link" href="#part-3">Part 3: Components</a>
+    <a class="jump-link" href="#inductors">Inductors</a>
+    <a class="jump-link" href="#capacitors">Capacitors</a>
+    <a class="jump-link" href="#part-4">Part 4: Build</a>
+    <a class="jump-link" href="#pcb-layout">PCB Layout</a>
+    <a class="jump-link" href="#part-5">Part 5: Test</a>
+    <a class="jump-link" href="#test-s21">S21</a>
+    <a class="jump-link" href="#test-stopband">Stopband</a>
+    <a class="jump-link" href="#test-rl">Return Loss</a>
+    <a class="jump-link" href="#test-bench">Bench Test</a>
+    <a class="jump-link" href="#quick-ref">Quick Ref</a>
+  </nav>
+
+  <p>A filter is a frequency-selective network. It passes some frequencies with little loss and attenuates others. Every amateur station uses filters — the low-pass filter on the PA output, the bandpass filter in the receiver front end, the audio filter that pulls CW out of noise. Understanding how to design, build, and verify one closes the loop between the formula on the page and the working circuit on the bench.</p>
+  <p>This sideband covers the two main filter families used in amateur work: <strong>passive LC filters</strong> (inductors and capacitors, no power needed, used at RF) and <strong>active op-amp filters</strong> (resistors, capacitors, and an op-amp, used at audio and sub-100 MHz IF frequencies). For crystal filters — the technology used in SSB IF strips — see the companion sideband.</p>
+
+  <!-- ════════ PART 1 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-1">Part 1: Passive LC Filters</h2>
+  <span class="part-sub">Pi · T · High-pass · Bandpass · Notch</span>
+
+  <h3 id="design-formulas">The Design Formulas</h3>
+  <p>Two formulas cover every single-section passive LC filter regardless of topology (Pi, T, LP, or HP):</p>
+  <div class="formula-display">Series inductor:  L = Z₀ / (2π × f_c)         [henries]
+Shunt capacitor:  C = 1 / (2π × f_c × Z₀)    [farads]</div>
+  <p>where <strong>f_c</strong> is the −3 dB cut-off frequency in Hz and <strong>Z₀</strong> is the source and load impedance in Ω (must be equal — the formulas assume a matched system).</p>
+  <div class="callout-amber"><strong>These two formulas are it.</strong> They apply whether you are designing a Pi filter, a T filter, a low-pass, or a high-pass. The topology and the L/C assignment change; the formulas do not.</div>
+
+  <hr class="section-divider">
+
+  <h3 id="lp-pi">Low-Pass Pi Filter (shunt–series–shunt)</h3>
+  <pre class="code-block">Input ──┬───[L]───┬── Output
+       [C]       [C]
+        │         │
+       GND       GND</pre>
+  <p><strong>Component values:</strong> one inductor (series, value L) and two capacitors (shunt, each value C).</p>
+  <p><strong>Use for:</strong> harmonic suppression at transmitter output; HF/VHF low-pass at 50 Ω.</p>
+  <p>The Pi filter suits <strong>high-impedance source and load</strong> — the capacitors immediately shunt harmonic energy before it can enter the inductor.</p>
+  <div class="examples">
+    <strong>Worked example — HF LP filter, f_c = 32 MHz, Z₀ = 50 Ω:</strong><br><br>
+    <code>L = 50 / (2π × 32 × 10⁶) = 50 / 201,062,000 = 249 nH → use 250 nH</code><br>
+    <code>C = 1 / (2π × 32 × 10⁶ × 50) = 1 / 10,053,096,000 = 99.5 pF → use 100 pF</code><br><br>
+    Pi topology: <strong>100 pF to GND → 250 nH series → 100 pF to GND</strong>
+  </div>
+
+  <h3 id="lp-t">Low-Pass T Filter (series–shunt–series)</h3>
+  <pre class="code-block">Input ──[L]──┬──[L]── Output
+            [C]
+             │
+            GND</pre>
+  <p><strong>Component values:</strong> two identical inductors (series, each L) and one capacitor (shunt, value C).</p>
+  <p><strong>Use for:</strong> lower-impedance sources where the inductors block harmonics at the input and output. Same formulas as Pi — values L and C are identical to the Pi at the same f_c and Z₀. Only the topology (which element is where) differs.</p>
+
+  <h3 id="hp-pi">High-Pass Pi Filter</h3>
+  <p><strong>Element-type swap:</strong> series inductor → series <strong>capacitor</strong>; shunt capacitors → shunt <strong>inductors</strong>.</p>
+  <pre class="code-block">Input ──┬───[C]───┬── Output
+       [L]       [L]
+        │         │
+       GND       GND</pre>
+  <p><strong>Same formula values — just swap which formula goes to which element type:</strong></p>
+  <ul>
+    <li>Series <strong>capacitor:</strong> use the C formula → C = 1/(2πf_c Z₀)</li>
+    <li>Shunt <strong>inductor:</strong> use the L formula → L = Z₀/(2πf_c)</li>
+  </ul>
+  <div class="examples">
+    <strong>Worked example — TV aerial HPF, f_c = 50 MHz, Z₀ = 75 Ω (blocks HF, passes UHF):</strong><br><br>
+    <code>C_series = 1 / (2π × 50 × 10⁶ × 75) = 42.4 pF → use 39 pF or 43 pF</code><br>
+    <code>L_shunt  = 75 / (2π × 50 × 10⁶)     = 238 nH → use 220 nH or 270 nH</code>
+  </div>
+
+  <h3 id="bandpass">Bandpass Filter</h3>
+  <p>A simple bandpass filter is constructed by <strong>cascading a LP filter and an HP filter</strong>, with the LP cut-off above the HP cut-off. Signals below f_HP and above f_LP are rejected; signals between them pass.</p>
+  <p>For a single-band receive filter on 20 m (14.0–14.35 MHz):</p>
+  <ul>
+    <li>HP section: f_c = 13.5 MHz (blocks below 20 m band)</li>
+    <li>LP section: f_c = 15.0 MHz (blocks above 20 m band)</li>
+  </ul>
+  <p>Place them in order: HP Pi → LP Pi. Both sections designed for 50 Ω.</p>
+  <div class="callout-amber"><strong>Note:</strong> Adjacent sections sharing a node can combine their shunt elements (two shunt capacitors at a junction → one capacitor of double the value). This reduces component count.</div>
+
+  <h3 id="notch">Notch Filter (Band-Stop)</h3>
+  <p>A <strong>parallel LC trap</strong> (placed in shunt across the signal path) presents very high impedance at its resonant frequency — the signal at that frequency sees a near-open circuit and is diverted to ground. This creates a sharp notch.</p>
+  <pre class="code-block">Signal line ──┬──────────────────── continues
+              │
+             [L] ═══ parallel resonance
+             [C]
+              │
+             GND</pre>
+  <div class="formula-display">Resonant frequency: f₀ = 1 / (2π × √(L × C))</div>
+  <p><strong>Depth of notch:</strong> determined by the Q of the inductor. High-Q air-wound inductors give notches &gt;40 dB; ferrite-wound inductors give broader, shallower notches.</p>
+  <p><strong>Use for:</strong> rejecting a single interferer (FM broadcast station desensitising an HF receiver, a specific harmonic).</p>
+  <div class="examples">
+    <strong>Worked example — notch at 97.5 MHz (FM station), 50 Ω system, C = 47 pF:</strong><br><br>
+    <code>L = 1 / (4π² × f₀² × C)</code><br>
+    <code>  = 1 / (4 × 9.87 × (97.5 × 10⁶)² × 47 × 10⁻¹²)</code><br>
+    <code>  = <strong>56.7 nH → 56 nH air-wound coil</strong></code>
+  </div>
+
+  <h3 id="cascading">Cascading for More Attenuation</h3>
+  <p>Each additional identical filter section adds the same dB attenuation in the stop band (attenuations add in dB). Two 3-element Pi LP sections give approximately 2× the dB of one.</p>
+  <p><strong>Practical limit:</strong> component parasitics (inductor self-resonant frequency, capacitor series inductance) degrade performance beyond ~80–100 dB total. At VHF and above, physical component size becomes the limiting factor.</p>
+
+  <!-- LC FILTER DESIGNER INTERACTIVE -->
+  <h3 id="lc-designer">Try It: LC Filter Designer</h3>
+  <p>Enter your target cut-off frequency and system impedance to compute Pi, T, and notch component values. Sweep the frequency response interactively.</p>
+  <div class="interactive-frame">
+    <iframe src="/interactives/full-lc-filter-designer.html" style="height:750px;" loading="lazy" title="LC Filter Designer — Pi and T Networks"></iframe>
+  </div>
+
+  <!-- ════════ PART 2 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-2">Part 2: Active Op-Amp Filters</h2>
+  <span class="part-sub">Sallen-Key · MFB · Op-Amp Selection</span>
+
+  <p>Active filters use resistors, capacitors, and an op-amp to achieve frequency-selective behaviour without inductors. This matters because:</p>
+  <ul>
+    <li>Inductors are bulky, lossy, and expensive at audio/IF frequencies</li>
+    <li>Op-amp filters are easily tuned by changing resistor values</li>
+    <li>Active filters can provide gain (or unity gain) in the passband</li>
+  </ul>
+  <div class="callout-amber"><strong>Limitation:</strong> op-amp filters are only practical below ~10 MHz (limited by op-amp gain-bandwidth product). At RF, passive LC is the right choice.</div>
+
+  <h3 id="sk-lp">The Sallen-Key Low-Pass Filter (2nd Order)</h3>
+  <p>The Sallen-Key is the most common active LP topology — two poles (−40 dB/decade rolloff) from one op-amp, unity gain (voltage follower output stage).</p>
+  <pre class="code-block">Input ──[R1]──┬──[R2]──┬── (+) op-amp out── Output
+              |        |        |
+             [C1]     [C2]     |
+              |        |       (−) ──────────┘ (unity gain)
+             GND      GND</pre>
+  <p>For a <strong>Butterworth</strong> (maximally flat passband) 2nd-order LP with R1 = R2 = R, C1 = C2 = C:</p>
+  <div class="formula-display">f_c = 1 / (2π × R × C)
+
+Choose C, solve for R:  R = 1 / (2π × f_c × C)</div>
+  <p>The Butterworth condition (Q = 0.707) is automatically satisfied when R1 = R2 and C1 = C2 in the unity-gain Sallen-Key.</p>
+  <div class="examples">
+    <strong>Worked example — audio LPF at 3 kHz (voice high-cut), using C = 47 nF:</strong><br><br>
+    <code>R = 1 / (2π × 3000 × 47 × 10⁻⁹)</code><br>
+    <code>  = 1 / 885,840</code><br>
+    <code>  = <strong>1,129 Ω → use 1.1 kΩ</strong> (2.6% error — acceptable)</code>
+  </div>
+
+  <h3 id="sk-hp">The Sallen-Key High-Pass Filter (2nd Order)</h3>
+  <p>Swap R and C positions in the Sallen-Key network:</p>
+  <pre class="code-block">Input ──[C1]──┬──[C2]──┬── (+) op-amp out── Output
+              |        |        |
+             [R1]     [R2]     |
+              |        |       (−) ──────────┘ (unity gain)
+             GND      GND</pre>
+  <p>Same formula: <strong>f_c = 1 / (2π × R × C)</strong> with R1=R2=R, C1=C2=C.</p>
+  <p><strong>Use for:</strong> audio HPF to cut rumble below 300 Hz; removing DC and LF noise from audio interfaces.</p>
+
+  <h3 id="mfb">Multiple-Feedback (MFB) Bandpass Filter</h3>
+  <p>The MFB topology gives a bandpass response (passes a band around a centre frequency f₀, attenuates above and below) with gain at the centre frequency.</p>
+  <pre class="code-block">        [C1]
+          │
+Input ──[R1]──┬──[R3]── (−) op-amp ──┬── Output
+              |                       │
+             [R2]                    [C2]
+              |                       │
+             GND                      │
+              └───────────────────────┘ (feedback)</pre>
+  <p>For the MFB bandpass (equal-C design, C1 = C2 = C):</p>
+  <div class="formula-display">f₀ = 1 / (2π × C × √(R1 × R3))
+A₀ = −R3 / (2 × R1)      [inverting gain at f₀]</div>
+  <p><strong>Use for:</strong> audio CW filter (e.g. centre 700 Hz, BW 100 Hz, Q = 7); IF noise filtering; SSB audio shaping.</p>
+  <div class="callout-amber"><strong>Practical note:</strong> the MFB is sensitive to component tolerances at high Q. For Q &gt; 10, use 1% resistors and NP0 capacitors to hit the design frequency.</div>
+
+  <h3 id="opamp-selection">Op-Amp Selection</h3>
+  <p>The op-amp's <strong>gain-bandwidth product (GBW)</strong> must be much higher than f₀ × A₀. Rule of thumb: GBW ≥ 100 × f₀ for stable filter performance.</p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Application</th><th>f₀</th><th>Minimum GBW</th><th>Suitable op-amps</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Audio LPF 3 kHz</td><td>3 kHz</td><td>≥ 300 kHz</td><td>LM741, TL071, NE5532</td></tr>
+      <tr><td>Audio CW filter 700 Hz</td><td>700 Hz</td><td>≥ 70 kHz</td><td>Any general-purpose</td></tr>
+      <tr><td>SSB audio shaping 2.4 kHz</td><td>2.4 kHz</td><td>≥ 240 kHz</td><td>NE5532, OPA2134</td></tr>
+      <tr><td>IF bandpass 455 kHz</td><td>455 kHz</td><td>≥ 45 MHz</td><td>OPA355, OPA657</td></tr>
+      <tr><td>IF bandpass 9 MHz</td><td>9 MHz</td><td>≥ 900 MHz</td><td>Crystal filter preferred here</td></tr>
+    </tbody>
+  </table>
+  <p>For audio work, <strong>NE5532</strong> (10 MHz GBW, low noise) is the standard amateur choice. <strong>OPA2134</strong> (8 MHz GBW, FET input, very low noise) for high-performance audio.</p>
+
+  <!-- ════════ PART 3 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-3">Part 3: Component Selection</h2>
+  <span class="part-sub">Inductors · Capacitors</span>
+
+  <h3 id="inductors">Inductors</h3>
+  <p><strong>Self-resonant frequency (SRF):</strong> every inductor has distributed capacitance between its windings. At the SRF, the inductor resonates with its own capacitance and behaves as a capacitor above that frequency. The SRF must be well above the filter's stop-band frequency.</p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Inductor type</th><th>SRF range</th><th>Suitable for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Axial moulded (colour-coded)</td><td>50–300 MHz</td><td>HF LP filters only</td></tr>
+      <tr><td>Toroidal (T50-6)</td><td>&gt; 200 MHz</td><td>HF/VHF, wound to value</td></tr>
+      <tr><td>Air-wound (self-supporting coil)</td><td>&gt; 500 MHz</td><td>VHF/UHF, high-Q notches</td></tr>
+      <tr><td>Shielded SMD</td><td>100 MHz–1 GHz</td><td>VHF/UHF PCB filters</td></tr>
+    </tbody>
+  </table>
+  <div class="callout-amber"><strong>Core material:</strong> for HF filters, <strong>iron powder cores</strong> (T50-6, T50-2, Amidon) give high Q and linear permeability. Ferrite cores (suitable for EMC chokes) are lossy at HF and reduce filter Q, broadening the response.</div>
+
+  <h3 id="capacitors">Capacitors</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Dielectric</th><th>Tolerance</th><th>Tempco</th><th>Suitable for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>NP0/C0G</td><td>±5% or better</td><td>±30 ppm/°C</td><td>All RF filters — first choice</td></tr>
+      <tr><td>Silver mica</td><td>±1%</td><td>±50 ppm/°C</td><td>High-performance RF, notch filters</td></tr>
+      <tr><td>X7R</td><td>±10–20%</td><td>±15% over temp</td><td>Not suitable for tuned circuits</td></tr>
+      <tr><td>Polystyrene</td><td>±1–2.5%</td><td>−125 ppm/°C</td><td>Audio filters, good stability</td></tr>
+      <tr><td>Polyester/MKT</td><td>±5–10%</td><td>±200 ppm/°C</td><td>Audio only (too large for RF)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout-amber"><strong>For RF LC filters: always use NP0/C0G or silver mica.</strong> X7R capacitance drifts with temperature and voltage — a filter built with X7R capacitors will shift cut-off frequency as the circuit warms up.</div>
+
+  <!-- ════════ PART 4 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-4">Part 4: Building and Layout</h2>
+  <span class="part-sub">PCB · Stripboard · Shielding</span>
+
+  <h3 id="pcb-layout">PCB and Stripboard Guidelines</h3>
+  <p><strong>Ground plane:</strong> a continuous copper ground plane under the filter components is essential at VHF. It provides a low-inductance return path and prevents ground-loop problems between filter sections.</p>
+  <p><strong>Lead length:</strong> at 50 MHz and above, 10 mm of component lead ≈ approximately 8 nH of series inductance (about 2.5 Ω at 50 MHz). Excess lead length on capacitors adds parasitic inductance that degrades filter performance. Keep leads as short as possible; use SMD components at VHF.</p>
+  <p><strong>Input/output separation:</strong> the input and output of a filter must be physically separated and shielded from each other. A signal bypassing the filter by coupling capacitively across it destroys the stop-band attenuation. Use a grounded metal partition or shield can between input and output stages on high-isolation filters.</p>
+  <div class="callout-amber"><strong>Box:</strong> a fully enclosed tinplate or aluminium box with SMA or BNC connectors is the correct housing for any filter requiring &gt; 40 dB stop-band isolation.</div>
+
+  <!-- ════════ PART 5 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-5">Part 5: Test Procedure</h2>
+  <span class="part-sub">S21 · Stop-band · Return loss · Quick bench test</span>
+
+  <p>A completed filter should be verified before installation. Two measurements matter:</p>
+
+  <h3 id="test-s21">1. Passband Insertion Loss (S21)</h3>
+  <p>Connect the filter between a signal generator (or VNA port 1) and a spectrum analyser / power meter (VNA port 2). Sweep across the passband and record the insertion loss at the design frequency.</p>
+  <p><strong>Expected:</strong> LP Butterworth filter at f_c/10 should have &lt; 0.1 dB insertion loss. Actual loss is due to coil winding resistance (low Q) and capacitor ESR. A well-built LC filter at HF should achieve &lt; 0.5 dB passband loss.</p>
+
+  <h3 id="test-stopband">2. Stop-Band Attenuation</h3>
+  <p>Sweep the frequency into the stop band and measure attenuation at 2× f_c, 3× f_c.</p>
+  <p>A 3-element Pi LP (one inductor, two capacitors) rolls off at −60 dB/decade beyond f_c. At 2× f_c (one octave): approximately −18 dB below the passband. At 3× f_c: approximately −30 dB. A 5-element Pi (two inductors, three capacitors) gives −100 dB/decade.</p>
+
+  <h3 id="test-rl">3. Return Loss / Match (S11)</h3>
+  <p>Connect the filter input to VNA port 1 (with the output terminated in Z₀). A well-designed filter presents near Z₀ in the passband — the return loss should be &gt; 15 dB in the passband, indicating SWR &lt; 1.4:1.</p>
+  <p>Poor return loss in the passband means the component values are off or the filter's source/load impedance assumption is not matched.</p>
+
+  <h3 id="test-bench">Quick Bench Test Without a VNA</h3>
+  <p>A basic two-generator test works without dedicated RF test equipment:</p>
+  <ol>
+    <li>Set signal generator to f_passband → measure output level with multimeter (AC mV setting) → note as reference</li>
+    <li>Set signal generator to f_stopband (e.g. 2× f_c) → measure output level</li>
+    <li>Attenuation (dB) = 20 × log₁₀(V_passband / V_stopband)</li>
+  </ol>
+
+  <!-- ════════ QUICK REFERENCE ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="quick-ref">Quick Reference</h2>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Filter type</th><th>Topology</th><th>Series element</th><th>Shunt element</th><th>L formula</th><th>C formula</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>LP Pi</td><td>shunt–series–shunt</td><td>L</td><td>C</td><td>Z₀/(2πf_c)</td><td>1/(2πf_c Z₀)</td></tr>
+      <tr><td>LP T</td><td>series–shunt–series</td><td>L</td><td>C</td><td>Z₀/(2πf_c)</td><td>1/(2πf_c Z₀)</td></tr>
+      <tr><td>HP Pi</td><td>shunt–series–shunt</td><td>C (series)</td><td>L (shunt)</td><td>Z₀/(2πf_c)</td><td>1/(2πf_c Z₀)</td></tr>
+      <tr><td>HP T</td><td>series–shunt–series</td><td>C (series)</td><td>L (shunt)</td><td>Z₀/(2πf_c)</td><td>1/(2πf_c Z₀)</td></tr>
+      <tr><td>Notch trap</td><td>shunt resonator</td><td>L ∥ C</td><td>—</td><td>L = 1/(4π²f₀²C)</td><td>chosen first</td></tr>
+      <tr><td>S-K LP (active)</td><td>Sallen-Key</td><td>R (series)</td><td>C (shunt)</td><td>—</td><td>f_c = 1/(2πRC)</td></tr>
+      <tr><td>S-K HP (active)</td><td>Sallen-Key</td><td>C (series)</td><td>R (shunt)</td><td>—</td><td>f_c = 1/(2πRC)</td></tr>
+    </tbody>
+  </table>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Rolloff rate</th><th>Elements</th><th>Type</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>−20 dB/decade</td><td>1 reactive</td><td>1st order (single RC or LC)</td></tr>
+      <tr><td>−40 dB/decade</td><td>2 reactive</td><td>2nd order (Sallen-Key, or Pi L+2C)</td></tr>
+      <tr><td>−60 dB/decade</td><td>3 reactive</td><td>3-element Pi or T</td></tr>
+      <tr><td>−100 dB/decade</td><td>5 reactive</td><td>5-element Pi or T</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sideband-footer-note">
+    Sideband snippets are short-form RF-Hub reference topics. For crystal filters (IF strips, SSB ladders, half-lattice), see the companion <a href="crystal-filter.html" target="_blank" rel="noopener noreferrer">Crystal Filter sideband</a>.
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<div id="site-footer-mount">
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function() {
+    var bar = document.getElementById('progress-bar');
+    if (!bar) return;
+    window.addEventListener('scroll', function() {
+      var d = document.documentElement;
+      var pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+      bar.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+  })();
+</script>
+<script src="/assets/js/search.js?v=20260917-1100" defer></script>
+<script src="/assets/js/nav-loader.js?v=20260917-1100" defer></script>
+</body>
+</html>

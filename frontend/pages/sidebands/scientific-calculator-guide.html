@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Calculator Guide — Every RSGB Formula | RF-Hub Sidebands</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#06b6d4">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260916-1000">
+<meta name="site-nav-active" content="sidebands">
+<style>
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --amber:  #f59e0b;
+  --cyan:   #06b6d4;
+  --purple: #a78bfa;
+  --green:  #4ade80;
+  --border: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+a { color: var(--purple); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--amber);
+  background: rgba(245,158,11,0.1);
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+}
+
+/* ── Progress bar ── */
+.progress-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+/* ── Nav fallback ── */
+.site-nav {
+  background: rgba(10,14,26,0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  backdrop-filter: blur(8px);
+}
+.site-nav .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 2rem; }
+.site-nav-brand { font-family: var(--font-display); font-size: 1.2rem; color: var(--text-primary); text-decoration: none; }
+.site-nav-links { list-style: none; display: flex; gap: 1.5rem; }
+.site-nav-links a { color: var(--text-secondary); font-size: 0.9rem; text-decoration: none; }
+.site-nav-links a:hover { color: var(--text-primary); }
+
+/* ── Layout ── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #0d1120 0%, #151d35 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3.5rem 0 2.5rem;
+  margin-top: 3px;
+}
+.hero .container { max-width: 800px; }
+
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+.breadcrumb a { color: var(--text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--purple); }
+.breadcrumb span { margin: 0 0.4rem; }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 620px;
+  margin-bottom: 1.25rem;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.tag-chip {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.tag-chip--level { color: var(--cyan); border-color: rgba(6,182,212,0.35); }
+.tag-chip--ref   { color: var(--purple); border-color: rgba(167,139,250,0.35); }
+
+.hero__meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.hero__meta a { color: var(--purple); }
+
+/* ── Chapters ── */
+.chapter {
+  margin-bottom: 3rem;
+}
+
+.chapter h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.chapter h3 {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.chapter h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+}
+
+.chapter p { color: var(--text-secondary); margin-bottom: 0.9rem; }
+.chapter ul, .chapter ol { color: var(--text-secondary); padding-left: 1.5rem; margin-bottom: 0.9rem; }
+.chapter li { margin-bottom: 0.3rem; }
+
+/* ── Formula display ── */
+.formula-display {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--purple);
+  border-radius: 6px;
+  padding: 0.9rem 1.1rem;
+  margin: 0.75rem 0 1rem;
+  line-height: 1.5;
+}
+
+/* ── Code block (key sequences) ── */
+.code-block {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--cyan);
+  background: rgba(6,182,212,0.05);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  margin: 0.5rem 0 1rem;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+/* ── Worked examples ── */
+.examples {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  margin: 0.75rem 0;
+}
+.examples p { color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.92rem; }
+.examples p:last-child { margin-bottom: 0; }
+.examples ul { color: var(--text-secondary); padding-left: 1.25rem; font-size: 0.92rem; }
+.examples li { margin-bottom: 0.35rem; }
+
+/* ── Callouts ── */
+.callout {
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin: 1rem 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+}
+.callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+.callout-text { color: var(--text-secondary); line-height: 1.6; }
+.callout-text strong { color: var(--text-primary); }
+
+.callout--amber {
+  background: rgba(245,158,11,0.07);
+  border: 1px solid rgba(245,158,11,0.25);
+}
+.callout--cyan {
+  background: rgba(6,182,212,0.07);
+  border: 1px solid rgba(6,182,212,0.25);
+}
+.callout--purple {
+  background: rgba(167,139,250,0.07);
+  border: 1px solid rgba(167,139,250,0.25);
+}
+
+/* ── Tables ── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.data-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 0.6rem 0.9rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td:first-child { font-family: var(--font-mono); color: var(--amber); }
+
+/* ── Quick-ref table ── */
+.quickref-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 1px solid rgba(167,139,250,0.25);
+  background: rgba(167,139,250,0.03);
+}
+.quickref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.quickref-table th {
+  background: rgba(167,139,250,0.1);
+  color: var(--purple);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(167,139,250,0.2);
+}
+.quickref-table td {
+  padding: 0.5rem 0.9rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.quickref-table tr:last-child td { border-bottom: none; }
+.quickref-table td:first-child { font-family: var(--font-mono); font-size: 0.8rem; color: var(--purple); width: 3rem; }
+.quickref-table td:nth-child(2) { font-family: var(--font-mono); font-size: 0.82rem; color: var(--cyan); }
+.quickref-table td:nth-child(4) { font-family: var(--font-mono); font-size: 0.8rem; color: var(--amber); }
+
+/* ── Section divider ── */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ── dB reference mini-table ── */
+.db-ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin: 0.75rem 0;
+}
+.db-ref-table th {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.db-ref-table td {
+  padding: 0.4rem 0.7rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.db-ref-table tr:last-child td { border-bottom: none; }
+.db-ref-table td:first-child { font-family: var(--font-mono); color: var(--amber); width: 4rem; }
+
+/* ── VF / tau reference tables ── */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin: 0.75rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.ref-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.ref-table td {
+  padding: 0.45rem 0.75rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table td:first-child { color: var(--cyan); }
+.ref-table td:nth-child(2) { font-family: var(--font-mono); color: var(--amber); }
+
+/* ── Footer ── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+.site-footer .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.footer-brand { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 0.3rem; }
+.footer-brand span { color: var(--cyan); }
+.footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+.footer-copy a { color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  main { padding: 1.5rem 1rem 4rem; }
+  .hero { padding: 2.5rem 0 1.75rem; }
+  .hero h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"></div>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/sidebands/">Sidebands</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/pages/sidebands/">Sidebands</a>
+      <span>›</span>
+      Scientific Calculator Guide
+    </div>
+    <h1>Scientific Calculator Guide</h1>
+    <p class="hero-subtitle">Every RSGB syllabus formula — grouped by topic — with exact Windows Calculator key sequences, multiple worked examples drawn from the study curriculum, and the gotchas that cost people marks.</p>
+    <div class="tag-row">
+      <span class="tag-chip tag-chip--level">[F]</span>
+      <span class="tag-chip tag-chip--level">[I]</span>
+      <span class="tag-chip tag-chip--level">[FL]</span>
+      <span class="tag-chip tag-chip--ref">RSGB 2A1</span>
+      <span class="tag-chip tag-chip--ref">2C1–2C2</span>
+      <span class="tag-chip tag-chip--ref">2D1</span>
+      <span class="tag-chip tag-chip--ref">4B1</span>
+      <span class="tag-chip tag-chip--ref">5D1</span>
+      <span class="tag-chip tag-chip--ref">9A1</span>
+      <span class="tag-chip tag-chip--ref">10D1–11O1</span>
+      <span class="tag-chip tag-chip--ref">12D1</span>
+    </div>
+    <div class="hero__meta">
+      Cross-refs:
+      <a href="../study/intermediate/section-2-electronics.html" target="_blank">Intermediate §2</a> ·
+      <a href="../study/full/section-4-basic-circuits.html" target="_blank">Full §4</a> ·
+      <a href="../study/full/section-9-measurements.html" target="_blank">Full §9</a> ·
+      <a href="../study/full/section-10-sdr.html" target="_blank">Full §10</a> ·
+      <a href="../study/full/section-11-feeders-antennas.html" target="_blank">Full §11</a> ·
+      <a href="../study/full/section-12-propagation.html" target="_blank">Full §12</a> ·
+      <a href="resistance-reactance-impedance.html" target="_blank">Resistance &amp; Reactance</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<main>
+
+<!-- ─── SETUP ──────────────────────────────────────────── -->
+<div class="chapter">
+  <h2>Setting Up Windows Calculator — Scientific Mode</h2>
+  <ol>
+    <li>Press <code>Win</code> — type <strong>Calculator</strong> — press <code>Enter</code></li>
+    <li>Click the <strong>≡ menu</strong> (three horizontal lines, top-left)</li>
+    <li>Select <strong>Scientific</strong></li>
+  </ol>
+  <p>The display now shows <strong>DEG</strong> and <strong>F-E</strong> indicators, and the button grid expands to include the keys described below.</p>
+
+  <h3>Button Reference</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Button</th><th>Label on calculator</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>log</td><td>log</td><td>log base 10 — use for <strong>all dB formulas</strong></td></tr>
+        <tr><td>ln</td><td>ln</td><td>natural log (base <em>e</em>) — use for time-constant decay</td></tr>
+        <tr><td>10ˣ</td><td>10ˣ</td><td>10 raised to the displayed power — undoes <code>log</code></td></tr>
+        <tr><td>2ⁿᵈ then ln</td><td>2ⁿᵈ → ln</td><td><em>e</em> raised to the displayed power — undoes <code>ln</code></td></tr>
+        <tr><td>e</td><td>e</td><td>inserts Euler's number ≈ 2.71828 as a value</td></tr>
+        <tr><td>xʸ</td><td>xʸ</td><td>raises displayed number to a power you then type</td></tr>
+        <tr><td>x²</td><td>x²</td><td>squares the displayed number immediately</td></tr>
+        <tr><td>²√x</td><td>²√x</td><td>square root of the displayed number immediately</td></tr>
+        <tr><td>¹⁄ₓ</td><td>¹⁄ₓ</td><td>reciprocal (1 divided by the displayed number)</td></tr>
+        <tr><td>exp</td><td>exp</td><td>enter scientific notation: <code>2</code> <code>exp</code> <code>6</code> = 2,000,000</td></tr>
+        <tr><td>π</td><td>π</td><td>inserts π ≈ 3.14159 as a value</td></tr>
+        <tr><td>+/−</td><td>+/−</td><td>negates the displayed number (changes sign)</td></tr>
+        <tr><td>( )</td><td>( and )</td><td>group parts of a calculation</td></tr>
+        <tr><td>DEG</td><td>DEG (display)</td><td>mode indicator — must be set to DEG for trig functions</td></tr>
+        <tr><td>Trigonometry ▾</td><td>dropdown</td><td>access sin, cos, tan, sec and their inverses</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text">
+      <strong>Three things to check before any calculation:</strong><br>
+      <strong><code>log</code> ≠ <code>ln</code></strong> — <code>log</code> is base-10 (dB calculations). <code>ln</code> is the natural log (time-constant decay). Wrong key = wrong answer with no error message.<br>
+      <strong><code>exp</code> ≠ <code>xʸ</code></strong> — <code>exp</code> is for entering scientific notation (<code>2</code> <code>exp</code> <code>6</code> = 2,000,000). <code>xʸ</code> raises a number to a power (<code>2</code> <code>xʸ</code> <code>6</code> = 64). These are completely different.<br>
+      <strong>DEG mode</strong> — if you ever open the <strong>Trigonometry ▾</strong> dropdown, confirm <strong>DEG</strong> is showing at the top of the display. In RAD mode, sin(30) gives −0.988 instead of 0.5.
+    </div>
+  </div>
+
+  <h3>Unit Conversions — Do These Before Typing</h3>
+  <p>Many formulas require SI base units. Convert before you enter any value:</p>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Unit you have</th><th>SI base unit</th><th>Conversion</th></tr></thead>
+      <tbody>
+        <tr><td>MHz</td><td>Hz</td><td>× 1,000,000</td></tr>
+        <tr><td>kHz</td><td>Hz</td><td>× 1,000</td></tr>
+        <tr><td>μH</td><td>H</td><td>÷ 1,000,000 (= × 0.000001)</td></tr>
+        <tr><td>mH</td><td>H</td><td>÷ 1,000 (= × 0.001)</td></tr>
+        <tr><td>pF</td><td>F</td><td>÷ 10¹² (= × 0.000000000001)</td></tr>
+        <tr><td>nF</td><td>F</td><td>÷ 10⁹ (= × 0.000000001)</td></tr>
+        <tr><td>μF</td><td>F</td><td>÷ 10⁶ (= × 0.000001)</td></tr>
+        <tr><td>kΩ</td><td>Ω</td><td>× 1,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Shortcut:</strong> kΩ × μF = seconds directly (the 10³ and 10⁻⁶ cancel). Similarly, MHz × μH = Ω-ish (useful mental check for reactance values).</p>
+
+  <h3>Other Calculators</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Calculator</th><th>What to know</th></tr></thead>
+      <tbody>
+        <tr><td>iOS Calculator</td><td>Rotate to landscape for scientific mode. Button labels are identical. <code>EE</code> key = Windows <code>exp</code>. <code>2nd</code> key shifts functions.</td></tr>
+        <tr><td>Google Calculator</td><td>Type the formula as text: <code>10 * log(80/5)</code>, <code>1/(2*pi*7.1e6*220e-12)</code>, <code>sqrt(16900)</code>. Accepts <code>log()</code>, <code>ln()</code>, <code>sqrt()</code>, <code>^</code>, <code>e^</code>. Fastest for one-off checks.</td></tr>
+        <tr><td>Casio fx-83 / fx-85 / fx-991</td><td><code>SHIFT</code> <code>log</code> = 10ˣ. <code>SHIFT</code> <code>ln</code> = eˣ. <code>ENG</code> key cycles ×10³ prefixes. Sequences mirror Windows Calculator.</td></tr>
+        <tr><td>Any scientific calculator</td><td>Use <code>log</code> for base-10, <code>ln</code> for natural. Look for <code>√</code>, <code>x²</code>, <code>INV</code>/<code>2nd</code> for inverse functions. Principles are identical.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 1: OHM'S LAW ──────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 1: Ohm's Law and DC Power</h2>
+  <p>These formulas apply at Foundation level and underpin everything else.</p>
+
+  <h3>1.1 — Ohm's Law</h3>
+  <div class="formula-display">V = I × R &nbsp;&nbsp;·&nbsp;&nbsp; I = V / R &nbsp;&nbsp;·&nbsp;&nbsp; R = V / I</div>
+  <p><strong>Key sequences:</strong></p>
+  <div class="code-block">To find V: I × R =
+To find I: V ÷ R =
+To find R: V ÷ I =</div>
+  <div class="examples">
+    <ul>
+      <li>2 A through 47 Ω: <code>2</code> <code>×</code> <code>47</code> <code>=</code> → <strong>94 V</strong></li>
+      <li>Voltage 13.8 V, resistance 4.6 Ω: <code>13.8</code> <code>÷</code> <code>4.6</code> <code>=</code> → <strong>3 A</strong></li>
+      <li>12 V supply, 0.5 A load: <code>12</code> <code>÷</code> <code>0.5</code> <code>=</code> → <strong>24 Ω</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Units must be consistent — volts, amps, ohms. Mixing mA and A gives a 1000× error. If you have 50 mA, enter 0.05 (amps).</div>
+  </div>
+
+  <h3>1.2 — DC Power</h3>
+  <div class="formula-display">P = V × I &nbsp;&nbsp;=&nbsp;&nbsp; I² × R &nbsp;&nbsp;=&nbsp;&nbsp; V² / R</div>
+  <p>Three equivalent forms — use whichever two quantities you know.</p>
+  <div class="code-block">Know V and I: V × I =
+Know I and R: I x² × R =
+Know V and R: V x² ÷ R =</div>
+  <div class="examples">
+    <ul>
+      <li>PA stage: V = 13.8 V, I = 5 A → <code>13.8</code> <code>×</code> <code>5</code> <code>=</code> → <strong>69 W</strong></li>
+      <li>Dummy load: I = 2 A, R = 50 Ω → <code>2</code> <code>x²</code> → 4 → <code>×</code> <code>50</code> <code>=</code> → <strong>200 W</strong></li>
+      <li>5 W into 50 Ω: <code>5</code> <code>×</code> <code>50</code> <code>=</code> → 250 → <code>²√x</code> → <strong>15.8 V</strong> (rearrangement: V = √(P × R))</li>
+      <li>100 W into 75 Ω feeder: <code>100</code> <code>×</code> <code>75</code> <code>=</code> → 7500 → <code>²√x</code> → <strong>86.6 V</strong> RMS across the feeder</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> These are DC or RMS power formulas. Peak voltage is V<sub>RMS</sub> × √2. For an RF carrier at 100 W into 50 Ω: V<sub>RMS</sub> = √(100×50) = 70.7 V RMS; V<sub>peak</sub> = 70.7 × 1.414 = 100 V peak.</div>
+  </div>
+
+  <h3>1.3 — Resistors in Parallel</h3>
+  <div class="formula-display">R_total = (R₁ × R₂) / (R₁ + R₂) &nbsp;&nbsp; [two resistors]
+1/R_total = 1/R₁ + 1/R₂ + 1/R₃ + ... &nbsp;&nbsp; [three or more]</div>
+  <p><strong>Key sequence (two resistors):</strong></p>
+  <div class="code-block">( R₁ × R₂ ) ÷ ( R₁ + R₂ ) =
+
+Or reciprocal method (any number of resistors):
+1. Type R₁ → ¹⁄ₓ → M+ (store 1/R₁)
+2. Type R₂ → ¹⁄ₓ → M+ (add 1/R₂ to memory)
+3. MR → ¹⁄ₓ → result is R_total</div>
+  <div class="examples">
+    <ul>
+      <li>100 Ω ∥ 100 Ω: <code>(</code> <code>100</code> <code>×</code> <code>100</code> <code>)</code> <code>÷</code> <code>(</code> <code>100</code> <code>+</code> <code>100</code> <code>)</code> <code>=</code> → <strong>50 Ω</strong></li>
+      <li>50 Ω ∥ 75 Ω: <code>(</code> <code>50</code> <code>×</code> <code>75</code> <code>)</code> <code>÷</code> <code>(</code> <code>50</code> <code>+</code> <code>75</code> <code>)</code> <code>=</code> → 3750 ÷ 125 → <strong>30 Ω</strong></li>
+      <li>Three 150 Ω resistors: <code>150</code> <code>¹⁄ₓ</code> <code>M+</code>; <code>150</code> <code>¹⁄ₓ</code> <code>M+</code>; <code>150</code> <code>¹⁄ₓ</code> <code>M+</code>; <code>MR</code> <code>¹⁄ₓ</code> → <strong>50 Ω</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Parallel resistance is always smaller than the smallest individual resistor. If your answer is bigger than any of the inputs, you've calculated series instead of parallel.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 2: DECIBELS ───────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 2: Decibels</h2>
+
+  <h3>2.1 — Power Ratio to dB</h3>
+  <div class="formula-display">dB = 10 × log(P_out / P_in)</div>
+  <div class="code-block">1. Type P_out ÷ P_in = → ratio on screen
+2. log → log₁₀ of ratio
+3. × 10 = → result in dB</div>
+  <div class="examples">
+    <ul>
+      <li>5 W in, 80 W out: <code>80</code> <code>÷</code> <code>5</code> <code>=</code> → 16 → <code>log</code> → 1.204 → <code>×</code> <code>10</code> <code>=</code> → <strong>12.04 dB</strong></li>
+      <li>400 W in, 100 W out (loss): <code>100</code> <code>÷</code> <code>400</code> <code>=</code> → 0.25 → <code>log</code> → −0.602 → <code>×</code> <code>10</code> <code>=</code> → <strong>−6.02 dB</strong></li>
+      <li>2 W in, 100 W out: <code>100</code> <code>÷</code> <code>2</code> <code>=</code> → 50 → <code>log</code> → 1.699 → <code>×</code> <code>10</code> <code>=</code> → <strong>16.99 dB</strong></li>
+      <li>Feeder loss: 50 W TX, 32 W at antenna: <code>32</code> <code>÷</code> <code>50</code> <code>=</code> → 0.64 → <code>log</code> → −0.194 → <code>×</code> <code>10</code> <code>=</code> → <strong>−1.94 dB</strong></li>
+    </ul>
+  </div>
+  <p>Key reference values:</p>
+  <table class="db-ref-table">
+    <thead><tr><th>dB</th><th>Power ratio</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr><td>+3</td><td>× 2</td><td>double power</td></tr>
+      <tr><td>−3</td><td>÷ 2</td><td>half power</td></tr>
+      <tr><td>+6</td><td>× 4</td><td>four times power</td></tr>
+      <tr><td>+10</td><td>× 10</td><td>ten times power</td></tr>
+      <tr><td>−10</td><td>÷ 10</td><td>one-tenth power</td></tr>
+      <tr><td>+13</td><td>× 20</td><td>10 + 3 = ×10 × ×2</td></tr>
+      <tr><td>+20</td><td>× 100</td><td>one hundred times power</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Use <code>log</code> (base 10), not <code>ln</code>. Using <code>ln</code> gives an answer about 2.3× larger with no warning. For power, always ×10 at the end; for voltage, ×20 (see 2.3).</div>
+  </div>
+
+  <h3>2.2 — dB Back to Power</h3>
+  <div class="formula-display">P_out = P_in × 10^(dB / 10)</div>
+  <div class="code-block">1. Type the dB value (negative for loss)
+2. ÷ 10 = → dB/10
+3. 10ˣ → power ratio
+4. × P_in = → output power in watts</div>
+  <div class="examples">
+    <ul>
+      <li>13 dB gain, 2 W in: <code>13</code> <code>÷</code> <code>10</code> <code>=</code> → 1.3 → <code>10ˣ</code> → 19.95 → <code>×</code> <code>2</code> <code>=</code> → <strong>39.9 W ≈ 40 W</strong></li>
+      <li>−3 dB loss, 100 W in: <code>3</code> <code>+/−</code> <code>÷</code> <code>10</code> <code>=</code> → −0.3 → <code>10ˣ</code> → 0.5 → <code>×</code> <code>100</code> <code>=</code> → <strong>50 W</strong></li>
+      <li>Amp claims +17 dB, input 0.5 W: <code>17</code> <code>÷</code> <code>10</code> <code>=</code> → 1.7 → <code>10ˣ</code> → 50.12 → <code>×</code> <code>0.5</code> <code>=</code> → <strong>25.06 W</strong></li>
+      <li>3 dB coax loss each way, 25 W output: path loss = 6 dB → <code>6</code> <code>+/−</code> <code>÷</code> <code>10</code> <code>=</code> → −0.6 → <code>10ˣ</code> → 0.25 → <code>×</code> <code>25</code> <code>=</code> → <strong>6.25 W</strong> reaching antenna</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Use <code>10ˣ</code> here, not <code>eˣ</code> (<code>2ⁿᵈ</code> <code>ln</code>). The <code>10ˣ</code> button is the inverse of <code>log</code> (base 10). Using <code>eˣ</code> is the inverse of <code>ln</code> and gives a completely different result.</div>
+  </div>
+
+  <h3>2.3 — Voltage Gain in dB</h3>
+  <div class="formula-display">dB = 20 × log(V_out / V_in)</div>
+  <div class="code-block">1. Type V_out ÷ V_in =
+2. log
+3. × 20 = → result in dB</div>
+  <div class="examples">
+    <ul>
+      <li>10 mV in, 500 mV out: <code>500</code> <code>÷</code> <code>10</code> <code>=</code> → 50 → <code>log</code> → 1.699 → <code>×</code> <code>20</code> <code>=</code> → <strong>33.98 dB</strong></li>
+      <li>1 V in, 1 V out (unity gain): <code>1</code> <code>÷</code> <code>1</code> <code>=</code> → 1 → <code>log</code> → 0 → <code>×</code> <code>20</code> <code>=</code> → <strong>0 dB</strong> ✓</li>
+      <li>Attenuator: 2 V in, 0.5 V out: <code>0.5</code> <code>÷</code> <code>2</code> <code>=</code> → 0.25 → <code>log</code> → −0.602 → <code>×</code> <code>20</code> <code>=</code> → <strong>−12.04 dB</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Voltage uses ×20; power uses ×10. Mixing them gives an answer exactly 2× wrong in dB. Rule: 6 dB = ×2 in voltage, but 6 dB = ×4 in power (because P ∝ V², so doubling V quadruples P).</div>
+  </div>
+
+  <h3>2.4 — Absolute Power: dBW and dBm</h3>
+  <p>Sections 2.1–2.3 express <strong>relative</strong> change. dBW and dBm are <strong>absolute</strong> power levels — they tell you the actual power in watts using a fixed reference.</p>
+  <div class="formula-display">dBW = 10 × log₁₀(P / 1 W) = 10 × log₁₀(P)
+dBm = 10 × log₁₀(P / 1 mW) = 10 × log₁₀(P / 0.001)
+dBm = dBW + 30</div>
+  <p><strong>dBW</strong> (reference: 1 watt):</p>
+  <div class="code-block">Type P (watts) → log → × 10 = → dBW</div>
+  <p><strong>dBm</strong> (reference: 1 milliwatt):</p>
+  <div class="code-block">Method A (from dBW): + 30 = → dBm
+Method B (direct):  P (watts) ÷ 0.001 = → log → × 10 =</div>
+  <p><strong>Converting dBm back to watts:</strong></p>
+  <div class="code-block">dBm value − 30 = (gives dBW) → ÷ 10 = → 10ˣ → power in watts</div>
+  <p><strong>UK licence power levels:</strong></p>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Licence class</th><th>Power</th><th>dBW</th><th>dBm</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Foundation</td><td>5 W</td><td><strong>7.0 dBW</strong></td><td>37.0 dBm</td><td>Some bands, e.g. VHF simplex</td></tr>
+        <tr><td>Foundation</td><td>10 W</td><td><strong>10.0 dBW</strong></td><td>40.0 dBm</td><td>Standard Foundation maximum</td></tr>
+        <tr><td>Intermediate</td><td>50 W</td><td><strong>17.0 dBW</strong></td><td>47.0 dBm</td><td>Intermediate maximum PEP</td></tr>
+        <tr><td>Full</td><td>100 W</td><td><strong>20.0 dBW</strong></td><td>50.0 dBm</td><td>Common Full operating power</td></tr>
+        <tr><td>Full (pre-2024)</td><td>400 W</td><td><strong>26.0 dBW</strong></td><td>56.0 dBm</td><td>Previous Full licence maximum</td></tr>
+        <tr><td>Full (post-2024)</td><td>1000 W</td><td><strong>30.0 dBW</strong></td><td>60.0 dBm</td><td>Current Full licence maximum</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Calculator verification: <code>5</code> <code>log</code> → 0.699 → <code>×</code> <code>10</code> <code>=</code> → <strong>7.0 dBW</strong> → <code>+</code> <code>30</code> <code>=</code> → <strong>37.0 dBm</strong>. Pattern repeats for every row — ×10 for dBW, then +30 for dBm.</p>
+  <p><strong>dBm reference points:</strong></p>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>dBm</th><th>Watts</th><th>What it represents</th></tr></thead>
+      <tbody>
+        <tr><td>+60</td><td>1000 W</td><td>Post-2024 Full licence maximum</td></tr>
+        <tr><td>+56</td><td>400 W</td><td>Pre-2024 Full licence maximum</td></tr>
+        <tr><td>+50</td><td>100 W</td><td>Typical Full HF station</td></tr>
+        <tr><td>+47</td><td>50 W</td><td>Intermediate maximum</td></tr>
+        <tr><td>+40</td><td>10 W</td><td>Foundation maximum</td></tr>
+        <tr><td>+37</td><td>5 W</td><td>Foundation (restricted bands)</td></tr>
+        <tr><td>+30</td><td>1 W</td><td>1 watt = 0 dBW = +30 dBm</td></tr>
+        <tr><td>0</td><td>1 mW</td><td>Reference: 0 dBm = 1 milliwatt</td></tr>
+        <tr><td>−30</td><td>1 μW</td><td>1 microwatt</td></tr>
+        <tr><td>−73</td><td>50 nW</td><td>S9 signal in a 50 Ω system (IARU definition)</td></tr>
+        <tr><td>−100</td><td>0.1 pW</td><td>Typical HF receiver minimum signal</td></tr>
+        <tr><td>−120</td><td>1 fW</td><td>Noise floor of a good LNA</td></tr>
+        <tr><td>−174</td><td>—</td><td>Thermal noise floor at room temperature (per 1 Hz bandwidth)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>EIRP note:</strong> On some amateur bands, the licence specifies <strong>EIRP</strong> (Equivalent Isotropically Radiated Power) rather than transmitter output power. EIRP (dBW) = P_tx (dBW) + antenna gain (dBi) − feeder loss (dB). A 50 W transmitter (17 dBW) with a 6 dBi Yagi and 2 dB feeder loss gives EIRP = 17 + 6 − 2 = <strong>21 dBW = 125 W EIRP</strong>. Check your licence for whether the power limit is at the transmitter output or EIRP.</p>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> dBW and dBm look similar and are easily confused. Quick check: 1 W is exactly 0 dBW and exactly +30 dBm. If your dBW answer is negative for powers below 1 W (e.g. 0.5 W = −3.0 dBW), that's correct. If your dBm answer is negative for any transmitter power above 1 mW, you've used the wrong reference.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 3: REACTANCE ──────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 3: Reactance and Impedance</h2>
+  <div class="callout callout--cyan">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-text"><strong>Unit reminder before every calculation:</strong> f in <strong>Hz</strong> (not MHz), C in <strong>farads</strong> (not pF), L in <strong>henries</strong> (not μH).</div>
+  </div>
+
+  <h3>3.1 — Capacitive Reactance</h3>
+  <div class="formula-display">X_C = 1 / (2π × f × C)</div>
+  <p>Higher frequency or larger capacitance → lower X_C → capacitor passes signal more easily.</p>
+  <div class="code-block">1. 2 × π × f (Hz) × C (farads) = → denominator
+2. ¹⁄ₓ → X_C in ohms</div>
+  <div class="examples">
+    <ul>
+      <li>f = 7.1 MHz, C = 220 pF: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>7100000</code> <code>×</code> <code>0.00000000022</code> <code>=</code> → 0.009815 → <code>¹⁄ₓ</code> → <strong>101.9 Ω</strong></li>
+      <li>f = 3.5 MHz, C = 100 pF: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>3500000</code> <code>×</code> <code>0.0000000001</code> <code>=</code> → 0.002199 → <code>¹⁄ₓ</code> → <strong>454.7 Ω</strong></li>
+      <li>f = 144 MHz, C = 10 pF: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>144000000</code> <code>×</code> <code>0.00000000001</code> <code>=</code> → 0.009047 → <code>¹⁄ₓ</code> → <strong>110.5 Ω</strong></li>
+      <li>Bypass cap at 14 MHz, need X_C &lt; 5 Ω: C = 1/(2π × 14,000,000 × 5) → denominator: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>14000000</code> <code>×</code> <code>5</code> <code>=</code> → 439,822,971 → <code>¹⁄ₓ</code> → <strong>2.27 nF minimum</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> 220 pF = 220 × 10⁻¹² = 0.00000000022 F. Forgetting the conversion produces a reactance 10¹² times wrong. Always write out the decimal first: count the zeros for picofarads (12 decimal places).</div>
+  </div>
+
+  <h3>3.2 — Inductive Reactance</h3>
+  <div class="formula-display">X_L = 2π × f × L</div>
+  <p>Higher frequency or larger inductance → higher X_L → inductor opposes signal more strongly.</p>
+  <div class="code-block">2 × π × f (Hz) × L (henries) = → X_L in ohms</div>
+  <div class="examples">
+    <ul>
+      <li>f = 14.2 MHz, L = 2.5 μH (0.0000025 H): <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>14200000</code> <code>×</code> <code>0.0000025</code> <code>=</code> → <strong>223.1 Ω</strong></li>
+      <li>RFC: L = 100 μH (0.0001 H), f = 7.1 MHz: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>7100000</code> <code>×</code> <code>0.0001</code> <code>=</code> → <strong>4461 Ω</strong> (very high — good choke)</li>
+      <li>f = 144 MHz, L = 10 nH (0.00000001 H): <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>144000000</code> <code>×</code> <code>0.00000001</code> <code>=</code> → <strong>9.047 Ω</strong></li>
+      <li>Verify resonance: L = 1 μH, C = 100 pF, claimed f₀ = 15.92 MHz → X_L = X_C = <strong>100.0 Ω</strong> ✓</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> X_L and X_C both change with frequency, but in opposite directions. At resonance they are equal and opposite — they cancel, leaving only R in the circuit. If X_L = X_C, you're at f₀.</div>
+  </div>
+
+  <h3>3.3 — Series Impedance Magnitude</h3>
+  <div class="formula-display">Z = √(R² + X²)</div>
+  <p>X is the net reactance: if both X_L and X_C are present, use X = |X_L − X_C|.</p>
+  <div class="code-block">1. Type R → x² → +
+2. Type X (net reactance) → x² → =
+3. ²√x → Z in ohms</div>
+  <div class="examples">
+    <ul>
+      <li>R = 50 Ω, X_L = 120 Ω: <code>50</code> <code>x²</code> → 2500 → <code>+</code> <code>120</code> <code>x²</code> → 14400 → <code>=</code> → 16900 → <code>²√x</code> → <strong>130 Ω</strong></li>
+      <li>R = 75 Ω, X_C = 100 Ω: <code>75</code> <code>x²</code> → 5625 → <code>+</code> <code>100</code> <code>x²</code> → 10000 → <code>=</code> → 15625 → <code>²√x</code> → <strong>125 Ω</strong></li>
+      <li>Antenna feedpoint: R_rad = 35 Ω, X = +25 Ω: <code>35</code> <code>x²</code> → 1225 → <code>+</code> <code>25</code> <code>x²</code> → 625 → <code>=</code> → 1850 → <code>²√x</code> → <strong>43.0 Ω</strong></li>
+      <li>Verify 50 Ω match: R = 48 Ω, X = 14 Ω: <code>48</code> <code>x²</code> → 2304 → <code>+</code> <code>14</code> <code>x²</code> → 196 → <code>=</code> → 2500 → <code>²√x</code> → <strong>50.0 Ω</strong> ✓</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> This formula gives only the <strong>magnitude</strong> of impedance. Phase angle requires arctan(X/R) — not examined numerically at RSGB level. Always use the <strong>net</strong> reactance (X_L − X_C if both present), not the sum.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 4: RESONANCE ──────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 4: Resonance</h2>
+
+  <h3>4.1 — Resonant Frequency</h3>
+  <div class="formula-display">f₀ = 1 / (2π × √(L × C))</div>
+  <p>L in henries, C in farads, result in Hz. Divide by 10⁶ to get MHz.</p>
+  <div class="code-block">1. Type L (H) × C (F) = → LC product (very small — scientific notation normal)
+2. ²√x → √(LC)
+3. × 2 × π = → 2π√(LC)
+4. ¹⁄ₓ → f₀ in Hz
+5. ÷ 1000000 = → f₀ in MHz</div>
+  <div class="examples">
+    <ul>
+      <li>L = 1 μH, C = 100 pF: <code>0.000001</code> <code>×</code> <code>0.0000000001</code> <code>=</code> → 1e-16 → <code>²√x</code> → 1e-8 → <code>×</code> <code>2</code> <code>×</code> <code>π</code> <code>=</code> → 6.283e-8 → <code>¹⁄ₓ</code> → <strong>15.92 MHz</strong></li>
+      <li>Tank circuit: L = 10 μH, C = 68 pF: <code>0.00001</code> <code>×</code> <code>0.000000000068</code> <code>=</code> → 6.8e-16 → <code>²√x</code> → 2.608e-8 → <code>×</code> <code>2</code> <code>×</code> <code>π</code> <code>=</code> → 1.639e-7 → <code>¹⁄ₓ</code> → <strong>6.1 MHz</strong></li>
+      <li>Crystal filter at 10.7 MHz — what C with L = 1 μH? C = 1/(4π²f²L): <code>4</code> <code>×</code> <code>π</code> <code>x²</code> <code>×</code> <code>10700000</code> <code>x²</code> <code>×</code> <code>0.000001</code> <code>=</code> → 4,523,893,944 → <code>¹⁄ₓ</code> → <strong>221 pF</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> The intermediate result (L × C) will display in scientific notation like <code>1e-16</code>. This is normal and correct. Continue pressing keys; the final answer resolves to a sensible Hz value. If you see <code>0</code> after pressing <code>²√x</code>, you may have mis-entered a value.</div>
+  </div>
+
+  <h3>4.2 — Q Factor</h3>
+  <div class="formula-display">Q = X_L / R &nbsp;&nbsp; (at resonance; dimensionless)</div>
+  <p>Q describes selectivity: high Q = narrow bandwidth. Calculate X_L at f₀ first.</p>
+  <div class="code-block">1. Calculate X_L at f₀ (use Formula 3.2)
+2. Type X_L ÷ R = → Q</div>
+  <div class="examples">
+    <ul>
+      <li>f₀ = 15.92 MHz, L = 1 μH → X_L = 100 Ω. R = 2 Ω: <code>100</code> <code>÷</code> <code>2</code> <code>=</code> → <strong>Q = 50</strong></li>
+      <li>AM IF filter: L = 200 μH, f = 455 kHz, R = 5.75 Ω: X_L: <code>2</code> <code>×</code> <code>π</code> <code>×</code> <code>455000</code> <code>×</code> <code>0.0002</code> <code>=</code> → 572.1 → <code>÷</code> <code>5.75</code> <code>=</code> → <strong>Q ≈ 99.5</strong></li>
+      <li>Find R_loss: L = 10 μH, f = 7 MHz, Q = 80. X_L = 439.8 Ω. R = X_L/Q: <code>439.8</code> <code>÷</code> <code>80</code> <code>=</code> → <strong>R_loss = 5.5 Ω</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Q is frequency-dependent because X_L varies with frequency. Always calculate X_L at the resonant frequency f₀, not at some other test frequency.</div>
+  </div>
+
+  <h3>4.3 — 3 dB Bandwidth</h3>
+  <div class="formula-display">BW = f₀ / Q</div>
+  <p>The frequency span between the points where response has fallen 3 dB from peak.</p>
+  <div class="code-block">Type f₀ (Hz) ÷ Q = → BW in Hz
+÷ 1000 = → BW in kHz</div>
+  <div class="examples">
+    <ul>
+      <li>f₀ = 15.92 MHz, Q = 50: <code>15920000</code> <code>÷</code> <code>50</code> <code>=</code> → <strong>318.4 kHz</strong></li>
+      <li>AM IF filter: f₀ = 455 kHz, Q = 99.5: <code>455000</code> <code>÷</code> <code>99.5</code> <code>=</code> → <strong>4573 Hz ≈ 4.6 kHz</strong></li>
+      <li>SSB filter: f₀ = 9 MHz, BW = 2.4 kHz → Q needed: <code>9000000</code> <code>÷</code> <code>2400</code> <code>=</code> → <strong>Q = 3750</strong> (crystal or mechanical filter required)</li>
+      <li>2 m front end: f₀ = 144 MHz, Q = 20: <code>144000000</code> <code>÷</code> <code>20</code> <code>=</code> → <strong>7.2 MHz bandwidth</strong> (very broad — expected for RF front end)</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> The result is in Hz if you enter f₀ in Hz. Always enter f₀ in Hz, always get BW in Hz, then convert to kHz by ÷ 1000.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 5: SWR ─────────────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 5: SWR and Reflection</h2>
+
+  <h3>5.1 — VSWR from Reflection Coefficient</h3>
+  <div class="formula-display">VSWR = (1 + |Γ|) / (1 − |Γ|)</div>
+  <p>|Γ| ranges from 0 (perfect match) to 1 (total reflection).</p>
+  <div class="code-block">( 1 + |Γ| ) ÷ ( 1 − |Γ| ) = → VSWR</div>
+  <div class="examples">
+    <ul>
+      <li>|Γ| = 0.333: <code>(</code> <code>1</code> <code>+</code> <code>0.333</code> <code>)</code> <code>÷</code> <code>(</code> <code>1</code> <code>−</code> <code>0.333</code> <code>)</code> <code>=</code> → <strong>VSWR = 2.0:1</strong></li>
+      <li>|Γ| = 0.5: <code>(</code> <code>1</code> <code>+</code> <code>0.5</code> <code>)</code> <code>÷</code> <code>(</code> <code>1</code> <code>−</code> <code>0.5</code> <code>)</code> <code>=</code> → <strong>VSWR = 3.0:1</strong></li>
+      <li>|Γ| = 0.1: <code>(</code> <code>1</code> <code>+</code> <code>0.1</code> <code>)</code> <code>÷</code> <code>(</code> <code>1</code> <code>−</code> <code>0.1</code> <code>)</code> <code>=</code> → <strong>VSWR = 1.22:1</strong> (excellent)</li>
+      <li>Open circuit (|Γ| = 1): denominator = 0 → <strong>VSWR = ∞</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> |Γ| must be between 0 and 1. Entering |Γ| ≥ 1 gives division by zero or a negative — physically impossible. A perfect match is |Γ| = 0, VSWR = 1:1.</div>
+  </div>
+
+  <h3>5.2 — Reflection Coefficient from VSWR</h3>
+  <div class="formula-display">|Γ| = (VSWR − 1) / (VSWR + 1)</div>
+  <div class="code-block">( VSWR − 1 ) ÷ ( VSWR + 1 ) = → |Γ|</div>
+  <div class="examples">
+    <ul>
+      <li>VSWR = 2.5:1: <code>(</code> <code>2.5</code> <code>−</code> <code>1</code> <code>)</code> <code>÷</code> <code>(</code> <code>2.5</code> <code>+</code> <code>1</code> <code>)</code> <code>=</code> → <strong>|Γ| = 0.4286</strong></li>
+      <li>VSWR = 3:1: <code>(</code> <code>3</code> <code>−</code> <code>1</code> <code>)</code> <code>÷</code> <code>(</code> <code>3</code> <code>+</code> <code>1</code> <code>)</code> <code>=</code> → <strong>|Γ| = 0.5</strong></li>
+      <li>VSWR = 1.5:1: <code>(</code> <code>1.5</code> <code>−</code> <code>1</code> <code>)</code> <code>÷</code> <code>(</code> <code>1.5</code> <code>+</code> <code>1</code> <code>)</code> <code>=</code> → <strong>|Γ| = 0.2</strong></li>
+      <li>VSWR = 10:1: <code>(</code> <code>10</code> <code>−</code> <code>1</code> <code>)</code> <code>÷</code> <code>(</code> <code>10</code> <code>+</code> <code>1</code> <code>)</code> <code>=</code> → <strong>|Γ| = 0.818</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Enter VSWR as a plain number. If your meter shows "2.5:1", enter just <code>2.5</code>. The ":1" part is implied.</div>
+  </div>
+
+  <h3>5.3 — Return Loss</h3>
+  <div class="formula-display">RL = 20 × log(1 / |Γ|) &nbsp;&nbsp; (positive dB — higher is better)</div>
+  <div class="code-block">1. 1 ÷ |Γ| =
+2. log
+3. × 20 = → return loss in dB (positive)</div>
+  <div class="examples">
+    <ul>
+      <li>|Γ| = 0.4286 (VSWR 2.5:1): <code>1</code> <code>÷</code> <code>0.4286</code> <code>=</code> → 2.333 → <code>log</code> → 0.368 → <code>×</code> <code>20</code> <code>=</code> → <strong>7.36 dB</strong></li>
+      <li>|Γ| = 0.333 (VSWR 2:1): <code>1</code> <code>÷</code> <code>0.333</code> <code>=</code> → 3.003 → <code>log</code> → 0.4775 → <code>×</code> <code>20</code> <code>=</code> → <strong>9.55 dB</strong></li>
+      <li>|Γ| = 0.1 (VSWR 1.22:1): <code>1</code> <code>÷</code> <code>0.1</code> <code>=</code> → 10 → <code>log</code> → 1 → <code>×</code> <code>20</code> <code>=</code> → <strong>20 dB</strong> (excellent)</li>
+      <li>Target RL &gt; 30 dB → |Γ| &lt; ?: <code>30</code> <code>÷</code> <code>20</code> <code>=</code> → 1.5 → <code>10ˣ</code> → 31.62 → <code>¹⁄ₓ</code> → <strong>|Γ| &lt; 0.0316</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Return loss must be <strong>positive</strong>. If you get a negative answer, you forgot to use 1/|Γ|. RL &gt; 20 dB is a good match; &gt; 30 dB is excellent.</div>
+  </div>
+
+  <h3>5.4 — Power Reflected</h3>
+  <div class="formula-display">P_reflected = |Γ|² × P_incident</div>
+  <div class="code-block">|Γ| x² × P_incident = → P_reflected (watts)
+Then: P_incident − P_reflected = → power delivered to load</div>
+  <div class="examples">
+    <ul>
+      <li>VSWR 2.5:1 (|Γ| = 0.4286), 100 W: <code>0.4286</code> <code>x²</code> → 0.1837 → <code>×</code> <code>100</code> <code>=</code> → <strong>18.37 W reflected</strong>; 81.63 W to antenna</li>
+      <li>VSWR 3:1 (|Γ| = 0.5), 50 W: <code>0.5</code> <code>x²</code> → 0.25 → <code>×</code> <code>50</code> <code>=</code> → <strong>12.5 W reflected</strong> (25%)</li>
+      <li>VSWR 1.5:1 (|Γ| = 0.2), 100 W: <code>0.2</code> <code>x²</code> → 0.04 → <code>×</code> <code>100</code> <code>=</code> → <strong>4 W reflected</strong> (only 4%)</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Many people overestimate power loss from modest VSWR. VSWR 2:1 only reflects 11% of power. Coax heating from mismatch is often more significant than the power not reaching the antenna.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 6: PROPAGATION ────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 6: Propagation and Wavelength</h2>
+
+  <h3>6.1 — Free-Space Wavelength</h3>
+  <div class="formula-display">λ (m) = 300 / f_MHz</div>
+  <p>f in MHz, result in metres. Antenna element lengths derive directly from this.</p>
+  <div class="code-block">300 ÷ f (MHz) = → full wavelength (m)
+÷ 2 = → half-wavelength
+÷ 2 = again → quarter-wavelength</div>
+  <div class="examples">
+    <ul>
+      <li>40 m band, 7.1 MHz: <code>300</code> <code>÷</code> <code>7.1</code> <code>=</code> → <strong>42.25 m</strong>; ÷ 2 = 21.1 m (half-wave dipole total); ÷ 2 = 10.6 m per element</li>
+      <li>20 m band, 14.225 MHz: <code>300</code> <code>÷</code> <code>14.225</code> <code>=</code> → <strong>21.09 m</strong>; half-wave = 10.5 m total</li>
+      <li>2 m band, 145 MHz: <code>300</code> <code>÷</code> <code>145</code> <code>=</code> → 2.069 m; quarter-wave: <code>÷</code> <code>4</code> <code>=</code> → <strong>51.7 cm</strong></li>
+      <li>70 cm band, 433 MHz: <code>300</code> <code>÷</code> <code>433</code> <code>=</code> → 0.693 m; half-wave = 34.6 cm; quarter-wave = 17.3 cm</li>
+    </ul>
+  </div>
+  <p>In practice, a half-wave wire dipole is cut about 5% shorter than λ/2 due to end effects. Field calculation shortcut: element length ≈ <strong>143 / f_MHz</strong> metres.</p>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> f must be in MHz. If you enter f in Hz, you get wavelength in megametres, not metres. Sanity check: at 7 MHz the answer should be around 43 m, not 43,000 m.</div>
+  </div>
+
+  <h3>6.2 — Maximum Usable Frequency (MUF)</h3>
+  <div class="formula-display">MUF = f_c × √(1 + (d / 2h)²)</div>
+  <p>f_c is the vertical-incidence critical frequency; d is path distance; h is layer height. Keep d and h in the same units.</p>
+  <div class="code-block">1. d ÷ 2 ÷ h = → (d/2h)
+2. x² → (d/2h)²
+3. + 1 = → 1 + (d/2h)²
+4. ²√x → obliquity factor
+5. × f_c = → MUF
+OWF: × 0.85 = → Optimum Working Frequency</div>
+  <div class="examples">
+    <ul>
+      <li>§12 example: f_c = 9 MHz, d = 2000 km, h = 300 km: <code>2000</code> <code>÷</code> <code>2</code> <code>÷</code> <code>300</code> <code>=</code> → 3.333 → <code>x²</code> → 11.11 → <code>+</code> <code>1</code> <code>=</code> → 12.11 → <code>²√x</code> → 3.479 → <code>×</code> <code>9</code> <code>=</code> → <strong>31.3 MHz</strong>; OWF: × 0.85 = <strong>26.6 MHz</strong></li>
+      <li>§12 Q19: f_c = 8 MHz, d = 3000 km, h = 300 km: <code>3000</code> <code>÷</code> <code>2</code> <code>÷</code> <code>300</code> <code>=</code> → 5.0 → <code>x²</code> → 25 → <code>+</code> <code>1</code> <code>=</code> → 26 → <code>²√x</code> → 5.099 → <code>×</code> <code>8</code> <code>=</code> → <strong>40.8 MHz</strong></li>
+      <li>§12 Q25: foF2 = 6 MHz, d = 1800 km, h = 300 km: <code>1800</code> <code>÷</code> <code>2</code> <code>÷</code> <code>300</code> <code>=</code> → 3.0 → <code>x²</code> → 9 → <code>+</code> <code>1</code> <code>=</code> → 10 → <code>²√x</code> → 3.162 → <code>×</code> <code>6</code> <code>=</code> → <strong>18.97 MHz ≈ 19 MHz MUF</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> d and h must be in identical units. Mixing km and metres produces an answer off by 1000×. No DEG/RAD concern here — no trig functions are called directly in this formula.</div>
+  </div>
+
+  <h3>6.3 — Cable Wavelength and Velocity Factor</h3>
+  <div class="formula-display">λ_cable = (300 / f_MHz) × VF</div>
+  <p>VF (velocity factor) is always &lt; 1. Quarter-wave stub = λ_cable / 4.</p>
+  <div class="code-block">300 ÷ f (MHz) × VF = → full wavelength in cable (m)
+÷ 4 = → quarter-wave length (m)
+× 100 = → in centimetres</div>
+  <div class="examples">
+    <ul>
+      <li>§11 example: λ/4 stub, f = 144 MHz, RG-58 (VF = 0.66): <code>300</code> <code>÷</code> <code>144</code> <code>×</code> <code>0.66</code> <code>=</code> → 1.375 m → <code>÷</code> <code>4</code> <code>=</code> → <strong>34.4 cm</strong></li>
+      <li>Coax trap at 7 MHz, foam coax (VF = 0.82): <code>300</code> <code>÷</code> <code>7</code> <code>×</code> <code>0.82</code> <code>=</code> → 35.14 m → <code>÷</code> <code>2</code> <code>=</code> → <strong>17.57 m</strong> half-wave trap</li>
+      <li>28 MHz λ/4 stub, air-spaced (VF ≈ 0.95): <code>300</code> <code>÷</code> <code>28</code> <code>×</code> <code>0.95</code> <code>=</code> → 10.18 m → <code>÷</code> <code>4</code> <code>=</code> → <strong>2.54 m</strong></li>
+    </ul>
+  </div>
+  <table class="ref-table">
+    <thead><tr><th>Cable type</th><th>VF</th></tr></thead>
+    <tbody>
+      <tr><td>Open-wire feeder (air-spaced)</td><td>≈ 0.97</td></tr>
+      <tr><td>Foam-filled coax (e.g. LMR-400)</td><td>≈ 0.85</td></tr>
+      <tr><td>Foam coax (typical)</td><td>≈ 0.82</td></tr>
+      <tr><td>RG-58 / RG-213 (solid PE)</td><td>≈ 0.66</td></tr>
+      <tr><td>Twin-lead 300 Ω</td><td>≈ 0.82</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> VF is always less than 1.0. If your result is longer than the free-space wavelength, you accidentally used VF &gt; 1. Air-spaced line (VF ≈ 0.97) is closest to free space; solid PE fills slow the wave to VF ≈ 0.66.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 7: IMPEDANCE MATCHING ─────────────────────── -->
+<div class="chapter">
+  <h2>Group 7: Impedance Matching and Transformers</h2>
+
+  <h3>7.1 — Quarter-Wave Impedance Transformer</h3>
+  <div class="formula-display">Z₀ = √(Z_source × Z_load)</div>
+  <p>The characteristic impedance of the λ/4 matching section needed to match two impedances.</p>
+  <div class="code-block">Z_source × Z_load = → then ²√x → Z₀ in ohms</div>
+  <div class="examples">
+    <ul>
+      <li>§11 example: match 25 Ω antenna to 50 Ω coax: <code>25</code> <code>×</code> <code>50</code> <code>=</code> → 1250 → <code>²√x</code> → <strong>35.4 Ω</strong></li>
+      <li>Match 75 Ω to 300 Ω: <code>75</code> <code>×</code> <code>300</code> <code>=</code> → 22500 → <code>²√x</code> → <strong>150 Ω</strong> matching section required</li>
+      <li>Match 50 Ω to 50 Ω (unity): <code>50</code> <code>×</code> <code>50</code> <code>=</code> → 2500 → <code>²√x</code> → <strong>50 Ω</strong> ✓</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> The λ/4 transformer only works at one frequency (and its odd harmonics). Use Formula 6.3 to calculate the physical length in your cable type.</div>
+  </div>
+
+  <h3>7.2 — Transformer Turns Ratio and Voltage</h3>
+  <div class="formula-display">V₁ / V₂ = N₁ / N₂ &nbsp;&nbsp;&nbsp; I₁ / I₂ = N₂ / N₁</div>
+  <div class="code-block">Find V₂: V₁ × N₂ ÷ N₁ =
+Find N₂: V₂ × N₁ ÷ V₁ =
+Find step ratio: V₁ ÷ V₂ = → ratio (N₁:N₂)</div>
+  <div class="examples">
+    <ul>
+      <li>Mains transformer: 240 V, N₁ = 480, N₂ = 60: <code>240</code> <code>×</code> <code>60</code> <code>÷</code> <code>480</code> <code>=</code> → <strong>30 V output</strong></li>
+      <li>13.8 V from 240 V mains: <code>240</code> <code>÷</code> <code>13.8</code> <code>=</code> → <strong>17.4:1 step-down</strong></li>
+      <li>Step-up: 12 V, N₁ = 10, N₂ = 50: <code>12</code> <code>×</code> <code>50</code> <code>÷</code> <code>10</code> <code>=</code> → <strong>60 V</strong></li>
+      <li>Current: V₁ = 240 V, V₂ = 30 V, I₁ = 1 A → I₂ = 1 × 8 = <strong>8 A</strong> (240×1 = 30×8 = 240 VA ✓)</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Transformers conserve power (V₁ × I₁ ≈ V₂ × I₂). If V steps up, I steps down by the same ratio. A step-up voltage transformer is a step-down current transformer.</div>
+  </div>
+
+  <h3>7.3 — Impedance Transformation</h3>
+  <div class="formula-display">Z₁ / Z₂ = (N₁ / N₂)² &nbsp;&nbsp;&nbsp; N₁ / N₂ = √(Z₁ / Z₂)</div>
+  <div class="code-block">Find turns ratio from impedance ratio: Z₁ ÷ Z₂ = → ²√x → N₁/N₂ turns ratio
+Find Z₂: Z₁ × N₂ x² ÷ N₁ x² =</div>
+  <div class="examples">
+    <ul>
+      <li>4:1 balun — what turns ratio? <code>4</code> <code>²√x</code> → <strong>2:1 turns ratio</strong></li>
+      <li>Match 50 Ω to 200 Ω: <code>200</code> <code>÷</code> <code>50</code> <code>=</code> → 4 → <code>²√x</code> → <strong>2:1 turns ratio needed</strong></li>
+      <li>§11 quiz: 4:1 balun on 150 Ω balanced antenna → unbalanced: <code>150</code> <code>÷</code> <code>4</code> <code>=</code> → <strong>37.5 Ω</strong>; VSWR vs 50 Ω: <code>(</code> <code>50</code> <code>−</code> <code>37.5</code> <code>)</code> <code>÷</code> <code>(</code> <code>50</code> <code>+</code> <code>37.5</code> <code>)</code> <code>=</code> → 0.143 → VSWR formula → <strong>1.33:1</strong> (acceptable)</li>
+      <li>9:1 unun for EFHW (2450 Ω to 50 Ω): <code>9</code> <code>²√x</code> → <strong>3:1 turns ratio</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Impedance transforms as the <strong>square</strong> of turns ratio — not linearly. A 2:1 turns ratio gives 4:1 impedance change. A 3:1 turns ratio gives 9:1 impedance change.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 8: TIME CONSTANTS ─────────────────────────── -->
+<div class="chapter">
+  <h2>Group 8: Time Constants and Exponential Decay</h2>
+
+  <h3>8.1 — RC Time Constant</h3>
+  <div class="formula-display">τ = R × C &nbsp;&nbsp; (τ in seconds; R in Ω, C in farads)</div>
+  <div class="code-block">R (Ω) × C (F) = → τ in seconds</div>
+  <div class="examples">
+    <ul>
+      <li>R = 100 kΩ (100,000 Ω), C = 47 μF (0.000047 F): <code>100000</code> <code>×</code> <code>0.000047</code> <code>=</code> → <strong>τ = 4.7 s</strong></li>
+      <li>Timing circuit: R = 47 kΩ, C = 10 μF (0.00001 F): <code>47000</code> <code>×</code> <code>0.00001</code> <code>=</code> → <strong>τ = 0.47 s</strong></li>
+      <li>Fast discharge: R = 10 Ω, C = 1000 μF (0.001 F): <code>10</code> <code>×</code> <code>0.001</code> <code>=</code> → <strong>τ = 10 ms</strong></li>
+      <li>Wanted τ = 1 s, C = 100 μF → R: <code>1</code> <code>÷</code> <code>0.0001</code> <code>=</code> → <strong>R = 10 kΩ</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> C must be in farads. Entering 47 instead of 0.000047 (forgetting the μ) gives τ = 4,700,000 s — over 54 days — rather than 4.7 s.</div>
+  </div>
+
+  <h3>8.2 — RL Time Constant</h3>
+  <div class="formula-display">τ = L / R &nbsp;&nbsp; (note: division — opposite to RC)</div>
+  <div class="code-block">L (H) ÷ R (Ω) = → τ in seconds</div>
+  <div class="examples">
+    <ul>
+      <li>L = 50 mH (0.05 H), R = 25 Ω: <code>0.05</code> <code>÷</code> <code>25</code> <code>=</code> → <strong>τ = 2 ms</strong></li>
+      <li>Relay coil: L = 100 mH (0.1 H), R = 200 Ω: <code>0.1</code> <code>÷</code> <code>200</code> <code>=</code> → <strong>τ = 0.5 ms</strong></li>
+      <li>RF choke: L = 1 mH (0.001 H), R = 0.5 Ω: <code>0.001</code> <code>÷</code> <code>0.5</code> <code>=</code> → <strong>τ = 2 ms</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> The formula is L/R for inductors, R×C for capacitors. Memory aid: for an inductor, higher R drains stored energy faster (shorter τ); for a capacitor, higher R slows the charging path (longer τ).</div>
+  </div>
+
+  <h3>8.3 — Exponential Charge and Discharge</h3>
+  <div class="formula-display">Discharging: V(t) = V₀ × e^(−t/τ)
+Charging:    V(t) = V_final × (1 − e^(−t/τ))</div>
+  <p><strong>Key sequence — discharging</strong> (cleanest method via reciprocal):</p>
+  <div class="code-block">1. Press e → xʸ → type t/τ → = → e^(t/τ)
+2. ¹⁄ₓ → e^(−t/τ)
+3. × V₀ = → voltage remaining</div>
+  <p><strong>Key sequence — charging:</strong></p>
+  <div class="code-block">1. e → xʸ → t/τ → = → e^(t/τ)
+2. ¹⁄ₓ → e^(−t/τ)
+3. +/− → −e^(−t/τ)
+4. + 1 = → (1 − e^(−t/τ))
+5. × V_final = → voltage charged to</div>
+  <div class="examples">
+    <ul>
+      <li>Discharge: V₀ = 12 V, after 3τ: <code>e</code> <code>xʸ</code> <code>3</code> <code>=</code> → 20.086 → <code>¹⁄ₓ</code> → 0.04979 → <code>×</code> <code>12</code> <code>=</code> → <strong>0.60 V</strong></li>
+      <li>Discharge: 200 V cap, after 2τ: <code>e</code> <code>xʸ</code> <code>2</code> <code>=</code> → 7.389 → <code>¹⁄ₓ</code> → 0.1353 → <code>×</code> <code>200</code> <code>=</code> → <strong>27.07 V remaining</strong></li>
+      <li>Charge: V_final = 12 V, after 2τ: → e^(2) → 7.389 → <code>¹⁄ₓ</code> → 0.1353 → <code>+/−</code> → <code>+</code> <code>1</code> <code>=</code> → 0.8647 → <code>×</code> <code>12</code> <code>=</code> → <strong>10.38 V</strong></li>
+      <li>Charge: V_final = 100 V, after 1τ: → (1 − e⁻¹) × 100 = <strong>63.21 V</strong> (definition of one time constant)</li>
+    </ul>
+  </div>
+  <table class="ref-table">
+    <thead><tr><th>Time constants</th><th>Fraction remaining (discharge)</th><th>% charged</th></tr></thead>
+    <tbody>
+      <tr><td>1τ</td><td>0.3679</td><td>63.2%</td></tr>
+      <tr><td>2τ</td><td>0.1353</td><td>86.5%</td></tr>
+      <tr><td>3τ</td><td>0.0498</td><td>95.0%</td></tr>
+      <tr><td>4τ</td><td>0.0183</td><td>98.2%</td></tr>
+      <tr><td>5τ</td><td>0.0067</td><td>99.3%</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Use <code>e</code> followed by <code>xʸ</code> for the exponential — not <code>10ˣ</code>. Euler's number e ≈ 2.718, not 10. Using <code>10ˣ</code> gives a completely different answer with no error message.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── GROUP 9: ADC / SDR ───────────────────────────────── -->
+<div class="chapter">
+  <h2>Group 9: ADC, SDR, and Digital Signal Processing</h2>
+  <p>These formulas apply at <strong>Full licence</strong> level (RSGB Ch. 10).</p>
+
+  <h3>9.1 — ADC Dynamic Range</h3>
+  <div class="formula-display">DR ≈ 6 × n  dB &nbsp;&nbsp; (n = bit depth)
+Precise: DR = 6.02n + 1.76 dB</div>
+  <div class="code-block">Approximate: n × 6 = → DR in dB
+Precise: n × 6.02 + 1.76 =</div>
+  <div class="examples">
+    <ul>
+      <li>8-bit (RTL-SDR dongle): <code>8</code> <code>×</code> <code>6</code> <code>=</code> → <strong>48 dB</strong></li>
+      <li>12-bit ADC: <code>12</code> <code>×</code> <code>6</code> <code>=</code> → <strong>72 dB</strong></li>
+      <li>14-bit HF SDR: <code>14</code> <code>×</code> <code>6</code> <code>=</code> → <strong>84 dB</strong></li>
+      <li>16-bit ADC: <code>16</code> <code>×</code> <code>6</code> <code>=</code> → <strong>96 dB</strong></li>
+      <li>Need 100 dB DR — how many bits? <code>100</code> <code>÷</code> <code>6</code> <code>=</code> → 16.67 → <strong>17 bits minimum</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Each additional bit adds ~6 dB. Going from 8-bit to 16-bit is 8 bits × 6 dB = 48 dB improvement — why professional SDRs use 14- or 16-bit ADCs despite the higher cost.</div>
+  </div>
+
+  <h3>9.2 — Nyquist Bandwidth</h3>
+  <div class="formula-display">BW_max = f_sample / 2</div>
+  <div class="code-block">f_sample (Hz or Msps) ÷ 2 = → maximum usable bandwidth</div>
+  <div class="examples">
+    <ul>
+      <li>RTL-SDR: 2.4 Msps → <code>2.4</code> <code>÷</code> <code>2</code> <code>=</code> → <strong>1.2 MHz</strong> usable bandwidth</li>
+      <li>HackRF One: 20 Msps → <code>20</code> <code>÷</code> <code>2</code> <code>=</code> → <strong>10 MHz</strong></li>
+      <li>Direct-sampling HF: 122.88 Msps → <code>122.88</code> <code>÷</code> <code>2</code> <code>=</code> → <strong>61.44 MHz</strong> — entire HF spectrum at once</li>
+      <li>SSB voice (2.4 kHz signal): minimum sample rate: <code>2.4</code> <code>×</code> <code>2</code> <code>=</code> → <strong>4.8 kHz</strong> minimum (8 kHz standard in practice)</li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> This is the theoretical Nyquist limit. Real SDR software uses 80–90% of theoretical bandwidth to avoid edge artefacts. A 2.4 Msps dongle gives usable bandwidth of about 1–1.8 MHz depending on software.</div>
+  </div>
+
+  <h3>9.3 — FFT Frequency Resolution (Bin Width)</h3>
+  <div class="formula-display">bin width = f_sample / N_FFT</div>
+  <p>N_FFT must be a power of 2. Result is the frequency spacing between displayed spectrum bins.</p>
+  <div class="code-block">f_sample (Hz) ÷ N_FFT = → bin width in Hz</div>
+  <div class="examples">
+    <ul>
+      <li>RTL-SDR, FFT = 1024: <code>2400000</code> <code>÷</code> <code>1024</code> <code>=</code> → <strong>2343.75 Hz ≈ 2.3 kHz per bin</strong> (coarse)</li>
+      <li>Same SDR, FFT = 65536: <code>2400000</code> <code>÷</code> <code>65536</code> <code>=</code> → <strong>36.6 Hz per bin</strong> (fine detail)</li>
+      <li>HackRF: 10,000,000 Hz, FFT = 4096: <code>10000000</code> <code>÷</code> <code>4096</code> <code>=</code> → <strong>2441 Hz per bin</strong></li>
+      <li>Resolve signals 500 Hz apart, 1 MHz sample rate → minimum N_FFT: <code>1000000</code> <code>÷</code> <code>500</code> <code>=</code> → 2000 → round up to <strong>2048</strong></li>
+    </ul>
+  </div>
+  <div class="callout callout--amber">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-text"><strong>Gotcha:</strong> Larger FFT = finer frequency resolution but slower update rate and more CPU load. A 65k-point FFT takes over 27× longer to compute than a 2k FFT. Most SDR software lets you adjust to trade resolution against waterfall speed.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── QUICK REFERENCE ──────────────────────────────────── -->
+<div class="chapter">
+  <h2>Quick Reference — All 27 Formulas</h2>
+  <div class="quickref-wrap">
+    <table class="quickref-table">
+      <thead><tr><th>#</th><th>Formula</th><th>What you need</th><th>Units</th></tr></thead>
+      <tbody>
+        <tr><td>1.1</td><td>V = I × R</td><td>I (A), R (Ω)</td><td>V</td></tr>
+        <tr><td>1.2</td><td>P = V × I = I²R = V²/R</td><td>any two of V, I, R</td><td>W</td></tr>
+        <tr><td>1.3</td><td>R_par = R₁R₂/(R₁+R₂)</td><td>R₁, R₂ (Ω)</td><td>Ω</td></tr>
+        <tr><td>2.1</td><td>dB = 10 × log(P_out/P_in)</td><td>two power levels</td><td>dB</td></tr>
+        <tr><td>2.2</td><td>P_out = P_in × 10^(dB/10)</td><td>dB, P_in (W)</td><td>W</td></tr>
+        <tr><td>2.3</td><td>dB = 20 × log(V_out/V_in)</td><td>two voltage levels</td><td>dB</td></tr>
+        <tr><td>2.4a</td><td>dBW = 10 × log(P)</td><td>P (W)</td><td>dBW</td></tr>
+        <tr><td>2.4b</td><td>dBm = dBW + 30</td><td>dBW or P (W)</td><td>dBm</td></tr>
+        <tr><td>3.1</td><td>X_C = 1/(2πfC)</td><td>f (Hz), C (F)</td><td>Ω</td></tr>
+        <tr><td>3.2</td><td>X_L = 2πfL</td><td>f (Hz), L (H)</td><td>Ω</td></tr>
+        <tr><td>3.3</td><td>Z = √(R² + X²)</td><td>R (Ω), X (Ω)</td><td>Ω</td></tr>
+        <tr><td>4.1</td><td>f₀ = 1/(2π√(LC))</td><td>L (H), C (F)</td><td>Hz</td></tr>
+        <tr><td>4.2</td><td>Q = X_L / R</td><td>X_L (Ω), R (Ω)</td><td>—</td></tr>
+        <tr><td>4.3</td><td>BW = f₀ / Q</td><td>f₀ (Hz), Q</td><td>Hz</td></tr>
+        <tr><td>5.1</td><td>VSWR = (1+|Γ|)/(1−|Γ|)</td><td>|Γ| (0–1)</td><td>ratio</td></tr>
+        <tr><td>5.2</td><td>|Γ| = (VSWR−1)/(VSWR+1)</td><td>VSWR (ratio)</td><td>0–1</td></tr>
+        <tr><td>5.3</td><td>RL = 20 × log(1/|Γ|)</td><td>|Γ| (0–1)</td><td>dB</td></tr>
+        <tr><td>5.4</td><td>P_ref = |Γ|² × P_inc</td><td>|Γ|, P_inc (W)</td><td>W</td></tr>
+        <tr><td>6.1</td><td>λ = 300 / f_MHz</td><td>f (MHz)</td><td>m</td></tr>
+        <tr><td>6.2</td><td>MUF = f_c × √(1+(d/2h)²)</td><td>f_c (MHz), d, h</td><td>MHz</td></tr>
+        <tr><td>6.3</td><td>λ_cable = (300/f_MHz) × VF</td><td>f (MHz), VF</td><td>m</td></tr>
+        <tr><td>7.1</td><td>Z₀ = √(Z_source × Z_load)</td><td>Z₁, Z₂ (Ω)</td><td>Ω</td></tr>
+        <tr><td>7.2</td><td>V₂ = V₁ × (N₂/N₁)</td><td>V₁, N₁, N₂</td><td>V</td></tr>
+        <tr><td>7.3</td><td>Z ratio = (N₁/N₂)²</td><td>turns ratio</td><td>—</td></tr>
+        <tr><td>8.1</td><td>τ = R × C</td><td>R (Ω), C (F)</td><td>s</td></tr>
+        <tr><td>8.2</td><td>τ = L / R</td><td>L (H), R (Ω)</td><td>s</td></tr>
+        <tr><td>8.3</td><td>V = V₀ × e^(−t/τ)</td><td>V₀, t (s), τ (s)</td><td>V</td></tr>
+        <tr><td>9.1</td><td>DR ≈ 6n dB</td><td>n (bit depth)</td><td>dB</td></tr>
+        <tr><td>9.2</td><td>BW_max = f_sample / 2</td><td>f_sample (Hz)</td><td>Hz</td></tr>
+        <tr><td>9.3</td><td>bin width = f_sample / N_FFT</td><td>f_sample, N_FFT</td><td>Hz</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ─── CRITICAL TRAPS ───────────────────────────────────── -->
+<div class="chapter">
+  <h2>The Critical Traps</h2>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Trap</th><th>What goes wrong</th><th>How to avoid it</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>log</code> vs <code>ln</code></td>
+          <td>ln(x) ≈ 2.303 × log(x) — answer off by factor of 2.3</td>
+          <td>dB = <code>log</code> (base 10); decay = <code>ln</code> / <code>2ⁿᵈ ln</code></td>
+        </tr>
+        <tr>
+          <td>DEG vs RAD</td>
+          <td>In RAD mode, sin(30) = −0.988 not 0.5</td>
+          <td>Check <strong>DEG</strong> shown in display before any Trigonometry ▾ use</td>
+        </tr>
+        <tr>
+          <td><code>exp</code> vs <code>xʸ</code></td>
+          <td><code>2</code> <code>exp</code> <code>6</code> = 2,000,000; <code>2</code> <code>xʸ</code> <code>6</code> = 64</td>
+          <td><code>exp</code> = scientific notation entry; <code>xʸ</code> = raise to a power</td>
+        </tr>
+        <tr>
+          <td><code>10ˣ</code> vs <code>2ⁿᵈ ln</code></td>
+          <td>Different bases: 10 vs <em>e</em></td>
+          <td>Use <code>10ˣ</code> to undo <code>log</code>; use <code>2ⁿᵈ ln</code> to undo <code>ln</code></td>
+        </tr>
+        <tr>
+          <td>Wrong units</td>
+          <td>MHz instead of Hz → off by 10⁶</td>
+          <td>Always convert to SI base units first; do unit check before pressing <code>=</code></td>
+        </tr>
+        <tr>
+          <td>Power vs voltage dB</td>
+          <td>Multiplying by 10 when you should use 20 (or vice versa)</td>
+          <td>P → ×10; V → ×20; 6 dB = ×4 power = ×2 voltage</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+
+<div id="site-footer-mount">
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+    </div>
+  </footer>
+</div>
+
+<script src="/assets/js/search.js?v=20260916-1000" defer></script>
+<script src="/assets/js/nav-loader.js?v=20260916-1000" defer></script>
+</body>
+</html>

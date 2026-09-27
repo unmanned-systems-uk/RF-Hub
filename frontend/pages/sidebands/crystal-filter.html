@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crystal Filters — Ladder, Half-Lattice &amp; the 9 MHz IF Strip | RF-Hub</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#06b6d4">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css?v=20260917-1100">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260917-1100">
+<meta name="site-nav-active" content="sidebands">
+<style>
+:root {
+  --bg-primary:    #0a0e1a;
+  --bg-secondary:  #111827;
+  --bg-tertiary:   #1f2937;
+  --text-primary:  #f9fafb;
+  --text-secondary:#9ca3af;
+  --text-muted:    #6b7280;
+  --purple: #a78bfa;
+  --cyan:   #06b6d4;
+  --amber:  #f59e0b;
+  --border: rgba(255,255,255,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* ── Progress bar ────────────────────────────────────────── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 3px; z-index: 999;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width 0.1s linear;
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 0 2.5rem;
+}
+.hero .container { max-width: 860px; }
+.hero-badge {
+  display: inline-block;
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--purple); border: 1px solid rgba(167,139,250,0.35);
+  border-radius: 4px; padding: 0.2rem 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--text-primary); margin: 0 0 0.75rem; line-height: 1.2;
+}
+.hero-subtitle {
+  color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65;
+  max-width: 640px; margin: 0 0 1.25rem;
+}
+.tag-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.tag-chip {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  border: 1px solid var(--border); color: var(--text-muted);
+}
+.tag-chip--level { color: var(--cyan); border-color: rgba(6,182,212,0.3); }
+
+/* ── Main content ────────────────────────────────────────── */
+.sideband-content {
+  max-width: 800px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── Cross-reference callout ─────────────────────────────── */
+.callout-cyan {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.22);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.1rem; margin: 0 0 2rem;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65;
+}
+.callout-cyan strong { color: var(--cyan); }
+.callout-cyan a { color: var(--cyan); }
+
+/* ── Amber callout ───────────────────────────────────────── */
+.callout-amber {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.1rem; margin: 1rem 0;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65;
+}
+.callout-amber strong { color: var(--amber); }
+
+/* ── Section dividers ────────────────────────────────────── */
+.section-divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+.part-heading {
+  font-family: var(--font-display); font-size: 1.5rem;
+  color: var(--text-primary); margin: 0 0 0.25rem;
+}
+.part-sub {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--purple); text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 0 0 1.25rem; display: block;
+}
+h3 {
+  font-size: 1.05rem; color: var(--text-primary);
+  margin: 1.75rem 0 0.6rem; font-weight: 600;
+}
+p { color: var(--text-secondary); line-height: 1.75; margin: 0 0 1rem; }
+ul, ol { color: var(--text-secondary); line-height: 1.75; padding-left: 1.5rem; margin: 0 0 1rem; }
+li { margin-bottom: 0.35rem; }
+strong { color: #e5e7eb; }
+
+/* ── Formula display ─────────────────────────────────────── */
+.formula-display {
+  background: rgba(167,139,250,0.07);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-mono); font-size: 0.88rem; color: #e5e7eb;
+  padding: 0.85rem 1.1rem; margin: 0.75rem 0 1rem;
+  white-space: pre-wrap; overflow-x: auto;
+}
+
+/* ── Code / ASCII diagram block ──────────────────────────── */
+.code-block {
+  background: rgba(6,182,212,0.06);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 6px;
+  font-family: var(--font-mono); font-size: 0.82rem; color: #9ca3af;
+  padding: 1rem 1.1rem; margin: 0.75rem 0 1rem;
+  white-space: pre; overflow-x: auto;
+  line-height: 1.5;
+}
+
+/* ── Worked example block ────────────────────────────────── */
+.examples {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0 1rem;
+  font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7;
+}
+.examples code {
+  font-family: var(--font-mono); font-size: 0.82rem; color: #c4b5fd;
+  background: rgba(167,139,250,0.1); padding: 0 0.3rem; border-radius: 3px;
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem; margin: 0.75rem 0 1.5rem;
+}
+.data-table th {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--purple); font-weight: 500;
+  border-bottom: 1px solid rgba(167,139,250,0.25);
+  padding: 0.5rem 0.75rem; text-align: left;
+}
+.data-table td {
+  color: var(--text-secondary); border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem; vertical-align: top;
+}
+.data-table td:first-child {
+  font-family: var(--font-mono); color: #e5e7eb; font-size: 0.8rem;
+}
+.data-table tr:last-child td { border-bottom: none; }
+
+/* ── Troubleshooting table — amber col 3 ─────────────────── */
+.ts-table td:nth-child(3) { color: var(--amber); font-style: italic; }
+
+/* ── References list ─────────────────────────────────────── */
+.references {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.25rem 1.5rem; margin: 1rem 0;
+}
+.references p { margin: 0 0 0.6rem; font-size: 0.875rem; }
+.references p:last-child { margin: 0; }
+
+/* ── Footer note ─────────────────────────────────────────── */
+.sideband-footer-note {
+  margin-top: 2.5rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.65;
+}
+.sideband-footer-note a { color: var(--purple); text-decoration: none; }
+.sideband-footer-note a:hover { text-decoration: underline; }
+
+/* ── Jump navigation ─────────────────────────────────────── */
+.jump-nav {
+  display: flex; flex-wrap: wrap; gap: 0.35rem;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0 0 2rem;
+}
+.jump-link {
+  font-family: var(--font-mono); font-size: 0.7rem;
+  color: var(--text-secondary); text-decoration: none;
+  padding: 0.2rem 0.55rem; border: 1px solid var(--border);
+  border-radius: 4px; transition: color 0.15s, border-color 0.15s;
+}
+.jump-link:hover { color: var(--purple); border-color: rgba(167,139,250,0.4); }
+h2[id], h3[id] { scroll-margin-top: 1.5rem; }
+
+@media (max-width: 600px) {
+  .sideband-content { padding: 1.5rem 1rem 3rem; }
+  .hero { padding: 2rem 0 1.5rem; }
+  .hero h1 { font-size: 1.6rem; }
+  .hero-subtitle { font-size: 0.875rem; }
+  .formula-display, .code-block { font-size: 0.78rem; }
+  .data-table { font-size: 0.78rem; }
+  .data-table th, .data-table td { padding: 0.4rem 0.5rem; }
+}
+@media (max-width: 380px) {
+  .hero h1 { font-size: 1.35rem; }
+  .part-heading { font-size: 1.25rem; }
+  .jump-nav { padding: 0.7rem 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/study/">Study</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Topic Snippet</div>
+    <h1>Crystal Filters</h1>
+    <p class="hero-subtitle">Ladder, half-lattice, and the 9 MHz IF strip — crystal equivalent circuit, Q factor, topology comparison, component values, matching procedure, and S21 test. Companion to the LC Filter sideband.</p>
+    <div class="tag-chips">
+      <span class="tag-chip tag-chip--level">[I]</span>
+      <span class="tag-chip tag-chip--level">[FL]</span>
+      <span class="tag-chip">RSGB 13I1 · 13J1</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTENT ─────────────────────────────────────────────── -->
+<main class="container sideband-content">
+
+  <div class="callout-cyan">
+    <strong>Cross-references:</strong>
+    <a href="../study/full/section-13-emc.html#ch-13I" target="_blank" rel="noopener noreferrer">Full §13I — Filter Design</a> &nbsp;·&nbsp;
+    <a href="../study/full/section-7-transmitter.html" target="_blank" rel="noopener noreferrer">Full §7 — Transmitter (SSB IF strip)</a> &nbsp;·&nbsp;
+    <a href="../study/full/section-9-receiver.html" target="_blank" rel="noopener noreferrer">Full §9 — Receiver (IF selectivity)</a> &nbsp;·&nbsp;
+    <a href="filter-design-build-test.html" target="_blank" rel="noopener noreferrer">Filter Design, Build &amp; Test sideband</a> &nbsp;·&nbsp;
+    <a href="s21-transmission-measurement.html" target="_blank" rel="noopener noreferrer">S21 Measurement sideband</a>
+  </div>
+
+  <nav class="jump-nav" aria-label="Page sections">
+    <a class="jump-link" href="#part-1">Part 1: Equiv Circuit</a>
+    <a class="jump-link" href="#resonant-freq">Resonances</a>
+    <a class="jump-link" href="#q-factor">Q Factor</a>
+    <a class="jump-link" href="#part-2">Part 2: Topologies</a>
+    <a class="jump-link" href="#ladder">Ladder</a>
+    <a class="jump-link" href="#half-lattice">Half-Lattice</a>
+    <a class="jump-link" href="#shape-factor">Shape Factor</a>
+    <a class="jump-link" href="#part-3">Part 3: 9 MHz Filter</a>
+    <a class="jump-link" href="#design-spec">Design Spec</a>
+    <a class="jump-link" href="#crystal-matching">Matching</a>
+    <a class="jump-link" href="#four-crystal">4-Crystal</a>
+    <a class="jump-link" href="#six-crystal">6-Crystal</a>
+    <a class="jump-link" href="#termination">Termination</a>
+    <a class="jump-link" href="#schematic">Schematic</a>
+    <a class="jump-link" href="#part-4">Part 4: Temp &amp; Ageing</a>
+    <a class="jump-link" href="#cut-angle">Cut Angle</a>
+    <a class="jump-link" href="#ageing">Ageing</a>
+    <a class="jump-link" href="#part-5">Part 5: Construction</a>
+    <a class="jump-link" href="#pcb-layout">PCB Layout</a>
+    <a class="jump-link" href="#shielding">Shielding</a>
+    <a class="jump-link" href="#mounting">Mounting</a>
+    <a class="jump-link" href="#part-6">Part 6: Test</a>
+    <a class="jump-link" href="#equipment">Equipment</a>
+    <a class="jump-link" href="#s21-sweep">S21 Sweep</a>
+    <a class="jump-link" href="#interpreting">Interpreting</a>
+    <a class="jump-link" href="#quick-ref">Quick Ref</a>
+    <a class="jump-link" href="#references">References</a>
+  </nav>
+
+  <p>A quartz crystal resonator is a mechanical resonator — a tiny slice of piezoelectric quartz that vibrates at a precise frequency determined by its cut angle and physical dimensions. As an electrical component it behaves as an LC resonant circuit with an extraordinary Q factor — typically 10,000 to 100,000 compared to 50–500 for a wound inductor. This extreme Q makes crystals the natural choice for narrow-bandwidth IF filters in SSB and CW receivers and transmitters.</p>
+  <p>This sideband covers how crystals behave electrically, how they are combined into ladder and half-lattice filter topologies, and how a practical 9 MHz IF SSB filter is designed and tested.</p>
+
+  <!-- ════════ PART 1 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-1">Part 1: The Crystal Equivalent Circuit</h2>
+  <span class="part-sub">Motional arm · Static capacitance · Q factor</span>
+
+  <p>A quartz crystal behaves electrically as a two-terminal network containing a <strong>series branch</strong> (the motional arm) in parallel with a <strong>static capacitance</strong>:</p>
+  <pre class="code-block">     ┌────────────────────────────────────────┐
+     │                                        │
+    [C₀]         static (plate) capacitance  │
+     │                                        │
+     └──[L_m]──[C_m]──[R_s]──────────────────┘
+          motional arm (series resonance)</pre>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Symbol</th><th>Name</th><th>Typical value (10 MHz crystal)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>L_m</td><td>Motional inductance</td><td>10–100 mH</td></tr>
+      <tr><td>C_m</td><td>Motional capacitance</td><td>10–30 fF (femtofarads)</td></tr>
+      <tr><td>R_s</td><td>Series resistance (ESR)</td><td>5–50 Ω</td></tr>
+      <tr><td>C₀</td><td>Static (parallel) capacitance</td><td>3–7 pF</td></tr>
+    </tbody>
+  </table>
+
+  <p>The ratio C_m/C₀ is tiny (typically 0.001–0.003) — this gives the crystal its narrow operating frequency range and high Q.</p>
+
+  <h3 id="resonant-freq">Two Resonant Frequencies</h3>
+  <p><strong>Series resonance (f_s):</strong> the motional arm L_m and C_m resonate. At f_s the series branch looks like a pure resistance R_s (very low impedance).</p>
+  <div class="formula-display">f_s = 1 / (2π × √(L_m × C_m))</div>
+
+  <p><strong>Parallel resonance (f_p):</strong> C_m and C₀ together with L_m resonate. At f_p the device looks like a very high impedance (open circuit).</p>
+  <div class="formula-display">f_p ≈ f_s × √(1 + C_m / C₀) ≈ f_s × (1 + C_m / (2 × C₀))</div>
+
+  <p>The gap between f_s and f_p is typically <strong>0.1–0.5% of f_s</strong> — for a 9 MHz crystal, this is only 9–45 kHz. All useful filter operation occurs within this narrow range.</p>
+
+  <h3 id="q-factor">Q Factor</h3>
+  <div class="formula-display">Q = (2π × f_s × L_m) / R_s = 1 / (2π × f_s × C_m × R_s)</div>
+  <div class="examples">
+    <strong>Worked example — 9 MHz crystal, L_m = 20 mH, R_s = 10 Ω:</strong><br><br>
+    <code>Q = (2π × 9 × 10⁶ × 20 × 10⁻³) / 10</code><br>
+    <code>  = 1,130,973 / 10</code><br>
+    <code>  ≈ <strong>113,000</strong></code><br><br>
+    This Q is 200–2,000× higher than a wound inductor at the same frequency.
+  </div>
+
+  <!-- ════════ PART 2 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-2">Part 2: Filter Topologies</h2>
+  <span class="part-sub">Ladder · Half-lattice · Shape factor</span>
+
+  <h3 id="ladder">Ladder Filter</h3>
+  <p>The most common crystal filter topology for homebrew use. A series of crystals is connected along the signal path, with capacitors connecting the junctions to ground:</p>
+  <pre class="code-block">Input ──[X1]──┬──[X2]──┬──[X3]──┬──[X4]── Output
+             [C]      [C]      [C]
+              │        │        │
+             GND      GND      GND</pre>
+  <p><strong>How it works:</strong> Each crystal presents very low impedance near f_s and very high impedance away from f_s. The shunt capacitors provide a reference path to ground. Together they create a bandpass response centred near the crystals' series resonant frequency, with the bandwidth controlled primarily by the <strong>capacitor values</strong>.</p>
+  <ul>
+    <li><strong>Larger C (more capacitance to ground):</strong> wider bandwidth, lower shape factor</li>
+    <li><strong>Smaller C:</strong> narrower bandwidth, higher insertion loss</li>
+  </ul>
+  <p><strong>Number of crystals:</strong> each crystal adds one pole to the response. A 4-crystal ladder gives a reasonable shape factor for SSB; 6–8 crystals give CW bandwidths. Commercial SSB filters typically use 8–12 crystals.</p>
+
+  <h3 id="half-lattice">Half-Lattice Filter</h3>
+  <p>The half-lattice uses <strong>pairs of crystals</strong> with slightly different frequencies in a bridge (lattice) configuration:</p>
+  <pre class="code-block">        [Xa] (series resonance f_sa)
+Input ──┤                              ├── Output
+        [Xb] (series resonance f_sb)</pre>
+  <p>where Xa and Xb are connected in a transformer-coupled bridge — one crystal in the signal path, one in the feedback path. The two crystals are deliberately chosen to have slightly different f_s values.</p>
+  <ul>
+    <li><strong>Passband:</strong> centred between f_sa and f_sb</li>
+    <li><strong>Bandwidth:</strong> approximately (f_pb − f_sa) × 1.4, where f_pb is the parallel resonance of the crystal with lower f_s</li>
+  </ul>
+  <p>The half-lattice gives a very steep skirt (excellent shape factor) and is used in high-performance commercial SSB filters. It requires two transformers (for coupling in and out of the bridge) and is more complex to build than a ladder filter.</p>
+
+  <h3 id="shape-factor">Shape Factor</h3>
+  <p>The <strong>shape factor</strong> is the ratio of filter bandwidth at −60 dB to bandwidth at −6 dB. Lower is better.</p>
+  <ul>
+    <li>Good SSB ladder filter: <strong>2.0:1</strong></li>
+    <li>Half-lattice: can achieve <strong>1.5:1</strong></li>
+    <li>Simple LC bandpass: typically <strong>5:1 or worse</strong></li>
+  </ul>
+
+  <!-- ════════ PART 3 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-3">Part 3: The 9 MHz SSB IF Filter</h2>
+  <span class="part-sub">Design spec · Crystal matching · Component values · Schematic</span>
+
+  <p>9 MHz is the standard IF frequency for many HF transceivers. At 9 MHz, HC-49 crystals are readily available, inexpensive, and well-characterised. A 4- or 6-crystal ladder filter at 9 MHz provides the SSB passband needed for voice communication.</p>
+
+  <h3 id="design-spec">Design Specification</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Parameter</th><th>Target</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Centre frequency</td><td>9.000 MHz</td><td>Standard HC-49 crystals</td></tr>
+      <tr><td>Passband (−6 dB)</td><td>2.4 kHz</td><td>Covers 300–2700 Hz audio</td></tr>
+      <tr><td>Passband (−60 dB)</td><td>&lt; 5.0 kHz</td><td>Shape factor &lt; 2.1:1</td></tr>
+      <tr><td>Insertion loss</td><td>&lt; 6 dB</td><td>In matched 200 Ω system</td></tr>
+      <tr><td>Stopband</td><td>&gt; 60 dB at ±10 kHz</td><td>Suppresses adjacent-channel interference</td></tr>
+      <tr><td>Crystal count</td><td>4–6</td><td>Homebrew achievable</td></tr>
+      <tr><td>Termination impedance</td><td>200 Ω</td><td>Typical for 9 MHz ladder filters</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="crystal-matching">Crystal Selection and Matching</h3>
+  <div class="callout-amber"><strong>This is the most critical step.</strong> All crystals in a ladder filter must have series resonant frequencies within approximately <strong>±100 Hz</strong> of each other, or the passband will be uneven and the insertion loss will increase.</div>
+
+  <p><strong>How to match crystals:</strong></p>
+  <ol>
+    <li>Measure each crystal's series resonant frequency using a crystal oscillator test circuit or a VNA in series-through mode</li>
+    <li>Trim a batch of 10–20 crystals from the same reel — they are likely to be within ±200 Hz of each other</li>
+    <li>Sort by frequency; select the most closely matched set</li>
+    <li>For a 6-crystal filter, you need 6 crystals within ±50 Hz of each other</li>
+  </ol>
+  <div class="callout-amber"><strong>Do not mix crystals from different batches or manufacturers.</strong> Even nominally identical part numbers from different production lots may differ by several hundred Hz.</div>
+
+  <h3 id="four-crystal">4-Crystal Ladder — Design Values</h3>
+  <p>For a 9.000 MHz SSB ladder filter with 200 Ω termination and 2.4 kHz bandwidth, typical component values (derived using the Dishal method):</p>
+  <pre class="code-block">200Ω ──[X1]──┬──[X2]──┬──[X3]──┬──[X4]── 200Ω
+            [C1]     [C2]     [C3]</pre>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Component</th><th>Value</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>X1–X4</td><td>HC-49, 9.000 MHz</td><td>Matched within ±50 Hz</td></tr>
+      <tr><td>C1, C3 (end caps)</td><td>56 pF</td><td>NP0/C0G only</td></tr>
+      <tr><td>C2 (middle)</td><td>39 pF</td><td>NP0/C0G only</td></tr>
+      <tr><td>Termination R</td><td>200 Ω</td><td>Both source and load</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout-amber"><strong>Why end and middle capacitors differ:</strong> the end capacitors interact with the source/load impedance and the first/last crystal; the middle capacitors only interact between crystals. The values are derived from the Dishal method or determined by simulation. The above values are a starting point for a 2.4 kHz SSB filter.</div>
+
+  <h3 id="six-crystal">6-Crystal Ladder — Additional Bandwidth Control</h3>
+  <p>Adding two more crystals sharpens the skirts significantly:</p>
+  <ul>
+    <li><strong>4-crystal:</strong> shape factor approximately 2.5:1 (practical homebrew result)</li>
+    <li><strong>6-crystal:</strong> shape factor approximately 1.8:1</li>
+  </ul>
+
+  <h3 id="termination">Source and Load Impedance</h3>
+  <p>The ladder crystal filter is <strong>critically sensitive to termination impedance</strong>. If the source or load deviates from the design impedance (200 Ω in this example):</p>
+  <ul>
+    <li><strong>Too high:</strong> passband ripple increases; out-of-band attenuation degrades</li>
+    <li><strong>Too low:</strong> passband becomes peaky with gain variations across the band</li>
+  </ul>
+  <p>In an SSB transceiver IF strip, a resistive pad (attenuator) is often inserted between the filter and the mixer output or the first IF amplifier input, specifically to ensure the filter sees the correct termination. A 6 dB pad set to 200 Ω will raise the insertion loss by 6 dB but guarantee flat passband performance.</p>
+
+  <h3 id="schematic">Schematic — 4-Crystal Ladder</h3>
+  <pre class="code-block">RF input                                    RF output
+  │                                            │
+[200Ω]                                      [200Ω]
+  │                                            │
+──┤ X1 ├──┬──┤ X2 ├──┬──┤ X3 ├──┬──┤ X4 ├───
+         [56p]      [39p]      [56p]
+          │          │          │
+         GND        GND        GND
+
+Components: 4× HC-49/S 9.000 MHz (matched ±50 Hz)
+            2× 56 pF NP0, 1× 39 pF NP0
+            Source termination 200 Ω, Load termination 200 Ω</pre>
+
+  <!-- ════════ PART 4 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-4">Part 4: Temperature Effects and Ageing</h2>
+  <span class="part-sub">Cut angle · Temperature coefficient · Ageing</span>
+
+  <h3 id="cut-angle">Cut Angle and Temperature Coefficient</h3>
+  <p>Quartz crystals are cut at a specific angle relative to the crystal lattice. The cut angle determines the temperature coefficient:</p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Cut</th><th>Temperature coefficient</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>AT cut</td><td>Near-zero over 0–70 °C</td><td>Standard choice for filter and reference crystals</td></tr>
+      <tr><td>BT cut</td><td>Slightly higher tempco</td><td>Slightly easier to manufacture</td></tr>
+      <tr><td>SC cut</td><td>Very low over wider range</td><td>Premium oscillator use, expensive</td></tr>
+    </tbody>
+  </table>
+  <p><strong>AT-cut crystals</strong> are the standard for IF filter applications. Over a 0–50 °C operating range, frequency variation is typically &lt; 5 ppm — for a 9 MHz crystal this is &lt; 45 Hz, negligible for SSB bandwidth.</p>
+
+  <h3 id="ageing">Ageing</h3>
+  <p>Crystal frequency drifts slowly over time as the quartz surface chemistry changes and mechanical stresses relax. Typical ageing rate for HC-49 crystals: 1–5 ppm per year in the first few years, slowing thereafter. For a filter application, ageing of matched crystals is nearly identical across the set — the filter centre frequency drifts, but the shape is preserved.</p>
+
+  <!-- ════════ PART 5 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-5">Part 5: Construction</h2>
+  <span class="part-sub">PCB layout · Shielding · Crystal mounting</span>
+
+  <h3 id="pcb-layout">PCB Layout</h3>
+  <ul>
+    <li>Use a <strong>solid ground plane</strong> under all crystals and capacitors</li>
+    <li>Keep the signal path as short as possible — long tracks between crystals add stray capacitance that widens the passband and degrades shape factor</li>
+    <li><strong>Do not put the crystal bodies directly on the PCB solder side</strong> if using a ground plane — the crystal body capacitance to ground adds C₀ directly to the circuit, shifting the effective filter parameters</li>
+  </ul>
+
+  <h3 id="shielding">Shielded Enclosure</h3>
+  <p>For &gt; 60 dB stopband isolation, the filter <strong>must be in a fully shielded metal enclosure</strong>. Without shielding, the RF signal at the input will couple directly to the output through the air, bypassing the filter entirely and limiting practical attenuation to approximately 40–50 dB.</p>
+  <p>Use a tinplate or die-cast aluminium box with feedthrough capacitors or SMA connectors. Ground the box lid to the PCB ground plane.</p>
+
+  <h3 id="mounting">Crystal Mounting</h3>
+  <p>HC-49 crystals are through-hole components. Keep their leads short (5 mm maximum). If the crystals are close together, add a small ground plane strip between adjacent crystal bodies to prevent direct capacitive coupling between them.</p>
+
+  <!-- ════════ PART 6 ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="part-6">Part 6: Test Procedure</h2>
+  <span class="part-sub">S21 sweep · Interpreting results</span>
+
+  <h3 id="equipment">Equipment</h3>
+  <ul>
+    <li>VNA or tracking generator + spectrum analyser (preferred)</li>
+    <li>Alternative: signal generator + calibrated attenuator + power meter / voltmeter</li>
+  </ul>
+
+  <h3 id="s21-sweep">S21 Sweep Procedure</h3>
+  <ol>
+    <li>Calibrate the VNA for a 200 Ω–200 Ω S21 measurement (or use 50 Ω with 200 Ω/50 Ω resistive pads at each port)</li>
+    <li>Set span to ±50 kHz around 9.000 MHz (e.g. 8.950–9.050 MHz)</li>
+    <li>Set RBW to 300 Hz or lower — the passband is only 2.4 kHz wide; coarse RBW will miss detail</li>
+    <li>Record: centre frequency (peak of passband), −6 dB bandwidth, −60 dB bandwidth, insertion loss, shape factor</li>
+  </ol>
+  <div class="formula-display">Shape factor = BW_−60dB / BW_−6dB
+
+Target: &lt; 2.1:1 for SSB, &lt; 1.5:1 for narrow CW</div>
+
+  <h3 id="interpreting">Interpreting Results</h3>
+  <table class="data-table ts-table">
+    <thead>
+      <tr><th>Result</th><th>Likely cause</th><th>Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Insertion loss &gt; 10 dB</td><td>Crystals not matched, or wrong termination impedance</td><td>Re-match crystals; check termination R</td></tr>
+      <tr><td>Passband ripple &gt; 3 dB</td><td>Crystals spread &gt; ±100 Hz, or capacitor values off</td><td>Re-sort crystals; adjust C values</td></tr>
+      <tr><td>Shape factor &gt; 3:1</td><td>Capacitor values too large (wide BW) or wrong topology</td><td>Reduce shunt capacitor values</td></tr>
+      <tr><td>No deep stopband (&lt; 40 dB at ±10 kHz)</td><td>Insufficient shielding; RF bypassing filter</td><td>Add metal enclosure; check PCB layout</td></tr>
+      <tr><td>Centre frequency offset</td><td>Crystal batch offset from nominal</td><td>Acceptable if within ±1 kHz; adjust BFO/carrier to compensate</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ════════ QUICK REFERENCE ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="quick-ref">Quick Reference</h2>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Parameter</th><th>Formula</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Crystal series resonance</td><td>f_s = 1/(2π√(L_m C_m))</td><td>L_m in mH, C_m in fF</td></tr>
+      <tr><td>Crystal parallel resonance</td><td>f_p ≈ f_s × √(1 + C_m/C₀)</td><td>Typically 0.1–0.5% above f_s</td></tr>
+      <tr><td>Crystal Q</td><td>Q = 2πf_s L_m / R_s</td><td>Typical: 10,000–100,000</td></tr>
+      <tr><td>Filter shape factor</td><td>SF = BW_−60dB / BW_−6dB</td><td>&lt;2:1 good; &lt;1.5:1 excellent</td></tr>
+      <tr><td>Ladder BW control</td><td>Wider BW → larger shunt C; Narrower → smaller C</td><td>NP0 capacitors only</td></tr>
+      <tr><td>Termination impedance</td><td>Must match design value exactly</td><td>Use resistive pads if needed</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="ready-ref">9 MHz Ladder Filter — Ready Reference</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Crystals</th><th>BW (−6 dB)</th><th>Shape factor (typical)</th><th>Insertion loss</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>4</td><td>~3 kHz</td><td>~2.5:1</td><td>~3 dB</td></tr>
+      <tr><td>6</td><td>~2.4 kHz</td><td>~1.8:1</td><td>~4 dB</td></tr>
+      <tr><td>8</td><td>~2.0 kHz</td><td>~1.5:1</td><td>~5–6 dB</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ════════ REFERENCES ════════ -->
+  <hr class="section-divider">
+  <h2 class="part-heading" id="references">References</h2>
+
+  <div class="references">
+    <p><strong>Dishal, M.</strong> — "Modern network design of bandpass crystal filters" (1965). The classical closed-form synthesis procedure for ladder crystal filters.</p>
+    <p><strong>Williams, A. &amp; Taylor, F.</strong> — <em>Electronic Filter Design Handbook</em> (McGraw-Hill, 4th ed.). Chapter on crystal filter design includes normalised ladder tables.</p>
+    <p><strong>Hayward, W., Campbell, R., Larkin, B.</strong> — <em>Experimental Methods in RF Design</em> (ARRL, 2003). Chapter 3 covers ladder and half-lattice crystal filter design with worked examples for amateur IF frequencies.</p>
+    <p><strong>AADE Filter Design</strong> (freeware) — Windows software implementing the Dishal method for ladder crystal filter synthesis. Accepts measured crystal parameters.</p>
+    <p><strong>Elsie</strong> (Tonne Software) — LC and crystal filter synthesis for Windows; exports component values and plots ideal response.</p>
+  </div>
+
+  <div class="sideband-footer-note">
+    Sideband snippets are short-form RF-Hub reference topics. For passive LC and active op-amp filters (Pi, T, Sallen-Key), see the companion <a href="filter-design-build-test.html" target="_blank" rel="noopener noreferrer">Filter Design, Build &amp; Test sideband</a>.
+  </div>
+
+</main>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<div id="site-footer-mount">
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function() {
+    var bar = document.getElementById('progress-bar');
+    if (!bar) return;
+    window.addEventListener('scroll', function() {
+      var d = document.documentElement;
+      var pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+      bar.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+  })();
+</script>
+<script src="/assets/js/search.js?v=20260917-1100" defer></script>
+<script src="/assets/js/nav-loader.js?v=20260917-1100" defer></script>
+</body>
+</html>
