@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/rf-hub-v2.css?v=20260917-0900">
+  <link rel="stylesheet" href="/assets/css/search.css?v=20260927-2220">
   <style>
     /* ── Level card grid ──────────────────────────────────────────────────── */
     .level-grid {
@@ -151,6 +152,54 @@
       font-size: 0.9rem;
       line-height: 1.6;
     }
+
+    /* ── Privileges table → stacked cards on phone ──────────────────────────
+       Dyslexia-friendly per request: cards, not a horizontal-scroll table.
+       Scoped to .privileges-section only - does not touch the locked
+       .table-wrapper/table rules used elsewhere on the site. */
+    @media (max-width: 640px) {
+      .privileges-section .table-wrapper table,
+      .privileges-section .table-wrapper thead,
+      .privileges-section .table-wrapper tbody,
+      .privileges-section .table-wrapper tr,
+      .privileges-section .table-wrapper th,
+      .privileges-section .table-wrapper td {
+        display: block;
+        width: 100%;
+      }
+      .privileges-section .table-wrapper thead { display: none; }
+      .privileges-section .table-wrapper tr {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.1rem;
+        margin-bottom: 1rem;
+      }
+      .privileges-section .table-wrapper td {
+        padding: 0.5rem 0;
+        border: none;
+      }
+      .privileges-section .table-wrapper td:first-child {
+        font-size: 1.02rem;
+        color: var(--text-primary);
+        padding: 0 0 0.6rem;
+        margin-bottom: 0.4rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .privileges-section .table-wrapper td[data-label] + td[data-label] {
+        border-top: 1px solid rgba(255,255,255,0.05);
+      }
+      .privileges-section .table-wrapper td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--accent-em);
+        margin-bottom: 0.25rem;
+      }
+    }
   </style>
   <meta name="site-nav-active" content="study">
 </head>
@@ -256,7 +305,7 @@
     <!-- ── Privileges reference table ─────────────────────────────────── -->
     <section class="privileges-section" id="privileges" style="margin-top: 4rem;">
       <h2 style="text-align:center; margin-bottom: 0.5rem;">UK licence privileges at a glance</h2>
-      <p style="text-align:center; color: var(--text-dim); margin: 0 auto 1.5rem; max-width: 720px; line-height:1.6;">The three-tier ladder as it stands under the post-1-September-2024 Ofcom framework. Refer back here for a side-by-side comparison of what each tier can do.</p>
+      <p style="text-align:center; color: var(--text-dim); margin: 0 auto 1.5rem; max-width: 720px; line-height:1.6;">The three-tier ladder as it stands under the Ofcom licence limits in force since 21 February 2024 (examined from 1 September 2024). Refer back here for a side-by-side comparison of what each tier can do.</p>
 
       <div class="table-wrapper" style="max-width: 1100px; margin: 0 auto;">
         <table>
@@ -271,39 +320,39 @@
           <tbody>
             <tr>
               <td><strong>Max transmit power</strong></td>
-              <td>25 W PEP most bands (10 W on some restricted bands)</td>
-              <td>100 W PEP most bands (50 W on some; 1 W on 135.7 kHz; 32 W on upper 1.8 MHz)</td>
-              <td>1 000 W PEP (30 dBW) on most primary HF / VHF / UHF bands; specialist exceptions (60 m / 5 MHz: 15 W EIRP; 472 kHz: 1 W EIRP; 135.7 kHz: 1 W EIRP)</td>
+              <td data-label="Foundation">25 W PEP most bands (10 W on some restricted bands)</td>
+              <td data-label="Intermediate">100 W PEP most bands (50 W on some; 1 W on 135.7 kHz; 32 W on upper 1.8 MHz)</td>
+              <td data-label="Full">1 000 W PEP (30 dBW) on most primary HF / VHF / UHF bands; specialist exceptions (60 m / 5 MHz: 15 W EIRP; 472 kHz: 1 W EIRP; 135.7 kHz: 1 W EIRP)</td>
             </tr>
             <tr>
               <td><strong>Callsign format</strong></td>
-              <td>M7xxx or ME7xxx</td>
-              <td>2E0xxx / 2E1xxx (traditional) or M8xxx / M9xxx (modernised blocks)</td>
-              <td>M0xxx, G0xxx (and historic prefixes)</td>
+              <td data-label="Foundation">M7xxx or ME7xxx</td>
+              <td data-label="Intermediate">2E0xxx / 2E1xxx (traditional) or M8xxx / M9xxx (modernised blocks)</td>
+              <td data-label="Full">M0xxx, G0xxx (and historic prefixes)</td>
             </tr>
             <tr>
               <td><strong>Build your own transmitter?</strong></td>
-              <td>Commercial gear OR kits conforming to <strong>Ofcom IR 2028</strong> OR self-build limited to <strong>&le; 2 W on 2.4 GHz and 5 GHz bands only</strong>. Cannot scratch-build custom transmitters.</td>
-              <td>Full freedom to design, build, modify and operate home-brew transmitters from scratch. No kit-only limitation.</td>
-              <td>Full freedom to design, build, alter and test any transmitting or receiving hardware.</td>
+              <td data-label="Foundation">Commercial gear OR kits conforming to <strong>Ofcom IR 2028</strong> OR self-build limited to <strong>&le; 2 W on 2.4 GHz and 5 GHz bands only</strong>. Cannot scratch-build custom transmitters.</td>
+              <td data-label="Intermediate">Full freedom to design, build, modify and operate home-brew transmitters from scratch. No kit-only limitation.</td>
+              <td data-label="Full">Full freedom to design, build, alter and test any transmitting or receiving hardware.</td>
             </tr>
             <tr>
               <td><strong>Operating location</strong></td>
-              <td>UK only. Maritime mobile (/MM) permitted in UK territorial waters. No foreign operation without a separate local licence.</td>
-              <td>UK only. Expanded maritime mobile privileges. No CEPT reciprocal recognition abroad.</td>
-              <td>UK plus <strong>full CEPT reciprocal</strong> &mdash; operate in participating CEPT countries without applying for a local licence.</td>
+              <td data-label="Foundation">UK only. Maritime mobile (/MM) permitted in UK territorial waters. No foreign operation without a separate local licence.</td>
+              <td data-label="Intermediate">UK only. Expanded maritime mobile privileges. No CEPT reciprocal recognition abroad.</td>
+              <td data-label="Full">UK plus <strong>full CEPT reciprocal</strong> &mdash; operate in participating CEPT countries without applying for a local licence.</td>
             </tr>
             <tr>
               <td><strong>Frequency bands</strong></td>
-              <td>Most standard VHF / UHF / HF amateur bands, plus 2.4 GHz and 5 GHz. Denied specialist narrow bands (5 MHz / 60 m, 472 kHz / 630 m).</td>
-              <td>Same broad access as Foundation, with full power allowance across those bands.</td>
-              <td>All amateur bands including <strong>5 MHz (60 m)</strong> and <strong>472 kHz (630 m)</strong>. Access to microwave bands up to 3 THz under NoV.</td>
+              <td data-label="Foundation">Most standard VHF / UHF / HF amateur bands, plus 2.4 GHz and 5 GHz. Denied specialist narrow bands (5 MHz / 60 m, 472 kHz / 630 m).</td>
+              <td data-label="Intermediate">Same broad access as Foundation, with full power allowance across those bands.</td>
+              <td data-label="Full">All amateur bands including <strong>5 MHz (60 m)</strong> and <strong>472 kHz (630 m)</strong>. Access to microwave bands up to 3 THz under NoV.</td>
             </tr>
             <tr>
               <td><strong>Notice of Variation (NoV) eligibility</strong></td>
-              <td>Not eligible.</td>
-              <td>Not eligible.</td>
-              <td>Eligible to apply for NoVs to operate repeaters, internet gateways, beacons, or high-microwave bands.</td>
+              <td data-label="Foundation">Not eligible.</td>
+              <td data-label="Intermediate">Not eligible.</td>
+              <td data-label="Full">Eligible to apply for NoVs to operate repeaters, internet gateways, beacons, or high-microwave bands.</td>
             </tr>
             <tr>
               <td><strong>Airborne / aeronautical mobile (/AM)</strong></td>
