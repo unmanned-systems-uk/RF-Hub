@@ -1,7 +1,6 @@
 # Sideband: UK Repeaters — Location, Frequency, and How to Use Them
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 8A1, 8B1, 8C1, 8D1
 **Cross-refs:** Band Plan, QSO Scripts, Digital Modes, Q-Codes
 **Series:** Sideband — Topic Snippets for RF-Hub
 

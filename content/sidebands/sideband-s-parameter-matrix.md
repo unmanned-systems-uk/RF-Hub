@@ -1,7 +1,6 @@
 # Sideband: S-Parameters — The Four Numbers That Describe Any RF Device
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 2C1, 2E3, 2E4, 2E5
 **Cross-refs:** Blog: Understanding S11, Sideband: vswr-bridge-measurement, Sideband: s21-transmission-measurement
 **Series:** Sideband — Topic Snippets for RF-Hub
 

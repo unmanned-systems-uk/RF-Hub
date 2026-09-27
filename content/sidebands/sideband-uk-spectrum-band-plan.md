@@ -1,13 +1,12 @@
 # Sideband: UK Spectrum Allocation & Amateur Band Plan — From 160 Metres to 23 Centimetres
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 1A1, 1B1, 1C1, 8A1
 **Cross-refs:** Frequency Bands, Operating Procedures, Digital Modes
 **Series:** Sideband — Topic Snippets for RF-Hub
 
 ---
 
-The radio spectrum from HF through UHF is shared between dozens of services — broadcast, maritime, aviation, military, emergency, and amateur. Understanding who uses what, and where amateur radio fits in, is essential knowledge for your licence exam and for operating without causing interference.
+The radio spectrum from HF through UHF is shared between dozens of services — broadcast, maritime, aviation, military, emergency, and amateur. Understanding who uses what, and where amateur radio fits in, is essential knowledge for operating without causing interference.
 
 This page covers two things:
 1. **Spectrum Allocation** — the big picture of who uses what from 1.8 MHz to 1.3 GHz
@@ -25,7 +24,7 @@ This page covers two things:
 | Intermediate | **100 W PEP** | 2E0, M8, M9 |
 | Full | **1,000 W PEP** (primary bands) | M0 |
 
-> **Old vs New:** If you see older references quoting 10 W Foundation, 50 W Intermediate, or 400 W Full — those were the pre-2024 limits. The exam syllabus was updated from 1 September 2024 to reflect the new figures.
+> **Old vs New:** If you see older references quoting 10 W Foundation, 50 W Intermediate, or 400 W Full — those were the pre-2024 limits, superseded from 21 February 2024.
 
 **Band Plan vs Licence Conditions:** The RSGB band plan is a *voluntary coordination tool* — a gentleman's agreement on how to share each band. Your Ofcom licence (OFW611) sets the *legal* limits. In practice, everyone follows the band plan because it makes the bands work for everyone.
 

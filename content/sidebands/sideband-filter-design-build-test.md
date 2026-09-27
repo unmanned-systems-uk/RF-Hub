@@ -1,7 +1,6 @@
 # Sideband: Filter Design, Build & Test — Passive LC and Active Op-Amp Filters
 
 **Tags:** `[I]` `[FL]`
-**RSGB Refs:** 13H1, 13I1, 13J1, 13M1 (Full EMC); Intermediate §6C (filter types)
 **Cross-refs:** <a href="../study/full/section-13-emc.html#13h--filter-types-and-placement-13h1" target="_blank">Full §13H — Filter Types & Placement</a> · <a href="../study/full/section-13-emc.html#13i--pi-and-t-filter-design-13i1" target="_blank">Full §13I — Pi & T Filter Design</a> · <a href="../study/full/section-14-measurements.html#14k--the-spectrum-analyser" target="_blank">Full §14K — Spectrum Analyser</a> · <a href="sideband-scientific-calculator-guide.html" target="_blank">Calculator Guide (group 4 — Resonance)</a> · <a href="sideband-crystal-filter.html" target="_blank">Crystal Filter Sideband</a>
 **Series:** Sideband — Topic Snippets for RF-Hub
 

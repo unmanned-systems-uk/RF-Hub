@@ -1,7 +1,6 @@
 # Sideband: S21 — Measuring What Gets Through
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 2C1, 2E3, 2E4, 2E5
 **Cross-refs:** Sideband: s-parameter-matrix, Sideband: vswr-bridge-measurement, Sideband: dut-characterisation-workflow
 **Series:** Sideband — Topic Snippets for RF-Hub
 

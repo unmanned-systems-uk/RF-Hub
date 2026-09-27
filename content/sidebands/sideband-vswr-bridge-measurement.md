@@ -1,7 +1,6 @@
 # Sideband: The VSWR Bridge — How Your Analyser Measures Reflections
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 2E3, 2E4, 2E5, 2E6
 **Cross-refs:** Blog: Understanding S11, Sideband: s-parameter-matrix, Sideband: dut-characterisation-workflow
 **Series:** Sideband — Topic Snippets for RF-Hub
 

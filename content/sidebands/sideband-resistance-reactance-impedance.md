@@ -1,7 +1,6 @@
 # Sideband: Resistance, Reactance, and Impedance — Three Flavours of Opposition
 
 **Tags:** `[F]` `[I]` `[FL]`  
-**RSGB Refs:** 2A1, 2C1, 2E3, 2E4, 2E5, 2E6  
 **Cross-refs:** Unit 1 Lesson 2, Unit 3 Lessons 13–16  
 **Series:** Sideband — Topic Snippets for RF-Hub
 

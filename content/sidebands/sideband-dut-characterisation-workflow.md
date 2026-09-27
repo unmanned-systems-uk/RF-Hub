@@ -1,7 +1,6 @@
 # Sideband: DUT Characterisation — A Complete Measurement Walkthrough
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 2E3, 2E4, 2E5, 2E6
 **Cross-refs:** Sideband: s-parameter-matrix, Sideband: vswr-bridge-measurement, Sideband: s21-transmission-measurement
 **Series:** Sideband — Topic Snippets for RF-Hub
 

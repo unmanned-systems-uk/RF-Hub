@@ -1,7 +1,6 @@
 # Sideband: NATO Phonetic Alphabet — Say It So It's Heard
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 8A1, 8B1
 **Cross-refs:** QSO Scripts, Q-Codes, Operating Procedures
 **Series:** Sideband — Topic Snippets for RF-Hub
 

@@ -1,8 +1,7 @@
 # Sideband: Digital Modes — Every Way Your Radio Can Talk Without Your Voice
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 8A1, 8B1, 8C1, 8D1
-**Cross-refs:** Unit 8 (Operating Practices), Foundation syllabus Section 8
+**Cross-refs:** Unit 8 (Operating Practices), Foundation §8 — Modes
 **Series:** Sideband — Topic Snippets for RF-Hub
 
 ---

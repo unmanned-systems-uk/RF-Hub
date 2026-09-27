@@ -1,13 +1,12 @@
 # Sideband: QSO Scripts — What to Say and When to Say It
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 8A1, 8B1, 8C1
 **Cross-refs:** Q-Codes, Band Plan, Operating Procedures
 **Series:** Sideband — Topic Snippets for RF-Hub
 
 ---
 
-Making your first contact on the radio can be nerve-wracking. You know the theory, you've passed the exam, but what do you actually *say*? These scripts give you a step-by-step guide for the most common types of contact. Follow them until the procedure feels natural — then make them your own.
+Making your first contact on the radio can be nerve-wracking. You know the theory, but what do you actually *say*? These scripts give you a step-by-step guide for the most common types of contact. Follow them until the procedure feels natural — then make them your own.
 
 <!-- INTERACTIVE: callsign-autofill
 If the user is logged in and has a callsign set in their profile, auto-populate all "YOUR CALLSIGN" placeholders with their actual callsign. Show a small input field at the top of the page:

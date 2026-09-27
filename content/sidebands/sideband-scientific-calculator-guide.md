@@ -1,13 +1,12 @@
-# Sideband: Scientific Calculator Guide — Every RSGB Syllabus Formula, Step by Step
+# Sideband: Scientific Calculator Guide — RF & Electronics Formulas, Step by Step
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 2A1, 2C1, 2C2, 2D1, 2E3, 2E5, 4B1, 4D1, 5D1, 9A1, 10D1, 11E1, 11G1, 11O1, 12D1, 14A1
 **Cross-refs:** <a href="../study/intermediate/section-2-electronics.html" target="_blank">Intermediate §2 Electronics</a> · <a href="../study/full/section-4-basic-circuits.html" target="_blank">Full §4 Basic Circuits</a> · <a href="../study/full/section-9-measurements.html" target="_blank">Full §9 Measurements</a> · <a href="../study/full/section-10-sdr.html" target="_blank">Full §10 SDR</a> · <a href="../study/full/section-11-feeders-antennas.html" target="_blank">Full §11 Feeders &amp; Antennas</a> · <a href="../study/full/section-12-propagation.html" target="_blank">Full §12 Propagation</a> · <a href="resistance-reactance-impedance.html" target="_blank">Resistance, Reactance &amp; Impedance</a>
 **Series:** Sideband — Topic Snippets for RF-Hub
 
 ---
 
-Every RSGB exam formula boils down to a short sequence of button-presses on a scientific calculator. This guide covers every syllabus formula — grouped by topic — with exact Windows Calculator key sequences using the real button labels, multiple worked examples drawn from the study curriculum, and the gotchas that cost people marks.
+Every RF and electronics formula boils down to a short sequence of button-presses on a scientific calculator. This guide covers the key formulas — grouped by topic — with exact Windows Calculator key sequences using the real button labels, multiple worked examples drawn from the study curriculum, and the gotchas that trip people up.
 
 No new maths. Just the buttons, in order.
 
@@ -389,7 +388,7 @@ X is the net reactance: if capacitive and inductive reactances are both present,
 - Antenna feedpoint: R_rad = 35 Ω, jX = +25 Ω (inductive component): `35` `x²` → 1225 → `+` → `25` `x²` → 625 → `=` → 1850 → `²√x` → **43.0 Ω**
 - Verify 50 Ω match: R = 48 Ω, X = 14 Ω: `48` `x²` → 2304 → `+` → `14` `x²` → 196 → `=` → 2500 → `²√x` → **50.0 Ω** — a perfect 50 Ω match despite having reactance
 
-> **Gotcha:** This formula gives only the **magnitude** of impedance. Phase angle (how much current leads or lags voltage) requires arctan(X/R) — not examined numerically at RSGB level. Also: always use the **net** reactance (X_L − X_C if both present), not the sum.
+> **Gotcha:** This formula gives only the **magnitude** of impedance. Phase angle (how much current leads or lags voltage) requires arctan(X/R). Also: always use the **net** reactance (X_L − X_C if both present), not the sum.
 
 ---
 
@@ -746,7 +745,7 @@ To find the required turns ratio for a given impedance step:
   `150` `÷` `4` `=` → **37.5 Ω** — VSWR against 50 Ω: use 5.1/5.2: (50-37.5)/(50+37.5) = 12.5/87.5 → `¹⁄ₓ` → `×` `12.5` `=` ... or directly: `(` `50` `−` `37.5` `)` `÷` `(` `50` `+` `37.5` `)` `=` → 0.143 → then VSWR: `(` `1` `+` `0.143` `)` `÷` `(` `1` `−` `0.143` `)` `=` → **VSWR = 1.33:1** (acceptable)
 - 9:1 unun for EFHW antenna (2450 Ω to 50 Ω): turns ratio: `9` `²√x` → **3:1 turns ratio**
 
-> **Gotcha:** Impedance transforms as the **square** of turns ratio, not linearly. A 2:1 turns ratio gives 4:1 impedance change. A 3:1 turns ratio gives 9:1 impedance change. Getting this wrong is a common exam error.
+> **Gotcha:** Impedance transforms as the **square** of turns ratio, not linearly. A 2:1 turns ratio gives 4:1 impedance change. A 3:1 turns ratio gives 9:1 impedance change. Getting this wrong is a common mistake.
 
 ---
 

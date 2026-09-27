@@ -1,7 +1,6 @@
 # Sideband: Crystal Filters — Ladder, Half-Lattice & the 9 MHz IF Strip
 
 **Tags:** `[I]` `[FL]`
-**RSGB Refs:** 13I1, 13J1 (Full — filter design); Intermediate §6C (filter types); cross-ref Full §7 (SSB transmitter IF chain)
 **Cross-refs:** <a href="../study/full/section-13-emc.html#13i--pi-and-t-filter-design-13i1" target="_blank">Full §13I — Filter Design</a> · <a href="../study/full/section-7-transmitter.html" target="_blank">Full §7 — Transmitter (SSB IF strip)</a> · <a href="sideband-filter-design-build-test.html" target="_blank">Filter Design, Build & Test sideband</a> · <a href="sideband-s21-transmission-measurement.html" target="_blank">S21 Measurement sideband</a>
 **Series:** Sideband — Topic Snippets for RF-Hub
 

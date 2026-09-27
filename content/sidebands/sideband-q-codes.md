@@ -1,7 +1,6 @@
 # Sideband: Q-Codes — The Shorthand Language of Amateur Radio
 
 **Tags:** `[F]` `[I]` `[FL]`
-**RSGB Refs:** 8A1, 8B1
 **Cross-refs:** Operating Procedures, Digital Modes
 **Series:** Sideband — Topic Snippets for RF-Hub
 
