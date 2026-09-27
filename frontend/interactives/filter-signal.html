@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter Signal &mdash; Before/After &mdash; RF-Hub</title>
+  <!-- Favicons — SPOT (see /favicon.ico, /apple-touch-icon.png, /site.webmanifest) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      padding: 1.5rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    h1 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: 0.2rem; }
+
+    .subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 0.9rem;
+      position: relative;
+    }
+
+    /* Mode / selection bars */
+    .mode-bar {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.65rem;
+      align-items: center;
+    }
+    .mode-bar:last-child { margin-bottom: 0; }
+    .mode-bar .spacer { flex: 1; min-width: 0.5rem; }
+    .group-label {
+      font-size: 0.62rem;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-right: 0.15rem;
+      white-space: nowrap;
+    }
+
+    .mbtn {
+      background: #1a2234;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      color: #94a3b8;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.65rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .mbtn:hover { color: #e2e8f0; border-color: #334155; }
+    .mbtn:focus-visible { outline: 2px solid #a78bfa; outline-offset: 1px; }
+    .mbtn.on     { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+    .mbtn.lp-on  { border-color: #22c55e; color: #22c55e; background: #0f2318; }
+    .mbtn.hp-on  { border-color: #f97316; color: #f97316; background: #1f1508; }
+    .mbtn.bp-on  { border-color: #a78bfa; color: #a78bfa; background: #140e22; }
+    .mbtn.bs-on  { border-color: #06b6d4; color: #06b6d4; background: #04141a; }
+    .mbtn.quiz-on { border-color: #f59e0b; color: #f59e0b; background: #1f1508; }
+
+    /* Quiz panel */
+    #quiz-panel { display: none; }
+    #quiz-panel.show { display: block; }
+    .quiz-q { font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.75rem; font-family: 'IBM Plex Mono', monospace; text-align: center; }
+    #quiz-canvas { display: block; margin: 0 auto 0.9rem; border-radius: 4px; width: 100%; max-width: 520px; }
+    .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; max-width: 480px; margin: 0 auto; }
+    @media (max-width: 520px) { .quiz-opts { grid-template-columns: 1fr; } }
+    .qbtn { background: #1a2234; border: 1px solid #1e293b; color: #e2e8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; padding: 0.55rem 0.8rem; border-radius: 4px; cursor: pointer; text-align: left; transition: background .12s; }
+    .qbtn:hover { background: #1e293b; }
+    .qbtn:focus-visible { outline: 2px solid #a78bfa; outline-offset: 1px; }
+    .qbtn.correct { background: #14532d; border-color: #22c55e; color: #86efac; }
+    .qbtn.wrong   { background: #450a0a; border-color: #ef4444; color: #fca5a5; }
+    .quiz-result { text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; margin-top: 0.85rem; min-height: 1.4rem; }
+    .quiz-score  { font-size: 0.74rem; color: #64748b; font-family: 'IBM Plex Mono', monospace; margin-top: 0.4rem; text-align: center; }
+
+    /* Waveform / spectrum 2x2 grid */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 760px) { .scope-grid { grid-template-columns: 1fr; } }
+    .panel { min-width: 0; }
+    .panel-label {
+      font: 8px/1 'IBM Plex Mono', monospace;
+      text-transform: uppercase; letter-spacing: .08em; color: #64748b;
+      margin-bottom: 0.3rem;
+    }
+    .panel canvas { display: block; width: 100%; border-radius: 3px; }
+
+    /* Circuit + explain */
+    .main-row { display: flex; gap: 0.85rem; align-items: stretch; margin-bottom: 0.65rem; }
+    @media (max-width: 900px) { .main-row { flex-direction: column; } }
+    #circuit-card {
+      flex: 1 1 0; min-width: 260px;
+      background: #0d1321; border: 1px solid #1e293b; border-radius: 5px;
+      padding: 0.85rem 1rem 0.65rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    #circuit-card svg { display: block; width: 100%; height: auto; overflow: visible; }
+    #ctrl-card { flex: 1.3 1 0; min-width: 0; }
+
+    .ctrl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem 1.5rem;
+    }
+    @media (max-width: 520px) { .ctrl-grid { grid-template-columns: 1fr; } }
+
+    .ctrl-label {
+      font-size: 0.65rem;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+      color: #64748b;
+      display: block;
+    }
+    .slider-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    input[type="range"] { flex: 1; accent-color: #a78bfa; cursor: pointer; }
+    input[type="range"]:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
+    .sval {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      min-width: 8ch;
+      text-align: right;
+    }
+
+    #explain-panel {
+      font-size: 0.82rem; line-height: 1.65; color: #94a3b8;
+      background: #111827; border: 1px solid #1e293b; border-radius: 8px;
+      padding: 0.75rem 1rem; margin-top: 0.9rem; min-height: 3rem;
+    }
+    #explain-panel strong { font-weight: 600; color: #e2e8f0; }
+    #explain-panel .mnemonic {
+      display: block; margin-top: 0.5rem; font-style: italic; color: #f59e0b; font-size: 0.78rem;
+    }
+
+    details.deeper {
+      margin-top: 0.6rem; font-size: 0.78rem; color: #94a3b8;
+      border-left: 3px solid #f59e0b; background: #0d1321; border-radius: 0 4px 4px 0;
+      padding: 0.5rem 0.85rem;
+    }
+    details.deeper summary { cursor: pointer; color: #fbbf24; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    details.deeper summary:focus-visible { outline: 2px solid #a78bfa; }
+    details.deeper p { margin-top: 0.5rem; line-height: 1.6; }
+
+    /* Readout panel */
+    .ro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin-top: 0.9rem; }
+    @media (max-width: 600px) { .ro-grid { grid-template-columns: repeat(2, 1fr); } }
+    .ro-item { background: #0d1321; border: 1px solid #1e293b; border-radius: 4px; padding: 0.55rem 0.7rem; }
+    .ro-label { font-size: 0.62rem; font-family: 'IBM Plex Mono', monospace; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .ro-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: #e2e8f0; }
+    .ro-val.good { color: #22c55e; }
+    .ro-val.hi   { color: #a78bfa; }
+
+    .blurb { font-size: 0.74rem; color: #64748b; margin-bottom: 0.7rem; font-family: 'IBM Plex Mono', monospace; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+<main>
+
+<h1>Filter Signal &mdash; Before/After</h1>
+<p class="subtitle">Waveform &amp; spectrum, side by side &mdash; pick a signal, pick a filter, see what survives</p>
+
+<!-- Signal + filter selection -->
+<div class="card">
+  <div class="mode-bar" role="group" aria-label="Input signal">
+    <span class="group-label">Input</span>
+    <button class="mbtn" data-input="square"  aria-pressed="false">Square wave</button>
+    <button class="mbtn" data-input="whistle" aria-pressed="false">Tone + whistle</button>
+    <button class="mbtn" data-input="speech"  aria-pressed="false">Speech-like</button>
+    <button class="mbtn" data-input="noise"   aria-pressed="false">Broadband noise</button>
+    <button class="mbtn" data-input="tx"      aria-pressed="false">TX + harmonics</button>
+    <div class="spacer"></div>
+    <button class="mbtn" id="btn-quiz" onclick="toggleQuiz()" aria-pressed="false">&#127919; Quiz me</button>
+  </div>
+  <div class="mode-bar" role="group" aria-label="Filter response">
+    <span class="group-label">Filter</span>
+    <button class="mbtn" data-filter="lp"    aria-pressed="false">Low-pass</button>
+    <button class="mbtn" data-filter="hp"    aria-pressed="false">High-pass</button>
+    <button class="mbtn" data-filter="bp"    aria-pressed="false">Band-pass</button>
+    <button class="mbtn" data-filter="notch" aria-pressed="false">Notch</button>
+  </div>
+  <div class="mode-bar" role="group" aria-label="LC circuit topology">
+    <span class="group-label">LC circuit</span>
+    <button class="mbtn" data-filter="series-inline"   aria-pressed="false">Series LC &middot; in-line</button>
+    <button class="mbtn" data-filter="series-shunt"    aria-pressed="false">Series LC &middot; shunt</button>
+    <button class="mbtn" data-filter="parallel-inline" aria-pressed="false">Parallel LC &middot; in-line</button>
+    <button class="mbtn" data-filter="parallel-shunt"  aria-pressed="false">Parallel LC &middot; shunt</button>
+  </div>
+</div>
+
+<!-- Quiz panel -->
+<div class="card" id="quiz-panel">
+  <div class="quiz-q">Which filter response is this?</div>
+  <canvas id="quiz-canvas" width="520" height="220"></canvas>
+  <div class="quiz-opts" id="quiz-opts">
+    <button class="qbtn" data-ans="lp">Low-pass</button>
+    <button class="qbtn" data-ans="hp">High-pass</button>
+    <button class="qbtn" data-ans="bp">Band-pass</button>
+    <button class="qbtn" data-ans="notch">Notch / Band-stop</button>
+  </div>
+  <div class="quiz-result" id="quiz-result" aria-live="polite"></div>
+  <div class="quiz-score" id="quiz-score"></div>
+</div>
+
+<!-- Main display -->
+<div class="card" id="main-display">
+  <p class="blurb" id="input-blurb">&mdash;</p>
+  <div class="scope-grid">
+    <div class="panel">
+      <div class="panel-label">&#9632; Input &mdash; time domain</div>
+      <canvas id="wfInCanvas"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-label">&#9632; Output &mdash; time domain</div>
+      <canvas id="wfOutCanvas"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-label">&#9632; Input &mdash; spectrum</div>
+      <canvas id="specInCanvas"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-label">&#9632; Output &mdash; spectrum (filter response overlaid)</div>
+      <canvas id="specOutCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Circuit + controls -->
+<div class="card">
+  <div class="main-row">
+    <div id="circuit-card">
+      <svg id="circuit" viewBox="0 0 280 95" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+    <div id="ctrl-card">
+      <div class="ctrl-grid">
+        <div>
+          <label class="ctrl-label" for="sF0" style="color:#a78bfa">Cutoff / f&#x2080;</label>
+          <div class="slider-wrap">
+            <input type="range" id="sF0" min="0" max="100" step="0.1" oninput="onS('f0',+this.value)">
+            <span class="sval" id="vF0">&mdash;</span>
+          </div>
+        </div>
+        <div>
+          <label class="ctrl-label" for="sQ" style="color:#06b6d4">Q (selectivity)</label>
+          <div class="slider-wrap">
+            <input type="range" id="sQ" min="0.5" max="20" step="0.1" oninput="onS('Q',+this.value)">
+            <span class="sval" id="vQ">&mdash;</span>
+          </div>
+        </div>
+        <div>
+          <label class="ctrl-label" for="sN" style="color:#f59e0b">Order (cascaded sections)</label>
+          <div class="slider-wrap">
+            <input type="range" id="sN" min="1" max="4" step="1" oninput="onS('n',+this.value)">
+            <span class="sval" id="vN">&mdash;</span>
+          </div>
+        </div>
+        <div>
+          <div class="ctrl-label">Bandwidth (f&#x2080;/Q)</div>
+          <div class="sval" id="vBW" style="text-align:left;min-width:0">&mdash;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="explain-panel">Initialising&hellip;</div>
+  <details class="deeper" id="deeper-dive">
+    <summary>Deeper dive</summary>
+    <p id="deeper-text"></p>
+  </details>
+
+  <div class="ro-grid">
+    <div class="ro-item"><div class="ro-label">Topology</div><div class="ro-val" id="rv-topo">&mdash;</div></div>
+    <div class="ro-item"><div class="ro-label">Cutoff / f&#x2080;</div><div class="ro-val hi" id="rv-f0">&mdash;</div></div>
+    <div class="ro-item"><div class="ro-label">Peak gain @ f&#x2080;</div><div class="ro-val" id="rv-peak">&mdash;</div></div>
+    <div class="ro-item"><div class="ro-label" id="rv-key-label">Key component</div><div class="ro-val" id="rv-key">&mdash;</div></div>
+  </div>
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────────
+const DB_MIN = -60, DB_MAX = 24;
+const CHART_PAD = { l: 46, r: 14, t: 14, b: 26 };
+const NOTCH_EPS = 1e-9;
+
+// ── Log-slider helpers (reused from lc-filter.html) ────────────────────────────
+function ls(v, mn, mx)  { return mn * Math.pow(mx / mn, v / 100); }
+function lsi(val, mn, mx) { return 100 * Math.log(val / mn) / Math.log(mx / mn); }
+function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+// ── Format helpers ─────────────────────────────────────────────────────────────
+function fmtF(v) {
+  if (v >= 1e6) return (v/1e6).toPrecision(4) + ' MHz';
+  if (v >= 1e3) return (v/1e3).toPrecision(4) + ' kHz';
+  return v.toPrecision(3) + ' Hz';
+}
+function fmtT(sec) {
+  if (sec >= 1) return sec.toPrecision(3) + ' s';
+  if (sec >= 1e-3) return (sec*1e3).toPrecision(3) + ' ms';
+  if (sec >= 1e-6) return (sec*1e6).toPrecision(3) + ' µs';
+  return (sec*1e9).toPrecision(3) + ' ns';
+}
+function fmtDb(db) { return (db >= 0 ? '+' : '') + db.toFixed(1) + ' dB'; }
+
+// ── Input signal definitions ───────────────────────────────────────────────────
+const INPUTS = {
+  square: {
+    label: 'Square wave', axisMin: 50, axisMax: 5000,
+    f0Default: 600, QDefault: 1.5, nDefault: 2,
+    components: () => [
+      { f: 200,  a: 4/Math.PI },
+      { f: 600,  a: 4/(Math.PI*3) },
+      { f: 1000, a: 4/(Math.PI*5) },
+      { f: 1400, a: 4/(Math.PI*7) },
+      { f: 1800, a: 4/(Math.PI*9) },
+    ],
+    wantedIdx: 0, keyIdx: 2, keyLabel: '5th harmonic',
+    blurb: 'Fundamental 200 Hz + odd harmonics (classic square-wave Fourier series) &mdash; a low-pass rounds the corners off by removing the high harmonics.',
+  },
+  whistle: {
+    label: 'Tone + whistle', axisMin: 50, axisMax: 5000,
+    f0Default: 1500, QDefault: 3, nDefault: 2,
+    components: () => [
+      { f: 800,  a: 1.0 },
+      { f: 2800, a: 0.6 },
+    ],
+    wantedIdx: 0, keyIdx: 1, keyLabel: '2.8 kHz whistle',
+    blurb: '800 Hz wanted tone + a 2.8 kHz heterodyne whistle from an adjacent signal &mdash; the classic audio-filter exam scenario.',
+  },
+  speech: {
+    label: 'Speech-like', axisMin: 50, axisMax: 5000,
+    f0Default: 2700, QDefault: 1.5, nDefault: 2,
+    components: () => [
+      { f: 300,  a: 0.55 },
+      { f: 500,  a: 0.85 },
+      { f: 800,  a: 1.0 },
+      { f: 1200, a: 0.7 },
+      { f: 1800, a: 0.4 },
+      { f: 2500, a: 0.22 },
+    ],
+    wantedIdx: 2, keyIdx: 5, keyLabel: '2.5 kHz content',
+    blurb: 'Multi-tone approximation of a voice spectrum &mdash; energy falls off with frequency, like real speech.',
+  },
+  noise: {
+    label: 'Broadband noise', axisMin: 50, axisMax: 5000,
+    f0Default: 1200, QDefault: 4, nDefault: 2,
+    components: (() => {
+      let cache = null;
+      return () => {
+        if (cache) return cache;
+        cache = [];
+        const n = 36;
+        for (let i = 0; i < n; i++) {
+          const f = 50 * Math.pow(5000/50, i/(n-1));
+          cache.push({ f, a: 0.25 + Math.random()*0.75, ph0: Math.random()*2*Math.PI });
+        }
+        return cache;
+      };
+    })(),
+    wantedIdx: 0, keyIdx: null, keyLabel: 'noise floor',
+    blurb: 'Randomised broadband content spanning the whole range &mdash; watch the filter carve out a passband from the noise floor.',
+  },
+  tx: {
+    label: 'TX + harmonics', axisMin: 2e6, axisMax: 50e6,
+    f0Default: 10e6, QDefault: 5, nDefault: 3,
+    components: () => [
+      { f: 7.1e6,  a: 1.0 },
+      { f: 14.2e6, a: 0.28 },
+      { f: 21.3e6, a: 0.12 },
+    ],
+    wantedIdx: 0, keyIdx: 1, keyLabel: '2nd harmonic',
+    blurb: '7.1 MHz TX fundamental + 2nd/3rd harmonics &mdash; a low-pass harmonic filter must suppress these before the antenna.',
+  },
+};
+
+function getComponents(inputId) { return INPUTS[inputId].components(); }
+
+// ── Filter definitions ─────────────────────────────────────────────────────────
+const FILTER_DEFS = {
+  lp:                { resp: 'lp',    label: 'Low-pass',              color: '#22c55e', circuit: 'lp',              physTag: null },
+  hp:                { resp: 'hp',    label: 'High-pass',             color: '#f97316', circuit: 'hp',              physTag: null },
+  bp:                { resp: 'bp',    label: 'Band-pass',             color: '#a78bfa', circuit: 'bp',              physTag: null },
+  notch:             { resp: 'notch', label: 'Notch',                 color: '#06b6d4', circuit: 'parallel-inline', physTag: 'parallel-rejector' },
+  'series-inline':   { resp: 'bp',    label: 'Series LC · in-line',   color: '#a78bfa', circuit: 'series-inline',   physTag: 'series-acceptor' },
+  'series-shunt':    { resp: 'notch', label: 'Series LC · shunt',     color: '#06b6d4', circuit: 'series-shunt',    physTag: 'series-trap' },
+  'parallel-inline': { resp: 'notch', label: 'Parallel LC · in-line', color: '#06b6d4', circuit: 'parallel-inline', physTag: 'parallel-rejector' },
+  'parallel-shunt':  { resp: 'bp',    label: 'Parallel LC · shunt',   color: '#a78bfa', circuit: 'parallel-shunt', physTag: 'parallel-tank-shunt' },
+};
+
+// ── State ──────────────────────────────────────────────────────────────────────
+const STATE = { input: 'square', filter: 'lp', f0: 600, Q: 1.5, n: 2, quiz: false };
+
+// ── URL params ─────────────────────────────────────────────────────────────────
+(function () {
+  const p = new URLSearchParams(location.search);
+  if (p.has('input') && INPUTS[p.get('input')]) STATE.input = p.get('input');
+  if (p.has('filter') && FILTER_DEFS[p.get('filter')]) STATE.filter = p.get('filter');
+  const inDef = INPUTS[STATE.input];
+  STATE.f0 = inDef.f0Default; STATE.Q = inDef.QDefault; STATE.n = inDef.nDefault;
+  if (p.has('f0')) STATE.f0 = clamp(parseFloat(p.get('f0')), inDef.axisMin, inDef.axisMax);
+  if (p.has('q'))  STATE.Q  = clamp(parseFloat(p.get('q')), 0.5, 20);
+  if (p.has('order')) STATE.n = clamp(Math.round(parseFloat(p.get('order'))), 1, 4);
+  if (p.get('quiz') === '1') STATE.quiz = true;
+})();
+
+// ── Filter response physics ────────────────────────────────────────────────────
+// Universal single-tuned-circuit resonance curve, x = Q(f/f0 - f0/f).
+// Same underlying maths as lc-filter.html's series/parallel RLC formulas,
+// reparameterised by (f0, Q) instead of raw L/C/R, then raised to the
+// order power to model N identical cascaded sections.
+function detuning(f, f0, Q) { return Q * (f/f0 - f0/f); }
+
+function respMag1(type, f, f0, Q) {
+  const x = detuning(f, f0, Q);
+  switch (type) {
+    case 'lp':    return Q * (f0/f) / Math.sqrt(1 + x*x);
+    case 'hp':    return Q * (f/f0) / Math.sqrt(1 + x*x);
+    case 'notch': return Math.abs(x) < NOTCH_EPS ? 0 : 1 / Math.sqrt(1 + (Q*Q/x)*(Q*Q/x));
+    default:      return 1 / Math.sqrt(1 + x*x); // bp
+  }
+}
+function respPhase1(type, f, f0, Q) {
+  const x = detuning(f, f0, Q);
+  const base = -Math.atan(x);
+  switch (type) {
+    case 'lp':    return base - Math.PI/2;
+    case 'hp':    return base + Math.PI/2;
+    case 'notch': return Math.abs(x) < NOTCH_EPS ? Math.PI/2 : Math.atan2(Q*Q, x);
+    default:      return base; // bp
+  }
+}
+function respMag(type, f, f0, Q, n)   { return Math.pow(respMag1(type, f, f0, Q), n); }
+function respPhaseTot(type, f, f0, Q, n) { return n * respPhase1(type, f, f0, Q); }
+
+// ── Canvas helpers ─────────────────────────────────────────────────────────────
+function makeCanvas(id, heightRatio, minH, maxH) {
+  const el = document.getElementById(id);
+  const ctx = el.getContext('2d');
+  const box = { W: 0, H: 0 };
+  function resize() {
+    const pr = window.devicePixelRatio || 1;
+    const cssW = el.parentElement.clientWidth;
+    if (!cssW) { requestAnimationFrame(resize); return; }
+    const cssH = Math.round(clamp(cssW * heightRatio, minH, maxH));
+    el.width  = Math.round(cssW * pr);
+    el.height = Math.round(cssH * pr);
+    el.style.height = cssH + 'px';
+    ctx.setTransform(pr, 0, 0, pr, 0, 0);
+    box.W = cssW; box.H = cssH;
+    scheduleDraw();
+  }
+  return { el, ctx, box, resize };
+}
+
+const wfIn   = makeCanvas('wfInCanvas',   0.34, 110, 220);
+const wfOut  = makeCanvas('wfOutCanvas',  0.34, 110, 220);
+const specIn = makeCanvas('specInCanvas', 0.4,  130, 240);
+const specOut= makeCanvas('specOutCanvas',0.4,  130, 240);
+const quizC  = { el: document.getElementById('quiz-canvas'), ctx: document.getElementById('quiz-canvas').getContext('2d') };
+
+let _raf = false;
+function scheduleDraw() {
+  if (!_raf) { _raf = true; requestAnimationFrame(() => { _raf = false; draw(); }); }
+}
+
+// ── Grid / axis drawing ─────────────────────────────────────────────────────────
+function drawDbGrid(ctx, W, H, pad) {
+  ctx.setLineDash([2,4]); ctx.lineWidth = 0.8;
+  for (const db of [20,10,0,-10,-20,-30,-40,-50,-60]) {
+    if (db < DB_MIN || db > DB_MAX) continue;
+    const y = pad.t + (DB_MAX - db) / (DB_MAX - DB_MIN) * (H - pad.t - pad.b);
+    ctx.strokeStyle = db === 0 ? 'rgba(100,116,139,0.35)' : 'rgba(30,41,59,0.9)';
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(100,116,139,0.75)';
+    ctx.font = '9px IBM Plex Mono,monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(db + ' dB', pad.l - 4, y + 3);
+  }
+  ctx.setLineDash([]);
+}
+
+function niceFreqTicks(mn, mx) {
+  const ticks = [];
+  const steps = [1,2,5];
+  let decade = Math.pow(10, Math.floor(Math.log10(mn)));
+  while (decade <= mx * 1.001) {
+    for (const s of steps) {
+      const v = decade * s;
+      if (v >= mn * 0.999 && v <= mx * 1.001) ticks.push(v);
+    }
+    decade *= 10;
+  }
+  return ticks;
+}
+
+function drawFreqAxis(ctx, W, H, pad, axisMin, axisMax, fToX) {
+  const ticks = niceFreqTicks(axisMin, axisMax);
+  ctx.setLineDash([2,4]); ctx.lineWidth = 0.8;
+  ticks.forEach(ft => {
+    const x = fToX(ft);
+    ctx.strokeStyle = 'rgba(30,41,59,0.9)';
+    ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H - pad.b); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(100,116,139,0.75)';
+  ctx.font = '9px IBM Plex Mono,monospace';
+  ctx.textAlign = 'center';
+  const labelTicks = ticks.filter((_, i) => ticks.length <= 6 || i % 2 === 0);
+  labelTicks.forEach(ft => ctx.fillText(fmtF(ft).replace(/\.\d+/, ''), fToX(ft), H - pad.b + 12));
+}
+
+// ── Time-domain waveform ─────────────────────────────────────────────────────────
+function drawWaveform(cv, components, filtered, color, windowCycles) {
+  const { ctx, box } = cv;
+  const W = box.W, H = box.H;
+  if (!W) return;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#040e07'; ctx.fillRect(0, 0, W, H);
+
+  const pad = { l: 8, r: 8, t: 10, b: 16 };
+  const pW = W - pad.l - pad.r, pH = H - pad.t - pad.b;
+  const midY = pad.t + pH/2;
+
+  const fLow = Math.min(...components.map(c => c.f));
+  const winT = windowCycles / fLow;
+
+  // grid
+  ctx.strokeStyle = 'rgba(0,150,50,0.16)'; ctx.lineWidth = 0.6;
+  for (let i = 0; i <= 10; i++) { const x = pad.l + i*pW/10; ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,pad.t+pH); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(pad.l, midY); ctx.lineTo(pad.l+pW, midY); ctx.strokeStyle='rgba(0,200,70,0.28)'; ctx.lineWidth=0.8; ctx.stroke();
+
+  const { filter, f0, Q, n } = STATE;
+  const respType = FILTER_DEFS[filter].resp;
+
+  const steps = Math.round(pW);
+  let peak = 0;
+  const samples = new Array(steps + 1);
+  for (let px = 0; px <= steps; px++) {
+    const t = (px / pW) * winT;
+    let y = 0;
+    for (const c of components) {
+      const ph0 = c.ph0 || 0;
+      if (filtered) {
+        const mag = respMag(respType, c.f, f0, Q, n);
+        const ph  = respPhaseTot(respType, c.f, f0, Q, n);
+        y += c.a * mag * Math.sin(2*Math.PI*c.f*t + ph + ph0);
+      } else {
+        y += c.a * Math.sin(2*Math.PI*c.f*t + ph0);
+      }
+    }
+    samples[px] = y;
+    if (Math.abs(y) > peak) peak = Math.abs(y);
+  }
+  if (peak < 1e-9) peak = 1;
+  const amp = pH * 0.42 / peak;
+
+  ctx.beginPath();
+  for (let px = 0; px <= steps; px++) {
+    const yp = midY - samples[px] * amp;
+    if (px === 0) ctx.moveTo(pad.l+px, yp); else ctx.lineTo(pad.l+px, yp);
+  }
+  ctx.globalAlpha=0.25; ctx.shadowBlur=10; ctx.shadowColor=color; ctx.strokeStyle=color; ctx.lineWidth=4; ctx.stroke();
+  ctx.globalAlpha=1;    ctx.shadowBlur=3;  ctx.strokeStyle=color; ctx.lineWidth=1.4; ctx.stroke();
+  ctx.shadowBlur=0;
+
+  ctx.textAlign='left'; ctx.fillStyle=color; ctx.font='8px IBM Plex Mono,monospace';
+  ctx.fillText('Vpk ' + peak.toFixed(2), pad.l+4, pad.t+10);
+  ctx.textAlign='center'; ctx.fillStyle='rgba(100,116,139,0.7)';
+  ctx.fillText(windowCycles + ' cycles @ ' + fmtF(fLow) + ' · ' + fmtT(winT) + ' window', pad.l+pW/2, H-4);
+
+  ctx.strokeStyle='rgba(0,150,50,0.3)'; ctx.lineWidth=1;
+  ctx.strokeRect(pad.l+0.5, pad.t+0.5, pW-1, pH-1);
+}
+
+// ── Spectrum ─────────────────────────────────────────────────────────────────────
+function drawSpectrum(cv, components, filtered, color, axisMin, axisMax, overlayResp) {
+  const { ctx, box } = cv;
+  const W = box.W, H = box.H;
+  if (!W) return;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = CHART_PAD;
+  const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  function fToX(f) { return pad.l + Math.log10(f/axisMin) / Math.log10(axisMax/axisMin) * plotW; }
+  function dbToY(db) { return pad.t + (DB_MAX - db) / (DB_MAX - DB_MIN) * plotH; }
+
+  drawDbGrid(ctx, W, H, pad);
+  drawFreqAxis(ctx, W, H, pad, axisMin, axisMax, fToX);
+
+  const { filter, f0, Q, n } = STATE;
+  const respType = FILTER_DEFS[filter].resp;
+
+  // Filter response overlay curve (output panel only)
+  if (overlayResp) {
+    ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.6; ctx.setLineDash([5,3]);
+    ctx.beginPath();
+    let first = true;
+    const steps = Math.round(plotW);
+    for (let px = 0; px <= steps; px++) {
+      const f = axisMin * Math.pow(axisMax/axisMin, px/steps);
+      const mag = respMag(respType, f, f0, Q, n);
+      const db = 20 * Math.log10(Math.max(mag, 1e-9));
+      const y = dbToY(clamp(db, DB_MIN, DB_MAX));
+      if (first) { ctx.moveTo(pad.l+px, y); first = false; } else ctx.lineTo(pad.l+px, y);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(167,139,250,0.85)'; ctx.font = '8.5px IBM Plex Mono,monospace'; ctx.textAlign = 'left';
+    ctx.fillText('Filter response', pad.l+4, pad.t+11);
+  }
+
+  // f0 marker
+  if (f0 >= axisMin && f0 <= axisMax) {
+    const xf0 = fToX(f0);
+    ctx.strokeStyle = 'rgba(167,139,250,0.35)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(xf0, pad.t); ctx.lineTo(xf0, H-pad.b); ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  // Component stems
+  components.forEach(c => {
+    if (c.f < axisMin || c.f > axisMax) return;
+    const mag = filtered ? respMag(respType, c.f, f0, Q, n) : 1;
+    const amp = c.a * mag;
+    const db = 20 * Math.log10(Math.max(amp, 1e-9));
+    const x = fToX(c.f);
+    const y0 = dbToY(DB_MIN);
+    const y1 = dbToY(clamp(db, DB_MIN, DB_MAX));
+    ctx.strokeStyle = color; ctx.lineWidth = components.length > 12 ? 1.2 : 2.5;
+    ctx.globalAlpha = components.length > 12 ? 0.65 : 1;
+    ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y1); ctx.stroke();
+    ctx.globalAlpha = 1;
+    if (components.length <= 12) {
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(x, y1, 2.6, 0, 2*Math.PI); ctx.fill();
+    }
+  });
+
+  ctx.strokeStyle = 'rgba(100,116,139,0.4)'; ctx.lineWidth = 1;
+  ctx.strokeRect(pad.l+0.5, pad.t+0.5, plotW-1, plotH-1);
+}
+
+// ── Circuit diagram (SVG viewBox 0 0 280 95) — shared helpers ────────────────────
+const Lc = '#a78bfa', Cc = '#06b6d4', Rc = '#f59e0b', wc = '#3d5068', fn = 'IBM Plex Mono';
+const tf = 'rgba(100,116,139,0.65)';
+
+function hCoil(x, y) {
+  return `<path d="M${x},${y} q7,-11 14,0 q7,-11 14,0 q7,-11 14,0"` +
+    ` stroke="${Lc}" stroke-width="2.5" fill="none"/>`;
+}
+function vCoil(x, y, len=42) {
+  return `<path d="M${x},${y} q-11,7 0,14 q-11,7 0,14 q-11,7 0,14"` +
+    ` stroke="${Lc}" stroke-width="2.5" fill="none"/>`;
+}
+function sCap(x, y, h=14) {
+  return `<line x1="${x}" y1="${y-h}" x2="${x}" y2="${y+h}" stroke="${Cc}" stroke-width="2.5"/>` +
+    `<line x1="${x+9}" y1="${y-h}" x2="${x+9}" y2="${y+h}" stroke="${Cc}" stroke-width="2.5"/>`;
+}
+function pCap(x, y, w=14) {
+  return `<line x1="${x-w}" y1="${y}" x2="${x+w}" y2="${y}" stroke="${Cc}" stroke-width="2.5"/>` +
+    `<line x1="${x-w}" y1="${y+9}" x2="${x+w}" y2="${y+9}" stroke="${Cc}" stroke-width="2.5"/>`;
+}
+function gnd(x, y) {
+  return `<line x1="${x-10}" y1="${y}"   x2="${x+10}" y2="${y}"   stroke="${wc}" stroke-width="1.5"/>` +
+    `<line x1="${x-6}"  y1="${y+5}" x2="${x+6}"  y2="${y+5}" stroke="${wc}" stroke-width="1.5"/>` +
+    `<line x1="${x-3}"  y1="${y+10}" x2="${x+3}" y2="${y+10}" stroke="${wc}" stroke-width="1.5"/>`;
+}
+function lbl(x, y, txt, fill, anchor='middle') {
+  return `<text x="${x}" y="${y}" text-anchor="${anchor}" fill="${fill}" font-size="11"` +
+    ` font-family="${fn}">${txt}</text>`;
+}
+function wire(x1, y1, x2, y2, w=1.5) {
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${wc}" stroke-width="${w}"/>`;
+}
+function rect(x, y, w, h) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" stroke="${Rc}" stroke-width="2" fill="none" rx="2"/>`;
+}
+
+const SY = 44;
+
+function circuitLP(order) {
+  return lbl(0, 11, 'Low-pass — L series, C shunt' + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, 22, SY) + hCoil(22, SY) + wire(64, SY, 120, SY) +
+    wire(120, SY, 265, SY) + wire(120, SY, 120, 58) + pCap(120, 58) + wire(120, 67, 120, 80) + gnd(120, 80) +
+    lbl(43, SY-17, 'L', Lc) + lbl(136, 62, 'C', Cc, 'start') +
+    lbl(2, SY-4, 'IN', tf, 'start') + lbl(269, SY-4, 'OUT', tf, 'start');
+}
+function circuitHP(order) {
+  return lbl(0, 11, 'High-pass — C series, L shunt' + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, 22, SY) + sCap(22, SY) + wire(31, SY, 110, SY) +
+    wire(110, SY, 265, SY) + wire(110, SY, 110, SY+14) + wire(110, SY+14, 152, SY+14) + hCoil(110, SY+14) +
+    wire(152, SY+14, 152, 78) + gnd(152, 78) +
+    lbl(26, SY-14, 'C', Cc) + lbl(131, SY+10, 'L', Lc) +
+    lbl(2, SY-4, 'IN', tf, 'start') + lbl(269, SY-4, 'OUT', tf, 'start');
+}
+function circuitBP(order, caption) {
+  return lbl(0, 11, caption + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, 18, SY) + hCoil(18, SY) + wire(60, SY, 72, SY) + sCap(72, SY) + wire(81, SY, 95, SY) +
+    rect(95, SY-11, 28, 22) + wire(123, SY, 175, SY) +
+    lbl(39, SY-17, 'L', Lc) + lbl(72, SY-17, 'C', Cc) + lbl(109, SY-15, 'R', Rc) +
+    lbl(0, SY-4, 'IN', tf, 'start') + lbl(179, SY-4, 'OUT', tf, 'start');
+}
+function circuitParallelInline(order, caption) {
+  const A = 30, B = 105, UY = 28, LY = 60;
+  return lbl(0, 11, caption + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, A, SY) + wire(A, UY, A, LY) + wire(B, UY, B, LY) +
+    wire(A, UY, A+2, UY) + hCoil(A+2, UY) + wire(A+44, UY, B, UY) +
+    wire(A, LY, 55, LY) + sCap(55, LY, 11) + wire(64, LY, B, LY) +
+    wire(B, SY, 115, SY) + rect(115, SY-11, 28, 22) + wire(143, SY, 175, SY) +
+    lbl(A+23, UY-14, 'L', Lc) + lbl(59, LY-14, 'C', Cc) + lbl(129, SY-15, 'R', Rc) +
+    lbl(0, SY-4, 'IN', tf, 'start') + lbl(179, SY-4, 'OUT', tf, 'start');
+}
+function circuitSeriesShunt(order) {
+  const B = 100;
+  return lbl(0, 11, 'Series LC shunt — trap to ground' + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, 20, SY) + rect(20, SY-11, 26, 22) + wire(46, SY, B, SY) + wire(B, SY, 200, SY) +
+    wire(B, SY, B, 56) + hCoil(B-21, 56) + wire(B-21+42, 56, B+21, 56) +
+    wire(B, 56, B, 70) + sCap(B, 78, 8) + wire(B, 86, B, 92) + gnd(B, 92) +
+    lbl(33, SY-16, 'R', Rc) + lbl(B, 50, 'L', Lc) + lbl(B+16, 82, 'C', Cc, 'start') +
+    lbl(0, SY-4, 'IN', tf, 'start') + lbl(204, SY-4, 'OUT', tf, 'start');
+}
+function circuitParallelShunt(order) {
+  const B = 105;
+  return lbl(0, 11, 'Parallel LC shunt — tank to ground' + (order>1 ? ` (×${order} sections)` : ''), tf, 'start') +
+    wire(0, SY, 20, SY) + rect(20, SY-11, 26, 22) + wire(46, SY, B, SY) + wire(B, SY, 210, SY) +
+    wire(B-14, SY, B-14, 80) + hCoil(B-14-21, 58) + wire(B-14, SY, B+14, SY) + wire(B+14, SY, B+14, 80) +
+    pCap(B, 80, 14) + wire(B-14, 80, B-14, 89) + wire(B+14, 80, B+14, 89) + gnd(B, 92) +
+    lbl(B-14, SY+22, 'L', Lc) + lbl(B+22, 76, 'C', Cc, 'start') + lbl(33, SY-16, 'R', Rc) +
+    lbl(0, SY-4, 'IN', tf, 'start') + lbl(214, SY-4, 'OUT', tf, 'start');
+}
+
+function drawCircuit() {
+  const { filter, n } = STATE;
+  const c = FILTER_DEFS[filter].circuit;
+  let svg;
+  switch (c) {
+    case 'lp': svg = circuitLP(n); break;
+    case 'hp': svg = circuitHP(n); break;
+    case 'bp': svg = circuitBP(n, 'Band-pass — series L, C, R'); break;
+    case 'series-inline': svg = circuitBP(n, 'Series LC in-line — acceptor (passes f₀)'); break;
+    case 'parallel-inline': svg = circuitParallelInline(n, filter === 'notch' ? 'Notch — parallel LC tank in path' : 'Parallel LC in-line — rejector (blocks f₀)'); break;
+    case 'series-shunt': svg = circuitSeriesShunt(n); break;
+    case 'parallel-shunt': svg = circuitParallelShunt(n); break;
+    default: svg = circuitLP(n);
+  }
+  document.getElementById('circuit').innerHTML = svg;
+}
+
+// ── Explain / readout panels ─────────────────────────────────────────────────────
+const PHYS_TEXT = {
+  'series-acceptor': {
+    main: 'A <strong>series</strong> LC in the signal path hits <strong>minimum impedance</strong> at f₀ &mdash; X<sub>L</sub> and X<sub>C</sub> cancel, leaving only loss resistance. Current peaks, f₀ passes through with least opposition. RSGB calls this the <strong>acceptor</strong> circuit.',
+    mnemonic: 'Series = Small impedance at resonance.',
+    deeper: 'Away from f₀, the reactances no longer cancel and impedance rises, so off-tune signals see more opposition and are attenuated. An impedance-vs-frequency plot of a series LC is a V-shaped dip at f₀.',
+  },
+  'series-trap': {
+    main: 'The same series-resonant minimum-impedance behaviour, but wired as a <strong>shunt to ground</strong> instead of in-line. At f₀ the series LC nearly short-circuits the signal to ground &mdash; a deep <strong>notch</strong>. Away from f₀ its impedance rises, so it stops shorting and the signal passes normally.',
+    mnemonic: 'Series = Small impedance at resonance — here that "small" is a short to ground.',
+    deeper: 'This is the classic series-resonant trap: a single component pair placed across the line, tuned to short out one unwanted frequency (e.g. an interfering carrier) while leaving everything else untouched.',
+  },
+  'parallel-rejector': {
+    main: 'A <strong>parallel</strong> LC tank hits <strong>maximum impedance</strong> at f₀ (ideally infinite) &mdash; line current drops to a minimum even though a large circulating current flows inside the tank. Placed directly in the signal path, this <strong>blocks</strong> f₀. RSGB calls this the <strong>rejector</strong> circuit.',
+    mnemonic: 'Parallel = Peak impedance at resonance.',
+    deeper: 'This is the antenna-trap configuration: a parallel LC tank in series with the radiator blocks current at its resonant frequency, electrically shortening the antenna above that frequency. An impedance-vs-frequency plot of a parallel LC is a peak at f₀ (opposite shape to the series case).',
+  },
+  'parallel-tank-shunt': {
+    main: 'The same parallel-tank high-impedance behaviour, but wired as a <strong>shunt</strong> to ground. At f₀ the tank’s impedance is so high it barely loads the line, so f₀ <strong>passes</strong>. Away from f₀ the tank’s impedance collapses and shorts those frequencies to ground instead.',
+    mnemonic: 'Parallel = Peak impedance at resonance — here that "peak" is what lets f₀ through untouched.',
+    deeper: 'This is the classic tuned-amplifier / IF-tank load: a parallel LC as the collector or drain load selects one frequency by presenting high impedance only at resonance, giving voltage gain there while shorting everything else.',
+  },
+};
+
+function updateExplain() {
+  const { filter, input, f0, Q, n } = STATE;
+  const def = FILTER_DEFS[filter];
+  const inDef = INPUTS[input];
+  const bw = f0 / Q;
+  const explainEl = document.getElementById('explain-panel');
+  const deeperEl  = document.getElementById('deeper-text');
+
+  if (def.physTag) {
+    const t = PHYS_TEXT[def.physTag];
+    explainEl.innerHTML = t.main + `<span class="mnemonic">${t.mnemonic}</span>`;
+    deeperEl.innerHTML = t.deeper + (n > 1 ? ` With order = ${n}, ${n} identical sections are cascaded — skirts get steeper, but so does any resonant peaking. Real multi-pole designs (Butterworth, Chebyshev) stagger the Q per stage to avoid that; this model uses N identical stages for simplicity.` : '');
+  } else {
+    const generic = {
+      lp: `<strong>Low-pass</strong>: passes content below f₀ = ${fmtF(f0)}, attenuates above it. Bandwidth here isn’t a passband width but the roll-off steepness set by Q and order.`,
+      hp: `<strong>High-pass</strong>: passes content above f₀ = ${fmtF(f0)}, attenuates below it.`,
+      bp: `<strong>Band-pass</strong>: passes a band roughly ${fmtF(bw)} wide centred on f₀ = ${fmtF(f0)}; everything else is attenuated.`,
+      notch: `<strong>Notch (band-stop)</strong>: blocks a narrow band around f₀ = ${fmtF(f0)}, passes everything else — the opposite of a band-pass.`,
+    }[def.resp];
+    explainEl.innerHTML = generic;
+    deeperEl.innerHTML = (n > 1 ? `Order = ${n} cascades ${n} identical sections for steeper skirts. ` : '') +
+      `This is a generalised single-tuned-circuit response (same maths family as the LC Filter tool), so it isn’t tied to one specific component topology.`;
+  }
+
+  document.getElementById('input-blurb').innerHTML = inDef.blurb;
+
+  // Readouts
+  document.getElementById('rv-topo').textContent = def.physTag ? def.physTag.replace(/-/g,' ') : def.label;
+  document.getElementById('rv-f0').textContent = fmtF(f0);
+  const peakMag = respMag(def.resp, f0, f0, Q, n);
+  const peakDb = 20*Math.log10(Math.max(peakMag, 1e-9));
+  document.getElementById('rv-peak').textContent = fmtDb(peakDb);
+
+  const comps = getComponents(input);
+  if (inDef.keyIdx !== null && comps[inDef.keyIdx]) {
+    const kc = comps[inDef.keyIdx];
+    const mag = respMag(def.resp, kc.f, f0, Q, n);
+    const db = 20*Math.log10(Math.max(mag,1e-9));
+    document.getElementById('rv-key-label').textContent = inDef.keyLabel + ' attenuation';
+    document.getElementById('rv-key').textContent = fmtDb(db);
+  } else {
+    document.getElementById('rv-key-label').textContent = 'Key component';
+    document.getElementById('rv-key').textContent = '—';
+  }
+}
+
+// ── Main draw ────────────────────────────────────────────────────────────────────
+function draw() {
+  const { input, filter } = STATE;
+  const inDef = INPUTS[input];
+  const comps = getComponents(input);
+  const def = FILTER_DEFS[filter];
+
+  drawWaveform(wfIn,  comps, false, '#4dff6e', 3);
+  drawWaveform(wfOut, comps, true,  '#f59e0b', 3);
+  drawSpectrum(specIn,  comps, false, '#4dff6e', inDef.axisMin, inDef.axisMax, false);
+  drawSpectrum(specOut, comps, true,  '#f59e0b', inDef.axisMin, inDef.axisMax, true);
+
+  drawCircuit();
+  updateExplain();
+}
+
+// ── Slider handlers ────────────────────────────────────────────────────────────
+function onS(p, v) {
+  const inDef = INPUTS[STATE.input];
+  if (p === 'f0') { STATE.f0 = ls(v, inDef.axisMin, inDef.axisMax); document.getElementById('vF0').textContent = fmtF(STATE.f0); }
+  if (p === 'Q')  { STATE.Q  = v; document.getElementById('vQ').textContent = v.toFixed(1); }
+  if (p === 'n')  { STATE.n  = v; document.getElementById('vN').textContent = 'n = ' + v; }
+  document.getElementById('vBW').textContent = fmtF(STATE.f0 / STATE.Q);
+  scheduleDraw();
+}
+
+function syncSliders() {
+  const inDef = INPUTS[STATE.input];
+  document.getElementById('sF0').value = lsi(STATE.f0, inDef.axisMin, inDef.axisMax).toString();
+  document.getElementById('vF0').textContent = fmtF(STATE.f0);
+  document.getElementById('sQ').value = STATE.Q.toString();
+  document.getElementById('vQ').textContent = STATE.Q.toFixed(1);
+  document.getElementById('sN').value = STATE.n.toString();
+  document.getElementById('vN').textContent = 'n = ' + STATE.n;
+  document.getElementById('vBW').textContent = fmtF(STATE.f0 / STATE.Q);
+}
+
+function activateInputButtons(id) {
+  document.querySelectorAll('[data-input]').forEach(b => {
+    const on = b.dataset.input === id;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+}
+
+// User-driven input switch: re-centres f0/Q/n on the new signal's frequency range.
+function setInput(id) {
+  STATE.input = id;
+  const inDef = INPUTS[id];
+  STATE.f0 = inDef.f0Default; STATE.Q = inDef.QDefault; STATE.n = inDef.nDefault;
+  activateInputButtons(id);
+  syncSliders();
+  scheduleDraw();
+}
+
+function setFilter(id) {
+  STATE.filter = id;
+  document.querySelectorAll('[data-filter]').forEach(b => {
+    const on = b.dataset.filter === id;
+    b.classList.remove('lp-on','hp-on','bp-on','bs-on');
+    b.setAttribute('aria-pressed', String(on));
+    if (on) {
+      const resp = FILTER_DEFS[id].resp;
+      const cls = resp === 'lp' ? 'lp-on' : resp === 'hp' ? 'hp-on' : resp === 'bp' ? 'bp-on' : 'bs-on';
+      b.classList.add(cls);
+    }
+  });
+  scheduleDraw();
+}
+
+document.querySelectorAll('[data-input]').forEach(b => b.addEventListener('click', () => setInput(b.dataset.input)));
+document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
+
+// ── Quiz mode ────────────────────────────────────────────────────────────────────
+let quizQ = null;
+let quizScore = { correct: 0, total: 0 };
+
+function toggleQuiz() {
+  STATE.quiz = !STATE.quiz;
+  document.getElementById('btn-quiz').classList.toggle('quiz-on', STATE.quiz);
+  document.getElementById('btn-quiz').setAttribute('aria-pressed', String(STATE.quiz));
+  document.getElementById('quiz-panel').classList.toggle('show', STATE.quiz);
+  document.getElementById('main-display').style.display = STATE.quiz ? 'none' : '';
+  if (STATE.quiz) nextQuizQuestion();
+}
+
+function nextQuizQuestion() {
+  const types = ['lp','hp','bp','notch'];
+  const type = types[Math.floor(Math.random()*types.length)];
+  const f0 = 100 * Math.pow(10000/100, Math.random());
+  const Q  = 0.6 + Math.random()*10;
+  const n  = 1 + Math.floor(Math.random()*4);
+  quizQ = { type, f0, Q, n };
+
+  const el = quizC.el, ctx = quizC.ctx;
+  const cssW = el.parentElement.clientWidth || 520;
+  const cssH = Math.round(cssW * 0.34);
+  const pr = window.devicePixelRatio || 1;
+  el.width = cssW*pr; el.height = cssH*pr; el.style.height = cssH+'px';
+  ctx.setTransform(pr,0,0,pr,0,0);
+
+  const W = cssW, H = cssH, pad = CHART_PAD;
+  ctx.clearRect(0,0,W,H);
+  drawDbGrid(ctx, W, H, pad);
+  const axisMin = f0/50, axisMax = f0*50;
+  function fToX(f) { return pad.l + Math.log10(f/axisMin)/Math.log10(axisMax/axisMin) * (W-pad.l-pad.r); }
+  drawFreqAxis(ctx, W, H, pad, axisMin, axisMax, fToX);
+
+  ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.beginPath();
+  const steps = Math.round(W-pad.l-pad.r);
+  let first = true;
+  for (let px = 0; px <= steps; px++) {
+    const f = axisMin * Math.pow(axisMax/axisMin, px/steps);
+    const mag = respMag(type, f, f0, Q, n);
+    const db = clamp(20*Math.log10(Math.max(mag,1e-9)), DB_MIN, DB_MAX);
+    const y = pad.t + (DB_MAX-db)/(DB_MAX-DB_MIN)*(H-pad.t-pad.b);
+    if (first) { ctx.moveTo(pad.l+px,y); first=false; } else ctx.lineTo(pad.l+px,y);
+  }
+  ctx.stroke();
+
+  document.querySelectorAll('.qbtn').forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; b.onclick = () => answerQuiz(b.dataset.ans, b); });
+  document.getElementById('quiz-result').textContent = '';
+  updateQuizScore();
+}
+
+function answerQuiz(ans, btn) {
+  document.querySelectorAll('.qbtn').forEach(b => b.onclick = null);
+  quizScore.total++;
+  const resultEl = document.getElementById('quiz-result');
+  if (ans === quizQ.type) {
+    btn.classList.add('correct');
+    resultEl.textContent = '✓ Correct!'; resultEl.style.color = '#22c55e';
+    quizScore.correct++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.qbtn').forEach(b => { if (b.dataset.ans === quizQ.type) b.classList.add('correct'); });
+    const names = { lp:'Low-pass', hp:'High-pass', bp:'Band-pass', notch:'Notch / Band-stop' };
+    resultEl.textContent = '✗ It was ' + names[quizQ.type]; resultEl.style.color = '#ef4444';
+  }
+  updateQuizScore();
+  setTimeout(nextQuizQuestion, 1600);
+}
+
+function updateQuizScore() {
+  const el = document.getElementById('quiz-score');
+  if (quizScore.total === 0) { el.textContent = ''; return; }
+  const pct = Math.round(quizScore.correct/quizScore.total*100);
+  el.textContent = `Score: ${quizScore.correct} / ${quizScore.total} (${pct}%)`;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+// Uses activateInputButtons (not setInput) so URL-supplied f0/Q/order overrides
+// from STATE survive — setInput() re-centres them to the input's defaults.
+activateInputButtons(STATE.input);
+setFilter(STATE.filter);
+syncSliders();
+if (STATE.quiz) toggleQuiz();
+
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => {
+    [wfIn, wfOut, specIn, specOut].forEach(c => { c.ctx.setTransform(1,0,0,1,0,0); c.resize(); });
+  }, 80);
+});
+requestAnimationFrame(() => [wfIn, wfOut, specIn, specOut].forEach(c => c.resize()));
+</script>
+</main>
+</body>
+</html>
