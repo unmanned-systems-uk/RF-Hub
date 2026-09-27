@@ -596,6 +596,16 @@ QRP satellite operating is effective in practice. 5 W to a handheld crossed-dipo
 
 > [INFO] **7G4:** Use minimum power on amateur satellites. Strong signals take the transponder's AGC headroom and reduce output for all other stations in the footprint.
 
+### Why Is One Downlink Much Weaker? (7G4)
+
+A **linear transponder** doesn't give each station its own private slice of power — it has a **fixed total output power** that is shared across every signal present in its passband at that moment. If one uplink is much stronger than the others, the transponder's AGC turns its overall gain down to avoid overloading, and that gain reduction applies to **every signal passing through it, not just the strong one**. The practical effect: one over-strong station can make everyone else's downlink noticeably weaker, even though those other stations haven't changed anything about their own transmission.
+
+**The tempting wrong answer:** "the satellite's solar panels are unlit / it's in eclipse, so power is reduced." Eclipse and solar-panel shading are real effects, but they act on the **whole spacecraft's power budget** — every downlink and beacon weakens together, roughly equally. That is a completely different symptom from one specific station's uplink being too strong, which affects the shared AGC while the satellite's own power supply is unaffected. If only one signal (or a cluster near one strong signal) is affected while others nearby are fine, look at uplink power, not the satellite's power budget.
+
+**The rule:** use the minimum uplink power that gives a readable signal, and **listen to your own downlink while you transmit** — match your own signal to the level of the satellite's beacon (a continuous reference signal the satellite transmits at a known, fixed power). If your downlink is much stronger than the beacon, you are almost certainly over-driving the transponder and taking headroom away from everyone else.
+
+> [WARNING] **Exam trap:** if a question describes one downlink being weak while asking you to pick between "eclipse/solar power" and "AGC compression from a strong uplink", check whether the effect is described as affecting *one signal* (→ AGC compression, a shared-resource problem) or *the whole satellite* (→ eclipse/power budget, affects everything equally).
+
 ### Practical Station Setup
 
 **For LEO (FM) satellites:**

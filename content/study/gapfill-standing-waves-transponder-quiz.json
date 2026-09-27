@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "topic": "gapfill-standing-waves-transponder",
+    "title": "Gap-Fill: What Standing Waves Do + Satellite Transponder Power Sharing",
+    "levels": ["intermediate"],
+    "syllabus_refs": ["4B1", "7G4"],
+    "source_content": "RF-Hub original — topic-gap fill from PO's own Intermediate exam experience (topic-gap analysis only; no exam wording reproduced)",
+    "question_count": 4,
+    "generated": "2026-09-27"
+  },
+  "questions": [
+    {
+      "syllabus_ref": "4B1-GF1-Q01",
+      "level": "intermediate",
+      "difficulty": "easy",
+      "section_code": "4B",
+      "section_name": "Standing Waves, SWR, and the Reflection Coefficient",
+      "question": "What does a standing wave on a mismatched antenna feeder actually cause?",
+      "options": [
+        "The impedance the transmitter sees is no longer Z0 and varies with feeder length; feeder loss also increases",
+        "It generates harmonics of the transmitted frequency",
+        "It reduces the antenna's radiation efficiency, even on a lossless feeder",
+        "It has no measurable effect provided the SWR is below 3:1"
+      ],
+      "correct_answer_index": 0,
+      "explanation": "A standing wave changes the V/I ratio (impedance) seen at the transmitter end of the feeder, and that impedance depends on feeder length. It also raises feeder loss (higher current/voltage peaks). It does NOT generate harmonics — harmonics come from transmitter non-linearity, a completely separate mechanism.",
+      "source_content": null,
+      "has_diagram": false,
+      "diagram_url": null,
+      "tags": ["standing-waves", "swr", "impedance", "gap-fill"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "4B1-GF1-Q02",
+      "level": "intermediate",
+      "difficulty": "medium",
+      "section_code": "4B",
+      "section_name": "Standing Waves, SWR, and the Reflection Coefficient",
+      "question": "A friend says: 'My antenna has a standing wave on the feeder, but the reflected power must be zero because I want a good match.' What is wrong with this statement?",
+      "options": [
+        "SWR meters are incapable of measuring reflected power at all",
+        "A standing wave can only exist because reflected power is non-zero — zero reflected power (SWR 1:1) means there is no standing wave at all",
+        "Reflected power is always zero on any correctly installed feeder",
+        "A low SWR means high reflected power, not low"
+      ],
+      "correct_answer_index": 1,
+      "explanation": "A standing wave forms from the superposition of the incident and reflected waves — if there were truly zero reflected power, there would be nothing to superimpose and no standing wave pattern. 'Standing wave present' and 'zero reflected power' are contradictory statements.",
+      "source_content": null,
+      "has_diagram": false,
+      "diagram_url": null,
+      "tags": ["standing-waves", "swr", "reflection-coefficient", "gap-fill"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7G4-GF1-Q03",
+      "level": "intermediate",
+      "difficulty": "medium",
+      "section_code": "7J",
+      "section_name": "Amateur Satellite Operating",
+      "question": "During a satellite pass using a linear transponder, several other stations' downlinks suddenly get much weaker at the same time, while one particular station's downlink stays strong. What is the most likely cause?",
+      "options": [
+        "The satellite has entered eclipse and its solar panels are temporarily unlit",
+        "The transponder has automatically switched to a different downlink band",
+        "One station is using excessive uplink power, compressing the transponder's shared AGC and reducing gain for everyone else",
+        "Doppler shift has moved the weaker stations outside the passband"
+      ],
+      "correct_answer_index": 2,
+      "explanation": "A linear transponder has a fixed total output power shared across every signal in its passband. One over-strong uplink compresses the shared AGC, reducing the output level for every OTHER signal — while the strong station's own downlink stays strong. This is a shared-resource problem affecting some signals, not the whole spacecraft.",
+      "source_content": null,
+      "has_diagram": false,
+      "diagram_url": null,
+      "tags": ["satellite", "transponder", "agc", "gap-fill"],
+      "active": true
+    },
+    {
+      "syllabus_ref": "7G4-GF1-Q04",
+      "level": "intermediate",
+      "difficulty": "medium",
+      "section_code": "7J",
+      "section_name": "Amateur Satellite Operating",
+      "question": "Which scenario would weaken ALL of a satellite's downlinks and its beacon together, rather than affecting just one station's signal?",
+      "options": [
+        "One station transmitting with excessive uplink power",
+        "Two stations transmitting on very slightly different uplink frequencies",
+        "A station using a circularly-polarised uplink antenna",
+        "The satellite entering eclipse, reducing the solar power available to the whole spacecraft"
+      ],
+      "correct_answer_index": 3,
+      "explanation": "Eclipse (or any reduction in the satellite's own power budget) affects the whole spacecraft, so every downlink and the beacon weaken together, roughly equally. This is the opposite signature to AGC compression from one strong uplink, which weakens other signals while leaving the strong station's own downlink unaffected.",
+      "source_content": null,
+      "has_diagram": false,
+      "diagram_url": null,
+      "tags": ["satellite", "transponder", "eclipse", "power-budget", "gap-fill"],
+      "active": true
+    }
+  ]
+}

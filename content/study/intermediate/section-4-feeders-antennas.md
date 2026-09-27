@@ -106,6 +106,22 @@ Key facts about standing waves:
 
 > [INFO] **2F1 (revisited):** This is the physical explanation behind the 2F1 fact you learned earlier. Voltage zeros repeat every half wavelength because the incident and reflected waves cancel in exactly the same place for every cycle.
 
+### What Standing Waves Do (and Don't Do) (4B1)
+
+Knowing standing waves exist is one thing — knowing what they actually cause (and what they *don't* cause) is what matters in practice.
+
+**Standing waves DO:**
+- Change the impedance the transmitter sees. The V/I ratio at the transmitter end of the feeder is **no longer Z₀**, and it **varies with feeder length** — not a fixed, single "wrong" value. Your rig sees a load that isn't 50 Ω, which can trip ALC/fold-back or stress the PA (see below).
+- Increase feeder loss. Higher voltage and current peaks along the line mean more I²R loss in the conductors and more dielectric loss — this gets worse the lossier your coax already is.
+- Create real voltage peaks that can stress or arc connectors and cable insulation at high power, at the antinodes of the standing wave pattern.
+
+**Standing waves do NOT:**
+- Generate harmonics or new frequencies. A standing wave is still the same frequency as the transmitted signal — harmonics come from **transmitter non-linearity**, not from a mismatch on the feeder.
+- Mean "zero reflected power". By definition, a standing wave only forms *because* some power is reflected. Zero reflected power (a perfect match) means no standing wave at all.
+- By themselves change what the antenna radiates, if the feeder is lossless. On a lossless feeder, power that isn't absorbed by the antenna on the first pass is re-reflected at a matched transmitter/ATU and given another chance to reach the antenna — it doesn't just vanish. (Real feeders have some loss, so this is a simplification, but it's the right first-order picture.)
+
+> [WARNING] **Exam trap:** "Standing waves cause harmonics" is a common wrong answer. Harmonics and standing waves are unrelated — one is a frequency-domain problem (transmitter distortion), the other is what happens to the fundamental frequency's power on a mismatched feeder.
+
 ### The Reflection Coefficient Γ (4E1, 4F1)
 
 The **reflection coefficient Γ (gamma)** quantifies how much of the incident wave is reflected.

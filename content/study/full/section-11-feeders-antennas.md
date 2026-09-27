@@ -182,6 +182,20 @@ When a transmission line is terminated in its characteristic impedance Z₀, all
 
 When the load impedance Z_L ≠ Z₀, some energy is reflected. The incident and reflected waves superimpose to form a **standing wave** — a pattern of voltage and current maxima (antinodes) and minima (nodes) that repeats every half-wavelength along the line.
 
+### What Standing Waves Do (and Don't Do)
+
+**Do:**
+- Change the impedance seen at the transmitter end of the line. On a mismatched line, the input impedance is **not** simply Z_L transformed once — it depends on the feeder's **electrical length**: a λ/4 section transforms the load impedance (Z_in = Z₀²/Z_L for a quarter-wave line), and the pattern **repeats every λ/2** (a half-wave line, or any multiple of it, presents the load impedance unchanged at its input). Change the feeder length on a mismatched line and the impedance the transmitter sees changes too.
+- Increase feeder loss (higher I²R and dielectric loss from the elevated current/voltage peaks), worse on lossy lines.
+- Produce real voltage antinodes that can exceed cable/connector voltage ratings at high power.
+
+**Don't:**
+- Generate harmonics — that is a transmitter linearity issue, unrelated to feeder mismatch.
+- Imply zero reflected power — the opposite: a standing wave exists *because* reflected power is non-zero. A matched line (Γ = 0) has no standing wave.
+- By themselves change the antenna's radiated power if the feeder is lossless — unabsorbed power is re-reflected at a matched source and given another pass at the antenna.
+
+**A crucial nuance:** an **ATU (antenna tuning unit) at the transmitter matches the transmitter to the feeder input impedance it currently presents** — it does not (and cannot) remove the standing wave on the feeder itself, since that pattern is set entirely by the mismatch at the antenna end. The transmitter is happy (sees 50 Ω), but the elevated feeder losses and voltage peaks from the standing wave are still present between the ATU and the antenna. Only fixing the actual antenna-to-feeder match (or moving the match to the antenna feedpoint) removes the standing wave itself.
+
 ### Reflection Coefficient and VSWR
 
 The **reflection coefficient** Γ measures how much of the incident wave is reflected:
