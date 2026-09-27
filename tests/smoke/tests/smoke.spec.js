@@ -123,9 +123,10 @@ test.describe('RF-Hub Smoke Tests', () => {
       });
       expect(panelBg.opacity).toBe(1); // Opaque
 
-      // Check for navigation links
-      const studyLink = page.locator('text=/study/i');
-      const examLink = page.locator('text=/exam/i');
+      // Check for navigation links (scoped to mobile-open panel to avoid matching 4+ elements)
+      const mobilePanel = page.locator('.site-nav-links.mobile-open');
+      const studyLink = mobilePanel.getByRole('link', { name: 'Study', exact: true });
+      const examLink = mobilePanel.getByRole('link', { name: 'Exams', exact: true });
       await expect(studyLink).toBeVisible();
       await expect(examLink).toBeVisible();
 
