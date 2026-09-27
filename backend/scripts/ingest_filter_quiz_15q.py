@@ -86,7 +86,7 @@ def ingest_questions():
             # Convert options
             options_obj, correct_letter = convert_options(q['options'], q['correct_answer_index'])
 
-            # Check for duplicate (match on syllabus_ref due to unique index)
+            # Check if question exists by syllabus_ref (unique ID, handles duplicate texts)
             cur.execute(
                 "SELECT id FROM exam_questions WHERE syllabus_ref = %s",
                 (q['syllabus_ref'],)
