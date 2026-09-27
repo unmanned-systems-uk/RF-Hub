@@ -604,7 +604,7 @@ A **linear transponder** doesn't give each station its own private slice of powe
 
 **The rule:** use the minimum uplink power that gives a readable signal, and **listen to your own downlink while you transmit** — match your own signal to the level of the satellite's beacon (a continuous reference signal the satellite transmits at a known, fixed power). If your downlink is much stronger than the beacon, you are almost certainly over-driving the transponder and taking headroom away from everyone else.
 
-> [WARNING] **Exam trap:** if a question describes one downlink being weak while asking you to pick between "eclipse/solar power" and "AGC compression from a strong uplink", check whether the effect is described as affecting *one signal* (→ AGC compression, a shared-resource problem) or *the whole satellite* (→ eclipse/power budget, affects everything equally).
+> [WARNING] **Exam trap:** the general principle to apply is *whole-craft vs one-signal*. Anything affecting the satellite's own power budget (eclipse, battery state) weakens every downlink and beacon together, equally. Anything affecting the shared transponder resource (one station's excessive uplink power) weakens other signals while leaving the strong station's own downlink unaffected. Work out which pattern is described before picking a cause.
 
 ### Practical Station Setup
 
