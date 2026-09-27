@@ -90,12 +90,18 @@
 .study-resume-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
 #study-resume-card { display: none; }
 #study-resume-card.visible { display: block; }
-main.study-page-main {
+/* Scoped to study-page-wrapped (added by THIS script, below, only after a
+   sidebar mount + headings are confirmed present and the DOM has actually
+   been restructured) rather than to study-page-main (a static HTML class
+   many pages carry regardless of whether this script's wrap step ever
+   runs) — a page with no mount, or an empty mount, must render as a
+   normal single column instead of putting every <section> side by side. */
+main.study-page-wrapped {
   display: flex; gap: 2rem; align-items: flex-start;
   max-width: 1280px; margin-left: auto; margin-right: auto;
   padding-left: 2rem; padding-right: 2rem;
 }
-main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
+main.study-page-wrapped > .study-content-wrap { flex: 1; min-width: 0; }
     `;
     document.head.appendChild(style);
   }
@@ -224,7 +230,7 @@ main.study-page-main > .study-content-wrap { flex: 1; min-width: 0; }
 
     // ── Auto-wrap: runs AFTER heading check (Change 2 guard passed) ───────────
     if (root.tagName === 'MAIN') {
-      root.classList.add('study-page-main');
+      root.classList.add('study-page-wrapped');
       const existingChildren = Array.from(root.childNodes).filter(function (node) {
         return node !== mount;
       });
