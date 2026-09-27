@@ -466,6 +466,26 @@ Example — λ/4 matching section at 144 MHz in RG58 (VF 0.66):
 
       <p>When the load impedance Z<sub>L</sub> &ne; Z<sub>0</sub>, some energy is reflected. The incident and reflected waves superimpose to form a <strong>standing wave</strong> — a pattern of voltage and current maxima (antinodes) and minima (nodes) that repeats every half-wavelength along the line.</p>
 
+      <h3>What Standing Waves Do (and Don't Do)</h3>
+
+      <p><strong>Do:</strong></p>
+      <ul>
+        <li>Change the impedance seen at the transmitter end of the line. On a mismatched line, the input impedance is <strong>not</strong> simply Z<sub>L</sub> transformed once — it depends on the feeder's <strong>electrical length</strong>: a &lambda;/4 section transforms the load impedance (Z<sub>in</sub> = Z<sub>0</sub>&sup2;/Z<sub>L</sub> for a quarter-wave line), and the pattern <strong>repeats every &lambda;/2</strong> (a half-wave line, or any multiple of it, presents the load impedance unchanged at its input). Change the feeder length on a mismatched line and the impedance the transmitter sees changes too.</li>
+        <li>Increase feeder loss (higher I&sup2;R and dielectric loss from the elevated current/voltage peaks), worse on lossy lines.</li>
+        <li>Produce real voltage antinodes that can exceed cable/connector voltage ratings at high power.</li>
+      </ul>
+
+      <p><strong>Don't:</strong></p>
+      <ul>
+        <li>Generate harmonics — that is a transmitter linearity issue, unrelated to feeder mismatch.</li>
+        <li>Imply zero reflected power — the opposite: a standing wave exists <em>because</em> reflected power is non-zero. A matched line (&Gamma; = 0) has no standing wave.</li>
+        <li>By themselves change the antenna's radiated power if the feeder is lossless — unabsorbed power is re-reflected at a matched source and given another pass at the antenna.</li>
+      </ul>
+
+      <div class="callout-warn">
+        <strong>A crucial nuance:</strong> an <strong>ATU (antenna tuning unit) at the transmitter matches the transmitter to the feeder input impedance it currently presents</strong> — it does not (and cannot) remove the standing wave on the feeder itself, since that pattern is set entirely by the mismatch at the antenna end. The transmitter is happy (sees 50 &Omega;), but the elevated feeder losses and voltage peaks from the standing wave are still present between the ATU and the antenna. Only fixing the actual antenna-to-feeder match (or moving the match to the antenna feedpoint) removes the standing wave itself.
+      </div>
+
       <h3>Reflection Coefficient and VSWR</h3>
 
       <p>The <strong>reflection coefficient</strong> &Gamma; measures how much of the incident wave is reflected:</p>

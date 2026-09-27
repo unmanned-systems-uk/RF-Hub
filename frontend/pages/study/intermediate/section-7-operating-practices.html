@@ -1099,6 +1099,15 @@ Calling station: QSL, 73</pre>
         <div class="callout-text"><strong>7G4:</strong> Use minimum power on amateur satellites. Strong signals take the transponder's AGC headroom and reduce output for all other stations in the footprint.</div>
       </div>
 
+      <h3>Why Is One Downlink Much Weaker? (7G4)</h3>
+      <p>A <strong>linear transponder</strong> doesn't give each station its own private slice of power — it has a <strong>fixed total output power</strong> that is shared across every signal present in its passband at that moment. If one uplink is much stronger than the others, the transponder's AGC turns its overall gain down to avoid overloading, and that gain reduction applies to <strong>every signal passing through it, not just the strong one</strong>. The practical effect: one over-strong station can make everyone else's downlink noticeably weaker, even though those other stations haven't changed anything about their own transmission.</p>
+      <p><strong>The tempting wrong answer:</strong> "the satellite's solar panels are unlit / it's in eclipse, so power is reduced." Eclipse and solar-panel shading are real effects, but they act on the <strong>whole spacecraft's power budget</strong> — every downlink and beacon weakens together, roughly equally. That is a completely different symptom from one specific station's uplink being too strong, which affects the shared AGC while the satellite's own power supply is unaffected. If only one signal (or a cluster near one strong signal) is affected while others nearby are fine, look at uplink power, not the satellite's power budget.</p>
+      <p><strong>The rule:</strong> use the minimum uplink power that gives a readable signal, and <strong>listen to your own downlink while you transmit</strong> — match your own signal to the level of the satellite's beacon (a continuous reference signal the satellite transmits at a known, fixed power). If your downlink is much stronger than the beacon, you are almost certainly over-driving the transponder and taking headroom away from everyone else.</p>
+      <div class="callout callout--warning">
+        <div class="callout-icon">⚠</div>
+        <div class="callout-text"><strong>Exam trap:</strong> the general principle to apply is <em>whole-craft vs one-signal</em>. Anything affecting the satellite's own power budget (eclipse, battery state) weakens every downlink and beacon together, equally. Anything affecting the shared transponder resource (one station's excessive uplink power) weakens other signals while leaving the strong station's own downlink unaffected. Work out which pattern is described before picking a cause.</div>
+      </div>
+
       <h3>Practical Station Setup</h3>
       <p><strong>For LEO (FM) satellites:</strong></p>
       <ul>
