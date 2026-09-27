@@ -1012,7 +1012,7 @@ Resonant frequency halves.</pre>
 
       <div style="margin: 1rem 0;">
         <iframe src="/interactives/filter-signal.html?input=noise&filter=parallel-inline"
-          style="width:100%; height:750px; border:1px solid #1e293b; border-radius:8px; display:block;"
+          style="width:100%; height:1200px; border:1px solid #1e293b; border-radius:8px; display:block;"
           loading="lazy" title="Filter Signal — broadband noise through a parallel LC in-line (notch)"></iframe>
       </div>
       <p style="font-size:0.85rem;color:var(--text-dim);margin:0.4rem 0 0;">Try it: a parallel LC placed in-line blocks its resonant frequency, carving a notch out of broadband noise. Swap the preset to <code>filter=series-shunt</code> to see the equivalent series-LC-as-shunt notch.</p>
@@ -1900,6 +1900,21 @@ Power is reduced by a factor of 1 000 (to 1/1000 of input)</pre>
         target.hidden = expanded;
       });
     });
+
+    // filter-signal.html interactives auto-report their height so the
+    // iframe can fit exactly instead of a fixed guess (falls back to the
+    // 1200px inline height above if no message ever arrives).
+    (function() {
+      var frames = document.querySelectorAll('iframe[src*="/interactives/filter-signal.html"]');
+      if (!frames.length) return;
+      window.addEventListener('message', function(e) {
+        if (e.origin !== window.location.origin) return;
+        if (!e.data || e.data.type !== 'rfhub:filter-signal:height') return;
+        frames.forEach(function(f) {
+          if (f.contentWindow === e.source) f.style.height = Math.max(e.data.height, 200) + 'px';
+        });
+      });
+    })();
   </script>
 
   <div id="site-footer-mount">

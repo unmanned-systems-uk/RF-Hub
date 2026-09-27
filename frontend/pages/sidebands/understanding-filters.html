@@ -326,7 +326,7 @@ h2[id], h3[id] { scroll-margin-top: 1.5rem; }
   </div>
 
   <div class="interactive-frame">
-    <iframe src="/interactives/filter-signal.html?input=square&filter=lp" style="height:750px;" loading="lazy" title="Filter Signal — square wave through a low-pass filter"></iframe>
+    <iframe src="/interactives/filter-signal.html?input=square&filter=lp" style="height:1200px;" loading="lazy" title="Filter Signal — square wave through a low-pass filter"></iframe>
   </div>
 
   <div class="callout-amber"><strong>Key idea:</strong> removing harmonics from a waveform always rounds off its sharp features. This is exactly why a transmitter's <strong>harmonic low-pass filter</strong> cleans up a distorted output stage — see the spectrum example below.</div>
@@ -509,6 +509,21 @@ h2[id], h3[id] { scroll-margin-top: 1.5rem; }
       var pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
       bar.style.width = Math.min(pct, 100) + '%';
     }, { passive: true });
+  })();
+
+  // filter-signal.html interactives auto-report their height so the
+  // iframe can fit exactly instead of a fixed guess (falls back to the
+  // 1200px inline height above if no message ever arrives).
+  (function() {
+    var frames = document.querySelectorAll('iframe[src*="/interactives/filter-signal.html"]');
+    if (!frames.length) return;
+    window.addEventListener('message', function(e) {
+      if (e.origin !== window.location.origin) return;
+      if (!e.data || e.data.type !== 'rfhub:filter-signal:height') return;
+      frames.forEach(function(f) {
+        if (f.contentWindow === e.source) f.style.height = Math.max(e.data.height, 200) + 'px';
+      });
+    });
   })();
 </script>
 <script src="/assets/js/search.js?v=20260927-1800" defer></script>

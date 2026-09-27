@@ -1013,6 +1013,28 @@ window.addEventListener('resize', () => {
   }, 80);
 });
 requestAnimationFrame(() => [wfIn, wfOut, specIn, specOut].forEach(c => c.resize()));
+
+// ── Auto-height for iframe embedding — reports document height to parent ──
+// Fires on load, on any layout change (quiz toggle, canvas resize, window
+// resize) via ResizeObserver, so the embedding page can size the iframe to
+// fit exactly instead of guessing a fixed height.
+(function () {
+  if (window.parent === window) return; // not embedded, nothing to report
+  let lastH = 0;
+  function reportHeight() {
+    const h = document.documentElement.scrollHeight;
+    if (h === lastH) return;
+    lastH = h;
+    window.parent.postMessage({ type: 'rfhub:filter-signal:height', height: h }, window.location.origin);
+  }
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(reportHeight).observe(document.body);
+  } else {
+    window.addEventListener('resize', reportHeight);
+  }
+  window.addEventListener('load', reportHeight);
+  requestAnimationFrame(reportHeight);
+})();
 </script>
 </main>
 </body>
