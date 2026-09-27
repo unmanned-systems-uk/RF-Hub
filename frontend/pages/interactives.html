@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Interactives — RF-Hub</title>
+  <!-- Favicons — SPOT (see /favicon.ico, /apple-touch-icon.png, /site.webmanifest) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/rf-hub-v2.css">
+  <style>
+    /* ── Intro / search ─────────────────────────────────────────────────── */
+    .interactives-intro { max-width: 700px; margin-bottom: 1.5rem; }
+    .interactives-intro p { color: var(--text-secondary); line-height: 1.7; margin: 0; }
+    .interactives-search {
+      width: 100%; max-width: 420px; font-family: var(--font-mono); font-size: 0.85rem;
+      color: var(--text-primary); background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.6rem 0.9rem; margin: 0 0 2rem;
+    }
+    .interactives-search:focus { outline: none; border-color: rgba(167,139,250,0.5); }
+    .interactives-search::placeholder { color: var(--text-dim); }
+    .interactives-count { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin: -1.25rem 0 2rem; }
+
+    /* ── Topic group ─────────────────────────────────────────────────────── */
+    .interactive-group { margin-bottom: 2.5rem; }
+    .interactive-group-heading {
+      font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent-em); margin: 0 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+    .interactive-group.is-hidden { display: none; }
+
+    /* ── Cards grid ──────────────────────────────────────────────────────── */
+    .interactive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.1rem;
+    }
+    .interactive-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;
+      text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s;
+    }
+    .interactive-card:hover { border-color: rgba(167,139,250,0.4); transform: translateY(-2px); }
+    .interactive-card.is-hidden { display: none; }
+    .interactive-card-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
+    .interactive-card-desc { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.55; flex: 1; }
+    .interactive-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .tag {
+      font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim);
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 3px; padding: 0.12rem 0.45rem;
+    }
+    .tag--level { color: var(--accent-h); border-color: rgba(6,182,212,0.3); }
+    .interactive-card-cta { margin-top: auto; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-em); font-weight: 600; }
+
+    .no-results { display: none; color: var(--text-dim); font-size: 0.9rem; padding: 2rem 0; text-align: center; }
+    .no-results.is-visible { display: block; }
+  </style>
+  <meta name="site-nav-active" content="interactives">
+</head>
+<body>
+  <!-- Nav SPOT (site-nav.html partial). Fallback link if JS fails. -->
+  <div id="site-nav-mount">
+    <nav class="site-nav">
+      <div class="container container--wide">
+        <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+        <ul class="site-nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/pages/study/">Study</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Interactives</div>
+      <h1>All Interactives</h1>
+      <p class="hero-subtitle">Every simulator, calculator and visualiser on RF-Hub in one place — each opens in a new tab.</p>
+    </div>
+  </section>
+
+  <div class="container" style="padding-bottom: 4rem;">
+
+    <div class="interactives-intro">
+      <p>Grouped by topic below. Every card opens its interactive in a new tab, so you don't lose your place here. Use the search box to filter by name, description or tag.</p>
+    </div>
+
+    <input type="text" class="interactives-search" id="interactives-search" placeholder="Search interactives… (e.g. &quot;filter&quot;, &quot;SWR&quot;, &quot;Full&quot;)" aria-label="Search interactives">
+    <p class="interactives-count" id="interactives-count"></p>
+
+    <!-- ═══ Filters & tuned circuits ═══ -->
+    <div class="interactive-group" data-group="filters">
+      <h2 class="interactive-group-heading">Filters &amp; tuned circuits</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/filter-signal.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Filter Signal — Before/After</div>
+          <div class="interactive-card-desc">Route a waveform (whistle, noise, speech, square wave…) through a filter and watch the waveform and spectrum change either side.</div>
+          <div class="interactive-card-tags"><span class="tag">Filters</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/lc-filter.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">LC Filter — Tuned Circuit</div>
+          <div class="interactive-card-desc">Series/parallel LC filter with a live oscilloscope-style trace and frequency response as you adjust L, C, and R.</div>
+          <div class="interactive-card-tags"><span class="tag">Filters</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/lc-filter-designer.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">LC Filter Designer</div>
+          <div class="interactive-card-desc">Design a Butterworth ladder filter (low-pass, high-pass, band-pass or band-stop, 1st–4th order) with real E12 nearest-practical component values.</div>
+          <div class="interactive-card-tags"><span class="tag">Filters</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/lc-oscillation.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">LC Tank Oscillation</div>
+          <div class="interactive-card-desc">Watch energy slosh back and forth between the inductor and capacitor in a resonant tank circuit, with damping.</div>
+          <div class="interactive-card-tags"><span class="tag">Filters</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/harmonic-filter-designer.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Harmonic Filter Designer</div>
+          <div class="interactive-card-desc">Design a low-pass harmonic filter for a transmitter's output stage and see how much it suppresses each harmonic.</div>
+          <div class="interactive-card-tags"><span class="tag">Filters</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Antennas & radiation ═══ -->
+    <div class="interactive-group" data-group="antennas">
+      <h2 class="interactive-group-heading">Antennas &amp; radiation</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/em-radiation.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">How Antennas Radiate</div>
+          <div class="interactive-card-desc">The complete story of how current flowing in a wire turns into a self-propagating electromagnetic wave that detaches from the antenna.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/em-animato-2.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">EM Field &amp; Radiation Pattern Animator</div>
+          <div class="interactive-card-desc">Switch between dipole, monopole and Yagi and watch the electric/magnetic field and radiation pattern animate live as frequency changes.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/field-detachment.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Field Detachment — Acts 1–4</div>
+          <div class="interactive-card-desc">A four-act animated walkthrough of the exact moment electromagnetic fields break free of the antenna and become a travelling wave.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/radiation-3d-v5.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">3D Radiation Wavefronts</div>
+          <div class="interactive-card-desc">Rotate a live 3D radiation pattern for dipole, vertical, Yagi, collinear, loop, patch or dish antennas.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/radiation-pattern-viewer.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Radiation Pattern Viewer</div>
+          <div class="interactive-card-desc">2D polar plots of antenna radiation patterns — compare azimuth and elevation views for common antenna types.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/polarisation-mismatch.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Polarisation Mismatch</div>
+          <div class="interactive-card-desc">See how much signal you lose as the transmit and receive antenna polarisation angles diverge from aligned.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/df-hunt.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">DF Hunt</div>
+          <div class="interactive-card-desc">A direction-finding exercise — triangulate a hidden transmitter using the deep nulls of a loop antenna.</div>
+          <div class="interactive-card-tags"><span class="tag">Antennas</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Feeders, SWR & matching ═══ -->
+    <div class="interactive-group" data-group="feeders">
+      <h2 class="interactive-group-heading">Feeders, SWR &amp; matching</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/atu-matching.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">ATU Matching Network</div>
+          <div class="interactive-card-desc">L-match, π-match and T-match networks — compute input impedance and SWR live as you change component values.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span><span class="tag tag--level">Intermediate</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-atu-matcher.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">ATU Matcher</div>
+          <div class="interactive-card-desc">L, Pi and T network solver for matching a resistive source to a resistive load — the Full-licence companion to the ATU matching tool.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/balun-currents.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Balun Current Flow</div>
+          <div class="interactive-card-desc">Visualise common-mode versus differential current on a feedline as it passes through a balun.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/feeder-loss.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Feeder Loss vs Frequency</div>
+          <div class="interactive-card-desc">Compare cable-loss curves across common coax types and see how loss climbs with frequency and cable length.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-standing-wave-animator.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Standing-Wave Animator</div>
+          <div class="interactive-card-desc">An animated standing wave forming on a mismatched feedline, showing voltage/current antinodes and nodes.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-vswr-calculator.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">VSWR Calculator</div>
+          <div class="interactive-card-desc">Compute VSWR, reflection coefficient and return loss from a load impedance, with the maths shown step by step.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/swr-sweep.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">SWR Sweep — Standing Waves</div>
+          <div class="interactive-card-desc">Vary the antenna impedance and watch standing waves, reflection coefficient, SWR and return loss respond together.</div>
+          <div class="interactive-card-tags"><span class="tag">Feeders</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Propagation ═══ -->
+    <div class="interactive-group" data-group="propagation">
+      <h2 class="interactive-group-heading">Propagation</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/ionospheric-layers.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Ionospheric Layer Explorer</div>
+          <div class="interactive-card-desc">Explore the D, E, F1 and F2 layers and see how each refracts (or absorbs) signals depending on frequency and time of day.</div>
+          <div class="interactive-card-tags"><span class="tag">Propagation</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/muf-predictor.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">MUF / Skip-Distance Predictor</div>
+          <div class="interactive-card-desc">Single-hop maximum usable frequency and skip-zone geometry — where does your signal actually land?</div>
+          <div class="interactive-card-tags"><span class="tag">Propagation</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-muf-luf-predictor.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">MUF / LUF Diurnal Predictor</div>
+          <div class="interactive-card-desc">A simplified F2-layer diurnal model — drag through a 24-hour clock and watch MUF and LUF rise and fall as foF2 varies.</div>
+          <div class="interactive-card-tags"><span class="tag">Propagation</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Transmitters & receivers ═══ -->
+    <div class="interactive-group" data-group="txrx">
+      <h2 class="interactive-group-heading">Transmitters &amp; receivers</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/tx-rx-complete.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">The Complete Link — TX to RX</div>
+          <div class="interactive-card-desc">Follow a signal end to end: transmitter, antenna, propagation path, receiving antenna, and receiver.</div>
+          <div class="interactive-card-tags"><span class="tag">TX/RX</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-reciprocal-mixing-visualiser.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Reciprocal Mixing Visualiser</div>
+          <div class="interactive-card-desc">See how local-oscillator phase noise mixes with a strong nearby signal to raise the receiver's effective noise floor.</div>
+          <div class="interactive-card-tags"><span class="tag">TX/RX</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-sampling-aliasing-visualiser.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Sampling &amp; Aliasing Visualiser</div>
+          <div class="interactive-card-desc">Watch aliasing appear as the sample rate drops below the Nyquist rate for a given input frequency.</div>
+          <div class="interactive-card-tags"><span class="tag">TX/RX</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Measurement & test gear ═══ -->
+    <div class="interactive-group" data-group="measurement">
+      <h2 class="interactive-group-heading">Measurement &amp; test gear</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/virtual-oscilloscope.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Virtual Oscilloscope</div>
+          <div class="interactive-card-desc">Adjust V/div and time/div to frame a waveform on the grid, then read off Vpp and period like a real scope.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span><span class="tag tag--level">Intermediate</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-oscilloscope-sim.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Oscilloscope Simulator</div>
+          <div class="interactive-card-desc">Time-domain waveform display built for the Full Measurements chapter — CRT/DSO controls, triggering, and probe loading.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/virtual-multimeter.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Virtual Multimeter</div>
+          <div class="interactive-card-desc">Simulate voltage, current and resistance measurement — including how meter loading changes the circuit you're measuring.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/virtual-spectrum-analyser.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Virtual Spectrum Analyser</div>
+          <div class="interactive-card-desc">Explore resolution bandwidth, video bandwidth and span on a simulated spectrum-analyser display.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/vswr-bridge-principle.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">VSWR Bridge Principle</div>
+          <div class="interactive-card-desc">How a Wheatstone-bridge reflectometer separates incident from reflected power to measure impedance mismatch.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/s21-trace-explorer.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">S21 Trace Explorer</div>
+          <div class="interactive-card-desc">A simulated spectrum-analyser insertion-loss trace with draggable markers and delta readout.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/dut-signature-gallery.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">DUT Signature Gallery</div>
+          <div class="interactive-card-desc">A gallery of S11/S21 device-under-test signatures, dual-panel with a linked cursor between the two traces.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/s-parameter-signal-flow.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">S-Parameter Signal Flow</div>
+          <div class="interactive-card-desc">Click S11, S21, S12 or S22 to highlight which travelling waves each parameter actually relates.</div>
+          <div class="interactive-card-tags"><span class="tag">Measurement</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ EMC & safety ═══ -->
+    <div class="interactive-group" data-group="emc">
+      <h2 class="interactive-group-heading">EMC &amp; safety</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/ferrite-choke.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Ferrite Choke Effectiveness</div>
+          <div class="interactive-card-desc">See how a clip-on ferrite choke attenuates common-mode current on a cable, and how that changes with frequency.</div>
+          <div class="interactive-card-tags"><span class="tag">EMC</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-emf-compliance-distance.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">EMF Compliance Distance</div>
+          <div class="interactive-card-desc">Compute the compliance distance around an antenna for RF exposure (EMF) limits at a given power and frequency.</div>
+          <div class="interactive-card-tags"><span class="tag">EMC</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/full-field-strength-calculator.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Field-Strength Calculator</div>
+          <div class="interactive-card-desc">Estimate field strength from transmit power and distance — the companion calculation behind EMF compliance distance.</div>
+          <div class="interactive-card-tags"><span class="tag">EMC</span><span class="tag tag--level">Full</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Components & basics ═══ -->
+    <div class="interactive-group" data-group="components">
+      <h2 class="interactive-group-heading">Components &amp; basics</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/component-symbols.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Component Symbols</div>
+          <div class="interactive-card-desc">Reference and self-test on standard schematic symbols — resistors, capacitors, inductors, semiconductors and more.</div>
+          <div class="interactive-card-tags"><span class="tag">Basics</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/impedance-triangle.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Impedance Triangle</div>
+          <div class="interactive-card-desc">Visualise resistance, reactance and impedance as the three sides of a right-angle triangle, live as you change R and X.</div>
+          <div class="interactive-card-tags"><span class="tag">Basics</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/reactance-vs-frequency.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Reactance vs Frequency</div>
+          <div class="interactive-card-desc">Plot inductive and capacitive reactance against frequency and see where they cross at resonance.</div>
+          <div class="interactive-card-tags"><span class="tag">Basics</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/energy-flow-comparison.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Energy Flow Comparison</div>
+          <div class="interactive-card-desc">Resistance, reactance and impedance told as three different stories about what happens to energy in a circuit.</div>
+          <div class="interactive-card-tags"><span class="tag">Basics</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Licensing & reference ═══ -->
+    <div class="interactive-group" data-group="licensing">
+      <h2 class="interactive-group-heading">Licensing &amp; reference</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/uk-callsign-parser.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">UK Callsign Parser</div>
+          <div class="interactive-card-desc">Type in a UK amateur callsign and see it broken down into licence class, region and sequential parts.</div>
+          <div class="interactive-card-tags"><span class="tag">Reference</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ═══ Station & live data ═══ -->
+    <div class="interactive-group" data-group="station">
+      <h2 class="interactive-group-heading">Station &amp; live data</h2>
+      <div class="interactive-grid">
+
+        <a class="interactive-card" href="/interactives/station-monitor.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Station Monitor</div>
+          <div class="interactive-card-desc">Live dashboard for the home station — real-time WSPR decode feed, propagation conditions and horizon analysis.</div>
+          <div class="interactive-card-tags"><span class="tag">Live</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/panorama-viewer.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">360° Horizon Panorama</div>
+          <div class="interactive-card-desc">A drone-captured 360° panorama of the horizon from the home station (IO85LO, 64 m AGL) — pan and zoom around the skyline.</div>
+          <div class="interactive-card-tags"><span class="tag">Station</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/terrain-3d.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">3D Terrain</div>
+          <div class="interactive-card-desc">A rotatable 3D terrain model of the ground around the home station, built from real elevation data.</div>
+          <div class="interactive-card-tags"><span class="tag">Station</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/horizon-rose.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Terrain Horizon Profile</div>
+          <div class="interactive-card-desc">A bearing-by-bearing horizon elevation profile for the home station — see which directions are blocked by terrain.</div>
+          <div class="interactive-card-tags"><span class="tag">Station</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/signal-path-profile.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">Signal Path Profile</div>
+          <div class="interactive-card-desc">A real link-path profile between two specific stations, showing terrain, distance and line-of-sight along the path.</div>
+          <div class="interactive-card-tags"><span class="tag">Station</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+        <a class="interactive-card" href="/interactives/wspr-decode-map.html" target="_blank" rel="noopener">
+          <div class="interactive-card-title">WSPR Reception Survey</div>
+          <div class="interactive-card-desc">A map of every WSPR decode the home station made during a fixed survey window — see how far a few milliwatts actually travel.</div>
+          <div class="interactive-card-tags"><span class="tag">Station</span></div>
+          <div class="interactive-card-cta">Open →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <p class="no-results" id="interactives-no-results">No interactives match "<span id="interactives-no-results-query"></span>".</p>
+
+  </div>
+
+  <div id="site-footer-mount">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-brand">RF<span>Hub</span></p>
+        <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/assets/js/search.js?v=20260927-1900" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260927-1900" defer></script>
+  <script>
+    (function () {
+      var input = document.getElementById('interactives-search');
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.interactive-card'));
+      var groups = Array.prototype.slice.call(document.querySelectorAll('.interactive-group'));
+      var countEl = document.getElementById('interactives-count');
+      var noResults = document.getElementById('interactives-no-results');
+      var noResultsQuery = document.getElementById('interactives-no-results-query');
+      var total = cards.length;
+
+      function setCount(n) {
+        countEl.textContent = n === total ? total + ' interactives' : n + ' of ' + total + ' interactives';
+      }
+      setCount(total);
+
+      input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase();
+        var visibleCount = 0;
+
+        cards.forEach(function (card) {
+          var text = card.textContent.toLowerCase();
+          var match = q === '' || text.indexOf(q) !== -1;
+          card.classList.toggle('is-hidden', !match);
+          if (match) visibleCount++;
+        });
+
+        groups.forEach(function (group) {
+          var anyVisible = group.querySelector('.interactive-card:not(.is-hidden)') !== null;
+          group.classList.toggle('is-hidden', !anyVisible);
+        });
+
+        setCount(visibleCount);
+        noResultsQuery.textContent = input.value.trim();
+        noResults.classList.toggle('is-visible', visibleCount === 0 && q !== '');
+      });
+    })();
+  </script>
+</body>
+</html>
