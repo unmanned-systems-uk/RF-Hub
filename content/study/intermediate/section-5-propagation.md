@@ -256,7 +256,7 @@ Above approximately **30 MHz**, signals almost never refract from the ionosphere
 The **radio horizon** is slightly further than the visual horizon because the atmosphere bends radio waves slightly downward (atmospheric refraction). A useful approximation for VHF/UHF:
 
 ```
-Radio range (km) ≈ 3.57 × (√h_tx + √h_rx)
+Radio range (km) ≈ 3.57 × (√h<sub>tx</sub> + √h<sub>rx</sub>)
 ```
 
 Where h is antenna height in metres. For two stations, both with antennas at 10 m height:

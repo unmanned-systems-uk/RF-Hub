@@ -293,7 +293,7 @@ L(metres) &asymp; 142.5 / f(MHz)</pre>
       <p>Knowing standing waves exist is one thing — knowing what they actually cause (and what they <em>don't</em> cause) is what matters in practice.</p>
       <p><strong>Standing waves DO:</strong></p>
       <ul>
-        <li>Change the impedance the transmitter sees. The V/I ratio at the transmitter end of the feeder is <strong>no longer Z_0</strong>, and it <strong>varies with feeder length</strong> — not a fixed, single "wrong" value. Your rig sees a load that isn't 50 &Omega;, which can trip ALC/fold-back or stress the PA (see below).</li>
+        <li>Change the impedance the transmitter sees. The V/I ratio at the transmitter end of the feeder is <strong>no longer Z<sub>0</sub></strong>, and it <strong>varies with feeder length</strong> — not a fixed, single "wrong" value. Your rig sees a load that isn't 50 &Omega;, which can trip ALC/fold-back or stress the PA (see below).</li>
         <li>Increase feeder loss. Higher voltage and current peaks along the line mean more I&sup2;R loss in the conductors and more dielectric loss — this gets worse the lossier your coax already is.</li>
         <li>Create real voltage peaks that can stress or arc connectors and cable insulation at high power, at the antinodes of the standing wave pattern.</li>
       </ul>
@@ -311,27 +311,27 @@ L(metres) &asymp; 142.5 / f(MHz)</pre>
       <h3>The Reflection Coefficient &Gamma; (4E1, 4F1)</h3>
       <p>The <strong>reflection coefficient &Gamma; (gamma)</strong> quantifies how much of the incident wave is reflected.</p>
 <pre>
-        Z_L &minus; Z_0
+        Z<sub>L</sub> &minus; Z<sub>0</sub>
 &Gamma; = &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
-        Z_L + Z_0
+        Z<sub>L</sub> + Z<sub>0</sub>
 </pre>
       <p>Where:</p>
       <ul>
-        <li>Z_L = load impedance (the antenna feedpoint impedance)</li>
-        <li>Z_0 = characteristic impedance of the feeder (usually 50 &Omega;)</li>
+        <li>Z<sub>L</sub> = load impedance (the antenna feedpoint impedance)</li>
+        <li>Z<sub>0</sub> = characteristic impedance of the feeder (usually 50 &Omega;)</li>
         <li>&Gamma; is a complex number, but for exam purposes its magnitude |&Gamma;| is what matters</li>
       </ul>
       <p><strong>The magnitude |&Gamma;| ranges from 0 (perfect match) to 1 (total reflection):</strong></p>
       <div class="table-wrapper">
         <table>
           <thead>
-            <tr><th>Condition</th><th>Z_L</th><th>|&Gamma;|</th></tr>
+            <tr><th>Condition</th><th>Z<sub>L</sub></th><th>|&Gamma;|</th></tr>
           </thead>
           <tbody>
-            <tr><td>Perfect match</td><td>Z_L = Z_0</td><td>0</td></tr>
-            <tr><td>Open circuit</td><td>Z_L = &infin;</td><td>1</td></tr>
-            <tr><td>Short circuit</td><td>Z_L = 0</td><td>1</td></tr>
-            <tr><td>Practical good match</td><td>Z_L &asymp; Z_0</td><td>small (&lt; 0.2)</td></tr>
+            <tr><td>Perfect match</td><td>Z<sub>L</sub> = Z<sub>0</sub></td><td>0</td></tr>
+            <tr><td>Open circuit</td><td>Z<sub>L</sub> = &infin;</td><td>1</td></tr>
+            <tr><td>Short circuit</td><td>Z<sub>L</sub> = 0</td><td>1</td></tr>
+            <tr><td>Practical good match</td><td>Z<sub>L</sub> &asymp; Z<sub>0</sub></td><td>small (&lt; 0.2)</td></tr>
           </tbody>
         </table>
       </div>
@@ -484,7 +484,7 @@ SWR = &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
 
       <h3>Velocity Factor (4A3)</h3>
       <p>The speed of an electromagnetic wave inside a coaxial cable is <strong>less than the speed of light in a vacuum</strong>. The ratio of the wave speed in the cable to the speed of light is called the <strong>velocity factor (VF)</strong>.</p>
-<pre>VF = v_cable / c
+<pre>VF = v<sub>cable</sub> / c
 
 Where c = speed of light = 300 &times; 10&sup6; m/s.</pre>
       <p><strong>VF for common cables:</strong></p>
@@ -542,17 +542,17 @@ Where c = speed of light = 300 &times; 10&sup6; m/s.</pre>
       <p><strong>Waveguide</strong> is a hollow metal pipe used to carry microwave signals at frequencies above a few GHz. Unlike coax, it has no inner conductor &mdash; the signal travels as an electromagnetic wave bouncing down the inside of the pipe. Loss is extremely low once the signal is above the cutoff frequency.</p>
       <p><strong>Cutoff frequency &mdash; the key calculation</strong></p>
       <p>A rectangular waveguide propagates signals above a minimum frequency called the <strong>cutoff frequency</strong>. For the dominant TE10 mode, the cutoff wavelength depends only on the wide (internal) dimension <code>a</code>:</p>
-      <pre>&lambda;_c = 2 &times; a
-f_c  = c / &lambda;_c  =  c / (2 &times; a)</pre>
-      <p>Where <code>c</code> = 3 &times; 10&sup8; m/s and <code>a</code> is in metres. Below <code>f_c</code> the signal is heavily attenuated and does not propagate. Above <code>f_c</code> propagation is essentially loss-free until the next higher-order mode appears &mdash; the usable operating band runs from about <strong>1.25&times; to 1.9&times;</strong> the cutoff frequency.</p>
+      <pre>&lambda;<sub>c</sub> = 2 &times; a
+f<sub>c</sub>  = c / &lambda;<sub>c</sub>  =  c / (2 &times; a)</pre>
+      <p>Where <code>c</code> = 3 &times; 10&sup8; m/s and <code>a</code> is in metres. Below <code>f<sub>c</sub></code> the signal is heavily attenuated and does not propagate. Above <code>f<sub>c</sub></code> propagation is essentially loss-free until the next higher-order mode appears &mdash; the usable operating band runs from about <strong>1.25&times; to 1.9&times;</strong> the cutoff frequency.</p>
       <p><strong>Worked example &mdash; WG13:</strong></p>
       <p>WG13 has internal dimensions 40.4 mm &times; 20.2 mm (wide &times; narrow).</p>
-      <pre>&lambda;_c = 2 &times; 40.4 mm = 80.8 mm = 0.0808 m
-f_c = (3 &times; 10&sup8;) / 0.0808 &asymp; 3.71 GHz
+      <pre>&lambda;<sub>c</sub> = 2 &times; 40.4 mm = 80.8 mm = 0.0808 m
+f<sub>c</sub> = (3 &times; 10&sup8;) / 0.0808 &asymp; 3.71 GHz
 Operating band &asymp; 1.25 &times; 3.71 to 1.9 &times; 3.71 = 4.6 to 7.0 GHz</pre>
       <p>WG13 is designed for C-band (~5&ndash;6 GHz). Trying to use it at, say, 2.4 GHz would fail &mdash; that frequency is below cutoff.</p>
       <p><strong>The 2:1 aspect ratio</strong></p>
-      <p>Standard rectangular waveguides have narrow dimension &asymp; wide dimension / 2 (notice 20.2 mm &asymp; 40.4 mm / 2 for WG13). This ratio suppresses higher-order modes across the operating band. The narrow dimension does not affect the cutoff frequency &mdash; only the wide dimension determines <code>f_c</code>.</p>
+      <p>Standard rectangular waveguides have narrow dimension &asymp; wide dimension / 2 (notice 20.2 mm &asymp; 40.4 mm / 2 for WG13). This ratio suppresses higher-order modes across the operating band. The narrow dimension does not affect the cutoff frequency &mdash; only the wide dimension determines <code>f<sub>c</sub></code>.</p>
       <p><strong>Why not at HF or VHF?</strong> At 145 MHz, <code>a</code> would need to be about 1 metre &mdash; impractically large. Waveguide is only practical above a few GHz.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
@@ -784,7 +784,7 @@ Impedance ratio = (turns ratio)&sup2;
         <li>More director elements &rarr; narrower beamwidth &rarr; higher gain (these are linked: you cannot have both high gain and wide beamwidth)</li>
       </ul>
       <p><strong>Front-to-back ratio (F/B)</strong> is the ratio (in dB) of the power radiated in the main forward direction to the power radiated directly behind the antenna. A high F/B ratio means the antenna discriminates well against stations behind it — useful for reducing interference.</p>
-<pre>F/B (dB) = 10 &times; log&#x2081;&#x2080; (Power_forward / Power_back)</pre>
+<pre>F/B (dB) = 10 &times; log&#x2081;&#x2080; (Power<sub>forward</sub> / Power<sub>back</sub>)</pre>
       <p>A typical 3-element Yagi has F/B &asymp; 20–25 dB. A well-designed 5-element Yagi may achieve 28–30 dB F/B.</p>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
@@ -1024,13 +1024,13 @@ Turns ratio = &radic;(impedance ratio) = &radic;4 = <strong>2:1</strong></pre>
           <li><strong>Practical dipole length:</strong> L(m) = 142.5 / f(MHz) — or (150/f) &times; 0.95</li>
           <li><strong>Dipole feedpoint impedance:</strong> &asymp; 73 &Omega; in free space, &asymp; 50 &Omega; near ground</li>
           <li><strong>Polarisation mismatch on VHF/UHF:</strong> causes &asymp; 20 dB signal loss — always match polarisation</li>
-          <li><strong>Reflection coefficient:</strong> &Gamma; = (Z_L &minus; Z_0) / (Z_L + Z_0); |&Gamma;| = 0 = perfect match, 1 = total reflection</li>
+          <li><strong>Reflection coefficient:</strong> &Gamma; = (Z<sub>L</sub> &minus; Z<sub>0</sub>) / (Z<sub>L</sub> + Z<sub>0</sub>); |&Gamma;| = 0 = perfect match, 1 = total reflection</li>
           <li><strong>SWR from |&Gamma;|:</strong> SWR = (1 + |&Gamma;|) / (1 &minus; |&Gamma;|)</li>
           <li><strong>|&Gamma;| from SWR:</strong> |&Gamma;| = (SWR &minus; 1) / (SWR + 1)</li>
           <li><strong>Return loss:</strong> RL(dB) = &minus;20 &times; log&#x2081;&#x2080;(|&Gamma;|). Higher = better match</li>
           <li><strong>Key SWR values:</strong> 2:1 &rarr; 11% power reflected, 9.5 dB RL; 3:1 &rarr; 25% reflected, 6.0 dB RL</li>
           <li><strong>Coax is unbalanced, 50 &Omega; standard;</strong> 75 &Omega; is for TV — not for amateur TX</li>
-          <li><strong>Velocity factor:</strong> VF = v_cable / c; typical 0.66–0.85 for coax. Physical length = free-space length &times; VF</li>
+          <li><strong>Velocity factor:</strong> VF = v<sub>cable</sub> / c; typical 0.66–0.85 for coax. Physical length = free-space length &times; VF</li>
           <li><strong>Ladder line:</strong> lower loss than coax at HF; typical 300/450/600 &Omega;; sensitive to nearby metal</li>
           <li><strong>Balun:</strong> chokes common-mode current on coax braid at balanced antenna feedpoint</li>
           <li><strong>Balun impedance ratio:</strong> = (turns ratio)&sup2;; 4:1 balun &rarr; 2:1 turns &rarr; 200 &Omega; &harr; 50 &Omega;</li>
@@ -1103,15 +1103,15 @@ Turns ratio = &radic;(impedance ratio) = &radic;4 = <strong>2:1</strong></pre>
           <tbody>
             <tr><td><a href="#ch-4a" target="_blank">L(m) = 142.5 / f(MHz)</a></td><td>Practical half-wave dipole length</td></tr>
             <tr><td><a href="#ch-4a" target="_blank">L(m) = (150 / f) &times; VF</a></td><td>Dipole length using velocity factor</td></tr>
-            <tr><td><a href="#ch-4b" target="_blank">&Gamma; = (Z_L &minus; Z_0) / (Z_L + Z_0)</a></td><td>Reflection coefficient</td></tr>
+            <tr><td><a href="#ch-4b" target="_blank">&Gamma; = (Z<sub>L</sub> &minus; Z<sub>0</sub>) / (Z<sub>L</sub> + Z<sub>0</sub>)</a></td><td>Reflection coefficient</td></tr>
             <tr><td><a href="#ch-4b" target="_blank">SWR = (1 + |&Gamma;|) / (1 &minus; |&Gamma;|)</a></td><td>SWR from reflection coefficient</td></tr>
             <tr><td><a href="#ch-4b" target="_blank">|&Gamma;| = (SWR &minus; 1) / (SWR + 1)</a></td><td>Reflection coefficient from SWR</td></tr>
             <tr><td><a href="#ch-4b" target="_blank">RL(dB) = &minus;20 &times; log&#x2081;&#x2080;(|&Gamma;|)</a></td><td>Return loss</td></tr>
-            <tr><td><a href="#ch-4b" target="_blank">P_reflected = |&Gamma;|&sup2; &times; P_forward</a></td><td>Reflected power fraction</td></tr>
-            <tr><td><a href="#ch-4d" target="_blank">Z_ratio = (N_turns_ratio)&sup2;</a></td><td>Balun / transformer impedance ratio</td></tr>
+            <tr><td><a href="#ch-4b" target="_blank">P<sub>reflected</sub> = |&Gamma;|&sup2; &times; P<sub>forward</sub></a></td><td>Reflected power fraction</td></tr>
+            <tr><td><a href="#ch-4d" target="_blank">Z<sub>ratio</sub> = (N<sub>turns ratio</sub>)&sup2;</a></td><td>Balun / transformer impedance ratio</td></tr>
             <tr><td><a href="#ch-4f" target="_blank">dBi = dBd + 2.15</a></td><td>Gain reference conversion</td></tr>
-            <tr><td><a href="#ch-4f" target="_blank">EIRP = P_TX(dBW) + G_ant(dBi) &minus; Loss_feeder(dB)</a></td><td>Effective isotropic radiated power</td></tr>
-            <tr><td><a href="#ch-4f" target="_blank">F/B(dB) = 10 &times; log&#x2081;&#x2080;(P_fwd / P_back)</a></td><td>Front-to-back ratio</td></tr>
+            <tr><td><a href="#ch-4f" target="_blank">EIRP = P<sub>TX</sub>(dBW) + G<sub>ant</sub>(dBi) &minus; Loss<sub>feeder</sub>(dB)</a></td><td>Effective isotropic radiated power</td></tr>
+            <tr><td><a href="#ch-4f" target="_blank">F/B(dB) = 10 &times; log&#x2081;&#x2080;(P<sub>fwd</sub> / P<sub>back</sub>)</a></td><td>Front-to-back ratio</td></tr>
           </tbody>
         </table>
       </div>

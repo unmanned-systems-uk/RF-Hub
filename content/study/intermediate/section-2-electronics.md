@@ -73,7 +73,7 @@ These are the values you will find in catalogues and exam questions.
 When resistors are connected end-to-end (series), the **resistances add**.
 
 ```
-R_total = R1 + R2 + R3 + ...
+R<sub>total</sub> = R1 + R2 + R3 + ...
 ```
 
 **Example:** 100 Ω + 150 Ω + 220 Ω = **470 Ω**
@@ -85,12 +85,12 @@ the smallest individual resistor**.
 
 **For two resistors:**
 ```
-R_total = (R1 × R2) / (R1 + R2)
+R<sub>total</sub> = (R1 × R2) / (R1 + R2)
 ```
 
 **For any number of resistors:**
 ```
-1/R_total = 1/R1 + 1/R2 + 1/R3 + ...
+1/R<sub>total</sub> = 1/R1 + 1/R2 + 1/R3 + ...
 ```
 
 > [WARNING] **Common mistake:** Students often add resistances in parallel instead of using
@@ -127,22 +127,22 @@ fraction of the supply voltage.
 
 The output voltage is:
 ```
-V_out = Vs × R2 / (R1 + R2)
+V<sub>out</sub> = Vs × R2 / (R1 + R2)
 ```
 
-This only works accurately if the load (connected to V_out) draws very little current —
+This only works accurately if the load (connected to V<sub>out</sub>) draws very little current —
 if it draws significant current, it changes the effective R2 value.
 
 > [INFO] **2C2:** The potential divider formula. Questions often give you R1, R2, and Vs,
-> and ask for V_out — or vice versa.
+> and ask for V<sub>out</sub> — or vice versa.
 
 **Example:** Three equal resistors in series across a supply. What is the voltage at the
 junction between the bottom two resistors?
 
 If all three are equal, each drops 1/3 of the supply. The bottom junction is 1/3 of the way
-up, so V_out = Vs × 1/3.
+up, so V<sub>out</sub> = Vs × 1/3.
 
-If V_out = 8 V, then Vs = 24 V.
+If V<sub>out</sub> = 8 V, then Vs = 24 V.
 
 #### Voltage in a series circuit
 
@@ -151,7 +151,7 @@ drop across each component is proportional to its resistance.
 
 **Example:** R1 = 200 Ω, R2 = 600 Ω in series. Voltage across R1 = 4 V.
 ```
-Current I = V_R1 / R1 = 4 / 200 = 20 mA
+Current I = V<sub>R1</sub> / R1 = 4 / 200 = 20 mA
 Voltage across R2 = I × R2 = 20 mA × 600 = 12 V
 Total supply = 4 + 12 = 16 V
 ```
@@ -165,19 +165,19 @@ Real batteries and power supplies have an **internal resistance**. Under load, t
 voltage drops because current flows through this internal resistance.
 
 ```
-V_terminal = V_open_circuit - (I × R_internal)
+V<sub>terminal</sub> = V<sub>open circuit</sub> - (I × R<sub>internal</sub>)
 ```
 
 **Example:** Terminal voltage is 13.2 V at 1 A, and 12.4 V at 5 A.
 ```
-Voltage drop at 1A: 13.2 V terminal, unknown V_oc and R_int
+Voltage drop at 1A: 13.2 V terminal, unknown V<sub>oc</sub> and R<sub>int</sub>
 Voltage drop at 5A: 12.4 V terminal
 
 Change in voltage: 13.2 - 12.4 = 0.8 V
 Change in current: 5 - 1 = 4 A
-R_internal = 0.8 / 4 = 0.2 Ω
+R<sub>internal</sub> = 0.8 / 4 = 0.2 Ω
 
-V_oc = 13.2 + (1 × 0.2) = 13.4 V
+V<sub>oc</sub> = 13.2 + (1 × 0.2) = 13.4 V
 ```
 
 At receive (I ≈ 0): terminal voltage ≈ **13.4 V** (the open-circuit voltage).
@@ -209,8 +209,8 @@ Capacitance is measured in **farads (F)**, but practical values are:
 
 Capacitors combine the **opposite way** to resistors:
 
-- **Parallel:** C_total = C1 + C2 + C3 (capacitances add — like resistors in series)
-- **Series:** 1/C_total = 1/C1 + 1/C2 (use reciprocal formula)
+- **Parallel:** C<sub>total</sub> = C1 + C2 + C3 (capacitances add — like resistors in series)
+- **Series:** 1/C<sub>total</sub> = 1/C1 + 1/C2 (use reciprocal formula)
 
 > [WARNING] **Common mistake:** Many students mix up series/parallel rules for C vs R.
 > Remember: for capacitors, parallel = add. For resistors, series = add.
@@ -235,8 +235,8 @@ Inductance is measured in **henries (H)**, though practical values are often mH 
 - Pull turns apart
 - Remove turns
 
-Inductors in series: L_total = L1 + L2 + ... (like resistors)
-Inductors in parallel: 1/L_total = 1/L1 + 1/L2 + ... (like resistors)
+Inductors in series: L<sub>total</sub> = L1 + L2 + ... (like resistors)
+Inductors in parallel: 1/L<sub>total</sub> = 1/L1 + 1/L2 + ... (like resistors)
 
 > [INFO] **2D4:** An inductor is normally described as a coil of wire with several turns.
 > The inductance depends on the number of turns, core material, and turn spacing.
@@ -263,7 +263,7 @@ Value = **4 700 Ω (4.7 kΩ) ±5%**
 What is the output voltage measured across R2?
 <details><summary>Answer</summary>
 
-V_out = 10 × 4 000 / (1 000 + 4 000) = 10 × 4/5 = **8 V**
+V<sub>out</sub> = 10 × 4 000 / (1 000 + 4 000) = 10 × 4/5 = **8 V**
 </details>
 
 **Q4.** A polarised capacitor is installed backwards in a circuit. What is likely to happen?
@@ -508,22 +508,22 @@ f = 1 / T      T = 1 / f
 
 **Example:** Mains frequency = 50 Hz → Period = 1 / 50 = **0.02 s (20 ms)**
 
-- **Peak voltage (V_pk):** the maximum voltage reached in one direction.
-- **Peak-to-peak voltage (V_pp):** the total swing from positive peak to negative peak.
-  V_pp = 2 × V_pk
-- **RMS voltage (V_rms):** the DC equivalent in terms of heating effect.
+- **Peak voltage (V<sub>pk</sub>):** the maximum voltage reached in one direction.
+- **Peak-to-peak voltage (V<sub>pp</sub>):** the total swing from positive peak to negative peak.
+  V<sub>pp</sub> = 2 × V<sub>pk</sub>
+- **RMS voltage (V<sub>rms</sub>):** the DC equivalent in terms of heating effect.
 
 ```
-V_rms = V_pk / √2  ≈  V_pk × 0.707
-V_pk  = V_rms × √2  ≈  V_rms × 1.414
+V<sub>rms</sub> = V<sub>pk</sub> / √2  ≈  V<sub>pk</sub> × 0.707
+V<sub>pk</sub>  = V<sub>rms</sub> × √2  ≈  V<sub>rms</sub> × 1.414
 ```
 
 > [INFO] **2E3:** RMS stands for Root Mean Square. The RMS value of an AC signal is the
 > DC voltage that would produce the same heating effect in a resistor.
 
 **UK mains example:**
-- V_rms = 230 V (what your meter reads)
-- V_pk = 230 × 1.414 ≈ **325 V** (the actual peak)
+- V<sub>rms</sub> = 230 V (what your meter reads)
+- V<sub>pk</sub> = 230 × 1.414 ≈ **325 V** (the actual peak)
 
 > [WARNING] **2E3:** Which signal causes more heating in a 50 Ω load — 10 V DC or
 > 10 V AC (peak)? Answer: **10 V DC.** The DC is a constant 10 V. The AC peak is 10 V,
@@ -618,7 +618,7 @@ Or equivalently: λ × f = 300 × 10⁶ (speed of light in metres per second)
 **Q1.** An AC signal has a peak voltage of 14.1 V. What is its RMS voltage?
 <details><summary>Answer</summary>
 
-V_rms = 14.1 / √2 = 14.1 / 1.414 ≈ **10 V RMS**
+V<sub>rms</sub> = 14.1 / √2 = 14.1 / 1.414 ≈ **10 V RMS**
 </details>
 
 **Q2.** A signal at 50.150 MHz is in which amateur band?
@@ -893,7 +893,7 @@ To accurately represent an analogue signal, the **sampling rate must be at least
 highest frequency in the signal.**
 
 ```
-f_sample ≥ 2 × f_max        (the Nyquist rate)
+f<sub>sample</sub> ≥ 2 × f<sub>max</sub>        (the Nyquist rate)
 ```
 
 **Example:** An audio signal up to 4 kHz. Minimum sample rate = 2 × 4 kHz = **8 kHz.**
@@ -934,7 +934,7 @@ C is quadrupled. Therefore f₀ halves. The new resonant frequency is **half** t
 needed to record it accurately?
 <details><summary>Answer</summary>
 
-f_sample ≥ 2 × 3 500 = **7 000 Hz (7 kHz)**
+f<sub>sample</sub> ≥ 2 × 3 500 = **7 000 Hz (7 kHz)**
 </details>
 
 **Q3.** At resonance, a series tuned circuit has _____ impedance.
@@ -1002,13 +1002,13 @@ Key facts:
 - The voltage ratio equals the turns ratio:
 
 ```
-V_primary / V_secondary = N_primary / N_secondary
+V<sub>primary</sub> / V<sub>secondary</sub> = N<sub>primary</sub> / N<sub>secondary</sub>
 ```
 
 **Example:** Primary = 3 turns, secondary = 1 turn. Primary voltage = 240 V AC.
 ```
-240 / V_sec = 3 / 1
-V_sec = 240 / 3 = 80 V AC
+240 / V<sub>sec</sub> = 3 / 1
+V<sub>sec</sub> = 240 / 3 = 80 V AC
 ```
 
 > [INFO] **2G1:** A transformer can only be used with AC. The iron core concentrates the
@@ -1021,7 +1021,7 @@ V_sec = 240 / 3 = 80 V AC
 matching circuits (baluns) to connect antennas with 450 Ω impedance to 50 Ω feeders.
 
 ```
-Z_primary / Z_secondary = (N_primary / N_secondary)²
+Z<sub>primary</sub> / Z<sub>secondary</sub> = (N<sub>primary</sub> / N<sub>secondary</sub>)²
 ```
 
 **Example:** A 9:1 balun (unun) transforms 450 Ω to 50 Ω.
@@ -1055,7 +1055,7 @@ A germanium diode drops about 0.2–0.3 V.
 **Calculating diode current:**
 If a 10 V supply is connected through a 900 Ω resistor to a silicon diode:
 ```
-V_resistor = 10 - 0.6 = 9.4 V (forward drop across diode)
+V<sub>resistor</sub> = 10 - 0.6 = 9.4 V (forward drop across diode)
 I = 9.4 / 900 ≈ 10.4 mA ≈ 10.6 mA
 ```
 
@@ -1145,12 +1145,12 @@ When bias resistors (R1 and R2 as a voltage divider) are combined with the trans
 own input resistance at the base, the overall input resistance is the parallel combination:
 
 ```
-R_in = R1 || R2 || (β × r_e)
+R<sub>in</sub> = R1 || R2 || (β × r<sub>e</sub>)
 ```
 
 For a transistor with base input resistance of 50 kΩ, with bias resistors of 47 kΩ and 22 kΩ:
 ```
-R_in = 47k || 22k || 50k ≈ 12.1 kΩ
+R<sub>in</sub> = 47k || 22k || 50k ≈ 12.1 kΩ
 ```
 
 ### 2G Theory — Field Effect Transistors (FET) (2H4 and 2H5)
@@ -1186,7 +1186,7 @@ A special diode where capacitance is controlled by the reverse bias voltage.
 The primary is fed 240 V AC. What is the secondary voltage?
 <details><summary>Answer</summary>
 
-V_sec = V_pri × (N_sec / N_pri) = 240 × (50/200) = 240 × 0.25 = **60 V AC**
+V<sub>sec</sub> = V<sub>pri</sub> × (N<sub>sec</sub> / N<sub>pri</sub>) = 240 × (50/200) = 240 × 0.25 = **60 V AC**
 </details>
 
 **Q2.** A transistor has a current gain (β) of 150. If the base current is 20 μA,
@@ -1402,7 +1402,7 @@ It maintains a constant voltage across itself as long as some minimum current fl
 
 <img src="/assets/images/study/section-2/fig-2-3-zener-regulator.svg" alt="Zener voltage regulator: +Vin feeds through R_series resistor to the output junction. A Zener diode from junction to GND clamps Vout to the Zener voltage V_z. R_series drops any excess input voltage." width="600" height="280" loading="lazy">
 
-**How it works:** excess input voltage is dropped across R_series. The zener clamps Vout.
+**How it works:** excess input voltage is dropped across R<sub>series</sub>. The zener clamps Vout.
 
 #### IC voltage regulators
 
@@ -1539,7 +1539,7 @@ or two voltage/current levels.
 #### Power ratio in dB
 
 ```
-dB = 10 × log₁₀ (P_out / P_in)
+dB = 10 × log₁₀ (P<sub>out</sub> / P<sub>in</sub>)
 ```
 
 **Common power ratios to memorise:**
@@ -1572,7 +1572,7 @@ Power is reduced by a factor of 1 000 (to 1/1000 of input)
 #### Voltage ratio in dB
 
 ```
-dB = 20 × log₁₀ (V_out / V_in)
+dB = 20 × log₁₀ (V<sub>out</sub> / V<sub>in</sub>)
 ```
 
 Note the factor of 20 (not 10) for voltage ratios.
@@ -1691,13 +1691,13 @@ signal-to-noise ratio for weak signals.
 
 | Formula | Use |
 |---------|-----|
-| R_total = R1 + R2 + ... | Resistors in series |
-| 1/R_t = 1/R1 + 1/R2 | Resistors in parallel |
-| R_t = R1×R2/(R1+R2) | Two resistors in parallel |
-| V_out = Vs × R2/(R1+R2) | Potential divider |
+| R<sub>total</sub> = R1 + R2 + ... | Resistors in series |
+| 1/R<sub>t</sub> = 1/R1 + 1/R2 | Resistors in parallel |
+| R<sub>t</sub> = R1×R2/(R1+R2) | Two resistors in parallel |
+| V<sub>out</sub> = Vs × R2/(R1+R2) | Potential divider |
 | V = I × R | Ohm's law |
 | P = V × I = I² × R = V²/R | Power |
-| V_rms = V_pk / √2 ≈ V_pk × 0.707 | RMS voltage from peak |
+| V<sub>rms</sub> = V<sub>pk</sub> / √2 ≈ V<sub>pk</sub> × 0.707 | RMS voltage from peak |
 | f = 1/T | Frequency from period |
 | λ = 300 / f(MHz) | Wavelength in metres |
 | Xc = 1/(2πfC) | Capacitive reactance |
@@ -1705,9 +1705,9 @@ signal-to-noise ratio for weak signals.
 | f₀ = 1/(2π√LC) | Resonant frequency |
 | β = IC / IB | Transistor current gain |
 | V1/V2 = N1/N2 | Transformer voltage ratio |
-| dB = 10 × log(P_out/P_in) | Power in decibels |
-| dB = 20 × log(V_out/V_in) | Voltage in decibels |
-| f_sample ≥ 2 × f_max | Nyquist sampling theorem |
+| dB = 10 × log(P<sub>out</sub>/P<sub>in</sub>) | Power in decibels |
+| dB = 20 × log(V<sub>out</sub>/V<sub>in</sub>) | Voltage in decibels |
+| f<sub>sample</sub> ≥ 2 × f<sub>max</sub> | Nyquist sampling theorem |
 | Capacity (Ah) = I(A) × t(h) | Battery capacity |
 
 ---
@@ -1721,7 +1721,7 @@ signal-to-noise ratio for weak signals.
 - **Capacitor:** blocks DC, passes AC
 - **Transformer:** AC only; turns ratio = voltage ratio
 - **Resonance:** series circuit = minimum impedance; parallel = maximum
-- **RMS:** the DC equivalent heating value; V_rms = 0.707 × V_peak
+- **RMS:** the DC equivalent heating value; V<sub>rms</sub> = 0.707 × V<sub>peak</sub>
 - **Decibels:** +3 dB doubles power; +10 dB multiplies by 10
 - **Nyquist:** sample rate ≥ twice the highest signal frequency
 - **FET advantages at RX input:** lower noise, higher input impedance

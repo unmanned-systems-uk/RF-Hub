@@ -87,8 +87,8 @@ Watch for the answer option **"constant offset from the LO"**. It is technically
 ### 3A Theory — Image Frequency and Rejection (3A2, 3I2)
 
 The mixer responds to two RF frequencies that both produce the same IF:
-- The **wanted signal:** `f_RF`
-- The **image frequency:** `f_RF + 2 × IF` (or `f_RF − 2 × IF`)
+- The **wanted signal:** `f<sub>RF</sub>`
+- The **image frequency:** `f<sub>RF</sub> + 2 × IF` (or `f<sub>RF</sub> − 2 × IF`)
 
 **Example:** IF = 455 kHz, wanted signal at 7.100 MHz.
 LO = 7.100 + 0.455 = 7.555 MHz.
@@ -112,9 +112,9 @@ amplifier could pick up its own output and oscillate.
 
 The LO can be placed either ABOVE or BELOW the received signal. Both arrangements produce the same IF from the mixer. The two are called **high-side injection** and **low-side injection**.
 
-**High-side injection:** `LO = f_signal + f_IF` — LO is ABOVE the signal. The mixer takes LO − RF = IF.
+**High-side injection:** `LO = f<sub>signal</sub> + f<sub>IF</sub>` — LO is ABOVE the signal. The mixer takes LO − RF = IF.
 
-**Low-side injection:** `LO = f_signal − f_IF` — LO is BELOW the signal. The mixer takes RF − LO = IF.
+**Low-side injection:** `LO = f<sub>signal</sub> − f<sub>IF</sub>` — LO is BELOW the signal. The mixer takes RF − LO = IF.
 
 Both produce an identical IF and are equally valid superhet designs. The choice is a design decision about where to park the oscillator.
 
@@ -136,11 +136,11 @@ A superhet's local oscillator inevitably leaks a small amount of RF back through
 #### Exam approach
 
 When a question gives you signal frequency and IF and asks for the LO:
-- Both `f_signal + f_IF` and `f_signal − f_IF` are mathematically correct
+- Both `f<sub>signal</sub> + f<sub>IF</sub>` and `f<sub>signal</sub> − f<sub>IF</sub>` are mathematically correct
 - If only one answer is offered, that is the intended answer
 - If both are offered, the answer that places the LO **outside** the amateur band is the preferred choice
 
-> [INFO] **3I2:** LO injection can be high-side (`f_signal + f_IF`) or low-side (`f_signal − f_IF`). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = **13.640 MHz** (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.
+> [INFO] **3I2:** LO injection can be high-side (`f<sub>signal</sub> + f<sub>IF</sub>`) or low-side (`f<sub>signal</sub> − f<sub>IF</sub>`). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = **13.640 MHz** (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.
 
 ### 3A Self-Check Questions
 
@@ -262,7 +262,7 @@ A **mixer** is a non-linear device that combines two input signals and produces
 output frequencies that include their sum and difference:
 
 ```
-Output frequencies = f_RF ± f_LO
+Output frequencies = f<sub>RF</sub> ± f<sub>LO</sub>
 ```
 
 In a superhet, the difference (or sum) is selected by the IF filter. The unwanted
@@ -278,7 +278,7 @@ product is rejected.
 is why receiver **dynamic range** matters.
 
 > [INFO] **3B1:** A mixer combines the RF and LO signals to produce the IF. The IF is
-> typically the difference frequency: IF = |f_RF − f_LO|.
+> typically the difference frequency: IF = |f<sub>RF</sub> − f<sub>LO</sub>|.
 
 ---
 
@@ -551,10 +551,10 @@ prevents this.
 **AM depth of modulation (m):**
 
 ```
-m = V_mod_peak / V_carrier
+m = V<sub>mod peak</sub> / V<sub>carrier</sub>
 ```
 
-`V_mod_peak` = peak amplitude of the audio modulating signal; `V_carrier` = peak amplitude of the unmodulated carrier.
+`V<sub>mod peak</sub>` = peak amplitude of the audio modulating signal; `V<sub>carrier</sub>` = peak amplitude of the unmodulated carrier.
 
 | m value | Depth % | Meaning | Effect |
 |---------|---------|---------|--------|
@@ -568,10 +568,10 @@ At m = 1.0 (100% modulation), the total radiated power equals 1.5× the unmodula
 **FM modulation index (β):**
 
 ```
-β = Δf / f_mod
+β = Δf / f<sub>mod</sub>
 ```
 
-where Δf is the peak frequency deviation and f_mod is the modulating frequency. Unlike AM, β **can exceed 1.0** without distortion — it simply produces more sidebands and a wider bandwidth (governed by Carson's Rule). There is no overmodulation in FM in the same sense as AM.
+where Δf is the peak frequency deviation and f<sub>mod</sub> is the modulating frequency. Unlike AM, β **can exceed 1.0** without distortion — it simply produces more sidebands and a wider bandwidth (governed by Carson's Rule). There is no overmodulation in FM in the same sense as AM.
 
 ```
 AM:  m > 1.0 → clipping → splatter (interferes with adjacent channels)
@@ -596,7 +596,7 @@ The carrier amplitude stays constant.
 - **Centre frequency:** the unmodulated carrier frequency
 - **Peak deviation (Δf):** the maximum change from centre frequency.
   This occurs at the amplitude peaks of the modulating signal.
-- **Modulation index (β):** β = Δf / f_mod (deviation divided by modulating frequency)
+- **Modulation index (β):** β = Δf / f<sub>mod</sub> (deviation divided by modulating frequency)
 
 > [INFO] **3A2:** Peak deviation is the **maximum change from the centre frequency**,
 > occurring at the amplitude peaks of the modulating audio signal.
@@ -606,10 +606,10 @@ The carrier amplitude stays constant.
 The bandwidth of an FM signal is approximately:
 
 ```
-BW ≈ 2 × (Δf + f_max)
+BW ≈ 2 × (Δf + f<sub>max</sub>)
 ```
 
-Where Δf = peak deviation and f_max = highest audio frequency.
+Where Δf = peak deviation and f<sub>max</sub> = highest audio frequency.
 
 **Example:** Deviation = 5 kHz, highest audio = 3 kHz.
 ```
@@ -720,16 +720,16 @@ A power amplifier converts DC power drawn from the PSU into RF power delivered t
 **Efficiency η** is defined as:
 
 ```
-η = P_out / P_in
+η = P<sub>out</sub> / P<sub>in</sub>
 ```
 
-Where `P_out` is the RF power reaching the antenna and `P_in` is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat.
+Where `P<sub>out</sub>` is the RF power reaching the antenna and `P<sub>in</sub>` is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat.
 
-To find heat dissipation, rearrange to get P_in, then subtract P_out:
+To find heat dissipation, rearrange to get P<sub>in</sub>, then subtract P<sub>out</sub>:
 
 ```
-P_in  = P_out / η
-P_heat = P_in − P_out
+P<sub>in</sub>  = P<sub>out</sub> / η
+P<sub>heat</sub> = P<sub>in</sub> − P<sub>out</sub>
 ```
 
 **Worked example — typical exam question shape:**
@@ -737,21 +737,21 @@ P_heat = P_in − P_out
 > A PA stage has 60% efficiency and delivers 50 W of RF. How much power is dissipated as heat?
 
 ```
-P_in   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
-P_heat = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
+P<sub>in</sub>   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
+P<sub>heat</sub> = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
 Answer: ~33 W
 ```
 
-> [INFO] **Common exam trap:** Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the **output** (RF delivered), not the input. Efficiency applies to the **input** power. You must find P_in first, then subtract P_out to get heat. The correct path: P_in = 50 ÷ 0.6 = 83 W; heat = 83 − 50 = **33 W**, not 20 W.
+> [INFO] **Common exam trap:** Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the **output** (RF delivered), not the input. Efficiency applies to the **input** power. You must find P<sub>in</sub> first, then subtract P<sub>out</sub> to get heat. The correct path: P<sub>in</sub> = 50 ÷ 0.6 = 83 W; heat = 83 − 50 = **33 W**, not 20 W.
 
 **Mental-arithmetic shortcuts for common efficiencies:**
 
 | Efficiency | Heat as fraction of RF output |
 |---|---|
-| 50% | Heat = P_out (equal amounts) |
-| 60% | Heat ≈ ⅔ × P_out (ratio 3:2 out:heat) |
-| 66% | Heat ≈ ½ × P_out |
-| 75% | Heat ≈ ⅓ × P_out |
+| 50% | Heat = P<sub>out</sub> (equal amounts) |
+| 60% | Heat ≈ ⅔ × P<sub>out</sub> (ratio 3:2 out:heat) |
+| 66% | Heat ≈ ½ × P<sub>out</sub> |
+| 75% | Heat ≈ ⅓ × P<sub>out</sub> |
 
 For 60% efficient: the out:heat ratio is 60:40 = 3:2, so heat ≈ (2/3) × RF output = (2/3) × 50 = **33 W** — same answer, faster arithmetic.
 
@@ -770,7 +770,7 @@ SSB requires the PA to faithfully reproduce amplitude variations in the signal �
 
 *(Cross-ref: amplifier class theory is covered in detail in §5 Semiconductors.)*
 
-**Practical implication:** The heat has to go somewhere. A Full-licence HF linear running 400 W output at 60% efficiency draws P_in = 400 ÷ 0.6 = 667 W from the PSU and dissipates **267 W as heat** — more than twice the heat of a 100 W station. This is why HF linears have large heatsinks, internal cooling fans, and thermal cutout protection. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.
+**Practical implication:** The heat has to go somewhere. A Full-licence HF linear running 400 W output at 60% efficiency draws P<sub>in</sub> = 400 ÷ 0.6 = 667 W from the PSU and dissipates **267 W as heat** — more than twice the heat of a 100 W station. This is why HF linears have large heatsinks, internal cooling fans, and thermal cutout protection. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.
 
 ### 3G Self-Check Questions
 
@@ -1351,13 +1351,13 @@ transceiver output mixes to 50 MHz output).
 
 | Formula | Use |
 |---------|-----|
-| IF = \|f_RF − f_LO\| | Intermediate frequency (both injection sides) |
-| f_LO = f_RF + f_IF | LO frequency — high-side injection |
-| f_LO = f_RF − f_IF | LO frequency — low-side injection |
-| f_image = f_RF + 2 × IF | Image frequency (high-side LO) |
-| f_image = f_RF − 2 × IF | Image frequency (low-side LO) |
-| BW ≈ 2(Δf + f_max) | FM bandwidth (Carson's rule) |
-| β = Δf / f_mod | FM modulation index |
+| IF = \|f<sub>RF</sub> − f<sub>LO</sub>\| | Intermediate frequency (both injection sides) |
+| f<sub>LO</sub> = f<sub>RF</sub> + f<sub>IF</sub> | LO frequency — high-side injection |
+| f<sub>LO</sub> = f<sub>RF</sub> − f<sub>IF</sub> | LO frequency — low-side injection |
+| f<sub>image</sub> = f<sub>RF</sub> + 2 × IF | Image frequency (high-side LO) |
+| f<sub>image</sub> = f<sub>RF</sub> − 2 × IF | Image frequency (low-side LO) |
+| BW ≈ 2(Δf + f<sub>max</sub>) | FM bandwidth (Carson's rule) |
+| β = Δf / f<sub>mod</sub> | FM modulation index |
 | Audio = \|IF − BFO\| | CW receive tone |
 | f = 1/T | Frequency from period |
 

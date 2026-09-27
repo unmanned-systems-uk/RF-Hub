@@ -20,7 +20,7 @@ This section covers mains electrical safety, working on live circuits, RF exposu
 The UK mains supply is **230 V RMS at 50 Hz**. RMS (Root Mean Square) is the equivalent DC value in terms of power delivery — but the actual peak voltage of a sinusoidal supply is higher:
 
 ```
-V_peak = V_RMS × √2 = 230 × 1.414 ≈ 325 V
+V<sub>peak</sub> = V<sub>RMS</sub> × √2 = 230 × 1.414 ≈ 325 V
 ```
 
 Every time you handle a mains-connected device, up to 325 V is present across the conductors. That is enough to be lethal under the right conditions. The hazard is not the voltage alone but the **current that voltage drives through the body**:

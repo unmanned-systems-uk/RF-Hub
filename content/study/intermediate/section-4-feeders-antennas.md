@@ -127,24 +127,24 @@ Knowing standing waves exist is one thing — knowing what they actually cause (
 The **reflection coefficient Γ (gamma)** quantifies how much of the incident wave is reflected.
 
 ```
-        Z_L − Z_0
+        Z<sub>L</sub> − Z<sub>0</sub>
 Γ = ——————————————
-        Z_L + Z_0
+        Z<sub>L</sub> + Z<sub>0</sub>
 ```
 
 Where:
-- Z_L = load impedance (the antenna feedpoint impedance)
-- Z_0 = characteristic impedance of the feeder (usually 50 Ω)
+- Z<sub>L</sub> = load impedance (the antenna feedpoint impedance)
+- Z<sub>0</sub> = characteristic impedance of the feeder (usually 50 Ω)
 - Γ is a complex number, but for exam purposes its magnitude |Γ| is what matters
 
 **The magnitude |Γ| ranges from 0 (perfect match) to 1 (total reflection):**
 
-| Condition | Z_L | |Γ| |
+| Condition | Z<sub>L</sub> | |Γ| |
 |-----------|-----|-------|
-| Perfect match | Z_L = Z_0 | 0 |
-| Open circuit | Z_L = ∞ | 1 |
-| Short circuit | Z_L = 0 | 1 |
-| Practical good match | Z_L ≈ Z_0 | small (< 0.2) |
+| Perfect match | Z<sub>L</sub> = Z<sub>0</sub> | 0 |
+| Open circuit | Z<sub>L</sub> = ∞ | 1 |
+| Short circuit | Z<sub>L</sub> = 0 | 1 |
+| Practical good match | Z<sub>L</sub> ≈ Z<sub>0</sub> | small (< 0.2) |
 
 **What does |Γ| = 0.33 mean physically?** One third of the voltage amplitude is reflected. Since power is proportional to V², the reflected power fraction is |Γ|² = 0.11, i.e., about 11% of power is reflected back. The remaining 89% is absorbed by the antenna (or lost in feeder resistance).
 
@@ -237,7 +237,7 @@ It contains a **directional coupler** that samples both the forward (incident) p
 - [VSWR Bridge — Wheatstone bridge principle, RSA calibration, and measurement procedure](/pages/sidebands/vswr-bridge-measurement.html)
 - [Antenna Curriculum Lesson 7: SWR and Return Loss](/pages/antenna-curriculum/unit-2-characteristics-and-measurement/lesson-07-swr-and-return-loss.html)
 
-<!-- INTERACTIVE REQUEST: SWR sweep visualiser — slider for Z_L from 0 to 500 Ω, live calculation of SWR, |Γ|, return loss (dB), and % reflected power. Visual standing wave envelope animation updating in real time. -->
+<!-- INTERACTIVE REQUEST: SWR sweep visualiser — slider for Z<sub>L</sub> from 0 to 500 Ω, live calculation of SWR, |Γ|, return loss (dB), and % reflected power. Visual standing wave envelope animation updating in real time. -->
 
 ---
 
@@ -291,7 +291,7 @@ The characteristic impedance of coax depends on the diameter of the inner conduc
 The speed of an electromagnetic wave inside a coaxial cable is **less than the speed of light in a vacuum**. The ratio of the wave speed in the cable to the speed of light is called the **velocity factor (VF)**.
 
 ```
-VF = v_cable / c
+VF = v<sub>cable</sub> / c
 ```
 
 Where c = speed of light = 300 × 10⁶ m/s.
@@ -353,19 +353,19 @@ Because the two conductors carry equal-and-opposite currents, their electromagne
 A rectangular waveguide propagates signals above a minimum frequency called the **cutoff frequency**. For the dominant TE10 mode, the cutoff wavelength depends only on the wide (internal) dimension `a`:
 
 ```
-λ_c = 2 × a
-f_c  = c / λ_c  =  c / (2 × a)
+λ<sub>c</sub> = 2 × a
+f<sub>c</sub>  = c / λ<sub>c</sub>  =  c / (2 × a)
 ```
 
-Where `c` = 3 × 10⁸ m/s and `a` is in metres. Below `f_c` the signal is heavily attenuated and does not propagate. Above `f_c` propagation is essentially loss-free until the next higher-order mode appears — the usable operating band runs from about **1.25× to 1.9×** the cutoff frequency.
+Where `c` = 3 × 10⁸ m/s and `a` is in metres. Below `f<sub>c</sub>` the signal is heavily attenuated and does not propagate. Above `f<sub>c</sub>` propagation is essentially loss-free until the next higher-order mode appears — the usable operating band runs from about **1.25× to 1.9×** the cutoff frequency.
 
 **Worked example — WG13:**
 
 WG13 has internal dimensions 40.4 mm × 20.2 mm (wide × narrow).
 
 ```
-λ_c = 2 × 40.4 mm = 80.8 mm = 0.0808 m
-f_c = (3 × 10⁸) / 0.0808 ≈ 3.71 GHz
+λ<sub>c</sub> = 2 × 40.4 mm = 80.8 mm = 0.0808 m
+f<sub>c</sub> = (3 × 10⁸) / 0.0808 ≈ 3.71 GHz
 Operating band ≈ 1.25 × 3.71 to 1.9 × 3.71 = 4.6 to 7.0 GHz
 ```
 
@@ -373,7 +373,7 @@ WG13 is designed for C-band (~5–6 GHz). Trying to use it at, say, 2.4 GHz woul
 
 **The 2:1 aspect ratio**
 
-Standard rectangular waveguides have narrow dimension ≈ wide dimension / 2 (notice 20.2 mm ≈ 40.4 mm / 2 for WG13). This ratio suppresses higher-order modes across the operating band. The narrow dimension does not affect the cutoff frequency — only the wide dimension determines `f_c`.
+Standard rectangular waveguides have narrow dimension ≈ wide dimension / 2 (notice 20.2 mm ≈ 40.4 mm / 2 for WG13). This ratio suppresses higher-order modes across the operating band. The narrow dimension does not affect the cutoff frequency — only the wide dimension determines `f<sub>c</sub>`.
 
 **Why not at HF or VHF?** At 145 MHz, `a` would need to be about 1 metre — impractically large. Waveguide is only practical above a few GHz.
 
@@ -583,7 +583,7 @@ Your licence condition specifies maximum power as a radiated power figure (or as
 **Front-to-back ratio (F/B)** is the ratio (in dB) of the power radiated in the main forward direction to the power radiated directly behind the antenna. A high F/B ratio means the antenna discriminates well against stations behind it — useful for reducing interference.
 
 ```
-F/B (dB) = 10 × log₁₀ (Power_forward / Power_back)
+F/B (dB) = 10 × log₁₀ (Power<sub>forward</sub> / Power<sub>back</sub>)
 ```
 
 A typical 3-element Yagi has F/B ≈ 20–25 dB. A well-designed 5-element Yagi may achieve 28–30 dB F/B.
@@ -877,7 +877,7 @@ At Intermediate power levels (up to 100 W), most HF antenna systems will exceed 
 
 The following interactives would significantly strengthen this section. Passing this list to RFH-Master for scoping:
 
-1. **SWR sweep visualiser** — slider for antenna impedance (Z_L), live calculation of SWR, |Γ|, return loss (dB), % power reflected. Animated standing-wave envelope showing voltage/current distribution. Ideal placement: Section 4B (after the SWR formulas).
+1. **SWR sweep visualiser** — slider for antenna impedance (Z<sub>L</sub>), live calculation of SWR, |Γ|, return loss (dB), % power reflected. Animated standing-wave envelope showing voltage/current distribution. Ideal placement: Section 4B (after the SWR formulas).
 
 2. **Radiation pattern viewer** — select antenna type (dipole, vertical, Yagi 3-el / 5-el), height above ground (λ slider), frequency. Display azimuth and elevation polar plots. Add overlay mode to compare two antenna configurations. Ideal placement: Section 4F (antenna concepts).
 

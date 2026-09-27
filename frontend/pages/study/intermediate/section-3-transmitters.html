@@ -305,8 +305,8 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
       <h3 id="ch-3a-lo">High-Side vs Low-Side LO Injection (3I2)</h3>
       <p>The local oscillator can be placed either above or below the received signal frequency. Both arrangements produce the same IF from the mixer — they are called <strong>high-side injection</strong> and <strong>low-side injection</strong>.</p>
       <ul>
-        <li><strong>High-side injection:</strong> <code>f_LO = f_signal + f_IF</code> — LO is above the signal. Mixer takes LO − RF = IF.</li>
-        <li><strong>Low-side injection:</strong> <code>f_LO = f_signal − f_IF</code> — LO is below the signal. Mixer takes RF − LO = IF.</li>
+        <li><strong>High-side injection:</strong> <code>f<sub>LO</sub> = f<sub>signal</sub> + f<sub>IF</sub></code> — LO is above the signal. Mixer takes LO − RF = IF.</li>
+        <li><strong>Low-side injection:</strong> <code>f<sub>LO</sub> = f<sub>signal</sub> − f<sub>IF</sub></code> — LO is below the signal. Mixer takes RF − LO = IF.</li>
       </ul>
       <p>Both produce an identical IF and are equally valid superhet designs. The choice is a design decision about where to park the oscillator.</p>
 
@@ -331,14 +331,14 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
       <h4>Exam Approach</h4>
       <p>When a question gives you signal frequency and IF and asks for the LO:</p>
       <ul>
-        <li>Both <code>f_signal + f_IF</code> and <code>f_signal − f_IF</code> are mathematically correct</li>
+        <li>Both <code>f<sub>signal</sub> + f<sub>IF</sub></code> and <code>f<sub>signal</sub> − f<sub>IF</sub></code> are mathematically correct</li>
         <li>If only one answer is offered, that is the intended answer</li>
         <li>If both are offered, the answer that places the LO <strong>outside</strong> the amateur band is the preferred choice</li>
       </ul>
 
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>3I2:</strong> LO injection can be high-side (<code>f_signal + f_IF</code>) or low-side (<code>f_signal − f_IF</code>). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = <strong>13.640 MHz</strong> (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.</div>
+        <div class="callout-text"><strong>3I2:</strong> LO injection can be high-side (<code>f<sub>signal</sub> + f<sub>IF</sub></code>) or low-side (<code>f<sub>signal</sub> − f<sub>IF</sub></code>). Both produce the same IF. On 20 m with 460 kHz IF: high-side = 14.560 MHz (inside the 20 m band — not ideal); low-side = <strong>13.640 MHz</strong> (outside 20 m — preferred). Low-side injection is preferred when high-side would put the LO inside the band being received.</div>
       </div>
 
       <div class="self-checks">
@@ -475,7 +475,7 @@ Image = 7.555 + 0.455 = 8.010 MHz — a signal here also mixes down to 455 kHz.<
 
       <h3>How a Mixer Works (3B1)</h3>
       <p>A <strong>mixer</strong> is a non-linear device that combines two input signals and produces output frequencies that include their sum and difference:</p>
-      <pre>Output frequencies = f_RF ± f_LO</pre>
+      <pre>Output frequencies = f<sub>RF</sub> ± f<sub>LO</sub></pre>
       <p>In a superhet, the difference (or sum) is selected by the IF filter. The unwanted product is rejected.</p>
       <p><strong>Types of mixer:</strong></p>
       <ul>
@@ -895,7 +895,7 @@ FM:  &beta; &gt; 1.0 &rarr; more sidebands &rarr; wider bandwidth (allowed, but 
 
       <h3>FM Bandwidth — Carson's Rule (3G4)</h3>
       <p>The bandwidth of an FM signal is approximately:</p>
-      <pre>BW ≈ 2 × (Δf + f_max)</pre>
+      <pre>BW ≈ 2 × (Δf + f<sub>max</sub>)</pre>
       <p>Where Δf = peak deviation and f<sub>max</sub> = highest audio frequency.</p>
       <p><strong>Example:</strong> Deviation = 5 kHz, highest audio = 3 kHz.</p>
       <pre>BW ≈ 2 × (5 + 3) = 2 × 8 = 16 kHz</pre>
@@ -990,29 +990,29 @@ FM:  &beta; &gt; 1.0 &rarr; more sidebands &rarr; wider bandwidth (allowed, but 
       <h3>PA Efficiency and Heat Dissipation</h3>
       <p>A power amplifier converts DC power drawn from the PSU into RF power delivered to the antenna. It never does this perfectly &mdash; some of the input power is always lost as heat.</p>
       <p><strong>Efficiency &eta;</strong> is defined as:</p>
-      <pre>η = P_out / P_in</pre>
-      <p>Where <code>P_out</code> is the RF power reaching the antenna and <code>P_in</code> is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat. To find heat dissipation, rearrange to get P_in, then subtract P_out:</p>
-      <pre>P_in   = P_out / η
-P_heat = P_in − P_out</pre>
+      <pre>η = P<sub>out</sub> / P<sub>in</sub></pre>
+      <p>Where <code>P<sub>out</sub></code> is the RF power reaching the antenna and <code>P<sub>in</sub></code> is the DC power drawn from the supply. An efficiency of 0.60 means 60% of the input becomes useful RF; 40% becomes heat. To find heat dissipation, rearrange to get P<sub>in</sub>, then subtract P<sub>out</sub>:</p>
+      <pre>P<sub>in</sub>   = P<sub>out</sub> / η
+P<sub>heat</sub> = P<sub>in</sub> − P<sub>out</sub></pre>
 
       <h4>Worked example</h4>
       <blockquote>A PA stage has 60% efficiency and delivers 50 W of RF. How much power is dissipated as heat?</blockquote>
-      <pre>P_in   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
-P_heat = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
+      <pre>P<sub>in</sub>   = 50 / 0.60 = 83.3 W   (DC power drawn from PSU)
+P<sub>heat</sub> = 83.3 − 50 = 33.3 W   (heat the PA must dissipate)
 Answer: ~33 W</pre>
       <div class="callout callout--info">
         <div class="callout-icon">ℹ</div>
-        <div class="callout-text"><strong>Common exam trap:</strong> Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the <strong>output</strong> (RF delivered), not the input. You must find P_in first, then subtract: P_in = 50 ÷ 0.6 = 83 W; heat = 83 &minus; 50 = <strong>33 W</strong>, not 20 W.</div>
+        <div class="callout-text"><strong>Common exam trap:</strong> Some candidates calculate "40% of 50 W = 20 W" and pick that as the answer. This is wrong because 50 W is the <strong>output</strong> (RF delivered), not the input. You must find P<sub>in</sub> first, then subtract: P<sub>in</sub> = 50 ÷ 0.6 = 83 W; heat = 83 &minus; 50 = <strong>33 W</strong>, not 20 W.</div>
       </div>
       <p><strong>Mental-arithmetic shortcuts for common efficiencies:</strong></p>
       <div class="table-wrapper">
         <table>
           <thead><tr><th>Efficiency</th><th>Heat as fraction of RF output</th></tr></thead>
           <tbody>
-            <tr><td>50%</td><td>Heat = P_out (equal amounts)</td></tr>
-            <tr><td>60%</td><td>Heat &asymp; &frac23; &times; P_out (ratio 3:2 out:heat)</td></tr>
-            <tr><td>66%</td><td>Heat &asymp; &frac12; &times; P_out</td></tr>
-            <tr><td>75%</td><td>Heat &asymp; &frac13; &times; P_out</td></tr>
+            <tr><td>50%</td><td>Heat = P<sub>out</sub> (equal amounts)</td></tr>
+            <tr><td>60%</td><td>Heat &asymp; &frac23; &times; P<sub>out</sub> (ratio 3:2 out:heat)</td></tr>
+            <tr><td>66%</td><td>Heat &asymp; &frac12; &times; P<sub>out</sub></td></tr>
+            <tr><td>75%</td><td>Heat &asymp; &frac13; &times; P<sub>out</sub></td></tr>
           </tbody>
         </table>
       </div>
@@ -1031,7 +1031,7 @@ Answer: ~33 W</pre>
       <p>SSB requires the PA to faithfully reproduce amplitude variations &mdash; linearity is essential. Class C is efficient but clips the signal, which is acceptable for constant-amplitude modes (CW, FM) and fatal for SSB. This is why SSB transmitters use Class AB despite its lower efficiency and greater heat output. <em>(Cross-ref: amplifier class theory is covered in detail in §5 Semiconductors.)</em></p>
       <div class="callout callout--warning">
         <div class="callout-icon">⚠</div>
-        <div class="callout-text">A Full-licence HF linear running at, say, 400 W (well within the 1000 W Full-licence primary-band limit) at 60% efficiency draws P_in = 667 W from the PSU and dissipates <strong>267 W as heat</strong>. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.</div>
+        <div class="callout-text">A Full-licence HF linear running at, say, 400 W (well within the 1000 W Full-licence primary-band limit) at 60% efficiency draws P<sub>in</sub> = 667 W from the PSU and dissipates <strong>267 W as heat</strong>. Even at Intermediate power (100 W), a poorly ventilated PA running a continuous-carrier mode can overheat within minutes.</div>
       </div>
 
       <div class="self-checks">
@@ -1629,7 +1629,7 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
           <li><strong>FM generation:</strong> varicap diode on oscillator pulled by AF signal</li>
           <li><strong>Harmonics:</strong> multiples of fundamental; suppress with low-pass filter at TX output</li>
           <li><strong>RTTY duty cycle:</strong> continuous carrier — runs transmitter hot; reduce power from SSB levels</li>
-          <li><strong>PA efficiency:</strong> &eta; = P_out/P_in; heat = P_in &minus; P_out; Class AB (~55%) for SSB, Class C (~75%) for CW/FM</li>
+          <li><strong>PA efficiency:</strong> &eta; = P<sub>out</sub>/P<sub>in</sub>; heat = P<sub>in</sub> &minus; P<sub>out</sub>; Class AB (~55%) for SSB, Class C (~75%) for CW/FM</li>
           <li><strong>AGC fast attack:</strong> prevents sudden loud audio burst on SSB</li>
           <li><strong>PLL:</strong> Phase Locked Loop — stable frequency synthesis from crystal reference</li>
           <li><strong>Transverter:</strong> extends transceiver to a different band using a mixer and LO</li>
@@ -1656,17 +1656,17 @@ RX: 50 MHz antenna signal − 22 MHz oscillator = 28 MHz to receiver</pre>
             <tr><th>Formula</th><th>Use</th></tr>
           </thead>
           <tbody>
-            <tr><td><a href="#ch-3a" target="_blank">IF = |f_RF − f_LO|</a></td><td>Intermediate frequency (both injection sides)</td></tr>
-            <tr><td><a href="#ch-3a-lo" target="_blank">f_LO = f_RF + f_IF</a></td><td>LO frequency — high-side injection</td></tr>
-            <tr><td><a href="#ch-3a-lo" target="_blank">f_LO = f_RF − f_IF</a></td><td>LO frequency — low-side injection</td></tr>
-            <tr><td><a href="#ch-3a" target="_blank">f_image = f_RF + 2 × IF</a></td><td>Image frequency (high-side LO)</td></tr>
-            <tr><td><a href="#ch-3a-lo" target="_blank">f_image = f_RF − 2 × IF</a></td><td>Image frequency (low-side LO)</td></tr>
-            <tr><td><a href="#ch-3g" target="_blank">BW ≈ 2(Δf + f_max)</a></td><td>FM bandwidth (Carson's rule)</td></tr>
-            <tr><td><a href="#ch-3g" target="_blank">β = Δf / f_mod</a></td><td>FM modulation index</td></tr>
+            <tr><td><a href="#ch-3a" target="_blank">IF = |f<sub>RF</sub> − f<sub>LO</sub>|</a></td><td>Intermediate frequency (both injection sides)</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f<sub>LO</sub> = f<sub>RF</sub> + f<sub>IF</sub></a></td><td>LO frequency — high-side injection</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f<sub>LO</sub> = f<sub>RF</sub> − f<sub>IF</sub></a></td><td>LO frequency — low-side injection</td></tr>
+            <tr><td><a href="#ch-3a" target="_blank">f<sub>image</sub> = f<sub>RF</sub> + 2 × IF</a></td><td>Image frequency (high-side LO)</td></tr>
+            <tr><td><a href="#ch-3a-lo" target="_blank">f<sub>image</sub> = f<sub>RF</sub> − 2 × IF</a></td><td>Image frequency (low-side LO)</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">BW ≈ 2(Δf + f<sub>max</sub>)</a></td><td>FM bandwidth (Carson's rule)</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">β = Δf / f<sub>mod</sub></a></td><td>FM modulation index</td></tr>
             <tr><td><a href="#ch-3e" target="_blank">Audio = |IF − BFO|</a></td><td>CW receive tone</td></tr>
             <tr><td><a href="#ch-3m" target="_blank">f = 1/T</a></td><td>Frequency from period</td></tr>
-            <tr><td><a href="#ch-3g" target="_blank">P_in = P_out / &eta;</a></td><td>PA input power from efficiency</td></tr>
-            <tr><td><a href="#ch-3g" target="_blank">P_heat = P_in &minus; P_out</a></td><td>Heat dissipated by PA</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">P<sub>in</sub> = P<sub>out</sub> / &eta;</a></td><td>PA input power from efficiency</td></tr>
+            <tr><td><a href="#ch-3g" target="_blank">P<sub>heat</sub> = P<sub>in</sub> &minus; P<sub>out</sub></a></td><td>Heat dissipated by PA</td></tr>
           </tbody>
         </table>
       </div>
