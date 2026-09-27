@@ -375,6 +375,29 @@ function preset(v) {
 }
 
 tick();
+
+// ── Auto-height for iframe embedding — reports document height to parent ──
+// Same pattern as filter-signal.html: fires on load and on any layout
+// change (e.g. the preset/legend rows wrapping onto more lines at narrow
+// embed widths) via ResizeObserver, so the embedding page can size the
+// iframe to fit exactly instead of guessing a fixed height.
+(function () {
+  if (window.parent === window) return; // not embedded, nothing to report
+  let lastH = 0;
+  function reportHeight() {
+    const h = document.documentElement.scrollHeight;
+    if (h === lastH) return;
+    lastH = h;
+    window.parent.postMessage({ type: 'rfhub:iframe-height', height: h }, window.location.origin);
+  }
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(reportHeight).observe(document.body);
+  } else {
+    window.addEventListener('resize', reportHeight);
+  }
+  window.addEventListener('load', reportHeight);
+  requestAnimationFrame(reportHeight);
+})();
 </script>
 </main>
 </body>

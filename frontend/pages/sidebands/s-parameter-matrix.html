@@ -210,6 +210,75 @@ main {
 .intro p strong { color: var(--text-primary); }
 
 /* ============================================================
+   INTERACTIVE FRAME (iframe embed)
+   ============================================================ */
+.interactive-frame {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-top: 2px solid var(--purple);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin: 32px 0;
+  overflow: hidden;
+  position: relative;
+}
+.interactive-frame .frame-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(167,139,250,0.05);
+}
+.interactive-frame .frame-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.interactive-frame .frame-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+}
+.interactive-frame .frame-body {
+  position: relative;
+}
+.interactive-frame iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  background: var(--bg-primary);
+}
+.frame-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-primary);
+  z-index: 1;
+  pointer-events: none;
+}
+.frame-fallback p {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.frame-fallback .fallback-icon {
+  font-size: 24px;
+  opacity: 0.4;
+}
+
+/* ============================================================
    CONTENT SECTIONS
    ============================================================ */
 .content-section {
@@ -446,6 +515,7 @@ footer a:hover { color: var(--text-primary); }
   main { padding: 0 16px 60px; }
   .quick-ref { padding: 20px; }
   .site-nav-links { display: none; }
+  .interactive-frame .frame-header { padding: 10px 14px; }
 }
 @media (max-width: 360px) {
   .hero h1 { font-size: 1.6rem; }
@@ -505,6 +575,29 @@ footer a:hover { color: var(--text-primary); }
 <!-- INTRO -->
 <div class="intro">
   <p>Any two-port RF device — a filter, an amplifier, an attenuator, a length of cable — can be completely described at a given frequency by four numbers. These are the <strong>S-parameters</strong> (scattering parameters): S11, S21, S12, and S22. Together they form the <strong>S-parameter matrix</strong>, and they capture everything that matters about how a device handles RF signals at its ports.</p>
+</div>
+
+<!-- ============================================================
+     INTERACTIVE — S-PARAMETER SIGNAL FLOW
+     ============================================================ -->
+<div class="interactive-frame" id="frame-signal-flow">
+  <div class="frame-header">
+    <span class="frame-label">Interactive</span>
+    <span class="frame-title">S-Parameter Signal Flow — click each parameter to see which waves it relates</span>
+  </div>
+  <div class="frame-body">
+    <div class="frame-fallback" id="fallback-signal-flow" aria-hidden="true">
+      <span class="fallback-icon">📡</span>
+      <p>Interactive loading…</p>
+    </div>
+    <iframe
+      src="/interactives/s-parameter-signal-flow.html"
+      height="900"
+      title="Interactive two-port network diagram: click S11, S21, S12, S22 to highlight signal waves and see definitions"
+      loading="lazy"
+      id="iframe-signal-flow">
+    </iframe>
+  </div>
 </div>
 
 <!-- ============================================================
@@ -701,6 +794,28 @@ footer a:hover { color: var(--text-primary); }
   }
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
+
+  // Iframe fallback — hide loading indicator once iframe loads
+  var iframe = document.getElementById('iframe-signal-flow');
+  var fallback = document.getElementById('fallback-signal-flow');
+  if (iframe && fallback) {
+    iframe.addEventListener('load', function() {
+      fallback.style.display = 'none';
+    });
+  }
+
+  // Auto-height: s-parameter-signal-flow.html reports its real height so
+  // the iframe fits exactly (falls back to the 900px inline height above
+  // if no message ever arrives).
+  if (iframe) {
+    window.addEventListener('message', function(e) {
+      if (e.origin !== window.location.origin) return;
+      if (!e.data || e.data.type !== 'rfhub:iframe-height') return;
+      if (e.source === iframe.contentWindow) {
+        iframe.style.height = Math.max(e.data.height, 200) + 'px';
+      }
+    });
+  }
 })();
 </script>
 
