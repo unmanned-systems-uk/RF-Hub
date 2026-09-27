@@ -1,7 +1,6 @@
 # Sideband: Understanding Filters — Response Curves, Spectra, and Waveforms
 
 **Tags:** `[I]` `[FL]`
-**RSGB Refs:** Intermediate 2H1, 2H3, 3G3, 3K1 (filters and tuned circuits); Full 13H1, 13I1 (filter design), §9I (receiver filters)
 **Cross-refs:** <a href="../study/intermediate/section-2-electronics.html#2f-impedance-resonance-q-factor-and-tuned-circuits" target="_blank">Int §2F — Tuned Circuits</a> · <a href="../study/intermediate/section-3-transmitters.html#3k-filters-and-agc" target="_blank">Int §3K — Filters and AGC</a> · <a href="../study/full/section-9-receiver.html#9i--receiver-filters" target="_blank">Full §9I — Receiver Filters</a> · <a href="../study/full/section-13-emc.html#13h--filter-types-and-placement-13h1" target="_blank">Full §13H — Filter Types & Placement</a> · <a href="filter-design-build-test.html" target="_blank">Filter Design, Build & Test sideband</a> · <a href="crystal-filter.html" target="_blank">Crystal Filters sideband</a>
 **Series:** Sideband — Topic Snippets for RF-Hub
 
@@ -17,7 +16,7 @@ A filter is a circuit that treats different frequencies differently — it lets 
 
 ## Part 2: The Four Types — Three Ways to See Each One
 
-The exam shows filters as **amplitude-vs-frequency response curves**. In the real world you also meet them as their effect on a **spectrum** (which frequency components are present) and on a **waveform** (what the signal looks like on a scope). Seeing all three side by side builds real intuition, not just plot-recognition.
+Filters are most often described by their **amplitude-vs-frequency response curve**. In the real world you also meet them as their effect on a **spectrum** (which frequency components are present) and on a **waveform** (what the signal looks like on a scope). Seeing all three side by side builds real intuition, not just plot-recognition.
 
 ### Low-pass
 
@@ -77,7 +76,7 @@ Any of the four filter types above can be built from an LC (inductor + capacitor
 
 **Why "acceptor" and "rejector"?** A series LC at resonance is the lowest-impedance path it will ever present — it "accepts" current at that one frequency more readily than any other. A parallel LC at resonance is the highest-impedance it will ever present — it "rejects" current flow through itself at that frequency (while a large current still circulates internally, sloshing between L and C).
 
-**Impedance-vs-frequency view** — the exam sometimes shows impedance rather than amplitude:
+You will also meet LC circuits drawn as **impedance-vs-frequency plots** rather than amplitude:
 
 <img src="/assets/images/filters/lc-impedance-series.svg" alt="Series LC impedance vs frequency: V-shaped dip to a minimum at f0" width="700" height="376" loading="lazy">
 <img src="/assets/images/filters/lc-impedance-parallel.svg" alt="Parallel LC impedance vs frequency: sharp peak to a maximum at f0" width="700" height="376" loading="lazy">
@@ -90,7 +89,7 @@ Series = V-shaped dip at f0. Parallel = sharp peak at f0.
 
 ## Part 4: Identify-the-Filter Practice
 
-Eight unlabelled response plots — work out the type (and, where you can, roughly how selective it is) before revealing the answer.
+Reading a response curve at a glance is a skill worth building on its own. Eight unlabelled plots — work out the type (and, where you can, roughly how selective it is) before revealing the answer.
 
 <img src="/assets/images/filters/filter-response-unlabelled-1.svg" alt="Unlabelled filter response 1" width="700" height="376" loading="lazy">
 <img src="/assets/images/filters/filter-response-unlabelled-2.svg" alt="Unlabelled filter response 2" width="700" height="376" loading="lazy">
