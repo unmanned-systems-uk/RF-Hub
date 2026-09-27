@@ -90,20 +90,63 @@
       font-size: 0.75rem;
       color: var(--text-dim);
     }
-    .section-codes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      margin-top: 0.2rem;
+    .section-card-title-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
-    .code-chip {
+    .section-toc {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .section-toc li a {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      align-items: baseline;
+      gap: 0.5rem;
+      text-decoration: none;
+      line-height: 1.45;
+    }
+    .section-toc-code {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0.1rem 0.4rem;
+      white-space: nowrap;
+    }
+    .section-toc-title {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .section-toc li a:hover .section-toc-title {
+      color: #a78bfa;
+      text-decoration: underline;
+    }
+    .section-toc-more {
+      margin-top: -0.1rem;
+    }
+    .section-toc-more summary {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      padding: 0.15rem 0;
+      list-style: none;
+    }
+    .section-toc-more summary::-webkit-details-marker {
+      display: none;
+    }
+    .section-toc-more summary::before {
+      content: '+ ';
+    }
+    .section-toc-more[open] summary::before {
+      content: '− ';
+    }
+    .section-toc-more .section-toc {
+      margin-top: 0.4rem;
     }
     .section-card-cta {
       margin-top: auto;
@@ -111,6 +154,7 @@
       font-size: 0.78rem;
       color: #a78bfa;
       font-weight: 600;
+      text-decoration: none;
     }
     .section-card--soon .section-card-cta {
       color: var(--text-dim);
@@ -236,270 +280,399 @@
     <div class="section-grid">
 
       <!-- Section 1 — Available -->
-      <a href="section-1-licence-conditions.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-1-licence-conditions.html">
             <p class="section-num">Section 1</p>
             <h2 class="section-name">Licence Conditions</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 1 &nbsp;·&nbsp; Ofcom/RSGB licence terms</div>
-        <div class="section-codes">
-          <span class="code-chip">Emission designators</span>
-          <span class="code-chip">Callsigns</span>
-          <span class="code-chip">Band plans</span>
-          <span class="code-chip">Power limits</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-1-licence-conditions.html#ch-1A"><span class="section-toc-code">1A</span><span class="section-toc-title">How This Chapter Works</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1B"><span class="section-toc-code">1B</span><span class="section-toc-title">Content of Messages</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1C"><span class="section-toc-code">1C</span><span class="section-toc-title">Transmitter Standards</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1D"><span class="section-toc-code">1D</span><span class="section-toc-title">Remote Control Operation</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1E"><span class="section-toc-code">1E</span><span class="section-toc-title">CEPT T/R 61-01 &amp; HAREC</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1F"><span class="section-toc-code">1F</span><span class="section-toc-title">ITU Radio Regions</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1G"><span class="section-toc-code">1G</span><span class="section-toc-title">EMF Compliance Assessment</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1H"><span class="section-toc-code">1H</span><span class="section-toc-title">Schedule 1, Callsigns &amp; Ops</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1I"><span class="section-toc-code">1I</span><span class="section-toc-title">Emission Designators</span></a></li>
+          <li><a href="section-1-licence-conditions.html#ch-1J"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-1-licence-conditions.html">Study now &rarr;</a>
+      </article>
 
       <!-- Section 2 — Available -->
-      <a href="section-2-operating-techniques.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-2-operating-techniques.html">
             <p class="section-num">Section 2</p>
             <h2 class="section-name">Operating Techniques</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 2 &nbsp;·&nbsp; 472 kHz / 5 MHz / pileups / callsigns</div>
-        <div class="section-codes">
-          <span class="code-chip">Split operation</span>
-          <span class="code-chip">Band plans abroad</span>
-          <span class="code-chip">Special events</span>
-          <span class="code-chip">Supervision</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-2-operating-techniques.html#ch-2A"><span class="section-toc-code">2A</span><span class="section-toc-title">472 kHz and 5 MHz Operating Conditions</span></a></li>
+          <li><a href="section-2-operating-techniques.html#ch-2B"><span class="section-toc-code">2B</span><span class="section-toc-title">Pileups and Operating Split</span></a></li>
+          <li><a href="section-2-operating-techniques.html#ch-2C"><span class="section-toc-code">2C</span><span class="section-toc-title">Band Plans in Other Countries</span></a></li>
+          <li><a href="section-2-operating-techniques.html#ch-2D"><span class="section-toc-code">2D</span><span class="section-toc-title">Callsigns, Special Events &amp; Supervision</span></a></li>
+          <li><a href="section-2-operating-techniques.html#ch-2E"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          <li><a href="section-2-operating-techniques.html#ch-2F"><span class="section-toc-code">2F</span><span class="section-toc-title">Dive Deeper: Beacons, Modes &amp; Repeaters</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-2-operating-techniques.html">Study now &rarr;</a>
+      </article>
 
       <!-- Section 3 — Available -->
-      <a href="section-3-amateur-radio-safety.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-3-amateur-radio-safety.html">
             <p class="section-num">Section 3</p>
             <h2 class="section-name">Amateur Radio Safety</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 3 &nbsp;·&nbsp; Electrical safety, PME, RF exposure</div>
-        <div class="section-codes">
-          <span class="code-chip">PME / TN-C-S</span>
-          <span class="code-chip">RCD / RCBO</span>
-          <span class="code-chip">Lightning</span>
-          <span class="code-chip">Vehicle safety</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-3-amateur-radio-safety.html#ch-3A"><span class="section-toc-code">3A</span><span class="section-toc-title">Safe Use of Electricity in the Shack</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3B"><span class="section-toc-code">3B</span><span class="section-toc-title">Temporary Locations and Public Events</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3C"><span class="section-toc-code">3C</span><span class="section-toc-title">Vehicle Safety</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3D"><span class="section-toc-code">3D</span><span class="section-toc-title">Overseas and Temporary Mains Supply</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3E"><span class="section-toc-code">3E</span><span class="section-toc-title">Exposure to RF Energy</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3F"><span class="section-toc-code">3F</span><span class="section-toc-title">Thunderstorms and Lightning Protection</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3G"><span class="section-toc-code">3G</span><span class="section-toc-title">Protective Multiple Earthing (PME)</span></a></li>
+          <li><a href="section-3-amateur-radio-safety.html#ch-3H"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-3-amateur-radio-safety.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 4 — Basic Circuits — Available -->
-      <a href="section-4-basic-circuits.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-4-basic-circuits.html">
             <p class="section-num">Chapter 4</p>
             <h2 class="section-name">Basic Circuits</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 4 &nbsp;·&nbsp; DC, AC, resonance, Q factor, transformers</div>
-        <div class="section-codes">
-          <span class="code-chip">Kirchhoff</span>
-          <span class="code-chip">Phasors / Z</span>
-          <span class="code-chip">Resonance &amp; Q</span>
-          <span class="code-chip">Crystals</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-4-basic-circuits.html#ch-4A"><span class="section-toc-code">4A</span><span class="section-toc-title">DC Fundamentals: Current, Voltage, Power, Charge</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4B"><span class="section-toc-code">4B</span><span class="section-toc-title">Kirchhoff's Laws, Resistors &amp; Potential Divider</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4C"><span class="section-toc-code">4C</span><span class="section-toc-title">Real Batteries &amp; Maximum Power Transfer</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4D"><span class="section-toc-code">4D</span><span class="section-toc-title">Capacitors: Construction, RC Circuits &amp; Types</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4E"><span class="section-toc-code">4E</span><span class="section-toc-title">Inductors: Back-EMF, LR Circuits &amp; Types</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4F"><span class="section-toc-code">4F</span><span class="section-toc-title">Alternating Current: RMS, Phase &amp; Harmonics</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4G"><span class="section-toc-code">4G</span><span class="section-toc-title">Reactance, Impedance &amp; Phasors</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4H"><span class="section-toc-code">4H</span><span class="section-toc-title">Resonance, Q Factor &amp; Bandwidth</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 12 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-4-basic-circuits.html#ch-4I"><span class="section-toc-code">4I</span><span class="section-toc-title">Crystals as Resonators</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4J"><span class="section-toc-code">4J</span><span class="section-toc-title">Transformers &amp; Impedance Matching</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4K"><span class="section-toc-code">4K</span><span class="section-toc-title">Temperature Effects, Screening &amp; Decibels</span></a></li>
+          <li><a href="section-4-basic-circuits.html#ch-4L"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-4-basic-circuits.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 5 — Semiconductors — Available -->
-      <a href="section-5-semiconductors.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-5-semiconductors.html">
             <p class="section-num">Chapter 5</p>
             <h2 class="section-name">Semiconductors</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 5 &nbsp;·&nbsp; Diodes, BJT, FET, PSUs, op-amps</div>
-        <div class="section-codes">
-          <span class="code-chip">BJT / FET</span>
-          <span class="code-chip">Class A/B/C</span>
-          <span class="code-chip">SMPS</span>
-          <span class="code-chip">Op-amps</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-5-semiconductors.html#ch-5A"><span class="section-toc-code">5A</span><span class="section-toc-title">The P-N Junction Diode</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5B"><span class="section-toc-code">5B</span><span class="section-toc-title">Rectifier Circuits</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5C"><span class="section-toc-code">5C</span><span class="section-toc-title">Special Diodes</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5D"><span class="section-toc-code">5D</span><span class="section-toc-title">Bipolar Junction Transistors</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5E"><span class="section-toc-code">5E</span><span class="section-toc-title">BJT Circuit Configurations</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5F"><span class="section-toc-code">5F</span><span class="section-toc-title">Amplifier Bias Classes</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5G"><span class="section-toc-code">5G</span><span class="section-toc-title">Field Effect Transistors</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5H"><span class="section-toc-code">5H</span><span class="section-toc-title">Regulated Power Supplies</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 11 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-5-semiconductors.html#ch-5I"><span class="section-toc-code">5I</span><span class="section-toc-title">Switch-Mode Power Supplies (SMPS)</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5J"><span class="section-toc-code">5J</span><span class="section-toc-title">Integrated Circuits &amp; Op-Amps</span></a></li>
+          <li><a href="section-5-semiconductors.html#ch-5K"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-5-semiconductors.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 6 — Available -->
-      <a href="section-6-analogue-digital-signals.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-6-analogue-digital-signals.html">
             <p class="section-num">Chapter 6</p>
             <h2 class="section-name">Analogue &amp; Digital Signals</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 6 &nbsp;·&nbsp; ADC/DAC, sampling, Fourier, DDS</div>
-        <div class="section-codes">
-          <span class="code-chip">Sampling / aliasing</span>
-          <span class="code-chip">Fourier / FFT</span>
-          <span class="code-chip">ADC / DAC</span>
-          <span class="code-chip">DDS</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-6-analogue-digital-signals.html#ch-6A"><span class="section-toc-code">6A</span><span class="section-toc-title">Analogue vs Digital</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6B"><span class="section-toc-code">6B</span><span class="section-toc-title">Binary Numbers</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6C"><span class="section-toc-code">6C</span><span class="section-toc-title">ADC &amp; Quantisation</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6D"><span class="section-toc-code">6D</span><span class="section-toc-title">Sampling &amp; Nyquist Theorem</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6E"><span class="section-toc-code">6E</span><span class="section-toc-title">Fourier Transforms &amp; FFT</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6F"><span class="section-toc-code">6F</span><span class="section-toc-title">DAC &amp; DDS</span></a></li>
+          <li><a href="section-6-analogue-digital-signals.html#ch-6G"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-6-analogue-digital-signals.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 7 — Available -->
-      <a href="section-7-transmitter.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-7-transmitter.html">
             <p class="section-num">Chapter 7</p>
             <h2 class="section-name">The Transmitter</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 7 &nbsp;·&nbsp; TX architecture, modes, PA, ALC, SWR</div>
-        <div class="section-codes">
-          <span class="code-chip">SSB / FM</span>
-          <span class="code-chip">PLL / DDS</span>
-          <span class="code-chip">PEP / ALC</span>
-          <span class="code-chip">Class C PA</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-7-transmitter.html#ch-7A"><span class="section-toc-code">7A</span><span class="section-toc-title">Transmitter Architecture</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7B"><span class="section-toc-code">7B</span><span class="section-toc-title">SSB Generation</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7C"><span class="section-toc-code">7C</span><span class="section-toc-title">FM Generation</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7D"><span class="section-toc-code">7D</span><span class="section-toc-title">Oscillators</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7E"><span class="section-toc-code">7E</span><span class="section-toc-title">Freq Multipliers &amp; Mixers</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7F"><span class="section-toc-code">7F</span><span class="section-toc-title">Power Amplifiers</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7G"><span class="section-toc-code">7G</span><span class="section-toc-title">PEP, Speech Processors &amp; ALC</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7H"><span class="section-toc-code">7H</span><span class="section-toc-title">SWR Protection &amp; Transceivers</span></a></li>
+          <li><a href="section-7-transmitter.html#ch-7I"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-7-transmitter.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 8 — Available -->
-      <a href="section-8-transmitter-interference.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-8-transmitter-interference.html">
             <p class="section-num">Chapter 8</p>
             <h2 class="section-name">Transmitter Interference</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 8 &nbsp;·&nbsp; Harmonics, key clicks, IMD, spurs</div>
-        <div class="section-codes">
-          <span class="code-chip">Harmonics</span>
-          <span class="code-chip">Key clicks</span>
-          <span class="code-chip">IMD / splatter</span>
-          <span class="code-chip">PLL spurs</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-8-transmitter-interference.html#ch-8A"><span class="section-toc-code">8A</span><span class="section-toc-title">Frequency Stability &amp; Drift</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8B"><span class="section-toc-code">8B</span><span class="section-toc-title">Harmonics &amp; Spurious Emissions</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8C"><span class="section-toc-code">8C</span><span class="section-toc-title">PLL &amp; DDS Spurious Outputs</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8D"><span class="section-toc-code">8D</span><span class="section-toc-title">Key Clicks</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8E"><span class="section-toc-code">8E</span><span class="section-toc-title">FM Over-deviation</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8F"><span class="section-toc-code">8F</span><span class="section-toc-title">IMD &amp; SSB Splatter</span></a></li>
+          <li><a href="section-8-transmitter-interference.html#ch-8G"><span class="section-toc-code">8G</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-8-transmitter-interference.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 9 — Available -->
-      <a href="section-9-receiver.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-9-receiver.html">
             <p class="section-num">Chapter 9</p>
             <h2 class="section-name">The Receiver</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 9 &nbsp;·&nbsp; Superhet, NF, dynamic range, AGC, filters</div>
-        <div class="section-codes">
-          <span class="code-chip">Superhet / image</span>
-          <span class="code-chip">IP3 / NF</span>
-          <span class="code-chip">AGC / BFO</span>
-          <span class="code-chip">Reciprocal mixing</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-9-receiver.html#ch-9A"><span class="section-toc-code">9A</span><span class="section-toc-title">Sensitivity &amp; Noise Figure</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9B"><span class="section-toc-code">9B</span><span class="section-toc-title">Dynamic Range &amp; IP3</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9C"><span class="section-toc-code">9C</span><span class="section-toc-title">The Superheterodyne Receiver</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9D"><span class="section-toc-code">9D</span><span class="section-toc-title">Image Frequency &amp; Rejection</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9E"><span class="section-toc-code">9E</span><span class="section-toc-title">The Double Superhet</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9F"><span class="section-toc-code">9F</span><span class="section-toc-title">Product Detector &amp; BFO</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9G"><span class="section-toc-code">9G</span><span class="section-toc-title">Automatic Gain Control (AGC)</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9H"><span class="section-toc-code">9H</span><span class="section-toc-title">FM Demodulation</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 12 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-9-receiver.html#ch-9I"><span class="section-toc-code">9I</span><span class="section-toc-title">Receiver Filters</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9J"><span class="section-toc-code">9J</span><span class="section-toc-title">Blocking, Cross-mod &amp; Reciprocal Mixing</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9K"><span class="section-toc-code">9K</span><span class="section-toc-title">Masthead Preamplifiers</span></a></li>
+          <li><a href="section-9-receiver.html#ch-9L"><span class="section-toc-code">9L</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-9-receiver.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 10 — Available -->
-      <a href="section-10-sdr.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-10-sdr.html">
             <p class="section-num">Chapter 10</p>
             <h2 class="section-name">Software Defined Radio</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 10 &nbsp;·&nbsp; SDR architecture, I/Q, sample rate, waterfall</div>
-        <div class="section-codes">
-          <span class="code-chip">Direct sampling</span>
-          <span class="code-chip">I/Q signals</span>
-          <span class="code-chip">Bit depth / DR</span>
-          <span class="code-chip">FFT waterfall</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-10-sdr.html#ch-10A"><span class="section-toc-code">10A</span><span class="section-toc-title">What SDR Is</span></a></li>
+          <li><a href="section-10-sdr.html#ch-10B"><span class="section-toc-code">10B</span><span class="section-toc-title">Direct Sampling vs Down-Conversion</span></a></li>
+          <li><a href="section-10-sdr.html#ch-10C"><span class="section-toc-code">10C</span><span class="section-toc-title">I/Q Signals and Quadrature Sampling</span></a></li>
+          <li><a href="section-10-sdr.html#ch-10D"><span class="section-toc-code">10D</span><span class="section-toc-title">Sample Rate and Bit Depth</span></a></li>
+          <li><a href="section-10-sdr.html#ch-10E"><span class="section-toc-code">10E</span><span class="section-toc-title">FFT Waterfall and Panadapter</span></a></li>
+          <li><a href="section-10-sdr.html#ch-10F"><span class="section-toc-code">10F</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-10-sdr.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 11 — Available -->
-      <a href="section-11-feeders-antennas.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-11-feeders-antennas.html">
             <p class="section-num">Chapter 11</p>
             <h2 class="section-name">Feeders &amp; Antennas</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 11 &nbsp;·&nbsp; Coax, baluns, VSWR, Yagi, log-periodic, ATU</div>
-        <div class="section-codes">
-          <span class="code-chip">Coax / open-wire</span>
-          <span class="code-chip">VSWR / baluns</span>
-          <span class="code-chip">Yagi / LPDA</span>
-          <span class="code-chip">ATU L/T/Pi</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-11-feeders-antennas.html#ch-11A"><span class="section-toc-code">11A</span><span class="section-toc-title">The Antenna as an Impedance Interface</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11B"><span class="section-toc-code">11B</span><span class="section-toc-title">Coaxial Feeder</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11C"><span class="section-toc-code">11C</span><span class="section-toc-title">Open-Wire Feeder</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11D"><span class="section-toc-code">11D</span><span class="section-toc-title">Velocity Factor and Electrical Length</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11E"><span class="section-toc-code">11E</span><span class="section-toc-title">Baluns and Ununs</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11F"><span class="section-toc-code">11F</span><span class="section-toc-title">VSWR and Standing Waves</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11G"><span class="section-toc-code">11G</span><span class="section-toc-title">Ground Plane and Counterpoise</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11H"><span class="section-toc-code">11H</span><span class="section-toc-title">The Yagi–Uda Antenna</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 16 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-11-feeders-antennas.html#ch-11I"><span class="section-toc-code">11I</span><span class="section-toc-title">Log-Periodic Dipole Array</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11J"><span class="section-toc-code">11J</span><span class="section-toc-title">The 5/8 Wave Antenna</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11K"><span class="section-toc-code">11K</span><span class="section-toc-title">Folded Dipole</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11L"><span class="section-toc-code">11L</span><span class="section-toc-title">End-Fed Half-Wave (EFHW)</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11M"><span class="section-toc-code">11M</span><span class="section-toc-title">Slot Antenna</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11N"><span class="section-toc-code">11N</span><span class="section-toc-title">Loading Coils and Trap Antennas</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11O"><span class="section-toc-code">11O</span><span class="section-toc-title">ATU Networks: L, T, and Pi</span></a></li>
+          <li><a href="section-11-feeders-antennas.html#ch-11P"><span class="section-toc-code">11P</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-11-feeders-antennas.html">Study now &rarr;</a>
+      </article>
 
       <!-- Chapter 12 — Available -->
-      <a href="section-12-propagation.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-12-propagation.html">
             <p class="section-num">Chapter 12</p>
             <h2 class="section-name">Propagation</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 12 &nbsp;·&nbsp; MUF/LUF, SFI, skip, aurora, Es, EME</div>
-        <div class="section-codes">
-          <span class="code-chip">MUF / LUF</span>
-          <span class="code-chip">SFI / Kp index</span>
-          <span class="code-chip">Aurora / Es</span>
-          <span class="code-chip">EME / meteor</span>
-        </div>
-        <span class="section-card-cta">Study now &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-12-propagation.html#ch-12A"><span class="section-toc-code">12A</span><span class="section-toc-title">Ionospheric Layers</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12B"><span class="section-toc-code">12B</span><span class="section-toc-title">Solar Activity: SFI and Sunspot Cycle</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12C"><span class="section-toc-code">12C</span><span class="section-toc-title">Critical Frequency and the Ionosonde</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12D"><span class="section-toc-code">12D</span><span class="section-toc-title">MUF, LUF, and Optimal Working Frequency</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12E"><span class="section-toc-code">12E</span><span class="section-toc-title">Skip Distance and the Dead Zone</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12F"><span class="section-toc-code">12F</span><span class="section-toc-title">Fading: Multipath and Selective</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12G"><span class="section-toc-code">12G</span><span class="section-toc-title">Tropospheric Propagation</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12H"><span class="section-toc-code">12H</span><span class="section-toc-title">Sporadic-E</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 12 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-12-propagation.html#ch-12I"><span class="section-toc-code">12I</span><span class="section-toc-title">Auroral Propagation</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12J"><span class="section-toc-code">12J</span><span class="section-toc-title">Meteor Scatter</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12K"><span class="section-toc-code">12K</span><span class="section-toc-title">Earth-Moon-Earth (EME)</span></a></li>
+          <li><a href="section-12-propagation.html#ch-12L"><span class="section-toc-code">12L</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-12-propagation.html">Study now &rarr;</a>
+      </article>
 
       <!-- Section 9 — Available -->
-      <a href="section-13-emc.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-13-emc.html">
             <p class="section-num">Section 9</p>
             <h2 class="section-name">EMC</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 13 &nbsp;·&nbsp; Longest chapter</div>
-        <div class="section-codes">
-          <span class="code-chip">Field strength</span>
-          <span class="code-chip">CM / DM current</span>
-          <span class="code-chip">Filter design</span>
-          <span class="code-chip">Screening</span>
-        </div>
-        <span class="section-card-cta">Read chapter &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-13-emc.html#ch-13A"><span class="section-toc-code">13A</span><span class="section-toc-title">Introduction: What EMC Means and the Amateur's Dual Role</span></a></li>
+          <li><a href="section-13-emc.html#ch-13B"><span class="section-toc-code">13B</span><span class="section-toc-title">Legal Framework: UK EMC and Radio Equipment Regulations</span></a></li>
+          <li><a href="section-13-emc.html#ch-13C"><span class="section-toc-code">13C</span><span class="section-toc-title">Common Mode and Differential Mode Currents</span></a></li>
+          <li><a href="section-13-emc.html#ch-13D"><span class="section-toc-code">13D</span><span class="section-toc-title">Transmitted Field Strength</span></a></li>
+          <li><a href="section-13-emc.html#ch-13E"><span class="section-toc-code">13E</span><span class="section-toc-title">Antenna Position: Near Field vs Far Field</span></a></li>
+          <li><a href="section-13-emc.html#ch-13F"><span class="section-toc-code">13F</span><span class="section-toc-title">How Interference Travels: Coupling Mechanisms</span></a></li>
+          <li><a href="section-13-emc.html#ch-13G"><span class="section-toc-code">13G</span><span class="section-toc-title">Common-Mode Ferrite Chokes</span></a></li>
+          <li><a href="section-13-emc.html#ch-13H"><span class="section-toc-code">13H</span><span class="section-toc-title">Filter Types and Placement</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 19 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-13-emc.html#ch-13I"><span class="section-toc-code">13I</span><span class="section-toc-title">Pi and T Filter Design</span></a></li>
+          <li><a href="section-13-emc.html#ch-13J"><span class="section-toc-code">13J</span><span class="section-toc-title">Cascading Filters</span></a></li>
+          <li><a href="section-13-emc.html#ch-13K"><span class="section-toc-code">13K</span><span class="section-toc-title">Coaxial Cable Choice</span></a></li>
+          <li><a href="section-13-emc.html#ch-13L"><span class="section-toc-code">13L</span><span class="section-toc-title">Mains Interference Filters</span></a></li>
+          <li><a href="section-13-emc.html#ch-13M"><span class="section-toc-code">13M</span><span class="section-toc-title">Notch Filters</span></a></li>
+          <li><a href="section-13-emc.html#ch-13N"><span class="section-toc-code">13N</span><span class="section-toc-title">Equipment-Specific Interference</span></a></li>
+          <li><a href="section-13-emc.html#ch-13O"><span class="section-toc-code">13O</span><span class="section-toc-title">Telephone Line RFI</span></a></li>
+          <li><a href="section-13-emc.html#ch-13P"><span class="section-toc-code">13P</span><span class="section-toc-title">Computer and SMPS RFI</span></a></li>
+          <li><a href="section-13-emc.html#ch-13Q"><span class="section-toc-code">13Q</span><span class="section-toc-title">The Complaint Procedure</span></a></li>
+          <li><a href="section-13-emc.html#ch-13R"><span class="section-toc-code">13R</span><span class="section-toc-title">Shack EMC: Earth Loops and RF in Equipment</span></a></li>
+          <li><a href="section-13-emc.html#ch-13S"><span class="section-toc-code">13S</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-13-emc.html">Read chapter &rarr;</a>
+      </article>
 
       <!-- Section 10 — Available -->
-      <a href="section-14-measurements.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-14-measurements.html">
             <p class="section-num">Section 10</p>
             <h2 class="section-name">Measurements</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">Chapter 14 &nbsp;·&nbsp; Test equipment and procedures</div>
-        <div class="section-codes">
-          <span class="code-chip">VSWR / power</span>
-          <span class="code-chip">Oscilloscope</span>
-          <span class="code-chip">Spectrum analyser</span>
-          <span class="code-chip">Dip meter</span>
-        </div>
-        <span class="section-card-cta">Read chapter &rarr;</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-14-measurements.html#ch-14A"><span class="section-toc-code">14A</span><span class="section-toc-title">Voltmeter Loading &amp; Ammeter Error</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14B"><span class="section-toc-code">14B</span><span class="section-toc-title">AC Waveforms: RMS, Peak &amp; PEP</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14C"><span class="section-toc-code">14C</span><span class="section-toc-title">SWR, Reflection Coefficient &amp; Return Loss</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14D"><span class="section-toc-code">14D</span><span class="section-toc-title">The Bruene Directional Coupler</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14E"><span class="section-toc-code">14E</span><span class="section-toc-title">The CRT Oscilloscope</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14F"><span class="section-toc-code">14F</span><span class="section-toc-title">The Digital Storage Oscilloscope</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14G"><span class="section-toc-code">14G</span><span class="section-toc-title">Viewing RF Signals: SSB, AM &amp; FM</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14H"><span class="section-toc-code">14H</span><span class="section-toc-title">Frequency Counter: Reciprocal Counting</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 15 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-14-measurements.html#ch-14I"><span class="section-toc-code">14I</span><span class="section-toc-title">TCXO &amp; OCXO Reference Oscillators</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14J"><span class="section-toc-code">14J</span><span class="section-toc-title">The Dip Meter</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14K"><span class="section-toc-code">14K</span><span class="section-toc-title">Spectrum Analyser: RBW, VBW &amp; Markers</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14L"><span class="section-toc-code">14L</span><span class="section-toc-title">The Dummy Load</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14M"><span class="section-toc-code">14M</span><span class="section-toc-title">SWR Meter in Practice</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14N"><span class="section-toc-code">14N</span><span class="section-toc-title">The Field Strength Meter</span></a></li>
+          <li><a href="section-14-measurements.html#ch-14O"><span class="section-toc-code">14O</span><span class="section-toc-title">Self-Check</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-14-measurements.html">Read chapter &rarr;</a>
+      </article>
 
     </div>
 

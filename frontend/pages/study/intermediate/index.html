@@ -90,20 +90,63 @@
       font-size: 0.75rem;
       color: var(--text-dim);
     }
-    .section-codes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      margin-top: 0.2rem;
+    .section-card-title-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
-    .code-chip {
+    .section-toc {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .section-toc li a {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      align-items: baseline;
+      gap: 0.5rem;
+      text-decoration: none;
+      line-height: 1.45;
+    }
+    .section-toc-code {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0.1rem 0.4rem;
+      white-space: nowrap;
+    }
+    .section-toc-title {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .section-toc li a:hover .section-toc-title {
+      color: #a78bfa;
+      text-decoration: underline;
+    }
+    .section-toc-more {
+      margin-top: -0.1rem;
+    }
+    .section-toc-more summary {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      padding: 0.15rem 0;
+      list-style: none;
+    }
+    .section-toc-more summary::-webkit-details-marker {
+      display: none;
+    }
+    .section-toc-more summary::before {
+      content: '+ ';
+    }
+    .section-toc-more[open] summary::before {
+      content: '− ';
+    }
+    .section-toc-more .section-toc {
+      margin-top: 0.4rem;
     }
     .section-card-cta {
       margin-top: auto;
@@ -111,6 +154,7 @@
       font-size: 0.78rem;
       color: #a78bfa;
       font-weight: 600;
+      text-decoration: none;
     }
     .section-card--soon .section-card-cta {
       color: var(--text-dim);
@@ -208,160 +252,249 @@
     <div class="section-grid">
 
       <!-- Section 1 — Available -->
-      <a href="section-1-licensing.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-1-licensing.html">
             <p class="section-num">Section 1</p>
             <h2 class="section-name">Licensing &amp; Operating</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">6 questions &nbsp;·&nbsp; 13% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">1A</span><span class="code-chip">1B</span><span class="code-chip">1C</span>
-          <span class="code-chip">1D</span><span class="code-chip">1E</span><span class="code-chip">1G</span>
-          <span class="code-chip">1H</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-1-licensing.html#ch-1a"><span class="section-toc-code">1A</span><span class="section-toc-title">Licence Conditions</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1b"><span class="section-toc-code">1B</span><span class="section-toc-title">Licensing Structure</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1c"><span class="section-toc-code">1C</span><span class="section-toc-title">Supervision &amp; Third-Party Operation</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1d"><span class="section-toc-code">1D</span><span class="section-toc-title">Band Plans &amp; Interference</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1e"><span class="section-toc-code">1E</span><span class="section-toc-title">Operating &amp; Remote Control</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1f"><span class="section-toc-code">1F</span><span class="section-toc-title">Special Conditions</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1g"><span class="section-toc-code">1G</span><span class="section-toc-title">International Regulations</span></a></li>
+          <li><a href="section-1-licensing.html#ch-1h"><span class="section-toc-code">1H</span><span class="section-toc-title">Power Limits &amp; EMF</span></a></li>
+          <li><a href="section-1-licensing.html#key-facts"><span class="section-toc-code">★</span><span class="section-toc-title">Key Facts Table</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-1-licensing.html">Study section →</a>
+      </article>
 
       <!-- Section 2 — Available -->
-      <a href="section-2-electronics.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-2-electronics.html">
             <p class="section-num">Section 2</p>
             <h2 class="section-name">Electronics &amp; Electrical</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">14 questions &nbsp;·&nbsp; 30% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">2C</span><span class="code-chip">2D</span><span class="code-chip">2E</span>
-          <span class="code-chip">2F</span><span class="code-chip">2G</span><span class="code-chip">2H</span>
-          <span class="code-chip">2I</span><span class="code-chip">2J</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-2-electronics.html#mains-safety"><span class="section-toc-code">2A</span><span class="section-toc-title">AC Mains Safety</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2c"><span class="section-toc-code">2C</span><span class="section-toc-title">Resistors, Capacitors &amp; Inductors</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2d"><span class="section-toc-code">2D</span><span class="section-toc-title">Ohm's Law &amp; Power</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2e"><span class="section-toc-code">2E</span><span class="section-toc-title">Alternating Current</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2f"><span class="section-toc-code">2F</span><span class="section-toc-title">Impedance, Resonance &amp; Q Factor</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2g"><span class="section-toc-code">2G</span><span class="section-toc-title">Semiconductors</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2h"><span class="section-toc-code">2H</span><span class="section-toc-title">Digital Electronics</span></a></li>
+          <li><a href="section-2-electronics.html#ch-2i"><span class="section-toc-code">2I</span><span class="section-toc-title">Power Supplies</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 12 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-2-electronics.html#ch-2j"><span class="section-toc-code">2J</span><span class="section-toc-title">Decibels &amp; Signal Levels</span></a></li>
+          <li><a href="section-2-electronics.html#formula-ref"><span class="section-toc-code">≡</span><span class="section-toc-title">Formula Reference</span></a></li>
+          <li><a href="section-2-electronics.html#symbols-ref"><span class="section-toc-code">∑</span><span class="section-toc-title">Symbols &amp; Notation</span></a></li>
+          <li><a href="section-2-electronics.html#key-facts"><span class="section-toc-code">★</span><span class="section-toc-title">Key Facts Summary</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-2-electronics.html">Study section →</a>
+      </article>
 
       <!-- Section 3 — Available -->
-      <a href="section-3-transmitters.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-3-transmitters.html">
             <p class="section-num">Section 3</p>
             <h2 class="section-name">Transmitters &amp; Receivers</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">7 questions &nbsp;·&nbsp; 15% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">3A</span><span class="code-chip">3C</span><span class="code-chip">3E</span>
-          <span class="code-chip">3G</span><span class="code-chip">3H</span><span class="code-chip">3I</span>
-          <span class="code-chip">3K</span><span class="code-chip">3M</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-3-transmitters.html#ch-3a"><span class="section-toc-code">3A</span><span class="section-toc-title">The Superheterodyne Receiver</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3a-tune"><span class="section-toc-code">3A↳</span><span class="section-toc-title">What Happens When You Tune a Superhet</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3a-lo"><span class="section-toc-code">3A↳</span><span class="section-toc-title">High-Side vs Low-Side LO Injection</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3a2"><span class="section-toc-code">3A2</span><span class="section-toc-title">Direct Conversion Receivers</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3a3"><span class="section-toc-code">3A3</span><span class="section-toc-title">TRF Receivers</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3b"><span class="section-toc-code">3B</span><span class="section-toc-title">Mixers</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3c"><span class="section-toc-code">3C</span><span class="section-toc-title">Receiver Characteristics</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3e"><span class="section-toc-code">3E</span><span class="section-toc-title">CW and SSB Transmitters</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 17 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-3-transmitters.html#ch-3f"><span class="section-toc-code">3F</span><span class="section-toc-title">Modulation</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3g"><span class="section-toc-code">3G</span><span class="section-toc-title">FM Transmitters and Receivers</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3h"><span class="section-toc-code">3H</span><span class="section-toc-title">Digital Modes</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3i"><span class="section-toc-code">3I</span><span class="section-toc-title">Transceivers</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3k"><span class="section-toc-code">3K</span><span class="section-toc-title">Filters and AGC</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3l"><span class="section-toc-code">3L</span><span class="section-toc-title">Digital Signal Processing</span></a></li>
+          <li><a href="section-3-transmitters.html#ch-3m"><span class="section-toc-code">3M</span><span class="section-toc-title">Oscillators</span></a></li>
+          <li><a href="section-3-transmitters.html#key-facts"><span class="section-toc-code">★</span><span class="section-toc-title">Key Facts Summary</span></a></li>
+          <li><a href="section-3-transmitters.html#formula-ref"><span class="section-toc-code">≡</span><span class="section-toc-title">Formula Reference</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-3-transmitters.html">Study section →</a>
+      </article>
 
       <!-- Section 4 — Available -->
-      <a href="section-4-feeders-antennas.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-4-feeders-antennas.html">
             <p class="section-num">Section 4</p>
             <h2 class="section-name">Feeders &amp; Antennas</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">4 questions &nbsp;·&nbsp; 9% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">4A</span><span class="code-chip">4B</span><span class="code-chip">4C</span>
-          <span class="code-chip">4D</span><span class="code-chip">4E</span><span class="code-chip">4F</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-4-feeders-antennas.html#ch-4a"><span class="section-toc-code">4A</span><span class="section-toc-title">Antenna Fundamentals</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4b"><span class="section-toc-code">4B</span><span class="section-toc-title">Standing Waves, SWR &amp; Reflection</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4c"><span class="section-toc-code">4C</span><span class="section-toc-title">Feeders</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4d"><span class="section-toc-code">4D</span><span class="section-toc-title">Baluns</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4e"><span class="section-toc-code">4E</span><span class="section-toc-title">Antenna Matching</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4f"><span class="section-toc-code">4F</span><span class="section-toc-title">Antenna Concepts</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4g"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#ch-4h"><span class="section-toc-code">4H</span><span class="section-toc-title">EMF &amp; Near-Field Safety</span></a></li>
+          <li><a href="section-4-feeders-antennas.html#formula-ref"><span class="section-toc-code">≡</span><span class="section-toc-title">Formula Reference</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-4-feeders-antennas.html">Study section →</a>
+      </article>
 
       <!-- Section 5 — Available -->
-      <a href="section-5-propagation.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-5-propagation.html">
             <p class="section-num">Section 5</p>
             <h2 class="section-name">Propagation</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">3 questions &nbsp;·&nbsp; 7% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">5A</span><span class="code-chip">5B</span><span class="code-chip">5C</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-5-propagation.html#ch-5a"><span class="section-toc-code">5A</span><span class="section-toc-title">Ground Wave &amp; Sky Wave</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5b"><span class="section-toc-code">5B</span><span class="section-toc-title">The Ionosphere</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5c"><span class="section-toc-code">5C</span><span class="section-toc-title">MUF &amp; LUF</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5d"><span class="section-toc-code">5D</span><span class="section-toc-title">Seasonal &amp; Solar Variation</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5e"><span class="section-toc-code">5E</span><span class="section-toc-title">VHF &amp; UHF Propagation</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5f"><span class="section-toc-code">5F</span><span class="section-toc-title">Practical Propagation Effects</span></a></li>
+          <li><a href="section-5-propagation.html#ch-5g"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          <li><a href="section-5-propagation.html#formula-ref"><span class="section-toc-code">≡</span><span class="section-toc-title">Formula/Table Reference</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-5-propagation.html">Study section →</a>
+      </article>
 
       <!-- Section 6 — Available -->
-      <a href="section-6-emc.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-6-emc.html">
             <p class="section-num">Section 6</p>
             <h2 class="section-name">EMC</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">4 questions &nbsp;·&nbsp; 9% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">6A</span><span class="code-chip">6B</span><span class="code-chip">6C</span>
-          <span class="code-chip">6D</span><span class="code-chip">6E</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-6-emc.html#ch-6a"><span class="section-toc-code">6A</span><span class="section-toc-title">What is EMC?</span></a></li>
+          <li><a href="section-6-emc.html#ch-6b"><span class="section-toc-code">6B</span><span class="section-toc-title">Sources of Interference</span></a></li>
+          <li><a href="section-6-emc.html#ch-6c"><span class="section-toc-code">6C</span><span class="section-toc-title">Effects of Interference</span></a></li>
+          <li><a href="section-6-emc.html#ch-6d"><span class="section-toc-code">6D</span><span class="section-toc-title">Fixing Interference at the Source</span></a></li>
+          <li><a href="section-6-emc.html#ch-6e"><span class="section-toc-code">6E</span><span class="section-toc-title">Fixing Interference at the Victim</span></a></li>
+          <li><a href="section-6-emc.html#ch-6f"><span class="section-toc-code">6F</span><span class="section-toc-title">Checking Your Transmitter</span></a></li>
+          <li><a href="section-6-emc.html#ch-6g"><span class="section-toc-code">6G</span><span class="section-toc-title">Getting Help</span></a></li>
+          <li><a href="section-6-emc.html#ch-6h"><span class="section-toc-code">6H</span><span class="section-toc-title">Vehicle Installation EMC</span></a></li>
+          <li><a href="section-6-emc.html#ch-6j"><span class="section-toc-code">6J</span><span class="section-toc-title">ISM Bands</span></a></li>
+          <li><a href="section-6-emc.html#ch-6k"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-6-emc.html">Study section →</a>
+      </article>
 
       <!-- Section 7 — Coming soon -->
-      <a href="section-7-operating-practices.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-7-operating-practices.html">
             <p class="section-num">Section 7</p>
             <h2 class="section-name">Operating Practices</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">2–3 questions &nbsp;·&nbsp; ~6% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">7A</span><span class="code-chip">7B</span><span class="code-chip">7C</span>
-          <span class="code-chip">7D</span><span class="code-chip">7E</span><span class="code-chip">7F</span>
-          <span class="code-chip">7G</span><span class="code-chip">7H</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-7-operating-practices.html#ch-7a"><span class="section-toc-code">7A</span><span class="section-toc-title">Band Plans &amp; Frequency Etiquette</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7b"><span class="section-toc-code">7B</span><span class="section-toc-title">Making Contact</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7c"><span class="section-toc-code">7C</span><span class="section-toc-title">DX Operating &amp; Pileups</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7d"><span class="section-toc-code">7D</span><span class="section-toc-title">Digital Modes Etiquette</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7e"><span class="section-toc-code">7E</span><span class="section-toc-title">Nets &amp; Group Operations</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7f"><span class="section-toc-code">7F</span><span class="section-toc-title">Contest Operating</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7g"><span class="section-toc-code">7G</span><span class="section-toc-title">Log-keeping</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7h"><span class="section-toc-code">7H</span><span class="section-toc-title">Good Radio Housekeeping</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7j"><span class="section-toc-code">7J</span><span class="section-toc-title">Amateur Satellite Operating</span></a></li>
+          <li><a href="section-7-operating-practices.html#ch-7k"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-7-operating-practices.html">Study section →</a>
+      </article>
 
-      <a href="section-8-safety.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-8-safety.html">
             <p class="section-num">Section 8</p>
             <h2 class="section-name">Safety</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">3–4 questions &nbsp;·&nbsp; ~8% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">8A</span><span class="code-chip">8B</span><span class="code-chip">8C</span>
-          <span class="code-chip">8D</span><span class="code-chip">8E</span><span class="code-chip">8F</span>
-          <span class="code-chip">8G</span><span class="code-chip">8H</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-8-safety.html#ch-8a"><span class="section-toc-code">8A</span><span class="section-toc-title">Mains Electrical Safety</span></a></li>
+          <li><a href="section-8-safety.html#ch-8b"><span class="section-toc-code">8B</span><span class="section-toc-title">Working on Live Circuits</span></a></li>
+          <li><a href="section-8-safety.html#ch-8c"><span class="section-toc-code">8C</span><span class="section-toc-title">RF Burns &amp; RF Exposure</span></a></li>
+          <li><a href="section-8-safety.html#ch-8d"><span class="section-toc-code">8D</span><span class="section-toc-title">Antenna Work at Height</span></a></li>
+          <li><a href="section-8-safety.html#ch-8e"><span class="section-toc-code">8E</span><span class="section-toc-title">Battery Safety</span></a></li>
+          <li><a href="section-8-safety.html#ch-8f"><span class="section-toc-code">8F</span><span class="section-toc-title">Soldering Safety</span></a></li>
+          <li><a href="section-8-safety.html#ch-8g"><span class="section-toc-code">8G</span><span class="section-toc-title">Fire &amp; Emergency</span></a></li>
+          <li><a href="section-8-safety.html#ch-8h"><span class="section-toc-code">8H</span><span class="section-toc-title">Environmental Safety &amp; Lightning</span></a></li>
+          <li><a href="section-8-safety.html#ch-8j"><span class="section-toc-code">8J</span><span class="section-toc-title">Workshop Construction Safety</span></a></li>
+          <li><a href="section-8-safety.html#ch-8i"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+        </ul>
+        <a class="section-card-cta" href="section-8-safety.html">Study section →</a>
+      </article>
 
-      <a href="section-9-measurements.html" class="section-card section-card--available">
+      <article class="section-card section-card--available">
         <div class="section-card-top">
-          <div>
+          <a class="section-card-title-link" href="section-9-measurements.html">
             <p class="section-num">Section 9</p>
             <h2 class="section-name">Measurements &amp; Construction</h2>
-          </div>
+          </a>
           <span class="section-status section-status--available">Available</span>
         </div>
         <div class="section-weight">~3 questions &nbsp;·&nbsp; ~7% of exam</div>
-        <div class="section-codes">
-          <span class="code-chip">9A</span><span class="code-chip">9B</span><span class="code-chip">9C</span>
-          <span class="code-chip">9D</span><span class="code-chip">9E</span><span class="code-chip">9F</span>
-          <span class="code-chip">9G</span><span class="code-chip">9H</span>
-        </div>
-        <span class="section-card-cta">Study section →</span>
-      </a>
+        <ul class="section-toc">
+          <li><a href="section-9-measurements.html#ch-9a"><span class="section-toc-code">9A</span><span class="section-toc-title">Introduction to Test Equipment</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9b"><span class="section-toc-code">9B</span><span class="section-toc-title">The Multimeter</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9c"><span class="section-toc-code">9C</span><span class="section-toc-title">The Oscilloscope</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9d"><span class="section-toc-code">9D</span><span class="section-toc-title">Signal Generators</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9e"><span class="section-toc-code">9E</span><span class="section-toc-title">SWR Meters &amp; Power Meters</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9f"><span class="section-toc-code">9F</span><span class="section-toc-title">Spectrum Analysers</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9g"><span class="section-toc-code">9G</span><span class="section-toc-title">Dip Meters &amp; Antenna Analysers</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9h"><span class="section-toc-code">9H</span><span class="section-toc-title">Test Setups &amp; Procedures</span></a></li>
+        </ul>
+        <details class="section-toc-more">
+          <summary>Show all 12 topics</summary>
+          <ul class="section-toc">
+          <li><a href="section-9-measurements.html#ch-9i"><span class="section-toc-code">9I</span><span class="section-toc-title">Safety During Testing</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9k"><span class="section-toc-code">9K</span><span class="section-toc-title">Construction Basics</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9l"><span class="section-toc-code">9L</span><span class="section-toc-title">dB Power Shortcuts</span></a></li>
+          <li><a href="section-9-measurements.html#ch-9j"><span class="section-toc-code">★</span><span class="section-toc-title">Self-Check Questions</span></a></li>
+          </ul>
+        </details>
+        <a class="section-card-cta" href="section-9-measurements.html">Study section →</a>
+      </article>
 
     </div>
 
