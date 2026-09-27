@@ -101,8 +101,8 @@ def ingest_questions():
                 INSERT INTO exam_questions (
                     level, section_code, section_name, syllabus_ref,
                     question_text, options, correct_answer, explanation,
-                    source_paper, has_diagram, tags
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    source_paper, has_diagram, diagram_url, tags
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     q['level'],
@@ -115,6 +115,7 @@ def ingest_questions():
                     q['explanation'],
                     q.get('source_content'),
                     q.get('has_diagram', False),
+                    q.get('diagram_url'),  # diagram_url from JSON
                     json.dumps(q.get('tags', [])),  # JSONB array
                 )
             )
