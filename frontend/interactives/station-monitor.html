@@ -186,6 +186,14 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   #rose-sidebar{width:100%;border-left:none;border-top:1px solid var(--border)}
   #rose-wrap{flex-direction:column}
   header .hlinks{display:none}
+
+  /* stack the antenna-comparison summary table into cards instead of clipping columns */
+  #compare-table-wrap{overflow-x:visible}
+  #compare-table thead{position:absolute;left:-9999px;top:-9999px}
+  #compare-table, #compare-table tbody, #compare-table tr, #compare-table td{display:block;width:100%}
+  #compare-table tr{border:1px solid var(--border);border-radius:6px;margin-bottom:8px;padding:6px 0;background:var(--bg-card)}
+  #compare-table td{border-bottom:none;display:flex;justify-content:space-between;gap:10px;white-space:normal;padding:3px 10px}
+  #compare-table td::before{content:attr(data-label);color:var(--dim);text-transform:uppercase;font-size:.6rem;letter-spacing:.05em;font-family:'IBM Plex Sans',sans-serif}
 }
 
 /* ── time-of-day / grey-line ────────────────────────────────────────────── */
@@ -737,13 +745,13 @@ function renderComparison() {
     <thead><tr><th>Band</th><th>Both running</th><th>Pairs</th><th>Only ${label1}</th><th>Only ${label2}</th><th>Mean diff</th><th>Median diff</th></tr></thead>
     <tbody>${bands.map(b=>{
       const s=summary.by_band[b];
-      return `<tr><td style="color:${BAND_META[b].color}">${BAND_META[b].label}</td>`+
-        `<td>${(s.both_running_slots||0).toLocaleString()}</td>`+
-        `<td>${(s.pairs||0).toLocaleString()}${(s.pairs||0)<20?' *':''}</td>`+
-        `<td>${s['only_'+ant1]||0}</td>`+
-        `<td>${s['only_'+ant2]||0}</td>`+
-        `<td>${fmtDiff(s.snr_diff_mean)}</td>`+
-        `<td>${fmtDiff(s.snr_diff_median)}</td></tr>`;
+      return `<tr><td data-label="Band" style="color:${BAND_META[b].color}">${BAND_META[b].label}</td>`+
+        `<td data-label="Both running">${(s.both_running_slots||0).toLocaleString()}</td>`+
+        `<td data-label="Pairs">${(s.pairs||0).toLocaleString()}${(s.pairs||0)<20?' *':''}</td>`+
+        `<td data-label="Only ${label1}">${s['only_'+ant1]||0}</td>`+
+        `<td data-label="Only ${label2}">${s['only_'+ant2]||0}</td>`+
+        `<td data-label="Mean diff">${fmtDiff(s.snr_diff_mean)}</td>`+
+        `<td data-label="Median diff">${fmtDiff(s.snr_diff_median)}</td></tr>`;
     }).join('')}</tbody>
   </table>
   <div id="compare-caption">* fewer than 20 pairs — not enough data yet. Rule: ${summary.rule||''} Generated ${summary.generated_utc||'—'}.</div>
