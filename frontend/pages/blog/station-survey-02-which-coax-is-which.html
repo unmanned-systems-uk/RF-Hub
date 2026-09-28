@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="description" content="Four coax feedlines, one confusing VNA sweep, and a lesson learned the hard way: a great SWR is not the same thing as a great antenna.">
+<meta property="og:title" content="Which Coax Is Which? — Station Surveys #2">
+<meta property="og:description" content="Four coax feedlines, one confusing VNA sweep, and a lesson learned the hard way: a great SWR is not the same thing as a great antenna.">
+<meta property="og:image" content="/assets/images/blog/station-surveys/survey-02/fig02-hf360xp-s11-1-55MHz-comb.jpg">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://rf-hub.info/pages/blog/station-survey-02-which-coax-is-which.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Which Coax Is Which? — Station Surveys #2">
+<meta name="twitter:description" content="Four coax feedlines, one confusing VNA sweep, and a lesson learned the hard way: a great SWR is not the same thing as a great antenna.">
+<meta name="twitter:image" content="/assets/images/blog/station-surveys/survey-02/fig02-hf360xp-s11-1-55MHz-comb.jpg">
+<link rel="canonical" href="https://rf-hub.info/pages/blog/station-survey-02-which-coax-is-which.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Coax Is Which? — Station Surveys #2 | RF-Hub</title>
+  <!-- Favicons — SPOT (see /favicon.ico, /apple-touch-icon.png, /site.webmanifest) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#06b6d4">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Which Coax Is Which? — and why a great SWR isn't a great antenna",
+  "description": "Four coax feedlines, one confusing VNA sweep, and a lesson learned the hard way: a great SWR is not the same thing as a great antenna.",
+  "image": "/assets/images/blog/station-surveys/survey-02/fig02-hf360xp-s11-1-55MHz-comb.jpg",
+  "author": { "@type": "Person", "name": "Anthony" },
+  "datePublished": "2026-09-28"
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/rf-hub-v2.css">
+<link rel="stylesheet" href="/assets/css/search.css?v=20260913-1600">
+  <meta name="site-nav-active" content="blog">
+</head>
+<body>
+
+<!-- ─── NAVIGATION ──────────────────────────────────────────── -->
+<!-- Nav SPOT (site-nav.html partial). Fallback link if JS fails. -->
+<div id="site-nav-mount">
+  <nav class="site-nav">
+    <div class="container container--wide">
+      <a href="/index.html" class="site-nav-brand">RF-Hub</a>
+      <ul class="site-nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/study/">Study</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- ─── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Station Surveys #2</div>
+    <h1>Which Coax Is Which?</h1>
+    <p class="hero-subtitle">— and why a great SWR isn't a great antenna</p>
+  </div>
+</section>
+
+<!-- ─── ARTICLE META ────────────────────────────────────────── -->
+<div class="container">
+<div class="article">
+<div class="article-meta">
+  <span class="article-meta-item">📅 <span>2026-09-28</span></span>
+  <span class="article-meta-item">⏱ <span>15 min read</span></span>
+  <span class="article-meta-item">📊 <span>4 cables · Rigol RSA5065N · CK106A cal kit</span></span>
+</div>
+
+<div class="callout callout--info">
+  <span class="callout-icon">📋</span>
+  <div class="callout-text">
+    <strong>Bench notes, not a tutorial.</strong> This is a first-person write-up from an evening at the analyser, kept in the order it actually happened — including the wrong turns. For the fundamentals of S11, return loss and SWR, see <a href="understanding-s11.html">Understanding S11 Measurements</a>.
+  </div>
+</div>
+
+<!-- ─── CHAPTER 01: THE PROBLEM ────────────────────────────────── -->
+<div class="chapter" id="the-problem">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 01</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Problem</h2>
+
+  <p>Four coax feedlines come into the shack, and after installing a new <strong>HF-360 XP</strong> (a 1&nbsp;kW fibreglass vertical, "80–10&nbsp;m") I was no longer sure my labels were right. The four were <em>supposed</em> to be:</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Cable</th><th>Labelled</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Discone</td><td>wideband scanner/VHF-UHF</td></tr>
+        <tr><td>2</td><td>Air-band</td><td>VHF/UHF, spec: <strong>108–140&nbsp;MHz</strong> + <strong>220–400&nbsp;MHz</strong></td></tr>
+        <tr><td>3</td><td>HF-360&nbsp;XP</td><td>new end-fed vertical, 80–10&nbsp;m (3.5–30&nbsp;MHz), <em>"1.1:1 with ATU"</em></td></tr>
+        <tr><td>4</td><td>40&nbsp;m long wire</td><td>~40&nbsp;m end-fed, normally on the Icom IC-7610</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>What set off the alarm: I put the "new HF-360" on the VNA and the S11 plot <strong>made no sense</strong> — nothing like the tidy 1.1:1-across-all-bands table on the box.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-02/fig01-hf360xp-s11-20-30MHz-raw.jpg"
+         alt="Rigol RSA5065N S11 sweep of the HF-360 XP, 20-30 MHz, showing a sharp -16 dB notch near 24 MHz with SWR 3-6 either side of it"
+         loading="lazy" width="1600">
+    <figcaption>Fig 1 — HF-360 XP, S11 20–30&nbsp;MHz. One sharp −16&nbsp;dB notch near 24&nbsp;MHz, SWR 3–6 either side. This "looks broken" against the spec sheet — but see the first gotcha below.</figcaption>
+  </figure>
+
+  <p>The whole job was done with <strong>S11 (return loss / SWR) reflection measurements</strong> on the Rigol RSA5065N's VNA mode, TG power −10&nbsp;dBm, CK106A cal kit. Below is how each cable was fingerprinted — and the answer, which was not what I expected.</p>
+</div>
+
+<!-- ─── CHAPTER 02: THE STATION ────────────────────────────────── -->
+<div class="chapter" id="the-station">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 02</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The Station</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <tbody>
+        <tr><td><strong>Rig</strong></td><td>Icom IC-7610 — ANT1 = 40&nbsp;m long wire, ANT2 = HF-360&nbsp;XP</td></tr>
+        <tr><td><strong>HF-360 XP</strong></td><td>1&nbsp;kW fibreglass vertical, 5.5&nbsp;m, rated 80–10&nbsp;m (3.5–30&nbsp;MHz), 4:1 unun at the base</td></tr>
+        <tr><td><strong>HF-360 install</strong></td><td>roof-mounted, 2&nbsp;m fibreglass pole, Sigma Plus kit loaded radials (80&nbsp;m + 40&nbsp;m) laid out as an inverted T, common-mode choke ~2&nbsp;m down the coax</td></tr>
+        <tr><td><strong>HF-360 feeder</strong></td><td>~30&nbsp;m RG-213</td></tr>
+        <tr><td><strong>Long wire feeder</strong></td><td>~20&nbsp;m RG-213 to the shack, common-mode choked at the shack end</td></tr>
+        <tr><td><strong>Instrument</strong></td><td>Rigol RSA5065N, VNA/S11 mode, TG power −10&nbsp;dBm, CK106A cal kit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>Feeder caveat.</strong> Every sweep below was taken at the shack end, through the coax — HF-360 through ~30&nbsp;m of RG-213, long wire through ~20&nbsp;m of RG-213. So every plot shows <strong>antenna + feeder</strong> combined, not the antenna alone, and the comb-spacing length estimate later in this post inherits that too.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 03: GOTCHA #1 ──────────────────────────────────── -->
+<div class="chapter" id="gotcha-1">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 03</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Gotcha #1 — a raw VNA sweep is NOT the "with ATU" spec sheet</h2>
+
+  <p>The HF-360's spec table (1.1:1 on every band) is measured <strong>through an ATU</strong>. On a bare VNA you see the antenna's <em>raw</em> feedpoint match, which for any multiband end-fed is a set of resonances with high SWR between them. The tuner is what squashes that to 1.1:1 at the radio.</p>
+
+  <div class="callout callout--success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson:</strong> never judge a raw S11 sweep against a with-ATU SWR table. They are different measurements. A "bad-looking" raw sweep is normal and expected.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 04: CABLE 3 — HF-360 XP ────────────────────────── -->
+<div class="chapter" id="cable-3-hf360">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 04</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Cable 3 — HF-360 XP (the "puzzle")</h2>
+
+  <p>Widening the sweep to <strong>1–55&nbsp;MHz</strong> shows the real signature — and it isn't what I first thought. My first read was "a comb of resonances landing on the ham bands." Looking properly at the trace, that's wrong: it's a <strong>broad, low-SWR plateau</strong> running from about 1 to 15&nbsp;MHz (S11 roughly −11 to −22&nbsp;dB, SWR ≈1.2–1.8), rising to a poor match above about 16&nbsp;MHz, with one narrow dip near 24.9&nbsp;MHz and a broader dip near 32&nbsp;MHz.</p>
+
+  <p>Marker minimum-search + spot readings on that plateau (S11 Log&nbsp;Mag):</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Band</th><th>Freq</th><th>S11</th><th>SWR</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>80&nbsp;m</td><td>3.43&nbsp;MHz</td><td class="excellent"><strong>−30.6&nbsp;dB</strong></td><td>≈1.06</td></tr>
+        <tr><td>40&nbsp;m</td><td>7.0&nbsp;MHz</td><td>−13.9&nbsp;dB</td><td>≈1.5</td></tr>
+        <tr><td>20&nbsp;m</td><td>14.0&nbsp;MHz</td><td>−19.5&nbsp;dB</td><td>≈1.2</td></tr>
+        <tr><td>10&nbsp;m</td><td>28.0&nbsp;MHz</td><td class="poor">−4.3&nbsp;dB</td><td class="poor">≈4.2 (raw)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>These are <strong>spot readings on the plateau</strong>, not resonance minima — at 7.0, 14.0 and 28.0&nbsp;MHz the trace is simply passing through those frequencies, not dipping to a local minimum there. S11 = −30.6&nbsp;dB at 3.43&nbsp;MHz means a return loss of 30.6&nbsp;dB — the deepest, cleanest point on the whole sweep.</em></p>
+
+  <p>That 3.43&nbsp;MHz dip is real and it's the deepest thing on the trace, but I can't be fully sure why it's there — it's <strong>possibly</strong> the 80&nbsp;m loaded radial from the Sigma Plus kit doing exactly what a loaded radial does, rather than a property of the vertical element itself.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-02/fig02-hf360xp-s11-1-55MHz-comb.jpg"
+         alt="Rigol RSA5065N S11 sweep of the HF-360 XP, 1-55 MHz, showing a broad low-SWR plateau from about 1 to 15 MHz, rising to a poor match above 16 MHz, with a narrow dip near 24.9 MHz and a broader dip near 32 MHz"
+         loading="lazy" width="1600">
+    <figcaption>Fig 2 — HF-360 XP, 1–55&nbsp;MHz. Broad plateau 1–15&nbsp;MHz (SWR ≈1.2–1.8), poor above ~16&nbsp;MHz, narrow dip ~24.9&nbsp;MHz, broad dip ~32&nbsp;MHz.</figcaption>
+  </figure>
+</div>
+
+<!-- ─── CHAPTER 05: CABLE 4 — LONG WIRE ────────────────────────── -->
+<div class="chapter" id="cable-4-longwire">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 05</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Cable 4 — 40&nbsp;m long wire</h2>
+
+  <p>Same 1–55&nbsp;MHz sweep, completely different fingerprint: a <strong>dense, regular comb that runs all the way to 55&nbsp;MHz</strong>, with the dips sitting <em>between</em> the amateur bands rather than on them.</p>
+
+  <ul>
+    <li>Deepest resonance: <strong>1.27&nbsp;MHz, −33.8&nbsp;dB</strong> (return loss 33.8&nbsp;dB)</li>
+    <li>Two adjacent resonances measured at <strong>23.3&nbsp;MHz and 26.8&nbsp;MHz → comb spacing Δf = 3.5&nbsp;MHz</strong></li>
+  </ul>
+
+  <h3>Method: comb spacing → wire length</h3>
+
+  <p>For an end-fed wire, adjacent half-wave resonances are spaced by:</p>
+
+  <pre>Δf = (c · vf) / (2 · L)      →      L = (c · vf) / (2 · Δf)</pre>
+
+  <p>With Δf = 3.5&nbsp;MHz and velocity factor vf ≈ 0.95:</p>
+
+  <pre>L = (3×10<sup>8</sup> · 0.95) / (2 · 3.5×10<sup>6</sup>) ≈ 40.7 m</pre>
+
+  <p>→ <strong>~40 metres of wire</strong> (remembering the feeder caveat above — this is antenna <em>and</em> ~20&nbsp;m of feeder run together, so the true radiating length is somewhere under that figure). A bare wire has no upper band limit, so it keeps resonating past 30&nbsp;MHz to 55&nbsp;MHz — exactly what we see, and the opposite of the band-limited HF-360.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-02/fig03-longwire-s11-1-55MHz-comb.jpg"
+         alt="Rigol RSA5065N S11 sweep of the 40 m long wire, 1-55 MHz, showing a dense regular comb of resonances off the amateur bands, continuing to the top of the sweep"
+         loading="lazy" width="1600">
+    <figcaption>Fig 3 — 40&nbsp;m long wire, 1–55&nbsp;MHz. Regular ~3.5&nbsp;MHz comb, off the ham bands, continuing to the top of the sweep. Marker at 28.000&nbsp;MHz.</figcaption>
+  </figure>
+</div>
+
+<!-- ─── CHAPTER 06: GOOD SWR ≠ GOOD ANTENNA ────────────────────── -->
+<div class="chapter" id="good-swr-not-good-antenna">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 06</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Good SWR is not the same as a good antenna</h2>
+
+  <p>Here's the thing that actually bothered me once I'd read the HF-360 plot correctly. On 80&nbsp;m, the whole antenna — 5.5&nbsp;m of fibreglass vertical — is electrically <strong>tiny</strong>: roughly 1/15th of a wavelength. A vertical that short should have very low radiation resistance and a lot of capacitive reactance. It should look <strong>reactive and badly matched</strong> at the feedpoint, not smooth and well-behaved.</p>
+
+  <p>Instead the raw sweep shows a broad, gently-varying, genuinely-good match (SWR ≈1.2–1.8) across 1–15&nbsp;MHz — no sharp resonance, no obvious tuning peak, just an easy ride the whole way. For a physically tiny antenna, a match that broad and that forgiving is not what "well radiating" normally looks like. It's much more consistent with something in the system — the 4:1 unun, the loaded-radial counterpoise, the ~30&nbsp;m of feeder — quietly <strong>absorbing</strong> power as loss rather than the antenna radiating it.</p>
+
+  <div class="callout callout--warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-text">
+      <strong>To be fair to the antenna:</strong> this is the likely explanation, not a proven efficiency number. I haven't measured loss directly — I've inferred it from how implausibly broad and smooth the match is for something this electrically short. The on-air listening test later in this post points the same way, which is why I'm reasonably confident in it, but it isn't a lab measurement.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 07: THE TWO DISCRIMINATORS ─────────────────────── -->
+<div class="chapter" id="discriminators">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 07</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The two discriminators between the HF wires</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th></th><th>HF-360 XP</th><th>40&nbsp;m long wire</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>S11 signature</strong></td><td>broad, lossy-looking plateau, ~1–15&nbsp;MHz; poor above ~16&nbsp;MHz</td><td>regular ~3.5&nbsp;MHz comb, continuing to 55&nbsp;MHz</td></tr>
+        <tr><td><strong>Rated range</strong></td><td>3.5–30&nbsp;MHz</td><td>no fixed limit — bare wire, resonates wherever its length dictates</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>A purpose-built, band-limited antenna and a random length of wire look nothing alike once you sweep wide enough: one rolls off where it's designed to, the other just keeps going.</p>
+</div>
+
+<!-- ─── CHAPTER 08: CABLE 1 — DISCONE ──────────────────────────── -->
+<div class="chapter" id="cable-1-discone">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 08</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Cable 1 — Discone (needed a re-calibration)</h2>
+
+  <p>A discone lives in VHF/UHF, so the sweep was opened to <strong>20&nbsp;MHz – 1&nbsp;GHz</strong>. First attempt threw an obvious error:</p>
+
+  <h3>Gotcha #2 — S11 above 0&nbsp;dB (or SWR below 1) means you are off-cal</h3>
+
+  <p>At 50&nbsp;MHz the marker read <strong>S11 = +5.9&nbsp;dB</strong>. That is physically impossible for a passive antenna (|S11| can't exceed 1, i.e. 0&nbsp;dB). The cause: the CK106A calibration had been done at 20–30&nbsp;MHz, so everything up in VHF/UHF was uncalibrated extrapolation.</p>
+
+  <div class="callout callout--success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson:</strong> VNA calibration is <strong>frequency-range specific</strong>. S11 above 0&nbsp;dB (or SWR below 1) is the instrument telling you the correction is invalid at that frequency — it isn't data. Re-cal for the range you actually want to measure.
+    </div>
+  </div>
+
+  <h3>After a proper O/S/L re-cal (20&nbsp;MHz – 1&nbsp;GHz, 1001 points, IF BW 1&nbsp;kHz)</h3>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Freq</th><th>S11</th><th>SWR</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>30&nbsp;MHz</td><td>−10.1&nbsp;dB</td><td>≈1.9</td></tr>
+        <tr><td>130&nbsp;MHz</td><td>−20.5&nbsp;dB</td><td>≈1.2</td></tr>
+        <tr><td>435&nbsp;MHz</td><td>−27.1&nbsp;dB</td><td>≈1.09</td></tr>
+        <tr><td><strong>570&nbsp;MHz</strong></td><td class="excellent"><strong>−69.6&nbsp;dB</strong></td><td class="excellent">≈1.0</td></tr>
+        <tr><td>950&nbsp;MHz</td><td>−27.2&nbsp;dB</td><td>≈1.09</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>−69.6&nbsp;dB at 570&nbsp;MHz isn't a special property of the antenna — it's a <strong>coincidental near-perfect match</strong> at that exact frequency. Anywhere deeper than about −40&nbsp;dB is really at the limit of what the instrument and calibration can resolve; treat numbers beyond that as "very well matched," not as a precise figure.</em></p>
+
+  <p>Well-matched (SWR &lt; 2) from ~30&nbsp;MHz all the way to 1&nbsp;GHz, with <strong>no single resonance</strong> — matched everywhere. That is the textbook discone signature, and the opposite of a resonant whip.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-02/fig05-discone-s11-cal-20MHz-1GHz.jpg"
+         alt="Rigol RSA5065N calibrated S11 sweep of the discone, 20 MHz to 1 GHz, showing SWR collapsing to approximately 1.0 across the whole band with no resonant notch"
+         loading="lazy" width="1600">
+    <figcaption>Fig 5 — Discone, calibrated. SWR collapses to ~1.0 across the whole band; broadband, no resonant notch.</figcaption>
+  </figure>
+</div>
+
+<!-- ─── CHAPTER 09: CABLE 2 — AIR-BAND ─────────────────────────── -->
+<div class="chapter" id="cable-2-airband">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 09</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Cable 2 — Air-band (dual-band VHF/UHF)</h2>
+
+  <p>On the same calibration, this one shows <strong>two distinct matched bands</strong> with mismatch between them — matching the spec (VHF 108–140&nbsp;MHz + UHF 220–400&nbsp;MHz):</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Band</th><th>Freq</th><th>SWR</th><th>≈ S11</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>VHF (108–140)</td><td>113.24&nbsp;MHz</td><td>1.07</td><td>≈ −29&nbsp;dB</td></tr>
+        <tr><td>VHF (108–140)</td><td>114.96&nbsp;MHz</td><td>1.04</td><td>−34.4&nbsp;dB (measured)</td></tr>
+        <tr><td>UHF (220–400)</td><td>364.12&nbsp;MHz</td><td>1.02</td><td>≈ −40&nbsp;dB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-dim" style="font-size: 13px; margin-top: -8px;"><em>There's also an incidental match near 965&nbsp;MHz, SWR ≈1.0 — a higher-order sweet spot outside the rated bands.</em></p>
+
+  <p>Two clean bands = a dual-band VHF/UHF antenna (the air-band 108–137&nbsp;MHz sits inside its VHF range). Confirmed.</p>
+
+  <figure>
+    <img src="../../assets/images/blog/station-surveys/survey-02/fig06-airband-s11-vhf-uhf.jpg"
+         alt="Rigol RSA5065N calibrated S11 sweep of the air-band VHF/UHF antenna showing two matched bands around 115 MHz and 364 MHz with mismatch between them"
+         loading="lazy" width="1600">
+    <figcaption>Fig 6 — Air-band/VHF-UHF antenna. Matched in 108–140&nbsp;MHz and 220–400&nbsp;MHz, mismatched between. Marker at 114.960&nbsp;MHz.</figcaption>
+  </figure>
+
+  <h3>Gotcha #3 — read the <em>right</em> trace</h3>
+
+  <p>Mid-measurement the marker was reading off the <strong>SWR trace</strong> while being interpreted as <strong>Log Mag (dB)</strong>. An SWR of ~1.0 (a <em>great</em> match) got misread as "+1&nbsp;dB return loss / open circuit." The tell: SWR and Log Mag are both derived from the same S11 but have completely different scales and signs.</p>
+
+  <div class="callout callout--success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-text">
+      <strong>Lesson:</strong> always confirm which trace your marker is attached to (<code>:CALCulate:MARKer:TRACe?</code>) before quoting numbers. Log Mag is negative dB; SWR is a ratio ≥1. They are not interchangeable.
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAPTER 10: ON THE AIR ──────────────────────────────────── -->
+<div class="chapter" id="on-the-air">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 10</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>On the air</h2>
+
+  <p>The VNA sweep is one kind of evidence. So I put both HF antennas on the IC-7610 the same evening and just listened.</p>
+
+  <ul>
+    <li><strong>80&nbsp;m:</strong> the long wire hears amateur chat. The HF-360 hears nothing on the same frequency, same moment.</li>
+    <li><strong>20&nbsp;m (14.185&nbsp;MHz):</strong> the HF-360 actually has a <em>lower</em> noise floor than the long wire — but a station calling CQ was only just readable on both.</li>
+  </ul>
+
+  <p>That 20&nbsp;m result needs unpacking, because "lower noise floor" sounds like a win and on its own it isn't one. A less efficient antenna doesn't just quiet the band noise — it quiets everything it hears, wanted signals included, by roughly the same amount. A lower noise floor from a lossy antenna is not a better receiver; it's a receiver hearing less of <em>everything</em>. The fair test isn't "which antenna is quieter," it's <strong>signal-to-noise on the same station</strong> — and on 20&nbsp;m that came out about equal, marginal on both. Combined with 80&nbsp;m being essentially dead on the HF-360, that's consistent with the loss story in the previous section, not against it.</p>
+
+  <p>Next: a proper WSPR head-to-head on the IC-7610's two receivers, running both antennas simultaneously against the same signals over the same hours — <strong>Station Surveys #3</strong>.</p>
+</div>
+
+<!-- ─── CHAPTER 11: THE RESULT ──────────────────────────────────── -->
+<div class="chapter" id="the-result">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 11</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>The result — nothing was actually mislabelled</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Cable</th><th>Label</th><th>Measured signature</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Discone</td><td>Broadband SWR &lt;2, ~30&nbsp;MHz → 1&nbsp;GHz</td><td class="excellent">✅ correct</td></tr>
+        <tr><td>2</td><td>Air-band</td><td>Matched 108–140 &amp; 220–400&nbsp;MHz</td><td class="excellent">✅ correct</td></tr>
+        <tr><td>3</td><td>HF-360&nbsp;XP</td><td>Broad plateau 1–15&nbsp;MHz, poor above ~16&nbsp;MHz</td><td class="excellent">✅ correct</td></tr>
+        <tr><td>4</td><td>40&nbsp;m long wire</td><td>~40&nbsp;m comb (Δf 3.5&nbsp;MHz), off-band, to 55&nbsp;MHz</td><td class="excellent">✅ correct</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The scare was a <strong>measurement-expectation mismatch</strong>, not a cabling mix-up: the HF-360's raw S11 looked nothing like its with-ATU spec sheet, which sent me second-guessing all four feedlines. What it actually turned up instead was more interesting than a mislabelled cable — a hint that the "great match" on the new vertical is doing that by <em>losing</em> power, not radiating it.</p>
+</div>
+
+<!-- ─── CHAPTER 12: METHOD SUMMARY ─────────────────────────────── -->
+<div class="chapter" id="method-summary">
+  <div class="chapter-header">
+    <span class="chapter-num">CHAPTER 12</span>
+    <div class="chapter-line"></div>
+  </div>
+  <h2>Method summary (reproducible)</h2>
+
+  <ol>
+    <li><strong>Instrument:</strong> Rigol RSA5065N, VNA/S11 mode, TG −10&nbsp;dBm, CK106A cal kit.</li>
+    <li><strong>HF antennas:</strong> sweep 1–55&nbsp;MHz. Identify by (a) whether the match sits on the ham bands as a resonant comb or as a broad plateau, and (b) whether it's band-limited or runs to the top of the sweep. Get wire length from comb spacing: <code>L = c·vf / (2·Δf)</code> — remembering this includes the feeder.</li>
+    <li><strong>VHF/UHF antennas:</strong> sweep 20&nbsp;MHz – 1&nbsp;GHz. <strong>Re-calibrate (O/S/L) for this range</strong> — a low-band cal does not extend upward. Discone = broadband/no notch; resonant antenna = discrete band(s).</li>
+    <li><strong>Sanity checks:</strong> S11 above 0&nbsp;dB / SWR &lt;1 ⇒ off-cal. Confirm marker trace (Log Mag vs SWR) before quoting values. Treat anything deeper than about −40&nbsp;dB as "very well matched," not a precise number.</li>
+    <li><strong>Don't stop at the VNA.</strong> A suspiciously broad, easy match on an electrically short antenna is worth an on-air listening comparison — signal-to-noise on the same station, not just noise floor.</li>
+  </ol>
+
+  <h3>Three takeaways</h3>
+
+  <ol>
+    <li><strong>Raw VNA ≠ with-ATU spec.</strong> Judge an antenna's raw sweep on its own terms.</li>
+    <li><strong>Calibration is range-specific.</strong> S11 above 0&nbsp;dB is a "you're off-cal" flag, not data.</li>
+    <li><strong>A great match can be a loss, not a gain.</strong> On an electrically short antenna, a broad, easy, resonance-free match is a reason to suspect the system is absorbing power — check it on the air, not just on the analyser.</li>
+  </ol>
+</div>
+
+<div class="summary-grid" style="margin-top: 48px; margin-bottom: 16px;">
+  <div class="summary-card">
+    <h4 class="text-em">Station Surveys #2</h4>
+    <p>Bench notes · 2026-09-28 · Rigol RSA5065N · CK106A cal kit</p>
+  </div>
+  <div class="summary-card">
+    <h4 class="text-info">Next in series</h4>
+    <p>WSPR head-to-head on the IC-7610's two receivers, long wire vs HF-360.</p>
+  </div>
+</div>
+
+</div><!-- /.article -->
+</div><!-- /.container -->
+
+<!-- ─── FOOTER ──────────────────────────────────────────────── -->
+<div id="site-footer-mount">
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-brand">RF<span>Hub</span></p>
+      <p class="footer-copy">&copy; 2025 RF Learning Hub &mdash; <a href="/pages/about.html">About</a></p>
+    </div>
+  </footer>
+</div>
+
+<script src="/assets/js/search.js?v=20260913-1600" defer></script>
+  <script src="/assets/js/nav-loader.js?v=20260927-2210" defer></script>
+</body>
+</html>
