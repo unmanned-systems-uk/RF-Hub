@@ -250,7 +250,7 @@
   <div class="callout callout--warning">
     <span class="callout-icon">⚠️</span>
     <div class="callout-text">
-      <strong>To be fair to the antenna:</strong> this is the likely explanation, not a proven efficiency number. I haven't measured loss directly — I've inferred it from how implausibly broad and smooth the match is for something this electrically short. The on-air listening test later in this post points the same way, which is why I'm reasonably confident in it, but it isn't a lab measurement.
+      <strong>To be fair to the antenna:</strong> this is the likely explanation, not a proven efficiency number. I haven't measured loss directly — I've inferred it purely from how implausibly broad and smooth the S11 match is for something this electrically short. It's worth being careful here: the on-air comparison later in this post turned out to have its <em>own</em> explanation — elevation angle, not efficiency — that would produce the same "HF-360 goes quiet at short range" result whether or not there's any extra loss in the system. So treat the loss theory as standing on the S11 shape alone, not as something the on-air test confirms.
     </div>
   </div>
 </div>
@@ -382,16 +382,33 @@
   </div>
   <h2>On the air</h2>
 
-  <p>The VNA sweep is one kind of evidence. So I put both HF antennas on the IC-7610 the same evening and just listened.</p>
+  <p>The VNA sweep is one kind of evidence. So I put both HF antennas on the IC-7610 the same evening and just listened — and the first 80&nbsp;m result looked like it confirmed the loss story. The second one flatly contradicted it.</p>
 
   <ul>
-    <li><strong>80&nbsp;m:</strong> the long wire hears amateur chat. The HF-360 hears nothing on the same frequency, same moment.</li>
+    <li><strong>80&nbsp;m, UK chat:</strong> the long wire hears it. The HF-360 hears nothing on the same frequency, same moment.</li>
+    <li><strong>80&nbsp;m, HB9CVQ (Switzerland, ~1200&nbsp;km), 3.760&nbsp;MHz:</strong> the exact opposite — very strong and clear on the HF-360, very poor on the long wire.</li>
     <li><strong>20&nbsp;m (14.185&nbsp;MHz):</strong> the HF-360 actually has a <em>lower</em> noise floor than the long wire — but a station calling CQ was only just readable on both.</li>
   </ul>
 
-  <p>That 20&nbsp;m result needs unpacking, because "lower noise floor" sounds like a win and on its own it isn't one. A less efficient antenna doesn't just quiet the band noise — it quiets everything it hears, wanted signals included, by roughly the same amount. A lower noise floor from a lossy antenna is not a better receiver; it's a receiver hearing less of <em>everything</em>. The fair test isn't "which antenna is quieter," it's <strong>signal-to-noise on the same station</strong> — and on 20&nbsp;m that came out about equal, marginal on both. Combined with 80&nbsp;m being essentially dead on the HF-360, that's consistent with the loss story in the previous section, not against it.</p>
+  <p>Same band, same evening, opposite winners — that's not consistent with one antenna simply being better or worse than the other on 80&nbsp;m. It's consistent with <strong>arrival angle</strong>. Short-range 80&nbsp;m contacts within the UK are classic NVIS: the signal goes up and comes back down steeply, arriving at a high angle. A ~1200&nbsp;km path to Switzerland is a single, shallower hop, arriving much lower. A low, mostly-horizontal long wire radiates and receives well at high angles and is comparatively poor near the horizon; a vertical like the HF-360 does the opposite — strong at low angles, close to deaf straight overhead. Swap the arrival angle and you swap the winner:</p>
 
-  <p>Next: a proper WSPR head-to-head on the IC-7610's two receivers, running both antennas simultaneously against the same signals over the same hours — <strong>Station Surveys #3</strong>.</p>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Path</th><th>Distance</th><th>Arrival angle</th><th>Winner</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>UK 80&nbsp;m chat (NVIS)</td><td>short skip, roughly 100–300&nbsp;km</td><td>high, roughly 70–90° (near-vertical)</td><td>Long wire</td></tr>
+        <tr><td>HB9CVQ, Switzerland</td><td>~1200&nbsp;km (single hop)</td><td>lower, roughly 20–30°</td><td>HF-360</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>That's the classic NVIS-vs-DX trade-off, not "the HF-360 is lossy." Taken alone, the UK-chat result was misleading — it was a pattern effect, not a verdict on the antenna generally.</p>
+
+  <p>The 20&nbsp;m result needs unpacking too, because "lower noise floor" sounds like a win and on its own it isn't one. A less efficient antenna doesn't just quiet the band noise — it quiets everything it hears, wanted signals included, by roughly the same amount. A lower noise floor from a lossy antenna is not a better receiver; it's a receiver hearing less of <em>everything</em>. The fair test isn't "which antenna is quieter," it's <strong>signal-to-noise on the same station</strong> — and on 20&nbsp;m that came out about equal, marginal on both. On its own that doesn't clearly favour either theory. The 80&nbsp;m result is the one that actually does the explaining, and once elevation angle is in the picture it explains itself without needing the antenna to be lossy at all.</p>
+
+  <p>Next: a proper WSPR head-to-head on the IC-7610's two receivers, running both antennas simultaneously against the same signals over the same hours, plotting the SNR difference against distance for every heard pair. If the NVIS-vs-DX story here is right, the plot should show the long wire ahead at short range and the HF-360 pulling ahead as distance increases — <strong>Station Surveys #3</strong>.</p>
 </div>
 
 <!-- ─── CHAPTER 11: THE RESULT ──────────────────────────────────── -->
@@ -432,15 +449,16 @@
     <li><strong>HF antennas:</strong> sweep 1–55&nbsp;MHz. Identify by (a) whether the match sits on the ham bands as a resonant comb or as a broad plateau, and (b) whether it's band-limited or runs to the top of the sweep. Get wire length from comb spacing: <code>L = c·vf / (2·Δf)</code> — remembering this includes the feeder.</li>
     <li><strong>VHF/UHF antennas:</strong> sweep 20&nbsp;MHz – 1&nbsp;GHz. <strong>Re-calibrate (O/S/L) for this range</strong> — a low-band cal does not extend upward. Discone = broadband/no notch; resonant antenna = discrete band(s).</li>
     <li><strong>Sanity checks:</strong> S11 above 0&nbsp;dB / SWR &lt;1 ⇒ off-cal. Confirm marker trace (Log Mag vs SWR) before quoting values. Treat anything deeper than about −40&nbsp;dB as "very well matched," not a precise number.</li>
-    <li><strong>Don't stop at the VNA.</strong> A suspiciously broad, easy match on an electrically short antenna is worth an on-air listening comparison — signal-to-noise on the same station, not just noise floor.</li>
+    <li><strong>Don't stop at the VNA.</strong> A suspiciously broad, easy match on an electrically short antenna is worth an on-air listening comparison — signal-to-noise on the same station, not just noise floor. But compare across a range of distances, not just one: a single short-range check can be dominated by elevation-angle differences that have nothing to do with loss.</li>
   </ol>
 
-  <h3>Three takeaways</h3>
+  <h3>Four takeaways</h3>
 
   <ol>
     <li><strong>Raw VNA ≠ with-ATU spec.</strong> Judge an antenna's raw sweep on its own terms.</li>
     <li><strong>Calibration is range-specific.</strong> S11 above 0&nbsp;dB is a "you're off-cal" flag, not data.</li>
-    <li><strong>A great match can be a loss, not a gain.</strong> On an electrically short antenna, a broad, easy, resonance-free match is a reason to suspect the system is absorbing power — check it on the air, not just on the analyser.</li>
+    <li><strong>A great match can be a loss, not a gain.</strong> On an electrically short antenna, a broad, easy, resonance-free match is a reason to suspect the system is absorbing power — but the S11 shape is the evidence for that, not a single on-air comparison.</li>
+    <li><strong>One on-air test is not a verdict — distance is a variable.</strong> A vertical and a low horizontal wire trade places depending on arrival angle. "Antenna A beat antenna B" on one QSO can just mean the path favoured A's pattern that evening. Compare across distances before concluding anything about efficiency.</li>
   </ol>
 </div>
 
