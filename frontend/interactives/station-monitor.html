@@ -142,6 +142,41 @@ header .hlinks a:hover{color:var(--txt)}
   font-size:.70rem;padding:3px 9px;border-radius:3px;margin-left:auto}
 #btn-export:hover{background:#0f2a1a}
 
+/* compare panel */
+#compare-wrap{flex:1;overflow:auto;padding:14px}
+.cmp-empty{max-width:480px;margin:30px auto;text-align:center;color:var(--txt2);
+  font-size:.85rem;line-height:1.7}
+.cmp-empty b{color:var(--txt)}
+.cmp-caveat{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+  padding:11px 14px;font-size:.74rem;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+.cmp-caveat b{color:var(--txt)}
+.cmp-overall{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:14px}
+.cmp-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+  padding:9px 14px;min-width:120px}
+.cmp-stat .k{font-size:.63rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.cmp-stat .v{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;color:var(--txt);margin-top:2px}
+#cmp-chart-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+  padding:10px 12px;margin-bottom:14px}
+#cmp-chart-title{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+#cmp-chart{display:block;width:100%}
+#cmp-chart-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px;font-size:.68rem;color:var(--txt2)}
+.cmp-leg-sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.cmp-bands{display:flex;flex-direction:column;gap:8px}
+.cmp-band-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:10px 14px}
+.cmp-band-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cmp-band-name{font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--txt);font-size:.85rem}
+.cmp-band-sub{color:var(--dim);font-size:.68rem}
+.cmp-band-line{margin-top:5px;font-size:.78rem;color:var(--txt2);line-height:1.6}
+.cmp-band-line b{color:var(--txt)}
+.cmp-flag{display:inline-block;background:#1a1a0a;border:1px solid var(--amber);color:var(--amber);
+  font-size:.63rem;padding:1px 7px;border-radius:10px;margin-left:6px}
+#compare-table-wrap{margin-top:16px;overflow-x:auto}
+#compare-table{width:100%;border-collapse:collapse;font-size:.71rem}
+#compare-table th{background:var(--bg-card);color:var(--dim);text-transform:uppercase;
+  letter-spacing:.05em;font-size:.62rem;padding:5px 8px;border-bottom:1px solid var(--border);text-align:left}
+#compare-table td{padding:4px 8px;border-bottom:1px solid #0f172a;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
+#compare-caption{font-size:.68rem;color:var(--dim);margin-top:16px}
+
 /* ── attribution footer ─────────────────────────────────────────────────── */
 footer{background:var(--bg-card);border-top:1px solid var(--border);
   padding:8px 16px;font-size:.64rem;color:var(--dim);line-height:1.6}
@@ -219,6 +254,10 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   <div class="fb-group" id="band-btns">
     <span class="fb-label">Band</span>
   </div>
+  <div class="sep" id="ant-sep" style="display:none"></div>
+  <div class="fb-group" id="ant-btns" style="display:none">
+    <span class="fb-label">Antenna</span>
+  </div>
   <div class="sep"></div>
   <div class="fb-group">
     <span class="fb-label">Dist km</span>
@@ -245,6 +284,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
   <button class="tab" data-panel="scatter">Arrival Angle</button>
   <button class="tab" data-panel="heatmap">Band × Hour</button>
   <button class="tab" data-panel="table">Table <span class="tab-badge" id="badge-table">0</span></button>
+  <button class="tab" data-panel="compare">Antenna comparison</button>
 </nav>
 
 <div id="panels">
@@ -342,6 +382,13 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);
         <button class="tpbtn" id="tbl-next" aria-label="Next page">▶</button>
       </div>
       <button id="btn-export">↓ CSV</button>
+    </div>
+  </div>
+
+  <!-- ANTENNA COMPARISON PANEL -->
+  <div class="panel" id="panel-compare">
+    <div id="compare-wrap">
+      <div id="compare-content">Loading…</div>
     </div>
   </div>
 
@@ -445,6 +492,8 @@ const STATE = {
   bands: new Set(ALL_BANDS),
   distMin:0, distMax:25000,
   snrMin:-30, snrMax:20,
+  antennaFilter:'all', // 'all' or an antenna id, e.g. 'longwire'/'hf360'
+  antennaMeta:new Map(), // antenna id -> {label, count}
   rows:[],     // geo rows (has lat/lon)
   allRows:[],  // all rows including type-2
   filtered:[],
@@ -456,6 +505,8 @@ const STATE = {
   tableSortCol:'_ts', tableSortDir:-1,
   tablePage:0,
   tableSearch:'',
+  pairsSummary:null,
+  pairsRows:[],
 
   applyFilter() {
     const now=Date.now();
@@ -465,7 +516,8 @@ const STATE = {
       (this.timeWindow==='all'||r._ts>=cutoff) &&
       this.bands.has(r.band) &&
       r.dist_km>=this.distMin && r.dist_km<=this.distMax &&
-      r.snr_db>=this.snrMin && r.snr_db<=this.snrMax
+      r.snr_db>=this.snrMin && r.snr_db<=this.snrMax &&
+      (this.antennaFilter==='all'||r.antenna===this.antennaFilter)
     );
     updateBadges();
     redrawRose();
@@ -493,6 +545,10 @@ function parseSpotsCSV(text) {
     row.snr_db=parseFloat(row.snr_db)||0;
     row.snr_norm_db=parseFloat(row.snr_norm_db)||0;
     row.tx_pwr_dbm=parseFloat(row.tx_pwr_dbm)||0;
+    // Old spots (pre antenna-column) default to the long-wire — that was the
+    // only receiver running before the second WSJT-X instance was added.
+    if (!row.antenna) row.antenna='longwire';
+    if (!row.antenna_label) row.antenna_label='Long wire';
     allRows.push(row);
     if (row.msg_type===2||!row.lat) { type2++; continue; }
     row.lat=parseFloat(row.lat);
@@ -553,6 +609,299 @@ async function pollManifest() {
     }
   } catch(e) { setStatusError(e.message); }
   finally { setSpinner(false); }
+  fetchPairs();
+}
+
+// ─── ANTENNA COMPARISON DATA ─────────────────────────────────────────────────
+function parsePairsCSV(text) {
+  if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+  const lines=text.trim().split('\n');
+  if (lines.length<2) return [];
+  const hdr=lines[0].split(',').map(h=>h.trim());
+  const out=[];
+  for (let i=1;i<lines.length;i++) {
+    if (!lines[i].trim()) continue;
+    const cols=lines[i].split(',');
+    const row={};
+    hdr.forEach((h,j)=>{ row[h]=cols[j]!==undefined?cols[j].trim():''; });
+    row.dist_km=parseFloat(row.dist_km)||null;
+    row.bearing_deg=parseFloat(row.bearing_deg)||null;
+    row.snr_diff=parseFloat(row.snr_diff);
+    out.push(row);
+  }
+  return out;
+}
+
+async function fetchPairs() {
+  // Both files only exist once two antenna instances have logged data — a 404
+  // just means "not enough data yet", not an error.
+  try {
+    const sResp=await fetch(DATA_BASE+'wspr_pairs_summary.json?_='+Date.now(),{cache:'no-cache'});
+    if (!sResp.ok) { STATE.pairsSummary=null; STATE.pairsRows=[]; renderComparison(); return; }
+    let sText=await sResp.text();
+    if (sText.charCodeAt(0)===0xFEFF) sText=sText.slice(1);
+    STATE.pairsSummary=JSON.parse(sText);
+    try {
+      const pResp=await fetch(DATA_BASE+'wspr_pairs.csv?_='+Date.now(),{cache:'no-cache'});
+      STATE.pairsRows=pResp.ok?parsePairsCSV(await pResp.text()):[];
+    } catch(e) { STATE.pairsRows=[]; }
+  } catch(e) { STATE.pairsSummary=null; STATE.pairsRows=[]; }
+  renderComparison();
+}
+
+function antennaLabel(id) {
+  if (STATE.antennaMeta.has(id)) return STATE.antennaMeta.get(id).label;
+  return id.charAt(0).toUpperCase()+id.slice(1);
+}
+
+function fmtDiff(v) {
+  if (v==null||isNaN(v)) return '—';
+  return (v>0?'+':'')+v.toFixed(1)+' dB';
+}
+
+// ─── COMPARE PANEL ────────────────────────────────────────────────────────────
+let cmpChartLayout=null;
+
+function renderComparison() {
+  const cont=document.getElementById('compare-content');
+  const summary=STATE.pairsSummary;
+  if (!summary) {
+    cont.innerHTML=`<div class="cmp-empty">
+      <b>Antenna comparison needs two receivers running side by side.</b><br><br>
+      Right now only one antenna's data is available. Once a second WSJT-X
+      instance is logging alongside it, this panel will show — band by band —
+      how the two antennas compare on the same signals.
+    </div>`;
+    return;
+  }
+  const [ant1,ant2]=summary.antennas;
+  const label1=antennaLabel(ant1), label2=antennaLabel(ant2);
+  const bands=ALL_BANDS.filter(b=>summary.by_band[b]);
+  const ov=summary.overall;
+
+  let html='';
+  html+=`<div class="cmp-caveat"><b>How to read this:</b> a slot only counts as
+    "both running" when ${label1} and ${label2} were both actively listening on
+    that band at the same 2-minute cycle — whether or not either one actually
+    decoded anything. The SNR difference below only compares stations that
+    <em>both</em> antennas heard at the same time. A positive number means
+    ${label2} heard it louder; a negative number means ${label2} heard it
+    weaker. Bands with fewer than 20 matched pairs are flagged — there just
+    isn't enough data yet to trust that number.</div>`;
+
+  html+=`<div class="cmp-overall">
+    <div class="cmp-stat"><div class="k">Both running</div><div class="v">${(ov.both_running_slots||0).toLocaleString()}</div></div>
+    <div class="cmp-stat"><div class="k">Matched pairs</div><div class="v">${(ov.pairs||0).toLocaleString()}</div></div>
+    <div class="cmp-stat"><div class="k">Only ${label1}</div><div class="v">${(ov['only_'+ant1]||0).toLocaleString()}</div></div>
+    <div class="cmp-stat"><div class="k">Only ${label2}</div><div class="v">${(ov['only_'+ant2]||0).toLocaleString()}</div></div>
+    <div class="cmp-stat"><div class="k">Median diff, overall</div><div class="v">${fmtDiff(ov.snr_diff_median)}</div></div>
+  </div>`;
+
+  html+=`<div id="cmp-chart-wrap">
+    <div id="cmp-chart-title">Median SNR difference by band (${label2} minus ${label1})</div>
+    <canvas id="cmp-chart" aria-label="Median SNR difference by band, one bar per band"></canvas>
+    <div id="cmp-chart-legend">
+      <span><span class="cmp-leg-sw" style="background:#06b6d4"></span>${label2} louder</span>
+      <span><span class="cmp-leg-sw" style="background:#f59e0b"></span>${label2} weaker</span>
+      <span><span class="cmp-leg-sw" style="background:#475569"></span>fewer than 20 pairs</span>
+    </div>
+    <div id="cmp-chart-hover" style="font-size:.71rem;color:var(--dim);margin-top:6px;min-height:1.2em;font-family:'IBM Plex Mono',monospace">Hover or tap a bar for details</div>
+  </div>`;
+
+  html+=`<div class="cmp-bands">`;
+  for (const b of bands) {
+    const s=summary.by_band[b];
+    const bMeta=BAND_META[b];
+    const low=(s.pairs||0)<20;
+    let line;
+    if (!s.pairs||s.snr_diff_median==null) {
+      line=`Not enough data yet on ${bMeta.label} (${s.pairs||0} matched pair${s.pairs===1?'':'s'}).`;
+    } else if (s.snr_diff_median===0) {
+      line=`On ${bMeta.label} the two antennas hear the same stations equally well on average.`;
+    } else {
+      const d=s.snr_diff_median, dir=d<0?'weaker':'stronger', mag=Math.abs(d).toFixed(1);
+      line=`On ${bMeta.label} the ${label2} hears the same stations <b>${mag} dB ${dir}</b> on average than the ${label1}.`;
+    }
+    html+=`<div class="cmp-band-card">
+      <div class="cmp-band-head">
+        <span class="cmp-band-name" style="color:${bMeta.color}">${bMeta.label}</span>
+        <span class="cmp-band-sub">${(s.pairs||0).toLocaleString()} pairs · ${(s.both_running_slots||0).toLocaleString()} both-running slots · only ${label1} ${s['only_'+ant1]||0} · only ${label2} ${s['only_'+ant2]||0}</span>
+        ${low?'<span class="cmp-flag">fewer than 20 pairs — not enough data yet</span>':''}
+      </div>
+      <div class="cmp-band-line">${line}</div>
+    </div>`;
+  }
+  html+=`</div>`;
+
+  html+=`<div id="compare-table-wrap"><table id="compare-table">
+    <thead><tr><th>Band</th><th>Both running</th><th>Pairs</th><th>Only ${label1}</th><th>Only ${label2}</th><th>Mean diff</th><th>Median diff</th></tr></thead>
+    <tbody>${bands.map(b=>{
+      const s=summary.by_band[b];
+      return `<tr><td style="color:${BAND_META[b].color}">${BAND_META[b].label}</td>`+
+        `<td>${(s.both_running_slots||0).toLocaleString()}</td>`+
+        `<td>${(s.pairs||0).toLocaleString()}${(s.pairs||0)<20?' *':''}</td>`+
+        `<td>${s['only_'+ant1]||0}</td>`+
+        `<td>${s['only_'+ant2]||0}</td>`+
+        `<td>${fmtDiff(s.snr_diff_mean)}</td>`+
+        `<td>${fmtDiff(s.snr_diff_median)}</td></tr>`;
+    }).join('')}</tbody>
+  </table>
+  <div id="compare-caption">* fewer than 20 pairs — not enough data yet. Rule: ${summary.rule||''} Generated ${summary.generated_utc||'—'}.</div>
+  </div>`;
+
+  if (STATE.pairsRows.length) {
+    html+=`<div id="cmp-scatter-wrap" style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:14px">
+      <div id="cmp-chart-title">SNR difference vs distance — each matched pair</div>
+      <canvas id="cmp-scatter" aria-label="SNR difference versus distance scatter plot" style="display:block;width:100%;height:220px"></canvas>
+    </div>`;
+  }
+
+  cont.innerHTML=html;
+  drawComparisonChart(summary,bands);
+  wireComparisonHover(summary,label1,label2,ant1,ant2);
+  if (STATE.pairsRows.length) drawPairsScatter();
+}
+
+function roundRectPath(ctx,x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function drawComparisonChart(summary,bands) {
+  const canvas=document.getElementById('cmp-chart');
+  const wrap=document.getElementById('cmp-chart-wrap');
+  if (!canvas||!wrap||!bands.length) return;
+  const ctx=canvas.getContext('2d');
+  const cssW=Math.max(260,wrap.clientWidth-24);
+  const rowH=30, padL=44, padR=54, padT=8, padB=8;
+  const cssH=padT+padB+bands.length*rowH;
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=cssW*dpr; canvas.height=cssH*dpr;
+  canvas.style.width=cssW+'px'; canvas.style.height=cssH+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cssW,cssH);
+
+  const plotW=cssW-padL-padR;
+  const cx=padL+plotW/2;
+  const maxAbs=Math.max(1,...bands.map(b=>{
+    const d=summary.by_band[b].snr_diff_median;
+    return d==null?0:Math.abs(d);
+  }));
+  const labelRoom=46; // reserve space so the value label never collides with the band-name label
+  const scale=Math.max(4,plotW/2-6-labelRoom)/maxAbs;
+
+  ctx.strokeStyle='rgba(148,163,184,0.35)';
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(cx,padT); ctx.lineTo(cx,cssH-padB); ctx.stroke();
+
+  cmpChartLayout={rows:[]};
+  bands.forEach((b,i)=>{
+    const s=summary.by_band[b];
+    const meta=BAND_META[b];
+    const y=padT+i*rowH;
+    const rowCy=y+rowH/2;
+    const low=(s.pairs||0)<20;
+    const d=s.snr_diff_median;
+
+    ctx.fillStyle=meta.color;
+    ctx.font='11px IBM Plex Mono,monospace';
+    ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText(meta.label,padL-8,rowCy);
+
+    let barW=0, color='#475569';
+    if (d!=null && s.pairs>0) {
+      barW=Math.abs(d)*scale;
+      color=low?'#475569':(d<0?'#f59e0b':'#06b6d4');
+    }
+    const bh=14;
+    ctx.fillStyle=color;
+    if (barW>0.5) {
+      const bx=d<0?cx-barW:cx;
+      const r=Math.min(4,barW/2,bh/2);
+      roundRectPath(ctx,bx,rowCy-bh/2,Math.max(barW,1),bh,r);
+      ctx.fill();
+    } else {
+      ctx.fillRect(cx-2,rowCy-2,4,4);
+    }
+    ctx.fillStyle='rgba(226,232,240,0.85)';
+    ctx.font='10px IBM Plex Mono,monospace';
+    const label=(d==null||!s.pairs)?'n/a':fmtDiff(d);
+    if (d!=null && d<0) { ctx.textAlign='right'; ctx.fillText(label,cx-barW-6,rowCy); }
+    else { ctx.textAlign='left'; ctx.fillText(label,cx+barW+6,rowCy); }
+
+    cmpChartLayout.rows.push({y,rowH,band:b});
+  });
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
+
+function wireComparisonHover(summary,label1,label2,ant1,ant2) {
+  const canvas=document.getElementById('cmp-chart');
+  const info=document.getElementById('cmp-chart-hover');
+  if (!canvas||!info) return;
+  function handle(clientY) {
+    if (!cmpChartLayout) return;
+    const rect=canvas.getBoundingClientRect();
+    const y=clientY-rect.top;
+    const row=cmpChartLayout.rows.find(r=>y>=r.y&&y<r.y+r.rowH);
+    if (!row) return;
+    const s=summary.by_band[row.band];
+    const meta=BAND_META[row.band];
+    info.innerHTML=`<b style="color:${meta.color}">${meta.label}</b> — `+
+      `${(s.pairs||0).toLocaleString()} pairs · both running ${(s.both_running_slots||0).toLocaleString()} slots · `+
+      `mean ${fmtDiff(s.snr_diff_mean)} · median ${fmtDiff(s.snr_diff_median)} · `+
+      `only ${label1} ${s['only_'+ant1]||0} · only ${label2} ${s['only_'+ant2]||0}`;
+  }
+  canvas.addEventListener('pointermove',e=>handle(e.clientY));
+  canvas.addEventListener('pointerleave',()=>{ info.textContent='Hover or tap a bar for details'; });
+  canvas.addEventListener('click',e=>handle(e.clientY));
+}
+
+function drawPairsScatter() {
+  const canvas=document.getElementById('cmp-scatter');
+  if (!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const cssW=Math.max(260,canvas.parentElement.clientWidth-24), cssH=220;
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=cssW*dpr; canvas.height=cssH*dpr;
+  canvas.style.width=cssW+'px'; canvas.style.height=cssH+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cssW,cssH);
+
+  const rows=STATE.pairsRows.filter(r=>r.dist_km&&!isNaN(r.snr_diff));
+  if (!rows.length) return;
+  const PAD={l:40,r:10,t:10,b:26};
+  const pW=cssW-PAD.l-PAD.r, pH=cssH-PAD.t-PAD.b;
+  const maxDist=Math.max(...rows.map(r=>r.dist_km));
+  const maxAbsDiff=Math.max(1,...rows.map(r=>Math.abs(r.snr_diff)));
+  const px=d=>PAD.l+d/maxDist*pW;
+  const py=v=>PAD.t+pH/2-(v/maxAbsDiff)*(pH/2-6);
+
+  ctx.strokeStyle='rgba(148,163,184,0.2)'; ctx.lineWidth=1;
+  ctx.strokeRect(PAD.l,PAD.t,pW,pH);
+  ctx.strokeStyle='rgba(148,163,184,0.35)';
+  ctx.beginPath(); ctx.moveTo(PAD.l,py(0)); ctx.lineTo(PAD.l+pW,py(0)); ctx.stroke();
+
+  ctx.fillStyle='rgba(100,116,139,0.8)';
+  ctx.font='9px IBM Plex Mono,monospace';
+  ctx.textAlign='center';
+  ctx.fillText('Distance (km)',PAD.l+pW/2,cssH-4);
+  ctx.save(); ctx.translate(9,PAD.t+pH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('SNR diff (dB)',0,0); ctx.restore();
+
+  ctx.globalAlpha=0.75;
+  for (const r of rows) {
+    const meta=BAND_META[r.band]||{color:'#94a3b8',shape:'circle'};
+    ctx.fillStyle=meta.color;
+    drawShape(ctx,meta.shape,px(r.dist_km),py(r.snr_diff),3);
+    ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  ctx.textAlign='left';
 }
 
 async function fetchSpots() {
@@ -563,9 +912,60 @@ async function fetchSpots() {
     const {geoRows,allRows,type2}=parseSpotsCSV(text);
     STATE.rows=geoRows; STATE.allRows=allRows; STATE.type2Count=type2; STATE.version++;
     document.getElementById('ss-type2').textContent=type2.toLocaleString()+' no-pos';
+    rebuildAntennaMeta();
     STATE.applyFilter();
     buildMapMarkers();
   } catch(e) { setStatusError('Spots fetch: '+e.message); }
+}
+
+// ─── ANTENNA FILTER ──────────────────────────────────────────────────────────
+function rebuildAntennaMeta() {
+  const meta=new Map();
+  for (const r of STATE.allRows) {
+    const id=r.antenna||'longwire';
+    if (!meta.has(id)) meta.set(id,{label:r.antenna_label||'Long wire',count:0});
+    meta.get(id).count++;
+  }
+  STATE.antennaMeta=meta;
+  buildAntennaFilterUI();
+}
+
+function buildAntennaFilterUI() {
+  const wrap=document.getElementById('ant-btns');
+  const sep=document.getElementById('ant-sep');
+  const ids=[...STATE.antennaMeta.keys()];
+  if (ids.length<2) {
+    // Only one antenna in the data (or none yet) — nothing meaningful to filter.
+    wrap.style.display='none'; sep.style.display='none';
+    if (STATE.antennaFilter!=='all') { STATE.antennaFilter='all'; STATE.applyFilter(); }
+    return;
+  }
+  wrap.style.display=''; sep.style.display='';
+  // Only rebuild buttons if the set of antenna ids changed.
+  const existing=[...wrap.querySelectorAll('[data-ant]')].map(b=>b.dataset.ant).join(',');
+  if (existing===ids.join(',')) return;
+  wrap.querySelectorAll('[data-ant]').forEach(b=>b.remove());
+  const allBtn=document.createElement('button');
+  allBtn.className='fbtn'+(STATE.antennaFilter==='all'?' on':'');
+  allBtn.textContent='All';
+  allBtn.dataset.ant='all';
+  allBtn.addEventListener('click',()=>selectAntennaFilter('all'));
+  wrap.appendChild(allBtn);
+  for (const id of ids) {
+    const btn=document.createElement('button');
+    btn.className='fbtn'+(STATE.antennaFilter===id?' on':'');
+    btn.textContent=STATE.antennaMeta.get(id).label;
+    btn.dataset.ant=id;
+    btn.addEventListener('click',()=>selectAntennaFilter(id));
+    wrap.appendChild(btn);
+  }
+}
+
+function selectAntennaFilter(id) {
+  STATE.antennaFilter=id;
+  document.querySelectorAll('#ant-btns [data-ant]').forEach(b=>
+    b.classList.toggle('on',b.dataset.ant===id));
+  STATE.applyFilter();
 }
 
 // ─── MAP ─────────────────────────────────────────────────────────────────────
@@ -1103,6 +1503,10 @@ function setupTabs() {
       if (tab.dataset.panel==='scatter') redrawScatter();
       if (tab.dataset.panel==='heatmap') redrawHeatmap();
       if (tab.dataset.panel==='map') { setTimeout(()=>map&&map.invalidateSize(),50); }
+      if (tab.dataset.panel==='compare' && STATE.pairsSummary) {
+        drawComparisonChart(STATE.pairsSummary,ALL_BANDS.filter(b=>STATE.pairsSummary.by_band[b]));
+        if (STATE.pairsRows.length) drawPairsScatter();
+      }
     });
   });
 }
@@ -1119,6 +1523,10 @@ window.addEventListener('resize',()=>{
     if (panel==='scatter') redrawScatter();
     if (panel==='heatmap') redrawHeatmap();
     if (panel==='map') map&&map.invalidateSize();
+    if (panel==='compare' && STATE.pairsSummary) {
+      drawComparisonChart(STATE.pairsSummary,ALL_BANDS.filter(b=>STATE.pairsSummary.by_band[b]));
+      if (STATE.pairsRows.length) drawPairsScatter();
+    }
   },120);
 });
 
